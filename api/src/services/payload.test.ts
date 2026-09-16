@@ -305,6 +305,7 @@ describe('Integration Tests', () => {
 					c.field('date_field').date();
 					c.field('datetime_field').dateTime();
 					c.field('timestamp_field').timestamp();
+					c.field('time_field').time();
 				})
 				.build();
 
@@ -530,6 +531,26 @@ describe('Integration Tests', () => {
 					const result = service.processDates(fieldEntries, [{ datetime_field: null }], action);
 					expect(result).toMatchObject([{ datetime_field: null }]);
 				});
+
+				test.each<PayloadAction>(['create', 'update'])('throws for an object value on a time field on %s', (action) => {
+					expect(() => service.processDates(fieldEntries, [{ time_field: { wrong: 'input' } }], action)).toThrow(
+						InvalidPayloadError,
+					);
+				});
+
+				test.each<PayloadAction>(['create', 'update'])('throws for a number value on a time field on %s', (action) => {
+					expect(() => service.processDates(fieldEntries, [{ time_field: 12345 }], action)).toThrow(
+						InvalidPayloadError,
+					);
+				});
+
+				test.each<PayloadAction>(['create', 'update'])(
+					'still allows a string value on a time field on %s',
+					(action) => {
+						const result = service.processDates(fieldEntries, [{ time_field: '12:34:56' }], action);
+						expect(result).toMatchObject([{ time_field: '12:34:56' }]);
+					},
+				);
 			});
 		});
 
