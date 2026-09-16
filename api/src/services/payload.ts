@@ -269,6 +269,24 @@ export class PayloadService {
 		}
 
 		if (['create', 'update'].includes(action)) {
+			const jsonFields = fieldEntries.filter(([_name, field]) => field.type === 'json');
+
+			for (const [name] of jsonFields) {
+				for (const record of processedPayload) {
+					const value = record[name];
+
+					// Only a string reaches the DB unmodified, so it must already be valid JSON text.
+					// Other types are serialized below or handled natively by the driver.
+					if (typeof value !== 'string') continue;
+
+					try {
+						JSON.parse(value);
+					} catch {
+						throw new InvalidPayloadError({ reason: `Invalid JSON format in field "${name}"` });
+					}
+				}
+			}
+
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
 					if (Array.isArray(value) || (typeof value === 'object' && !(value instanceof Date) && value !== null)) {
