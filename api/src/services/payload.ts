@@ -553,7 +553,7 @@ export class PayloadService {
 		 * Some DB drivers (MS SQL f.e.) return time values as Date objects. For consistencies sake,
 		 * we'll abstract those back to hh:mm:ss
 		 */
-		for (const [name] of timeColumns) {
+		for (const [name, timeColumn] of timeColumns) {
 			for (const payload of payloads) {
 				const value = payload[name];
 
@@ -561,6 +561,9 @@ export class PayloadService {
 
 				if (action === 'read') {
 					if (value instanceof Date) payload[name] = format(value, 'HH:mm:ss');
+				} else if (value instanceof Date === false && typeof value !== 'string') {
+					// Anything but a Date or string would otherwise reach the DB driver unchanged.
+					throw new InvalidPayloadError({ reason: `Invalid Time format in field "${timeColumn.field}"` });
 				}
 			}
 		}
