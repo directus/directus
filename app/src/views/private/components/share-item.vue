@@ -29,7 +29,7 @@ const { updateAllowed, deleteAllowed } = useItemPermissions('directus_shares', p
 
 const usesLeft = computed(() => {
 	if (props.share.max_uses === null) return null;
-	return props.share.max_uses - props.share.times_used;
+	return props.share.max_uses - (props.share.times_used ?? 0);
 });
 
 const status = computed(() => {
