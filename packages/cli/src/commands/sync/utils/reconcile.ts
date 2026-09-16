@@ -1,0 +1,225 @@
+import { byCodepoint } from './codepoint.js';
+import type { FkField } from './resources.js';
+
+export interface ReconcileInput {
+	readonly collection: string;
+	readonly primaryKey: string;
+	/** The fields that identify the same record across instances. */
+	readonly naturalKey: readonly string[];
+	readonly fkFields: readonly FkField[];
+	readonly sourceRecords: readonly Record<string, unknown>[];
+	readonly targetRecords: readonly Record<string, unknown>[];
+}
+
+export interface CollectionReconcile {
+	readonly collection: string;
+	readonly matched: readonly { sourceId: string; targetId: string; key: string }[];
+	readonly ambiguous: readonly { sourceId: string; key: string; targetIds: readonly string[] }[];
+	readonly unmatched: readonly string[];
+}
+
+const UNTRANSLATABLE: unique symbol = Symbol('untranslatable');
+
+// Null is a real key component, not a gap. An unmapped non-null FK is what makes a key unusable.
+function keyComponents(
+	record: Record<string, unknown>,
+	naturalKey: readonly string[],
+	references: ReadonlyMap<string, string>,
+	resolveFk: (referenced: string, id: string) => string | typeof UNTRANSLATABLE,
+): unknown[] | null {
+	const components: unknown[] = [];
+
+	for (const field of naturalKey) {
+		const referenced = references.get(field);
+		const raw = record[field];
+
+		if (referenced === undefined) {
+			components.push(raw === undefined ? null : raw);
+			continue;
+		}
+
+		if (raw === null || raw === undefined) {
+			components.push(null);
+			continue;
+		}
+
+		const resolved = resolveFk(referenced, String(raw));
+
+		if (resolved === UNTRANSLATABLE) return null;
+
+		components.push(resolved);
+	}
+
+	return components;
+}
+
+// Never offer a target already claimed by the ID map or an earlier match.
+function groupTargets(
+	input: ReconcileInput,
+	references: ReadonlyMap<string, string>,
+	claimed: ReadonlySet<string>,
+): Map<string, string[]> {
+	const byKey = new Map<string, string[]>();
+
+	for (const record of input.targetRecords) {
+		const targetId = String(record[input.primaryKey]);
+
+		if (claimed.has(targetId)) continue;
+
+		const components = keyComponents(record, input.naturalKey, references, (_referenced, id) => id);
+		const key = JSON.stringify(components);
+		const bucket = byKey.get(key);
+
+		if (bucket === undefined) {
+			byKey.set(key, [targetId]);
+		} else {
+			bucket.push(targetId);
+		}
+	}
+
+	return byKey;
+}
+
+function reconcileOne(
+	input: ReconcileInput,
+	existing: Readonly<Record<string, Readonly<Record<string, string>>>>,
+	progress: Map<string, Map<string, string>>,
+	claimed: Map<string, Set<string>>,
+): CollectionReconcile {
+	const references = new Map<string, string>();
+
+	for (const fk of input.fkFields) {
+		references.set(fk.field, fk.references);
+	}
+
+	const collectionProgress = progress.get(input.collection) ?? new Map<string, string>();
+	const collectionClaimed = claimed.get(input.collection) ?? new Set<string>();
+
+	if (!progress.has(input.collection)) progress.set(input.collection, collectionProgress);
+
+	if (!claimed.has(input.collection)) claimed.set(input.collection, collectionClaimed);
+
+	const existingBucket = existing[input.collection] ?? {};
+
+	const matched: { sourceId: string; targetId: string; key: string }[] = [];
+	const ambiguous: { sourceId: string; key: string; targetIds: readonly string[] }[] = [];
+	const unmatched: string[] = [];
+
+	// A self-referential key component (a folder's parent) only resolves once the parent itself has
+	// matched, so keys are recomputed until a pass matches nothing new; the last pass classifies the rest.
+	let pending = input.sourceRecords.filter(
+		(record) => !Object.hasOwn(existingBucket, String(record[input.primaryKey])),
+	);
+
+	while (true) {
+		const targetsByKey = groupTargets(input, references, collectionClaimed);
+		const unresolved: Record<string, unknown>[] = [];
+		const sourcesByKey = new Map<string, { record: Record<string, unknown>; sourceId: string }[]>();
+
+		for (const record of pending) {
+			const sourceId = String(record[input.primaryKey]);
+
+			const components = keyComponents(record, input.naturalKey, references, (referenced, id) => {
+				return progress.get(referenced)?.get(id) ?? UNTRANSLATABLE;
+			});
+
+			if (components === null) {
+				unresolved.push(record);
+				continue;
+			}
+
+			const key = JSON.stringify(components);
+			const bucket = sourcesByKey.get(key);
+
+			if (bucket === undefined) {
+				sourcesByKey.set(key, [{ record, sourceId }]);
+			} else {
+				bucket.push({ record, sourceId });
+			}
+		}
+
+		const rest: Record<string, unknown>[] = [];
+		let matchedThisPass = 0;
+
+		for (const [key, entries] of sourcesByKey) {
+			const targetIds = targetsByKey.get(key) ?? [];
+			const [entry] = entries;
+			const [targetId] = targetIds;
+
+			if (entries.length === 1 && targetIds.length === 1 && entry !== undefined && targetId !== undefined) {
+				matched.push({ sourceId: entry.sourceId, targetId, key });
+
+				// Later child keys need this mapping during the same reconciliation pass.
+				collectionProgress.set(entry.sourceId, targetId);
+				collectionClaimed.add(targetId);
+				matchedThisPass += 1;
+				continue;
+			}
+
+			// Unmatched and ambiguous stay pending: a later pass can free a target or resolve a parent.
+			rest.push(...entries.map((item) => item.record));
+		}
+
+		if (matchedThisPass === 0) {
+			for (const record of unresolved) unmatched.push(String(record[input.primaryKey]));
+
+			for (const [key, entries] of sourcesByKey) {
+				const targetIds = targetsByKey.get(key) ?? [];
+
+				if (targetIds.length === 0) {
+					for (const item of entries) unmatched.push(item.sourceId);
+					continue;
+				}
+
+				const targetIdsSorted = [...targetIds].sort(byCodepoint);
+
+				for (const item of entries) {
+					ambiguous.push({ sourceId: item.sourceId, key, targetIds: targetIdsSorted });
+				}
+			}
+
+			break;
+		}
+
+		pending = [...rest, ...unresolved];
+	}
+
+	matched.sort((a, b) => byCodepoint(a.sourceId, b.sourceId));
+	ambiguous.sort((a, b) => byCodepoint(a.sourceId, b.sourceId));
+	unmatched.sort(byCodepoint);
+
+	return { collection: input.collection, matched, ambiguous, unmatched };
+}
+
+/**
+ * Parent-first: already-mapped source IDs are skipped but their targets claimed, and each new match
+ * becomes available to the child FK keys reconciled after it.
+ */
+export function reconcileCollections(
+	inputs: readonly ReconcileInput[],
+	existing: Readonly<Record<string, Readonly<Record<string, string>>>>,
+): CollectionReconcile[] {
+	const progress = new Map<string, Map<string, string>>();
+	const claimed = new Map<string, Set<string>>();
+
+	for (const [collection, bucket] of Object.entries(existing)) {
+		const map = new Map<string, string>();
+		const taken = new Set<string>();
+
+		for (const [sourceId, targetId] of Object.entries(bucket)) {
+			map.set(String(sourceId), String(targetId));
+			taken.add(String(targetId));
+		}
+
+		progress.set(collection, map);
+		claimed.set(collection, taken);
+	}
+
+	const results: CollectionReconcile[] = [];
+
+	for (const input of inputs) {
+		results.push(reconcileOne(input, existing, progress, claimed));
+	}
+
+	return results;
+}

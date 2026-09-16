@@ -4,7 +4,7 @@ import { APP_SHARED_DEPS } from '@directus/extensions';
 import { generateExtensionsEntrypoint, resolveFsExtensions, resolveModuleExtensions } from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
 import { templateCompilerOptions } from '@tresjs/core';
-import UnheadVite from '@unhead/addons/vite';
+import { Unhead } from '@unhead/vue/vite';
 import vue from '@vitejs/plugin-vue';
 import { searchForWorkspaceRoot } from 'vite';
 import vueDevtools from 'vite-plugin-vue-devtools';
@@ -27,6 +27,9 @@ const EXTENSIONS_PATH = process.env.EXTENSIONS_LOCATION
 
 const extensionsPathExists = fs.existsSync(EXTENSIONS_PATH);
 
+const DEFAULT_PORT = 8080;
+const DEV_APP_PORT = process.env.NODE_ENV === 'development' ? resolveAppPort(process.env.DEV_APP_PORT) : null;
+
 // https://vitejs.dev/config/
 export default defineConfig({
 	css: {
@@ -41,7 +44,7 @@ export default defineConfig({
 		vue({
 			...templateCompilerOptions,
 		}),
-		UnheadVite(),
+		...Unhead(),
 		yaml({
 			transform(data) {
 				return data === null ? {} : undefined;
@@ -66,7 +69,8 @@ export default defineConfig({
 	},
 	base: process.env.NODE_ENV === 'production' ? '' : '/admin',
 	server: {
-		port: 8080,
+		port: DEV_APP_PORT ?? DEFAULT_PORT,
+		strictPort: DEV_APP_PORT !== null,
 		proxy: {
 			'^/(?!admin)': {
 				target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
@@ -98,6 +102,20 @@ export default defineConfig({
 		},
 	},
 });
+
+function resolveAppPort(value) {
+	if (!value || value.trim() === '') return null;
+
+	const port = Number(value);
+
+	if (!Number.isInteger(port) || port < 1 || port > 65535) {
+		// eslint-disable-next-line no-console
+		console.warn(`[vite.config] Ignoring invalid DEV_APP_PORT "${value}", falling back to ${DEFAULT_PORT}`);
+		return null;
+	}
+
+	return port;
+}
 
 function getExtensionsRealPaths() {
 	return extensionsPathExists

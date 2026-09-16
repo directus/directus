@@ -2,22 +2,31 @@
 'use strict';
 
 /**
- * Container entrypoint for the hardened (distroless) runtime image.
+ * Container entrypoint for both runtime images.
  *
- * The hardened base image ships no shell, so the previous shell-form CMD
- * (`node cli.js bootstrap && pm2-runtime start ecosystem.config.cjs`) can no
- * longer run. This launcher reproduces that two-step boot in pure Node:
+ * It boots in two steps:
  *
  *   1. `directus bootstrap` - idempotent DB install/migrate + ensure admin.
  *   2. Hand off to pm2-runtime as the long-lived process supervisor.
  *
- * pm2 is copied into /directus/pm2 from the build stage (see Dockerfile), so we
- * invoke its bin directly rather than relying on a global shim on PATH.
+ * Doing this in Node rather than a shell command is what lets the hardened
+ * (distroless) image, which ships no shell, run the same boot as the regular
+ * one.
+ *
+ * pm2 comes from @directus/api's own dependencies rather than a separate copy
+ * installed into the image, so it is subject to the workspace's
+ * `pnpm.overrides`. It gets resolved rather than hardcoded because its only
+ * literal path in the deployed bundle contains the pm2 version.
  */
 
 const { spawnSync, spawn } = require('node:child_process');
+const { createRequire } = require('node:module');
+const { realpathSync } = require('node:fs');
 
 const node = process.execPath;
+
+const api = realpathSync(require.resolve('./node_modules/@directus/api/package.json'));
+const pm2Runtime = createRequire(api).resolve('pm2/bin/pm2-runtime');
 
 const bootstrap = spawnSync(node, ['cli.js', 'bootstrap'], { stdio: 'inherit' });
 
@@ -25,7 +34,7 @@ if (bootstrap.status !== 0) {
 	process.exit(bootstrap.status ?? 1);
 }
 
-const pm2 = spawn(node, ['pm2/bin/pm2-runtime', 'start', 'ecosystem.config.cjs'], { stdio: 'inherit' });
+const pm2 = spawn(node, [pm2Runtime, 'start', 'ecosystem.config.cjs'], { stdio: 'inherit' });
 
 for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT']) {
 	process.on(signal, () => pm2.kill(signal));
