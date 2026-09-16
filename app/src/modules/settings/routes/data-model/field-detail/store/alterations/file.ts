@@ -1,4 +1,4 @@
-import { set } from 'lodash';
+import { set } from 'lodash-es';
 import { HelperFunctions, State, StateUpdates } from '../types';
 import { setRelatedOneFieldForCorrespondingField } from './m2o';
 

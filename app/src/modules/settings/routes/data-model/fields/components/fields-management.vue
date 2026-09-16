@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Field, LocalType } from '@directus/types';
-import { isNil, orderBy } from 'lodash';
+import { isNil, orderBy } from 'lodash-es';
 import { computed, onBeforeMount, onBeforeUnmount, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';

@@ -2,7 +2,7 @@
 import formatTitle from '@directus/format-title';
 import dompurify from 'dompurify';
 import { decode } from 'html-entities';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VIcon from '@/components/v-icon/v-icon.vue';

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import type { ShowSelect } from '@directus/types';
-import { clone, throttle } from 'lodash';
+import { clone, throttle } from 'lodash-es';
 import { computed, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
 import { Header, Sort } from './types';
