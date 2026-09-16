@@ -356,10 +356,11 @@ export class FilesService extends ItemsService<File> {
 			}
 
 			try {
-				// The file is renamed on the current location it is stored in
+				// A file is currently only renamed within the storage location it's currently stored in, we never
+				// move files between storages. Changing "data.storage" has no effect on where the file data is,
+				// which is why the new path is validated against the current location instead.
 				const currentStorage = changedFiles[0]?.['storage'];
 
-				// Note: if we support moving files between storages on update then the "data.storage" needs validation
 				assertValidStoragePath(data.filename_disk, currentStorage ?? data.storage);
 
 				await assertUniqueFilename(this.knex, data.filename_disk, keys[0]);
