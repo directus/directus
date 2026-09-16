@@ -15,7 +15,7 @@ export type LicenseBootAction =
 	| { kind: 'update'; source: Source; currentKey: string; key: string }
 	/** `key` is `null` for an offline token, which carries none to refresh with */
 	| { kind: 'refresh'; source: Source; key: string | null; token: string }
-	| { kind: 'downgrade' }
+	| { kind: 'clear-token' }
 	| { kind: 'sync'; source: LicenseSource };
 
 /**
@@ -30,7 +30,7 @@ export type LicenseBootAction =
  * |   n    |    y     |       *       |    *    | refresh - offline token, persisted ignored  | E  |
  * |   n    |    n     |       y       |    y    | refresh - revalidate the persisted token    | F  |
  * |   n    |    n     |       y       |    n    | activate - no token to revalidate           | G  |
- * |   n    |    n     |       n       |    y    | downgrade - orphaned token, drop to core    | H  |
+ * |   n    |    n     |       n       |    y    | clear-token - orphaned token, drop to core  | H  |
  * |   n    |    n     |       n       |    n    | sync - already core, just propagate         | I  |
  */
 export function computeBootAction({ envKey, envToken, dbKey, dbToken }: LicenseBootState): LicenseBootAction {
@@ -71,7 +71,7 @@ export function computeBootAction({ envKey, envToken, dbKey, dbToken }: LicenseB
 
 	// CASE H
 	if (dbToken) {
-		return { kind: 'downgrade' };
+		return { kind: 'clear-token' };
 	}
 
 	// CASE I

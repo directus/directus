@@ -27,7 +27,6 @@ import {
 } from '@directus/license';
 import type { Accountability } from '@directus/types';
 import { toBoolean } from '@directus/utils';
-import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionCache } from '../permissions/cache.js';
 import licenseCheckSchedule, { stopLicenseCheck } from '../schedules/license.js';
@@ -42,19 +41,26 @@ import { getActiveSeats } from './entitlements/lib/seats.js';
 import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
 import { computeBootAction, type LicenseBootAction } from './utils/compute-boot-action.js';
 import { computeLicenseStatus } from './utils/compute-license-status.js';
+import { handleLicenseError, isLicenseInactive, isLicenseInvalid, toReason } from './utils/errors.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
-import { handleLicenseError } from './utils/handle-license-error.js';
 import { useRPC } from './utils/use-rpc.js';
 
 const env = useEnv();
 const logger = useLogger();
 const LICENSE_CHANNEL = `license`;
-let licenseCache: Directus.License | null;
+let licenseCache: Directus.License = DIRECTUS_CORE_LICENSE;
 
 type LicenseStore = {
-	invalidStatus: InvalidLicenseStatus | undefined;
+	invalidReason: InvalidLicenseStatus | undefined;
 };
+
+type SyncLicenseOptions =
+	| {
+			kind?: 'downgrade' | 'clear-token';
+			invalidReason?: InvalidLicenseStatus;
+	  }
+	| { kind?: 'clear-status'; invalidReason?: undefined };
 
 let licenseManager: LicenseManager | undefined;
 
@@ -114,8 +120,8 @@ export class LicenseManager {
 			throw new Error(action.message);
 		}
 
-		if (action.kind === 'downgrade') {
-			await this.syncLicense({ kind: 'downgrade' });
+		if (action.kind === 'clear-token') {
+			await this.syncLicense({ kind: 'clear-token' });
 			return;
 		}
 
@@ -144,18 +150,23 @@ export class LicenseManager {
 				throw error;
 			}
 
-			// TODO: dont clear key so a transient license server wont clear a key
+			logger.error(error);
+
+			// On error, boot into core for setting based keys as it can only be fixed via UI
 			if (action.source === 'settings') {
-				logger.error('Unable to validate the license from the database, switching to core tier.');
-				logger.error(error);
-				await this.syncLicense({ kind: 'downgrade' });
+				logger.error('License could not be verified or is invalid, switching to core tier.');
+
+				// The key is kept so a renewed or reinstated license is picked back up on the next
+				// boot. Ensures a transient outage wont clear a valid key.
+				await this.syncLicense({
+					kind: 'clear-token',
+					invalidReason: toReason(error),
+				});
+
 				return;
 			}
 
-			logger.fatal(error);
-
-			// Only one env var can be set here, so whichever it is is the culprit
-			// TODO: We should be consistent between env and settings on failures
+			// env has no option to update key via the UI, hard exit to allow resolution
 			throw new Error(
 				`Unable to validate the ${env['LICENSE_KEY'] ? 'LICENSE_KEY' : 'LICENSE_TOKEN'}, please check its value and try again.`,
 				{ cause: error },
@@ -165,26 +176,13 @@ export class LicenseManager {
 
 	// Env-sourced licenses can never be managed via the API, independent of the flag.
 	public getEditable(): boolean {
-		return toBoolean(env['LICENSE_KEY_MANAGEMENT_ENABLED']) && this.source !== 'env';
+		// Check env directly to ensure downgrade does not allow editable
+		if (env['LICENSE_KEY'] || env['LICENSE_TOKEN']) return false;
+
+		return toBoolean(env['LICENSE_KEY_MANAGEMENT_ENABLED']);
 	}
 
-	public async getLicense(options?: { database?: Knex }): Promise<Directus.License> {
-		if (licenseCache) return licenseCache;
-
-		const { token } = await getLicenseToken(options);
-
-		if (!token) {
-			this.source = null;
-			licenseCache = DIRECTUS_CORE_LICENSE;
-		} else {
-			licenseCache = await this.verify(token);
-
-			if (!licenseCache) {
-				this.source = null;
-				licenseCache = DIRECTUS_CORE_LICENSE;
-			}
-		}
-
+	public async getLicense() {
 		return licenseCache;
 	}
 
@@ -192,8 +190,12 @@ export class LicenseManager {
 		return computeLicenseStatus(this.source === null ? null : await this.getLicense());
 	}
 
-	public async getDowngradeReason(): Promise<InvalidLicenseStatus | null> {
-		const invalidStatus = await this.store(async (store) => store.get('invalidStatus'));
+	public async getInvalidReason(): Promise<InvalidLicenseStatus | null> {
+		const invalidStatus = await this.store(async (store) => store.get('invalidReason')).catch((error) => {
+			logger.warn(error, 'Could not read the license invalid reason');
+			return null;
+		});
+
 		return invalidStatus ?? null;
 	}
 
@@ -272,9 +274,13 @@ export class LicenseManager {
 	public async activate(key: string) {
 		this.assertCanManageLicense();
 
-		// Keys cannot be directly activated if one is already active, must go via update route
+		// If a key is already present, treat as an update. Attempt direct activation on failure
 		if (this.licenseKey) {
-			throw new ForbiddenError({ reason: 'A license was already activated' });
+			try {
+				return await this.update(key);
+			} catch (err) {
+				logger.warn(err, 'Updating from the stored license key failed, attempting to activate the new key instead');
+			}
 		}
 
 		const settingsService = new SettingsService({ schema: await getSchema() });
@@ -392,17 +398,24 @@ export class LicenseManager {
 
 		let license: Directus.License | null = null;
 
+		let syncLicenseState: SyncLicenseOptions = {};
+
 		if (token) {
 			license = await this.verify(token);
 
 			if (!license) {
-				// TODO a token that will not verify does not invalidate the key, only token should be cleared
-				await this.syncLicense({ kind: 'downgrade', reason: 'expired' });
-				return;
+				syncLicenseState.kind = 'clear-token';
+				syncLicenseState.invalidReason = 'verification';
 			}
 		}
 
-		if (license?.meta.offline === false) {
+		/**
+		 *  A failed verification leaves the license unknown. Only an offline token comes without a
+		 *  key, so a key being present means the server is still worth asking for potential self heal
+		 *
+		 * Safe to allow key fall-through as it is not possible to set both env key and token.
+		 */
+		if (license?.meta.offline === false || key) {
 			if (!key) {
 				throw new InvalidPayloadError({ reason: 'A "key" is required' });
 			}
@@ -433,23 +446,24 @@ export class LicenseManager {
 				await settingsService.upsertSingleton({
 					license_token: token,
 				});
+
+				// reset any possible failed state
+				syncLicenseState = {};
 			} catch (err) {
 				logger.error(err);
 
-				if (err instanceof LicenseServerError) {
-					if (err.code === 'LICENSE_EXPIRED') {
-						// TODO expired is potentially recoverable, so the key should survive
-						await this.syncLicense({ kind: 'downgrade', reason: 'expired' });
-					} else if (err.code === 'LICENSE_CANCELED') {
-						await this.syncLicense({ kind: 'downgrade', reason: 'canceled' });
-					} else if (err.code === 'LICENSE_SUSPENDED') {
-						await this.syncLicense({ kind: 'downgrade', reason: 'suspended' });
-					}
+				const reason = toReason(err);
+
+				// Expose out non transient license statuses
+				if (isLicenseInvalid(reason)) {
+					if (isLicenseInactive(reason)) syncLicenseState.kind = 'clear-token';
+
+					syncLicenseState.invalidReason = reason;
 				}
 			}
 		}
 
-		await this.syncLicense();
+		await this.syncLicense(syncLicenseState);
 	}
 
 	public async billingPortalUrl() {
@@ -707,39 +721,38 @@ export class LicenseManager {
 		}
 
 		if (await entitlementManager.checkAll()) {
+			// Deliberately does not propagate, every node already has license state synced
 			await this.syncLicense({ kind: 'clear-status' });
 		}
 	}
 
 	/**
 	 * Apply a state transition and propagate to all instances.
-	 *
-	 *  - { kind: 'downgrade', reason? }: clear key + token, drop to core, propagate.
-	 *  - { kind: 'clear-token' }: clear only the token; key survives for re-activation. Marker preserved (server's verdict still applies). Propagates.
-	 *  - { kind: 'clear-status' }: clear the invalidStatus marker only. Redis-only, does NOT propagate.
 	 */
-	private async syncLicense(
-		options?: { kind: 'downgrade'; reason?: InvalidLicenseStatus } | { kind: 'clear-token' } | { kind: 'clear-status' },
-	) {
-		if (options?.kind !== 'downgrade' || (options?.kind === 'downgrade' && options.reason === undefined)) {
-			await this.store(async (store) => store.delete('invalidStatus'));
-
-			if (options?.kind === 'clear-status') {
-				return;
+	private async syncLicense(options?: SyncLicenseOptions) {
+		await this.store(async (store) => {
+			if (options?.invalidReason) {
+				await store.set('invalidReason', options.invalidReason);
+			} else {
+				await store.delete('invalidReason');
 			}
-		}
+		}).catch((error) => {
+			logger.warn(
+				error,
+				options?.invalidReason
+					? `Could not record the license invalid reason "${options.invalidReason}"`
+					: 'Could not clear the license invalid reason',
+			);
+		});
+
+		if (options?.kind === 'clear-status') return;
 
 		if (options?.kind === 'downgrade') {
 			const settingsService = new SettingsService({ schema: await getSchema() });
 			await settingsService.upsertSingleton({ license_key: null, license_token: null });
-			this.source = null;
 
 			// Stop the periodic check
 			await stopLicenseCheck();
-
-			if (options.reason) {
-				await this.store(async (store) => store.set('invalidStatus', options.reason));
-			}
 		} else if (options?.kind === 'clear-token') {
 			const settingsService = new SettingsService({ schema: await getSchema() });
 			await settingsService.upsertSingleton({ license_token: null });
@@ -747,7 +760,7 @@ export class LicenseManager {
 
 		// clear permission cache when the license entitlements change
 		await clearPermissionCache();
-		await this.syncState();
+		await this.syncState({ leader: true });
 		await this.rpc.syncState();
 	}
 
@@ -757,19 +770,37 @@ export class LicenseManager {
 	 * Every instance derives its own, so the RPC only has to signal that something changed rather
 	 * than carry one instance's view of it.
 	 */
-	public async syncState() {
+	public async syncState(options?: { leader?: boolean }) {
 		const { source: keySource, key } = await getLicenseKey();
 		const { source: tokenSource, token } = await getLicenseToken();
 
 		this.licenseKey = key;
 		this.licenseToken = token;
 
-		// An env key outranks a persisted token
-		this.source = keySource ?? tokenSource;
+		let license: Directus.License | null = null;
 
-		licenseCache = null;
+		if (token) {
+			const verified = await this.verify(token);
 
-		const license = await this.getLicense();
-		getEntitlementManager().setEntitlements(license.entitlements);
+			if (!verified) {
+				logger.warn('The stored license token could not be verified, switching to core tier.');
+
+				if (options?.leader === true) {
+					await this.store(async (store) => {
+						return store.set('invalidReason', 'verification');
+					}).catch((error) => {
+						logger.warn(error, 'Could not record the license invalid reason');
+					});
+				}
+			} else {
+				license = verified;
+			}
+		}
+
+		// An env key outranks a persisted token, always null if no license irrespective of source
+		this.source = license ? (keySource ?? tokenSource) : null;
+
+		licenseCache = license ?? DIRECTUS_CORE_LICENSE;
+		getEntitlementManager().setEntitlements(licenseCache.entitlements);
 	}
 }
