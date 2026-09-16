@@ -141,11 +141,11 @@ describe('Integration Tests', () => {
 					expect(result).toBe('test,directus');
 				});
 
-				test('Throws on illegal values on create', async () => {
+				test.each<PayloadAction>(['create', 'update'])('Throws on an object value on %s', async (action) => {
 					await expect(
 						service.transformers['cast-csv']!({
 							value: { wrong: 'input' },
-							action: 'create',
+							action,
 							payload: {},
 							accountability: { role: null } as Accountability,
 							specials: [],
@@ -156,11 +156,11 @@ describe('Integration Tests', () => {
 					).rejects.toThrow(InvalidPayloadError);
 				});
 
-				test('Throws on illegal values on update', async () => {
+				test.each<PayloadAction>(['create', 'update'])('Throws on a number value on %s', async (action) => {
 					await expect(
 						service.transformers['cast-csv']!({
 							value: 123,
-							action: 'update',
+							action,
 							payload: {},
 							accountability: { role: null } as Accountability,
 							specials: [],
