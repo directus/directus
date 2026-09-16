@@ -108,7 +108,6 @@
 		"@types/semver": "catalog:",
 		"@types/three": "catalog:",
 		"@types/wellknown": "catalog:",
-		"@unhead/addons": "catalog:",
 		"@unhead/vue": "catalog:",
 		"@vitejs/plugin-vue": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
