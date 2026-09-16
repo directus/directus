@@ -177,3 +177,8 @@ services:
     platform: linux/amd64
     ports:
       - 7000:1133
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:1133/.well-known/jwks.json']
+      interval: 1s
+      timeout: 5s
+      retries: 30
