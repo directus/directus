@@ -15,8 +15,18 @@ vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
 
+const { inactiveCollections } = vi.hoisted(() => ({ inactiveCollections: new Set<string>() }));
+
+vi.mock('@/utils/collection-status', () => ({
+	isCollectionInactive: (collection: unknown) =>
+		inactiveCollections.has(
+			typeof collection === 'string' ? collection : (collection as { collection: string }).collection,
+		),
+}));
+
 afterEach(() => {
 	vi.clearAllMocks();
+	inactiveCollections.clear();
 });
 
 const relation: RelationM2O = {
@@ -73,6 +83,21 @@ describe('useRelationSingle', () => {
 
 		expect(sdk.request).toHaveBeenCalledOnce();
 		expect(wrapper.vm.displayItem).toEqual({ id: 'tenant-a', name: 'Tenant A' });
+	});
+
+	test('does not request an item when the related collection is inactive', async () => {
+		inactiveCollections.add('related-collection');
+
+		const wrapper = mount(TestComponent, {
+			props: {
+				value: 'tenant-a',
+			},
+		});
+
+		await flushPromises();
+
+		expect(sdk.request).not.toHaveBeenCalled();
+		expect(wrapper.vm.displayItem).toBeNull();
 	});
 
 	test('does not request the temporary "+" primary key of an unsaved parent item', async () => {
