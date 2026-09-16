@@ -42,6 +42,7 @@ type Transformers = {
 		specials: string[];
 		helpers: Helpers;
 		overwriteDefaults: DefaultOverwrite | undefined;
+		field?: string;
 	}) => Promise<any>;
 };
 
@@ -150,8 +151,15 @@ export class PayloadService {
 				);
 			return value;
 		},
-		async 'cast-csv'({ action, value }) {
-			if (Array.isArray(value) === false && typeof value !== 'string') return;
+		async 'cast-csv'({ action, value, field }) {
+			if (Array.isArray(value) === false && typeof value !== 'string') {
+				if (value === null || value === undefined) return value;
+
+				if (action === 'read') return;
+
+				// Otherwise falls through to the generic stringify below, then gets mangled by `.split(',')` on the next read.
+				throw new InvalidPayloadError({ reason: `Invalid CSV format in field "${field}"` });
+			}
 
 			if (action === 'read') {
 				if (Array.isArray(value)) return value;
@@ -354,6 +362,7 @@ export class PayloadService {
 					specials: fieldSpecials,
 					helpers: this.helpers,
 					overwriteDefaults: this.overwriteDefaults,
+					field: field.field,
 				});
 			}
 		}
