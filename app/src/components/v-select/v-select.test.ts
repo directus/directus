@@ -10,9 +10,9 @@ import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 
 vi.mock('lodash-es', async () => {
-	const mod = await vi.importActual<{ default: typeof import('lodash-es') }>('lodash-es');
+	const mod = await vi.importActual<typeof import('lodash-es')>('lodash-es');
 	return {
-		...mod.default,
+		...mod,
 		debounce: (fn: any) => fn,
 	};
 });
