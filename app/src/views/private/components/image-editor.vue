@@ -517,7 +517,7 @@ function setAspectRatio() {
 			<VProgressCircular indeterminate />
 		</div>
 
-		<VNotice v-else-if="error" type="error">error</VNotice>
+		<VNotice v-else-if="error" type="danger">error</VNotice>
 
 		<div
 			v-if="imageData && !loading && !error"
