@@ -613,6 +613,23 @@ vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
 ]);
 ```
 
+#### When a service does not need its own mock
+
+**A service that is just an ItemsService with no extras does not get its own mock file.** Assign the ItemsService mock
+directly in the test instead:
+
+```typescript
+vi.mock('./users.js', async () => {
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
+	return { UsersService: mockItemsService().ItemsService };
+});
+```
+
+A mock file is only warranted when the service adds behaviour beyond CRUD that callers depend on — `revert` on
+[revisions-service.ts](#revisions-servicets), `buildTree` on [folders-service.ts](#folders-servicets), or a different
+constructor signature as in [collections-service.ts](#collections-servicets). A file that only renames `ItemsService`
+adds an import and a layer of indirection for nothing.
+
 ---
 
 ### fields-service.ts
