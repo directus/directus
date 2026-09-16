@@ -1032,6 +1032,7 @@ describe('refresh signal', () => {
 
 	test('refetches the rows when the provided signal is bumped', async () => {
 		const sdkSpy = vi.spyOn(sdk, 'request');
+		sdkSpy.mockClear();
 
 		const wrapper = mount(RefreshSignalProvider, {
 			props: { relation: relationO2M, id: 1 },
@@ -1051,6 +1052,7 @@ describe('refresh signal', () => {
 
 	test('does not refetch while the signal is unchanged', async () => {
 		const sdkSpy = vi.spyOn(sdk, 'request');
+		sdkSpy.mockClear();
 
 		mount(RefreshSignalProvider, {
 			props: { relation: relationO2M, id: 1 },

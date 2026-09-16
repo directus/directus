@@ -7,7 +7,7 @@ import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { findIndex, without } from 'lodash-es';
 import request from 'supertest';
-import { beforeAll, describe, expect, it, test } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { type CachedTestsSchema, CheckQueryFilters, type TestsSchemaVendorValues } from '../../query/filter';
 import {
 	type City,
@@ -2855,9 +2855,10 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
-		test('Auto Increment Tests', (ctx) => {
-			if (pkType !== 'integer') ctx.skip();
-
+		// TODO: these assertions have never run. Before Vitest 4 a `describe` nested inside a `test` was
+		// silently swallowed, so this block collected as a single always-passing test that asserted nothing.
+		// Enabling it (`describe.skipIf(pkType !== 'integer')`) is tracked separately.
+		describe.skip('Auto Increment Tests', () => {
 			describe('updates the auto increment value correctly', () => {
 				it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
 					// Setup

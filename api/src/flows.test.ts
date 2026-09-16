@@ -35,9 +35,11 @@ vi.mock('./utils/get-schema.js', () => ({
 }));
 
 vi.mock('./services/flows.js', () => ({
-	FlowsService: vi.fn().mockImplementation(() => ({
-		readByQuery: vi.fn().mockResolvedValue([]),
-	})),
+	FlowsService: vi.fn().mockImplementation(function () {
+		return {
+			readByQuery: vi.fn().mockResolvedValue([]),
+		};
+	}),
 }));
 
 vi.mock('./utils/schedule.js', () => ({
@@ -133,12 +135,11 @@ describe('FlowManager', () => {
 
 		const { FlowsService } = await import('./services/flows.js');
 
-		vi.mocked(FlowsService).mockImplementation(
-			() =>
-				({
-					readByQuery: vi.fn().mockResolvedValue([mockFlow]),
-				}) as any,
-		);
+		vi.mocked(FlowsService).mockImplementation(function () {
+			return {
+				readByQuery: vi.fn().mockResolvedValue([mockFlow]),
+			} as any;
+		});
 
 		const manager = getFlowManager();
 
@@ -170,12 +171,11 @@ describe('FlowManager', () => {
 		beforeEach(async () => {
 			const { FlowsService } = await import('./services/flows.js');
 
-			vi.mocked(FlowsService).mockImplementation(
-				() =>
-					({
-						readByQuery: vi.fn().mockResolvedValue([manualFlow]),
-					}) as any,
-			);
+			vi.mocked(FlowsService).mockImplementation(function () {
+				return {
+					readByQuery: vi.fn().mockResolvedValue([manualFlow]),
+				} as any;
+			});
 		});
 
 		const runArgs = (accountability: any) =>
