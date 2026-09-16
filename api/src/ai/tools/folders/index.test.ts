@@ -35,7 +35,9 @@ describe('folders tool', () => {
 				deleteMany: vi.fn(),
 			};
 
-			vi.mocked(FoldersService).mockImplementation(() => mockFoldersService as unknown as FoldersService);
+			vi.mocked(FoldersService).mockImplementation(function () {
+				return mockFoldersService as unknown as FoldersService;
+			});
 		});
 
 		describe('CREATE action', () => {
@@ -267,7 +269,9 @@ describe('folders tool', () => {
 				deleteMany: vi.fn(),
 			};
 
-			vi.mocked(FoldersService).mockImplementation(() => mockFoldersService);
+			vi.mocked(FoldersService).mockImplementation(function () {
+				return mockFoldersService;
+			});
 		});
 
 		test('should handle null result from readMany after create', async () => {
