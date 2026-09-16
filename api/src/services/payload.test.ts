@@ -500,6 +500,37 @@ describe('Integration Tests', () => {
 					]);
 				});
 			});
+
+			describe('rejects invalid types on write', () => {
+				test.each<PayloadAction>(['create', 'update'])(
+					'throws for an object value on a dateTime field on %s',
+					(action) => {
+						expect(() => service.processDates(fieldEntries, [{ datetime_field: { wrong: 'input' } }], action)).toThrow(
+							InvalidPayloadError,
+						);
+					},
+				);
+
+				test.each<PayloadAction>(['create', 'update'])('throws for a number value on a date field on %s', (action) => {
+					expect(() => service.processDates(fieldEntries, [{ date_field: 12345 }], action)).toThrow(
+						InvalidPayloadError,
+					);
+				});
+
+				test.each<PayloadAction>(['create', 'update'])(
+					'throws for an object value on a timestamp field on %s',
+					(action) => {
+						expect(() => service.processDates(fieldEntries, [{ timestamp_field: { wrong: 'input' } }], action)).toThrow(
+							InvalidPayloadError,
+						);
+					},
+				);
+
+				test.each<PayloadAction>(['create', 'update'])('still allows null values on write on %s', (action) => {
+					const result = service.processDates(fieldEntries, [{ datetime_field: null }], action);
+					expect(result).toMatchObject([{ datetime_field: null }]);
+				});
+			});
 		});
 
 		describe('processAggregates', () => {
