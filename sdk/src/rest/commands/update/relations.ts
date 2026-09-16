@@ -25,11 +25,11 @@ export const updateRelation =
 		query?: TQuery,
 	): RestCommand<UpdateRelationOutput<Schema, TQuery>, Schema> =>
 	() => {
-		throwIfEmpty(String(collection), 'Collection cannot be empty');
+		throwIfEmpty(collection, 'Collection cannot be empty');
 		throwIfEmpty(field, 'Field cannot be empty');
 
 		return {
-			path: `/relations/${collection as string}/${field}`,
+			path: `/relations/${collection}/${field}`,
 			params: query ?? {},
 			body: JSON.stringify(item),
 			method: 'PATCH',
