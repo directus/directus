@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
-import { isEmpty, isString } from 'lodash-es'es';
+import { isEmpty, isString } from 'lodash-es';
 import { computed } from 'vue';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
