@@ -1937,6 +1937,9 @@ importers:
       html-entities:
         specifier: 'catalog:'
         version: 2.6.0
+      jsdom:
+        specifier: 'catalog:'
+        version: 29.1.1(@noble/hashes@1.8.0)
       json-to-graphql-query:
         specifier: 'catalog:'
         version: 2.3.0
