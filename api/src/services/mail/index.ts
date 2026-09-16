@@ -12,6 +12,7 @@ import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import getMailer from '../../mailer.js';
+import { isWithinPath } from '../../utils/is-within-path.js';
 import { Url } from '../../utils/url.js';
 import { useEmailRateLimiterQueue } from './rate-limiter.js';
 
@@ -117,13 +118,14 @@ export class MailService {
 		const systemTemplatePath = path.resolve(systemTemplatesDir, template + '.liquid');
 
 		// Prevent path traversal: only resolve templates that stay within their own templates directory.
-		const isWithin = (dir: string, candidate: string) => candidate === dir || candidate.startsWith(dir + path.sep);
-
 		let templatePath: string | null = null;
 
-		if (isWithin(customTemplatesDir, customTemplatePath) && (await fse.pathExists(customTemplatePath))) {
+		if (isWithinPath(customTemplatePath, customTemplatesDir, path.sep) && (await fse.pathExists(customTemplatePath))) {
 			templatePath = customTemplatePath;
-		} else if (isWithin(systemTemplatesDir, systemTemplatePath) && (await fse.pathExists(systemTemplatePath))) {
+		} else if (
+			isWithinPath(systemTemplatePath, systemTemplatesDir, path.sep) &&
+			(await fse.pathExists(systemTemplatePath))
+		) {
 			templatePath = systemTemplatePath;
 		}
 

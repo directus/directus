@@ -3,13 +3,8 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import { toArray } from '@directus/utils';
 import { getExtensionsPath } from '../../../extensions/lib/get-extensions-path.js';
+import { isWithinPath } from '../../../utils/is-within-path.js';
 import { sanitizeFilepath } from './sanitize-filepath.js';
-
-function isWithinPath(filepath: string, dirpath: string): boolean {
-	if (dirpath === '') return true;
-
-	return filepath === dirpath || filepath.startsWith(dirpath + '/');
-}
 
 /**
  * Reject storage filepaths that write to "forbidden" locations
