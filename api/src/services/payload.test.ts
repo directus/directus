@@ -171,9 +171,9 @@ describe('Integration Tests', () => {
 					).rejects.toThrow(InvalidPayloadError);
 				});
 
-				test('Allows null/undefined values on write', async () => {
+				test.each([null, undefined])('Allows %s values on write', async (value) => {
 					const result = await service.transformers['cast-csv']!({
-						value: null,
+						value,
 						action: 'create',
 						payload: {},
 						accountability: { role: null } as Accountability,
@@ -183,7 +183,7 @@ describe('Integration Tests', () => {
 						field: 'tags',
 					});
 
-					expect(result).toBe(null);
+					expect(result).toBe(value);
 				});
 			});
 
@@ -512,8 +512,23 @@ describe('Integration Tests', () => {
 					},
 				);
 
+				test.each<PayloadAction>(['create', 'update'])(
+					'throws for a number value on a dateTime field on %s',
+					(action) => {
+						expect(() => service.processDates(fieldEntries, [{ datetime_field: 12345 }], action)).toThrow(
+							InvalidPayloadError,
+						);
+					},
+				);
+
 				test.each<PayloadAction>(['create', 'update'])('throws for a number value on a date field on %s', (action) => {
 					expect(() => service.processDates(fieldEntries, [{ date_field: 12345 }], action)).toThrow(
+						InvalidPayloadError,
+					);
+				});
+
+				test.each<PayloadAction>(['create', 'update'])('throws for an object value on a date field on %s', (action) => {
+					expect(() => service.processDates(fieldEntries, [{ date_field: { wrong: 'input' } }], action)).toThrow(
 						InvalidPayloadError,
 					);
 				});
@@ -522,6 +537,15 @@ describe('Integration Tests', () => {
 					'throws for an object value on a timestamp field on %s',
 					(action) => {
 						expect(() => service.processDates(fieldEntries, [{ timestamp_field: { wrong: 'input' } }], action)).toThrow(
+							InvalidPayloadError,
+						);
+					},
+				);
+
+				test.each<PayloadAction>(['create', 'update'])(
+					'throws for a number value on a timestamp field on %s',
+					(action) => {
+						expect(() => service.processDates(fieldEntries, [{ timestamp_field: 12345 }], action)).toThrow(
 							InvalidPayloadError,
 						);
 					},
