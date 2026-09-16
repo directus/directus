@@ -7,7 +7,7 @@ import { getReversedTestIndex } from './sequential-tests';
 
 export default <Environment>{
 	name: 'custom',
-	transformMode: 'ssr',
+	viteEnvironment: 'ssr',
 
 	async setup(global) {
 		const { totalTestsCount } = JSON.parse(await fs.readFile('sequencer-data.json', 'utf8'));
