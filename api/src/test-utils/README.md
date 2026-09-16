@@ -14,6 +14,9 @@ This directory contains mock implementations for commonly used modules in servic
 - **[emitter.ts](#emitterts)** - Event emitter mocks
 - **[env.ts](#envts)** - env mocks
 - **[storage.ts](#storagets)** - Storage driver and manager mocks
+- **[bus.ts](#busts)** - In-memory message bus with real delivery
+- **[store.ts](#storets)** - `useStore` mocks with a serialized critical section
+- **[async.ts](#asyncts)** - `Promise.withResolvers()` stand-in for driving tests off explicit signals
 - **[items-service.ts](#items-servicets)** - ItemsService mocks
 - **[fields-service.ts](#fields-servicets)** - FieldsService mocks
 - **[files-service.ts](#files-servicets)** - FilesService mocks
@@ -1246,3 +1249,66 @@ When adding new mock utilities:
 5. Use TypeScript for proper typing
 6. Include return type documentation
 7. Test the mock with actual service tests
+
+---
+
+### bus.ts
+
+Provides an in-memory message bus that actually delivers, mirroring the synchronous delivery of `BusLocal`. Use it over
+a plain `{ publish: vi.fn() }` stub when the code under test has a publisher and a subscriber that must reach each
+other.
+
+#### `createMockBus()`
+
+**Returns:** `{ bus, subscriberCount, setOnPublish }`
+
+- `bus` — `publish`/`subscribe`/`unsubscribe` spies backed by real handler delivery
+- `subscriberCount(channel)` — handlers currently attached, for asserting nothing leaks on the process-wide singleton
+- `setOnPublish(callback)` — runs while a publish is in flight, to act on the window between publish and delivery
+
+```typescript
+vi.mock('../bus/index.js');
+
+const testBus = createMockBus();
+vi.mocked(useBus).mockReturnValue(testBus.bus as any);
+```
+
+---
+
+### store.ts
+
+Provides a `useStore` mock backed by an in-memory map, with the critical section serialized the way the real store's
+lock serializes it.
+
+#### `createMockStore()`
+
+**Returns:** `{ store, state, ops, whenSettled, fail }`
+
+- `store` — the callback-taking spy `useStore` returns
+- `state` — the underlying map, for seeding and asserting
+- `ops` — an ordered log of `get:`/`set:`/`delete:` calls
+- `whenSettled(count)` — resolves once `count` store operations have settled, so tests sequence off explicit signals
+  rather than elapsed time
+- `fail()` — makes every subsequent operation throw
+
+---
+
+### async.ts
+
+#### `withResolvers<T>()`
+
+A promise with its `resolve` and `reject` exposed. Lets a test drive timing off explicit signals rather than elapsed
+time, so nothing depends on how fast the machine running it happens to be.
+
+This is a stand-in for the ES2024 `Promise.withResolvers()`, which is not yet typed under the repo's `lib: ES2023`. It
+returns the same shape, so once the lib is bumped this can be deleted and the call sites swapped over unchanged.
+
+```typescript
+const running = withResolvers();
+const finish = withResolvers<string>();
+
+const fn = vi.fn(() => {
+	running.resolve();
+	return finish.promise;
+});
+```

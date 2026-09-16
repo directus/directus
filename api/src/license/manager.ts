@@ -34,7 +34,7 @@ import licenseCheckSchedule, { stopLicenseCheck } from '../schedules/license.js'
 import { UsersService } from '../services/index.js';
 import { SettingsService } from '../services/settings.js';
 import { getSchema } from '../utils/get-schema.js';
-import { runExclusive } from '../utils/run-exclusive.js';
+import { runExclusive } from '../utils/run-exclusive/index.js';
 import { useStore } from '../utils/store.js';
 import { getActiveCollections } from './entitlements/lib/collections.js';
 import { getActiveFlows } from './entitlements/lib/flows.js';

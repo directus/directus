@@ -1,8 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import { useEnv } from '@directus/env';
-import { useBus } from '../bus/index.js';
-import { useLogger } from '../logger/index.js';
-import { useStore } from './store.js';
+import { useBus } from '../../bus/index.js';
+import { useLogger } from '../../logger/index.js';
+import { useStore } from '../store.js';
+import { waitForBusMessage } from './wait-for-bus-message.js';
 
 type Outcome<T> = { ok: true; result: T } | { ok: false; error: string };
 
@@ -13,7 +14,7 @@ type Message<T> = HeartbeatMessage | ResultMessage<T>;
 // How long a lease survives without being renewed.
 const LEASE_TTL = 10_000;
 
-// Renew and announce often enough to account for missed renewels
+// Renew and announce often enough to account for missed renewals
 const HEARTBEAT_INTERVAL = Math.floor(LEASE_TTL / 3);
 
 // How long a follower waits for the next heartbeat before giving up
@@ -127,123 +128,13 @@ export async function runExclusive<T>(
 		});
 	}
 
-	await useBus().publish(busChannel, { type: 'result', outcome });
+	await useBus().publish(busChannel, { type: 'result', outcome } satisfies ResultMessage<T>);
 
 	if (!outcome.ok) {
 		throw new Error(`Exclusive run for "${key}" failed`, { cause: outcome.error });
 	}
 
 	return { result: outcome.result, leader: true };
-}
-
-/**
- * Subscribes to a bus channel and waits for the next accepted message.
- *
- * The subscription is automatically removed on any "done" (message is accepted, timeout expires, etc) event
- *
- * @param channel Bus channel to subscribe to.
- * @param options Wait options.
- * @param options.timeout Maximum time to wait for an accepted message.
- * @param options.idleTimeout Maximum time to wait between messages of any kind.
- * @param options.accept Which message ends the wait, defaults to the next message.
- *
- */
-export async function waitForBusMessage<T, Accepted extends T = T>(
-	channel: string,
-	options?: {
-		timeout?: number;
-		idleTimeout?: number;
-		accept?: (payload: T) => payload is Accepted;
-	},
-) {
-	const bus = useBus();
-	const timeout = options?.timeout ?? 10_000;
-	const idleTimeout = options?.idleTimeout;
-	const accept = options?.accept ?? ((_payload: T): _payload is Accepted => true);
-
-	let resolveMessage: (payload: Accepted) => void;
-	let rejectMessage: (error: Error) => void;
-
-	const messagePromise = new Promise<Accepted>((res, rej) => {
-		resolveMessage = res;
-		rejectMessage = rej;
-	});
-
-	let idleTimer: NodeJS.Timeout | undefined;
-
-	// Only account for idle once listing to done
-	let waiting = false;
-
-	function armIdleTimer() {
-		if (idleTimeout === undefined) return;
-
-		clearTimeout(idleTimer);
-
-		idleTimer = setTimeout(
-			() => rejectMessage(new Error(`Stalled after ${idleTimeout}ms without message on ${channel}`)),
-			idleTimeout,
-		);
-	}
-
-	const onMessage = (payload: T) => {
-		// Any message marks publisher as still alive, extend lifetime
-		if (waiting) armIdleTimer();
-
-		if (accept(payload)) {
-			resolveMessage(payload);
-		}
-	};
-
-	// Subscribe before returning so the caller cannot miss a message
-	await bus.subscribe(channel, onMessage);
-
-	function done() {
-		waiting = true;
-		armIdleTimer();
-
-		return withTimeout(messagePromise, timeout).finally(async () => {
-			// Always remove the subscription, including on timeout.
-			await cancel();
-		});
-	}
-
-	async function cancel() {
-		waiting = false;
-		clearTimeout(idleTimer);
-
-		await bus.unsubscribe(channel, onMessage).catch((error) => {
-			useLogger().warn(error, `Could not release bus listener`);
-		});
-	}
-
-	return {
-		done,
-		cancel,
-	};
-}
-
-/**
- * Resolves with `promise` if it settles before the timeout.
- *
- * Rejects with a timeout error if `ms` elapses first.
- *
- * @param promise Promise to wait for.
- * @param ms Maximum time to wait, in milliseconds.
- * @returns The result of `promise`.
- * @throws {Error} If the timeout expires before `promise` settles.
- */
-export async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-	let rejectTimeout: (error: Error) => void;
-	const timeout = new Promise<never>((_, reject) => (rejectTimeout = reject));
-
-	const timer = setTimeout(() => rejectTimeout(new Error(`Timeout of ${ms}ms exceeded`)), ms);
-
-	try {
-		return await Promise.race([promise, timeout]);
-	} finally {
-		// The timer is no longer needed once the promise settles.
-		clearTimeout(timer);
-	}
 }
 
 /**
@@ -277,17 +168,21 @@ function heartbeat(
 				return true;
 			});
 
+			// The lease has been taken over, so another invocation may already be running `fn`.
+			// Stop telling followers to keep waiting on this one.
 			if (renewed) notifyFollowers();
 		} catch (error) {
 			logger.warn(error, `Could not renew exclusive lease`);
 
+			// An unreachable store says nothing about who holds the lease, so the followers
+			// are still better off knowing this invocation is alive.
 			notifyFollowers();
 		}
 	}
 
 	// A dropped beat must not reject in the followers' place
 	function notifyFollowers() {
-		bus.publish(channel, { type: 'heartbeat' }).catch((error) => {
+		bus.publish(channel, { type: 'heartbeat' } satisfies HeartbeatMessage).catch((error) => {
 			logger.warn(error, `Could not publish exclusive heartbeat`);
 		});
 	}
