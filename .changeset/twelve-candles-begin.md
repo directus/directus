@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Replaced dependency lodash with lodash-es
+Replaced `lodash` with `lodash-es` in the Studio
