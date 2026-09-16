@@ -1,5 +1,5 @@
 import { flushPromises, mount } from '@vue/test-utils';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { afterEach, describe, expect, MockInstance, test, vi } from 'vitest';
 import { computed, defineComponent, h, ref, toRefs } from 'vue';
 import { RelationM2A } from './use-relation-m2a';

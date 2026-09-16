@@ -1,7 +1,7 @@
 import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import type { ApiOutput } from '@directus/types';
 import { isIn } from '@directus/utils';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
