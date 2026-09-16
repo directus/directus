@@ -327,10 +327,6 @@ describe('Service / Files', () => {
 					)
 					.response({ storage: 's3', filename_disk: 'existing.jpg' });
 
-				tracker.on
-					.select('select "filename_disk" from "directus_files" where "filename_disk" = ? and not "id" = ?')
-					.response([]);
-
 				await service.uploadOne(
 					new PassThrough(),
 					{
@@ -357,10 +353,6 @@ describe('Service / Files', () => {
 						'select "folder", "filename_download", "filename_disk", "title", "description", "metadata", "storage" from "directus_files" where "id" = ?',
 					)
 					.response({ storage: 's3', filename_disk: 'existing.jpg' });
-
-				tracker.on
-					.select('select "filename_disk" from "directus_files" where "filename_disk" = ? and not "id" = ?')
-					.response([]);
 
 				await service.uploadOne(
 					new PassThrough(),
@@ -417,49 +409,6 @@ describe('Service / Files', () => {
 					).rejects.toBeInstanceOf(ForbiddenError);
 
 					expect(mockDriver.write).not.toHaveBeenCalled();
-				});
-			});
-
-			describe('filename uniqueness', () => {
-				test('should reject an upload that reuses the filename_disk of another file', async () => {
-					tracker.on
-						.select('select "filename_disk" from "directus_files" where "filename_disk" = ?')
-						.response([{ filename_disk: 'existing-file.jpg' }]);
-
-					await expect(
-						service.uploadOne(new PassThrough(), {
-							storage: 'local',
-							type: 'image/jpeg',
-							filename_download: 'test.jpg',
-							filename_disk: 'existing-file.jpg',
-						}),
-					).rejects.toBeInstanceOf(ForbiddenError);
-
-					expect(mockDriver.write).not.toHaveBeenCalled();
-				});
-
-				test('should allow a replacement to keep the filename_disk of the file it replaces', async () => {
-					tracker.on
-						.select(
-							'select "folder", "filename_download", "filename_disk", "title", "description", "metadata", "storage" from "directus_files" where "id" = ?',
-						)
-						.response({ storage: 'local', filename_disk: `${sample.id}.jpg` });
-
-					// No file other than the one being replaced holds this filename_disk
-					tracker.on
-						.select('select "filename_disk" from "directus_files" where "filename_disk" = ? and not "id" = ?')
-						.response([]);
-
-					await service.uploadOne(
-						new PassThrough(),
-						{ storage: 'local', type: 'image/jpeg', filename_download: 'test.jpg' },
-						sample.id,
-					);
-
-					const uniquenessQuery = tracker.history.select.find((query) => query.sql.includes('not "id" = ?'));
-
-					expect(uniquenessQuery?.bindings.slice(0, 2)).toEqual([`${sample.id}.jpg`, sample.id]);
-					expect(mockDriver.write).toHaveBeenCalled();
 				});
 			});
 

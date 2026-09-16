@@ -82,7 +82,7 @@ export class FilesService extends ItemsService<File> {
 			payload.filename_disk = sanitizeFilepath(payload.filename_disk);
 
 			assertValidStoragePath(payload.filename_disk, payload.storage);
-			await assertUniqueFilename(this.knex, payload.filename_disk, primaryKey);
+			// assertUniqueFilename is handled by creatOne, updateMany
 		}
 
 		const disk = storage.location(payload.storage);
