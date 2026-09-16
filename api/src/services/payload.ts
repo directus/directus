@@ -531,6 +531,19 @@ export class PayloadService {
 							const newValue = this.helpers.date.writeTimestamp(value);
 							payload[name] = newValue;
 						}
+					} else if (value instanceof Date === false) {
+						// Anything but a Date or string would otherwise reach the DB driver unchanged.
+						if (dateColumn.type === 'date') {
+							throw new InvalidPayloadError({ reason: `Invalid Date format in field "${dateColumn.field}"` });
+						}
+
+						if (dateColumn.type === 'dateTime') {
+							throw new InvalidPayloadError({ reason: `Invalid DateTime format in field "${dateColumn.field}"` });
+						}
+
+						if (dateColumn.type === 'timestamp') {
+							throw new InvalidPayloadError({ reason: `Invalid Timestamp format in field "${dateColumn.field}"` });
+						}
 					}
 				}
 			}
