@@ -6,13 +6,29 @@ import { useStore } from './store.js';
 
 type Outcome<T> = { ok: true; result: T } | { ok: false; error: string };
 
+type HeartbeatMessage = { type: 'heartbeat' };
+type ResultMessage<T> = { type: 'result'; outcome: Outcome<T> };
+type Message<T> = HeartbeatMessage | ResultMessage<T>;
+
+// How long a lease survives without being renewed.
+const LEASE_TTL = 10_000;
+
+// Renew and announce often enough to account for missed renewels
+const HEARTBEAT_INTERVAL = Math.floor(LEASE_TTL / 3);
+
+// How long a follower waits for the next heartbeat before giving up
+const HEARTBEAT_TIMEOUT = LEASE_TTL;
+
 /**
  * Runs `fn` exclusively for the given key.
  *
  * If another invocation already holds the lease, waits for its result
  * instead of running `fn`.
  *
- * CAVEAT: Exclusivity requires Redis, for local no exclusivity is currently guaranteed.
+ * The leader heartbeats to its followers. A follower that stops
+ * receiving heartbeats gives up rather than waiting out the full timeout.
+ *
+ * CAVEAT: Exclusivity requires Redis, local currently has no exclusivity
  *
  * @param key Key identifying the exclusive operation.
  * @param fn Function to execute once the lease is acquired.
@@ -33,20 +49,16 @@ export async function runExclusive<T>(
 	const timeout = options?.timeout ?? 300_000;
 	const maxAttempts = options?.maxAttempts ?? 1;
 
-	// Renew often enough to tolerate a missed heartbeat without letting
-	// a healthy lease expire during normal operation.
-	const ttl = 10_000;
-	const lease = Math.floor(ttl / 3);
-
-	const uid = randomUUID();
-	const bus = useBus();
-
-	const store = useStore<{ leader: string }>(`${namespace}:${key}`, { ttl });
-
-	// Subscribe before acquiring the lease so followers can't miss the result.
-	const { done, cancel } = await waitForBusMessage<Outcome<T>>(busChannel, { timeout });
+	// Subscribe before acquiring the lease so followers won't miss a result
+	const { done, cancel } = await waitForBusMessage<Message<T>, ResultMessage<T>>(busChannel, {
+		timeout,
+		idleTimeout: HEARTBEAT_TIMEOUT,
+		accept: (message) => message.type === 'result',
+	});
 
 	let isLeader: boolean;
+	const uid = randomUUID();
+	const store = useStore<{ leader: string }>(`${namespace}:${key}`, { ttl: LEASE_TTL });
 
 	try {
 		isLeader = await store(async (store) => {
@@ -65,8 +77,9 @@ export async function runExclusive<T>(
 	}
 
 	if (!isLeader) {
-		const outcome = await done();
+		const { outcome } = await done();
 
+		// on timeout or leader heartbeat stops
 		if (!outcome.ok) {
 			throw new Error(outcome.error);
 		}
@@ -74,9 +87,10 @@ export async function runExclusive<T>(
 		return { result: outcome.result, leader: false };
 	}
 
+	// Leader should not listen to its own messages
 	await cancel();
 
-	const { cancel: cancelHeartbeat } = heartbeat(store, uid, lease);
+	const { cancel: cancelHeartbeat } = heartbeat(store, busChannel, uid, HEARTBEAT_INTERVAL);
 
 	let outcome: Outcome<T> = { ok: false, error: 'unknown' };
 	const startedAt = Date.now();
@@ -89,10 +103,9 @@ export async function runExclusive<T>(
 				outcome = { ok: false, error: error instanceof Error ? error.message : String(error) };
 			}
 
-			// Followers stopped waiting, so there is no one left to hand a result to and no point
-			// attempting again
+			// Followers stopped waiting, so no one left to hand a result to
 			if (Date.now() - startedAt > timeout) {
-				outcome = { ok: false, error: 'timeout' };
+				outcome = { ok: false, error: `Exclusive run for "${key}" exceeded ${timeout}ms` };
 				break;
 			}
 
@@ -102,66 +115,105 @@ export async function runExclusive<T>(
 		// Release heartbeat & leader before publishing, so no window of indication that still a leader
 		cancelHeartbeat();
 
-		try {
-			await store(async (store) => {
-				const leader = await store.get('leader');
+		await store(async (store) => {
+			const leader = await store.get('leader');
 
-				// Only release if we still own the lease
-				if (leader === uid) {
-					await store.delete('leader');
-				}
-			});
-		} catch (error) {
+			// Only release if we still own the lease
+			if (leader === uid) {
+				await store.delete('leader');
+			}
+		}).catch((error) => {
 			useLogger().warn(error, `Could not release exclusive lease`);
-		}
+		});
 	}
 
-	await bus.publish(busChannel, outcome);
+	await useBus().publish(busChannel, { type: 'result', outcome });
 
 	if (!outcome.ok) {
-		throw new Error(outcome.error);
+		throw new Error(`Exclusive run for "${key}" failed`, { cause: outcome.error });
 	}
 
 	return { result: outcome.result, leader: true };
 }
 
 /**
- * Subscribes to a bus channel and waits for the next message.
+ * Subscribes to a bus channel and waits for the next accepted message.
  *
- * The subscription is automatically removed when the message is received,
- * the wait times out, or `cancel()` is called.
+ * The subscription is automatically removed on any "done" (message is accepted, timeout expires, etc) event
  *
  * @param channel Bus channel to subscribe to.
  * @param options Wait options.
- * @param options.timeout Maximum time to wait for a message.
- * @returns Controls for awaiting or cancelling the subscription.
+ * @param options.timeout Maximum time to wait for an accepted message.
+ * @param options.idleTimeout Maximum time to wait between messages of any kind.
+ * @param options.accept Which message ends the wait, defaults to the next message.
+ *
  */
-export async function waitForBusMessage<T>(channel: string, options?: { timeout?: number }) {
+export async function waitForBusMessage<T, Accepted extends T = T>(
+	channel: string,
+	options?: {
+		timeout?: number;
+		idleTimeout?: number;
+		accept?: (payload: T) => payload is Accepted;
+	},
+) {
 	const bus = useBus();
 	const timeout = options?.timeout ?? 10_000;
+	const idleTimeout = options?.idleTimeout;
+	const accept = options?.accept ?? ((_payload: T): _payload is Accepted => true);
 
-	let resolveMessage: (payload: T) => void;
+	let resolveMessage: (payload: Accepted) => void;
+	let rejectMessage: (error: Error) => void;
+
+	const messagePromise = new Promise<Accepted>((res, rej) => {
+		resolveMessage = res;
+		rejectMessage = rej;
+	});
+
+	let idleTimer: NodeJS.Timeout | undefined;
+
+	// Only account for idle once listing to done
+	let waiting = false;
+
+	function armIdleTimer() {
+		if (idleTimeout === undefined) return;
+
+		clearTimeout(idleTimer);
+
+		idleTimer = setTimeout(
+			() => rejectMessage(new Error(`Stalled after ${idleTimeout}ms without message on ${channel}`)),
+			idleTimeout,
+		);
+	}
 
 	const onMessage = (payload: T) => {
-		resolveMessage(payload);
+		// Any message marks publisher as still alive, extend lifetime
+		if (waiting) armIdleTimer();
+
+		if (accept(payload)) {
+			resolveMessage(payload);
+		}
 	};
 
-	const messagePromise = new Promise<T>((res) => (resolveMessage = res));
-
-	// Subscribe before returning so the caller cannot miss a message.
+	// Subscribe before returning so the caller cannot miss a message
 	await bus.subscribe(channel, onMessage);
 
-	async function done() {
-		try {
-			return await withTimeout(messagePromise, timeout);
-		} finally {
+	function done() {
+		waiting = true;
+		armIdleTimer();
+
+		return withTimeout(messagePromise, timeout).finally(async () => {
 			// Always remove the subscription, including on timeout.
 			await cancel();
-		}
+		});
 	}
 
 	async function cancel() {
-		await bus.unsubscribe(channel, onMessage).catch(() => {});
+		waiting = false;
+		clearTimeout(idleTimer);
+
+		await bus.unsubscribe(channel, onMessage).catch((error) => {
+			useLogger().warn(error, `Could not release bus listener`);
+		});
 	}
 
 	return {
@@ -184,7 +236,7 @@ export async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T
 	let rejectTimeout: (error: Error) => void;
 	const timeout = new Promise<never>((_, reject) => (rejectTimeout = reject));
 
-	const timer = setTimeout(() => rejectTimeout(new Error('timeout')), ms);
+	const timer = setTimeout(() => rejectTimeout(new Error(`Timeout of ${ms}ms exceeded`)), ms);
 
 	try {
 		return await Promise.race([promise, timeout]);
@@ -194,20 +246,51 @@ export async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T
 	}
 }
 
-function heartbeat(store: ReturnType<typeof useStore<{ leader: string }>>, uid: string, interval: number) {
+/**
+ * Keeps the lease alive and tells followers the leader is still working
+ *
+ * @param store Store holding the lease.
+ * @param channel Bus channel the followers listen on.
+ * @param uid Identifier of the current leader.
+ * @param interval How often to renew and announce.
+ *
+ */
+function heartbeat(
+	store: ReturnType<typeof useStore<{ leader: string }>>,
+	channel: string,
+	uid: string,
+	interval: number,
+) {
 	const logger = useLogger();
+	const bus = useBus();
 
-	const timer = setInterval(() => {
-		store(async (store) => {
-			const leader = await store.get('leader');
+	const timer = setInterval(beat, interval);
 
-			if (leader === uid) {
+	async function beat() {
+		try {
+			const renewed = await store(async (store) => {
+				// Only renew if we still own the lease
+				if ((await store.get('leader')) !== uid) return false;
+
 				await store.set('leader', uid);
-			}
-		}).catch((error) => {
+
+				return true;
+			});
+
+			if (renewed) notifyFollowers();
+		} catch (error) {
 			logger.warn(error, `Could not renew exclusive lease`);
+
+			notifyFollowers();
+		}
+	}
+
+	// A dropped beat must not reject in the followers' place
+	function notifyFollowers() {
+		bus.publish(channel, { type: 'heartbeat' }).catch((error) => {
+			logger.warn(error, `Could not publish exclusive heartbeat`);
 		});
-	}, interval);
+	}
 
 	function cancel() {
 		clearInterval(timer);

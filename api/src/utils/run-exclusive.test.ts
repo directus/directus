@@ -12,6 +12,9 @@ const CHANNEL = 'directus:exclusive:key:bus';
 
 const HEARTBEAT_INTERVAL = 3333;
 
+/** Matched to the lease ttl, so two missed beats are tolerated */
+const HEARTBEAT_TIMEOUT = 10_000;
+
 /**
  * A promise with its settle functions exposed.
  *
@@ -222,7 +225,7 @@ describe('runExclusive', () => {
 		await testStore.whenSettled(2);
 		fail(new Error('boom'));
 
-		await expect(leader).rejects.toThrow('boom');
+		await expect(leader).rejects.toMatchObject({ message: 'Exclusive run for "key" failed', cause: 'boom' });
 		await expect(follower).rejects.toThrow('boom');
 	});
 
@@ -240,7 +243,7 @@ describe('runExclusive', () => {
 	test('should stop retrying fn at maxAttempts', async () => {
 		const fn = vi.fn().mockRejectedValue(new Error('boom'));
 
-		await expect(runExclusive('key', fn, { maxAttempts: 2 })).rejects.toThrow('boom');
+		await expect(runExclusive('key', fn, { maxAttempts: 2 })).rejects.toThrow('Exclusive run for "key" failed');
 		expect(fn).toHaveBeenCalledTimes(2);
 	});
 
@@ -258,7 +261,7 @@ describe('runExclusive', () => {
 	test('should release the lease when fn fails', async () => {
 		const fn = vi.fn().mockRejectedValue(new Error('boom'));
 
-		await expect(runExclusive('key', fn, { maxAttempts: 1 })).rejects.toThrow('boom');
+		await expect(runExclusive('key', fn, { maxAttempts: 1 })).rejects.toThrow('Exclusive run for "key" failed');
 		expect(testStore.state.has('leader')).toBe(false);
 	});
 
@@ -291,16 +294,10 @@ describe('runExclusive', () => {
 		expect(testBus.subscriberCount(CHANNEL)).toBe(0);
 	});
 
-	test('should fail the leader when the result cannot be published', async () => {
+	test('should fail the leader and release the lease when the result cannot be published', async () => {
 		testBus.bus.publish.mockRejectedValue(new Error('publish unavailable'));
 
 		// Followers never re-elect, so nobody gets the result and the run has failed
-		await expect(runExclusive('key', async () => 'result')).rejects.toThrow('publish unavailable');
-	});
-
-	test('should release the lease when the result cannot be published', async () => {
-		testBus.bus.publish.mockRejectedValue(new Error('publish unavailable'));
-
 		await expect(runExclusive('key', async () => 'result')).rejects.toThrow('publish unavailable');
 		expect(testStore.state.has('leader')).toBe(false);
 	});
@@ -324,7 +321,7 @@ describe('runExclusive', () => {
 
 		expect(testBus.subscriberCount(CHANNEL)).toBe(1);
 
-		const timedOut = expect(follower).rejects.toThrow('timeout');
+		const timedOut = expect(follower).rejects.toThrow('Timeout of 1000ms exceeded');
 		await vi.advanceTimersByTimeAsync(1000);
 		await timedOut;
 
@@ -334,28 +331,7 @@ describe('runExclusive', () => {
 		await expect(leader).resolves.toEqual({ result: 'result', leader: true });
 	});
 
-	test('should reject the leader when fn finishes after the timeout', async () => {
-		const running = deferred();
-		const fn = deferred<string>();
-
-		const leader = runExclusive(
-			'key',
-			() => {
-				running.resolve();
-				return fn.promise;
-			},
-			{ timeout: 1000 },
-		);
-
-		await running.promise;
-
-		await vi.advanceTimersByTimeAsync(1001);
-		fn.resolve('result');
-
-		await expect(leader).rejects.toThrow('timeout');
-	});
-
-	test('should hand a leader that outran the timeout to its followers as a failure', async () => {
+	test('should fail a leader that outran the timeout, and its followers with it', async () => {
 		const running = deferred();
 		const fn = deferred<string>();
 
@@ -377,8 +353,13 @@ describe('runExclusive', () => {
 		await vi.advanceTimersByTimeAsync(1001);
 		fn.resolve('result');
 
-		await expect(leader).rejects.toThrow('timeout');
-		await expect(follower).rejects.toThrow('timeout');
+		await expect(leader).rejects.toMatchObject({
+			message: 'Exclusive run for "key" failed',
+			cause: 'Exclusive run for "key" exceeded 1000ms',
+		});
+
+		// Followers are handed the leader's overrun directly, not the leader's wrapper
+		await expect(follower).rejects.toThrow('Exclusive run for "key" exceeded 1000ms');
 	});
 
 	test('should not retry fn once the timeout has passed', async () => {
@@ -389,7 +370,7 @@ describe('runExclusive', () => {
 
 		const leader = runExclusive('key', fn, { timeout: 1000, maxAttempts: 3 });
 
-		const timedOut = expect(leader).rejects.toThrow('timeout');
+		const timedOut = expect(leader).rejects.toThrow('Exclusive run for "key" failed');
 		await vi.advanceTimersByTimeAsync(1001);
 		await timedOut;
 
@@ -442,13 +423,16 @@ describe('runExclusive', () => {
 			expect(testStore.state.get('leader')).toBe('someone-else');
 		});
 
-		test('should stop renewing once fn has settled', async () => {
+		test('should stop beating once fn has settled', async () => {
 			await runExclusive('key', async () => 'result');
 
 			testStore.store.mockClear();
+			testBus.bus.publish.mockClear();
+
 			await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL * 3);
 
 			expect(testStore.store).not.toHaveBeenCalled();
+			expect(testBus.bus.publish).not.toHaveBeenCalled();
 		});
 
 		test('should log, not reject, when renewing the lease fails', async () => {
@@ -474,6 +458,107 @@ describe('runExclusive', () => {
 			} finally {
 				process.off('unhandledRejection', onUnhandled);
 			}
+		});
+
+		test('should tell followers it is still alive while fn is running', async () => {
+			const { leader, finish } = await startLeader();
+
+			await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL);
+
+			expect(testBus.bus.publish).toHaveBeenCalledWith(CHANNEL, { type: 'heartbeat' });
+
+			finish('result');
+			await expect(leader).resolves.toEqual({ result: 'result', leader: true });
+		});
+
+		test('should log, not reject, when the heartbeat cannot be published', async () => {
+			const { leader, finish } = await startLeader();
+
+			testBus.bus.publish.mockRejectedValueOnce(new Error('bus unavailable'));
+			await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL);
+
+			expect(logger.warn).toHaveBeenCalledWith(expect.any(Error), 'Could not publish exclusive heartbeat');
+
+			finish('result');
+			await expect(leader).resolves.toEqual({ result: 'result', leader: true });
+		});
+
+		test('should stop announcing once the lease has been lost', async () => {
+			const { leader, finish } = await startLeader();
+
+			// Simulate the lease expiring and being taken over by another invocation
+			testStore.state.set('leader', 'someone-else');
+
+			await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL);
+
+			// Another invocation may already be running fn, so this one must not keep
+			// followers waiting on it
+			expect(testBus.bus.publish).not.toHaveBeenCalled();
+
+			finish('result');
+			await expect(leader).resolves.toEqual({ result: 'result', leader: true });
+		});
+
+		test('should keep announcing while the store is unreachable', async () => {
+			const { leader, finish } = await startLeader();
+
+			// A store that cannot be reached says nothing about who holds the lease
+			testStore.fail();
+			await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL);
+
+			expect(testBus.bus.publish).toHaveBeenCalledWith(CHANNEL, { type: 'heartbeat' });
+
+			finish('result');
+			await expect(leader).resolves.toEqual({ result: 'result', leader: true });
+		});
+
+		test('should keep a follower waiting for as long as the heartbeats keep arriving', async () => {
+			const { leader, finish } = await startLeader();
+
+			const follower = runExclusive('key', vi.fn(), { timeout: 300_000 });
+			await testStore.whenSettled(2);
+
+			// Well past the point a silent leader would have been given up on
+			await vi.advanceTimersByTimeAsync(HEARTBEAT_TIMEOUT * 3);
+
+			finish('result');
+
+			await expect(leader).resolves.toEqual({ result: 'result', leader: true });
+			await expect(follower).resolves.toEqual({ result: 'result', leader: false });
+		});
+
+		test('should reject a follower whose leader stops heartbeating', async () => {
+			// A lease held by a leader that never heartbeats, as if its process went away
+			testStore.state.set('leader', 'someone-else');
+
+			const follower = runExclusive('key', vi.fn(), { timeout: 300_000 });
+			await testStore.whenSettled(1);
+
+			await vi.advanceTimersByTimeAsync(HEARTBEAT_TIMEOUT - 1);
+			expect(testBus.subscriberCount(CHANNEL)).toBe(1);
+
+			const abandoned = expect(follower).rejects.toThrow(`Stalled after ${HEARTBEAT_TIMEOUT}ms`);
+			await vi.advanceTimersByTimeAsync(1);
+			await abandoned;
+
+			expect(testBus.subscriberCount(CHANNEL)).toBe(0);
+		});
+
+		test('should still time out a follower whose leader is alive but never finishes', async () => {
+			const { leader, finish } = await startLeader();
+
+			// Outlasts several heartbeats, so only the overall timeout can end the wait
+			const follower = runExclusive('key', vi.fn(), { timeout: HEARTBEAT_INTERVAL * 6 });
+			await testStore.whenSettled(2);
+
+			const timedOut = expect(follower).rejects.toThrow(`Timeout of ${HEARTBEAT_INTERVAL * 6}ms exceeded`);
+			await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL * 6);
+			await timedOut;
+
+			expect(testBus.subscriberCount(CHANNEL)).toBe(0);
+
+			finish('result');
+			await expect(leader).resolves.toEqual({ result: 'result', leader: true });
 		});
 	});
 });
@@ -512,7 +597,7 @@ describe('waitForBusMessage', () => {
 	test('should reject and unsubscribe on timeout', async () => {
 		const { done } = await waitForBusMessage('channel', { timeout: 1000 });
 
-		const timedOut = expect(done()).rejects.toThrow('timeout');
+		const timedOut = expect(done()).rejects.toThrow('Timeout of 1000ms exceeded');
 		await vi.advanceTimersByTimeAsync(1000);
 		await timedOut;
 
@@ -534,6 +619,58 @@ describe('waitForBusMessage', () => {
 
 		await expect(cancel()).resolves.toBeUndefined();
 	});
+
+	test('should skip messages that are not accepted', async () => {
+		const { done } = await waitForBusMessage<string, 'accepted'>('channel', {
+			accept: (payload): payload is 'accepted' => payload === 'accepted',
+		});
+
+		const message = done();
+
+		await testBus.bus.publish('channel', 'ignored');
+		await testBus.bus.publish('channel', 'accepted');
+
+		await expect(message).resolves.toBe('accepted');
+	});
+
+	test('should reject with the idle error when no message arrives in time', async () => {
+		const { done } = await waitForBusMessage('channel', { timeout: 10_000, idleTimeout: 1000 });
+
+		const stalled = expect(done()).rejects.toThrow('Stalled after 1000ms without message on channel');
+		await vi.advanceTimersByTimeAsync(1000);
+		await stalled;
+
+		expect(testBus.subscriberCount('channel')).toBe(0);
+	});
+
+	test('should start a fresh idle window on every message', async () => {
+		const { done } = await waitForBusMessage<string, 'accepted'>('channel', {
+			timeout: 10_000,
+			idleTimeout: 1000,
+			accept: (payload): payload is 'accepted' => payload === 'accepted',
+		});
+
+		const message = done();
+
+		for (let beat = 0; beat < 5; beat++) {
+			await vi.advanceTimersByTimeAsync(900);
+			await testBus.bus.publish('channel', 'ignored');
+		}
+
+		await testBus.bus.publish('channel', 'accepted');
+
+		await expect(message).resolves.toBe('accepted');
+	});
+
+	test('should not start the idle window before the caller waits', async () => {
+		const { cancel } = await waitForBusMessage('channel', { idleTimeout: 1000 });
+
+		await vi.advanceTimersByTimeAsync(5000);
+
+		expect(vi.getTimerCount()).toBe(0);
+
+		await cancel();
+	});
 });
 
 describe('withTimeout', () => {
@@ -554,7 +691,7 @@ describe('withTimeout', () => {
 	});
 
 	test('should reject when the timeout expires first', async () => {
-		const timedOut = expect(withTimeout(new Promise(() => {}), 1000)).rejects.toThrow('timeout');
+		const timedOut = expect(withTimeout(new Promise(() => {}), 1000)).rejects.toThrow('Timeout of 1000ms exceeded');
 
 		await vi.advanceTimersByTimeAsync(1000);
 		await timedOut;
