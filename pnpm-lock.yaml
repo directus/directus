@@ -393,9 +393,6 @@ catalogs:
     '@types/semver':
       specifier: 7.7.1
       version: 7.7.1
-    '@types/stream-json':
-      specifier: 1.7.8
-      version: 1.7.8
     '@types/three':
       specifier: 0.184.0
       version: 0.184.0
@@ -862,8 +859,8 @@ catalogs:
       specifier: 6.0.1
       version: 6.0.1
     stream-json:
-      specifier: 1.9.1
-      version: 1.9.1
+      specifier: 3.6.0
+      version: 3.6.0
     string-width:
       specifier: 7.2.0
       version: 7.2.0
@@ -1424,7 +1421,7 @@ importers:
         version: 7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)
       stream-json:
         specifier: 'catalog:'
-        version: 1.9.1
+        version: 3.6.0
       tar:
         specifier: 7.5.22
         version: 7.5.22
@@ -1543,9 +1540,6 @@ importers:
       '@types/sanitize-html':
         specifier: 'catalog:'
         version: 2.16.0
-      '@types/stream-json':
-        specifier: 'catalog:'
-        version: 1.7.8
       '@types/wellknown':
         specifier: 'catalog:'
         version: 0.5.8
@@ -7076,12 +7070,6 @@ packages:
 
   '@types/stats.js@0.17.4':
     resolution: {integrity: sha512-jIBvWWShCvlBqBNIZt0KAshWpvSjhkwkEu4ZUcASoAvhmrgAUI2t1dXrjSL4xXVLB4FznPrIsX3nKXFl/Dt4vA==}
-
-  '@types/stream-chain@2.1.0':
-    resolution: {integrity: sha512-guDyAl6s/CAzXUOWpGK2bHvdiopLIwpGu8v10+lb9hnQOyo4oj/ZUQFOvqFjKGsE3wJP1fpIesCcMvbXuWsqOg==}
-
-  '@types/stream-json@1.7.8':
-    resolution: {integrity: sha512-MU1OB1eFLcYWd1LjwKXrxdoPtXSRzRmAnnxs4Js/ayB5O/NvHraWwuOaqMWIebpYwM6khFlsJOHEhI9xK/ab4Q==}
 
   '@types/superagent@8.1.11':
     resolution: {integrity: sha512-KA7srSW/HENDtOw9DOqaFLgWuMqN9WgjEw62lh9dpvRaZDkhdOkazASd7X7i2eMUYLHa1U37ZttnePsH5zTDHw==}
@@ -12793,14 +12781,15 @@ packages:
   stream-browserify@3.0.0:
     resolution: {integrity: sha512-H73RAHsVBapbim0tU2JwwOiXUj+fikfiaoYAKHF3VJfA0pe2BCzkhAHBlLG6REzE+2WNZcxOXjK7lkso+9euLA==}
 
-  stream-chain@2.2.5:
-    resolution: {integrity: sha512-1TJmBx6aSWqZ4tx7aTpBDXK0/e2hhcNSTV8+CbFJtDjbb+I1mZ8lHit0Grw9GRT+6JbIrrDd8esncgBi8aBXGA==}
+  stream-chain@4.2.5:
+    resolution: {integrity: sha512-Wtyq3bNE3ggLR0v2vftqvuhltym3WbZAkZpfIrkr5F/6vpeUmWmwTgXa16zD87gpahwJ/Qulq3zVfUlgIc0J2A==}
+    engines: {node: '>=22'}
 
   stream-events@1.0.5:
     resolution: {integrity: sha512-E1GUzBSgvct8Jsb3v2X15pjzN1tYebtbLaMg+eBOUOAxgbLoSbT2NS91ckc5lJD1KfLjId+jXJRgo0qnV5Nerg==}
 
-  stream-json@1.9.1:
-    resolution: {integrity: sha512-uWkjJ+2Nt/LO9Z/JyKZbMusL8Dkh97uUBTv3AJQ74y07lVahLY4eEFsPsE97pxYBwr8nnjMAIch5eqI0gPShyw==}
+  stream-json@3.6.0:
+    resolution: {integrity: sha512-NiJdqxKyau579z/E8vfqcjWfSDWxW/AT99javFXdPXF147Z5za85LRXSHEmSX9TKOakB7gaIccfD0fOIctb7KQ==}
 
   stream-shift@1.0.3:
     resolution: {integrity: sha512-76ORR0DO1o1hlKwTbi/DM3EXWGf3ZJYO8cXX5RJwnul2DEg2oyoZyjLNoQM8WsvZiFKCRfC1O0J7iCvie3RZmQ==}
@@ -17783,15 +17772,6 @@ snapshots:
       '@types/nodemailer': 8.0.1
 
   '@types/stats.js@0.17.4': {}
-
-  '@types/stream-chain@2.1.0':
-    dependencies:
-      '@types/node': 22.13.14
-
-  '@types/stream-json@1.7.8':
-    dependencies:
-      '@types/node': 22.13.14
-      '@types/stream-chain': 2.1.0
 
   '@types/superagent@8.1.11':
     dependencies:
@@ -24201,15 +24181,15 @@ snapshots:
       inherits: 2.0.4
       readable-stream: 3.6.2
 
-  stream-chain@2.2.5: {}
+  stream-chain@4.2.5: {}
 
   stream-events@1.0.5:
     dependencies:
       stubs: 3.0.0
 
-  stream-json@1.9.1:
+  stream-json@3.6.0:
     dependencies:
-      stream-chain: 2.2.5
+      stream-chain: 4.2.5
 
   stream-shift@1.0.3: {}
 
