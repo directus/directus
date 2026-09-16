@@ -696,6 +696,54 @@ describe('Integration Tests', () => {
 			});
 		});
 
+		describe('processValues json fields', () => {
+			let service: PayloadService;
+
+			const schema = new SchemaBuilder()
+				.collection('test', (c) => {
+					c.field('id').id();
+					c.field('properties').json();
+				})
+				.build();
+
+			beforeEach(() => {
+				service = new PayloadService('test', {
+					knex: db,
+					schema,
+				});
+			});
+
+			test.each<PayloadAction>(['create', 'update'])(
+				'throws for a plain string value that is not valid JSON on %s',
+				async (action) => {
+					await expect(service.processValues(action, { properties: 'not valid json' })).rejects.toThrow(
+						InvalidPayloadError,
+					);
+				},
+			);
+
+			test.each<PayloadAction>(['create', 'update'])(
+				'allows a string value that is valid JSON text on %s',
+				async (action) => {
+					const result = await service.processValues(action, { properties: '"plain strings are valid json"' });
+					expect(result).toMatchObject({ properties: '"plain strings are valid json"' });
+				},
+			);
+
+			test.each<PayloadAction>(['create', 'update'])(
+				'allows object values (stringified for storage) on %s',
+				async (action) => {
+					const result = await service.processValues(action, { properties: { valid: true } });
+					expect(result).toMatchObject({ properties: JSON.stringify({ valid: true }) });
+				},
+			);
+
+			test.each<PayloadAction>(['create', 'update'])('allows null values on %s', async (action) => {
+				const result = await service.processValues(action, { properties: null });
+				expect(result).toMatchObject({ properties: null });
+			});
+		});
+
 		describe('prepareDelta', () => {
 			let service: PayloadService;
 
