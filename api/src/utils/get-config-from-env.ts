@@ -1,7 +1,6 @@
 import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
-import camelcase from 'camelcase';
-import { set } from 'lodash-es';
+import { camelCase, set } from 'lodash-es';
 
 export interface GetConfigFromEnvOptions {
 	omitPrefix?: string | string[];
@@ -49,7 +48,7 @@ export function getConfigFromEnv(prefix: string, options?: GetConfigFromEnvOptio
 
 	function transform(key: string): string {
 		if (type === 'camelcase') {
-			return camelcase(key, { locale: false });
+			return camelCase(key);
 		} else if (type === 'underscore') {
 			return key.toLowerCase();
 		}

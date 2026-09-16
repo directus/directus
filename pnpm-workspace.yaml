@@ -168,7 +168,6 @@ catalog:
   braintrust: 3.27.0
   busboy: 1.6.0
   bytes: 3.1.2
-  camelcase: 8.0.0
   caret-pos: 2.0.0
   chalk: 5.6.2
   chokidar: 5.0.0
