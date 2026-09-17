@@ -1,5 +1,12 @@
 ---
-'@directus/storage-driver-s3': patch
+'@directus/storage-driver-s3': minor
 ---
 
-Fixed S3 uploads silently ignoring HTTP_PROXY/HTTPS_PROXY on networks that require an outbound proxy
+Added support for the `HTTP_PROXY` / `HTTPS_PROXY` / `NO_PROXY` environment variables
+
+::: notice
+
+- Endpoints that should bypass the proxy (e.g. internal) should be listed in `NO_PROXY`
+- `STORAGE_<LOCATION>_CONNECTION_TIMEOUT` (5 seconds by default) may need to be adjusted when using a proxy to account for the additional proxy handshake time.
+
+:::
