@@ -118,4 +118,36 @@ describe('FnHelperOracle', () => {
 			).toThrow('is not a JSON field');
 		});
 	});
+
+	describe('year()', () => {
+		test('uses the calendar year, not the ISO week-numbering year', () => {
+			const helper = new FnHelperOracle(db, schema);
+
+			const result = helper.year('items', 'release', {
+				type: 'date',
+				jsonPath: undefined,
+				originalCollectionName: undefined,
+				relationalCountOptions: undefined,
+			});
+
+			const { sql } = result.toSQL();
+			expect(sql).toContain("'YYYY'");
+			expect(sql).not.toContain("'IYYY'");
+		});
+
+		test('converts timestamp columns to UTC before extracting the year', () => {
+			const helper = new FnHelperOracle(db, schema);
+
+			const result = helper.year('items', 'release', {
+				type: 'timestamp',
+				jsonPath: undefined,
+				originalCollectionName: undefined,
+				relationalCountOptions: undefined,
+			});
+
+			const { sql } = result.toSQL();
+			expect(sql).toContain("AT TIME ZONE 'UTC'");
+			expect(sql).toContain("'YYYY'");
+		});
+	});
 });
