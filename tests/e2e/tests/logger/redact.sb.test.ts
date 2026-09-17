@@ -1,12 +1,12 @@
-import { sandbox } from '@directus/sandbox';
 import { authentication, createDirectus, rest } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { Signal } from '@utils/signal.js';
 import { afterAll, expect, test } from 'vitest';
 
-const directus = await sandbox(database, {
+const directus = await useSandbox(database, {
 	inspect: false,
 	prefix: 'redact',
 	port: sandboxPort(),

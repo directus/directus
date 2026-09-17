@@ -1,10 +1,11 @@
 import fs from 'fs/promises';
 import { join } from 'path';
-import { type sandbox as Sandbox, sandbox } from '@directus/sandbox';
+import { type sandbox as Sandbox } from '@directus/sandbox';
 import { createDirectus, readFile, rest, staticToken, uploadFiles } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 const png = await fs.readFile(join(import.meta.dirname, 'directus.png'));
@@ -27,7 +28,7 @@ for (const { name, revalidate } of CONFIGS) {
 		let api: ReturnType<typeof createDirectus<any>> & any;
 
 		beforeAll(async () => {
-			directus = await sandbox(database, {
+			directus = await useSandbox(database, {
 				inspect: false,
 				prefix: `assets-cache-${revalidate}`,
 				port: sandboxPort(CONFIGS.findIndex((config) => config.revalidate === revalidate)),

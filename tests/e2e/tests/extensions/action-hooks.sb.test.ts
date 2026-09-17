@@ -1,5 +1,4 @@
 import { join } from 'path';
-import { sandbox } from '@directus/sandbox';
 import {
 	createCollection,
 	createDirectus,
@@ -16,13 +15,14 @@ import {
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { Signal } from '@utils/signal.js';
 import { range } from 'lodash-es';
 import { afterAll, expect, test } from 'vitest';
 
 const collection = 'hook_artists';
 
-const directus = await sandbox(database, {
+const directus = await useSandbox(database, {
 	port: sandboxPort(),
 	inspect: false,
 	prefix: 'action-hooks',

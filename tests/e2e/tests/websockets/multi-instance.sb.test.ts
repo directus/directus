@@ -1,16 +1,16 @@
 import { randomUUID } from 'node:crypto';
-import { sandbox } from '@directus/sandbox';
 import { createCollection, createDirectus, createItem, rest, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { openAuthenticatedSocket, openSocket } from '@utils/websocket.js';
 import { afterAll, expect, test } from 'vitest';
 
 const COLLECTION = 'ws_multi_instance';
 
 /** Two nodes sharing a messenger, so an event raised on one has to reach a subscriber on the other. */
-const directus = await sandbox(database, {
+const directus = await useSandbox(database, {
 	port: sandboxPort(),
 	inspect: false,
 	prefix: 'ws-multi',

@@ -1,4 +1,3 @@
-import { sandbox } from '@directus/sandbox';
 import {
 	createDirectus,
 	createItem,
@@ -12,6 +11,7 @@ import {
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { range } from 'lodash-es';
 import { afterAll, expect, test } from 'vitest';
@@ -19,7 +19,7 @@ import type { Schema } from './schema.d.ts';
 
 const LIMIT = 10;
 
-const directus = await sandbox(database, {
+const directus = await useSandbox(database, {
 	port: sandboxPort(),
 	inspect: false,
 	prefix: 'batch-limit',

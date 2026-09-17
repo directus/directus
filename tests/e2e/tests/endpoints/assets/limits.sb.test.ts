@@ -1,16 +1,16 @@
 import fs from 'fs/promises';
 import { join } from 'path';
-import { sandbox } from '@directus/sandbox';
 import { createDirectus, rest, staticToken, uploadFiles } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, expect, test } from 'vitest';
 
 /** How many transforms the instance will run at once before turning requests away. */
 const MAX_CONCURRENT = 2;
 
-const directus = await sandbox(database, {
+const directus = await useSandbox(database, {
 	inspect: false,
 	prefix: 'assets-limits',
 	port: sandboxPort(),

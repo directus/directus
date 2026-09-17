@@ -2,16 +2,16 @@
  * sandbox option fixtures for the e2e suite.
  *
  */
-import type { Options } from '@directus/sandbox';
+import { type Database, type Options, type Sandbox, sandbox } from '@directus/sandbox';
 import type { DeepPartial } from '@directus/types';
 import { getUID } from '@utils/getUID.js';
 import { merge } from 'lodash-es';
 
-export function withDefaultSandboxOptions(overrides?: DeepPartial<Options>): DeepPartial<Options> {
+export function useSandbox(database: Database, options?: DeepPartial<Options>): Promise<Sandbox> {
 	const devMode = process.env['NODE_ENV'] === 'development';
 	const uid = getUID(1);
 
-	return merge(
+	options = merge(
 		{
 			dev: devMode,
 			watch: devMode,
@@ -22,6 +22,8 @@ export function withDefaultSandboxOptions(overrides?: DeepPartial<Options>): Dee
 				DB_FILENAME: `directus_test_${uid}.db`,
 			},
 		},
-		overrides,
+		options,
 	);
+
+	return sandbox(database, options);
 }

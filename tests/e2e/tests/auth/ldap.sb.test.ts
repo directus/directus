@@ -1,7 +1,7 @@
-import { sandbox } from '@directus/sandbox';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { Client } from 'ldapts';
 import { afterAll, expect, test } from 'vitest';
 
@@ -9,7 +9,7 @@ import { afterAll, expect, test } from 'vitest';
  * Runs against a real directory server, so what is under test is how Directus talks to it:
  * signing a user in, turning them away, and provisioning a Directus user from their entry.
  */
-const directus = await sandbox(database, {
+const directus = await useSandbox(database, {
 	inspect: false,
 	prefix: 'ldap',
 	port: sandboxPort(),

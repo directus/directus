@@ -1,7 +1,8 @@
-import { type sandbox as Sandbox, sandbox } from '@directus/sandbox';
+import { type sandbox as Sandbox } from '@directus/sandbox';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 /**
@@ -35,7 +36,7 @@ describe('an instance served from the root of its public url', () => {
 	let url: string;
 
 	beforeAll(async () => {
-		directus = await sandbox(database, {
+		directus = await useSandbox(database, {
 			inspect: false,
 			prefix: 'oauth-root',
 			port: sandboxPort(0),
@@ -94,7 +95,7 @@ describe('an instance served from a subpath of its public url', () => {
 	beforeAll(async () => {
 		port = sandboxPort(1);
 
-		directus = await sandbox(database, {
+		directus = await useSandbox(database, {
 			inspect: false,
 			prefix: 'oauth-subpath',
 			port,

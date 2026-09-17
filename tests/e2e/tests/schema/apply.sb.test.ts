@@ -1,4 +1,3 @@
-import { sandbox } from '@directus/sandbox';
 import {
 	createCollection,
 	createDirectus,
@@ -23,12 +22,13 @@ import {
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeEach, expect, test } from 'vitest';
 
 /**
  * Applying a snapshot rewrites the whole schema, so this runs against its own instance.
  */
-const directus = await sandbox(database, {
+const directus = await useSandbox(database, {
 	port: sandboxPort(),
 	inspect: false,
 	prefix: 'schema-apply',

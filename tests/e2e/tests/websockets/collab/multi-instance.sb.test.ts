@@ -1,5 +1,4 @@
 import { randomUUID } from 'node:crypto';
-import { sandbox } from '@directus/sandbox';
 import {
 	createCollection,
 	createContentVersion,
@@ -16,13 +15,14 @@ import { openCollab } from '@utils/collab.js';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeEach, expect, test } from 'vitest';
 import { createRestrictedUser } from './users.js';
 
 const COLLECTION = 'collab_multi_instance';
 
 /** Two nodes sharing a messenger, so a room spans both of them. */
-const directus = await sandbox(database, {
+const directus = await useSandbox(database, {
 	port: sandboxPort(),
 	inspect: false,
 	prefix: 'collab-multi',

@@ -4,9 +4,9 @@ import { sandbox, type Sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { createLicense } from './__fixtures__/licenses.js';
-import { withDefaultSandboxOptions } from './__fixtures__/sandbox.js';
 
 describe('boot from env LICENSE_KEY', () => {
 	const license = createLicense({ meta: { name: 'init-env-key' } });
@@ -15,19 +15,16 @@ describe('boot from env LICENSE_KEY', () => {
 	let api: DirectusClient<any> & RestClient<any>;
 
 	beforeAll(async () => {
-		directus = await sandbox(
-			database,
-			withDefaultSandboxOptions({
-				port: sandboxPort(0),
-				env: { LICENSE_KEY: license.key },
-				hooks: {
-					beforeApi: async ({ env }) => {
-						await mockClient.registerLicense(env.LICENSE_API_URL!, license);
-					},
+		directus = await useSandbox(database, {
+			port: sandboxPort(0),
+			env: { LICENSE_KEY: license.key },
+			hooks: {
+				beforeApi: async ({ env }) => {
+					await mockClient.registerLicense(env.LICENSE_API_URL!, license);
 				},
-				extras: { license: true },
-			}),
-		);
+			},
+			extras: { license: true },
+		});
 
 		api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 	});
@@ -55,18 +52,15 @@ describe('boot persisted DB key', () => {
 	let api: DirectusClient<any> & RestClient<any>;
 
 	beforeAll(async () => {
-		directus = await sandbox(
-			database,
-			withDefaultSandboxOptions({
-				port: sandboxPort(1),
-				hooks: {
-					beforeApi: async ({ env }) => {
-						await mockClient.registerLicense(env.LICENSE_API_URL!, license);
-					},
+		directus = await useSandbox(database, {
+			port: sandboxPort(1),
+			hooks: {
+				beforeApi: async ({ env }) => {
+					await mockClient.registerLicense(env.LICENSE_API_URL!, license);
 				},
-				extras: { license: true },
-			}),
-		);
+			},
+			extras: { license: true },
+		});
 
 		api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 
@@ -97,13 +91,10 @@ describe('boot core', () => {
 	let api: DirectusClient<any> & RestClient<any>;
 
 	beforeAll(async () => {
-		directus = await sandbox(
-			database,
-			withDefaultSandboxOptions({
-				port: sandboxPort(2),
-				extras: { license: true },
-			}),
-		);
+		directus = await useSandbox(database, {
+			port: sandboxPort(2),
+			extras: { license: true },
+		});
 
 		api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 	});

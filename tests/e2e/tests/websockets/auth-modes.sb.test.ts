@@ -1,7 +1,8 @@
-import { type sandbox as Sandbox, sandbox } from '@directus/sandbox';
+import { type sandbox as Sandbox } from '@directus/sandbox';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 /** Seconds the server waits for a handshake before hanging up. */
@@ -50,7 +51,7 @@ for (const mode of MODES) {
 		let url: string;
 
 		beforeAll(async () => {
-			directus = await sandbox(database, {
+			directus = await useSandbox(database, {
 				port: sandboxPort(MODES.indexOf(mode)),
 				inspect: false,
 				prefix: `ws-auth-${mode}`,

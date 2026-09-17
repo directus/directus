@@ -1,8 +1,9 @@
-import { type sandbox as Sandbox, sandbox } from '@directus/sandbox';
+import { type sandbox as Sandbox } from '@directus/sandbox';
 import { createCollection, createDirectus, createItems, readItem, readItems, rest, staticToken, updateField, updateItem } from '@directus/sdk'; // prettier-ignore
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 const COLLECTION = 'timezone_items';
@@ -70,7 +71,7 @@ for (const timezone of TIMEZONES) {
 		let api: ReturnType<typeof createDirectus<any>> & any;
 
 		beforeAll(async () => {
-			directus = await sandbox(database, {
+			directus = await useSandbox(database, {
 				port: sandboxPort(TIMEZONES.indexOf(timezone)),
 				inspect: false,
 				prefix: `tz-${timezone}`,

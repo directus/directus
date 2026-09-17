@@ -1,9 +1,10 @@
 import { randomUUID } from 'node:crypto';
-import { type sandbox as Sandbox, sandbox } from '@directus/sandbox';
+import { type sandbox as Sandbox } from '@directus/sandbox';
 import { clearCache, createCollection, createDirectus, createItem, rest, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 const CACHE_STATUS_HEADER = 'x-cache-status';
@@ -28,7 +29,7 @@ for (const { name, store, purge } of CONFIGS) {
 		let api: ReturnType<typeof createDirectus<any>> & any;
 
 		beforeAll(async () => {
-			directus = await sandbox(database, {
+			directus = await useSandbox(database, {
 				port: sandboxPort(CONFIGS.findIndex((config) => config.store === store && config.purge === purge)),
 				inspect: false,
 				prefix: `cache-${store}-${purge}`,

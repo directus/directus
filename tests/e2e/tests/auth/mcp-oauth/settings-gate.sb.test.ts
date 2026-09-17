@@ -3,6 +3,7 @@ import { sandbox } from '@directus/sandbox';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import {
 	CimdMetadataServer,
@@ -24,7 +25,7 @@ let apiUrl: string;
 const metadataServers: CimdMetadataServer[] = [];
 
 beforeAll(async () => {
-	directus = await sandbox(database, {
+	directus = await useSandbox(database, {
 		port: sandboxPort(0),
 		inspect: false,
 		env: {
@@ -323,7 +324,7 @@ describe('/mcp-oauth env gate', () => {
 		// gets unlinked by the docker step.
 		const isolationId = randomUUID();
 
-		const oauthDisabledDirectus = await sandbox(database, {
+		const oauthDisabledDirectus = await useSandbox(database, {
 			port: sandboxPort(1),
 			inspect: false,
 			prefix: `mcp-oauth-env-disabled-${isolationId}`,

@@ -1,9 +1,9 @@
 import { randomUUID } from 'crypto';
-import { sandbox } from '@directus/sandbox';
 import { createDirectus, createFlow, createOperation, rest, staticToken, updateFlow } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { expect, test } from 'vitest';
 
 /** Seconds the schedule is left running, with a cron that fires once a second. */
@@ -22,7 +22,7 @@ for (const [index, { name, store, expected }] of CONFIGS.entries()) {
 	test(`a scheduled flow across two nodes with ${name}`, { timeout: 180_000 }, async () => {
 		const scope = randomUUID();
 
-		const directus = await sandbox(database, {
+		const directus = await useSandbox(database, {
 			instances: '2',
 			port: sandboxPort(index),
 			extras: { redis: true },

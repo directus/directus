@@ -1,13 +1,13 @@
-import { sandbox } from '@directus/sandbox';
 import { createDirectus, graphql, rest, serverHealth, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { describe, expect, test } from 'vitest';
 
 describe('health check configuration', () => {
 	test('not found when HEALTHCHECK_ENABLED=false', { timeout: 120_000 }, async () => {
-		const directus = await sandbox(database, {
+		const directus = await useSandbox(database, {
 			port: sandboxPort(0),
 			env: {
 				HEALTHCHECK_ENABLED: 'false',
@@ -31,7 +31,7 @@ describe('health check configuration', () => {
 	});
 
 	test('only includes database checks when HEALTHCHECK_SERVICES=database', { timeout: 120_000 }, async () => {
-		const directus = await sandbox(database, {
+		const directus = await useSandbox(database, {
 			port: sandboxPort(1),
 			env: {
 				HEALTHCHECK_SERVICES: 'database',
@@ -71,7 +71,7 @@ describe('health check configuration', () => {
 	});
 
 	test('exclude email checks when EMAIL_VERIFY_SETUP=false', { timeout: 120_000 }, async () => {
-		const directus = await sandbox(database, {
+		const directus = await useSandbox(database, {
 			port: sandboxPort(2),
 			env: {
 				EMAIL_VERIFY_SETUP: 'false',

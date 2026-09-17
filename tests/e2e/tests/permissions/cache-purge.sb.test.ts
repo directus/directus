@@ -1,4 +1,3 @@
-import { sandbox } from '@directus/sandbox';
 import {
 	clearCache,
 	createCollection,
@@ -17,6 +16,7 @@ import {
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { range } from 'lodash-es';
 import { afterAll, expect, test } from 'vitest';
 
@@ -28,7 +28,7 @@ const COLLECTION = 'cache_purge_items';
  * stale cache would serve data the new rules no longer allow. Auto purge is therefore left off
  * here: with it on, every mutation would purge anyway and the test would prove nothing.
  */
-const directus = await sandbox(database, {
+const directus = await useSandbox(database, {
 	port: sandboxPort(),
 	inspect: false,
 	prefix: 'cache-purge',
