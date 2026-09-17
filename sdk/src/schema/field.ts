@@ -1,4 +1,4 @@
-import type { CollectionName, MergeCoreCollection } from '../index.js';
+import type { CollectionName, MergeCoreCollection, WrapLogicalFilters } from '../index.js';
 
 export type DirectusField<Schema = any> = {
 	collection: CollectionName<Schema>;
@@ -56,28 +56,16 @@ export type DirectusField<Schema = any> = {
 };
 
 export type FieldMetaConditionType = {
-	// TODO: review
-	hidden: boolean;
 	name: string;
-	options: FieldMetaConditionOptionType;
-	readonly: boolean;
-	required: boolean;
-	// TODO: rules use atomic operators and can nest
-	rule: unknown;
+	hidden?: boolean;
+	readonly?: boolean;
+	required?: boolean;
+	clear_hidden_value_on_save?: boolean;
+	options?: Record<string, any>;
+	rule: FieldMetaConditionRule;
 };
 
-export type FieldMetaConditionOptionType = {
-	// TODO: review
-	clear: boolean;
-	font: string;
-	iconLeft?: string;
-	iconRight?: string;
-	masked: boolean;
-	placeholder: string;
-	slug: boolean;
-	softLength?: number;
-	trim: boolean;
-};
+export type FieldMetaConditionRule = WrapLogicalFilters<Record<string, Record<string, any>>>;
 
 export type FieldMetaTranslationType = {
 	language: string;
