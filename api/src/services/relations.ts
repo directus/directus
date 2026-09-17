@@ -251,7 +251,7 @@ export class RelationsService {
 
 			await transaction(this.knex, async (trx) => {
 				if (relation.related_collection) {
-					await trx.schema.alterTable(relation.collection!, async (table) => {
+					await trx.schema.alterTable(relation.collection!, (table) => {
 						this.alterType(table, relation, fieldSchema.nullable);
 
 						const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
@@ -308,7 +308,8 @@ export class RelationsService {
 	/**
 	 * Update an existing foreign key constraint
 	 *
-	 * Note: You can update anything under meta, but only the `on_delete` trigger under schema
+	 * Note: You can update anything under meta, but only the `on_delete` and `on_update` triggers
+	 * under schema.
 	 */
 	async updateOne(
 		collection: string,
@@ -341,14 +342,25 @@ export class RelationsService {
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
-		this.helpers.schema.preRelationChange(relation);
+
+		const updatedSchema = relation.schema ? { ...existingRelation.schema, ...relation.schema } : null;
+
+		const updatedRelation: Partial<Relation> = {
+			...relation,
+			collection,
+			field,
+			related_collection: existingRelation.related_collection,
+			...(updatedSchema ? { schema: updatedSchema } : {}),
+		};
+
+		this.helpers.schema.preRelationChange(updatedRelation);
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
 			await transaction(this.knex, async (trx) => {
-				if (existingRelation.related_collection) {
-					await trx.schema.alterTable(collection, async (table) => {
+				if (updatedSchema && existingRelation.related_collection) {
+					await trx.schema.alterTable(collection, (table) => {
 						let constraintName: string = getDefaultIndexName('foreign', collection, field);
 
 						// If the FK already exists in the DB, drop it first
@@ -357,10 +369,9 @@ export class RelationsService {
 							table.dropForeign(field, constraintName);
 
 							constraintName = this.helpers.schema.constraintName(constraintName);
-							existingRelation.schema.constraint_name = constraintName;
 						}
 
-						this.alterType(table, relation, fieldSchema.nullable);
+						this.alterType(table, existingRelation, fieldSchema.nullable);
 
 						const builder = table
 							.foreign(field, constraintName || undefined)
@@ -370,12 +381,16 @@ export class RelationsService {
 								}`,
 							);
 
-						if (relation.schema?.on_delete) {
-							builder.onDelete(relation.schema.on_delete);
+						/**
+						 * Delete/update handlers must be set on every request when applicable, excluding them
+						 * from a partial update will cause them to revert to no action.
+						 */
+						if (updatedSchema.on_delete) {
+							builder.onDelete(updatedSchema.on_delete);
 						}
 
-						if (relation.schema?.on_update) {
-							builder.onUpdate(relation.schema.on_update);
+						if (updatedSchema.on_update) {
+							builder.onUpdate(updatedSchema.on_update);
 						}
 					});
 				}
@@ -398,8 +413,8 @@ export class RelationsService {
 						await relationsItemService.createOne(
 							{
 								...(relation.meta || {}),
-								many_collection: relation.collection,
-								many_field: relation.field,
+								many_collection: collection,
+								many_field: field,
 								one_collection: existingRelation.related_collection || null,
 							},
 							{

@@ -9,7 +9,7 @@ import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 
 const assetsDirectory = [paths.cwd, 'assets'];
-const storages = ['local', 'minio'];
+const storages = ['local', 'rustfs'];
 const imageFilePath = join(...assetsDirectory, 'layers.png');
 
 describe('/assets', () => {

@@ -2,7 +2,7 @@
 defineOptions({ inheritAttrs: false });
 
 import type { Field } from '@directus/types';
-import { isEqual, sortBy } from 'lodash';
+import { isEqual, sortBy } from 'lodash-es';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';

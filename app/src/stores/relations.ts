@@ -1,6 +1,6 @@
 import { DeepPartial, Relation } from '@directus/types';
 import { getRelations, getRelationType } from '@directus/utils';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';

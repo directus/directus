@@ -3,7 +3,7 @@ import { useApi } from '@directus/composables';
 import { useShortcut } from '@directus/composables';
 import { HARDCODED_AUTH_REQUIREMENTS } from '@directus/system-data';
 import { Alterations, Item, Policy } from '@directus/types';
-import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash';
+import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash-es';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
