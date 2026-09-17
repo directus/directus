@@ -3,6 +3,8 @@ import type { Knex } from 'knex';
 
 type ModuleBar = (SettingsModuleBarLink | SettingsModuleBarModule)[];
 
+const MODULES_AFTER_FLOWS = ['deployments', 'docs', 'settings'];
+
 export async function up(knex: Knex): Promise<void> {
 	await updateModuleBar(knex, (moduleBar) => {
 		if (moduleBar.find(({ id }) => id === 'flows')) return;
@@ -13,8 +15,8 @@ export async function up(knex: Knex): Promise<void> {
 			enabled: true,
 		};
 
-		const insightsModuleIndex = moduleBar.findIndex(({ id }) => id === 'insights');
-		const insertAt = insightsModuleIndex === -1 ? moduleBar.length : insightsModuleIndex + 1;
+		const followingIndex = moduleBar.findIndex(({ id }) => MODULES_AFTER_FLOWS.includes(id));
+		const insertAt = followingIndex === -1 ? moduleBar.length : followingIndex;
 		moduleBar.splice(insertAt, 0, flowsModule);
 
 		return moduleBar;
