@@ -8,7 +8,7 @@ import ipaddr from 'ipaddr.js';
  * "::ffff:1.2.3.4"). Returns null if the input is not a valid IPv6 address.
  */
 function ipv6ToBytes(address: string): number[] | null {
-	const input = address.split('%')[0]; // drop any zone identifier, e.g. fe80::1%eth0
+	const input = address.split('%')[0]!; // drop any zone identifier, e.g. fe80::1%eth0
 
 	if (!ipaddr.isValid(input)) return null;
 
@@ -149,4 +149,45 @@ export class IpBlocklist extends BlockList {
 
 		return false;
 	}
+
+	static isRange(ip: string): boolean {
+		const parts = ip.split('-');
+
+		if (parts.length !== 2) return false;
+		const ipMin = isIP(parts[0]!);
+		const ipMax = isIP(parts[1]!);
+		if (ipMin === 0 || ipMax === 0) return false;
+		if (ipMin !== ipMax) return false;
+		if (!isIpLessOrEqual(ipaddr.parse(parts[0]!), ipaddr.parse(parts[1]!))) return false;
+
+		return true;
+	}
+
+	static isIP(ip: string): boolean {
+		return isIP(ip) !== 0;
+	}
+
+	static isSubnet(ip: string): boolean {
+		const parts = ip.split('/');
+
+		if (parts.length !== 2) return false;
+		if (isIP(parts[0]!) === 0) return false;
+		if (!ipaddr.isValidCIDR(ip)) return false;
+
+		return true;
+	}
+}
+
+type IP = ipaddr.IPv4 | ipaddr.IPv6;
+
+function isIpLessOrEqual(ipA: IP, ipB: IP) {
+	const bytesA = ipA.toByteArray();
+	const bytesB = ipB.toByteArray();
+
+	for (let i = 0; i < bytesA.length; i++) {
+		if (bytesA[i]! < bytesB[i]!) return true;
+		if (bytesA[i]! > bytesB[i]!) return false;
+	}
+
+	return true;
 }

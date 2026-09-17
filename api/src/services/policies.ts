@@ -1,23 +1,10 @@
-import { isIP } from 'node:net';
 import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, MutationOptions, Policy, PrimaryKey } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
-import { type IPv4, type IPv6, isValidCIDR, parse as parseIp } from 'ipaddr.js';
+import { IpBlocklist } from '@directus/utils/node';
 import { clearSystemCache } from '../cache.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { ItemsService } from './items.js';
-
-function isIpLessOrEqual(ipA: IPv4 | IPv6, ipB: IPv4 | IPv6) {
-	const bytesA = ipA.toByteArray();
-	const bytesB = ipB.toByteArray();
-
-	for (let i = 0; i < bytesA.length; i++) {
-		if (bytesA[i]! < bytesB[i]!) return true;
-		if (bytesA[i]! > bytesB[i]!) return false;
-	}
-
-	return true;
-}
 
 export function isIpAccessValid(value?: any[] | null): boolean {
 	if (value === undefined) return false;
@@ -28,29 +15,7 @@ export function isIpAccessValid(value?: any[] | null): boolean {
 		if (typeof ip !== 'string' || ip.includes('*')) return false;
 		ip = ip.trim();
 
-		// Validate IP Range
-		if (ip.includes('-')) {
-			const parts = ip.split('-');
-
-			if (parts.length !== 2) return false;
-			const ipMin = isIP(parts[0]!);
-			const ipMax = isIP(parts[1]!);
-			if (ipMin === 0 || ipMax === 0) return false;
-			if (ipMin !== ipMax) return false;
-			if (!isIpLessOrEqual(parseIp(parts[0]), parseIp(parts[1]))) return false;
-			continue;
-		}
-
-		const parts = ip.split('/');
-
-		// Validate singular IPs
-		if (isIP(parts[0]!) === 0) return false;
-
-		// Validate IP Subnetwork, but reject IP Masks
-		if (parts.length == 2 && !isValidCIDR(ip)) return false;
-
-		// Reject invalid IPs
-		if (parts.length > 2) return false;
+		if (!IpBlocklist.isIP(ip) || !IpBlocklist.isRange(ip) || !IpBlocklist.isSubnet(ip)) return false;
 	}
 
 	return true;
