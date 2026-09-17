@@ -1,4 +1,3 @@
-import { BlockList } from 'node:net';
 import os from 'node:os';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { IpBlocklist } from './ip-blocklist.js';
