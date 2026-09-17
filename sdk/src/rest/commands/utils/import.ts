@@ -1,4 +1,3 @@
-import type { CollectionName } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -8,12 +7,12 @@ import { throwIfEmpty } from '../../utils/index.js';
  * @throws Will throw if collection is empty
  */
 export const utilsImport =
-	<Schema>(collection: CollectionName<Schema>, data: FormData): RestCommand<void, Schema> =>
+	<Schema>(collection: keyof Schema, data: FormData): RestCommand<void, Schema> =>
 	() => {
-		throwIfEmpty(collection, 'Collection cannot be empty');
+		throwIfEmpty(collection as string, 'Collection cannot be empty');
 
 		return {
-			path: `/utils/import/${collection}`,
+			path: `/utils/import/${collection as string}`,
 			method: 'POST',
 			body: data,
 			headers: { 'Content-Type': 'multipart/form-data' },

@@ -21,15 +21,15 @@ export type CreateFieldOutput<
  */
 export const createField =
 	<Schema, const TQuery extends FieldQuery<Schema, DirectusField<Schema>>>(
-		collection: DirectusField<Schema>['collection'],
+		collection: keyof Schema,
 		item: NestedPartial<DirectusField<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateFieldOutput<Schema, TQuery>, Schema> =>
 	() => {
-		throwIfEmpty(collection, 'Collection cannot be empty');
+		throwIfEmpty(collection as string, 'Collection cannot be empty');
 
 		return {
-			path: `/fields/${collection}`,
+			path: `/fields/${collection as string}`,
 			params: query ?? {},
 			body: JSON.stringify(item),
 			method: 'POST',

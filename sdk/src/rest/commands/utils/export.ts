@@ -11,18 +11,18 @@ export type FileFormat = 'csv' | 'csv_utf8' | 'json' | 'xml' | 'yaml';
  * @throws Will throw if collection is empty
  */
 export const utilsExport =
-	<Schema, TQuery extends Query<Schema, Schema[Collection]>, Collection extends keyof Schema & string>(
+	<Schema, TQuery extends Query<Schema, Schema[Collection]>, Collection extends keyof Schema>(
 		collection: Collection,
 		format: FileFormat,
 		query: TQuery,
 		file: Partial<DirectusFile<Schema>>,
 	): RestCommand<void, Schema> =>
 	() => {
-		throwIfEmpty(collection, 'Collection cannot be empty');
+		throwIfEmpty(collection as string, 'Collection cannot be empty');
 
 		return {
 			method: 'POST',
-			path: `/utils/export/${collection}`,
+			path: `/utils/export/${collection as string}`,
 			body: JSON.stringify({ format, query, file }),
 		};
 	};

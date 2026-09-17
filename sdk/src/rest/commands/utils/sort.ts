@@ -1,4 +1,3 @@
-import type { CollectionName } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -11,13 +10,13 @@ import { throwIfEmpty } from '../../utils/index.js';
  * @throws Will throw if collection is empty
  */
 export const utilitySort =
-	<Schema>(collection: CollectionName<Schema>, item: string | number, to: string | number): RestCommand<void, Schema> =>
+	<Schema>(collection: keyof Schema, item: string | number, to: string | number): RestCommand<void, Schema> =>
 	() => {
-		throwIfEmpty(collection, 'Collection cannot be empty');
+		throwIfEmpty(collection as string, 'Collection cannot be empty');
 
 		return {
 			method: 'POST',
-			path: `/utils/sort/${collection}`,
+			path: `/utils/sort/${collection as string}`,
 			body: JSON.stringify({ item, to }),
 		};
 	};
