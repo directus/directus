@@ -91,7 +91,7 @@ describe('folders tool', () => {
 			});
 
 			test('should create a folder of a given type', async () => {
-				const folderData = { name: 'flow-folder', type: 'flows' };
+				const folderData = { name: 'flow-folder', type: 'flows' as const };
 
 				mockFoldersService.createMany.mockResolvedValue(['folder-1']);
 				mockFoldersService.readMany.mockResolvedValue([]);
@@ -323,6 +323,23 @@ describe('folders tool', () => {
 					accountability: mockAccountability,
 				}),
 			).rejects.toThrow('Service error');
+		});
+	});
+
+	describe('validation schema', () => {
+		test.each(['files', 'flows'])('accepts the %s folder type', (type) => {
+			const result = folders.validateSchema?.safeParse({ action: 'create', data: { name: 'Folder', type } });
+
+			expect(result?.success).toBe(true);
+		});
+
+		test('rejects a folder type outside the known values', () => {
+			const result = folders.validateSchema?.safeParse({
+				action: 'create',
+				data: { name: 'Folder', type: 'dashboards' },
+			});
+
+			expect(result?.success).toBe(false);
 		});
 	});
 
