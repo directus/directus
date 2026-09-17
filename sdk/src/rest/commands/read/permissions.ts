@@ -55,7 +55,7 @@ export const readPermission =
 		query?: TQuery,
 	): RestCommand<ReadPermissionOutput<Schema, TQuery>, Schema> =>
 	() => {
-		throwIfEmpty(String(key), 'Key cannot be empty');
+		throwIfEmpty(key, 'Key cannot be empty');
 
 		return {
 			path: `/permissions/${key}`,

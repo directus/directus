@@ -2,5 +2,4 @@
 '@directus/sdk': patch
 ---
 
-Fixed `deleteNotification`/`updateNotification` silently accepting `undefined`/`null` as the notification key instead of
-throwing
+Fixed `deleteNotification`, `updateNotification`, `deletePermission`, `updatePermission`, `readPermission`, `readActivity`, and `readRevision` silently accepting `undefined`/`null` as the key instead of throwing
