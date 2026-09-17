@@ -1,11 +1,80 @@
-import type { AbstractServiceOptions, Folder, Query } from '@directus/types';
+import { ForbiddenError } from '@directus/errors';
+import type { AbstractServiceOptions, Folder, MutationOptions, PrimaryKey, Query, QueryOptions } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { ItemsService } from './items.js';
 
+const FILE_LIBRARY_TYPE = 'files';
+
+/** Every folder type but the file library is admin-only, which permissions can't express as they filter rows, not payloads. */
 export class FoldersService extends ItemsService<Folder> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_folders', options);
+	}
+
+	/** Null accountability is an internal call, trusted like an admin. */
+	private get fileLibraryOnly(): boolean {
+		return this.accountability !== null && this.accountability.admin !== true;
+	}
+
+	private assertAllowedType(data: Partial<Folder>): void {
+		if (!this.fileLibraryOnly) {
+			return;
+		}
+
+		if (data.type === undefined || data.type === FILE_LIBRARY_TYPE) {
+			return;
+		}
+
+		throw new ForbiddenError({ reason: `You don't have permission to manage "${data.type}" folders.` });
+	}
+
+	private async assertAllowedKeys(keys: PrimaryKey[], action: 'update' | 'delete'): Promise<void> {
+		if (!this.fileLibraryOnly || keys.length === 0) {
+			return;
+		}
+
+		const restricted = await this.knex
+			.select('id')
+			.from('directus_folders')
+			.whereIn('id', keys)
+			.andWhereNot('type', FILE_LIBRARY_TYPE)
+			.first();
+
+		if (restricted) {
+			throw new ForbiddenError({ reason: `You don't have permission to ${action} this folder.` });
+		}
+	}
+
+	override async createOne(data: Partial<Folder>, opts: MutationOptions = {}): Promise<PrimaryKey> {
+		this.assertAllowedType(data);
+		return super.createOne(data, opts);
+	}
+
+	override async updateMany(
+		keys: PrimaryKey[],
+		data: Partial<Folder>,
+		opts: MutationOptions = {},
+	): Promise<PrimaryKey[]> {
+		this.assertAllowedType(data);
+		await this.assertAllowedKeys(keys, 'update');
+		return super.updateMany(keys, data, opts);
+	}
+
+	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		await this.assertAllowedKeys(keys, 'delete');
+		return super.deleteMany(keys, opts);
+	}
+
+	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Folder[]> {
+		if (!this.fileLibraryOnly) {
+			return super.readByQuery(query, opts);
+		}
+
+		const filter = mergeFilters(query.filter ?? null, { type: { _eq: FILE_LIBRARY_TYPE } });
+
+		return super.readByQuery({ ...query, filter }, opts);
 	}
 
 	/**

@@ -1,4 +1,5 @@
 import type { Accountability, PermissionsAction } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
 import type { Context } from '../types.js';
 import { extractRequiredDynamicVariableContextForPermissions } from '../utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../utils/fetch-dynamic-variable-data.js';
@@ -10,12 +11,13 @@ export interface FetchPermissionsOptions {
 	action?: PermissionsAction;
 	policies: string[];
 	collections?: string[];
-	accountability?: Pick<Accountability, 'user' | 'role' | 'roles' | 'app' | 'share' | 'ip'>;
+	accountability?: Pick<Accountability, 'user' | 'role' | 'roles' | 'app' | 'share' | 'ip'> &
+		Partial<Pick<Accountability, 'admin'>>;
 	bypassDynamicVariableProcessing?: boolean;
 }
 
 export async function fetchPermissions(options: FetchPermissionsOptions, context: Context) {
-	const permissions = await fetchRawPermissions(
+	let permissions = await fetchRawPermissions(
 		{ ...options, bypassMinimalAppPermissions: options.bypassDynamicVariableProcessing ?? false },
 		context,
 	);
@@ -33,17 +35,26 @@ export async function fetchPermissions(options: FetchPermissionsOptions, context
 		);
 
 		// Replace dynamic variables with their actual values
-		const processedPermissions = processPermissions({
+		permissions = processPermissions({
 			permissions,
 			accountability: options.accountability,
 			permissionsContext,
 		});
 
 		if (options.accountability.share && (options.action === undefined || options.action === 'read')) {
-			return await getPermissionsForShare(options.accountability, options.collections, context);
+			permissions = await getPermissionsForShare(options.accountability, options.collections, context);
 		}
+	}
 
-		return processedPermissions;
+	if (options.accountability && !options.accountability.admin) {
+		// Relational reads and MetaService counts query `directus_folders` without going through FoldersService
+		permissions = permissions.map((permission) => {
+			if (permission.collection !== 'directus_folders' || permission.action !== 'read') {
+				return permission;
+			}
+
+			return { ...permission, permissions: mergeFilters(permission.permissions, { type: { _eq: 'files' } }) };
+		});
 	}
 
 	return permissions;
