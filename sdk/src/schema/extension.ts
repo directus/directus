@@ -30,8 +30,8 @@ export type ExtensionSchemaEntry = {
 };
 
 export type ExtensionSandboxOptions = {
-	enabled: boolean;
-	requestedScopes: {
+	enabled?: boolean;
+	requestedScopes?: {
 		request?: { urls: string[]; methods: ('GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE')[] };
 		log?: Record<string, never>;
 		sleep?: Record<string, never>;
