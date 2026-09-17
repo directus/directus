@@ -4,7 +4,7 @@ import type { RequestHandler } from 'express';
 import { getEntitlementManager } from '../license/index.js';
 import { useLogger } from '../logger/index.js';
 import { useBufferedCounter } from '../telemetry/counter/use-buffered-counter.js';
-import { TRACKED_METHODS } from '../telemetry/utils/format-api-request-counts.js';
+import { TRACKED_METHODS } from '../telemetry/utils/api-request-keys.js';
 
 const TRACKED_METHODS_UPPER = new Set(TRACKED_METHODS.map((m) => m.toUpperCase()));
 
