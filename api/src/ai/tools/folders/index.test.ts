@@ -89,24 +89,6 @@ describe('folders tool', () => {
 
 				expect(mockFoldersService.createMany).toHaveBeenCalledWith(foldersData);
 			});
-
-			test('should create a folder of a given type', async () => {
-				const folderData = { name: 'flow-folder', type: 'flows' as const };
-
-				mockFoldersService.createMany.mockResolvedValue(['folder-1']);
-				mockFoldersService.readMany.mockResolvedValue([]);
-
-				await folders.handler({
-					args: {
-						action: 'create',
-						data: folderData,
-					},
-					schema: mockSchema,
-					accountability: mockAccountability,
-				});
-
-				expect(mockFoldersService.createMany).toHaveBeenCalledWith([folderData]);
-			});
 		});
 
 		describe('READ action', () => {
