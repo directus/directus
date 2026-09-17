@@ -29,7 +29,7 @@ export const deleteNotifications =
 export const deleteNotification =
 	<Schema>(key: DirectusNotification<Schema>['id']): RestCommand<void, Schema> =>
 	() => {
-		throwIfEmpty(String(key), 'Key cannot be empty');
+		throwIfEmpty(key, 'Key cannot be empty');
 
 		return {
 			path: `/notifications/${key}`,
