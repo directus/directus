@@ -1284,9 +1284,6 @@ importers:
       ioredis:
         specifier: 'catalog:'
         version: 5.8.2
-      ipaddr.js:
-        specifier: 'catalog:'
-        version: 2.4.0
       isolated-vm:
         specifier: 'catalog:'
         version: 5.0.3
