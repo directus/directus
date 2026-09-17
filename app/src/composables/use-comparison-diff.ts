@@ -1,7 +1,7 @@
 import type { Field } from '@directus/types';
 import { diffArrays, diffJson, diffWordsWithSpace } from 'diff';
 import dompurify from 'dompurify';
-import { isArray, isEqual, isNil, isPlainObject, isString } from 'lodash';
+import { isArray, isEqual, isNil, isPlainObject, isString } from 'lodash-es';
 
 export type Change = {
 	added?: boolean;
@@ -27,8 +27,8 @@ export function sanitizeDropsContent(value: any): boolean {
 
 	if (value.includes('<!--') && !sanitized.includes('<!--')) return true;
 
-	// DOMParser is inert: nothing executes and no resource loads while the raw markup is inspected
-	const parse = (html: string) => new DOMParser().parseFromString(html, 'text/html').body;
+	// DOMParser is inert: nothing executes and no resource loads while the raw markup is inspected.
+	const parse = (html: string) => new DOMParser().parseFromString(html, 'text/html').documentElement;
 	return nodeSignature(parse(value)) !== nodeSignature(parse(sanitized));
 }
 

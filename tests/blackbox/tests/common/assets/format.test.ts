@@ -8,7 +8,7 @@ import request, { type Response } from 'supertest';
 import { describe, expect, it } from 'vitest';
 
 const assetsDirectory = [paths.cwd, 'assets'];
-const storages = ['local', 'minio'];
+const storages = ['local', 'rustfs'];
 
 const imageFileAvif = join(...assetsDirectory, 'directus.avif');
 const imageFilePng = join(...assetsDirectory, 'directus.png');

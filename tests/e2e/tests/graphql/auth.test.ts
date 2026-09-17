@@ -8,7 +8,7 @@ import {
 	loginAsAdminSession,
 	loginAsAdminToken,
 	postJson,
-} from '../auth/mcp-oauth-utils.js';
+} from '../auth/mcp-oauth/utils.js';
 
 const introspectionQuery = '{ __schema { queryType { name } } }';
 

@@ -101,17 +101,17 @@ Enable redis,maildev,saml or other extras
 
 Email server
 
-#### minio
-
-> **minio**: `boolean`
-
-Storage provider
-
 #### redis
 
 > **redis**: `boolean`
 
 Used for caching, forced to true if instances > 1
+
+#### rustfs
+
+> **rustfs**: `boolean`
+
+Storage provider
 
 #### saml
 

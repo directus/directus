@@ -1,7 +1,7 @@
 import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { ContentVersion, Filter, Item, PrimaryKey } from '@directus/types';
 import { useRouteQuery } from '@vueuse/router';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { computed, ref, type Ref, watch } from 'vue';
 import { useCollectionPermissions } from './use-permissions';
 import api from '@/api';

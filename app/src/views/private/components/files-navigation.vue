@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { computed, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import NavigationFolder from './files-navigation-folder.vue';

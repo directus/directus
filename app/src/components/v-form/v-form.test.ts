@@ -1,6 +1,7 @@
-import type { Field } from '@directus/types';
+import type { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
+import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick } from 'vue';
 import FormField from './components/form-field.vue';
@@ -9,12 +10,17 @@ import { ClickOutside } from '@/__utils__/click-outside';
 import { Md } from '@/__utils__/md';
 import { Tooltip } from '@/__utils__/tooltip';
 import { i18n } from '@/lang';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 const global = {
 	plugins: [
 		i18n,
 		createTestingPinia({
 			createSpy: vi.fn,
+			// VForm resolves each field's related collection through the relations store
+			stubActions: false,
 		}),
 	],
 	directives: {
@@ -93,6 +99,31 @@ function createField(overrides: Partial<Field> = {}): Field {
 		},
 		...overrides,
 	};
+}
+
+function createRelationalField(field: string, relatedCollection: string): Field {
+	return createField({
+		field,
+		name: field,
+		type: 'integer',
+		schema: { ...createField().schema!, name: field, foreign_key_table: relatedCollection },
+		meta: { ...createField().meta!, field, special: ['m2o'] },
+	});
+}
+
+function createRelation(field: string, relatedCollection: string) {
+	return {
+		collection: 'test_collection',
+		field,
+		related_collection: relatedCollection,
+		schema: null,
+		meta: {
+			many_collection: 'test_collection',
+			many_field: field,
+			one_collection: relatedCollection,
+			one_field: null,
+		},
+	} as unknown as Relation;
 }
 
 describe('VForm', () => {
@@ -515,6 +546,42 @@ describe('VForm', () => {
 			const emitted = wrapper.emitted('update:modelValue');
 			expect(emitted).toBeTruthy();
 			expect(emitted?.[0]?.[0]).toEqual({ editable: 'new' });
+		});
+
+		it('disables a field relating to an inactive collection', async () => {
+			const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
+			setActivePinia(pinia);
+
+			const inactiveRelation = createRelationalField('inactive_rel', 'inactive_collection');
+			const activeRelation = createRelationalField('active_rel', 'active_collection');
+
+			useFieldsStore().fields = [inactiveRelation, activeRelation];
+
+			useRelationsStore().relations = [
+				createRelation('inactive_rel', 'inactive_collection'),
+				createRelation('active_rel', 'active_collection'),
+			];
+
+			useCollectionsStore().collections = [
+				{ collection: 'inactive_collection', meta: { status: 'inactive' }, schema: {} },
+				{ collection: 'active_collection', meta: { status: 'active' }, schema: {} },
+			] as any;
+
+			const wrapper = mount(VForm, {
+				props: { fields: [inactiveRelation, activeRelation], primaryKey: '+' },
+				global: { ...global, plugins: [i18n, pinia] },
+			});
+
+			await nextTick();
+
+			const disabledByField = Object.fromEntries(
+				wrapper
+					.findAllComponents(FormField)
+					.map((formField) => [formField.props('field').field, formField.props('disabled')]),
+			);
+
+			expect(disabledByField['inactive_rel']).toBe(true);
+			expect(disabledByField['active_rel']).toBe(false);
 		});
 
 		it('preserves conditionally readonly field values when nested form passes through unchanged values', async () => {
