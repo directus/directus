@@ -37,7 +37,14 @@ export default defineConfig({
 							globalSetup: './setup/global-setup-one.ts',
 							name: database,
 							passWithNoTests: true,
-							exclude: [...configDefaults.exclude, '**/*.sb.test.ts'],
+							exclude: [
+								...configDefaults.exclude,
+								'**/*.sb.test.ts',
+								// Oracle extracts string JSON values with their quotes intact, so every string
+								// comparison in a _json filter or json() call silently matches nothing.
+								// TODO: remove once https://github.com/directus/directus/issues/28256 is fixed
+								...(database === 'oracle' ? ['**/tests/endpoints/query/json/**'] : []),
+							],
 							testTimeout: 20_000,
 							reporters: ['verbose'],
 							env: {

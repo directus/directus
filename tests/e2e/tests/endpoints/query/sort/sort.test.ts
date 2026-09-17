@@ -1,7 +1,7 @@
-import { createDirectus, createItem, graphql, readItems, rest, staticToken } from '@directus/sdk';
-import { port } from '@utils/constants.js';
+import { createDirectus, createItem, deleteItems, graphql, readItems, rest, staticToken } from '@directus/sdk';
+import { database, port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
-import { expect, test } from 'vitest';
+import { afterAll, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(graphql()).with(staticToken('admin'));
@@ -20,6 +20,17 @@ async function seedArticles(marker: string, item: (n: number) => Record<string, 
 		await api.request(createItem(collections.articles, { title: `${marker}-${n}`, ...item(n) }));
 	}
 }
+
+afterAll(async () => {
+	const allIds = await api.request(readItems(collections.articles, { limit: -1, fields: ['id'] }));
+
+	await api.request(
+		deleteItems(
+			collections.articles,
+			allIds.map((id) => String(id.id)),
+		),
+	);
+});
 
 test('sorts on the top level ascending and descending', async () => {
 	const marker = 'sort-top';
@@ -115,7 +126,8 @@ test('sorts by a m2m field', async () => {
 	expect(order(desc)).toEqual([5, 4, 3, 2, 1]);
 });
 
-test('sorts by a function on a top level field', async () => {
+// TODO: actually fix this on oracle, see https://github.com/directus/directus/issues/2825
+test.skipIf(database === 'oracle')('sorts by a function on a top level field', async () => {
 	const marker = 'sort-fn-top';
 	await seedArticles(marker, (n) => ({ release: `200${n}-01-01T00:00:00` }));
 

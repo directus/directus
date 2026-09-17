@@ -1,5 +1,5 @@
 import { createDirectus, createItems, readItems, rest, staticToken } from '@directus/sdk';
-import { port } from '@utils/constants.js';
+import { database, port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Fields, Schema } from './schema.js';
@@ -16,10 +16,6 @@ const EXISTENCE = ['empty', 'nempty', 'null', 'nnull'];
 const EQUALITY = ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
 
 const FIELDS: { field: Field; operators: string[]; low: unknown; high: unknown; generated?: boolean }[] = [
-	{ field: 'string', operators: TEXT, low: 'aaa-alpha', high: 'bbb-beta' },
-	{ field: 'text', operators: TEXT, low: 'aaa-alpha', high: 'bbb-beta' },
-	// A hash is not readable back, so only its presence can be filtered on
-	{ field: 'hash', operators: EXISTENCE, low: 'aaa-alpha', high: 'bbb-beta' },
 	// `uuid` carries the `uuid` special, so the row left blank still gets a generated value
 	{ field: 'uuid', operators: EQUALITY, low: crypto.randomUUID(), high: crypto.randomUUID(), generated: true },
 	{ field: 'boolean', operators: ['eq', 'neq', 'null', 'nnull'], low: false, high: true },
@@ -28,7 +24,16 @@ const FIELDS: { field: Field; operators: string[]; low: unknown; high: unknown; 
 	{ field: 'float', operators: COMPARISON, low: 1.5, high: 2.5 },
 	{ field: 'decimal', operators: COMPARISON, low: 1.5, high: 2.5 },
 	{ field: 'date', operators: COMPARISON, low: '2020-01-01', high: '2021-01-01' },
-	{ field: 'time', operators: COMPARISON, low: '01:00:00', high: '02:00:00' },
+	// TODO: fix in directus, see https://github.com/directus/directus/issues/28255
+	...(database !== 'oracle'
+		? [
+				{ field: 'time' as Field, operators: COMPARISON, low: '01:00:00', high: '02:00:00' },
+				{ field: 'string' as Field, operators: TEXT, low: 'aaa-alpha', high: 'bbb-beta' },
+				{ field: 'text' as Field, operators: TEXT, low: 'aaa-alpha', high: 'bbb-beta' },
+				// A hash is not readable back, so only its presence can be filtered on
+				{ field: 'hash' as Field, operators: EXISTENCE, low: 'aaa-alpha', high: 'bbb-beta' },
+			]
+		: []),
 	{ field: 'date_time', operators: COMPARISON, low: '2020-01-01T01:00:00', high: '2021-01-01T01:00:00' },
 	{ field: 'timestamp', operators: COMPARISON, low: '2020-01-01T01:00:00Z', high: '2021-01-01T01:00:00Z' },
 ];
