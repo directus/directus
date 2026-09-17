@@ -1,7 +1,7 @@
 import { ContentVersion, Filter, Item } from '@directus/types';
 import { getEndpoint, toArray } from '@directus/utils';
 import { clamp, cloneDeep, get, isEqual, merge, mergeWith } from 'lodash-es';
-import { computed, ref, Ref, watch } from 'vue';
+import { computed, ref, Ref, shallowRef, watch } from 'vue';
 import { useRefreshSignal } from '@/composables/use-refresh-signal';
 import { RelationM2A } from '@/composables/use-relation-m2a';
 import { RelationM2M } from '@/composables/use-relation-m2m';
