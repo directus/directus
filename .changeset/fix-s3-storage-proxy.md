@@ -2,7 +2,7 @@
 '@directus/storage-driver-s3': minor
 ---
 
-Added support for the `HTTP_PROXY` / `HTTPS_PROXY` / `NO_PROXY` environment variables
+Added proxy support via `HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY` environment variables
 
 ::: notice
 
