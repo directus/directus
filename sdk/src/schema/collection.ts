@@ -1,4 +1,10 @@
-import type { CollectionName, DirectusField, MergeCoreCollection, NestedPartial } from '../index.js';
+import type {
+	CollectionName,
+	DirectusField,
+	MergeCoreCollection,
+	NestedPartial,
+	StringLiteralUnion,
+} from '../index.js';
 
 export type DirectusCollection<Schema = any> = {
 	collection: CollectionName<Schema>;
@@ -18,15 +24,15 @@ export type DirectusCollection<Schema = any> = {
 			archive_value: string | null;
 			unarchive_value: string | null;
 			sort_field: string | null;
-			accountability: string | null;
+			accountability: StringLiteralUnion<'all' | 'activity'> | null;
 			color: string | null;
 			item_duplication_fields: string[] | null;
 			sort: number | null;
 			group: string | null;
-			collapse: string;
+			collapse: StringLiteralUnion<'open' | 'closed' | 'locked'>;
 			preview_url: string | null;
 			versioning: boolean;
-			status: string;
+			status: StringLiteralUnion<'active' | 'inactive'>;
 			autosave_revision_interval: number | null;
 		}
 	>;
