@@ -35,7 +35,7 @@ const expectedChecks: Record<string, Record<string, unknown>> = {
 	[`${dbMapped}:responseTime`]: latencyCheck('datastore'),
 	'storage:local:responseTime': latencyCheck('objectstore'),
 	...(env.REDIS_ENABLED === 'true' ? { 'redis:responseTime': latencyCheck('cache') } : {}),
-	...(options.extras?.minio ? { 'storage:minio:responseTime': latencyCheck('objectstore') } : {}),
+	...(options.extras?.rustfs ? { 'storage:rustfs:responseTime': latencyCheck('objectstore') } : {}),
 };
 
 describe('health access', () => {

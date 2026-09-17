@@ -60,12 +60,12 @@ test('delete a file', async () => {
 	await expect(api.request(readFile(upload.id))).rejects.toThrowError();
 });
 
-if (options.extras?.minio) {
-	test('upload a file to minio', async () => {
+if (options.extras?.rustfs) {
+	test('upload a file to rustfs', async () => {
 		const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
 		const blob = new Blob([file], { type: 'image/jpg' });
 		const form = new FormData();
-		form.set('storage', 'minio');
+		form.set('storage', 'rustfs');
 		form.set('file', blob, 'image.jpg');
 
 		const upload = await api.request(uploadFiles(form));
@@ -83,17 +83,17 @@ if (options.extras?.minio) {
 			filename_download: 'image.jpg',
 			filesize: expect.toSatisfy((val) => String(val) === '41274'),
 			id: upload.id,
-			storage: 'minio',
+			storage: 'rustfs',
 			title: 'Image',
 			type: 'image/jpg',
 		});
 	});
 
-	test('delete a file from minio', async () => {
+	test('delete a file from rustfs', async () => {
 		const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
 		const blob = new Blob([file], { type: 'image/jpg' });
 		const form = new FormData();
-		form.set('storage', 'minio');
+		form.set('storage', 'rustfs');
 		form.set('file', blob, 'image.jpg');
 
 		const upload = await api.request(uploadFiles(form));
