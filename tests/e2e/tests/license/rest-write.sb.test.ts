@@ -32,6 +32,7 @@ import {
 	withToken,
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
 import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
@@ -411,6 +412,9 @@ describe('LICENSE_KEY_MANAGEMENT_ENABLED=false with source=settings', () => {
 				},
 			},
 			extras: { license: true },
+			env: {
+				DB_FILENAME: `directus_test_${getUID()}_2.db`,
+			},
 		});
 
 		managedApi = createDirectus<any>(`http://localhost:${managedDirectus.apis[0].port}`)
