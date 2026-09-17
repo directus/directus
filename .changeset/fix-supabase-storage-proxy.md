@@ -1,5 +1,11 @@
 ---
-'@directus/storage-driver-supabase': patch
+'@directus/storage-driver-supabase': minor
 ---
 
-Fixed the Supabase storage driver silently ignoring HTTP_PROXY/HTTPS_PROXY for all operations (read, write, delete, list, stat, copy, move) on networks that require an outbound proxy
+Added support for the `HTTP_PROXY` / `HTTPS_PROXY` / `NO_PROXY` environment variables
+
+::: notice
+
+If proxy is enabled, endpoints that should stay direct (e.g. self-hosted), should be listed in `NO_PROXY`
+
+:::
