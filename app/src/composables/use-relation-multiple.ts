@@ -79,34 +79,38 @@ export function useRelationMultiple(
 		return fetchedItems.value.map((item) => item[targetPKField.value]);
 	});
 
-	const _value = computed<ChangesItem>({
-		get() {
-			if (!value.value || Array.isArray(value.value)) {
-				return {
-					create: [],
-					update: [],
-					delete: [],
-				};
-			}
+	// Kept locally so displayItems reflects an edit before the prop round-trips
+	const _value = shallowRef<ChangesItem>(toChanges(value.value));
 
-			return value.value as ChangesItem;
-		},
-		set(newValue) {
-			if (newValue.create.length === 0 && newValue.update.length === 0 && newValue.delete.length === 0) {
-				const isVersion = version.value !== null;
+	watch(value, (newValue) => (_value.value = toChanges(newValue)), { flush: 'sync' });
 
-				if (isVersion) {
-					value.value = fetchedItemsPKs.value;
-					return;
-				}
+	function toChanges(newValue: Record<string, any> | any[] | undefined | null): ChangesItem {
+		if (!newValue || Array.isArray(newValue)) {
+			return {
+				create: [],
+				update: [],
+				delete: [],
+			};
+		}
 
-				value.value = undefined;
+		return newValue as ChangesItem;
+	}
+
+	function emitValue(newValue: ChangesItem) {
+		if (newValue.create.length === 0 && newValue.update.length === 0 && newValue.delete.length === 0) {
+			const isVersion = version.value !== null;
+
+			if (isVersion) {
+				value.value = fetchedItemsPKs.value;
 				return;
 			}
 
-			value.value = newValue;
-		},
-	});
+			value.value = undefined;
+			return;
+		}
+
+		value.value = newValue;
+	}
 
 	// Fetch new items when the value gets changed by the external "save and stay"
 	// We don't want to refresh when we ourself reset the value (when we have no more changes)
@@ -322,7 +326,7 @@ export function useRelationMultiple(
 
 	const { create, remove, select, update } = useActions(_value);
 
-	function useActions(target: Ref<Item>) {
+	function useActions(target: Ref<ChangesItem>) {
 		return { create, update, remove, select };
 
 		function create(...items: Record<string, any>[]) {
@@ -431,6 +435,7 @@ export function useRelationMultiple(
 
 		function updateValue() {
 			target.value = cloneDeep(target.value);
+			emitValue(target.value);
 		}
 	}
 
