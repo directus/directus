@@ -34,6 +34,7 @@ export type DirectusCollection<Schema = any> = {
 			versioning: boolean;
 			status: StringLiteralUnion<'active' | 'inactive'>;
 			autosave_revision_interval: number | null;
+			system: boolean | null;
 		}
 	>;
 	schema:
