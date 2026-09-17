@@ -3,6 +3,16 @@ import { directusFolder } from './find-directus.js';
 import { getPort } from './port.js';
 import type { Database, Options } from './sandbox.js';
 
+const mcpOAuthEnv = {
+	MCP_OAUTH_ENABLED: 'true',
+	MCP_OAUTH_DCR_ENABLED: 'true',
+	MCP_OAUTH_CIMD_ENABLED: 'true',
+	MCP_OAUTH_CIMD_ALLOW_HTTP: 'true',
+	MCP_OAUTH_CIMD_BLOCKED_TLDS: 'onion',
+	RATE_LIMITER_MCP_OAUTH_POINTS: '1000',
+	RATE_LIMITER_MCP_OAUTH_REGISTRATION_POINTS: '1000',
+} as const;
+
 const directusConfig = {
 	TZ: 'UTC',
 	SECRET: 'directus-test',
@@ -25,6 +35,7 @@ const directusConfig = {
 	REDIS_HOST: '127.0.0.1',
 	REDIS_PORT: '$PORT',
 	LICENSE_PORT: '$PORT_LICENSE',
+	...mcpOAuthEnv,
 } as const;
 
 const maria = {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Field, FieldFunction } from '@directus/types';
-import { debounce, isNil } from 'lodash';
+import { debounce, isNil } from 'lodash-es';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import VFieldListItem from './VFieldListItem.vue';
 import VDivider from '@/components/v-divider.vue';
