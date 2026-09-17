@@ -13,5 +13,6 @@ export type DirectusPermission<Schema = any> = MergeCoreCollection<
 		validation: Record<string, any> | null;
 		presets: Record<string, any> | null;
 		fields: string[] | null;
+		system?: true;
 	}
 >;
