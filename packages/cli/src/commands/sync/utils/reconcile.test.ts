@@ -293,6 +293,46 @@ describe('reconcileCollections', () => {
 		expect(flows.unmatched).toEqual([]);
 	});
 
+	it('matches a foldered flow even when flows are given before their folders', () => {
+		// The reverse of pull order hands flows over first, so reconciliation has to order them itself.
+		const results = reconcileCollections(
+			[
+				input(
+					'directus_flows',
+					[
+						{ id: 'n1S', name: 'Notify', folder: 'faS' },
+						{ id: 'n2S', name: 'Notify', folder: 'fbS' },
+					],
+					[
+						{ id: 'n1T', name: 'Notify', folder: 'faT' },
+						{ id: 'n2T', name: 'Notify', folder: 'fbT' },
+					],
+				),
+				input(
+					'directus_folders',
+					[
+						{ id: 'faS', name: 'A', parent: null, type: 'flows' },
+						{ id: 'fbS', name: 'B', parent: null, type: 'flows' },
+					],
+					[
+						{ id: 'faT', name: 'A', parent: null, type: 'flows' },
+						{ id: 'fbT', name: 'B', parent: null, type: 'flows' },
+					],
+				),
+			],
+			{},
+		);
+
+		const flows = forCollection(results, 'directus_flows');
+
+		expect(flows.matched).toEqual([
+			{ sourceId: 'n1S', targetId: 'n1T', key: JSON.stringify(['Notify', 'faT']) },
+			{ sourceId: 'n2S', targetId: 'n2T', key: JSON.stringify(['Notify', 'fbT']) },
+		]);
+
+		expect(flows.unmatched).toEqual([]);
+	});
+
 	it('produces identical output when record order is shuffled', () => {
 		const base: ReconcileInput[] = [
 			input(

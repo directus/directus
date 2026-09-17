@@ -150,7 +150,8 @@ const RESOURCE_LIST = [
 		primaryKeyType: 'uuid',
 		singleton: false,
 		selectable: true,
-		mustPull: ['operations'],
+		// Folders are pulled too: they are part of a flow's identity, so matching needs them on both sides.
+		mustPull: ['operations', 'folders'],
 		strip: ['user_created', 'date_created'],
 		aliases: ['operations'],
 		// Folders make same-named flows realistic, so the folder they live in is part of their identity.
