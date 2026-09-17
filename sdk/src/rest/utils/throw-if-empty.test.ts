@@ -15,6 +15,8 @@ describe('throwIfEmpty', () => {
 		{ description: 'a non-empty string', value: 'posts' },
 		{ description: 'a non-empty array', value: ['id'] },
 		{ description: 'a whitespace-only string', value: ' ' },
+		{ description: 'a number', value: 42 },
+		{ description: 'zero', value: 0 },
 	])('does not throw for $description', ({ value }) => {
 		expect(() => throwIfEmpty(value, 'Collection cannot be empty')).not.toThrow();
 	});
