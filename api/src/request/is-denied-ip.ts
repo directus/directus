@@ -23,12 +23,12 @@ export function isDeniedIp(ip: string): boolean {
 				continue;
 			}
 
-			if (blockNetwork.includes('-')) {
+			if (IpBlocklist.isRange(blockNetwork)) {
 				blockList.parseRange(blockNetwork);
 				continue;
 			}
 
-			if (blockNetwork.includes('/')) {
+			if (IpBlocklist.isSubnet(blockNetwork)) {
 				blockList.parseSubnet(blockNetwork);
 				continue;
 			}
