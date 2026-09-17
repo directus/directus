@@ -104,7 +104,7 @@ if (options.extras?.rustfs) {
 	});
 }
 
-for (const storage of ['local', ...(options.extras?.minio ? ['minio'] : [])]) {
+for (const storage of ['local', ...(options.extras?.rustfs ? ['rustfs'] : [])]) {
 	test(`replace the contents of a file on ${storage}`, async () => {
 		const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
 

@@ -111,7 +111,7 @@ async function uploadFixture(contents: Buffer, name: string, type: string, stora
 	return id as string;
 }
 
-for (const storage of ['local', ...(options.extras?.minio ? ['minio'] : [])]) {
+for (const storage of ['local', ...(options.extras?.rustfs ? ['rustfs'] : [])]) {
 	test(`an untransformed asset on ${storage} is served back byte for byte`, async () => {
 		const id = await uploadFixture(png, 'directus.png', 'image/png', storage);
 
