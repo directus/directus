@@ -1,5 +1,5 @@
 import { ForbiddenError } from '@directus/errors';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { FoldersService } from './folders.js';
@@ -40,7 +40,10 @@ describe('FoldersService', () => {
 				expect(tree.size).toBe(1);
 				expect(tree.get('root-id')).toBe('parent');
 
-				expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith({ limit: -1 }, undefined);
+				expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith(
+					{ filter: null, fields: ['id', 'parent', 'name'], limit: -1 },
+					undefined,
+				);
 			});
 
 			test('should forward a query to the read query when provided', async () => {
@@ -51,19 +54,28 @@ describe('FoldersService', () => {
 				await foldersService.buildTree('root-id', { filter: { type: { _eq: 'files' } } });
 
 				expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith(
-					{ limit: -1, filter: { type: { _eq: 'files' } } },
+					{ filter: { type: { _eq: 'files' } }, fields: ['id', 'parent', 'name'], limit: -1 },
 					undefined,
 				);
 			});
 
-			test('should ignore a limit in the given query', async () => {
+			test('should take only the filter from the given query, whatever else it carries', async () => {
 				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
 					{ id: 'root-id', name: 'parent', parent: null },
 				]);
 
-				await foldersService.buildTree('root-id', { limit: 10 });
+				// The narrowed type rules these out at compile time; the cast covers untyped callers.
+				await foldersService.buildTree('root-id', {
+					filter: { type: { _eq: 'files' } },
+					limit: 10,
+					fields: ['id'],
+					sort: ['name'],
+				} as Pick<Query, 'filter'>);
 
-				expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith({ limit: -1 }, undefined);
+				expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith(
+					{ filter: { type: { _eq: 'files' } }, fields: ['id', 'parent', 'name'], limit: -1 },
+					undefined,
+				);
 			});
 
 			test('should build tree for simple hierarchy', async () => {

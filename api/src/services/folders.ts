@@ -88,8 +88,8 @@ export class FoldersService extends ItemsService<Folder> {
 	 * access to are included.
 	 *
 	 * @param {string} root - The ID of the root folder to start building the tree from.
-	 * @param {Query} [query] - Optional query to scope which folders are read (e.g. filtered by `type`). The
-	 *   whole tree is always needed, so `limit` is ignored.
+	 * @param {Pick<Query, 'filter'>} [query] - Optional filter scoping which folders are read (e.g. by `type`).
+	 *   Only the filter is honoured: the whole tree is always needed, and the walk owns the fields it reads.
 	 * @returns {Promise<Map<string, string>>} A `Map` where:
 	 *   - Key: folder ID
 	 *   - Value: folder path relative to the root (e.g., "Documents/Photos")
@@ -103,7 +103,7 @@ export class FoldersService extends ItemsService<Folder> {
 	 * - The returned `Map` includes the root folder itself.
 	 * - If a folder has no name, its ID will be used as a fallback.
 	 */
-	async buildTree(root: string, query?: Query) {
+	async buildTree(root: string, query?: Pick<Query, 'filter'>) {
 		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
 				{
@@ -119,7 +119,11 @@ export class FoldersService extends ItemsService<Folder> {
 			);
 		}
 
-		const folders = await this.readByQuery({ ...query, limit: -1 });
+		const folders = await this.readByQuery({
+			filter: query?.filter ?? null,
+			fields: ['id', 'parent', 'name'],
+			limit: -1,
+		});
 
 		// build folder and child lookup
 		const folderLookup = new Map<string, Folder>();
