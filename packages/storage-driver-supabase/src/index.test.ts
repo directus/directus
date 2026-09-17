@@ -616,6 +616,18 @@ describe('#list', () => {
 		});
 	});
 
+	test('throws when the api returns an error instead of yielding nothing', async () => {
+		driver['bucket'] = {
+			list: vi.fn().mockResolvedValue({ data: null, error: { message: 'Network request failed' } }),
+		} as any;
+
+		await expect(async () => {
+			for await (const _filepath of driver.list(sample.path.input)) {
+				// Consume the generator so the error surfaces
+			}
+		}).rejects.toThrow(`Can't list for prefix "${sample.path.input}"`);
+	});
+
 	test('Yields file name omitting root if prefix is the full file path', async () => {
 		const sampleRoot = randDirectoryPath();
 		const sampleFile = randFileName();

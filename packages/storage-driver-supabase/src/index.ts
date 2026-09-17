@@ -253,7 +253,11 @@ export class DriverSupabase implements TusDriver {
 				search,
 			});
 
-			if (!data || error) {
+			if (error) {
+				throw new Error(`Can't list for prefix "${prefix}"`, { cause: error });
+			}
+
+			if (!data) {
 				break;
 			}
 
