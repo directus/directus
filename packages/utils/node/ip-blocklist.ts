@@ -101,15 +101,12 @@ export class IpBlocklist extends BlockList {
 	 * @throws {Error} Throws 'ERR_INVALID_SUBNET' if the input format is invalid
 	 */
 	parseSubnet(input: string): void {
-		const parts = input.split('/');
-
-		if (parts.length !== 2 || !parts[0] || !parts[1]) {
+		if (!IpBlocklist.isSubnet(input)) {
 			throw new Error('ERR_INVALID_SUBNET');
 		}
 
-		const subnet = parseInt(parts[1], 10);
-		const ipVersion = this.getIpVersion(parts[0]);
-		this.addSubnet(parts[0], subnet, ipVersion);
+		const [ip, subnet] = input.split('/') as [string, string];
+		this.addSubnet(ip, parseInt(subnet, 10), this.getIpVersion(ip));
 	}
 
 	/**
@@ -118,14 +115,12 @@ export class IpBlocklist extends BlockList {
 	 * @throws {Error} Throws 'ERR_INVALID_RANGE' if the input format is invalid
 	 */
 	parseRange(input: string): void {
-		const parts = input.split('-');
-
-		if (parts.length !== 2 || !parts[0] || !parts[1]) {
+		if (!IpBlocklist.isRange(input)) {
 			throw new Error('ERR_INVALID_RANGE');
 		}
 
-		const ipVersion = this.getIpVersion(parts[0]);
-		this.addRange(parts[0], parts[1], ipVersion);
+		const [start, end] = input.split('-') as [string, string];
+		this.addRange(start, end, this.getIpVersion(start));
 	}
 
 	/**
