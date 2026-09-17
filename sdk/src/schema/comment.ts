@@ -7,7 +7,7 @@ export type DirectusComment<Schema> = MergeCoreCollection<
 	'directus_comments',
 	{
 		id: string;
-		collection: DirectusCollection<Schema> | CollectionName<Schema>;
+		collection: DirectusCollection<Schema>['meta'] | CollectionName<Schema>;
 		item: string;
 		comment: string;
 		date_created: 'datetime' | null;

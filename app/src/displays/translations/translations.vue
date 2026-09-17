@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { computed, toRefs } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';

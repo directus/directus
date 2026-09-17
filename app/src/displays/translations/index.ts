@@ -1,6 +1,6 @@
 import { defineDisplay } from '@directus/extensions';
 import { getFieldsFromTemplate } from '@directus/utils';
-import { get, set } from 'lodash';
+import { get, set } from 'lodash-es';
 import DisplayTranslations from './translations.vue';
 import { useExtension } from '@/composables/use-extension';
 import { i18n } from '@/lang';

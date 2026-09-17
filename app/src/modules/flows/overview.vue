@@ -3,7 +3,7 @@ import { Field, Filter, FlowRaw, Item } from '@directus/types';
 import { getDateTimeFormatted } from '@directus/utils';
 import { StorageSerializers, useLocalStorage } from '@vueuse/core';
 import { saveAs } from 'file-saver';
-import { isObject, sortBy } from 'lodash';
+import { isObject, sortBy } from 'lodash-es';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink, RouterView } from 'vue-router';

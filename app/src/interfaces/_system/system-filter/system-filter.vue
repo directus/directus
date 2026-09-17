@@ -6,7 +6,7 @@ import {
 	parseFilterFunctionPath,
 	parseJSON,
 } from '@directus/utils';
-import { cloneDeep, get, isEmpty, set } from 'lodash';
+import { cloneDeep, get, isEmpty, set } from 'lodash-es';
 import { computed, inject, ref } from 'vue';
 import Nodes from './Nodes.vue';
 import { buildJsonFilter, getNodeName } from './utils';
