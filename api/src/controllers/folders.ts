@@ -73,7 +73,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		result = await service.readByQuery(req.sanitizedQuery);
 	}
 
-	const meta = await metaService.getMetaForQuery('directus_folders', req.sanitizedQuery);
+	const meta = await metaService.getMetaForQuery('directus_folders', service.scopeQuery(req.sanitizedQuery));
 
 	res.locals['payload'] = { data: result, meta };
 	return next();

@@ -3,7 +3,6 @@ import { beforeEach, expect, test, vi } from 'vitest';
 import { PermissionsService } from '../../services/permissions.js';
 import type { Context } from '../types.js';
 import { fetchDynamicVariableData } from '../utils/fetch-dynamic-variable-data.js';
-import { getPermissionsForShare } from '../utils/get-permissions-for-share.js';
 import { processPermissions } from '../utils/process-permissions.js';
 import { fetchPermissions } from './fetch-permissions.js';
 import { withAppMinimalPermissions } from './with-app-minimal-permissions.js';
@@ -15,7 +14,6 @@ vi.mock('../../services/permissions.js', () => ({
 vi.mock('./with-app-minimal-permissions.js');
 vi.mock('../utils/fetch-dynamic-variable-data.js');
 vi.mock('../utils/process-permissions.js');
-vi.mock('../utils/get-permissions-for-share.js');
 
 beforeEach(() => {
 	PermissionsService.prototype.readByQuery = vi.fn();
@@ -128,64 +126,5 @@ test('Injects dynamic variables by calling process permissions', async () => {
 		permissions,
 		accountability,
 		permissionsContext: {},
-	});
-});
-
-test('Restricts folder read permissions to the file library for non-admins', async () => {
-	const permissions = [
-		{ collection: 'directus_folders', action: 'read', permissions: null },
-		{ collection: 'directus_folders', action: 'read', permissions: { name: { _eq: 'Example' } } },
-		{ collection: 'directus_folders', action: 'update', permissions: null },
-		{ collection: 'directus_files', action: 'read', permissions: null },
-	] as unknown as Permission[];
-
-	vi.mocked(PermissionsService.prototype.readByQuery).mockResolvedValue(permissions);
-
-	const res = await fetchPermissions(
-		{ accountability: { admin: false } as Accountability, policies: ['policy-folders'] },
-		{} as Context,
-	);
-
-	expect(res.map((permission) => permission.permissions)).toStrictEqual([
-		{ type: { _eq: 'files' } },
-		{ _and: [{ name: { _eq: 'Example' } }, { type: { _eq: 'files' } }] },
-		null,
-		null,
-	]);
-});
-
-test('Leaves folder read permissions untouched for admins', async () => {
-	const permissions = [
-		{ collection: 'directus_folders', action: 'read', permissions: null },
-	] as unknown as Permission[];
-
-	vi.mocked(PermissionsService.prototype.readByQuery).mockResolvedValue(permissions);
-
-	const res = await fetchPermissions(
-		{ accountability: { admin: true } as Accountability, policies: ['policy-folders-admin'] },
-		{} as Context,
-	);
-
-	expect(res).toStrictEqual(permissions);
-});
-
-test('Restricts folder read permissions generated for shares', async () => {
-	vi.mocked(PermissionsService.prototype.readByQuery).mockResolvedValue([]);
-
-	vi.mocked(getPermissionsForShare).mockResolvedValue([
-		{ collection: 'directus_folders', action: 'read', permissions: { id: { _eq: 'shared-folder' } } },
-	] as unknown as Permission[]);
-
-	const res = await fetchPermissions(
-		{
-			accountability: { share: 'share-id', admin: false } as Accountability,
-			policies: ['policy-folders-share'],
-			action: 'read',
-		},
-		{} as Context,
-	);
-
-	expect(res[0]?.permissions).toStrictEqual({
-		_and: [{ id: { _eq: 'shared-folder' } }, { type: { _eq: 'files' } }],
 	});
 });

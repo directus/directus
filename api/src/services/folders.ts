@@ -67,14 +67,16 @@ export class FoldersService extends ItemsService<Folder> {
 		return super.deleteMany(keys, opts);
 	}
 
-	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Folder[]> {
+	scopeQuery<T extends Pick<Query, 'filter'>>(query: T): T {
 		if (!this.fileLibraryOnly) {
-			return super.readByQuery(query, opts);
+			return query;
 		}
 
-		const filter = mergeFilters(query.filter ?? null, { type: { _eq: FILE_LIBRARY_TYPE } });
+		return { ...query, filter: mergeFilters(query.filter ?? null, { type: { _eq: FILE_LIBRARY_TYPE } }) };
+	}
 
-		return super.readByQuery({ ...query, filter }, opts);
+	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Folder[]> {
+		return super.readByQuery(this.scopeQuery(query), opts);
 	}
 
 	/**

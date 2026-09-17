@@ -360,5 +360,19 @@ describe('FoldersService', () => {
 				undefined,
 			);
 		});
+
+		test('scopeQuery restricts a non-admin query to the file library', () => {
+			expect(service(nonAdmin).scopeQuery({ meta: ['filter_count'], filter: { name: { _eq: 'Images' } } })).toEqual({
+				meta: ['filter_count'],
+				filter: { _and: [{ name: { _eq: 'Images' } }, { type: { _eq: 'files' } }] },
+			});
+		});
+
+		test('scopeQuery leaves admin and internal queries untouched', () => {
+			const query = { meta: ['filter_count'], filter: { name: { _eq: 'Images' } } };
+
+			expect(service(admin).scopeQuery(query)).toBe(query);
+			expect(service(null).scopeQuery(query)).toBe(query);
+		});
 	});
 });
