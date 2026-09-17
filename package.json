@@ -39,11 +39,13 @@
 			"tar": "7.5.22",
 			"js-beautify>editorconfig": "3.0.2",
 			"js-beautify>glob": "11.1.0",
-			"express@4>path-to-regexp": "0.1.13",
 			"adm-zip": "0.6.0",
 			"js-yaml@4": "4.3.2",
 			"js-yaml@3": "3.15.2",
-			"unplugin-yaml>yaml": "2.9.0"
+			"unplugin-yaml>yaml": "2.9.0",
+			"uuid": "11.1.1",
+			"@ai-sdk/provider-utils": "4.0.51",
+			"@opentelemetry/core": "2.11.0"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",

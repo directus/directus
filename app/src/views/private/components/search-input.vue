@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Filter } from '@directus/types';
-import { isObject } from 'lodash';
+import { isObject } from 'lodash-es';
 import { computed, onMounted, ref } from 'vue';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VBadge from '@/components/v-badge.vue';

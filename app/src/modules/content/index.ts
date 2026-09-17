@@ -2,7 +2,7 @@ import { VERSION_KEY_DRAFT } from '@directus/constants';
 import { defineModule } from '@directus/extensions';
 import { Collection } from '@directus/types';
 import { useLocalStorage } from '@vueuse/core';
-import { isNil, orderBy } from 'lodash';
+import { isNil, orderBy } from 'lodash-es';
 import { LocationQuery, NavigationGuard, RouteLocationNormalized } from 'vue-router';
 import { useNavigation } from './composables/use-navigation';
 import CollectionRoute from './routes/collection.vue';
