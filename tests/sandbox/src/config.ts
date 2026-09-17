@@ -113,7 +113,6 @@ const oracle = {
 
 const saml = {
 	SAML_PORT: '$PORT_SAML',
-	AUTH_PROVIDERS: 'saml',
 	AUTH_SAML_DRIVER: 'saml',
 	AUTH_SAML_ALLOW_PUBLIC_REGISTRATION: 'true',
 	AUTH_SAML_SP_metadata:
@@ -139,7 +138,6 @@ const rustfs = {
 
 const ldap = {
 	LDAP_PORT: '$PORT_LDAP',
-	AUTH_PROVIDERS: 'ldap',
 	AUTH_LDAP_DRIVER: 'ldap',
 	AUTH_LDAP_CLIENT_URL: 'ldap://127.0.0.1:$PORT_LDAP',
 	AUTH_LDAP_BIND_DN: 'cn=Manager,dc=my-domain,dc=com',
@@ -189,6 +187,9 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 					ADMIN_TOKEN: 'admin',
 				}
 			: {}),
+		AUTH_PROVIDERS: [opts.extras.saml && 'saml', opts.extras.ldap && 'ldap']
+			.filter((s) => typeof s === 'string')
+			.join(','),
 		...(process.arch === 'arm64' ? { DOCKER_DEFAULT_PLATFORM: 'linux/amd64' } : {}),
 		...(opts.extras.rustfs ? rustfs : {}),
 		...(opts.extras.saml ? saml : {}),
@@ -235,6 +236,7 @@ export type Env = (typeof baseConfig)[Database] & {
 	PUBLIC_URL: string;
 	REDIS_ENABLED: string;
 	CACHE_ENABLED: string;
+	AUTH_PROVIDERS: string;
 	NODE_ENV: string;
 	ADMIN_EMAIL?: 'admin@example.com';
 	PROJECT_OWNER?: 'admin@example.com';
