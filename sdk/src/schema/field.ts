@@ -1,4 +1,4 @@
-import type { CollectionName, MergeCoreCollection, WrapLogicalFilters } from '../index.js';
+import type { CollectionName, FilterOperators, MergeCoreCollection, WrapLogicalFilters } from '../index.js';
 
 export type DirectusField<Schema = any> = {
 	collection: CollectionName<Schema>;
@@ -65,7 +65,7 @@ export type FieldMetaConditionType = {
 	rule: FieldMetaConditionRule;
 };
 
-export type FieldMetaConditionRule = WrapLogicalFilters<Record<string, Record<string, any>>>;
+export type FieldMetaConditionRule = WrapLogicalFilters<Record<string, FilterOperators<any>>>;
 
 export type FieldMetaTranslationType = {
 	language: string;
