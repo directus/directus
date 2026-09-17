@@ -52,7 +52,7 @@ export type DirectusField<Schema = any> = {
 		foreign_key_schema?: string | null;
 		foreign_key_table: string | null;
 		foreign_key_column: string | null;
-	};
+	} | null;
 };
 
 export type FieldMetaConditionType = {
