@@ -3,6 +3,16 @@ import { directusFolder } from './find-directus.js';
 import { getPort } from './port.js';
 import type { Database, Options } from './sandbox.js';
 
+const mcpOAuthEnv = {
+	MCP_OAUTH_ENABLED: 'true',
+	MCP_OAUTH_DCR_ENABLED: 'true',
+	MCP_OAUTH_CIMD_ENABLED: 'true',
+	MCP_OAUTH_CIMD_ALLOW_HTTP: 'true',
+	MCP_OAUTH_CIMD_BLOCKED_TLDS: 'onion',
+	RATE_LIMITER_MCP_OAUTH_POINTS: '1000',
+	RATE_LIMITER_MCP_OAUTH_REGISTRATION_POINTS: '1000',
+} as const;
+
 const directusConfig = {
 	TZ: 'UTC',
 	SECRET: 'directus-test',
@@ -25,6 +35,7 @@ const directusConfig = {
 	REDIS_HOST: '127.0.0.1',
 	REDIS_PORT: '$PORT',
 	LICENSE_PORT: '$PORT_LICENSE',
+	...mcpOAuthEnv,
 } as const;
 
 const maria = {
@@ -114,16 +125,16 @@ const saml = {
 	AUTH_SAML_EMAIL_KEY: 'email',
 } as const;
 
-const minio = {
-	MINIO_PORT: '$PORT_MINIO',
-	STORAGE_LOCATIONS: 'minio,local',
-	STORAGE_MINIO_DRIVER: 's3',
-	STORAGE_MINIO_KEY: 'directus',
-	STORAGE_MINIO_SECRET: 'miniosecret',
-	STORAGE_MINIO_BUCKET: 'directus-blackbox-test',
-	STORAGE_MINIO_REGION: 'us-east-1',
-	STORAGE_MINIO_ENDPOINT: 'http://127.0.0.1:$PORT_MINIO',
-	STORAGE_MINIO_FORCE_PATH_STYLE: 'true',
+const rustfs = {
+	RUSTFS_PORT: '$PORT_RUSTFS',
+	STORAGE_LOCATIONS: 'rustfs,local',
+	STORAGE_RUSTFS_DRIVER: 's3',
+	STORAGE_RUSTFS_KEY: 'directus',
+	STORAGE_RUSTFS_SECRET: 'rustfssecret',
+	STORAGE_RUSTFS_BUCKET: 'directus-blackbox-test',
+	STORAGE_RUSTFS_REGION: 'us-east-1',
+	STORAGE_RUSTFS_ENDPOINT: 'http://127.0.0.1:$PORT_RUSTFS',
+	STORAGE_RUSTFS_FORCE_PATH_STYLE: 'true',
 } as const;
 
 const ldap = {
@@ -179,7 +190,7 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 				}
 			: {}),
 		...(process.arch === 'arm64' ? { DOCKER_DEFAULT_PLATFORM: 'linux/amd64' } : {}),
-		...(opts.extras.minio ? minio : {}),
+		...(opts.extras.rustfs ? rustfs : {}),
 		...(opts.extras.saml ? saml : {}),
 		...(opts.extras.ldap ? ldap : {}),
 		...(opts.extras.maildev ? maildev : {}),
@@ -230,7 +241,7 @@ export type Env = (typeof baseConfig)[Database] & {
 	ADMIN_PASSWORD?: 'pw';
 	ADMIN_TOKEN?: 'admin';
 	DOCKER_DEFAULT_PLATFORM?: string;
-} & Partial<typeof minio> &
+} & Partial<typeof rustfs> &
 	Partial<typeof saml> &
 	Partial<typeof ldap> &
 	Partial<typeof maildev> &

@@ -73,7 +73,7 @@ export type Options = {
 		/** Directory server, used as an auth provider */
 		ldap: boolean;
 		/** Storage provider */
-		minio: boolean;
+		rustfs: boolean;
 		/** Email server */
 		maildev: boolean;
 		/** License server */
@@ -145,7 +145,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 				redis: false,
 				ldap: false,
 				maildev: false,
-				minio: false,
+				rustfs: false,
 				saml: false,
 				license: false,
 			},

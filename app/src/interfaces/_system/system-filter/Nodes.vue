@@ -10,7 +10,7 @@ import {
 	Type,
 } from '@directus/types';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/utils';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
