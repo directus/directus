@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/types';
-import { clone, forEach, pick } from 'lodash';
+import { clone, forEach, pick } from 'lodash-es';
 import { computed, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
 import TableHeader from './table-header.vue';
