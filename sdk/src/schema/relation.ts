@@ -25,8 +25,8 @@ export type DirectusRelation<Schema = any> = {
 		column: string;
 		constraint_name: string | null;
 		foreign_key_column: string;
-		foreign_key_schema?: string | null;
 		foreign_key_table: CollectionName<Schema>;
+		foreign_key_schema?: string;
 		on_delete: 'NO ACTION' | 'RESTRICT' | 'CASCADE' | 'SET NULL' | 'SET DEFAULT' | null;
 		on_update: 'NO ACTION' | 'RESTRICT' | 'CASCADE' | 'SET NULL' | 'SET DEFAULT' | null;
 		table: CollectionName<Schema>;
