@@ -14,7 +14,9 @@ const parseLocaltime = (columnType?: string) => {
 
 export class FnHelperOracle extends FnHelper {
 	year(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'IYYY')`, [table, column]);
+		// TO_CHAR with YYYY returns the calendar year. IYYY would return the ISO week-numbering year,
+		// which differs whenever Jan 1 belongs to the last ISO week of the previous year.
+		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'YYYY')`, [table, column]);
 	}
 
 	month(table: string, column: string, options: FnHelperOptions): Knex.Raw {
