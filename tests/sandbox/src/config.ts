@@ -106,8 +106,8 @@ const oracle = {
 	DB_PORT: '$PORT',
 	DB_USER: 'secretsysuser',
 	DB_PASSWORD: 'secretpassword',
-	DB_DATABASE: 'XEPDB1',
-	DB_VERSION: '21-slim-faststart' as string,
+	DB_DATABASE: 'FREEPDB1',
+	DB_VERSION: '23-slim-faststart' as string,
 	...directusConfig,
 } as const;
 
@@ -190,7 +190,6 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 		AUTH_PROVIDERS: [opts.extras.saml && 'saml', opts.extras.ldap && 'ldap']
 			.filter((s) => typeof s === 'string')
 			.join(','),
-		...(process.arch === 'arm64' ? { DOCKER_DEFAULT_PLATFORM: 'linux/amd64' } : {}),
 		...(opts.extras.rustfs ? rustfs : {}),
 		...(opts.extras.saml ? saml : {}),
 		...(opts.extras.ldap ? ldap : {}),
