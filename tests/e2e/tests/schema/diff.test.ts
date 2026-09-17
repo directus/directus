@@ -7,7 +7,6 @@ import {
 	schemaSnapshot,
 	type SchemaSnapshotOutput,
 	staticToken,
-	updateCollection,
 } from '@directus/sdk';
 import { port } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
