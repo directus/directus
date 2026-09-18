@@ -249,6 +249,7 @@ describe('round-trip: preserved attributes (class/id/title/role/lang/dir/data-*/
 	// metadata, never content
 	test('data-pm-slice is never preserved', () => {
 		expect(roundTrip('<p data-pm-slice="1 1 []">text</p>')).toBe('<p>text</p>');
+
 		expect(roundTrip('<p><strong data-pm-slice="1 1 []">bold</strong> text</p>')).toBe(
 			'<p><strong>bold</strong> text</p>',
 		);
