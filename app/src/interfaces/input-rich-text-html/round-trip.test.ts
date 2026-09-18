@@ -245,6 +245,19 @@ describe('round-trip: preserved attributes (class/id/title/role/lang/dir/data-*/
 		expect(roundTrip('<p class="" id="">text</p>')).toBe('<p>text</p>');
 	});
 
+	// ProseMirror stamps the first element of copied HTML with its slice context; it is transport
+	// metadata, never content
+	test('data-pm-slice is never preserved', () => {
+		expect(roundTrip('<p data-pm-slice="1 1 []">text</p>')).toBe('<p>text</p>');
+		expect(roundTrip('<p><strong data-pm-slice="1 1 []">bold</strong> text</p>')).toBe(
+			'<p><strong>bold</strong> text</p>',
+		);
+	});
+
+	test('a span carrying only data-pm-slice is unwrapped', () => {
+		expect(roundTrip('<p><span data-pm-slice="1 1 []">text</span></p>')).toBe('<p>text</p>');
+	});
+
 	test('page breaks still encode to the legacy comment', () => {
 		expect(roundTrip('<p>a</p><!-- pagebreak --><p>b</p>')).toBe('<p>a</p><!-- pagebreak --><p>b</p>');
 	});

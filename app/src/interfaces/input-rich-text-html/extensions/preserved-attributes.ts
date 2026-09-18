@@ -21,10 +21,17 @@ const OWN_DIR_TYPES = new Set(['paragraph', 'heading', 'blockquote', 'bulletList
 
 const WILDCARD_PREFIXES = ['data-', 'aria-'] as const;
 
+/** ProseMirror stamps copied HTML with its slice context; transport metadata, never content. */
+const TRANSPORT_ATTRIBUTES = new Set(['data-pm-slice']);
+
+function isWildcardAttribute(name: string): boolean {
+	return !TRANSPORT_ATTRIBUTES.has(name) && WILDCARD_PREFIXES.some((prefix) => name.startsWith(prefix));
+}
+
 /** True when the element carries an attribute PreservedAttributes would round-trip. */
 export function hasPreservedAttributes(element: HTMLElement): boolean {
 	if (['class', 'id', 'title', 'role', 'lang', 'dir'].some((name) => element.getAttribute(name))) return true;
-	return Array.from(element.attributes).some(({ name }) => WILDCARD_PREFIXES.some((prefix) => name.startsWith(prefix)));
+	return Array.from(element.attributes).some(({ name }) => isWildcardAttribute(name));
 }
 
 /** A plain string attribute round-tripped verbatim; empty → dropped so it never churns. */
@@ -43,7 +50,7 @@ function wildcardAttribute(name: string, prefix: (typeof WILDCARD_PREFIXES)[numb
 			const attrs: Record<string, string> = {};
 
 			for (const { name: attrName, value } of Array.from(element.attributes)) {
-				if (attrName.startsWith(prefix)) attrs[attrName] = value;
+				if (attrName.startsWith(prefix) && isWildcardAttribute(attrName)) attrs[attrName] = value;
 			}
 
 			return Object.keys(attrs).length > 0 ? attrs : null;

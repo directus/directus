@@ -88,6 +88,73 @@ describe('paste warning', () => {
 		expect(dialog(wrapper).props('modelValue')).toBe(false);
 	});
 
+	// ProseMirror stamps the first element of copied HTML with `data-pm-slice`; an inline copy puts it
+	// on a mark, where the wildcard data-* preservation would otherwise keep it in the document
+	test('inline content copied from the editor pastes through without the slice marker', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+		editor.commands.setTextSelection(6);
+		const clipboard = '<strong data-pm-slice="1 1 []">bold</strong> text';
+
+		expect(paste(editor, clipboard)).toBe(false);
+		editor.view.pasteHTML(clipboard);
+		await nextTick();
+
+		expect(dialog(wrapper).props('modelValue')).toBe(false);
+		expect(editor.getHTML()).toBe('<p>Hello<strong>bold</strong> text</p>');
+	});
+
+	test('a block copied from the editor is left to the editor', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+
+		expect(paste(editor, '<p data-pm-slice="0 0 []">fine</p>')).toBe(false);
+		await nextTick();
+
+		expect(dialog(wrapper).props('modelValue')).toBe(false);
+	});
+
+	// Chrome prefixes clipboard HTML with a charset meta; Windows builds also wrap it in fragment
+	// comments. Neither is content the editor could lose.
+	test('browser clipboard framing is left to the editor', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+
+		expect(paste(editor, "<meta charset='utf-8'><p>fine</p>")).toBe(false);
+		expect(paste(editor, '<html><body><!--StartFragment--><p>fine</p><!--EndFragment--></body></html>')).toBe(false);
+		await nextTick();
+
+		expect(dialog(wrapper).props('modelValue')).toBe(false);
+	});
+
+	// loose inline HTML has no block wrapper, but the editor adding one is not a loss
+	test('an inline fragment from a web page is left to the editor', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+
+		expect(paste(editor, "<meta charset='utf-8'><strong>bold</strong> text")).toBe(false);
+		await nextTick();
+
+		expect(dialog(wrapper).props('modelValue')).toBe(false);
+	});
+
+	test('a lossy inline fragment still warns', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+
+		expect(paste(editor, `<meta charset='utf-8'>${LOSSY}`)).toBe(true);
+		await nextTick();
+
+		expect(dialog(wrapper).props('modelValue')).toBe(true);
+	});
+
+	test('pasting anyway never stores the slice marker', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+		editor.commands.setTextSelection(6);
+
+		paste(editor, '<span style="white-space: pre-wrap;" data-pm-slice="1 1 []" data-metadata="figma">Grass</span>');
+		await nextTick();
+		dialog(wrapper).vm.$emit('confirm');
+		await nextTick();
+
+		expect(editor.getHTML()).toBe('<p>Hello<span data-metadata="figma">Grass</span></p>');
+	});
+
 	test('a lossy paste is blocked and opens the warning with the diff', async () => {
 		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
 
@@ -136,7 +203,7 @@ describe('paste warning', () => {
 		dialog(wrapper).vm.$emit('raw');
 		await nextTick();
 
-		expect(wrapper.emitted('input')?.at(-1)).toEqual([`<p>Hel</p>${LOSSY}<p>lo</p>`]);
+		expect(wrapper.emitted('input')?.at(-1)).toEqual([`<p>Hel</p><p>${LOSSY}</p><p>lo</p>`]);
 		expect(wrapper.findComponent(InterfaceInputCode).exists()).toBe(true);
 	});
 
@@ -148,7 +215,7 @@ describe('paste warning', () => {
 		dialog(wrapper).vm.$emit('raw');
 		await nextTick();
 
-		expect(wrapper.emitted('input')?.at(-1)).toEqual([LOSSY]);
+		expect(wrapper.emitted('input')?.at(-1)).toEqual([`<p>${LOSSY}</p>`]);
 	});
 
 	test('dismissing the warning drops the paste and leaves the document untouched', async () => {
