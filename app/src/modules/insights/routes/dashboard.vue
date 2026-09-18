@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useShortcut } from '@directus/composables';
 import { applyOptionsData } from '@directus/utils';
-import { assign, isEmpty } from 'lodash';
+import { assign, isEmpty } from 'lodash-es';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { RouterView } from 'vue-router';
 import InsightsNavigation from '../components/navigation.vue';

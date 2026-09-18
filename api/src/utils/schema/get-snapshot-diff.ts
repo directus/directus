@@ -1,5 +1,6 @@
 import type { Snapshot, SnapshotDiff, SnapshotDiffMode, SnapshotSystemField } from '@directus/types';
 import { DiffKind } from '@directus/types';
+import type { Diff } from 'deep-diff';
 import deepDiff from 'deep-diff';
 import { SNAPSHOT_VERSION } from '../../constants.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from '../sanitize-schema.js';
@@ -38,7 +39,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: Ge
 
 				return {
 					collection: currentCollection.collection,
-					diff: deepDiff.diff(sanitizeCollection(currentCollection), afterCollectionSanitized),
+					diff: getSnapshotItemDiff(sanitizeCollection(currentCollection), afterCollectionSanitized),
 				};
 			}),
 			...after.collections
@@ -51,7 +52,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: Ge
 				})
 				.map((afterCollection) => ({
 					collection: afterCollection.collection,
-					diff: deepDiff.diff(undefined, sanitizeCollection(afterCollection)),
+					diff: getSnapshotItemDiff(undefined, sanitizeCollection(afterCollection)),
 				})),
 		].filter(
 			(obj) => isChanged(obj) && isDeleteAllowed(obj, options?.mode) && isInScope(obj, scope),
@@ -74,7 +75,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: Ge
 					return {
 						collection: currentField.collection,
 						field: currentField.field,
-						diff: deepDiff.diff(sanitizeField(currentField, isAutoIncrementPrimaryKey), undefined),
+						diff: getSnapshotItemDiff(sanitizeField(currentField, isAutoIncrementPrimaryKey), undefined),
 					};
 				}
 
@@ -83,7 +84,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: Ge
 				return {
 					collection: currentField.collection,
 					field: currentField.field,
-					diff: deepDiff.diff(sanitizeField(currentField, isAutoIncrementPrimaryKey), afterFieldSanitized),
+					diff: getSnapshotItemDiff(sanitizeField(currentField, isAutoIncrementPrimaryKey), afterFieldSanitized),
 				};
 			}),
 			...after.fields
@@ -107,7 +108,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: Ge
 				.map((afterField) => ({
 					collection: afterField.collection,
 					field: afterField.field,
-					diff: deepDiff.diff(undefined, sanitizeField(afterField)),
+					diff: getSnapshotItemDiff(undefined, sanitizeField(afterField)),
 				})),
 		].filter(
 			(obj) => isChanged(obj) && isDeleteAllowed(obj, options?.mode) && isInScope(obj, scope),
@@ -175,7 +176,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: Ge
 					collection: currentRelation.collection,
 					field: currentRelation.field,
 					related_collection: currentRelation.related_collection,
-					diff: deepDiff.diff(sanitizeRelation(currentRelation), afterRelationSanitized),
+					diff: getSnapshotItemDiff(sanitizeRelation(currentRelation), afterRelationSanitized),
 				};
 			}),
 			...after.relations
@@ -191,7 +192,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: Ge
 					collection: afterRelation.collection,
 					field: afterRelation.field,
 					related_collection: afterRelation.related_collection,
-					diff: deepDiff.diff(undefined, sanitizeRelation(afterRelation)),
+					diff: getSnapshotItemDiff(undefined, sanitizeRelation(afterRelation)),
 				})),
 		].filter(
 			(obj) => isChanged(obj) && isDeleteAllowed(obj, options?.mode) && isInScope(obj, scope),
@@ -215,6 +216,29 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: Ge
 	);
 
 	return diffedSnapshot;
+}
+
+function getSnapshotItemDiff<T extends { meta?: unknown }>(
+	current: T | undefined,
+	after: T | undefined,
+): Diff<T | undefined>[] | undefined {
+	const diff = deepDiff.diff(current, after);
+
+	const hasNestedMetaChange = diff?.some(
+		(change) => change.kind === DiffKind.NEW || (change.kind === DiffKind.DELETE && change.path?.[0] === 'meta'),
+	);
+
+	if (!current || !after || !hasNestedMetaChange) return diff;
+
+	return [
+		{
+			kind: DiffKind.EDIT,
+			path: ['meta'],
+			lhs: current.meta,
+			rhs: after.meta,
+		},
+		...diff!.filter((change) => change.path?.[0] !== 'meta'),
+	] as Diff<T | undefined>[];
 }
 
 function invertIndexed(field: SnapshotSystemField): SnapshotSystemField {
