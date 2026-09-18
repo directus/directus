@@ -230,7 +230,7 @@ describe('/fields', () => {
 
 		test('can update meta only without schema changes for relational field', async () => {
 			// Setup
-			const fieldName = 'fields_change_change_country';
+			const fieldName = 'country';
 
 			const payload = await api.request(readField(collections.state, fieldName));
 
