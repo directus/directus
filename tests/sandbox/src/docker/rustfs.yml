@@ -28,7 +28,7 @@ services:
       - |
         curl -fsS -o /dev/null --retry 5 --retry-connrefused \
           -X PUT --aws-sigv4 'aws:amz:us-east-1:s3' --user 'directus:rustfssecret' \
-          http://rustfs:9000/directus-blackbox-test
+          http://rustfs:9000/directus-test
         # `docker compose up --wait` treats an exited container as a failure, so idle instead
         while true; do sleep 3600; done
     healthcheck:
@@ -37,7 +37,7 @@ services:
         - CMD-SHELL
         - >-
           curl -fsS -o /dev/null -I --aws-sigv4 'aws:amz:us-east-1:s3' --user 'directus:rustfssecret'
-          http://rustfs:9000/directus-blackbox-test
+          http://rustfs:9000/directus-test
       interval: 1s
       timeout: 5s
       retries: 60

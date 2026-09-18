@@ -55,7 +55,7 @@ test('should generate basic release notes', () => {
 
 	const untypedPackages: UntypedPackage[] = [
 		{ name: config.untypedPackageTitles['docs']!, changes: [change1, change2] },
-		{ name: config.untypedPackageTitles['tests-blackbox']!, changes: [change1] },
+		{ name: config.untypedPackageTitles['e2e']!, changes: [change1] },
 	];
 
 	const packageVersions: PackageVersion[] = [
@@ -85,7 +85,7 @@ test('should generate basic release notes', () => {
 		  And here's some additional context
 		- Improved some things a little ([#2](https://github.com/directus/directus/pull/2) by @directus)
 
-		### 🧪 Blackbox Tests
+		### 🧪 End to End Tests
 
 		- Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @directus)
 		  And here's some additional context
