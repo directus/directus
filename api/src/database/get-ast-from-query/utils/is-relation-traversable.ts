@@ -10,8 +10,8 @@ export function isRelationTraversable(
 	field: string,
 	knownRelation?: Relation,
 ): boolean {
-	const relationInfo = getRelationInfo(schema.relations, collection, field);
-	const relation = knownRelation ?? relationInfo.relation;
+	const relationInfo = getRelationInfo(knownRelation ? [knownRelation] : schema.relations, collection, field);
+	const relation = relationInfo.relation;
 
 	if (!relation) return false;
 
