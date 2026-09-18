@@ -1,3 +1,5 @@
+import { Agent as HttpAgent } from 'node:http';
+import { Agent as HttpsAgent } from 'node:https';
 import { join } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';
 import type { HeadObjectCommandOutput } from '@aws-sdk/client-s3';
@@ -29,7 +31,7 @@ import {
 	randGitShortSha as randUnique,
 	randWord,
 } from '@ngneat/falso';
-import { NodeHttpHandler } from '@smithy/node-http-handler';
+import { NodeHttpHandler, type NodeHttpHandlerOptions } from '@smithy/node-http-handler';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverS3Config } from './index.js';
 import { DriverS3 } from './index.js';
@@ -39,6 +41,9 @@ vi.mock('@directus/utils');
 vi.mock('@aws-sdk/client-s3');
 vi.mock('@aws-sdk/lib-storage');
 vi.mock('node:path');
+vi.mock('@smithy/node-http-handler');
+vi.mock('node:http');
+vi.mock('node:https');
 
 let sample: {
 	config: DriverS3Config & Required<Pick<DriverS3Config, 'key' | 'secret' | 'root' | 'region' | 'forcePathStyle'>>;
@@ -167,7 +172,6 @@ describe('#constructor', () => {
 
 describe('#getClient', () => {
 	// The constructor calls getClient(), so we don't have to call it separately
-
 	test('Throws error if key defined but secret missing', () => {
 		try {
 			new DriverS3({ key: 'key', bucket: 'bucket' });
@@ -290,6 +294,38 @@ describe('#getClient', () => {
 			},
 			requestHandler: expect.any(NodeHttpHandler),
 		});
+	});
+
+	test('defaults the request handler timeouts and agent options', () => {
+		new DriverS3({ bucket: 'bucket' });
+
+		const [handlerOptions] = vi.mocked(NodeHttpHandler).mock.calls.at(-1)!;
+		const { connectionTimeout, socketTimeout } = handlerOptions as NodeHttpHandlerOptions;
+
+		const agentOptions = { maxSockets: 500, keepAlive: true, proxyEnv: process.env };
+
+		expect({ connectionTimeout, socketTimeout }).toEqual({ connectionTimeout: 5000, socketTimeout: 120000 });
+		expect(HttpAgent).toHaveBeenCalledWith(agentOptions);
+		expect(HttpsAgent).toHaveBeenCalledWith(agentOptions);
+	});
+
+	test('takes the request handler timeouts and agent options from the driver config', () => {
+		new DriverS3({
+			bucket: 'bucket',
+			connectionTimeout: 30000,
+			socketTimeout: 60000,
+			maxSockets: 10,
+			keepAlive: false,
+		});
+
+		const [handlerOptions] = vi.mocked(NodeHttpHandler).mock.calls.at(-1)!;
+		const { connectionTimeout, socketTimeout } = handlerOptions as NodeHttpHandlerOptions;
+
+		const agentOptions = { maxSockets: 10, keepAlive: false, proxyEnv: process.env };
+
+		expect({ connectionTimeout, socketTimeout }).toEqual({ connectionTimeout: 30000, socketTimeout: 60000 });
+		expect(HttpAgent).toHaveBeenCalledWith(agentOptions);
+		expect(HttpsAgent).toHaveBeenCalledWith(agentOptions);
 	});
 });
 
