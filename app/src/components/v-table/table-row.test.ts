@@ -19,7 +19,7 @@ const global: GlobalMountOptions = {
 	stubs: ['v-icon', 'v-checkbox', 'v-text-overflow', 'value-null'],
 };
 
-function mountTableRow() {
+function mountTableRow(attachTo: Element = document.body) {
 	return mount(TableRow, {
 		props: {
 			headers,
@@ -31,7 +31,7 @@ function mountTableRow() {
 		slots: {
 			'item-append': '<button class="ctx-toggle">More</button>',
 		},
-		attachTo: document.body,
+		attachTo,
 		global,
 	});
 }
@@ -57,6 +57,18 @@ describe('TableRow', () => {
 		}
 
 		expect(wrapper.emitted('click')).toBeUndefined();
+	});
+
+	test('emits click when an ancestor above the row carries the row action attribute', async () => {
+		const container = document.createElement('div');
+		container.setAttribute('data-row-action', '');
+		document.body.append(container);
+
+		const wrapper = mountTableRow(container);
+
+		await wrapper.find('td.cell:not([data-row-action])').trigger('click');
+
+		expect(wrapper.emitted('click')).toHaveLength(1);
 	});
 
 	test('lets clicks on the row controls reach the document so open menus can close', async () => {

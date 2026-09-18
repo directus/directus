@@ -44,17 +44,12 @@ function onKeydown(e: KeyboardEvent) {
 	if ((e.target as HTMLElement)?.tagName === 'TR' && ['Enter', ' '].includes(e.key)) emit('click', e);
 }
 
-/**
- * Emit a row click unless the click targeted one of the row's own controls (sort handle, selection
- * checkbox, append slot). Filtering here rather than stopping propagation in those cells keeps the
- * click bubbling to the document, which is what lets open menus elsewhere close themselves.
- */
 function onClick(event: MouseEvent) {
-	const isRowAction = event
-		.composedPath()
-		.some((target) => target instanceof HTMLElement && target.hasAttribute('data-row-action'));
+	const rowAction = (event.target as HTMLElement | null)?.closest('[data-row-action]');
 
-	if (isRowAction) return;
+	if (rowAction && (event.currentTarget as HTMLElement).contains(rowAction)) {
+		return;
+	}
 
 	emit('click', event);
 }
