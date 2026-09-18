@@ -13,24 +13,24 @@ export interface FlowDrawerValues {
 }
 
 /**
+ * The flow drawer tracks the fields the user actually edited (see
+ * flow-drawer.vue), and this drops any edit that was reverted back to the
+ * existing value, so the update payload never carries an unchanged field.
  * The Flows API asserts the flows license entitlement whenever an update
- * payload contains `status: 'active'`, even when the status did not change.
- * Sending only the fields that actually changed keeps a plain edit of an
- * active flow from being mistaken for an activation.
+ * payload contains `status: 'active'`, even when the status did not change,
+ * so a plain edit of an active flow must not resend the status.
  * See https://github.com/directus/directus/issues/28184
  */
-export function getFlowChanges(values: FlowDrawerValues, existing: FlowRaw): Partial<FlowDrawerValues> {
-	const fields = ['name', 'icon', 'color', 'description', 'status', 'accountability', 'trigger', 'options'] as const;
-
+export function getFlowChanges(edits: Partial<FlowDrawerValues>, existing: FlowRaw): Partial<FlowDrawerValues> {
 	const changes: Partial<FlowDrawerValues> = {};
 
-	for (const field of fields) {
+	for (const field of Object.keys(edits) as (keyof FlowDrawerValues)[]) {
 		const fallback = field === 'options' ? {} : null;
-		const newValue = values[field] ?? fallback;
+		const newValue = edits[field] ?? fallback;
 		const existingValue = existing[field] ?? fallback;
 
 		if (!isEqual(newValue, existingValue)) {
-			(changes as Record<string, unknown>)[field] = values[field];
+			(changes as Record<string, unknown>)[field] = newValue;
 		}
 	}
 
