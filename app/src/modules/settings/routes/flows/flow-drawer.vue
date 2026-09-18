@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import type { TriggerType } from '@directus/types';
 import { computed, reactive, ref, watch } from 'vue';
+import { type FlowDrawerValues, getFlowChanges } from './get-flow-changes';
+import { useFlowDrawerEdits } from './use-flow-drawer-edits';
+import { watchFlowDrawerEdits } from './watch-flow-drawer-edits';
 import { getTriggers } from './triggers';
 import api from '@/api';
 import VDivider from '@/components/v-divider.vue';
@@ -22,17 +24,6 @@ import { useLicenseStore } from '@/stores/license';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
-interface Values {
-	name: string | null;
-	icon: string | null;
-	color: string | null;
-	description: string | null;
-	status: string;
-	accountability: string | null;
-	trigger?: TriggerType | null;
-	options: Record<string, any>;
-}
-
 const props = withDefaults(
 	defineProps<{
 		primaryKey?: string;
@@ -51,7 +42,7 @@ const currentTab = ref(['flow_setup']);
 
 const isNew = computed(() => props.primaryKey === '+');
 
-const values: Values = reactive({
+const values: FlowDrawerValues = reactive({
 	name: null,
 	icon: 'bolt',
 	color: null,
@@ -62,10 +53,20 @@ const values: Values = reactive({
 	options: {},
 });
 
+// Tracks only the fields the user actually changed, so saving never sends
+// untouched fields back to the API.
+const { edits, updateEdit, resetEdits, triggerEdited, optionsTypeEdited } = useFlowDrawerEdits();
+
+function updateField(field: keyof FlowDrawerValues, value: unknown) {
+	(values as Record<string, unknown>)[field] = value;
+	updateEdit(field, value);
+}
+
 watch(
 	() => props.primaryKey,
 	(newKey) => {
 		currentTab.value = [props.startTab];
+		resetEdits();
 
 		if (newKey === '+') {
 			values.name = null;
@@ -92,25 +93,7 @@ watch(
 	{ immediate: true },
 );
 
-watch(
-	() => values.trigger,
-	(_, previousTrigger) => {
-		if (previousTrigger === undefined) return;
-
-		values.options = {};
-	},
-);
-
-watch(
-	() => values.options?.type,
-	(type, previousType) => {
-		if (previousType === undefined) return;
-
-		values.options = {
-			type,
-		};
-	},
-);
+watchFlowDrawerEdits(values, { triggerEdited, optionsTypeEdited });
 
 const { triggers } = getTriggers();
 
@@ -140,9 +123,14 @@ async function save() {
 		if (isNew.value) {
 			id = await api.post('/flows', values, { params: { fields: ['id'] } }).then((res) => res.data.data.id);
 		} else {
-			id = await api
-				.patch(`/flows/${props.primaryKey}`, values, { params: { fields: ['id'] } })
-				.then((res) => res.data.data.id);
+			const existing = flowsStore.flows.find((flow) => flow.id === props.primaryKey)!;
+			const changes = getFlowChanges(edits, existing);
+
+			if (Object.keys(changes).length > 0) {
+				await api.patch(`/flows/${props.primaryKey}`, changes, { params: { fields: ['id'] } });
+			}
+
+			id = props.primaryKey;
 		}
 
 		await flowsStore.hydrate();
@@ -212,13 +200,14 @@ function onApply() {
 							:value="values.name"
 							autofocus
 							:placeholder="$t('flow_name')"
-							@input="values.name = $event"
+							@input="updateField('name', $event)"
 						/>
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('status') }}</div>
 						<VSelect
-							v-model="values.status"
+							:model-value="values.status"
+							@update:model-value="updateField('status', $event)"
 							:items="[
 								{
 									text: $t('active'),
@@ -233,21 +222,26 @@ function onApply() {
 					</div>
 					<div class="field full">
 						<div class="type-label">{{ $t('description') }}</div>
-						<VInput v-model="values.description" :placeholder="$t('description')" />
+						<VInput
+							:model-value="values.description"
+							@update:model-value="updateField('description', $event)"
+							:placeholder="$t('description')"
+						/>
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('icon') }}</div>
-						<InterfaceSelectIcon :value="values.icon" @input="values.icon = $event" />
+						<InterfaceSelectIcon :value="values.icon" @input="updateField('icon', $event)" />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('color') }}</div>
-						<InterfaceSelectColor width="half" :value="values.color" @input="values.color = $event" />
+						<InterfaceSelectColor width="half" :value="values.color" @input="updateField('color', $event)" />
 					</div>
 					<VDivider class="full" />
 					<div class="field full">
 						<div class="type-label">{{ $t('flow_tracking') }}</div>
 						<VSelect
-							v-model="values.accountability"
+							:model-value="values.accountability"
+							@update:model-value="updateField('accountability', $event)"
 							:items="[
 								{
 									text: $t('flow_tracking_all'),
@@ -267,11 +261,19 @@ function onApply() {
 				</div>
 			</VTabItem>
 			<VTabItem value="trigger_setup">
-				<VFancySelect v-model="values.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
+				<VFancySelect
+					:model-value="values.trigger"
+					@update:model-value="updateField('trigger', $event)"
+					class="select"
+					:items="triggers"
+					item-text="name"
+					item-value="id"
+				/>
 
 				<VForm
 					v-if="values.trigger"
-					v-model="values.options"
+					:model-value="values.options"
+					@update:model-value="updateField('options', $event)"
 					class="extension-options"
 					:fields="currentTriggerOptionFields"
 					primary-key="+"
