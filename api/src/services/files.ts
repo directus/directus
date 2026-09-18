@@ -78,6 +78,13 @@ export class FilesService extends ItemsService<File> {
 			...clone(data),
 		};
 
+		if (payload.filename_disk) {
+			payload.filename_disk = sanitizeFilepath(payload.filename_disk);
+
+			assertValidStoragePath(payload.filename_disk, payload.storage);
+			// assertUniqueFilename is handled by creatOne, updateMany
+		}
+
 		const disk = storage.location(payload.storage);
 
 		// If no folder is specified, we'll use the default folder from the settings if it exists
@@ -354,14 +361,6 @@ export class FilesService extends ItemsService<File> {
 		if (keys.length === 1 && data.filename_disk) {
 			data.filename_disk = sanitizeFilepath(data.filename_disk);
 
-			try {
-				assertValidStoragePath(data.filename_disk, data.storage);
-				await assertUniqueFilename(this.knex, data.filename_disk, keys[0]);
-			} catch (err: any) {
-				// Defer the error to be thrown until after permission checks
-				opts.preMutationError = err;
-			}
-
 			// Fetch existing records to have data prior to change, dont require read permissions.
 			const sudoFilesItemsService = new FilesService({
 				knex: this.knex,
@@ -376,6 +375,19 @@ export class FilesService extends ItemsService<File> {
 
 			for (const file of changedFiles) {
 				updatedFiles.set(file.id, file);
+			}
+
+			try {
+				// A file is currently only renamed within the storage location it's currently stored in, we never
+				// move files between storages. Changing "data.storage" has no effect on where the file data is,
+				// which is why the new path is validated against the current location instead.
+				const currentStorage = changedFiles[0]?.['storage'];
+
+				assertValidStoragePath(data.filename_disk, currentStorage ?? data.storage);
+
+				await assertUniqueFilename(this.knex, data.filename_disk, keys[0]);
+			} catch (err: any) {
+				opts.preMutationError = err;
 			}
 
 			for (const key of keys) {
