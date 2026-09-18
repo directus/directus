@@ -69,4 +69,26 @@ describe('getFlowChanges', () => {
 
 		expect(changes).toEqual({ name: 'New', icon: 'flag', accountability: 'activity' });
 	});
+
+	test('ignores fields the user never edited', () => {
+		expect(getFlowChanges({ name: 'Renamed Flow' }, existingFlow)).toStrictEqual({ name: 'Renamed Flow' });
+	});
+
+	test('drops an edit the user reverted to the existing value', () => {
+		expect(getFlowChanges({ name: 'Test Flow', status: 'active' }, existingFlow)).toStrictEqual({});
+	});
+
+	test('sends null when a field is cleared', () => {
+		expect(getFlowChanges({ description: null }, { ...existingFlow, description: 'Notes' })).toStrictEqual({
+			description: null,
+		});
+	});
+
+	test('sends null when the trigger is cleared', () => {
+		expect(getFlowChanges({ trigger: undefined }, existingFlow)).toStrictEqual({ trigger: null });
+	});
+
+	test('returns no changes for empty edits', () => {
+		expect(getFlowChanges({}, existingFlow)).toStrictEqual({});
+	});
 });
