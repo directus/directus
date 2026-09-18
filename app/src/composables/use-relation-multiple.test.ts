@@ -1,6 +1,6 @@
 import { flushPromises, mount } from '@vue/test-utils';
-import { cloneDeep } from 'lodash';
-import { describe, expect, MockInstance, test, vi } from 'vitest';
+import { cloneDeep } from 'lodash-es';
+import { afterEach, describe, expect, MockInstance, test, vi } from 'vitest';
 import { computed, defineComponent, h, ref, toRefs } from 'vue';
 import { RelationM2A } from './use-relation-m2a';
 import { RelationO2M } from './use-relation-o2m';
@@ -17,20 +17,45 @@ vi.mock('@/sdk', async () => {
 			return Promise.resolve(workerData);
 		} else if (path === '/items/article_m2a' && params?.aggregate?.count === 'id') {
 			return Promise.resolve([{ count: { id: m2aData.length } }]);
+		} else if (path === '/items/article_m2a') {
+			m2aRequestParams.push(params ?? {});
+			return Promise.resolve(m2aData);
 		} else {
 			return Promise.resolve(m2aData);
 		}
 	});
 });
 
+const { inactiveCollections } = vi.hoisted(() => ({ inactiveCollections: new Set<string>(['code']) }));
+
+vi.mock('@/utils/collection-status', () => ({
+	isCollectionInactive: (collection: unknown) =>
+		inactiveCollections.has(
+			typeof collection === 'string' ? collection : (collection as { collection: string }).collection,
+		),
+}));
+
+afterEach(() => {
+	inactiveCollections.clear();
+	inactiveCollections.add('code');
+});
+
+// Params of every m2a item request, so tests can assert on the fields that were queried
+const m2aRequestParams: Record<string, any>[] = [];
+
 // Rows that exist but are not related to the item yet, as reached through "Add Existing"
 const selectableData: Record<string, Record<string, any>[]> = {
 	'/items/worker': [{ id: 99, name: 'unlinked' }],
 	'/items/text': [{ id: 5, text: 'lorem' }],
+	'/items/code': [{ id: 7, code: 'print()' }],
 };
+
+// Endpoints fetchAll was called with, so tests can assert which collections were queried
+const fetchAllUrls: string[] = [];
 
 vi.mock('@/utils/fetch-all', () => ({
 	fetchAll: (url: string, config: Record<string, any>) => {
+		fetchAllUrls.push(url);
 		const ids: (string | number)[] = config?.params?.filter?.id?._in ?? [];
 		return Promise.resolve((selectableData[url] ?? []).filter((item) => ids.includes(item.id)));
 	},
@@ -120,6 +145,24 @@ const TestComponent = defineComponent({
 
 		// eslint-disable-next-line vue/no-dupe-keys
 		return { value: valueRef, ...useRelationMultiple(valueRef, query, relation, id, ref(null)) };
+	},
+	render: () => h('div'),
+});
+
+const LaggingTestComponent = defineComponent({
+	props: ['value', 'relation', 'id'], // eslint-disable-line vue/require-prop-types
+	emits: ['update:value'],
+	setup(props, { emit }) {
+		const value = computed({
+			get: () => props.value,
+			set: (newValue) => emit('update:value', newValue),
+		});
+
+		const { relation, id } = toRefs(props);
+
+		const query = computed<RelationQueryMultiple>(() => ({ limit: 15, page: 1, fields: ['id'] }));
+
+		return { ...useRelationMultiple(value, query, relation, id, ref(null)) };
 	},
 	render: () => h('div'),
 });
@@ -243,6 +286,36 @@ describe('test o2m relation', () => {
 		});
 	});
 
+	test('updating an item twice before the display items refresh keeps a single update entry', async () => {
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		wrapper.vm.update({ id: 2, name: 'test2-edited' });
+		wrapper.vm.update({ id: 2, name: 'test2-edited again' });
+
+		await flushPromises();
+
+		expect(wrapper.vm.value).toEqual({
+			create: [],
+			update: [{ id: 2, name: 'test2-edited again' }],
+			delete: [],
+		});
+
+		const changes = cloneDeep(workerData);
+
+		changes.splice(1, 1, {
+			id: 2,
+			name: 'test2-edited again',
+			facility: 1,
+			$edits: 0,
+			$type: 'updated',
+			$index: 0,
+		});
+
+		expect(wrapper.vm.displayItems).toEqual(changes);
+	});
+
 	test('removing an item', async () => {
 		const wrapper = mount(TestComponent, {
 			props: { relation: relationO2M, value: [], id: 1 },
@@ -303,6 +376,21 @@ describe('test o2m relation', () => {
 			$type: 'updated',
 			$index: 0,
 		});
+	});
+
+	test('does not request items when the related collection is inactive', async () => {
+		inactiveCollections.add('worker');
+		const sdkSpy = vi.spyOn(sdk, 'request');
+		sdkSpy.mockClear();
+
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		expect(sdkSpy).not.toHaveBeenCalled();
+		expect(wrapper.vm.displayItems).toEqual([]);
 	});
 
 	test('should use "_null" operator in filter when item id is "null"', async () => {
@@ -875,6 +963,49 @@ describe('nested relational changes', () => {
 });
 
 describe('test m2a relation', () => {
+	test('leaves an inactive collection out of the requested fields', async () => {
+		m2aRequestParams.length = 0;
+
+		mount(TestComponentM2A, {
+			props: {
+				relation: relationM2A,
+				value: [],
+				id: 1,
+			},
+		});
+
+		await flushPromises();
+
+		const fields = m2aRequestParams.flatMap((params) => params['fields'] ?? []);
+
+		expect(fields).toContain('item:text.id');
+		expect(fields).not.toContain('item:code.id');
+	});
+
+	test('does not request an inactive collection when resolving selected items', async () => {
+		fetchAllUrls.length = 0;
+
+		const wrapper = mount(TestComponentM2A, {
+			props: { relation: relationM2A, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		wrapper.vm.select([5], 'text');
+		wrapper.vm.select([7], 'code');
+
+		await flushPromises();
+
+		expect(fetchAllUrls).toContain('/items/text');
+		expect(fetchAllUrls).not.toContain('/items/code');
+
+		// Skipping a collection must not shift the remaining responses onto the wrong collection
+		expect(wrapper.vm.displayItems.find((item) => item.collection === 'text' && item.item?.id === 5)?.item).toEqual({
+			id: 5,
+			text: 'lorem',
+		});
+	});
+
 	test('sorting an item', async () => {
 		const wrapper = mount(TestComponentM2A, {
 			props: {
@@ -977,5 +1108,49 @@ describe('refresh signal', () => {
 		await flushPromises();
 
 		expect(countFetches(sdkSpy)).toBe(1);
+	});
+});
+
+describe('value round-trip lag', () => {
+	test('a created item shows in displayItems before the value comes back through props', async () => {
+		const wrapper = mount(LaggingTestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems).toHaveLength(workerData.length);
+
+		wrapper.vm.create({ name: 'draft' });
+
+		expect(wrapper.vm.displayItems).toContainEqual(
+			expect.objectContaining({ name: 'draft', $type: 'created', $index: 0 }),
+		);
+	});
+
+	test('editing a just-created item in the same tick keeps a single create entry', async () => {
+		const wrapper = mount(LaggingTestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems).toHaveLength(workerData.length);
+
+		wrapper.vm.create({ name: 'F' });
+
+		const created = wrapper.vm.displayItems.find((item: Record<string, any>) => item.$type === 'created');
+
+		wrapper.vm.update({ ...created, name: 'First line' });
+
+		const emitted = wrapper.emitted('update:value');
+
+		expect(emitted).toHaveLength(2);
+
+		expect(emitted?.at(-1)?.[0]).toEqual({
+			create: [{ name: 'First line' }],
+			update: [],
+			delete: [],
+		});
 	});
 });

@@ -8,7 +8,7 @@ import {
 	generatePKCE,
 	getResourceUrl,
 	loginAsAdminSession,
-} from './mcp-oauth-utils.js';
+} from './utils.js';
 
 const redirectUri = 'http://127.0.0.1:9876/callback';
 const metadataServers: CimdMetadataServer[] = [];
