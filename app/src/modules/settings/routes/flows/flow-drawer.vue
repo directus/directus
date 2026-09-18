@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { TriggerType } from '@directus/types';
 import { computed, reactive, ref, watch } from 'vue';
+import { type FlowDrawerValues, getFlowChanges } from './get-flow-changes';
 import { getTriggers } from './triggers';
 import api from '@/api';
 import VDivider from '@/components/v-divider.vue';
@@ -22,17 +22,6 @@ import { useLicenseStore } from '@/stores/license';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
-interface Values {
-	name: string | null;
-	icon: string | null;
-	color: string | null;
-	description: string | null;
-	status: string;
-	accountability: string | null;
-	trigger?: TriggerType | null;
-	options: Record<string, any>;
-}
-
 const props = withDefaults(
 	defineProps<{
 		primaryKey?: string;
@@ -51,7 +40,7 @@ const currentTab = ref(['flow_setup']);
 
 const isNew = computed(() => props.primaryKey === '+');
 
-const values: Values = reactive({
+const values: FlowDrawerValues = reactive({
 	name: null,
 	icon: 'bolt',
 	color: null,
@@ -140,9 +129,14 @@ async function save() {
 		if (isNew.value) {
 			id = await api.post('/flows', values, { params: { fields: ['id'] } }).then((res) => res.data.data.id);
 		} else {
-			id = await api
-				.patch(`/flows/${props.primaryKey}`, values, { params: { fields: ['id'] } })
-				.then((res) => res.data.data.id);
+			const existing = flowsStore.flows.find((flow) => flow.id === props.primaryKey)!;
+			const changes = getFlowChanges(values, existing);
+
+			if (Object.keys(changes).length > 0) {
+				await api.patch(`/flows/${props.primaryKey}`, changes, { params: { fields: ['id'] } });
+			}
+
+			id = props.primaryKey;
 		}
 
 		await flowsStore.hydrate();
