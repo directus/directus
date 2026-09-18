@@ -6,6 +6,7 @@ import Draggable from 'vuedraggable';
 import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
+import { useSlotPresence } from './use-slot-presence';
 import VProgressLinear from '@/components/v-progress-linear.vue';
 import { hideDragImage } from '@/utils/hide-drag-image';
 
@@ -122,9 +123,9 @@ const internalSort = computed<Sort>(
 
 const reordering = ref<boolean>(false);
 
-const hasHeaderAppendSlot = computed(() => slots['header-append'] !== undefined);
-const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !== undefined);
-const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
+const hasHeaderAppendSlot = useSlotPresence(slots, 'header-append');
+const hasHeaderContextMenuSlot = useSlotPresence(slots, 'header-context-menu');
+const hasItemAppendSlot = useSlotPresence(slots, 'item-append');
 
 const fullColSpan = computed<string>(() => {
 	let length = internalHeaders.value.length + 1; // +1 account for spacer
