@@ -68,14 +68,13 @@ export default defineConfig({
 							testTimeout: 100_000,
 							hookTimeout: 100_000,
 							reporters: ['verbose'],
-							fileParallelism: false,
 							env: {
 								DATABASE: database,
 								PORT: String(8050 + index * 100),
 								...process.env,
 							},
 							sequence: {
-								groupOrder: 1 + index,
+								groupOrder: 0,
 							},
 						},
 					},
