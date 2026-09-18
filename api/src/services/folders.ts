@@ -1,11 +1,82 @@
-import type { AbstractServiceOptions, Folder } from '@directus/types';
+import { ForbiddenError } from '@directus/errors';
+import type { AbstractServiceOptions, Folder, MutationOptions, PrimaryKey, Query, QueryOptions } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { ItemsService } from './items.js';
 
+const FILE_LIBRARY_TYPE = 'files';
+
+/** Every folder type but the file library is admin-only, which permissions can't express as they filter rows, not payloads. */
 export class FoldersService extends ItemsService<Folder> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_folders', options);
+	}
+
+	/** Null accountability is an internal call, trusted like an admin. */
+	private get fileLibraryOnly(): boolean {
+		return this.accountability !== null && this.accountability.admin !== true;
+	}
+
+	private assertAllowedType(data: Partial<Folder>): void {
+		if (!this.fileLibraryOnly) {
+			return;
+		}
+
+		if (data.type === undefined || data.type === FILE_LIBRARY_TYPE) {
+			return;
+		}
+
+		throw new ForbiddenError({ reason: `You don't have permission to manage "${data.type}" folders.` });
+	}
+
+	private async assertAllowedKeys(keys: PrimaryKey[], action: 'update' | 'delete'): Promise<void> {
+		if (!this.fileLibraryOnly || keys.length === 0) {
+			return;
+		}
+
+		const restricted = await this.knex
+			.select('id')
+			.from('directus_folders')
+			.whereIn('id', keys)
+			.andWhereNot('type', FILE_LIBRARY_TYPE)
+			.first();
+
+		if (restricted) {
+			throw new ForbiddenError({ reason: `You don't have permission to ${action} this folder.` });
+		}
+	}
+
+	override async createOne(data: Partial<Folder>, opts: MutationOptions = {}): Promise<PrimaryKey> {
+		this.assertAllowedType(data);
+		return super.createOne(data, opts);
+	}
+
+	override async updateMany(
+		keys: PrimaryKey[],
+		data: Partial<Folder>,
+		opts: MutationOptions = {},
+	): Promise<PrimaryKey[]> {
+		this.assertAllowedType(data);
+		await this.assertAllowedKeys(keys, 'update');
+		return super.updateMany(keys, data, opts);
+	}
+
+	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		await this.assertAllowedKeys(keys, 'delete');
+		return super.deleteMany(keys, opts);
+	}
+
+	scopeQuery<T extends Pick<Query, 'filter'>>(query: T): T {
+		if (!this.fileLibraryOnly) {
+			return query;
+		}
+
+		return { ...query, filter: mergeFilters(query.filter ?? null, { type: { _eq: FILE_LIBRARY_TYPE } }) };
+	}
+
+	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Folder[]> {
+		return super.readByQuery(this.scopeQuery(query), opts);
 	}
 
 	/**
@@ -19,6 +90,8 @@ export class FoldersService extends ItemsService<Folder> {
 	 * access to are included.
 	 *
 	 * @param {string} root - The ID of the root folder to start building the tree from.
+	 * @param {Pick<Query, 'filter'>} [query] - Optional filter scoping which folders are read (e.g. by `type`).
+	 *   Only the filter is honoured: the whole tree is always needed, and the walk owns the fields it reads.
 	 * @returns {Promise<Map<string, string>>} A `Map` where:
 	 *   - Key: folder ID
 	 *   - Value: folder path relative to the root (e.g., "Documents/Photos")
@@ -32,7 +105,7 @@ export class FoldersService extends ItemsService<Folder> {
 	 * - The returned `Map` includes the root folder itself.
 	 * - If a folder has no name, its ID will be used as a fallback.
 	 */
-	async buildTree(root: string) {
+	async buildTree(root: string, query?: Pick<Query, 'filter'>) {
 		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
 				{
@@ -48,7 +121,11 @@ export class FoldersService extends ItemsService<Folder> {
 			);
 		}
 
-		const folders = await this.readByQuery({ limit: -1 });
+		const folders = await this.readByQuery({
+			filter: query?.filter ?? null,
+			fields: ['id', 'parent', 'name'],
+			limit: -1,
+		});
 
 		// build folder and child lookup
 		const folderLookup = new Map<string, Folder>();

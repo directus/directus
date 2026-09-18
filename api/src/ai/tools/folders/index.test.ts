@@ -308,6 +308,23 @@ describe('folders tool', () => {
 		});
 	});
 
+	describe('validation schema', () => {
+		test.each(['files', 'flows'])('accepts the %s folder type', (type) => {
+			const result = folders.validateSchema?.safeParse({ action: 'create', data: { name: 'Folder', type } });
+
+			expect(result?.success).toBe(true);
+		});
+
+		test('rejects a folder type outside the known values', () => {
+			const result = folders.validateSchema?.safeParse({
+				action: 'create',
+				data: { name: 'Folder', type: 'dashboards' },
+			});
+
+			expect(result?.success).toBe(false);
+		});
+	});
+
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
 			expect(folders.name).toBe('folders');
