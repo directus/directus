@@ -1,6 +1,5 @@
 import type { Query, SchemaOverview } from '@directus/types';
 import { getRelationInfo } from '@directus/utils';
-import { getRelatedCollection } from '../../../../database/get-ast-from-query/utils/get-related-collection.js';
 import { parseFilterKey } from '../../../../utils/parse-filter-key.js';
 import type { CollectionKey, FieldKey, FieldMap } from '../types.js';
 import { extractPathsFromQuery } from '../utils/extract-paths-from-query.js';
