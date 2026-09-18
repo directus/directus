@@ -24,6 +24,9 @@ export type AppExtensionConfigs = {
 	modules: ModuleConfig[];
 	panels: PanelConfig[];
 	themes: Theme[];
+	// `unknown[]` keeps Tiptap (and its @tiptap/pm peer) out of this package, which 22 others
+	// depend on. The precise RichTextConfig lives in @directus/extensions; the app casts once.
+	richtexts: unknown[];
 	operations: OperationAppConfig[];
 };
 

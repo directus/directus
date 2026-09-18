@@ -26,15 +26,18 @@ type CreateOptions = {
 	install?: boolean;
 };
 
+// richtext has no template yet, so the CLI must not offer a type it cannot scaffold
+const CREATABLE_EXTENSION_TYPES = EXTENSION_TYPES.filter((type) => type !== 'richtext');
+
 export default async function create(type: string, name: string, options: CreateOptions): Promise<void> {
 	const install = options.install ?? true;
 	const targetDir = name.substring(name.lastIndexOf('/') + 1);
 	const targetPath = path.resolve(targetDir);
 
-	if (!isIn(type, EXTENSION_TYPES)) {
+	if (!isIn(type, CREATABLE_EXTENSION_TYPES)) {
 		log(
-			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
-				chalk.bold.magenta(t),
+			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${CREATABLE_EXTENSION_TYPES.map(
+				(t) => chalk.bold.magenta(t),
 			).join(', ')}.`,
 			'error',
 		);

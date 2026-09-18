@@ -1,4 +1,4 @@
-export const APP_EXTENSION_TYPES = ['interface', 'display', 'layout', 'module', 'panel', 'theme'] as const;
+export const APP_EXTENSION_TYPES = ['interface', 'display', 'layout', 'module', 'panel', 'theme', 'richtext'] as const;
 
 export const API_EXTENSION_TYPES = ['hook', 'endpoint'] as const;
 
@@ -13,6 +13,7 @@ export const EXTENSION_TYPES: readonly [
 	'module',
 	'panel',
 	'theme',
+	'richtext',
 	'hook',
 	'endpoint',
 	'operation',
@@ -26,6 +27,7 @@ export const NESTED_EXTENSION_TYPES: readonly [
 	'module',
 	'panel',
 	'theme',
+	'richtext',
 	'hook',
 	'endpoint',
 	'operation',
@@ -38,6 +40,7 @@ export const APP_OR_HYBRID_EXTENSION_TYPES: readonly [
 	'module',
 	'panel',
 	'theme',
+	'richtext',
 	'operation',
 ] = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES] as const;
 
@@ -48,6 +51,7 @@ export const APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES: readonly [
 	'module',
 	'panel',
 	'theme',
+	'richtext',
 	'operation',
 	'bundle',
 ] = [...APP_OR_HYBRID_EXTENSION_TYPES, ...BUNDLE_EXTENSION_TYPES] as const;

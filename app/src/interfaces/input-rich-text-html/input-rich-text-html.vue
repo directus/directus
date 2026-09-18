@@ -4,7 +4,6 @@ import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
 import { computed, nextTick, ref, type Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { comparisonSchema } from './composables/normalization-diff';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
 import { useMedia } from './composables/use-media';
@@ -15,9 +14,7 @@ import LinkDrawer from './drawers/link-drawer.vue';
 import MediaDrawer from './drawers/media-drawer.vue';
 import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
-import { editorExtensions } from './extensions';
-import { ComparisonDiff } from './extensions/comparison-diff';
-import { buildCustomFormats } from './extensions/custom-formats';
+import { buildFieldSchema, editorExtensions } from './extensions';
 import { LinkShortcut } from './extensions/link-shortcut';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
@@ -43,6 +40,8 @@ const props = withDefaults(
 		folder?: string;
 		/** Legacy TinyMCE `customFormats` option (array or JSON string); see extensions/custom-formats.ts. */
 		customFormats?: unknown;
+		/** Field `extensions` option: ids of the registered richtext extensions this field opted into. */
+		extensions?: string[];
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -78,12 +77,14 @@ if (
 	);
 }
 
-// built once at init: `customFormats` is design-time config, not reactive
-const {
-	extensions: customFormatExtensions,
-	formats: customFormatList,
-	key: customFormatsKey,
-} = buildCustomFormats(props.customFormats);
+// built once at init: `customFormats` and `extensions` are design-time config, not reactive, and the
+// schema is frozen when the editor is constructed, so changing either takes a remount either way.
+// In comparison mode ComparisonDiff joins the schema, so precomputed diff spans don't read as loss.
+const fieldSchema = buildFieldSchema({
+	customFormats: props.customFormats,
+	extensions: props.extensions,
+	comparisonMode: props.comparisonMode,
+});
 
 const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
 
@@ -93,11 +94,6 @@ const fontFamily = computed(() => {
 	return `var(--theme--fonts--${token}--font-family)`;
 });
 
-// in comparison mode ComparisonDiff joins the check, so precomputed diff spans don't read as loss
-const { extensions: normalizationExtensions, schemaKey: normalizationSchemaKey } = props.comparisonMode
-	? comparisonSchema(props.customFormats)
-	: { extensions: customFormatExtensions, schemaKey: customFormatsKey };
-
 const {
 	normalizationLocked,
 	normalizationWarningOpen,
@@ -106,7 +102,7 @@ const {
 	onLockedClick,
 	confirmNormalizationWarning,
 	cancelNormalizationWarning,
-} = useNormalizationWarning(value, normalizationExtensions, normalizationSchemaKey);
+} = useNormalizationWarning(value, fieldSchema.extensions, fieldSchema.key);
 
 // comparison runs it to pick the source fallback below; plain read-only display has nothing to act on
 if (!props.nonEditable || props.comparisonMode) checkValue();
@@ -146,13 +142,12 @@ function updateCount(instance: Editor) {
 const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
 const editor = useEditor({
-	// LinkShortcut is per-instance (its Mod-K handler opens this editor's drawer); ComparisonDiff only
-	// joins the schema in comparison mode, so normal editing keeps stripping diff spans
+	// LinkShortcut is per-instance (its Mod-K handler opens this editor's drawer), so it stays out of
+	// the shared field schema the normalization checks re-parse with
 	extensions: [
 		...editorExtensions,
-		...customFormatExtensions,
+		...fieldSchema.extensions,
 		LinkShortcut.configure({ onTrigger: () => openLinkDrawer() }),
-		...(props.comparisonMode ? [ComparisonDiff] : []),
 	],
 	content: '',
 	editable: isEditable.value,
@@ -282,7 +277,7 @@ const {
 	saveSourceCode,
 	confirmSaveSourceCode,
 	cancelNormalize,
-} = useSourceCode(editor as Ref<Editor>, customFormatExtensions);
+} = useSourceCode(editor as Ref<Editor>, fieldSchema.extensions);
 
 // pause the surrounding view's focus trap while a drawer is open so its inputs stay reachable
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
@@ -344,7 +339,8 @@ onKeyStroke('Escape', () => {
 			:editor="editor"
 			:toolbar="toolbar"
 			:font="font"
-			:custom-formats="customFormatList"
+			:custom-formats="fieldSchema.formats"
+			:contributed-buttons="fieldSchema.buttons"
 			:disabled="disabled || normalizationLocked"
 			:fullscreen="fullscreen"
 			:visualaid="visualaid"

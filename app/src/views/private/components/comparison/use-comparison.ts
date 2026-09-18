@@ -13,10 +13,8 @@ import type {
 } from './types';
 import api from '@/api';
 import { isHtmlString, sanitizeDropsContent, useComparisonDiff } from '@/composables/use-comparison-diff';
-import {
-	comparisonSchema,
-	computeValueNormalizationDiff,
-} from '@/interfaces/input-rich-text-html/composables/normalization-diff';
+import { computeValueNormalizationDiff } from '@/interfaces/input-rich-text-html/composables/normalization-diff';
+import { buildFieldSchema } from '@/interfaces/input-rich-text-html/extensions';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
 import type { Revision } from '@/types/revisions';
@@ -310,8 +308,14 @@ export function useComparison(options: UseComparisonOptions) {
 				// instead). Those values are compared without highlighting.
 				if (sanitizeDropsContent(baseValue) || sanitizeDropsContent(incomingValue)) continue;
 
-				const { extensions, schemaKey } = comparisonSchema(field.meta?.options?.['customFormats']);
-				const isLossy = (value: unknown) => isLossyForEditor(value, extensions, schemaKey);
+				// the same slice the interface renders this field with, or a contributed node reads as loss here
+				const { extensions, key } = buildFieldSchema({
+					customFormats: field.meta?.options?.['customFormats'],
+					extensions: field.meta?.options?.['extensions'],
+					comparisonMode: true,
+				});
+
+				const isLossy = (value: unknown) => isLossyForEditor(value, extensions, key);
 
 				if (isLossy(baseValue) || isLossy(incomingValue)) continue;
 

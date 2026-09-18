@@ -7,6 +7,7 @@ import { getInternalLayouts, registerLayouts } from './layouts';
 import { getInternalModules, registerModules } from './modules';
 import { getInternalOperations, registerOperations } from './operations';
 import { getInternalPanels, registerPanels } from './panels';
+import { registerRichTexts } from './rich-text/register';
 import { registerThemes } from './themes/register';
 import { getRootPath } from './utils/get-root-path';
 import { translate } from './utils/translate-object-values';
@@ -21,6 +22,7 @@ const extensions: RefRecord<AppExtensionConfigs> = {
 	panels: shallowRef([]),
 	operations: shallowRef([]),
 	themes: shallowRef([]),
+	richtexts: shallowRef([]), // populated via registerRichTexts, like themes
 };
 
 const onHydrateCallbacks: (() => Promise<void>)[] = [];
@@ -49,6 +51,8 @@ export function registerExtensions(app: App): void {
 	const panels = getInternalPanels();
 	const operations = getInternalOperations();
 	const themes = []; // Themes is the first extension type that doesn't rely on internally scoped extensions
+	// richtext contributes into the WYSIWYG interface, so it has no internal registry of its own
+	const richtexts: AppExtensionConfigs['richtexts'] = [];
 
 	if (customExtensions !== null) {
 		interfaces.push(...customExtensions.interfaces);
@@ -58,6 +62,7 @@ export function registerExtensions(app: App): void {
 		panels.push(...customExtensions.panels);
 		operations.push(...customExtensions.operations);
 		themes.push(...customExtensions.themes);
+		richtexts.push(...customExtensions.richtexts);
 	}
 
 	registerInterfaces(interfaces, app);
@@ -66,6 +71,7 @@ export function registerExtensions(app: App): void {
 	registerPanels(panels, app);
 	registerOperations(operations, app);
 	registerThemes(themes);
+	registerRichTexts(richtexts);
 
 	watch(
 		i18n.global.locale,
