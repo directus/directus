@@ -26,6 +26,12 @@ export interface InterfaceConfig {
 	hideLoader?: boolean;
 	indicatorStyle?: 'active' | 'hidden' | 'muted';
 	autoKey?: boolean;
+	/**
+	 * Pre-fill the field key with this value when the interface is selected during field creation.
+	 * Only applied while the key is still empty, so it never overwrites a key the user entered.
+	 * Useful for interfaces that are conventionally always used with the same field key.
+	 */
+	suggestedKey?: string;
 	system?: boolean;
 	recommendedDisplays?: string[];
 	preview?: string;

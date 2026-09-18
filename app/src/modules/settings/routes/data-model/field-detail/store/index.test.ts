@@ -1,7 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
-import { setLocalTypeForInterface } from './alterations/global';
+import { setKeyForInterface, setLocalTypeForInterface } from './alterations/global';
 import type { StateUpdates } from './types';
 import { useFieldDetailStore } from './index';
 import { cryptoStub } from '@/__utils__/crypto';
@@ -230,6 +230,126 @@ describe('Alterations', () => {
 			expect(fieldDetailStore.relations.o2m?.field).toEqual('collection_a_id');
 			expect(fieldDetailStore.relations.m2o?.related_collection).toEqual('directus_files');
 			expect(fieldDetailStore.relations.m2o?.field).toEqual('directus_files_id');
+		});
+	});
+
+	describe('setKeyForInterface', () => {
+		beforeEach(() => {
+			vi.mocked(useExtension).mockClear();
+		});
+
+		function mockInterfaces(configs: Record<string, { suggestedKey?: string }>) {
+			vi.mocked(useExtension).mockImplementation(
+				(_type, name) => ({ value: configs[name as string] ?? null }) as any,
+			);
+		}
+
+		it('should pre-fill an empty key with the suggested key of the chosen interface', () => {
+			const fieldDetailStore = useFieldDetailStore();
+			fieldDetailStore.startEditing('test_collection', '+', 'standard');
+
+			mockInterfaces({ 'demo-interface': { suggestedKey: 'demo_key' } });
+
+			const updates: StateUpdates = { field: { meta: { interface: 'demo-interface' } } };
+
+			setKeyForInterface(updates, fieldDetailStore.$state);
+
+			expect(updates.field?.field).toBe('demo_key');
+		});
+
+		it('should not overwrite a key the user already entered', () => {
+			const fieldDetailStore = useFieldDetailStore();
+			fieldDetailStore.startEditing('test_collection', '+', 'standard');
+			fieldDetailStore.$state.field.field = 'my_custom_key';
+
+			mockInterfaces({ 'demo-interface': { suggestedKey: 'demo_key' } });
+
+			const updates: StateUpdates = { field: { meta: { interface: 'demo-interface' } } };
+
+			setKeyForInterface(updates, fieldDetailStore.$state);
+
+			expect(updates.field?.field).toBeUndefined();
+		});
+
+		it('should do nothing for interfaces without a suggested key', () => {
+			const fieldDetailStore = useFieldDetailStore();
+			fieldDetailStore.startEditing('test_collection', '+', 'standard');
+
+			mockInterfaces({ 'demo-interface': {} });
+
+			const updates: StateUpdates = { field: { meta: { interface: 'demo-interface' } } };
+
+			setKeyForInterface(updates, fieldDetailStore.$state);
+
+			expect(updates.field?.field).toBeUndefined();
+		});
+
+		it('should not apply when editing an existing field', () => {
+			const fieldDetailStore = useFieldDetailStore();
+			fieldDetailStore.startEditing('test_collection', '+', 'standard');
+			fieldDetailStore.$state.editing = 'existing_field';
+
+			mockInterfaces({ 'demo-interface': { suggestedKey: 'demo_key' } });
+
+			const updates: StateUpdates = { field: { meta: { interface: 'demo-interface' } } };
+
+			setKeyForInterface(updates, fieldDetailStore.$state);
+
+			expect(updates.field?.field).toBeUndefined();
+		});
+
+		it('should replace an untouched suggestion when switching to another interface with a suggested key', () => {
+			const fieldDetailStore = useFieldDetailStore();
+			fieldDetailStore.startEditing('test_collection', '+', 'standard');
+			fieldDetailStore.$state.field.field = 'first_key';
+			fieldDetailStore.$state.field.meta = { interface: 'first-interface' };
+
+			mockInterfaces({
+				'first-interface': { suggestedKey: 'first_key' },
+				'second-interface': { suggestedKey: 'second_key' },
+			});
+
+			const updates: StateUpdates = { field: { meta: { interface: 'second-interface' } } };
+
+			setKeyForInterface(updates, fieldDetailStore.$state);
+
+			expect(updates.field?.field).toBe('second_key');
+		});
+
+		it('should clear an untouched suggestion when switching to an interface without one', () => {
+			const fieldDetailStore = useFieldDetailStore();
+			fieldDetailStore.startEditing('test_collection', '+', 'standard');
+			fieldDetailStore.$state.field.field = 'first_key';
+			fieldDetailStore.$state.field.meta = { interface: 'first-interface' };
+
+			mockInterfaces({
+				'first-interface': { suggestedKey: 'first_key' },
+				'second-interface': {},
+			});
+
+			const updates: StateUpdates = { field: { meta: { interface: 'second-interface' } } };
+
+			setKeyForInterface(updates, fieldDetailStore.$state);
+
+			expect(updates.field?.field).toBeNull();
+		});
+
+		it('should keep a user-entered key when switching away from an interface with a suggested key', () => {
+			const fieldDetailStore = useFieldDetailStore();
+			fieldDetailStore.startEditing('test_collection', '+', 'standard');
+			fieldDetailStore.$state.field.field = 'my_custom_key';
+			fieldDetailStore.$state.field.meta = { interface: 'first-interface' };
+
+			mockInterfaces({
+				'first-interface': { suggestedKey: 'first_key' },
+				'second-interface': {},
+			});
+
+			const updates: StateUpdates = { field: { meta: { interface: 'second-interface' } } };
+
+			setKeyForInterface(updates, fieldDetailStore.$state);
+
+			expect(updates.field?.field).toBeUndefined();
 		});
 	});
 

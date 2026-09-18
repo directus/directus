@@ -39,6 +39,36 @@ export function setLocalTypeForInterface(updates: StateUpdates) {
 }
 
 /**
+ * When an interface with a `suggestedKey` is chosen while creating a new field, pre-fill the field
+ * key with that value. Only applies while the key is still empty (or still equal to the previous
+ * interface's suggestion), so it never overwrites a key the user entered themselves.
+ */
+export function setKeyForInterface(updates: StateUpdates, state: State) {
+	// Never touch the key of an existing field
+	if (state.editing !== '+') return;
+
+	const previousInterface = state.field.meta?.interface;
+
+	const previousSuggestedKey = previousInterface
+		? useExtension('interface', previousInterface).value?.suggestedKey
+		: undefined;
+
+	const chosenInterface = updates.field?.meta?.interface;
+	const suggestedKey = chosenInterface ? useExtension('interface', chosenInterface).value?.suggestedKey : undefined;
+
+	const currentKey = updates.field?.field ?? state.field.field;
+
+	if (suggestedKey) {
+		if (!currentKey || currentKey === previousSuggestedKey) {
+			set(updates, 'field.field', suggestedKey);
+		}
+	} else if (previousSuggestedKey && currentKey === previousSuggestedKey) {
+		// Clear an untouched suggestion when switching to an interface without one
+		set(updates, 'field.field', null);
+	}
+}
+
+/**
  * Default to the first available type for this interface, if the currently selected type doesn't
  * work with this interface. Makes sure you never end up saving like "Geometry" for a "Boolean"
  * field etc.

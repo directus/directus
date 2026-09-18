@@ -150,6 +150,7 @@ export const useFieldDetailStore = defineStore({
 				if (hasChanged('field.meta.interface')) {
 					alterations.global.setLocalTypeForInterface(updates);
 					alterations.global.setTypeForInterface(updates, state);
+					alterations.global.setKeyForInterface(updates, state);
 				}
 
 				if (hasChanged('localType')) {

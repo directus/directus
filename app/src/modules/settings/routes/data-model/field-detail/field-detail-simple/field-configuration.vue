@@ -67,7 +67,7 @@ watch(
 			const simplifiedId = newVal.includes('-') ? newVal.split('-')[1] : newVal;
 			key.value = `${simplifiedId}-${nanoid(6).toLowerCase()}`;
 		} else if (oldVal && interfaceIdsToInterface.value[oldVal].autoKey) {
-			key.value = null;
+			key.value = interfaceIdsToInterface.value[newVal].suggestedKey ?? null;
 		}
 	},
 	{ immediate: true },
