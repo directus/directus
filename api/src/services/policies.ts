@@ -1,10 +1,25 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, MutationOptions, Policy, PrimaryKey } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
-import { getMatch } from 'ip-matching';
+import { IpBlocklist } from '@directus/utils/node';
 import { clearSystemCache } from '../cache.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { ItemsService } from './items.js';
+
+export function isIpAccessValid(value?: any[] | null): boolean {
+	if (value === undefined) return false;
+	if (value === null) return true;
+	if (Array.isArray(value) && value.length === 0) return true;
+
+	for (let ip of value) {
+		if (typeof ip !== 'string' || ip.includes('*')) return false;
+		ip = ip.trim();
+
+		if (!IpBlocklist.isIP(ip) || !IpBlocklist.isRange(ip) || !IpBlocklist.isSubnet(ip)) return false;
+	}
+
+	return true;
+}
 
 export class PoliciesService extends ItemsService<Policy> {
 	constructor(options: AbstractServiceOptions) {
@@ -19,27 +34,8 @@ export class PoliciesService extends ItemsService<Policy> {
 		}
 	}
 
-	private isIpAccessValid(value?: any[] | null): boolean {
-		if (value === undefined) return false;
-		if (value === null) return true;
-		if (Array.isArray(value) && value.length === 0) return true;
-
-		for (const ip of value) {
-			if (typeof ip !== 'string' || ip.includes('*')) return false;
-
-			try {
-				const match = getMatch(ip);
-				if (match.type == 'IPMask') return false;
-			} catch {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
 	private assertValidIpAccess(partialItem: Partial<Policy>): void {
-		if ('ip_access' in partialItem && !this.isIpAccessValid(partialItem['ip_access'])) {
+		if ('ip_access' in partialItem && !isIpAccessValid(partialItem['ip_access'])) {
 			throw new InvalidPayloadError({
 				reason: 'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
 			});

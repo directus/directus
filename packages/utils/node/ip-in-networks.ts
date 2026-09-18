@@ -12,12 +12,12 @@ export function ipInNetworks(ip: string, networks: string[]): boolean {
 	for (const blockNetworkRaw of networks) {
 		const blockNetwork = blockNetworkRaw.trim();
 
-		if (blockNetwork.includes('-')) {
+		if (IpBlocklist.isRange(blockNetwork)) {
 			blockList.parseRange(blockNetwork);
 			continue;
 		}
 
-		if (blockNetwork.includes('/')) {
+		if (IpBlocklist.isSubnet(blockNetwork)) {
 			blockList.parseSubnet(blockNetwork);
 			continue;
 		}

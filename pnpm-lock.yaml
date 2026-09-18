@@ -630,9 +630,6 @@ catalogs:
     ioredis:
       specifier: 5.8.2
       version: 5.8.2
-    ip-matching:
-      specifier: 2.1.2
-      version: 2.1.2
     ipaddr.js:
       specifier: 2.4.0
       version: 2.4.0
@@ -1284,9 +1281,6 @@ importers:
       ioredis:
         specifier: 'catalog:'
         version: 5.8.2
-      ip-matching:
-        specifier: 'catalog:'
-        version: 2.1.2
       isolated-vm:
         specifier: 'catalog:'
         version: 5.0.3
@@ -9782,9 +9776,6 @@ packages:
   ip-address@10.7.0:
     resolution: {integrity: sha512-BGFsyJd5mpXp3rK6jIdADLNgpJUK1jnjzvYF8lK+VyDab9JAmqN0YOKDdP17HlgKb2+ehPgDc8EtnRLbGCAMhA==}
     engines: {node: '>= 12'}
-
-  ip-matching@2.1.2:
-    resolution: {integrity: sha512-/ok+VhKMasgR5gvTRViwRFQfc0qYt9Vdowg6TO4/pFlDCob5ZjGPkwuOoQVCd5OrMm20zqh+1vA8KLJZTeWudg==}
 
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
@@ -20523,8 +20514,6 @@ snapshots:
       - supports-color
 
   ip-address@10.7.0: {}
-
-  ip-matching@2.1.2: {}
 
   ipaddr.js@1.9.1: {}
 
