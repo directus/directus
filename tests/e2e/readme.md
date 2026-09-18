@@ -36,6 +36,10 @@ these `-sb` projects as they require more resources and have a longer runtime.
 
 ## Writing tests
 
+Before you start writing tests, evaluate if an e2e test is really needed here and if so, what kind of e2e test.
+Prefer writing Unit tests over e2e tests, and e2e tests over sandboxed tests, as each level comes with higher execution cost.
+A sandboxed doesn't need to test what a unit test can cover. e2e tests are primarily to confirm that high level behaviors and flows are consistent.
+
 For general best practices on writing tests, please have a quick look at
 [this guide](https://github.com/goldbergyoni/javascript-testing-best-practices?tab=readme-ov-file#section-0%EF%B8%8F%E2%83%A3-the-golden-rule)
 and the [best practices](#best-practices) section at the bottom.
@@ -55,6 +59,8 @@ test('Pinging the API', async () => {
 	expect(data).toEqual('pong');
 });
 ```
+
+Make sure to place your test in a reasonable place, before creating a new folder tree. E.g. tests against the item enpoint belong into `/tests/endpoints/items`.
 
 ### Tests requiring a custom schema
 
