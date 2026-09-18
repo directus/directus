@@ -130,7 +130,7 @@ const rustfs = {
 	STORAGE_RUSTFS_DRIVER: 's3',
 	STORAGE_RUSTFS_KEY: 'directus',
 	STORAGE_RUSTFS_SECRET: 'rustfssecret',
-	STORAGE_RUSTFS_BUCKET: 'directus-blackbox-test',
+	STORAGE_RUSTFS_BUCKET: 'directus-test',
 	STORAGE_RUSTFS_REGION: 'us-east-1',
 	STORAGE_RUSTFS_ENDPOINT: 'http://127.0.0.1:$PORT_RUSTFS',
 	STORAGE_RUSTFS_FORCE_PATH_STYLE: 'true',
@@ -241,7 +241,6 @@ export type Env = (typeof baseConfig)[Database] & {
 	PROJECT_OWNER?: 'admin@example.com';
 	ADMIN_PASSWORD?: 'pw';
 	ADMIN_TOKEN?: 'admin';
-	DOCKER_DEFAULT_PLATFORM?: string;
 } & Partial<typeof rustfs> &
 	Partial<typeof saml> &
 	Partial<typeof ldap> &

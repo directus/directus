@@ -150,8 +150,8 @@ For more details on how to use the sandbox, please refer to the [sandbox readme]
 - `openCollab()` from `@utils/collab.js` builds on that with the helpers the collaborative editing protocol needs
   (`join()`, `collab()`, `waitFor()`).
 - `sandboxPort()` from `@utils/sandbox-port.js` hands a `*.sb.test.ts` file a port of its own, so a sandbox started
-  right after another one was stopped does not fail to bind. Pass a different slot per sandbox within one file, and add
-  the file to the list in that util — it throws for a file it does not know.
+  right after another one was stopped does not fail to bind. Pass a different slot per sandbox within one file. It
+  throws when called from anywhere other than a `*.sb.test.ts` file, since only those get a window.
 
 ## Best Practices
 

@@ -2,4 +2,4 @@
 '@directus/release-notes-generator': patch
 ---
 
-Migrated old blackbox tests to new e2e test suite
+Renamed the blackbox test package to e2e
