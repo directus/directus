@@ -1,6 +1,6 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
-import { getRelation, getRelationType, isCollectionActive, parseFilterFunctionPath } from '@directus/utils';
+import { getRelationInfo, isCollectionActive, parseFilterFunctionPath } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
@@ -10,7 +10,6 @@ import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from
 import { splitFieldPath } from '../../../utils/split-field-path.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
-import { getRelatedCollectionFromRelation } from '../utils/get-related-collection.js';
 import { convertWildcards } from './convert-wildcards.js';
 
 interface CollectionScope {
@@ -214,20 +213,13 @@ export async function parseFields(
 			fieldName = options.query.alias[fieldKey]!;
 		}
 
-		const relation = getRelation(context.schema.relations, options.parentCollection, fieldName);
-
-		if (!relation) continue;
-
-		const relatedCollection = getRelatedCollectionFromRelation(relation, options.parentCollection, fieldName);
-
-		const relationType = getRelationType({
+		const {
 			relation,
-			collection: options.parentCollection,
-			field: fieldName,
-			useA2O: true,
-		});
+			relationType,
+			oppositeCollection: relatedCollection,
+		} = getRelationInfo(context.schema.relations, options.parentCollection, fieldName);
 
-		if (!relationType) continue;
+		if (!relation || !relationType) continue;
 
 		let child: NestedCollectionNode | null = null;
 
