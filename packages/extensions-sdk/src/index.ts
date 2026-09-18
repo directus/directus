@@ -19,6 +19,8 @@ export {
 	defineOperationApi,
 	defineOperationApp,
 	definePanel,
+	defineRichText,
 } from '@directus/extensions';
 export { defineTheme } from '@directus/themes';
 export { getFieldsFromTemplate, getRelationType } from '@directus/utils';
+export type { RichTextConfig, RichTextToolbarButton } from '@directus/extensions';

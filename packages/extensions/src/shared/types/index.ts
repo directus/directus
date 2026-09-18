@@ -38,3 +38,5 @@ export type {
 	Panel,
 	ExtensionSettings,
 } from '@directus/types';
+
+export * from './rich-text.js';

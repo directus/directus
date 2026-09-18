@@ -1,6 +1,7 @@
 import type { DeepPartial, Field } from '@directus/types';
-import { describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from 'vitest';
 import config from './index';
+import { registerRichTexts } from '@/rich-text/register';
 
 /**
  * Options-schema compatibility with the legacy TinyMCE interface: option keys and choice values
@@ -98,5 +99,71 @@ describe('tinymceOverrides deprecation', () => {
 	test('stays hidden when other options have values but tinymceOverrides is unset', () => {
 		const { advanced } = resolveOptions({ softLength: 255 });
 		expect(fieldKeys(advanced)).not.toContain('tinymceOverrides');
+	});
+});
+
+describe('richtext extensions', () => {
+	const callout = {
+		id: 'spike-callout',
+		name: 'Callout',
+		buttons: [{ key: 'callout', icon: 'info', label: 'Callout', command: () => {} }],
+	};
+
+	const kbd = {
+		id: 'spike-kbd',
+		name: 'Keyboard Key',
+		buttons: [{ key: 'kbd', icon: 'keyboard', label: 'Keyboard Key', command: () => {} }],
+	};
+
+	function optionField(key: string, fieldOptions?: Record<string, unknown>) {
+		return resolveOptions(fieldOptions).standard.find((f) => f.field === key);
+	}
+
+	function choices(key: string, fieldOptions?: Record<string, unknown>) {
+		return optionField(key, fieldOptions)?.meta?.options?.choices as { value: string; text: string }[];
+	}
+
+	// keeps the strict core-choices assertions above unaffected
+	afterEach(() => registerRichTexts([]));
+
+	test('hides the extensions option when nothing is registered', () => {
+		expect(optionField('extensions')).toBeUndefined();
+	});
+
+	test('offers every registered extension once one exists', () => {
+		registerRichTexts([callout, kbd]);
+
+		expect(choices('extensions')).toEqual([
+			{ value: 'spike-callout', text: 'Callout' },
+			{ value: 'spike-kbd', text: 'Keyboard Key' },
+		]);
+	});
+
+	test('defaults to nothing enabled, so installing an extension leaves fields alone', () => {
+		registerRichTexts([callout]);
+		expect(optionField('extensions')?.schema?.default_value).toEqual([]);
+	});
+
+	test('offers a button only for the extensions the field enabled', () => {
+		registerRichTexts([callout, kbd]);
+		const values = choices('toolbar', { extensions: ['spike-kbd'] }).map((choice) => choice.value);
+
+		expect(values).toContain('kbd');
+		expect(values).not.toContain('callout');
+	});
+
+	test('offers no contributed button when the field enabled no extension', () => {
+		registerRichTexts([callout, kbd]);
+		const values = choices('toolbar').map((choice) => choice.value);
+
+		expect(values).not.toContain('kbd');
+		expect(values).not.toContain('callout');
+	});
+
+	// installing an extension must not change the toolbar of existing fields
+	test('leaves the default toolbar untouched', async () => {
+		registerRichTexts([callout]);
+		const toolbarDefault = (await import('./toolbar-default')).default;
+		expect(toolbarDefault).not.toContain('callout');
 	});
 });

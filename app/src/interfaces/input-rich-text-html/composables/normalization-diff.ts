@@ -1,14 +1,12 @@
 import { type AnyExtension, Editor } from '@tiptap/vue-3';
 import { type Change, diffLines } from 'diff';
 import { editorExtensions } from '../extensions';
-import { ComparisonDiff } from '../extensions/comparison-diff';
-import { buildCustomFormats } from '../extensions/custom-formats';
 import { decodePageBreaks, encodePageBreaks } from '../extensions/page-break';
 import { formatHtml } from './format-html';
 
 // Re-parse through the schema exactly as saveSourceCode will, so the diff compares against what
-// actually gets stored. `extraExtensions` carries the instance-only marks (custom formats) the live
-// editor was built with — without them their markup reads as dropped and falsely trips the warning.
+// actually gets stored. `extraExtensions` is the per-field slice from buildFieldSchema the live
+// editor was built with — without it that markup reads as dropped and falsely trips the warning.
 function roundTrip(html: string, extraExtensions: AnyExtension[]): string {
 	const editor = new Editor({ extensions: [...editorExtensions, ...extraExtensions], content: html });
 	const out = editor.getHTML();
@@ -62,12 +60,6 @@ export function computeValueNormalizationDiff(
 	verdictCache.set(cacheKey, verdict);
 
 	return verdict;
-}
-
-/** The schema the comparison view renders with, so its verdicts are shared with the interface. */
-export function comparisonSchema(customFormats: unknown): { extensions: AnyExtension[]; schemaKey: string } {
-	const { extensions, key } = buildCustomFormats(customFormats);
-	return { extensions: [...extensions, ComparisonDiff], schemaKey: `comparison\u0000${key}` };
 }
 
 const VERDICT_CACHE_SIZE = 24;
