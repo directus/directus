@@ -27,7 +27,7 @@ export const updateField =
 		query?: TQuery,
 	): RestCommand<UpdateFieldOutput<Schema, TQuery>, Schema> =>
 	() => {
-		throwIfEmpty(collection, 'Keys cannot be empty');
+		throwIfEmpty(collection, 'Collection cannot be empty');
 		throwIfEmpty(field, 'Field cannot be empty');
 
 		return {

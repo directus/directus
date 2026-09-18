@@ -1,9 +1,9 @@
 import type { PrimaryKey } from './items.js';
 
 export type Notification = {
-	id: string;
-	status: string;
-	timestamp: string;
+	id: number;
+	status: string | null;
+	timestamp: string | null;
 	recipient: string;
 	sender: string | null;
 	subject: string;
