@@ -1448,9 +1448,8 @@ wysiwyg_options:
   normalization_locked_learn_more: Learn what changed
   paste_warning_title: Pasted content includes unsupported markup
   paste_warning_body:
-    Some apps wrap copied content in extra markup this editor doesn't support. Paste Cleaned removes it
-    and keeps your text and formatting. Paste Raw keeps the HTML exactly as copied and switches this field to the raw
-    HTML editor.
+    Some apps wrap copied content in extra markup this editor doesn't support. Paste Cleaned removes it and keeps your
+    text and formatting. Paste Raw keeps the HTML exactly as copied and switches this field to the raw HTML editor.
   paste_warning_view_changes: View changes
   paste_warning_paste_raw: Paste Raw
   paste_warning_paste_cleaned: Paste Cleaned
