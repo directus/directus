@@ -2,7 +2,7 @@ import { createDirectus, createItem, deleteItem, readItem, rest, staticToken, up
 import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
-import type { Schema } from './schema.d.ts';
+import type { Schema } from './schema.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api);
