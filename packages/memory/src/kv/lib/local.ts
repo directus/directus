@@ -50,7 +50,7 @@ export class KvLocal implements Kv {
 		return this.store.has(key);
 	}
 
-	increment(key: string, amount: number = 1): number {
+	increment(key: string, amount: number = 1, _ttl?: number): number {
 		const currentVal = this.get(key) ?? 0;
 
 		if (typeof currentVal !== 'number') {

@@ -11,7 +11,7 @@ import {
 	withNamespace,
 } from '../../utils/index.js';
 import type { ExtendedRedis } from '../index.js';
-import { KvRedis, SET_MAX_SCRIPT } from './redis.js';
+import { INCREMENT_WITH_TTL_SCRIPT, KvRedis, SET_MAX_SCRIPT } from './redis.js';
 
 vi.mock('ioredis');
 vi.mock('../../utils/index.js');
@@ -87,10 +87,20 @@ describe('constructor', () => {
 			numberOfKeys: 1,
 			lua: expect.any(String),
 		});
+
+		expect(kv['redis'].defineCommand).toHaveBeenCalledWith('incrementWithTtl', {
+			numberOfKeys: 1,
+			lua: INCREMENT_WITH_TTL_SCRIPT,
+		});
 	});
 
 	test('Skips defining commands if they already exist on redis', () => {
-		const mockRedis = { defineCommand: vi.fn(), setMax: vi.fn(), release: vi.fn() } as unknown as ExtendedRedis;
+		const mockRedis = {
+			defineCommand: vi.fn(),
+			setMax: vi.fn(),
+			release: vi.fn(),
+			incrementWithTtl: vi.fn(),
+		} as unknown as ExtendedRedis;
 
 		new KvRedis({ redis: mockRedis, namespace: mockNamespace, compression: false });
 
@@ -266,6 +276,29 @@ describe('increment', () => {
 		vi.mocked(kv['redis'].incrby).mockResolvedValue(mockResult);
 
 		const res = await kv.increment(mockKey, mockAmount);
+
+		expect(res).toBe(mockResult);
+	});
+
+	test('Calls incrementWithTtl instead of incrby when a ttl is given', async () => {
+		const mockAmount = 15;
+		const mockTtl = 30000;
+
+		(kv['redis'] as any).incrementWithTtl = vi.fn();
+
+		await kv.increment(mockKey, mockAmount, mockTtl);
+
+		expect(withNamespace).toHaveBeenCalledWith(mockKey, mockNamespace);
+		expect(kv['redis'].incrementWithTtl).toHaveBeenCalledWith(mockNamespacedKey, mockAmount, mockTtl);
+		expect(kv['redis'].incrby).not.toHaveBeenCalled();
+	});
+
+	test('Returns incremented value from incrementWithTtl', async () => {
+		const mockResult = 42;
+
+		(kv['redis'] as any).incrementWithTtl = vi.fn().mockResolvedValue(mockResult);
+
+		const res = await kv.increment(mockKey, 1, 30000);
 
 		expect(res).toBe(mockResult);
 	});

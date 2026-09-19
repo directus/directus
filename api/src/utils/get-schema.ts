@@ -57,7 +57,14 @@ export async function getSchema(
 
 	const lockKey = 'schemaCache--preparing';
 	const messageKey = 'schemaCache--done';
-	const processId = await lock.increment(lockKey);
+
+	// Bounds how long the lock can be held for. If the owning process is killed before its `finally`
+	// block runs `lock.delete()`, this key would otherwise never expire and every future process with an
+	// empty in-memory schema cache would hit the infinite-loop error until CACHE_SCHEMA_MAX_ITERATIONS is
+	// reached. Sized as a multiple of the sync timeout so it comfortably outlasts a legitimate schema build.
+	const lockTtl = (env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number) * MAX_ATTEMPTS;
+
+	const processId = await lock.increment(lockKey, 1, lockTtl);
 
 	if (processId >= (env['CACHE_SCHEMA_MAX_ITERATIONS'] as number)) {
 		await lock.delete(lockKey);
