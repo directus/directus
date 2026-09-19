@@ -272,6 +272,12 @@ describe('Integration Tests', () => {
 			});
 
 			describe('processes dates', () => {
+				test('rejects an unparseable timestamp on create', () => {
+					expect(() => service.processDates(fieldEntries, [{ timestamp_field: 'not-a-date' }], 'create')).toThrow(
+						'Invalid Timestamp format in field "timestamp_field"',
+					);
+				});
+
 				test('with zero values', () => {
 					const result = service.processDates(
 						fieldEntries,
