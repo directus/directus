@@ -164,6 +164,29 @@ describe('getAggregateQuery', () => {
 				count: [],
 			});
 		});
+
+		test('should combine repeated aggregation groups', async () => {
+			const selections = [
+				buildField('count', { children: [buildField('id')] }),
+				buildField('count', { children: [buildField('name')] }),
+			];
+
+			const result = await getAggregateQuery({}, selections, schema);
+
+			expect(result.aggregate).toEqual({
+				count: ['id', 'name'],
+			});
+		});
+
+		test('should not read an aggregation group off the object prototype', async () => {
+			const selections = [buildField('toString', { children: [buildField('id')] })];
+
+			const result = await getAggregateQuery({}, selections, schema);
+
+			expect(result.aggregate).toEqual({
+				toString: ['id'],
+			});
+		});
 	});
 
 	describe('filter processing', () => {

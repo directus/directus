@@ -1,15 +1,25 @@
 import type { GraphQLParams } from '@directus/types';
 import type { GraphQLFieldResolver, GraphQLResolveInfo } from 'graphql';
 import { print } from 'graphql';
+import { uniq } from 'lodash-es';
 import hash from 'object-hash';
 
 /**
  * Builds a stable deduplication key for a GraphQL resolver call by combining
- * the field name, a hash of its arguments, and the printed selection set.
+ * the field name, a hash of its arguments, and the printed selection sets.
  * Used to identify structurally identical resolver invocations within a request.
+ *
+ * A field requested more than once resolves in a single call with one node per
+ * occurrence, so the selection sets are sorted and repeats dropped to keep the
+ * key the same however the occurrences are written and ordered.
  */
 export function resolverCacheKey(args: Record<string, unknown>, info: GraphQLResolveInfo): string {
-	const selectionKey = info.fieldNodes[0]?.selectionSet ? print(info.fieldNodes[0].selectionSet) : '';
+	const selectionKey = uniq(
+		info.fieldNodes.map((fieldNode) => (fieldNode.selectionSet ? print(fieldNode.selectionSet) : '')),
+	)
+		.sort()
+		.join('');
+
 	const cacheKey = `${info.fieldName}:${hash(args ?? {})}:${selectionKey}`;
 	return cacheKey;
 }
