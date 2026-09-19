@@ -12,39 +12,41 @@ const parseLocaltime = (columnType?: string) => {
 	return '';
 };
 
+// TO_CHAR always returns a zero padded string, so every date part below is wrapped in TO_NUMBER
+// to return a number, like the other dialects do (Postgres uses EXTRACT, SQLite casts to INTEGER).
 export class FnHelperOracle extends FnHelper {
 	year(table: string, column: string, options: FnHelperOptions): Knex.Raw {
 		// TO_CHAR with YYYY returns the calendar year. IYYY would return the ISO week-numbering year,
 		// which differs whenever Jan 1 belongs to the last ISO week of the previous year.
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'YYYY')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'YYYY'))`, [table, column]);
 	}
 
 	month(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'MM')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'MM'))`, [table, column]);
 	}
 
 	week(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'IW')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'IW'))`, [table, column]);
 	}
 
 	day(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'DD')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'DD'))`, [table, column]);
 	}
 
 	weekday(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'D')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'D'))`, [table, column]);
 	}
 
 	hour(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'HH24')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'HH24'))`, [table, column]);
 	}
 
 	minute(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'MI')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'MI'))`, [table, column]);
 	}
 
 	second(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'SS')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'SS'))`, [table, column]);
 	}
 
 	count(table: string, column: string, options?: FnHelperOptions): Knex.Raw<any> {
