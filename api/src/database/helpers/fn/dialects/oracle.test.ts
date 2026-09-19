@@ -150,4 +150,33 @@ describe('FnHelperOracle', () => {
 			expect(sql).toContain("'YYYY'");
 		});
 	});
+
+	describe('date part helpers', () => {
+		const dateParts = {
+			year: 'YYYY',
+			month: 'MM',
+			week: 'IW',
+			day: 'DD',
+			weekday: 'D',
+			hour: 'HH24',
+			minute: 'MI',
+			second: 'SS',
+		} as const;
+
+		for (const [fn, mask] of Object.entries(dateParts)) {
+			test(`${fn}() casts the TO_CHAR result to a number`, () => {
+				const helper = new FnHelperOracle(db, schema);
+
+				const { sql } = helper[fn as keyof typeof dateParts]('items', 'release', {
+					type: 'date',
+					jsonPath: undefined,
+					originalCollectionName: undefined,
+					relationalCountOptions: undefined,
+				}).toSQL();
+
+				expect(sql).toContain('TO_NUMBER(TO_CHAR(');
+				expect(sql).toContain(`'${mask}'`);
+			});
+		}
+	});
 });
