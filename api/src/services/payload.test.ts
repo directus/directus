@@ -453,6 +453,44 @@ describe('Integration Tests', () => {
 						},
 					]);
 				});
+
+				describe('writes dates', () => {
+					test('parses valid date, dateTime and timestamp strings', () => {
+						const result = service.processDates(
+							fieldEntries,
+							[
+								{
+									date_field: '2022-01-10',
+									datetime_field: '2021-09-30T12:34:56',
+									timestamp_field: '1980-12-08T00:11:22.333Z',
+								},
+							],
+							'create',
+						);
+
+						expect(result[0]!['date_field']).toBeInstanceOf(Date);
+						expect(result[0]!['datetime_field']).toBeInstanceOf(Date);
+						expect(result[0]!['timestamp_field']).toBeInstanceOf(Date);
+					});
+
+					test('throws for an invalid date string', () => {
+						expect(() =>
+							service.processDates(fieldEntries, [{ date_field: 'not-a-date' }], 'create'),
+						).toThrowError(/Invalid Date format/);
+					});
+
+					test('throws for an invalid dateTime string', () => {
+						expect(() =>
+							service.processDates(fieldEntries, [{ datetime_field: 'not-a-date' }], 'create'),
+						).toThrowError(/Invalid DateTime format/);
+					});
+
+					test('throws for an invalid timestamp string instead of silently writing an Invalid Date', () => {
+						expect(() =>
+							service.processDates(fieldEntries, [{ timestamp_field: 'not-a-date' }], 'create'),
+						).toThrowError(/Invalid Timestamp format/);
+					});
+				});
 			});
 		});
 

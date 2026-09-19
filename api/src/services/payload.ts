@@ -519,6 +519,10 @@ export class PayloadService {
 						}
 
 						if (dateColumn.type === 'timestamp') {
+							if (!isValid(parseISO(value))) {
+								throw new InvalidPayloadError({ reason: `Invalid Timestamp format in field "${dateColumn.field}"` });
+							}
+
 							const newValue = this.helpers.date.writeTimestamp(value);
 							payload[name] = newValue;
 						}
