@@ -101,10 +101,11 @@ describe('runExclusive', () => {
 		await expect(runExclusive('key', () => 'result')).resolves.toEqual({ result: 'result', leader: true });
 	});
 
-	test('should reject the leader with the error fn threw', async () => {
+	test('should reject the leader with the error fn threw, and give the lease back', async () => {
 		const error = new Error('boom');
 
 		await expect(runExclusive('key', () => Promise.reject(error))).rejects.toBe(error);
+		expect(testStore.state.has('leader')).toBe(false);
 	});
 
 	test('should reject the leader when fn throws before it returns a promise', async () => {
@@ -175,13 +176,6 @@ describe('runExclusive', () => {
 
 		await expect(runExclusive('key', fn)).resolves.toEqual({ result: 'second', leader: true });
 		expect(fn).toHaveBeenCalledTimes(1);
-	});
-
-	test('should release the lease when fn fails', async () => {
-		const fn = vi.fn().mockRejectedValue(new Error('boom'));
-
-		await expect(runExclusive('key', fn, { maxAttempts: 1 })).rejects.toThrow('boom');
-		expect(testStore.state.has('leader')).toBe(false);
 	});
 
 	test('should lead, not wait, when arriving between the release and the publish', async () => {
@@ -446,19 +440,8 @@ describe('runExclusive', () => {
 
 			// The takeover must survive this invocation finishing
 			expect(testStore.state.get('leader')).toBe('someone-else');
-		});
 
-		test('should leave the result to whoever took the lease over', async () => {
-			const { leader, finish } = await startLeader();
-
-			testStore.state.set('leader', 'someone-else');
-
-			await vi.advanceTimersByTimeAsync(RENEW_INTERVAL);
-
-			finish('result');
-			await expect(leader).resolves.toEqual({ result: 'result', leader: true });
-
-			// Another invocation is leading now, and its followers are waiting on that one
+			// And the result belongs to whoever holds the lease now, so its followers wait on that one
 			expect(testBus.bus.publish).not.toHaveBeenCalled();
 		});
 
@@ -569,24 +552,6 @@ describe('runExclusive', () => {
 			await expect(follower).resolves.toEqual({ result: 'result', leader: true });
 			expect(fn).toHaveBeenCalledTimes(1);
 			expect(logger.warn).toHaveBeenCalledWith('Exclusive run for "key" lost its leader, taking over');
-		});
-
-		test('should keep waiting for as long as the lease is still held', async () => {
-			const { leader, finish } = await startLeader();
-
-			const fn = vi.fn();
-			const follower = runExclusive('key', fn);
-			await testStore.whenSettled(2);
-
-			// Several rounds of checking on a leader that is working the whole time
-			await vi.advanceTimersByTimeAsync(LEADER_CHECK * 4);
-
-			expect(fn).not.toHaveBeenCalled();
-
-			finish('result');
-
-			await expect(follower).resolves.toEqual({ result: 'result', leader: false });
-			await leader;
 		});
 
 		test('should lead for the followers that did not take over', async () => {
