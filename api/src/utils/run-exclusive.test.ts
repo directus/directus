@@ -82,7 +82,6 @@ describe('runExclusive', () => {
 
 		await running.promise;
 
-		// All four followers are listening, so the leader can finish without any of them arriving late
 		await testStore.whenSettled(5);
 		finish.resolve('result');
 
@@ -117,7 +116,6 @@ describe('runExclusive', () => {
 			}),
 		).rejects.toBe(error);
 
-		// The lease is only given back if the throw was caught rather than escaping mid-run
 		expect(testStore.state.has('leader')).toBe(false);
 	});
 
@@ -133,7 +131,6 @@ describe('runExclusive', () => {
 		await expect(leader).rejects.toThrow('boom');
 		await expect(follower).rejects.toThrow('boom');
 
-		// A leader that reported a failure has decided for everyone, so there is nothing to take over
 		expect(fn).not.toHaveBeenCalled();
 	});
 
@@ -182,14 +179,10 @@ describe('runExclusive', () => {
 		const fn = vi.fn().mockResolvedValue('result');
 		const arrival = withResolvers<unknown>();
 
-		// Hold the leader inside publish so the arriving caller elects mid-publish. The lease is
-		// already released by then, so it has to lead rather than wait for a result that belongs
-		// to a run that is over.
 		testBus.setOnPublish(async () => {
 			testBus.setOnPublish(undefined);
 			arrival.resolve(runExclusive('key', fn));
 
-			// The leader's own election and release account for the first two
 			await testStore.whenSettled(3);
 		});
 
@@ -201,7 +194,6 @@ describe('runExclusive', () => {
 	test('should follow, rather than fail, when the lease cannot be taken', async () => {
 		const { leader, finish } = await startLeader();
 
-		// Whatever went wrong, a leader is out there and it will report back
 		testStore.fail();
 
 		const fn = vi.fn();
@@ -224,7 +216,6 @@ describe('runExclusive', () => {
 		const fn = vi.fn();
 		const follower = runExclusive('key', fn, { timeout: LEADER_CHECK * 2 });
 
-		// Nothing to lead and nothing to wait on, so all it can do is keep trying until the time is up
 		const timedOut = expect(follower).rejects.toThrow(`Exclusive run for "key" timed out after ${LEADER_CHECK * 2}ms`);
 
 		await vi.advanceTimersByTimeAsync(LEADER_CHECK * 2);
@@ -232,7 +223,6 @@ describe('runExclusive', () => {
 
 		expect(fn).not.toHaveBeenCalled();
 
-		// The bus is a process-wide singleton, so a stray handler would outlive the call
 		expect(testBus.subscriberCount(CHANNEL)).toBe(0);
 	});
 
@@ -266,7 +256,6 @@ describe('runExclusive', () => {
 	test('should keep its result when it cannot be published', async () => {
 		testBus.bus.publish.mockRejectedValue(new Error('publish unavailable'));
 
-		// The work is done either way, and followers that never hear it take over instead
 		await expect(runExclusive('key', async () => 'result')).resolves.toEqual({ result: 'result', leader: true });
 
 		expect(logger.warn).toHaveBeenCalledWith(expect.any(Error), 'Could not publish the exclusive result for "key"');
@@ -321,13 +310,11 @@ describe('runExclusive', () => {
 
 			await running.promise;
 
-			// Long enough for the leader to outrun its timeout, short enough for the follower to still wait
 			const follower = runExclusive('key', vi.fn(), { timeout: 5000 });
 			await testStore.whenSettled(2);
 
 			const timedOut = expect(leader).rejects.toThrow('Exclusive run for "key" timed out after 1000ms');
 
-			// Followers are handed the leader's overrun rather than waiting out their own
 			const handed = expect(follower).rejects.toThrow('Exclusive run for "key" timed out after 1000ms');
 
 			await vi.advanceTimersByTimeAsync(1000);
@@ -354,7 +341,6 @@ describe('runExclusive', () => {
 		test('should reject a caller whose time ran out before it could elect', async () => {
 			const electing = withResolvers<boolean>();
 
-			// Hold the election open, so the deadline is what answers first
 			testStore.store.mockImplementationOnce(() => electing.promise as any);
 
 			const fn = vi.fn();
@@ -364,7 +350,6 @@ describe('runExclusive', () => {
 
 			await vi.advanceTimersByTimeAsync(1000);
 
-			// Answering after the fact changes nothing, there is no time left to wait or to lead
 			electing.resolve(false);
 			await timedOut;
 
@@ -375,7 +360,6 @@ describe('runExclusive', () => {
 			const electing = withResolvers<void>();
 			const elect = testStore.store.getMockImplementation()!;
 
-			// Hold the election open, so it is won only once there is no time left to lead with it
 			testStore.store.mockImplementationOnce(async (callback: any) => {
 				await electing.promise;
 				return elect(callback);
@@ -392,12 +376,10 @@ describe('runExclusive', () => {
 
 			expect(fn).not.toHaveBeenCalled();
 
-			// Holding on to it would keep the next invocation from leading for a whole lease
 			expect(testStore.state.has('leader')).toBe(false);
 		});
 
 		test('should reject rather than take over once the timeout has passed', async () => {
-			// A lease held by a leader that never renews it, as if its process went away
 			testStore.state.set('leader', 'someone-else');
 
 			const fn = vi.fn();
@@ -428,7 +410,6 @@ describe('runExclusive', () => {
 		test('should not renew a lease it no longer owns', async () => {
 			const { leader, finish } = await startLeader();
 
-			// Simulate the lease expiring and being taken over by another invocation
 			testStore.state.set('leader', 'someone-else');
 
 			await vi.advanceTimersByTimeAsync(RENEW_INTERVAL);
@@ -438,10 +419,8 @@ describe('runExclusive', () => {
 			finish('result');
 			await expect(leader).resolves.toEqual({ result: 'result', leader: true });
 
-			// The takeover must survive this invocation finishing
 			expect(testStore.state.get('leader')).toBe('someone-else');
 
-			// And the result belongs to whoever holds the lease now, so its followers wait on that one
 			expect(testBus.bus.publish).not.toHaveBeenCalled();
 		});
 
@@ -453,7 +432,6 @@ describe('runExclusive', () => {
 			try {
 				const { leader, finish } = await startLeader();
 
-				// A store that cannot be reached says nothing about who holds the lease
 				testStore.fail();
 				await vi.advanceTimersByTimeAsync(RENEW_INTERVAL);
 
@@ -462,10 +440,8 @@ describe('runExclusive', () => {
 				finish('result');
 				await expect(leader).resolves.toEqual({ result: 'result', leader: true });
 
-				// It still holds the lease as far as it knows, so the result is still its to publish
 				expect(testBus.bus.publish).toHaveBeenCalledWith(CHANNEL, { ok: true, result: 'result' });
 
-				// Give any stray rejection a turn to surface
 				await vi.advanceTimersByTimeAsync(0);
 				expect(rejections).toEqual([]);
 			} finally {
@@ -479,8 +455,6 @@ describe('runExclusive', () => {
 			const renewing = withResolvers<void>();
 			const store = testStore.store.getMockImplementation()!;
 
-			// Hold the renewal open, and outside the queue, the way a lock that is raced for rather
-			// than queued for lets a release land first
 			testStore.store.mockImplementationOnce(async (callback: any) => {
 				await renewing.promise;
 				return store(callback);
@@ -491,8 +465,6 @@ describe('runExclusive', () => {
 			finish('result');
 			await vi.advanceTimersByTimeAsync(0);
 
-			// Renewing takes a free lease back, so letting go of it before that has settled leaves it
-			// held by nobody until it expires
 			expect(testStore.state.has('leader')).toBe(true);
 
 			renewing.resolve();
@@ -518,10 +490,8 @@ describe('runExclusive', () => {
 			const follower = runExclusive('key', fn);
 			await testStore.whenSettled(2);
 
-			// Two minutes of work, well past the lease and what a follower waits out
 			await vi.advanceTimersByTimeAsync(TWO_MINUTES);
 
-			// The lease was renewed all the way through, so nothing went looking for a new leader
 			expect(testStore.ops.filter((op) => op === 'set:leader')).toHaveLength(
 				1 + Math.floor(TWO_MINUTES / RENEW_INTERVAL),
 			);
@@ -538,7 +508,6 @@ describe('runExclusive', () => {
 
 	describe('takeover', () => {
 		test('should take over from a leader that stopped renewing its lease', async () => {
-			// A lease held by a leader that never renews it, as if its process went away
 			testStore.state.set('leader', 'someone-else');
 
 			const fn = vi.fn().mockResolvedValue('result');
@@ -546,7 +515,6 @@ describe('runExclusive', () => {
 
 			await testStore.whenSettled(1);
 
-			// The lease outlives its leader, so the wait has to outlast the lease
 			await vi.advanceTimersByTimeAsync(LEADER_CHECK);
 
 			await expect(follower).resolves.toEqual({ result: 'result', leader: true });
@@ -555,7 +523,6 @@ describe('runExclusive', () => {
 		});
 
 		test('should lead for the followers that did not take over', async () => {
-			// A lease held by a leader that never renews it, as if its process went away
 			testStore.state.set('leader', 'someone-else');
 
 			const running = withResolvers<void>();
@@ -573,7 +540,6 @@ describe('runExclusive', () => {
 
 			await testStore.whenSettled(2);
 
-			// Both give up on the old leader, but only one of them takes its place
 			await vi.advanceTimersByTimeAsync(LEADER_CHECK);
 			await running.promise;
 
