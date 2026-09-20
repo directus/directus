@@ -255,15 +255,43 @@ for (const quantifier of ['_some', '_none']) {
 
 		if (quantifier === '_none') {
 			expect(rawQuery.sql).toEqual(
-				`select * left join "links_list" as "vjhrm" on "article"."id" = "vjhrm"."article_id" where "article"."id" not in (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and "links_list"."name" = ?)`,
+				`select * where "article"."id" not in (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and "links_list"."name" = ?)`,
 			);
 		} else {
 			expect(rawQuery.sql).toEqual(
-				`select * left join "links_list" as "dbjyi" on "article"."id" = "dbjyi"."article_id" where "article"."id" in (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and "links_list"."name" = ?)`,
+				`select * where "article"."id" in (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and "links_list"."name" = ?)`,
 			);
 		}
 
 		expect(rawQuery.bindings).toEqual([2]);
+	});
+
+	test(`filtering o2m relation with ${quantifier} does not add a join`, async () => {
+		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+		const queryBuilder = db.queryBuilder();
+
+		const { hasJoins, hasMultiRelationalFilter } = applyFilter(
+			db,
+			o2m_schema,
+			queryBuilder,
+			{
+				links: {
+					[quantifier]: {
+						name: {
+							_eq: 2,
+						},
+					},
+				},
+			},
+			'article',
+			{},
+			[],
+			[],
+		);
+
+		expect(hasJoins).toBe(false);
+		expect(hasMultiRelationalFilter).toBe(false);
+		expect(queryBuilder.toSQL().sql).not.toContain('left join');
 	});
 }
 
