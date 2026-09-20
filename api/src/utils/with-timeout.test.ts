@@ -25,6 +25,13 @@ describe('withTimeout', () => {
 		await timedOut;
 	});
 
+	test('should reject with the given message when one is passed', async () => {
+		const timedOut = expect(withTimeout(new Promise(() => {}), 1000, 'took too long')).rejects.toThrow('took too long');
+
+		await vi.advanceTimersByTimeAsync(1000);
+		await timedOut;
+	});
+
 	test('should leave no pending timer once the promise settles', async () => {
 		await withTimeout(Promise.resolve('result'), 1000);
 

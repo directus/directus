@@ -51,7 +51,6 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	REDIS_LOCK_NAMESPACE: 'string',
 	REDIS_COUNTERS_NAMESPACE: 'string',
 	REDIS_PERMISSIONS_NAMESPACE: 'string',
-	REDIS_EXCLUSIVE_NAMESPACE: 'string',
 
 	HEALTHCHECK_ENABLED: 'boolean',
 	HEALTHCHECK_NAMESPACE: 'string',
