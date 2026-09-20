@@ -112,7 +112,7 @@ export async function runExclusive<T>(
 		let failure: unknown;
 
 		for (let attempts = 1; attempts <= maxAttempts; attempts++) {
-			if (remaining() > 0) {
+			if (remaining() <= 0) {
 				throw new Error(`Exclusive run for "${key}" timed out after ${timeout}ms`);
 			}
 
