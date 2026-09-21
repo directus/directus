@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRefs } from 'vue';
+import { computed, toRefs } from 'vue';
 import ValueNull from './value-null.vue';
 import VErrorBoundary from '@/components/v-error-boundary.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
@@ -19,27 +19,45 @@ const props = defineProps<{
 const { display } = toRefs(props);
 
 const displayInfo = useExtension('display', display);
+
+// Field types whose display components expect the array as a single value, instead of one
+// value per entry. Nested fields resolved through a to-many relation arrive as an array, while
+// the display of a scalar field (datetime as an example) can only render a single value.
+const ARRAY_DISPLAY_TYPES = ['alias', 'json'];
+
+const values = computed<unknown[]>(() => {
+	if (Array.isArray(props.value) && ARRAY_DISPLAY_TYPES.includes(props.type) === false) {
+		return props.value;
+	}
+
+	return [props.value];
+});
 </script>
 
 <template>
-	<ValueNull v-if="value === null || value === undefined" />
+	<ValueNull v-if="value === null || value === undefined || values.length === 0" />
 	<VTextOverflow v-else-if="displayInfo === null" class="display" :text="value" />
-	<VErrorBoundary v-else :name="`display-${display}`">
-		<component
-			:is="`display-${display}`"
-			v-bind="options"
-			:interface="interface"
-			:interface-options="interfaceOptions"
-			:value="value"
-			:type="type"
-			:collection="collection"
-			:field="field"
-		/>
+	<template v-else>
+		<template v-for="(valueItem, index) in values" :key="index">
+			<span v-if="index > 0">,&nbsp;</span>
+			<VErrorBoundary :name="`display-${display}`">
+				<component
+					:is="`display-${display}`"
+					v-bind="options"
+					:interface="interface"
+					:interface-options="interfaceOptions"
+					:value="valueItem"
+					:type="type"
+					:collection="collection"
+					:field="field"
+				/>
 
-		<template #fallback>
-			<VTextOverflow class="display" :text="value" />
+				<template #fallback>
+					<VTextOverflow class="display" :text="valueItem" />
+				</template>
+			</VErrorBoundary>
 		</template>
-	</VErrorBoundary>
+	</template>
 </template>
 
 <style lang="scss" scoped>
