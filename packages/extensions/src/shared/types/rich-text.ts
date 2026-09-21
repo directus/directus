@@ -13,11 +13,6 @@ export interface RichTextToolbarButton {
 export interface RichTextConfig {
 	id: string;
 	name: string;
-	/**
-	 * Tiptap extensions built with `@tiptap/core`, which the app serves as a shared dependency so the
-	 * extension bundle resolves to the app's copy. The app shares these instances across every editor
-	 * it builds, the same way it shares its own extension list.
-	 */
 	extensions?: AnyExtension[];
 	buttons?: RichTextToolbarButton[];
 }
