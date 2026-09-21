@@ -3,7 +3,7 @@ import type { AppField, DeepPartial } from '@directus/types';
 import { defineAsyncComponent } from 'vue';
 import PreviewSVG from './preview.svg?raw';
 import toolbarDefault from './toolbar-default';
-import { enabledRichTexts, useRichTexts } from '@/rich-text/register';
+import { contributedButtonKey, enabledRichTexts, useRichTexts } from '@/rich-text/register';
 
 const InterfaceWYSIWYG = defineAsyncComponent(() => import('./input-rich-text-html.vue'));
 
@@ -250,7 +250,11 @@ export default defineInterface({
 							// the field's schema would do nothing. `options` is a function the app
 							// re-runs as the admin edits, so this list follows the picker above.
 							...enabledRichTexts(field.meta?.options?.['extensions'] as string[] | undefined).flatMap(
-								(config) => config.buttons?.map(({ key, label }) => ({ value: key, text: label })) ?? [],
+								(config) =>
+									config.buttons?.map((button) => ({
+										value: contributedButtonKey(config, button),
+										text: button.label,
+									})) ?? [],
 							),
 						],
 					},

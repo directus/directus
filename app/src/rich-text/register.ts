@@ -1,4 +1,4 @@
-import type { RichTextConfig } from '@directus/extensions';
+import type { RichTextConfig, RichTextToolbarButton } from '@directus/extensions';
 import { shallowRef, type ShallowRef } from 'vue';
 
 const richTexts = shallowRef<RichTextConfig[]>([]);
@@ -22,3 +22,7 @@ export const enabledRichTexts = (ids: string[] | null | undefined): RichTextConf
 	if (!ids?.length) return [];
 	return richTexts.value.filter((config) => ids.includes(config.id));
 };
+
+// prefixed with the extension id so a bare key like `bold` cannot replace the core button
+export const contributedButtonKey = (config: RichTextConfig, button: RichTextToolbarButton): string =>
+	`${config.id}:${button.key}`;

@@ -18,7 +18,7 @@ import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { Table } from './table';
 import { TextAlignment } from './text-alignment';
 import { TextStyle } from './text-style';
-import { enabledRichTexts } from '@/rich-text/register';
+import { contributedButtonKey, enabledRichTexts } from '@/rich-text/register';
 
 /**
  * The editor's extension set, shared by input-rich-text-html.vue and the round-trip tests so the
@@ -93,6 +93,8 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			contributed.map((config) => config.id).join('\u0000'),
 		].join('\u0000'),
 		formats: customFormats.formats,
-		buttons: contributed.flatMap((config) => config.buttons ?? []),
+		buttons: contributed.flatMap(
+			(config) => config.buttons?.map((button) => ({ ...button, key: contributedButtonKey(config, button) })) ?? [],
+		),
 	};
 }

@@ -73,6 +73,28 @@ describe('per-field richtext extensions', () => {
 	});
 });
 
+describe('contributed toolbar buttons', () => {
+	const button = { icon: 'info', label: 'Callout', command: () => {} };
+
+	test('namespaces each button key by extension id', () => {
+		registerRichTexts([{ id: 'spike-bold', name: 'Bold', buttons: [{ ...button, key: 'bold' }] }]);
+		const { buttons } = buildFieldSchema({ extensions: ['spike-bold'] });
+
+		expect(buttons.map((b) => b.key)).toEqual(['spike-bold:bold']);
+		expect(buttons[0]!.command).toBe(button.command);
+	});
+
+	test('keeps the buttons of two extensions with the same bare key apart', () => {
+		registerRichTexts([
+			{ id: 'spike-a', name: 'A', buttons: [{ ...button, key: 'callout' }] },
+			{ id: 'spike-b', name: 'B', buttons: [{ ...button, key: 'callout' }] },
+		]);
+
+		const { buttons } = buildFieldSchema({ extensions: ['spike-a', 'spike-b'] });
+		expect(buttons.map((b) => b.key)).toEqual(['spike-a:callout', 'spike-b:callout']);
+	});
+});
+
 // The save-time check and the comparison view re-parse the value through their own schema. Both
 // take the same buildFieldSchema slice as the live editor, so a contributed node must never read
 // as content loss there.

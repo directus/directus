@@ -112,4 +112,12 @@ describe('contributed buttons', () => {
 		const wrapper = mountToolbar(['bold'], [], [callout]);
 		expect(wrapper.findAll('.toolbar-button')).toHaveLength(1);
 	});
+
+	test('renders a namespaced contribution next to the core button it is named after', () => {
+		const bold: RichTextToolbarButton = { key: 'spike:bold', icon: 'star', label: 'Spike', command: () => {} };
+		const wrapper = mountToolbar(['bold', 'spike:bold'], [], [bold]);
+
+		const icons = wrapper.findAll('.toolbar-button .v-icon i').map((icon) => icon.attributes('data-icon'));
+		expect(icons).toEqual(['format_bold', 'star']);
+	});
 });

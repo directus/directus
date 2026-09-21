@@ -1,7 +1,7 @@
 import type { AnyExtension, Editor } from '@tiptap/core';
 
 export interface RichTextToolbarButton {
-	/** Also the value a field puts in its `toolbar` option to switch this button on. */
+	/** A field switches the button on with `<extension id>:<key>` in its `toolbar` option. */
 	key: string;
 	icon: string;
 	/** Plain text, not an i18n key: extensions cannot reach the app's i18n instance. */

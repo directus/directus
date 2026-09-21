@@ -148,16 +148,24 @@ describe('richtext extensions', () => {
 		registerRichTexts([callout, kbd]);
 		const values = choices('toolbar', { extensions: ['spike-kbd'] }).map((choice) => choice.value);
 
-		expect(values).toContain('kbd');
-		expect(values).not.toContain('callout');
+		expect(values).toContain('spike-kbd:kbd');
+		expect(values).not.toContain('spike-callout:callout');
 	});
 
 	test('offers no contributed button when the field enabled no extension', () => {
 		registerRichTexts([callout, kbd]);
 		const values = choices('toolbar').map((choice) => choice.value);
 
-		expect(values).not.toContain('kbd');
-		expect(values).not.toContain('callout');
+		expect(values).not.toContain('spike-kbd:kbd');
+		expect(values).not.toContain('spike-callout:callout');
+	});
+
+	test('keeps a contributed button apart from a core button with the same key', () => {
+		registerRichTexts([{ id: 'spike-bold', name: 'Bold', buttons: [{ ...callout.buttons[0]!, key: 'bold' }] }]);
+		const values = choices('toolbar', { extensions: ['spike-bold'] }).map((choice) => choice.value);
+
+		expect(values.filter((value) => value === 'bold')).toHaveLength(1);
+		expect(values).toContain('spike-bold:bold');
 	});
 
 	// installing an extension must not change the toolbar of existing fields
