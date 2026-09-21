@@ -1,5 +1,5 @@
 import { createDirectus, createItem, deleteItems, graphql, readItems, rest, staticToken } from '@directus/sdk';
-import { database, port } from '@utils/constants.js';
+import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { afterAll, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
