@@ -268,6 +268,7 @@ describe('FoldersService', () => {
 			chain['from'] = vi.fn(() => chain);
 			chain['whereIn'] = vi.fn(() => chain);
 			chain['andWhere'] = vi.fn(() => chain);
+
 			chain['then'] = (onFulfilled: any, onRejected: any) =>
 				Promise.resolve(flowsFolders).then(onFulfilled, onRejected);
 
