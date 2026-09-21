@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
 import { type FlowDrawerValues, getFlowChanges } from './get-flow-changes';
+import { getTriggers } from './triggers';
 import { useFlowDrawerEdits } from './use-flow-drawer-edits';
 import { watchFlowDrawerEdits } from './watch-flow-drawer-edits';
-import { getTriggers } from './triggers';
 import api from '@/api';
 import VDivider from '@/components/v-divider.vue';
 import VDrawer from '@/components/v-drawer.vue';
@@ -207,7 +207,6 @@ function onApply() {
 						<div class="type-label">{{ $t('status') }}</div>
 						<VSelect
 							:model-value="values.status"
-							@update:model-value="updateField('status', $event)"
 							:items="[
 								{
 									text: $t('active'),
@@ -218,14 +217,15 @@ function onApply() {
 									value: 'inactive',
 								},
 							]"
+							@update:model-value="updateField('status', $event)"
 						/>
 					</div>
 					<div class="field full">
 						<div class="type-label">{{ $t('description') }}</div>
 						<VInput
 							:model-value="values.description"
-							@update:model-value="updateField('description', $event)"
 							:placeholder="$t('description')"
+							@update:model-value="updateField('description', $event)"
 						/>
 					</div>
 					<div class="field half">
@@ -241,7 +241,6 @@ function onApply() {
 						<div class="type-label">{{ $t('flow_tracking') }}</div>
 						<VSelect
 							:model-value="values.accountability"
-							@update:model-value="updateField('accountability', $event)"
 							:items="[
 								{
 									text: $t('flow_tracking_all'),
@@ -256,6 +255,7 @@ function onApply() {
 									value: null,
 								},
 							]"
+							@update:model-value="updateField('accountability', $event)"
 						/>
 					</div>
 				</div>
@@ -263,20 +263,20 @@ function onApply() {
 			<VTabItem value="trigger_setup">
 				<VFancySelect
 					:model-value="values.trigger"
-					@update:model-value="updateField('trigger', $event)"
 					class="select"
 					:items="triggers"
 					item-text="name"
 					item-value="id"
+					@update:model-value="updateField('trigger', $event)"
 				/>
 
 				<VForm
 					v-if="values.trigger"
 					:model-value="values.options"
-					@update:model-value="updateField('options', $event)"
 					class="extension-options"
 					:fields="currentTriggerOptionFields"
 					primary-key="+"
+					@update:model-value="updateField('options', $event)"
 				/>
 			</VTabItem>
 		</VTabsItems>
