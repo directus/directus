@@ -26,5 +26,19 @@ test(`invalid date_time`, async () => {
 				date_time: 'test',
 			}),
 		),
-	).rejects.toThrowError();
+	).rejects.toMatchObject({
+		errors: [{ extensions: { code: 'INVALID_PAYLOAD' } }],
+	});
+});
+
+test(`invalid date_time (non-string)`, async () => {
+	await expect(() =>
+		api.request(
+			createItem(collections.fields, {
+				date_time: 12345,
+			}),
+		),
+	).rejects.toMatchObject({
+		errors: [{ extensions: { code: 'INVALID_PAYLOAD' } }],
+	});
 });

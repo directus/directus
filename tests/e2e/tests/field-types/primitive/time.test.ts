@@ -28,3 +28,15 @@ test(`invalid time`, async () => {
 		),
 	).rejects.toThrowError();
 });
+
+test(`invalid time (non-string)`, async () => {
+	await expect(() =>
+		api.request(
+			createItem(collections.fields, {
+				time: 12345,
+			}),
+		),
+	).rejects.toMatchObject({
+		errors: [{ extensions: { code: 'INVALID_PAYLOAD' } }],
+	});
+});

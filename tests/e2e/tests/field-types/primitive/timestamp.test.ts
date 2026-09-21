@@ -1,5 +1,4 @@
-import { createItem } from '@directus/sdk';
-import { createDirectus, rest, staticToken } from '@directus/sdk';
+import { createDirectus, createItem, rest, staticToken } from '@directus/sdk';
 import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
@@ -28,4 +27,16 @@ test(`invalid timestamp`, async () => {
 			}),
 		),
 	).rejects.toThrowError();
+});
+
+test(`invalid timestamp (non-string)`, async () => {
+	await expect(() =>
+		api.request(
+			createItem(collections.fields, {
+				timestamp: 12345,
+			}),
+		),
+	).rejects.toMatchObject({
+		errors: [{ extensions: { code: 'INVALID_PAYLOAD' } }],
+	});
 });
