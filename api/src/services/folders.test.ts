@@ -1,5 +1,5 @@
 import { ForbiddenError } from '@directus/errors';
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { FoldersService } from './folders.js';
@@ -41,39 +41,20 @@ describe('FoldersService', () => {
 				expect(tree.get('root-id')).toBe('parent');
 
 				expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith(
-					{ filter: null, fields: ['id', 'parent', 'name'], limit: -1 },
-					undefined,
-				);
-			});
-
-			test('should forward a query to the read query when provided', async () => {
-				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
-					{ id: 'root-id', name: 'parent', parent: null },
-				]);
-
-				await foldersService.buildTree('root-id', { filter: { type: { _eq: 'files' } } });
-
-				expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith(
 					{ filter: { type: { _eq: 'files' } }, fields: ['id', 'parent', 'name'], limit: -1 },
 					undefined,
 				);
 			});
 
-			test('should take only the filter from the given query, whatever else it carries', async () => {
+			test('should read the folders of the given type', async () => {
 				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
 					{ id: 'root-id', name: 'parent', parent: null },
 				]);
 
-				// The narrowed type rules these out at compile time; the cast covers untyped callers.
-				await foldersService.buildTree('root-id', {
-					filter: { type: { _eq: 'files' } },
-					limit: 10,
-					fields: ['id'],
-					sort: ['name'],
-				} as Pick<Query, 'filter'>);
+				await foldersService.buildTree('root-id', 'flows');
 
 				expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith(
-					{ filter: { type: { _eq: 'files' } }, fields: ['id', 'parent', 'name'], limit: -1 },
+					{ filter: { type: { _eq: 'flows' } }, fields: ['id', 'parent', 'name'], limit: -1 },
 					undefined,
 				);
 			});
@@ -275,31 +256,33 @@ describe('FoldersService', () => {
 		});
 	});
 
-	describe('folder type restrictions', () => {
+	describe('flows folder restrictions', () => {
 		const nonAdmin = { admin: false, user: 'user-123' } as Accountability;
 		const admin = { admin: true, user: 'user-123' } as Accountability;
 
-		function mockKnex(restricted: { id: string } | undefined) {
+		/** The lookup awaits the query builder itself, so the chain has to be thenable. */
+		function mockKnex(flowsFolders: { name: string }[] = []) {
 			const chain: Record<string, any> = {};
 
 			chain['select'] = vi.fn(() => chain);
 			chain['from'] = vi.fn(() => chain);
 			chain['whereIn'] = vi.fn(() => chain);
-			chain['andWhereNot'] = vi.fn(() => chain);
-			chain['first'] = vi.fn().mockResolvedValue(restricted);
+			chain['andWhere'] = vi.fn(() => chain);
+			chain['then'] = (onFulfilled: any, onRejected: any) =>
+				Promise.resolve(flowsFolders).then(onFulfilled, onRejected);
 
 			return chain;
 		}
 
-		function service(accountability: Accountability | null, restricted?: { id: string }) {
+		function service(accountability: Accountability | null, knex: Record<string, any> = mockKnex()) {
 			return new FoldersService({
 				schema: mockSchema,
 				accountability,
-				knex: mockKnex(restricted) as any,
+				knex: knex as any,
 			});
 		}
 
-		test('blocks a non-admin creating a non-files folder', async () => {
+		test('blocks a non-admin creating a flows folder', async () => {
 			await expect(service(nonAdmin).createOne({ name: 'Flows', type: 'flows' })).rejects.toThrow(ForbiddenError);
 
 			expect(ItemsService.prototype.createOne).not.toHaveBeenCalled();
@@ -317,17 +300,27 @@ describe('FoldersService', () => {
 			expect(ItemsService.prototype.createOne).toHaveBeenCalled();
 		});
 
+		test('lets an internal call create a flows folder', async () => {
+			await service(null).createOne({ name: 'Flows', type: 'flows' });
+
+			expect(ItemsService.prototype.createOne).toHaveBeenCalled();
+		});
+
 		test('blocks a non-admin retyping a folder to flows', async () => {
 			await expect(service(nonAdmin).updateMany(['folder-1'], { type: 'flows' })).rejects.toThrow(ForbiddenError);
 
 			expect(ItemsService.prototype.updateMany).not.toHaveBeenCalled();
 		});
 
-		test('blocks a non-admin updating an existing flows folder', async () => {
-			await expect(service(nonAdmin, { id: 'folder-1' }).updateMany(['folder-1'], { name: 'Renamed' })).rejects.toThrow(
-				ForbiddenError,
+		test('blocks a non-admin updating an existing flows folder, naming the folders', async () => {
+			const knex = mockKnex([{ name: 'Flows' }, { name: 'Archived' }]);
+
+			await expect(service(nonAdmin, knex).updateMany(['folder-1', 'folder-2'], { name: 'Renamed' })).rejects.toThrow(
+				"You don't have permission to update the [Flows, Archived] folders.",
 			);
 
+			expect(knex['whereIn']).toHaveBeenCalledWith('id', ['folder-1', 'folder-2']);
+			expect(knex['andWhere']).toHaveBeenCalledWith('type', 'flows');
 			expect(ItemsService.prototype.updateMany).not.toHaveBeenCalled();
 		});
 
@@ -337,17 +330,52 @@ describe('FoldersService', () => {
 			expect(ItemsService.prototype.updateMany).toHaveBeenCalled();
 		});
 
+		test('lets an admin update a flows folder', async () => {
+			const knex = mockKnex([{ name: 'Flows' }]);
+
+			await service(admin, knex).updateMany(['folder-1'], { name: 'Renamed' });
+
+			expect(knex['select']).not.toHaveBeenCalled();
+			expect(ItemsService.prototype.updateMany).toHaveBeenCalled();
+		});
+
 		test('blocks a non-admin deleting an existing flows folder', async () => {
-			await expect(service(nonAdmin, { id: 'folder-1' }).deleteMany(['folder-1'])).rejects.toThrow(ForbiddenError);
+			await expect(service(nonAdmin, mockKnex([{ name: 'Flows' }])).deleteMany(['folder-1'])).rejects.toThrow(
+				"You don't have permission to delete the [Flows] folders.",
+			);
 
 			expect(ItemsService.prototype.deleteMany).not.toHaveBeenCalled();
 		});
 
-		test('scopes non-admin reads to the file library', async () => {
+		test('lets a non-admin delete a file library folder', async () => {
+			await service(nonAdmin).deleteMany(['folder-1']);
+
+			expect(ItemsService.prototype.deleteMany).toHaveBeenCalled();
+		});
+
+		test('skips the lookup when there are no keys', async () => {
+			const knex = mockKnex([{ name: 'Flows' }]);
+
+			await service(nonAdmin, knex).deleteMany([]);
+
+			expect(knex['select']).not.toHaveBeenCalled();
+			expect(ItemsService.prototype.deleteMany).toHaveBeenCalled();
+		});
+
+		test('hides flows folders from non-admin reads', async () => {
 			await service(nonAdmin).readByQuery({ filter: { name: { _eq: 'Images' } } });
 
 			expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith(
-				{ filter: { _and: [{ name: { _eq: 'Images' } }, { type: { _eq: 'files' } }] } },
+				{ filter: { _and: [{ name: { _eq: 'Images' } }, { type: { _neq: 'flows' } }] } },
+				undefined,
+			);
+		});
+
+		test('scopes a non-admin read without a filter', async () => {
+			await service(nonAdmin).readByQuery({});
+
+			expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith(
+				{ filter: { type: { _neq: 'flows' } } },
 				undefined,
 			);
 		});
@@ -361,18 +389,13 @@ describe('FoldersService', () => {
 			);
 		});
 
-		test('scopeQuery restricts a non-admin query to the file library', () => {
-			expect(service(nonAdmin).scopeQuery({ meta: ['filter_count'], filter: { name: { _eq: 'Images' } } })).toEqual({
-				meta: ['filter_count'],
-				filter: { _and: [{ name: { _eq: 'Images' } }, { type: { _eq: 'files' } }] },
-			});
-		});
+		test('leaves internal reads untouched', async () => {
+			await service(null).readByQuery({ filter: { name: { _eq: 'Images' } } });
 
-		test('scopeQuery leaves admin and internal queries untouched', () => {
-			const query = { meta: ['filter_count'], filter: { name: { _eq: 'Images' } } };
-
-			expect(service(admin).scopeQuery(query)).toBe(query);
-			expect(service(null).scopeQuery(query)).toBe(query);
+			expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith(
+				{ filter: { name: { _eq: 'Images' } } },
+				undefined,
+			);
 		});
 	});
 });

@@ -2,10 +2,9 @@ import { ForbiddenError } from '@directus/errors';
 import type { AbstractServiceOptions, Folder, MutationOptions, PrimaryKey, Query, QueryOptions } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { isAdmin } from '../utils/is-admin.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { ItemsService } from './items.js';
-
-const FILE_LIBRARY_TYPE = 'files';
 
 /** Every folder type but the file library is admin-only, which permissions can't express as they filter rows, not payloads. */
 export class FoldersService extends ItemsService<Folder> {
@@ -13,42 +12,29 @@ export class FoldersService extends ItemsService<Folder> {
 		super('directus_folders', options);
 	}
 
-	/** Null accountability is an internal call, trusted like an admin. */
-	private get fileLibraryOnly(): boolean {
-		return this.accountability !== null && this.accountability.admin !== true;
-	}
-
-	private assertAllowedType(data: Partial<Folder>): void {
-		if (!this.fileLibraryOnly) {
+	private async checkFlowsFolders(keys: PrimaryKey[], action: 'update' | 'delete'): Promise<void> {
+		if (keys.length === 0 || isAdmin(this.accountability)) {
 			return;
 		}
 
-		if (data.type === undefined || data.type === FILE_LIBRARY_TYPE) {
-			return;
-		}
-
-		throw new ForbiddenError({ reason: `You don't have permission to manage "${data.type}" folders.` });
-	}
-
-	private async assertAllowedKeys(keys: PrimaryKey[], action: 'update' | 'delete'): Promise<void> {
-		if (!this.fileLibraryOnly || keys.length === 0) {
-			return;
-		}
-
-		const restricted = await this.knex
-			.select('id')
+		const folders = await this.knex
+			.select('name')
 			.from('directus_folders')
 			.whereIn('id', keys)
-			.andWhereNot('type', FILE_LIBRARY_TYPE)
-			.first();
+			.andWhere('type', 'flows');
 
-		if (restricted) {
-			throw new ForbiddenError({ reason: `You don't have permission to ${action} this folder.` });
-		}
+		if (folders.length === 0) return;
+
+		throw new ForbiddenError({
+			reason: `You don't have permission to ${action} the [${folders.map((folder) => folder.name).join(', ')}] folders.`,
+		});
 	}
 
 	override async createOne(data: Partial<Folder>, opts: MutationOptions = {}): Promise<PrimaryKey> {
-		this.assertAllowedType(data);
+		if (!isAdmin(this.accountability) && data.type === 'flows') {
+			throw new ForbiddenError({ reason: `You don't have permission to manage flows folders.` });
+		}
+
 		return super.createOne(data, opts);
 	}
 
@@ -57,26 +43,27 @@ export class FoldersService extends ItemsService<Folder> {
 		data: Partial<Folder>,
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
-		this.assertAllowedType(data);
-		await this.assertAllowedKeys(keys, 'update');
+		if (!isAdmin(this.accountability) && data.type === 'flows') {
+			throw new ForbiddenError({ reason: `You don't have permission to manage flows folders.` });
+		}
+
+		await this.checkFlowsFolders(keys, 'update');
+
 		return super.updateMany(keys, data, opts);
 	}
 
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		await this.assertAllowedKeys(keys, 'delete');
+		await this.checkFlowsFolders(keys, 'delete');
+
 		return super.deleteMany(keys, opts);
 	}
 
-	scopeQuery<T extends Pick<Query, 'filter'>>(query: T): T {
-		if (!this.fileLibraryOnly) {
-			return query;
+	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Folder[]> {
+		if (!isAdmin(this.accountability)) {
+			query.filter = mergeFilters(query.filter ?? null, { type: { _neq: 'flows' } });
 		}
 
-		return { ...query, filter: mergeFilters(query.filter ?? null, { type: { _eq: FILE_LIBRARY_TYPE } }) };
-	}
-
-	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Folder[]> {
-		return super.readByQuery(this.scopeQuery(query), opts);
+		return super.readByQuery(query, opts);
 	}
 
 	/**
@@ -105,7 +92,7 @@ export class FoldersService extends ItemsService<Folder> {
 	 * - The returned `Map` includes the root folder itself.
 	 * - If a folder has no name, its ID will be used as a fallback.
 	 */
-	async buildTree(root: string, query?: Pick<Query, 'filter'>) {
+	async buildTree(root: string, type: 'files' | 'flows' = 'files') {
 		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
 				{
@@ -122,7 +109,7 @@ export class FoldersService extends ItemsService<Folder> {
 		}
 
 		const folders = await this.readByQuery({
-			filter: query?.filter ?? null,
+			filter: { type: { _eq: type } },
 			fields: ['id', 'parent', 'name'],
 			limit: -1,
 		});

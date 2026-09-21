@@ -205,7 +205,7 @@ export class AssetsService {
 			accountability: this.accountability,
 		});
 
-		const folderTree = await foldersService.buildTree(root, { filter: { type: { _eq: 'files' } } });
+		const folderTree = await foldersService.buildTree(root);
 
 		const filesService = new FilesService({
 			schema: this.schema,
