@@ -474,15 +474,15 @@ describe('Integration Tests', () => {
 					});
 
 					test('throws for an invalid date string', () => {
-						expect(() =>
-							service.processDates(fieldEntries, [{ date_field: 'not-a-date' }], 'create'),
-						).toThrowError(/Invalid Date format/);
+						expect(() => service.processDates(fieldEntries, [{ date_field: 'not-a-date' }], 'create')).toThrowError(
+							/Invalid Date format/,
+						);
 					});
 
 					test('throws for an invalid dateTime string', () => {
-						expect(() =>
-							service.processDates(fieldEntries, [{ datetime_field: 'not-a-date' }], 'create'),
-						).toThrowError(/Invalid DateTime format/);
+						expect(() => service.processDates(fieldEntries, [{ datetime_field: 'not-a-date' }], 'create')).toThrowError(
+							/Invalid DateTime format/,
+						);
 					});
 
 					test('throws for an invalid timestamp string instead of silently writing an Invalid Date', () => {
