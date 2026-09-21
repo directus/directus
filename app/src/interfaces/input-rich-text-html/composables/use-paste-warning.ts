@@ -5,7 +5,8 @@ import type { AnyExtension, Editor } from '@tiptap/vue-3';
 import type { Change } from 'diff';
 import { Ref, ref } from 'vue';
 import { encodePageBreaks } from '../extensions/page-break';
-import { computeNormalizationDiff, roundTrip } from './normalization-diff';
+import { findMarkupLoss } from './markup-loss';
+import { diffFormatted, roundTrip } from './normalization-diff';
 
 type PendingPaste = { html: string; from: number; to: number; event: ClipboardEvent };
 
@@ -43,7 +44,9 @@ export function usePasteWarning(
 	};
 
 	// `true` stops ProseMirror from inserting anything, so the document only changes once the dialog
-	// is answered. Plain text carries no markup to lose and never reaches the check.
+	// is answered. Plain text carries no markup to lose and never reaches the check. The gate is
+	// what the schema drops, not whether it rewrites: `<b>` to `<strong>` or an implied `<tbody>`
+	// is not a loss. The textual diff is only the picture shown in the dialog.
 	function handlePaste(view: EditorView, event: ClipboardEvent) {
 		if (replaying) return false;
 
@@ -51,7 +54,10 @@ export function usePasteWarning(
 		if (!clipboard) return false;
 
 		const html = clipboardContent(clipboard, view.state.schema);
-		const diff = computeNormalizationDiff(html, extraExtensions);
+		const normalized = roundTrip(html, extraExtensions);
+		if (findMarkupLoss(html, normalized, view.state.schema).length === 0) return false;
+
+		const diff = diffFormatted(html, normalized);
 		if (diff === null) return false;
 
 		const { from, to } = view.state.selection;

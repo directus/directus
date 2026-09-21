@@ -134,6 +134,25 @@ describe('paste warning', () => {
 		expect(dialog(wrapper).props('modelValue')).toBe(false);
 	});
 
+	// the schema rewrites all of these (tag aliases, attribute order, implied wrappers) without
+	// dropping anything; a textual comparison would open the dialog on every one
+	test.each([
+		['bold from a web page', '<p>Hello <b>bold</b></p>'],
+		['a plain table', '<table><tr><td>a</td></tr></table>'],
+		['a blockquote', '<blockquote>quoted</blockquote>'],
+		['a nested list', '<ul><li>a<ul><li>b</li></ul></li></ul>'],
+		['a link with reordered attributes', '<p><a href="https://x.test" target="_blank">x</a></p>'],
+		['an image inside a paragraph', '<p><img src="https://x.test/a.png"></p>'],
+		['a Word span with a supported style', '<p><span style="font-size:11pt">w</span></p>'],
+	])('%s is left to the editor', async (_name, html) => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+
+		expect(paste(editor, html)).toBe(false);
+		await nextTick();
+
+		expect(dialog(wrapper).props('modelValue')).toBe(false);
+	});
+
 	test('a lossy inline fragment still warns', async () => {
 		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
 

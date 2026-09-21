@@ -17,7 +17,7 @@ export function roundTrip(html: string, extraExtensions: AnyExtension[] = []): s
 }
 
 // Both sides run through formatHtml so only semantic loss surfaces, never cosmetic reformatting.
-function diffFormatted(rawBefore: string, rawAfter: string): Change[] | null {
+export function diffFormatted(rawBefore: string, rawAfter: string): Change[] | null {
 	const before = formatHtml(rawBefore);
 	const after = formatHtml(rawAfter);
 	if (before === after) return null;
