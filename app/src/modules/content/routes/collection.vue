@@ -5,7 +5,7 @@ import { ErrorCode } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import { Filter, Preset } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { computed, ref, toRefs, watch } from 'vue';
 import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import BookmarkAdd from '../components/bookmark-add.vue';
