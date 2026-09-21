@@ -18,7 +18,7 @@ import type {
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
-import { format, isValid, parseISO } from 'date-fns';
+import { format, isValid, parse, parseISO } from 'date-fns';
 import Joi from 'joi';
 import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject } from 'lodash-es';
@@ -547,6 +547,11 @@ export class PayloadService {
 
 						if (dateColumn.type === 'timestamp') {
 							const newValue = this.helpers.date.writeTimestamp(value);
+
+							if (!isValid(newValue)) {
+								throw new InvalidPayloadError({ reason: `Invalid Timestamp format in field "${dateColumn.field}"` });
+							}
+
 							payload[name] = newValue;
 						}
 					} else if (value instanceof Date === false) {
@@ -579,9 +584,11 @@ export class PayloadService {
 
 				if (action === 'read') {
 					if (value instanceof Date) payload[name] = format(value, 'HH:mm:ss');
-				} else if (value instanceof Date === false && typeof value !== 'string') {
-					// Anything but a Date or string would otherwise reach the DB driver unchanged.
-					throw new InvalidPayloadError({ reason: `Invalid Time format in field "${timeColumn.field}"` });
+				} else if (value instanceof Date === false) {
+					if (typeof value !== 'string' || !isValid(parse(value, 'HH:mm:ss', new Date(0)))) {
+						// Anything but a Date or a valid "HH:mm:ss" string would otherwise reach the DB driver unchanged.
+						throw new InvalidPayloadError({ reason: `Invalid Time format in field "${timeColumn.field}"` });
+					}
 				}
 			}
 		}

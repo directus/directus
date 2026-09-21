@@ -26,7 +26,9 @@ test(`invalid time`, async () => {
 				time: 'test',
 			}),
 		),
-	).rejects.toThrowError();
+	).rejects.toMatchObject({
+		errors: [{ extensions: { code: 'INVALID_PAYLOAD' } }],
+	});
 });
 
 test(`invalid time (non-string)`, async () => {

@@ -26,7 +26,9 @@ test(`invalid timestamp`, async () => {
 				timestamp: 'test',
 			}),
 		),
-	).rejects.toThrowError();
+	).rejects.toMatchObject({
+		errors: [{ extensions: { code: 'INVALID_PAYLOAD' } }],
+	});
 });
 
 test(`invalid timestamp (non-string)`, async () => {
