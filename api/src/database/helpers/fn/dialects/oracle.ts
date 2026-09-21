@@ -12,12 +12,8 @@ const parseLocaltime = (columnType?: string) => {
 	return '';
 };
 
-// TO_CHAR always returns a zero padded string, so every date part below is wrapped in TO_NUMBER
-// to return a number, like the other dialects do (Postgres uses EXTRACT, SQLite casts to INTEGER).
 export class FnHelperOracle extends FnHelper {
 	year(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		// TO_CHAR with YYYY returns the calendar year. IYYY would return the ISO week-numbering year,
-		// which differs whenever Jan 1 belongs to the last ISO week of the previous year.
 		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'YYYY'))`, [table, column]);
 	}
 
