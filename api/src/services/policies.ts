@@ -6,7 +6,7 @@ import { clearSystemCache } from '../cache.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { ItemsService } from './items.js';
 
-export function isIpAccessValid(value?: any[] | null): boolean {
+export function isIpAccessValid(value?: string[] | null): boolean {
 	if (value === undefined) return false;
 	if (value === null) return true;
 	if (Array.isArray(value) && value.length === 0) return true;
@@ -15,7 +15,7 @@ export function isIpAccessValid(value?: any[] | null): boolean {
 		if (typeof ip !== 'string' || ip.includes('*')) return false;
 		ip = ip.trim();
 
-		if (!IpBlocklist.isIP(ip) || !IpBlocklist.isRange(ip) || !IpBlocklist.isSubnet(ip)) return false;
+		if (!IpBlocklist.isNetwork(ip)) return false;
 	}
 
 	return true;

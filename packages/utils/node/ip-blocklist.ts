@@ -124,6 +124,24 @@ export class IpBlocklist extends BlockList {
 	}
 
 	/**
+	 * Parsing of a Range, Subnet or Address combined into 1 function
+	 * @see {@link parseRange}, {@link parseSubnet} and {@link parseAddress}
+	 */
+	parseNetwork(input: string): void {
+		if (IpBlocklist.isRange(input)) {
+			this.parseRange(input);
+			return;
+		}
+
+		if (IpBlocklist.isSubnet(input)) {
+			this.parseSubnet(input);
+			return;
+		}
+
+		this.parseAddress(input);
+	}
+
+	/**
 	 * Checks if an IP address is in the blocklist.
 	 * Automatically detects the IP version, and also classifies the embedded IPv4
 	 * of IPv6 transition forms (IPv4-compatible / NAT64 / 6to4) so they cannot be
@@ -145,6 +163,7 @@ export class IpBlocklist extends BlockList {
 		return false;
 	}
 
+	/** Validates if a given string is a ip range (e.g. `111.44.23.0-112.0.0.1`)  */
 	static isRange(ip: string): boolean {
 		const parts = ip.split('-');
 
@@ -158,10 +177,12 @@ export class IpBlocklist extends BlockList {
 		return true;
 	}
 
-	static isIP(ip: string): boolean {
+	/** Validates if a given string is a ip address (e.g. `111.44.23.0`)  */
+	static isAddress(ip: string): boolean {
 		return isIP(ip) !== 0;
 	}
 
+	/** Validates if a given string is a ip subnet (e.g. `111.44.23.0/8`)  */
 	static isSubnet(ip: string): boolean {
 		const parts = ip.split('/');
 
@@ -171,18 +192,21 @@ export class IpBlocklist extends BlockList {
 
 		return true;
 	}
+
+	/**
+	 * Validates a string as a Range, Subnet or Address
+	 * @see {@link IpBlocklist.isAddress}, {@link IpBlocklist.isRange} and {@link IpBlocklist.isSubnet}
+	 */
+	static isNetwork(ip: string): boolean {
+		return IpBlocklist.isAddress(ip) || IpBlocklist.isRange(ip) || IpBlocklist.isSubnet(ip);
+	}
 }
 
 type IP = ipaddr.IPv4 | ipaddr.IPv6;
 
 function isIpLessOrEqual(ipA: IP, ipB: IP) {
-	const bytesA = ipA.toByteArray();
-	const bytesB = ipB.toByteArray();
+	const bytesA = Buffer.from(ipA.toByteArray());
+	const bytesB = Buffer.from(ipB.toByteArray());
 
-	for (let i = 0; i < bytesA.length; i++) {
-		if (bytesA[i]! < bytesB[i]!) return true;
-		if (bytesA[i]! > bytesB[i]!) return false;
-	}
-
-	return true;
+	return bytesA.compare(bytesB) !== 1;
 }

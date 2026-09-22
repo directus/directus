@@ -272,7 +272,7 @@ describe('IpBlocklist', () => {
 
 	describe('single IP addresses', () => {
 		test.each(['127.0.0.1', '10.0.0.1', '0.0.0.0', '255.255.255.255'])('accepts IPv4 %s', (ip) => {
-			expect(IpBlocklist.isIP(ip)).toBe(true);
+			expect(IpBlocklist.isAddress(ip)).toBe(true);
 			expect(IpBlocklist.isRange(ip)).toBe(false);
 			expect(IpBlocklist.isSubnet(ip)).toBe(false);
 		});
@@ -280,14 +280,14 @@ describe('IpBlocklist', () => {
 		test.each(['::1', '::', '2001:db8::1', 'fe80::1', '2001:0db8:0000:0000:0000:0000:0000:0001'])(
 			'accepts IPv6 %s',
 			(ip) => {
-				expect(IpBlocklist.isIP(ip)).toBe(true);
+				expect(IpBlocklist.isAddress(ip)).toBe(true);
 				expect(IpBlocklist.isRange(ip)).toBe(false);
 				expect(IpBlocklist.isSubnet(ip)).toBe(false);
 			},
 		);
 
 		test.each(['10.0.0', '10.0.0.1.1', '256.0.0.1', '10.0.0.-1', 'not-an-ip', ''])('rejects malformed IP %s', (ip) => {
-			expect(IpBlocklist.isIP(ip)).toBe(false);
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
 			expect(IpBlocklist.isRange(ip)).toBe(false);
 			expect(IpBlocklist.isSubnet(ip)).toBe(false);
 		});
@@ -295,13 +295,13 @@ describe('IpBlocklist', () => {
 
 	describe('CIDR blocks', () => {
 		test.each(['10.0.0.0/24', '10.0.0.1/24', '0.0.0.0/0', '192.168.1.0/32'])('accepts IPv4 CIDR %s', (ip) => {
-			expect(IpBlocklist.isIP(ip)).toBe(false);
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
 			expect(IpBlocklist.isRange(ip)).toBe(false);
 			expect(IpBlocklist.isSubnet(ip)).toBe(true);
 		});
 
 		test.each(['2001:db8::/32', '::/0', 'fe80::1/128'])('accepts IPv6 CIDR %s', (ip) => {
-			expect(IpBlocklist.isIP(ip)).toBe(false);
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
 			expect(IpBlocklist.isRange(ip)).toBe(false);
 			expect(IpBlocklist.isSubnet(ip)).toBe(true);
 		});
@@ -316,7 +316,7 @@ describe('IpBlocklist', () => {
 			'/24',
 			'10.0.0/24',
 		])('rejects malformed CIDR %s', (ip) => {
-			expect(IpBlocklist.isIP(ip)).toBe(false);
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
 			expect(IpBlocklist.isRange(ip)).toBe(false);
 			expect(IpBlocklist.isSubnet(ip)).toBe(false);
 		});
@@ -328,21 +328,25 @@ describe('IpBlocklist', () => {
 
 	describe('IP masks', () => {
 		test.each(['10.0.0.0/255.255.255.0', '192.168.0.0/255.255.0.0', 'fe80::/ffff::'])('rejects mask %s', (ip) => {
-			expect(IpBlocklist.isIP(ip)).toBe(false);
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
 			expect(IpBlocklist.isRange(ip)).toBe(false);
 			expect(IpBlocklist.isSubnet(ip)).toBe(false);
 		});
 	});
 
 	describe('IP ranges', () => {
-		test.each(['10.0.0.1-10.0.0.5', '0.0.0.0-255.255.255.255', 'fe80::1-fe80::5', '::1-::2'])(
-			'accepts range %s',
-			(ip) => {
-				expect(IpBlocklist.isIP(ip)).toBe(false);
-				expect(IpBlocklist.isRange(ip)).toBe(true);
-				expect(IpBlocklist.isSubnet(ip)).toBe(false);
-			},
-		);
+		test.each([
+			'10.0.0.1-10.0.0.5',
+			'0.0.0.0-255.255.255.255',
+			'fe80::1-fe80::5',
+			'::1-::2',
+			'10.0.0.1-10.0.0.1',
+			'10.0.255.255-10.1.0.0',
+		])('accepts range %s', (ip) => {
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
+			expect(IpBlocklist.isRange(ip)).toBe(true);
+			expect(IpBlocklist.isSubnet(ip)).toBe(false);
+		});
 
 		test.each([
 			'10.0.2.1-10.0.0.1',
@@ -352,8 +356,9 @@ describe('IpBlocklist', () => {
 			'10.0.0.1-10.0.0.2-10.0.0.3',
 			'10.0.0.1-not-an-ip',
 			'10.0.0-10.0.0.5',
+			'10.0.0.1-::1',
 		])('rejects malformed range %s', (ip) => {
-			expect(IpBlocklist.isIP(ip)).toBe(false);
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
 			expect(IpBlocklist.isRange(ip)).toBe(false);
 			expect(IpBlocklist.isSubnet(ip)).toBe(false);
 		});
@@ -361,7 +366,7 @@ describe('IpBlocklist', () => {
 
 	describe('wildcards', () => {
 		test.each(['10.0.0.*', '*', '*.*.*.*', '10.0.*.1'])('rejects wildcard %s', (ip) => {
-			expect(IpBlocklist.isIP(ip)).toBe(false);
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
 			expect(IpBlocklist.isRange(ip)).toBe(false);
 			expect(IpBlocklist.isSubnet(ip)).toBe(false);
 		});

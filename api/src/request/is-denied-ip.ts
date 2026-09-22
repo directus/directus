@@ -23,17 +23,7 @@ export function isDeniedIp(ip: string): boolean {
 				continue;
 			}
 
-			if (IpBlocklist.isRange(blockNetwork)) {
-				blockList.parseRange(blockNetwork);
-				continue;
-			}
-
-			if (IpBlocklist.isSubnet(blockNetwork)) {
-				blockList.parseSubnet(blockNetwork);
-				continue;
-			}
-
-			blockList.parseAddress(blockNetwork);
+			blockList.parseNetwork(blockNetwork);
 		}
 
 		if (blockNetworkInterfaces) {
