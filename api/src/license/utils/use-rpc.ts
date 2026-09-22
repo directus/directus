@@ -40,7 +40,7 @@ export async function useRPC<C>(self: C, channel: string): Promise<ExtractMethod
 
 	return new Proxy({} as any, {
 		get(_, method) {
-			// Awaiting this proxy would triggers a publish call with `then` with noting to respond leaving it to hang
+			// Awaiting this proxy would triggers a publish call with `then` with nothing to respond leaving it to hang
 			if (typeof method !== 'string' || method === 'then') return undefined;
 
 			return (...args: any) => messenger.publish(channel, { uid, method, args });
