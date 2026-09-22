@@ -19,6 +19,7 @@ describe('boot with a license', () => {
 		directus = await useSandbox(database, {
 			port: sandboxPort(0),
 			instances: '2',
+			env: { LICENSE_KEY: license.key },
 			hooks: {
 				async beforeApi({ env }) {
 					await mockClient.registerLicense(env.LICENSE_API_URL!, license);
