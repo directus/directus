@@ -1,3 +1,4 @@
+import { GraphQLNonNull } from 'graphql';
 // eslint-disable-next-line import/order
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
@@ -58,13 +59,13 @@ function makeSchemaComposer() {
 	};
 }
 
-function makeSchema(action: 'read' | 'create', collections: Record<string, any>) {
+function makeSchema(action: 'read' | 'create' | 'update', collections: Record<string, any>) {
 	const empty = { collections: {}, relations: [] };
 
 	return {
 		read: action === 'read' ? { collections, relations: [] } : empty,
 		create: action === 'create' ? { collections, relations: [] } : empty,
-		update: empty,
+		update: action === 'update' ? { collections, relations: [] } : empty,
 		delete: empty,
 	};
 }
@@ -73,8 +74,8 @@ function makeCollection(name: string, fields: Record<string, any>) {
 	return { collection: name, primary: 'id', singleton: false, fields };
 }
 
-function makeField(name: string, type: string) {
-	return { field: name, type, special: [], note: null, nullable: true, defaultValue: null };
+function makeField(name: string, type: string, overrides: Record<string, any> = {}) {
+	return { field: name, type, special: [], note: null, nullable: true, defaultValue: null, ...overrides };
 }
 
 const mockInconsistentFields = { read: {}, create: {}, update: {}, delete: {} } as any;
@@ -207,5 +208,66 @@ describe('getTypes – json() inside {field}_func (Phase 3)', () => {
 		const { CollectionTypes } = getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'create');
 
 		expect(CollectionTypes['articles']!.getFields()).not.toHaveProperty('metadata_func');
+	});
+});
+
+describe('getTypes – non-null marking with default values (directus/directus#25888)', () => {
+	let sc: ReturnType<typeof makeSchemaComposer>;
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+		mockApplyFunctionToColumnName.mockImplementation((col: string) => col);
+		sc = makeSchemaComposer();
+	});
+
+	/** Returns the emitted GraphQL type for the `size` string field. */
+	function fieldType(action: 'read' | 'create' | 'update', nullable: boolean, defaultValue: unknown) {
+		const schema = makeSchema(action, {
+			articles: makeCollection('articles', {
+				id: makeField('id', 'integer'),
+				size: makeField('size', 'string', { nullable, defaultValue }),
+			}),
+		});
+
+		// Empty per-collection lists mark every field as consistent
+		const inconsistentFields = {
+			read: { articles: [] },
+			create: { articles: [] },
+			update: { articles: [] },
+			delete: {},
+		} as any;
+
+		const { CollectionTypes } = getTypes(sc as any, 'items', schema as any, inconsistentFields, action);
+
+		// CollectionTypes is keyed by collection name for every action
+		return CollectionTypes['articles']!.getFields()['size'].type;
+	}
+
+	test('read: NOT NULL field with a default value is non-null', () => {
+		expect(fieldType('read', false, 'small')).toBeInstanceOf(GraphQLNonNull);
+	});
+
+	test('read: NOT NULL field without a default value is non-null', () => {
+		expect(fieldType('read', false, null)).toBeInstanceOf(GraphQLNonNull);
+	});
+
+	test('read: nullable field with a default value stays nullable', () => {
+		expect(fieldType('read', true, 'small')).not.toBeInstanceOf(GraphQLNonNull);
+	});
+
+	test('create: NOT NULL field with a default value is nullable (omittable)', () => {
+		expect(fieldType('create', false, 'small')).not.toBeInstanceOf(GraphQLNonNull);
+	});
+
+	test('create: NOT NULL field without a default value is non-null', () => {
+		expect(fieldType('create', false, null)).toBeInstanceOf(GraphQLNonNull);
+	});
+
+	test('update: NOT NULL field with a default value is nullable', () => {
+		expect(fieldType('update', false, 'small')).not.toBeInstanceOf(GraphQLNonNull);
+	});
+
+	test('update: NOT NULL field without a default value is nullable', () => {
+		expect(fieldType('update', false, null)).not.toBeInstanceOf(GraphQLNonNull);
 	});
 });
