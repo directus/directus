@@ -28,6 +28,11 @@ describe('findMarkupLoss', () => {
 				'<p><span style="font-weight:bold">b</span> <span style="font-style:italic">i</span></p>',
 			],
 			['styles that clear marks', '<p><b style="font-weight:400">plain</b></p>'],
+			// browsers list this shorthand as four `text-decoration-*` longhands no rule names
+			[
+				'shorthand styles that become marks',
+				'<p><span style="text-decoration:underline">u</span> <span style="text-decoration:line-through">s</span></p>',
+			],
 			['unwrapped bare wrappers', '<div><span>plain</span></div><p><o:p></o:p>word</p>'],
 			['preserved global attributes', '<h1 class="x" id="y" data-k="v" title="t">h</h1>'],
 			['non-content elements', '<style>p{}</style><p>s</p><script>1</script>'],

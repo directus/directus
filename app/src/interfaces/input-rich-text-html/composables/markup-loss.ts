@@ -57,7 +57,12 @@ export function findMarkupLoss(input: string, normalized: string, schema: Schema
 	return lost;
 }
 
-type Rules = { tags: TagParseRule[]; styles: StyleParseRule[] };
+type Rules = {
+	tags: TagParseRule[];
+	styles: StyleParseRule[];
+	/** every CSS property some style rule looks at */
+	properties: string[];
+};
 
 type Description = {
 	/** schema type the parser assigns, `null` when it unwraps the element */
@@ -116,9 +121,12 @@ const BLOCK_TAGS = new Set([
 
 function parseRules(schema: Schema): Rules {
 	const { rules } = ProseMirrorDOMParser.fromSchema(schema);
+	const styles = rules.filter((rule): rule is StyleParseRule => 'style' in rule && rule.style !== undefined);
+
 	return {
 		tags: rules.filter((rule): rule is TagParseRule => 'tag' in rule && rule.tag !== undefined),
-		styles: rules.filter((rule): rule is StyleParseRule => 'style' in rule && rule.style !== undefined),
+		styles,
+		properties: Array.from(new Set(styles.map((rule) => rule.style.split('=')[0]!))),
 	};
 }
 
@@ -164,14 +172,26 @@ function describe(el: HTMLElement, rules: Rules): Description {
 		attrs.set(name, value);
 	}
 
-	// the DOM reserializes declarations for both sides, so `font-size:11pt` and `font-size: 11pt;` agree
-	for (let i = 0; i < el.style.length; i++) {
-		const property = el.style[i]!;
+	// Browsers list a shorthand as its longhands (`text-decoration: underline` becomes
+	// `text-decoration-line` and three more), which no rule names. So, as the parser does, the rules'
+	// properties are read by name; only what is left once those are removed counts as an attribute.
+	// The DOM reserializes values for both sides, so `font-size:11pt` and `font-size: 11pt;` agree.
+	const rest = el.cloneNode(false) as HTMLElement;
+
+	for (const property of rules.properties) {
 		const value = el.style.getPropertyValue(property);
+		if (!value) continue;
+
+		rest.style.removeProperty(property);
 		const mark = matchStyle(property, value, rules);
 
 		if (mark === undefined) attrs.set(`style:${property}`, value);
 		else if (mark !== null) marks.push(mark);
+	}
+
+	for (let i = 0; i < rest.style.length; i++) {
+		const property = rest.style[i]!;
+		attrs.set(`style:${property}`, rest.style.getPropertyValue(property));
 	}
 
 	return { type: matchType(el, rules), attrs, marks };

@@ -112,16 +112,74 @@ export function usePasteWarning(
 }
 
 /**
+ * Declarations Google Docs stamps on every paragraph, span, and list regardless of what the author
+ * did. `null` strips the property whatever its value; a string strips only that value, so an
+ * underline, a sub/superscript, or an indent the author chose is still checked.
+ */
+const GOOGLE_DOCS_DEFAULTS: Record<string, string | null> = {
+	'line-height': null,
+	'margin-top': null,
+	'margin-bottom': null,
+	'padding-inline-start': null,
+	'white-space': null,
+	'-webkit-text-decoration-skip': null,
+	'text-decoration-skip-ink': null,
+	'font-variant': 'normal',
+	'text-decoration': 'none',
+	'vertical-align': 'baseline',
+};
+
+/**
+ * Google Docs frames its payload in a `<b style="font-weight:normal" id="docs-internal-guid-…">` the
+ * editor unwraps, and fills it with its document defaults. None of it is formatting the author
+ * chose, so it is not a loss and is stripped before the check.
+ */
+function unwrapGoogleDocs(wrapper: Element) {
+	// list markers, table cells and images carry layout the editor never models (the text inside
+	// keeps its own formatting); Docs also frames every table in an aligned <div>
+	for (const el of Array.from(
+		wrapper.querySelectorAll('li[style], table[style], tr[style], td[style], th[style], img[style]'),
+	)) {
+		el.removeAttribute('style');
+	}
+
+	for (const col of Array.from(wrapper.querySelectorAll('col[width]'))) col.removeAttribute('width');
+
+	for (const table of Array.from(wrapper.querySelectorAll('table'))) {
+		const frame = table.parentElement;
+		if (frame?.tagName === 'DIV') frame.replaceWith(...Array.from(frame.childNodes));
+	}
+
+	// an image sits in a sizing <span> inside a text-styled <span>, neither of which holds text
+	for (const span of Array.from(wrapper.querySelectorAll('span'))) {
+		if (span.querySelector('img') && span.textContent?.trim() === '') span.replaceWith(...Array.from(span.childNodes));
+	}
+
+	for (const el of Array.from(wrapper.querySelectorAll<HTMLElement>('[style]'))) {
+		for (const [property, value] of Object.entries(GOOGLE_DOCS_DEFAULTS)) {
+			if (value === null || el.style.getPropertyValue(property) === value) el.style.removeProperty(property);
+		}
+
+		if (el.style.length === 0) el.removeAttribute('style');
+	}
+
+	wrapper.replaceWith(...Array.from(wrapper.childNodes));
+}
+
+/**
  * The clipboard reduced to what the editor would keep: browsers frame it in a `<meta charset>` and
- * fragment comments, ProseMirror stamps the first element with `data-pm-slice`, and an inline copy
- * has no block wrapper. The editor drops or adds all of these on any paste, so left in they read as
- * loss and trip the warning on valid content.
+ * fragment comments, ProseMirror stamps the first element with `data-pm-slice`, Google Docs wraps
+ * everything in a `<b>` full of its defaults, and an inline copy has no block wrapper. The editor
+ * drops or adds all of these on any paste, so left in they read as loss and trip the warning on
+ * valid content.
  */
 function clipboardContent(html: string, schema: Schema): string {
 	const body = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html').body;
 
 	for (const meta of Array.from(body.querySelectorAll('meta'))) meta.remove();
 	for (const el of Array.from(body.querySelectorAll('[data-pm-slice]'))) el.removeAttribute('data-pm-slice');
+
+	for (const wrapper of Array.from(body.querySelectorAll('b[id^="docs-internal-guid-"]'))) unwrapGoogleDocs(wrapper);
 
 	const walker = body.ownerDocument.createTreeWalker(body, NodeFilter.SHOW_COMMENT);
 	const comments: Node[] = [];

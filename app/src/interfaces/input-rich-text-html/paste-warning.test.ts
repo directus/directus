@@ -18,6 +18,22 @@ import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 const LOSSY = '<span style="white-space: pre-wrap;" data-metadata="figma">Grass</span>';
 const SUPPORTED = '<p>fine</p>';
 
+// Google Docs' clipboard shape: one `<b>` wrapper, and its document defaults stamped on every element
+const DOCS_SPAN =
+	'font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;' +
+	'font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;';
+
+const DOCS_P = 'line-height:1.38;margin-top:0pt;margin-bottom:0pt;';
+
+function googleDocs(paragraphs: string) {
+	return `<meta charset='utf-8'><b style="font-weight:normal;" id="docs-internal-guid-4a1f">${paragraphs}</b>`;
+}
+
+const GOOGLE_DOCS_CLIPBOARD = googleDocs(
+	`<p dir="ltr" style="${DOCS_P}"><span style="${DOCS_SPAN}">Awiwiwwi</span></p><br />` +
+		`<p dir="ltr" style="${DOCS_P}"><span style="${DOCS_SPAN}">Thus is a test</span></p>`,
+);
+
 // Figma's clipboard shape; on load the line break becomes a hard break and the double space collapses
 const FIGMA_CLIPBOARD =
 	`<meta charset='utf-8'><span data-metadata="<!--(figmeta)e30=(/figmeta)-->"></span>` +
@@ -144,6 +160,50 @@ describe('paste warning', () => {
 		['a link with reordered attributes', '<p><a href="https://x.test" target="_blank">x</a></p>'],
 		['an image inside a paragraph', '<p><img src="https://x.test/a.png"></p>'],
 		['a Word span with a supported style', '<p><span style="font-size:11pt">w</span></p>'],
+		['a Google Docs paste', GOOGLE_DOCS_CLIPBOARD],
+		[
+			'a Google Docs link',
+			googleDocs(
+				`<p dir="ltr" style="${DOCS_P}"><a href="https://x.test" style="text-decoration:none;"><span style="${DOCS_SPAN.replace(
+					'text-decoration:none',
+					'text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none',
+				)}">link</span></a></p>`,
+			),
+		],
+		[
+			'a Google Docs image',
+			googleDocs(
+				`<p dir="ltr" style="${DOCS_P}"><span style="${DOCS_SPAN}">` +
+					`<span style="border:none;display:inline-block;overflow:hidden;width:624px;height:416px;">` +
+					`<img src="https://x.test/a.png" width="624" height="416" style="margin-left:0px;margin-top:0px;" /></span></span></p>`,
+			),
+		],
+		[
+			'a Google Docs table',
+			googleDocs(
+				`<div dir="ltr" style="margin-left:0pt;" align="left">` +
+					`<table style="border:none;border-collapse:collapse;table-layout:fixed;width:468pt"><colgroup><col width="*" /></colgroup>` +
+					`<tbody><tr style="height:0pt"><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;` +
+					`border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;padding:5pt 5pt 5pt 5pt;overflow:hidden;overflow-wrap:break-word;">` +
+					`<p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;"><span style="${DOCS_SPAN}">cell</span></p></td></tr></tbody></table></div>`,
+			),
+		],
+		[
+			'a Google Docs list',
+			googleDocs(
+				`<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">` +
+					`<li dir="ltr" style="list-style-type:disc;${DOCS_SPAN.replace('#000000', '#ff9900')}" aria-level="1">` +
+					`<p dir="ltr" style="${DOCS_P}text-align: right;" role="presentation">` +
+					`<span style="${DOCS_SPAN.replace('#000000', '#ff9900')}">Awiwiwiiw</span></p></li></ul>`,
+			),
+		],
+		[
+			'a Google Docs paste with underline and subscript',
+			googleDocs(
+				`<p dir="ltr" style="${DOCS_P}"><span style="${DOCS_SPAN.replace('text-decoration:none', 'text-decoration:underline')}">u</span>` +
+					`<span style="${DOCS_SPAN.replace('vertical-align:baseline', 'vertical-align:sub')}">s</span></p>`,
+			),
+		],
 	])('%s is left to the editor', async (_name, html) => {
 		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
 
@@ -151,6 +211,22 @@ describe('paste warning', () => {
 		await nextTick();
 
 		expect(dialog(wrapper).props('modelValue')).toBe(false);
+	});
+
+	// only Docs' stamped defaults are noise; formatting the author chose is still checked
+	test('a Google Docs paste with an indented paragraph still warns', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+
+		expect(
+			paste(
+				editor,
+				googleDocs(`<p dir="ltr" style="${DOCS_P}text-indent:36pt;"><span style="${DOCS_SPAN}">fine</span></p>`),
+			),
+		).toBe(true);
+
+		await nextTick();
+
+		expect(dialog(wrapper).props('modelValue')).toBe(true);
 	});
 
 	test('a lossy inline fragment still warns', async () => {
