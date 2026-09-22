@@ -3,7 +3,21 @@
  * extensions are used. These are virtually rewritten to use the existing bundled instances in the
  * global scope rather than local copies
  */
-export const APP_SHARED_DEPS = ['@directus/extensions-sdk', 'vue', 'vue-router', 'vue-i18n', 'pinia'] as const;
+export const APP_SHARED_DEPS = [
+	'@directus/extensions-sdk',
+	'vue',
+	'vue-router',
+	'vue-i18n',
+	'pinia',
+	// Tiptap must be a single instance so extensions share the app's ProseMirror schema. `@tiptap/pm`
+	// has no root export, only subpaths
+	'@tiptap/core',
+	'@tiptap/vue-3',
+	'@tiptap/pm/model',
+	'@tiptap/pm/state',
+	'@tiptap/pm/transform',
+	'@tiptap/pm/view',
+] as const;
 
 /**
  * Dependencies that we guarantee are available in the node_modules of the API when API extensions
