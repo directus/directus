@@ -9,8 +9,8 @@ export const APP_SHARED_DEPS = [
 	'vue-router',
 	'vue-i18n',
 	'pinia',
-	// Tiptap must be a single instance so extensions share the app's ProseMirror schema. `@tiptap/pm`
-	// has no root export, only subpaths
+	// `richtext` extensions must get the app's Tiptap instance so they share the editor's ProseMirror
+	// schema. `@tiptap/pm` has no root export, only subpaths
 	'@tiptap/core',
 	'@tiptap/vue-3',
 	'@tiptap/pm/model',
