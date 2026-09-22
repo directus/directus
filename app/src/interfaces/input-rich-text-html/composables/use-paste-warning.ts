@@ -3,7 +3,7 @@ import { DOMParser as ProseMirrorDOMParser, type Schema } from '@tiptap/pm/model
 import type { EditorView } from '@tiptap/pm/view';
 import type { AnyExtension, Editor } from '@tiptap/vue-3';
 import type { Change } from 'diff';
-import { Ref, ref } from 'vue';
+import { Ref, ref, watch } from 'vue';
 import { encodePageBreaks } from '../extensions/page-break';
 import { findMarkupLoss } from './markup-loss';
 import { diffFormatted, roundTrip } from './normalization-diff';
@@ -33,6 +33,11 @@ export function usePasteWarning(
 	const pasteWarningDiff = ref<Change[]>([]);
 	let pending: PendingPaste | null = null;
 	let replaying = false;
+
+	// the overlay click closes the dialog through v-model without a button, and is a cancel too
+	watch(pasteWarningOpen, (open) => {
+		if (!open) pending = null;
+	});
 
 	return {
 		pasteWarningOpen,

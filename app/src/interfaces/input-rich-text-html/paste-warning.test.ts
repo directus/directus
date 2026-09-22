@@ -325,4 +325,20 @@ describe('paste warning', () => {
 		expect(dialog(wrapper).props('modelValue')).toBe(false);
 		expect(wrapper.emitted('input')).toBeUndefined();
 	});
+
+	// the overlay click closes through v-model, not through a button, and must not keep the paste
+	// alive for a later confirm
+	test('closing the warning from outside drops the paste', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+
+		paste(editor, LOSSY);
+		await nextTick();
+		dialog(wrapper).vm.$emit('update:modelValue', false);
+		await nextTick();
+		dialog(wrapper).vm.$emit('confirm');
+		await nextTick();
+
+		expect(editor.getHTML()).toBe('<p>Hello</p>');
+		expect(wrapper.emitted('input')).toBeUndefined();
+	});
 });

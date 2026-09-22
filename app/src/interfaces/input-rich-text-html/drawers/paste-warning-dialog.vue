@@ -29,6 +29,7 @@ const open = defineModel<boolean>({ required: true });
 			</div>
 
 			<VCardActions>
+				<VButton secondary @click="emit('cancel')">{{ $t('cancel') }}</VButton>
 				<VButton secondary @click="emit('raw')">{{ $t('wysiwyg_options.paste_warning_paste_raw') }}</VButton>
 				<VButton @click="emit('confirm')">{{ $t('wysiwyg_options.paste_warning_paste_cleaned') }}</VButton>
 			</VCardActions>
