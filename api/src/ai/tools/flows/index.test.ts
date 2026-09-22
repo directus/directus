@@ -2,7 +2,7 @@ import type { Accountability, FlowRaw, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 import { FlowsService } from '../../../services/flows.js';
 import { ItemsService } from '../../../services/items.js';
-import { flows } from './index.js';
+import { flows, FlowsValidateSchema } from './index.js';
 
 vi.mock('../../../services/flows');
 vi.mock('../../../services/items');
@@ -222,6 +222,21 @@ describe('flows tool', () => {
 					data: mockKey,
 				});
 			});
+		});
+	});
+
+	describe('validation schema', () => {
+		test.each([
+			['assigns a folder', 'folder-uuid'],
+			['clears the folder', null],
+		])('%s', (_label, folder) => {
+			const result = FlowsValidateSchema.safeParse({ action: 'update', key: 'flow-uuid', data: { folder } });
+
+			expect(result.success).toBe(true);
+
+			const parsed = result.success && result.data.action === 'update' ? result.data : undefined;
+
+			expect(parsed?.data).toEqual({ folder });
 		});
 	});
 
