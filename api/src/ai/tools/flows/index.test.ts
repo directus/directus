@@ -36,7 +36,9 @@ describe('flows tool', () => {
 				deleteOne: vi.fn(),
 			};
 
-			vi.mocked(FlowsService).mockImplementation(() => mockFlowsService as unknown as FlowsService);
+			vi.mocked(FlowsService).mockImplementation(function () {
+				return mockFlowsService as unknown as FlowsService;
+			});
 
 			mockLayoutService = {
 				readByQuery: vi.fn().mockResolvedValue([]),
@@ -45,10 +47,9 @@ describe('flows tool', () => {
 
 			// FlowsService extends ItemsService, so its automocked constructor runs
 			// through this implementation too; dispatch on the collection
-			vi.mocked(ItemsService).mockImplementation(
-				(collection) =>
-					(collection === 'directus_operations' ? mockLayoutService : mockFlowsService) as unknown as ItemsService,
-			);
+			vi.mocked(ItemsService).mockImplementation(function (collection) {
+				return (collection === 'directus_operations' ? mockLayoutService : mockFlowsService) as unknown as ItemsService;
+			});
 		});
 
 		describe('CREATE action', () => {
