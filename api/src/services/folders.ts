@@ -1,38 +1,75 @@
-import { ForbiddenError } from '@directus/errors';
+import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Folder, MutationOptions, PrimaryKey, Query, QueryOptions } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
+import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { isAdmin } from '../utils/is-admin.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { ItemsService } from './items.js';
 
-/** Every folder type but the file library is admin-only, which permissions can't express as they filter rows, not payloads. */
+const logger = useLogger();
+
 export class FoldersService extends ItemsService<Folder> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_folders', options);
 	}
 
+	/**
+	 * Flows folders are admin-only, ensure they cannot be changed
+	 * */
 	private async checkFlowsFolders(keys: PrimaryKey[], action: 'update' | 'delete'): Promise<void> {
 		if (keys.length === 0 || isAdmin(this.accountability)) {
 			return;
 		}
 
-		const folders = await this.knex
-			.select('name')
+		const folder = await this.knex
+			.select('id')
 			.from('directus_folders')
 			.whereIn('id', keys)
-			.andWhere('type', 'flows');
+			.andWhere('type', 'flows')
+			.first();
 
-		if (folders.length === 0) return;
+		if (folder) {
+			logger.debug(`User ${this.accountability?.user} doesn't have permission to modify flows folder ${folder.id}.`);
 
-		throw new ForbiddenError({
-			reason: `You don't have permission to ${action} the [${folders.map((folder) => folder.name).join(', ')}] folders.`,
-		});
+			throw new InvalidPayloadError({ reason: `Cannot ${action} a flows folder` });
+		}
+	}
+
+	/**
+	 * Flow folders are admin only, ensure a flow folder parent cannot be set
+	 */
+	private async checkFlowsParent(parent: Partial<Folder>['parent']): Promise<void> {
+		if (typeof parent !== 'string' || isAdmin(this.accountability)) {
+			return;
+		}
+
+		const folder = await this.knex
+			.select('id')
+			.from('directus_folders')
+			.where('id', parent)
+			.andWhere('type', 'flows')
+			.first();
+
+		if (folder) {
+			logger.debug(
+				`User ${this.accountability?.user} doesn't have permission to nest a folder under flows folder ${folder.id}.`,
+			);
+
+			throw new InvalidPayloadError({ reason: `Cannot nest a folder under a flows folder` });
+		}
 	}
 
 	override async createOne(data: Partial<Folder>, opts: MutationOptions = {}): Promise<PrimaryKey> {
-		if (!isAdmin(this.accountability) && data.type === 'flows') {
-			throw new ForbiddenError({ reason: `You don't have permission to manage flows folders.` });
+		try {
+			if (!isAdmin(this.accountability) && data.type === 'flows') {
+				throw new InvalidPayloadError({ reason: `Cannot create a flows folder` });
+			}
+
+			await this.checkFlowsParent(data.parent);
+		} catch (err: any) {
+			// Defer the error to be thrown until after permission checks
+			opts.preMutationError = err;
 		}
 
 		return super.createOne(data, opts);
@@ -43,17 +80,28 @@ export class FoldersService extends ItemsService<Folder> {
 		data: Partial<Folder>,
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
-		if (!isAdmin(this.accountability) && data.type === 'flows') {
-			throw new ForbiddenError({ reason: `You don't have permission to manage flows folders.` });
-		}
+		try {
+			if (!isAdmin(this.accountability) && data.type === 'flows') {
+				throw new InvalidPayloadError({ reason: `Cannot change a folder into a flows folder` });
+			}
 
-		await this.checkFlowsFolders(keys, 'update');
+			await this.checkFlowsParent(data.parent);
+			await this.checkFlowsFolders(keys, 'update');
+		} catch (err: any) {
+			// Defer the error to be thrown until after permission checks
+			opts.preMutationError = err;
+		}
 
 		return super.updateMany(keys, data, opts);
 	}
 
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		await this.checkFlowsFolders(keys, 'delete');
+		try {
+			await this.checkFlowsFolders(keys, 'delete');
+		} catch (err: any) {
+			// Defer the error to be thrown until after permission checks
+			opts.preMutationError = err;
+		}
 
 		return super.deleteMany(keys, opts);
 	}
