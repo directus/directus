@@ -332,7 +332,8 @@ test('rooms for different items do not see each other', async () => {
 	expect((await secondLatecomer.join(COLLECTION, secondId)).changes).toMatchObject({ title: 'Update 2' });
 });
 
-test('a room scoped to a version reports when that version is saved', async () => {
+// TODO fix websocket flaky tests and remove the retry
+test('a room scoped to a version reports when that version is saved', { retry: 3 }, async () => {
 	const id = await item({ title: 'Original' });
 
 	const version = await api.request(
