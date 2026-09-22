@@ -62,7 +62,7 @@ describe('FnHelperOracle', () => {
 			expect(sql).toContain("'$.price' RETURNING NUMBER");
 		});
 
-		test('default (no jsonReturnType) uses COALESCE(JSON_QUERY, JSON_VALUE)', () => {
+		test('default (no jsonReturnType) uses COALESCE(JSON_VALUE, JSON_QUERY)', () => {
 			const helper = new FnHelperOracle(db, schema);
 
 			const result = helper.json('items', 'data', {
@@ -73,8 +73,8 @@ describe('FnHelperOracle', () => {
 			});
 
 			const { sql } = result.toSQL();
-			expect(sql).toMatch(/COALESCE\(JSON_QUERY/i);
-			expect(sql).toMatch(/JSON_VALUE/i);
+			expect(sql).toMatch(/COALESCE\(JSON_VALUE/i);
+			expect(sql).toMatch(/JSON_QUERY/i);
 		});
 
 		test('uses originalCollectionName for schema lookup when provided', () => {
