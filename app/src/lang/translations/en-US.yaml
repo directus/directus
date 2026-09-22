@@ -2788,9 +2788,8 @@ interfaces:
     description: A rich-text editor writing HTML content
     toolbar: Toolbar
     extensions: Extensions
-    extensions_note:
-      Rich text extensions this field is allowed to use. An extension that is not selected here is not part of the
-      field's schema, so its markup is removed when the content is saved.
+    extensions_placeholder: Select extensions...
+    extensions_note: Extensions this field can use. Markup from unselected extensions is removed on save.
     custom_formats: Custom Formats
     custom_formats_note:
       A list of custom formats. Each entry needs a `title` plus either an `inline` tag, a `block` tag, a `selector` of

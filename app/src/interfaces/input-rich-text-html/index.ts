@@ -36,6 +36,7 @@ export default defineInterface({
 								note: '$t:interfaces.input-rich-text-html.extensions_note',
 								options: {
 									choices: useRichTexts().value.map(({ id, name }) => ({ value: id, text: name })),
+									placeholder: '$t:interfaces.input-rich-text-html.extensions_placeholder',
 								},
 							},
 						} satisfies DeepPartial<AppField>,
