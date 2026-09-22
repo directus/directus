@@ -2,6 +2,7 @@ import { DIRECTUS_CORE_LICENSE, readLicense } from '@directus/license';
 import { type Sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
 import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeAll, expect, test } from 'vitest';
 
@@ -9,7 +10,7 @@ let directus: Sandbox;
 let api: DirectusClient<any> & RestClient<any>;
 
 beforeAll(async () => {
-	directus = await useSandbox(database, { extras: { license: true } });
+	directus = await useSandbox(database, { port: sandboxPort(), extras: { license: true } });
 
 	api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 });

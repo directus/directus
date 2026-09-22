@@ -73,6 +73,7 @@ describe('activation post boot', () => {
 
 	beforeAll(async () => {
 		directus = await useSandbox(database, {
+			port: sandboxPort(1),
 			instances: '2',
 			hooks: {
 				async beforeApi({ env }) {
