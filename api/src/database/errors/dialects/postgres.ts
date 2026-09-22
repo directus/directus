@@ -58,7 +58,7 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		 * infer it.
 		 *
 		 * When a single field is provided, the error must be from it.
-		 * For multi-field inserts, attribution would be speculative, and therefor omit it
+		 * For multi-field inserts, attribution would be speculative, and therefore omit it
 		 */
 
 		const regex = /"(.*?)"/g;
@@ -84,7 +84,7 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		 * infer it.
 		 *
 		 * When a single field is provided, the error must be from it.
-		 * For multi-field inserts, attribution would be speculative, and therefor omit it
+		 * For multi-field inserts, attribution would be speculative, and therefore omit it
 		 */
 
 		const regex = /"(.*?)"/g;

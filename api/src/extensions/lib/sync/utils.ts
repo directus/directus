@@ -57,7 +57,7 @@ export function getSyncPaths(partialPath: string | undefined) {
 
 /**
  * Retrieve the stats for local and remote files and check if they are the same
- * Returns false if files are differnt else true
+ * Returns false if files are different else true
  */
 export async function compareFileMetadata(localPath: string, remotePath: string, disk: Driver): Promise<boolean> {
 	const localStat = await fsStat(localPath).catch(() => {});

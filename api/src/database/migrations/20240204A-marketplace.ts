@@ -90,7 +90,7 @@ export async function up(knex: Knex): Promise<void> {
 /*
  * Note: For local extensions having a different package & folder name,
  * we aren't able to revert to the exact same state as before.
- * But we still need to do the name convertion, in order for the migration to succeed.
+ * But we still need to do the name conversion, in order for the migration to succeed.
  */
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_extensions', (table) => {

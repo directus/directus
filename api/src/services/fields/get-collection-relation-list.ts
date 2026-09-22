@@ -22,7 +22,7 @@ export function getCollectionRelationList(collection: string, collectionRelation
 	}
 
 	function addRelationNode(node: string) {
-		// system collections cannot have duplication fields and therfore can be skipped
+		// system collections cannot have duplication fields and therefore can be skipped
 		if (isSystemCollection(node)) return;
 
 		// skip circular reference and existing linked nodes

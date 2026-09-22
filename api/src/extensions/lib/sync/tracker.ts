@@ -15,7 +15,7 @@ export class SyncFileTracker {
 	}
 
 	/**
-	 * Reads all files recusrively in the provided directory
+	 * Reads all files recursively in the provided directory
 	 * @returns the number of files read
 	 */
 	async readLocalFiles(localExtensionsPath: string): Promise<number> {

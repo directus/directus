@@ -97,7 +97,7 @@ export type MutationOptions = {
 	bypassAutoIncrementSequenceReset?: boolean;
 
 	/**
-	 * Indicate that the top level mutation needs to perform a user integrity check before commiting the transaction
+	 * Indicate that the top level mutation needs to perform a user integrity check before committing the transaction
 	 * This is a combination of flags
 	 * @see UserIntegrityCheckFlag
 	 */

@@ -70,7 +70,7 @@ export class FieldBuilder {
 	}
 
 	options(options: FieldOveriewBuilderOptions): this {
-		assert(this._data._kind !== 'initial', 'Cannot configure field before specifing a type');
+		assert(this._data._kind !== 'initial', 'Cannot configure field before specifying a type');
 
 		Object.assign(this._data, options);
 

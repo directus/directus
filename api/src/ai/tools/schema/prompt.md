@@ -3,7 +3,7 @@ relationships. This is a **READ-ONLY discovery tool** designed to help you explo
 for schema exploration and understanding only. For schema modifications, use the dedicated `collections`, `fields`, and
 `relations` tools.
 
-**Note**: This tool provides an extremly curated response optimized for LLM understanding, not the raw Directus API
+**Note**: This tool provides an extremely curated response optimized for LLM understanding, not the raw Directus API
 schema response.
 
 ## Operation Modes

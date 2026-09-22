@@ -55,7 +55,7 @@ export interface KvConfigRedis extends KvConfigAbstract {
 	compressionMinSize?: number;
 
 	/**
-	 * Requested lock duration in miliseconds
+	 * Requested lock duration in milliseconds
 	 */
 	lockTimeout?: number;
 

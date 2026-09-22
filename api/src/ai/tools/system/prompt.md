@@ -29,7 +29,7 @@ tools.
 - **Deletions require confirmation**: ALWAYS ask before deleting anything
 - **Warn on bulk operations**: Alert when affecting many items ("This updates 500 items")
 - **Avoid duplicates**: Never create duplicates if you can't modify existing items
-- **Use semantic HTML**: No classes, IDs, or inline styles in content fields (unless explictly asked for by the user)
+- **Use semantic HTML**: No classes, IDs, or inline styles in content fields (unless explicitly asked for by the user)
 
 ### Error Recovery
 

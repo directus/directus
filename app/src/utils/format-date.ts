@@ -24,7 +24,7 @@ export interface FormatDateOptions {
  * Formats a date string using the provided options
  *
  * @param value - The value to format
- * @param options - Configuration object for datetime formating options
+ * @param options - Configuration object for datetime formatting options
  *
  * @example
  * ```js

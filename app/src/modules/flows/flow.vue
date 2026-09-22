@@ -345,7 +345,7 @@ async function saveChanges() {
 			const operationReferenceResetUpdates = [];
 
 			/**
-			 * Prevents the following from occuring:
+			 * Prevents the following from occurring:
 			 *
 			 * Existing A -> B re-linked to A -> C -> B via new panel
 			 * not nullifying A -> B link before attempting to link C -> B
