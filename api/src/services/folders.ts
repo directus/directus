@@ -67,32 +67,21 @@ export class FoldersService extends ItemsService<Folder> {
 	}
 
 	/**
-	 * Builds a full folder tree starting from a given root folder.
+	 * Builds a permission-aware folder tree starting from the given root folder.
 	 *
-	 * This method returns a map of folder IDs to their corresponding paths
-	 * relative to the root. It resolves all nested child folders and ensures
-	 * that folder names are deduplicated within the same parent.
+	 * Returns a map of folder IDs to their paths relative to the root.
+	 * Nested folders are included, with duplicate names handled per parent.
 	 *
-	 * Access control is applied automatically when non-admin, only folders the user has `read`
-	 * access to are included.
+	 * Limited to file-library folders.
 	 *
-	 * @param {string} root - The ID of the root folder to start building the tree from.
-	 * @param {Pick<Query, 'filter'>} [query] - Optional filter scoping which folders are read (e.g. by `type`).
-	 *   Only the filter is honoured: the whole tree is always needed, and the walk owns the fields it reads.
-	 * @returns {Promise<Map<string, string>>} A `Map` where:
-	 *   - Key: folder ID
-	 *   - Value: folder path relative to the root (e.g., "Documents/Photos")
-	 *
-	 * @example
-	 * const foldersService = new FoldersService({ schema, accountability });
-	 * const tree = await foldersService.buildTree('root-folder-id');
-	 * console.log(tree.get('folder1')); // e.g., "RootFolder/SubFolder1"
+	 * @param {string} root - ID of the root folder.
+	 * @returns {Promise<Map<string, string>>} Map of folder IDs to relative paths.
 	 *
 	 * @remarks
-	 * - The returned `Map` includes the root folder itself.
-	 * - If a folder has no name, its ID will be used as a fallback.
+	 * - Includes the root folder.
+	 * - Uses the folder ID if a folder has no name.
 	 */
-	async buildTree(root: string, type: 'files' | 'flows' = 'files') {
+	async buildTree(root: string) {
 		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
 				{
@@ -109,7 +98,7 @@ export class FoldersService extends ItemsService<Folder> {
 		}
 
 		const folders = await this.readByQuery({
-			filter: { type: { _eq: type } },
+			filter: { type: { _eq: 'files' } },
 			fields: ['id', 'parent', 'name'],
 			limit: -1,
 		});

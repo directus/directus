@@ -46,19 +46,6 @@ describe('FoldersService', () => {
 				);
 			});
 
-			test('should read the folders of the given type', async () => {
-				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
-					{ id: 'root-id', name: 'parent', parent: null },
-				]);
-
-				await foldersService.buildTree('root-id', 'flows');
-
-				expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith(
-					{ filter: { type: { _eq: 'flows' } }, fields: ['id', 'parent', 'name'], limit: -1 },
-					undefined,
-				);
-			});
-
 			test('should build tree for simple hierarchy', async () => {
 				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
 					{ id: 'root-id', name: 'parent', parent: null },
