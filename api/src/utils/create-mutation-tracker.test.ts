@@ -1,12 +1,13 @@
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 import { createMutationTracker } from './create-mutation-tracker.js';
 
 vi.mock('@directus/env');
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({ MAX_BATCH_MUTATION: 10 });
+	vi.mocked(useEnv).mockReturnValue(asEnv({ MAX_BATCH_MUTATION: 10 }));
 });
 
 afterEach(() => {

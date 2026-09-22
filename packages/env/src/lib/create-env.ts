@@ -17,7 +17,7 @@ export const createEnv = (): Env => {
 
 	const rawConfiguration = { ...baseConfiguration, ...fileConfiguration };
 
-	const output: Env = {};
+	const output: Record<string, unknown> = {};
 
 	for (const [key, value] of Object.entries(DEFAULTS)) {
 		output[key] = getDefaultType(key) ? cast(value, key) : value;
@@ -45,5 +45,6 @@ export const createEnv = (): Env => {
 		output[key] = cast(value, key);
 	}
 
-	return output;
+	// Every variable that has a default is guaranteed to be present, as the defaults are seeded first
+	return output as Env;
 };

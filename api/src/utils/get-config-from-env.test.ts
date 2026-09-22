@@ -1,25 +1,28 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 import { getConfigFromEnv } from './get-config-from-env.js';
 
 vi.mock('@directus/env');
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({
-		CASING_KEY: 'key',
-		CASING_KEY_value: 'value',
-		OBJECT_BRAND__COLOR: 'purple',
-		OBJECT_BRAND__HEX: '#6644FF',
-		CAMELCASE_OBJECT__FIRST_KEY: 'firstValue',
-		CAMELCASE_OBJECT__SECOND_KEY: 'secondValue',
-		OMIT_PREFIX_FIRST_KEY: 'firstKey',
-		OMIT_PREFIX_FIRST_KEY_VALUE: 'firstValue',
-		OMIT_PREFIX_FIRST_VALUE: 'firstValue',
-		OMIT_PREFIX_SECOND_KEY: 'secondKey',
-		OMIT_PREFIX_SECOND_KEY_VALUE: 'secondValue',
-		OMIT_KEY_FIRST_KEY: 'firstKey',
-		OMIT_KEY_FIRST_KEY_VALUE: 'firstValue',
-	});
+	vi.mocked(useEnv).mockReturnValue(
+		asEnv({
+			CASING_KEY: 'key',
+			CASING_KEY_value: 'value',
+			OBJECT_BRAND__COLOR: 'purple',
+			OBJECT_BRAND__HEX: '#6644FF',
+			CAMELCASE_OBJECT__FIRST_KEY: 'firstValue',
+			CAMELCASE_OBJECT__SECOND_KEY: 'secondValue',
+			OMIT_PREFIX_FIRST_KEY: 'firstKey',
+			OMIT_PREFIX_FIRST_KEY_VALUE: 'firstValue',
+			OMIT_PREFIX_FIRST_VALUE: 'firstValue',
+			OMIT_PREFIX_SECOND_KEY: 'secondKey',
+			OMIT_PREFIX_SECOND_KEY_VALUE: 'secondValue',
+			OMIT_KEY_FIRST_KEY: 'firstKey',
+			OMIT_KEY_FIRST_KEY_VALUE: 'firstValue',
+		}),
+	);
 });
 
 afterEach(() => {

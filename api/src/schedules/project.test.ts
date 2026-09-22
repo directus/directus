@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 import getDatabase from '../database/index.js';
 import { sendReport } from '../telemetry/index.js';
 import { scheduleSynchronizedJob } from '../utils/schedule.js';
@@ -21,7 +22,7 @@ vi.mock('../telemetry/index.js');
 vi.mock('../utils/schedule.js');
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({ PROJECT_OWNER_ENABLED: true });
+	vi.mocked(useEnv).mockReturnValue(asEnv({ PROJECT_OWNER_ENABLED: true }));
 });
 
 let callback: (date: Date) => Promise<void> | void;
@@ -45,7 +46,7 @@ afterEach(() => {
 });
 
 test('Returns early when project owner is disabled', async () => {
-	vi.mocked(useEnv).mockReturnValue({ PROJECT_OWNER_ENABLED: false });
+	vi.mocked(useEnv).mockReturnValue(asEnv({ PROJECT_OWNER_ENABLED: false }));
 
 	const res = await projectSchedule();
 

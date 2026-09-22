@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 import { getAuthProviders } from './get-auth-providers.js';
 
 vi.mock('@directus/env');
@@ -65,7 +66,7 @@ const scenarios = [
 describe('get auth providers', () => {
 	for (const scenario of scenarios) {
 		test(scenario.name, () => {
-			vi.mocked(useEnv).mockReturnValue(scenario.input);
+			vi.mocked(useEnv).mockReturnValue(asEnv(scenario.input));
 
 			expect(getAuthProviders()).toEqual(scenario.output);
 		});

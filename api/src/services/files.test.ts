@@ -3,6 +3,7 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InternalServerError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { Driver, StorageManager } from '@directus/storage';
 import { afterEach, beforeEach, describe, expect, it, type MockInstance, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import { resetEnvMock } from '../test-utils/env.js';
@@ -537,9 +538,11 @@ describe('Service / Files', () => {
 		});
 
 		test('should delete original file when remote file exists and FILES_DELETE_ORIGINAL_ON_MOVE is true', async () => {
-			vi.mocked(useEnv).mockReturnValue({
-				FILES_DELETE_ORIGINAL_ON_MOVE: 'true',
-			});
+			vi.mocked(useEnv).mockReturnValue(
+				asEnv({
+					FILES_DELETE_ORIGINAL_ON_MOVE: true,
+				}),
+			);
 
 			const { FilesService } = await import('./files.js');
 
@@ -571,9 +574,11 @@ describe('Service / Files', () => {
 		});
 
 		test('should not delete original file when remote file exists and FILES_DELETE_ORIGINAL_ON_MOVE is false', async () => {
-			vi.mocked(useEnv).mockReturnValue({
-				FILES_DELETE_ORIGINAL_ON_MOVE: 'false',
-			});
+			vi.mocked(useEnv).mockReturnValue(
+				asEnv({
+					FILES_DELETE_ORIGINAL_ON_MOVE: false,
+				}),
+			);
 
 			const { FilesService } = await import('./files.js');
 

@@ -1,12 +1,13 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 
 vi.mock('@directus/env');
 
 beforeEach(() => {
 	vi.resetModules();
 
-	vi.mocked(useEnv).mockReturnValue({});
+	vi.mocked(useEnv).mockReturnValue(asEnv({}));
 });
 
 afterEach(() => {
@@ -15,7 +16,7 @@ afterEach(() => {
 
 describe('max limit', () => {
 	describe('max limit of 100', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ QUERY_LIMIT_MAX: 100 }));
 		const { validateQuery } = await import('./validate-query.js');
 
 		test.each([-1, 1, 25])('should accept number %i', (limit) => {
@@ -34,7 +35,7 @@ describe('max limit', () => {
 	});
 
 	test('should accept 101 when unlimited', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: -1 });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ QUERY_LIMIT_MAX: -1 }));
 		const { validateQuery } = await import('./validate-query.js');
 
 		expect(() => validateQuery({ limit: 101 })).not.toThrowError('limit');
@@ -128,7 +129,7 @@ describe('alias validation', async () => {
 });
 
 describe('alias relational depth', async () => {
-	vi.mocked(useEnv).mockReturnValue({ MAX_RELATIONAL_DEPTH: 2 });
+	vi.mocked(useEnv).mockReturnValue(asEnv({ MAX_RELATIONAL_DEPTH: 2 }));
 	const { validateQuery } = await import('./validate-query.js');
 
 	test('checks depth against resolved alias value, not key', () => {
@@ -207,7 +208,7 @@ describe('sort validation', async () => {
 });
 
 describe('sort relational depth', async () => {
-	vi.mocked(useEnv).mockReturnValue({ MAX_RELATIONAL_DEPTH: 2 });
+	vi.mocked(useEnv).mockReturnValue(asEnv({ MAX_RELATIONAL_DEPTH: 2 }));
 	const { validateQuery } = await import('./validate-query.js');
 
 	test('dotted json path in sort does not inflate relational depth', () => {

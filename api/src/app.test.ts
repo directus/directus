@@ -3,6 +3,7 @@ import type { AddressInfo } from 'node:net';
 import { useEnv } from '@directus/env';
 import { Router } from 'express';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from './__utils__/as-env.js';
 import createApp from './app.js';
 
 const { mockMcpOAuthGuard } = vi.hoisted(() => ({
@@ -89,19 +90,21 @@ vi.mock('./deployment.js', () => ({
 vi.mock('./utils/validate-env.js');
 
 function mockAppEnv(overrides: Partial<ReturnType<typeof useEnv>> = {}) {
-	vi.mocked(useEnv).mockReturnValue({
-		SECRET: 'abcdef',
-		SERVE_APP: 'true',
-		PUBLIC_URL: 'http://localhost:8055/directus',
-		TELEMETRY: 'false',
-		LOG_STYLE: 'raw',
-		EXTENSIONS_PATH: './extensions',
-		STORAGE_LOCATIONS: ['local'],
-		ROBOTS_TXT: 'User-agent: *\nDisallow: /',
-		ROOT_REDIRECT: './admin',
-		IP_TRUST_PROXY: true,
-		...overrides,
-	});
+	vi.mocked(useEnv).mockReturnValue(
+		asEnv({
+			SECRET: 'abcdef',
+			SERVE_APP: 'true',
+			PUBLIC_URL: 'http://localhost:8055/directus',
+			TELEMETRY: 'false',
+			LOG_STYLE: 'raw',
+			EXTENSIONS_PATH: './extensions',
+			STORAGE_LOCATIONS: ['local'],
+			ROBOTS_TXT: 'User-agent: *\nDisallow: /',
+			ROOT_REDIRECT: './admin',
+			IP_TRUST_PROXY: true,
+			...overrides,
+		}),
+	);
 }
 
 beforeEach(() => {

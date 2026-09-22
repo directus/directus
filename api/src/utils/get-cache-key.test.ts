@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import type { Request } from 'express';
 import type { Knex } from 'knex';
 import { afterEach, beforeAll, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 import { getDatabase } from '../database/index.js';
 import { getFlowManager } from '../flows.js';
 import { fetchPoliciesIpAccess } from '../permissions/modules/fetch-policies-ip-access/fetch-policies-ip-access.js';
@@ -92,7 +93,7 @@ const requests = [
 const cases = requests.map(({ name, params, key }) => [name, params, key]);
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({});
+	vi.mocked(useEnv).mockReturnValue(asEnv({}));
 });
 
 afterEach(() => {

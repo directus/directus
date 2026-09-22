@@ -359,7 +359,7 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 			.where({ TABLE_SCHEMA: env['DB_DATABASE'] })
 			.whereNot({ COLLATION_NAME: collation });
 
-		const excludedTables: string[] = toArray(env['DB_EXCLUDE_TABLES']);
+		const excludedTables: string[] = toArray(env['DB_EXCLUDE_TABLES'] as string[]);
 
 		let inconsistencies = '';
 

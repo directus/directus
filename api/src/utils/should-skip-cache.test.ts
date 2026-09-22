@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Request } from 'express';
 import { expect, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 import { shouldSkipCache } from './should-skip-cache.js';
 
 vi.mock('@directus/env');
@@ -12,12 +13,14 @@ test.each([
 ])(
 	'should always skip cache for requests coming from data studio when public URL is $scenario and CACHE_AUTO_PURGE is false',
 	({ publicURL, refererHost }) => {
-		vi.mocked(useEnv).mockReturnValue({
-			PUBLIC_URL: publicURL,
-			CACHE_SKIP_ALLOWED: false,
-			CACHE_AUTO_PURGE: false,
-			CACHE_AUTO_PURGE_IGNORE_LIST: ['directus_activity', 'directus_presets'],
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			asEnv({
+				PUBLIC_URL: publicURL,
+				CACHE_SKIP_ALLOWED: false,
+				CACHE_AUTO_PURGE: false,
+				CACHE_AUTO_PURGE_IGNORE_LIST: ['directus_activity', 'directus_presets'],
+			}),
+		);
 
 		const req = {
 			get: vi.fn((str) => {
@@ -42,12 +45,14 @@ test.each([
 ])(
 	'should not skip cache for requests coming from data studio when public URL is $scenario and CACHE_AUTO_PURGE is true',
 	({ publicURL, refererHost }) => {
-		vi.mocked(useEnv).mockReturnValue({
-			PUBLIC_URL: publicURL,
-			CACHE_SKIP_ALLOWED: false,
-			CACHE_AUTO_PURGE: true,
-			CACHE_AUTO_PURGE_IGNORE_LIST: ['directus_activity', 'directus_presets', 'ignore_collection'],
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			asEnv({
+				PUBLIC_URL: publicURL,
+				CACHE_SKIP_ALLOWED: false,
+				CACHE_AUTO_PURGE: true,
+				CACHE_AUTO_PURGE_IGNORE_LIST: ['directus_activity', 'directus_presets', 'ignore_collection'],
+			}),
+		);
 
 		const req = {
 			get: vi.fn((str) => {
@@ -72,12 +77,14 @@ test.each([
 ])(
 	'should skip cache for requests with collections in CACHE_AUTO_PURGE_IGNORE_LIST coming from data studio when public URL is $scenario and CACHE_AUTO_PURGE is true',
 	({ publicURL, refererHost }) => {
-		vi.mocked(useEnv).mockReturnValue({
-			PUBLIC_URL: publicURL,
-			CACHE_SKIP_ALLOWED: false,
-			CACHE_AUTO_PURGE: true,
-			CACHE_AUTO_PURGE_IGNORE_LIST: ['directus_activity', 'directus_presets', 'ignore_collection'],
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			asEnv({
+				PUBLIC_URL: publicURL,
+				CACHE_SKIP_ALLOWED: false,
+				CACHE_AUTO_PURGE: true,
+				CACHE_AUTO_PURGE_IGNORE_LIST: ['directus_activity', 'directus_presets', 'ignore_collection'],
+			}),
+		);
 
 		const req = {
 			get: vi.fn((str) => {
@@ -96,10 +103,12 @@ test.each([
 );
 
 test('should not skip cache for requests coming outside of data studio', () => {
-	vi.mocked(useEnv).mockReturnValue({
-		PUBLIC_URL: 'http://admin.example.com',
-		CACHE_SKIP_ALLOWED: 'false',
-	});
+	vi.mocked(useEnv).mockReturnValue(
+		asEnv({
+			PUBLIC_URL: 'http://admin.example.com',
+			CACHE_SKIP_ALLOWED: false,
+		}),
+	);
 
 	const req = {
 		get: vi.fn((str) => {
@@ -121,10 +130,12 @@ test.each([
 ])(
 	'should $scenario Cache-Control request header containing "no-store" when CACHE_SKIP_ALLOWED is $value',
 	({ value }) => {
-		vi.mocked(useEnv).mockReturnValue({
-			PUBLIC_URL: '/',
-			CACHE_SKIP_ALLOWED: value,
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			asEnv({
+				PUBLIC_URL: '/',
+				CACHE_SKIP_ALLOWED: value,
+			}),
+		);
 
 		const req = {
 			get: vi.fn((str) => {

@@ -3,6 +3,7 @@ import type { ListenOptions } from 'net';
 import { useEnv } from '@directus/env';
 import getPort from 'get-port';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 import { getAddress } from './get-address.js';
 
 vi.mock('@directus/env');
@@ -37,9 +38,11 @@ describe('getAddress', async () => {
 	test('Should return unix socket before server is listening when path is provided', async () => {
 		server = await createServer();
 
-		vi.mocked(useEnv).mockReturnValue({
-			UNIX_SOCKET_PATH: serverSocket,
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			asEnv({
+				UNIX_SOCKET_PATH: serverSocket,
+			}),
+		);
 
 		expect(getAddress(server)).toBe(serverSocket);
 	});
@@ -47,10 +50,12 @@ describe('getAddress', async () => {
 	test('Should return host + port before server is listening when path is undefined', async () => {
 		server = await createServer();
 
-		vi.mocked(useEnv).mockReturnValue({
-			PORT: serverPort,
-			HOST: serverHost,
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			asEnv({
+				PORT: String(serverPort),
+				HOST: serverHost,
+			}),
+		);
 
 		expect(getAddress(server)).toBe(`${serverHost}:${serverPort}`);
 	});

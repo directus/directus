@@ -173,7 +173,7 @@ export const createExpressLogger = () => {
 	}
 
 	if (env['LOG_HTTP_IGNORE_PATHS']) {
-		const ignorePathsSet = new Set(env['LOG_HTTP_IGNORE_PATHS'] as string);
+		const ignorePathsSet = new Set(env['LOG_HTTP_IGNORE_PATHS'] as string[]);
 
 		httpLoggerEnvConfig['autoLogging'] = {
 			ignore: (req) => {

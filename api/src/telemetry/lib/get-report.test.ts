@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import { version } from 'directus/version';
 import { type Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { asEnv } from '../../__utils__/as-env.js';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { fetchUserCount, type UserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 import { useBufferedCounter } from '../counter/use-buffered-counter.js';
@@ -84,7 +85,7 @@ beforeEach(() => {
 
 	mockRequestCounts = { get: 100, post: 50, patch: 20, delete: 5 };
 
-	vi.mocked(useEnv).mockReturnValue(mockEnv);
+	vi.mocked(useEnv).mockReturnValue(asEnv(mockEnv));
 	vi.mocked(getDatabase).mockReturnValue(mockDb);
 
 	vi.mocked(useBufferedCounter).mockReturnValue({

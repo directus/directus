@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import type { DeepPartial } from '@directus/types';
 import { merge } from 'lodash-es';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../../../__utils__/as-env.js';
 import { CollectionsService } from '../../../services/index.js';
 import type { Collection } from '../../../types/collection.js';
 import { getActiveCollections } from './collections.js';
@@ -88,7 +89,7 @@ describe('getActiveCollections', () => {
 	});
 
 	test('exclude collections listed in DB_EXCLUDE_TABLES', async () => {
-		vi.mocked(useEnv).mockReturnValue({ DB_EXCLUDE_TABLES: ['secrets'] });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ DB_EXCLUDE_TABLES: ['secrets'] }));
 
 		vi.mocked(CollectionsService.prototype.readByQuery).mockResolvedValue([
 			makeCollection('articles'),
@@ -101,7 +102,7 @@ describe('getActiveCollections', () => {
 	});
 
 	test('returns only valid collections from a mixed payload', async () => {
-		vi.mocked(useEnv).mockReturnValue({ DB_EXCLUDE_TABLES: ['secrets'] });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ DB_EXCLUDE_TABLES: ['secrets'] }));
 
 		vi.mocked(CollectionsService.prototype.readByQuery).mockResolvedValue([
 			makeCollection('articles'),

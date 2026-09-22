@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 import { _cache, getSecret } from './get-secret.js';
 
 vi.mock('@directus/env', () => ({
@@ -10,11 +11,11 @@ describe('getSecret', () => {
 	beforeEach(() => {
 		_cache.secret = null;
 
-		vi.mocked(useEnv).mockReturnValue({});
+		vi.mocked(useEnv).mockReturnValue(asEnv({}));
 	});
 
 	test('returns the configured secret', () => {
-		vi.mocked(useEnv).mockReturnValue({ SECRET: 'configured-secret' });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ SECRET: 'configured-secret' }));
 
 		expect(getSecret()).toBe('configured-secret');
 	});

@@ -1,10 +1,9 @@
 import { resolve } from 'node:path';
 import { cwd } from 'node:process';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
-import type { Env } from '../types/env.js';
 
-export const DEFAULTS: Env = {
-	CONFIG_PATH: resolve(cwd(), '.env'),
+export const DEFAULTS = {
+	CONFIG_PATH: resolve(cwd(), '.env') as string,
 
 	HOST: '0.0.0.0',
 	PORT: 8055,
@@ -14,7 +13,7 @@ export const DEFAULTS: Env = {
 	QUERYSTRING_MAX_PARSE_DEPTH: 10,
 	QUERYSTRING_ARRAY_LIMIT: 500,
 	QUERY_LIMIT_DEFAULT: 100,
-	MAX_BATCH_MUTATION: Infinity,
+	MAX_BATCH_MUTATION: Infinity as number,
 	MAX_IMPORT_ERRORS: 1000,
 	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 
@@ -140,7 +139,7 @@ export const DEFAULTS: Env = {
 	IP_CUSTOM_HEADER: false,
 
 	IMPORT_EXPORT_NAMESPACE: 'directus:import-export',
-	IMPORT_IP_DENY_LIST: ['0.0.0.0', '169.254.169.254'],
+	IMPORT_IP_DENY_LIST: ['0.0.0.0', '169.254.169.254'] as string[],
 	IMPORT_TIMEOUT: '1h',
 	IMPORT_MAX_CONCURRENCY: 20,
 	IMPORT_MAX_FILE_SIZE: '50mb',
@@ -151,16 +150,16 @@ export const DEFAULTS: Env = {
 
 	EXPORT_BATCH_SIZE: 5000,
 
-	USERS_ADMIN_ACCESS_LIMIT: Infinity,
-	USERS_APP_ACCESS_LIMIT: Infinity,
-	USERS_API_ACCESS_LIMIT: Infinity,
+	USERS_ADMIN_ACCESS_LIMIT: Infinity as number,
+	USERS_APP_ACCESS_LIMIT: Infinity as number,
+	USERS_API_ACCESS_LIMIT: Infinity as number,
 
 	MAX_JSON_QUERY_DEPTH: 10,
 
 	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings',
 
 	TUS_ENABLED: false,
-	TUS_CHUNK_SIZE: DEFAULT_CHUNK_SIZE, // 8mb
+	TUS_CHUNK_SIZE: DEFAULT_CHUNK_SIZE as number, // 8mb
 	TUS_UPLOAD_EXPIRATION: '10m',
 	TUS_CLEANUP_SCHEDULE: '0 * * * *', // every hour
 
@@ -187,8 +186,7 @@ export const DEFAULTS: Env = {
 		'users_me_tfa_enable',
 		'users_me_tfa_disable',
 		'utils_cache_clear',
-	],
-
+	] as string[],
 	WEBSOCKETS_ENABLED: false,
 	WEBSOCKETS_REST_ENABLED: true,
 	WEBSOCKETS_REST_AUTH: 'handshake',
@@ -234,7 +232,7 @@ export const DEFAULTS: Env = {
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
 	FILES_DELETE_ORIGINAL_ON_MOVE: false,
-	FILES_MAX_UPLOAD_CONCURRENCY: Infinity,
+	FILES_MAX_UPLOAD_CONCURRENCY: Infinity as number,
 
 	CROSS_ORIGIN_OPENER_POLICY_ENABLED: true,
 	CROSS_ORIGIN_OPENER_POLICY: 'same-origin-allow-popups',
@@ -276,4 +274,4 @@ export const DEFAULTS: Env = {
 
 	LICENSE_NAMESPACE: 'license',
 	LICENSE_KEY_MANAGEMENT_ENABLED: true,
-} as const;
+};

@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { sanitizeQuery } from './sanitize-query.js';
 
@@ -14,7 +15,7 @@ vi.mock('../permissions/lib/fetch-policies.js');
 vi.mock('../permissions/utils/fetch-dynamic-variable-data.js');
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({});
+	vi.mocked(useEnv).mockReturnValue(asEnv({}));
 });
 
 afterEach(() => {
@@ -39,7 +40,7 @@ describe('limit', () => {
 
 describe('max limit', () => {
 	test('should replace -1', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ QUERY_LIMIT_MAX: 100 }));
 
 		const sanitizedQuery = await sanitizeQuery({ limit: -1 }, null as any);
 
@@ -47,7 +48,7 @@ describe('max limit', () => {
 	});
 
 	test.each([1, 25, 150])('should accept number %i', async (limit) => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ QUERY_LIMIT_MAX: 100 }));
 
 		const sanitizedQuery = await sanitizeQuery({ limit }, null as any);
 
@@ -55,7 +56,7 @@ describe('max limit', () => {
 	});
 
 	test('should apply max if no limit passed in request', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 }));
 
 		const sanitizedQuery = await sanitizeQuery({}, null as any);
 
@@ -63,7 +64,7 @@ describe('max limit', () => {
 	});
 
 	test('should apply lower value if no limit passed in request', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100, QUERY_LIMIT_DEFAULT: 25 });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ QUERY_LIMIT_MAX: 100, QUERY_LIMIT_DEFAULT: 25 }));
 
 		const sanitizedQuery = await sanitizeQuery({}, null as any);
 
@@ -77,7 +78,7 @@ describe('max limit', () => {
 	});
 
 	test('should apply limit from request if max is unlimited', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: -1 });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ QUERY_LIMIT_MAX: -1 }));
 
 		const sanitizedQuery = await sanitizeQuery({ limit: 150 }, null as any);
 
@@ -391,7 +392,7 @@ describe('deep', () => {
 	});
 
 	test('should work in combination with query limit', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 }));
 
 		const deep = { deep: { relational_field_a: { _sort: ['name'] } } };
 

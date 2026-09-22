@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 import { getCache } from '../cache.js';
 import { getEntitlementManager } from '../license/index.js';
 import { track } from '../telemetry/index.js';
@@ -31,7 +32,7 @@ beforeEach(() => {
 	mockCache = { lockCache: { get: vi.fn(), set: vi.fn() } } as unknown as ReturnType<typeof getCache>;
 
 	vi.mocked(getCache).mockReturnValue(mockCache);
-	vi.mocked(useEnv).mockReturnValue({ TELEMETRY: true });
+	vi.mocked(useEnv).mockReturnValue(asEnv({ TELEMETRY: true }));
 });
 
 afterEach(() => {
@@ -40,7 +41,7 @@ afterEach(() => {
 
 describe('telemetry', () => {
 	test('Returns early when telemetry is disabled and not required by entitlement', async () => {
-		vi.mocked(useEnv).mockReturnValue({ TELEMETRY: false });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ TELEMETRY: false }));
 
 		const res = await telemetrySchedule();
 
@@ -48,7 +49,7 @@ describe('telemetry', () => {
 	});
 
 	test('Continues when telemetry is disabled but required by entitlement', async () => {
-		vi.mocked(useEnv).mockReturnValue({ TELEMETRY: false });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ TELEMETRY: false }));
 		vi.mocked(getEntitlementManager).mockReturnValueOnce({ isEntitled: vi.fn().mockReturnValue(true) } as any);
 
 		const res = await telemetrySchedule();

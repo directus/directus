@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../../__utils__/as-env.js';
 import { createMetrics } from './create-metrics.js';
 import { _cache, useMetrics } from './use-metrics.js';
 
@@ -22,14 +23,14 @@ afterEach(() => {
 
 describe('useMetrics', () => {
 	test('Returns undefined when metrics are disabled', () => {
-		vi.mocked(useEnv).mockReturnValue({ METRICS_ENABLED: false });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ METRICS_ENABLED: false }));
 
 		const metrics = useMetrics();
 		expect(metrics).toBeUndefined();
 	});
 
 	test('Returns cached metrics if it exists', () => {
-		vi.mocked(useEnv).mockReturnValue({ METRICS_ENABLED: true });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ METRICS_ENABLED: true }));
 		_cache.metrics = mockMetrics;
 
 		const metrics = useMetrics();
@@ -37,7 +38,7 @@ describe('useMetrics', () => {
 	});
 
 	test('Creates new metrics instance', () => {
-		vi.mocked(useEnv).mockReturnValue({ METRICS_ENABLED: true });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ METRICS_ENABLED: true }));
 
 		const metrics = useMetrics();
 		expect(metrics).toBe(mockMetrics);

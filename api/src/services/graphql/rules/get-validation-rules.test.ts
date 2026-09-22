@@ -1,12 +1,13 @@
 import { useEnv } from '@directus/env';
 import { NoSchemaIntrospectionCustomRule } from 'graphql';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../../../__utils__/as-env.js';
 import { BlockFieldSuggestionsRule, getValidationRules } from './index.js';
 
 vi.mock('@directus/env', () => ({ useEnv: vi.fn() }));
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({ GRAPHQL_INTROSPECTION: true });
+	vi.mocked(useEnv).mockReturnValue(asEnv({ GRAPHQL_INTROSPECTION: true }));
 });
 
 afterEach(() => {
@@ -22,7 +23,7 @@ describe('getValidationRules', () => {
 	});
 
 	test('adds the introspection rules when introspection is disabled', () => {
-		vi.mocked(useEnv).mockReturnValue({ GRAPHQL_INTROSPECTION: false });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ GRAPHQL_INTROSPECTION: false }));
 
 		const rules = getValidationRules();
 

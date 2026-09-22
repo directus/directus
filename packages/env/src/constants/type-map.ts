@@ -4,7 +4,7 @@ import type { EnvType } from '../types/env-type.js';
  * Environment variables that we expect to be in a certain type. Will set the default casting of
  * those values
  */
-export const TYPE_MAP: Record<string, EnvType> = {
+export const TYPE_MAP = {
 	HOST: 'string',
 	PORT: 'string',
 
@@ -104,7 +104,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	'AUTH_.+_COOKIE_SECURE': 'boolean',
 
 	LICENSE_KEY_MANAGEMENT_ENABLED: 'boolean',
-} as const;
+} as const satisfies Record<string, EnvType>;
 
 export const TYPE_MAP_REGEX: [RegExp, EnvType][] = Object.entries(TYPE_MAP).map(([name, value]) => [
 	new RegExp(`^${name}$`),

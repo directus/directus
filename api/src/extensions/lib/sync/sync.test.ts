@@ -8,6 +8,7 @@ import { useEnv } from '@directus/env';
 import type { Driver } from '@directus/storage';
 import mid from 'node-machine-id';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../../../__utils__/as-env.js';
 import { useBus } from '../../../bus/index.js';
 import { useLock } from '../../../lock/index.js';
 import { useLogger } from '../../../logger/index.js';
@@ -104,7 +105,7 @@ describe('syncExtensions', () => {
 			cleanup: vi.fn().mockResolvedValue(undefined),
 		};
 
-		vi.mocked(useEnv).mockReturnValue(mockEnv);
+		vi.mocked(useEnv).mockReturnValue(asEnv(mockEnv));
 		vi.mocked(useLock).mockReturnValue(mockLock);
 		vi.mocked(useBus).mockReturnValue(mockMessenger);
 		vi.mocked(useLogger).mockReturnValue(mockLogger);

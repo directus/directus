@@ -10,6 +10,7 @@ import {
 import { generators, errors as openidErrors } from 'openid-client';
 import type { Logger } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../../__utils__/as-env.js';
 import { getAuthProvider } from '../../auth.js';
 import { useLogger } from '../../logger/index.js';
 import { createOAuth2AuthRouter, OAuth2AuthDriver } from './oauth2.js';
@@ -212,10 +213,12 @@ describe('OAuth2AuthDriver', () => {
 			});
 
 			test('passes clientOptionsOverrides from env to Client constructor', () => {
-				vi.mocked(useEnv).mockReturnValue({
-					EMAIL_TEMPLATES_PATH: './templates',
-					AUTH_GITHUB_CLIENT_TEST: 'test',
-				});
+				vi.mocked(useEnv).mockReturnValue(
+					asEnv({
+						EMAIL_TEMPLATES_PATH: './templates',
+						AUTH_GITHUB_CLIENT_TEST: 'test',
+					}),
+				);
 
 				const config = createOAuth2Config();
 				new OAuth2AuthDriver({ knex: {} as any }, config);
@@ -1323,10 +1326,12 @@ describe('createOAuth2AuthRouter', () => {
 	}
 
 	test('sets secure cookie option to true when AUTH_TEST_COOKIE_SECURE is true', () => {
-		vi.mocked(useEnv).mockReturnValue({
-			EMAIL_TEMPLATES_PATH: './templates',
-			AUTH_TEST_COOKIE_SECURE: true,
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			asEnv({
+				EMAIL_TEMPLATES_PATH: './templates',
+				AUTH_TEST_COOKIE_SECURE: true,
+			}),
+		);
 
 		const mockDriver = {
 			generateCodeVerifier: vi.fn(() => 'test-verifier'),
@@ -1350,10 +1355,12 @@ describe('createOAuth2AuthRouter', () => {
 	});
 
 	test('sets secure cookie option to false when AUTH_TEST_COOKIE_SECURE is false', () => {
-		vi.mocked(useEnv).mockReturnValue({
-			EMAIL_TEMPLATES_PATH: './templates',
-			AUTH_TEST_COOKIE_SECURE: false,
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			asEnv({
+				EMAIL_TEMPLATES_PATH: './templates',
+				AUTH_TEST_COOKIE_SECURE: false,
+			}),
+		);
 
 		const mockDriver = {
 			generateCodeVerifier: vi.fn(() => 'test-verifier'),

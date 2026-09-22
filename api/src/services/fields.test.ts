@@ -3,6 +3,7 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Field, RawField } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 import * as cacheModule from '../cache.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import {
@@ -194,9 +195,11 @@ describe('Integration Tests', () => {
 
 				vi.mocked(cacheModule.getCacheValue).mockResolvedValueOnce(mockColumns);
 
-				vi.mocked(useEnv).mockReturnValue({
-					CACHE_SCHEMA: true,
-				});
+				vi.mocked(useEnv).mockReturnValue(
+					asEnv({
+						CACHE_SCHEMA: true,
+					}),
+				);
 
 				// Re-import FieldsService to pick up the new env mock
 				vi.resetModules();

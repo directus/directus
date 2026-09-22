@@ -3,6 +3,7 @@ import { ForbiddenError, UnsupportedMediaTypeError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import type { Upload } from '@tus/utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../../__utils__/as-env.js';
 import getDatabase from '../../database/index.js';
 import { createMockKnex, resetKnexMocks } from '../../test-utils/knex.js';
 import { ItemsService } from '../items.js';
@@ -63,7 +64,7 @@ describe('TusDataStore.create', () => {
 		});
 
 	beforeEach(() => {
-		vi.mocked(useEnv).mockReturnValue(baseEnv);
+		vi.mocked(useEnv).mockReturnValue(asEnv(baseEnv));
 		vi.mocked(getDatabase).mockReturnValue(db);
 		vi.mocked(ItemsService.prototype.createOne).mockResolvedValue('generated-pk');
 
@@ -125,7 +126,7 @@ describe('TusDataStore.create', () => {
 	});
 
 	test('rejects an upload whose type is not in FILES_MIME_TYPE_ALLOW_LIST', async () => {
-		vi.mocked(useEnv).mockReturnValue({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' }));
 
 		const store = makeStore();
 
@@ -137,7 +138,7 @@ describe('TusDataStore.create', () => {
 	});
 
 	test('accepts an upload whose type matches FILES_MIME_TYPE_ALLOW_LIST', async () => {
-		vi.mocked(useEnv).mockReturnValue({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' });
+		vi.mocked(useEnv).mockReturnValue(asEnv({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' }));
 
 		const store = makeStore();
 

@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Logger } from 'pino';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
+import { asEnv } from '../__utils__/as-env.js';
 import { useLogger } from '../logger/index.js';
 import { validateEnv } from './validate-env.js';
 
@@ -13,9 +14,11 @@ let mockLogger: Logger<never>;
 beforeAll(() => {
 	vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
 
-	vi.mocked(useEnv).mockReturnValue({
-		PRESENT_TEST_VARIABLE: 'true',
-	});
+	vi.mocked(useEnv).mockReturnValue(
+		asEnv({
+			PRESENT_TEST_VARIABLE: 'true',
+		}),
+	);
 });
 
 beforeEach(() => {

@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Knex } from 'knex';
 import { describe, expect, it, vi } from 'vitest';
+import { asEnv } from '../../__utils__/as-env.js';
 import { SettingsService } from '../../services/settings.js';
 import { type DatabaseSettings, getSettings, type TelemetrySettings } from './get-settings.js';
 
@@ -67,9 +68,11 @@ describe('getSettings', () => {
 	});
 
 	it('should return false if WEBSOCKETS_COLLAB_ENABLED is false', async () => {
-		vi.mocked(useEnv).mockReturnValue({
-			WEBSOCKETS_COLLAB_ENABLED: 'false',
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			asEnv({
+				WEBSOCKETS_COLLAB_ENABLED: 'false',
+			}),
+		);
 
 		vi.mocked(SettingsService.prototype.readSingleton).mockResolvedValue({
 			project_id: 'test-project-id',
@@ -81,9 +84,11 @@ describe('getSettings', () => {
 	});
 
 	it('should return false if database setting is false even if env is true', async () => {
-		vi.mocked(useEnv).mockReturnValue({
-			WEBSOCKETS_COLLAB_ENABLED: 'true',
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			asEnv({
+				WEBSOCKETS_COLLAB_ENABLED: 'true',
+			}),
+		);
 
 		vi.mocked(SettingsService.prototype.readSingleton).mockResolvedValue({
 			project_id: 'test-project-id',

@@ -10,6 +10,7 @@ import {
 import { errors as openidErrors } from 'openid-client';
 import type { Logger } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { asEnv } from '../../__utils__/as-env.js';
 import { getAuthProvider } from '../../auth.js';
 import { useLogger } from '../../logger/index.js';
 import { createOpenIDAuthRouter, OpenIDAuthDriver } from './openid.js';
@@ -1259,10 +1260,12 @@ describe('createOpenIDAuthRouter', () => {
 	}
 
 	test('sets secure cookie option to true when AUTH_TEST_COOKIE_SECURE is true', async () => {
-		vi.mocked(useEnv).mockReturnValue({
-			EMAIL_TEMPLATES_PATH: './templates',
-			AUTH_TEST_COOKIE_SECURE: true,
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			asEnv({
+				EMAIL_TEMPLATES_PATH: './templates',
+				AUTH_TEST_COOKIE_SECURE: true,
+			}),
+		);
 
 		const mockDriver = {
 			generateCodeVerifier: vi.fn(() => 'test-verifier'),
@@ -1286,10 +1289,12 @@ describe('createOpenIDAuthRouter', () => {
 	});
 
 	test('sets secure cookie option to false when AUTH_TEST_COOKIE_SECURE is false', async () => {
-		vi.mocked(useEnv).mockReturnValue({
-			EMAIL_TEMPLATES_PATH: './templates',
-			AUTH_TEST_COOKIE_SECURE: false,
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			asEnv({
+				EMAIL_TEMPLATES_PATH: './templates',
+				AUTH_TEST_COOKIE_SECURE: false,
+			}),
+		);
 
 		const mockDriver = {
 			generateCodeVerifier: vi.fn(() => 'test-verifier'),
