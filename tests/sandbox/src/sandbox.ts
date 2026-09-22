@@ -21,6 +21,7 @@ import {
 	saveSchema,
 	startApi,
 } from './steps/index.js';
+import { startLicenseServer } from './steps/license.js';
 
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -159,6 +160,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 
 export const apiFolder = join(directusFolder, 'api');
 export const appFolder = join(directusFolder, 'app');
+export const licenseFolder = join(directusFolder, 'tests/mock-license-server');
 
 export const databases: Database[] = [
 	'maria',
@@ -196,6 +198,12 @@ export async function sandboxes(
 
 	let build: ChildProcessWithoutNullStreams | undefined;
 	const projects: { project: string; logger: Logger; env: Env; keep: boolean }[] = [];
+
+	let license: ChildProcessWithoutNullStreams | undefined;
+
+	if (opts.extras.license) {
+		license = await startLicenseServer(await getEnv('sqlite', opts), logger);
+	}
 
 	try {
 		// Rebuild directus
@@ -268,6 +276,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	let app: ChildProcessWithoutNullStreams | undefined;
 	let build: ChildProcessWithoutNullStreams | undefined;
 	let interval: NodeJS.Timeout;
+	let license: ChildProcessWithoutNullStreams | undefined;
 	let knex: Knex | undefined;
 	let project: string | undefined;
 
@@ -330,6 +339,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		}
 
 		kill(app);
+		kill(license);
 
 		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
 

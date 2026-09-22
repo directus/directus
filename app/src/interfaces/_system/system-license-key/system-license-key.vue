@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { DIRECTUS_SUPPORT_URL } from '@directus/constants';
 import { DIRECTUS_LICENSE_KEY, normalizeLicenseKey } from '@directus/license';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { computed, onMounted, ref, watch } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
 import api from '@/api';
