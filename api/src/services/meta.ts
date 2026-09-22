@@ -65,7 +65,7 @@ export class MetaService {
 
 			permissions = await fetchPermissions({ action: 'read', accountability: this.accountability, policies }, context);
 
-			if (collection === 'directus_files') {
+			if (collection === 'directus_folders') {
 				filter = mergeFilters(filter, { type: { _neq: 'flows' } });
 			}
 		}
