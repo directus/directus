@@ -1,7 +1,13 @@
-import type { AbstractServiceOptions, Folder } from '@directus/types';
+import { InvalidPayloadError } from '@directus/errors';
+import type { AbstractServiceOptions, Folder, MutationOptions, PrimaryKey, Query, QueryOptions } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
+import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { isAdmin } from '../utils/is-admin.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { ItemsService } from './items.js';
+
+const logger = useLogger();
 
 export class FoldersService extends ItemsService<Folder> {
 	constructor(options: AbstractServiceOptions) {
@@ -9,28 +15,119 @@ export class FoldersService extends ItemsService<Folder> {
 	}
 
 	/**
-	 * Builds a full folder tree starting from a given root folder.
+	 * Flows folders are admin-only, ensure they cannot be changed
+	 * */
+	private async checkFlowsFolders(keys: PrimaryKey[], action: 'update' | 'delete'): Promise<void> {
+		if (keys.length === 0 || isAdmin(this.accountability)) {
+			return;
+		}
+
+		const folder = await this.knex
+			.select('id')
+			.from('directus_folders')
+			.whereIn('id', keys)
+			.andWhere('type', 'flows')
+			.first();
+
+		if (folder) {
+			logger.debug(`User ${this.accountability?.user} doesn't have permission to modify flows folder ${folder.id}.`);
+
+			throw new InvalidPayloadError({ reason: `Cannot ${action} a flows folder` });
+		}
+	}
+
+	/**
+	 * Flow folders are admin only, ensure a flow folder parent cannot be set
+	 */
+	private async checkFlowsParent(parent: Partial<Folder>['parent']): Promise<void> {
+		if (typeof parent !== 'string' || isAdmin(this.accountability)) {
+			return;
+		}
+
+		const folder = await this.knex
+			.select('id')
+			.from('directus_folders')
+			.where('id', parent)
+			.andWhere('type', 'flows')
+			.first();
+
+		if (folder) {
+			logger.debug(
+				`User ${this.accountability?.user} doesn't have permission to nest a folder under flows folder ${folder.id}.`,
+			);
+
+			throw new InvalidPayloadError({ reason: `Cannot nest a folder under a flows folder` });
+		}
+	}
+
+	override async createOne(data: Partial<Folder>, opts: MutationOptions = {}): Promise<PrimaryKey> {
+		try {
+			if (!isAdmin(this.accountability) && data.type === 'flows') {
+				throw new InvalidPayloadError({ reason: `Cannot create a flows folder` });
+			}
+
+			await this.checkFlowsParent(data.parent);
+		} catch (err: any) {
+			// Defer the error to be thrown until after permission checks
+			opts.preMutationError = err;
+		}
+
+		return super.createOne(data, opts);
+	}
+
+	override async updateMany(
+		keys: PrimaryKey[],
+		data: Partial<Folder>,
+		opts: MutationOptions = {},
+	): Promise<PrimaryKey[]> {
+		try {
+			if (!isAdmin(this.accountability) && data.type === 'flows') {
+				throw new InvalidPayloadError({ reason: `Cannot change a folder into a flows folder` });
+			}
+
+			await this.checkFlowsParent(data.parent);
+			await this.checkFlowsFolders(keys, 'update');
+		} catch (err: any) {
+			// Defer the error to be thrown until after permission checks
+			opts.preMutationError = err;
+		}
+
+		return super.updateMany(keys, data, opts);
+	}
+
+	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		try {
+			await this.checkFlowsFolders(keys, 'delete');
+		} catch (err: any) {
+			// Defer the error to be thrown until after permission checks
+			opts.preMutationError = err;
+		}
+
+		return super.deleteMany(keys, opts);
+	}
+
+	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Folder[]> {
+		if (!isAdmin(this.accountability)) {
+			query.filter = mergeFilters(query.filter ?? null, { type: { _neq: 'flows' } });
+		}
+
+		return super.readByQuery(query, opts);
+	}
+
+	/**
+	 * Builds a permission-aware folder tree starting from the given root folder.
 	 *
-	 * This method returns a map of folder IDs to their corresponding paths
-	 * relative to the root. It resolves all nested child folders and ensures
-	 * that folder names are deduplicated within the same parent.
+	 * Returns a map of folder IDs to their paths relative to the root.
+	 * Nested folders are included, with duplicate names handled per parent.
 	 *
-	 * Access control is applied automatically when non-admin, only folders the user has `read`
-	 * access to are included.
+	 * Limited to file-library folders.
 	 *
-	 * @param {string} root - The ID of the root folder to start building the tree from.
-	 * @returns {Promise<Map<string, string>>} A `Map` where:
-	 *   - Key: folder ID
-	 *   - Value: folder path relative to the root (e.g., "Documents/Photos")
-	 *
-	 * @example
-	 * const foldersService = new FoldersService({ schema, accountability });
-	 * const tree = await foldersService.buildTree('root-folder-id');
-	 * console.log(tree.get('folder1')); // e.g., "RootFolder/SubFolder1"
+	 * @param {string} root - ID of the root folder.
+	 * @returns {Promise<Map<string, string>>} Map of folder IDs to relative paths.
 	 *
 	 * @remarks
-	 * - The returned `Map` includes the root folder itself.
-	 * - If a folder has no name, its ID will be used as a fallback.
+	 * - Includes the root folder.
+	 * - Uses the folder ID if a folder has no name.
 	 */
 	async buildTree(root: string) {
 		if (this.accountability && this.accountability.admin !== true) {
@@ -48,7 +145,11 @@ export class FoldersService extends ItemsService<Folder> {
 			);
 		}
 
-		const folders = await this.readByQuery({ limit: -1 });
+		const folders = await this.readByQuery({
+			filter: { type: { _eq: 'files' } },
+			fields: ['id', 'parent', 'name'],
+			limit: -1,
+		});
 
 		// build folder and child lookup
 		const folderLookup = new Map<string, Folder>();

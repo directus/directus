@@ -38,6 +38,7 @@ const props = withDefaults(
 		primaryKey?: string;
 		active: boolean;
 		startTab?: string;
+		folder?: string;
 	}>(),
 	{ primaryKey: '+', startTab: 'flow_setup' },
 );
@@ -138,7 +139,9 @@ async function save() {
 		let id: string;
 
 		if (isNew.value) {
-			id = await api.post('/flows', values, { params: { fields: ['id'] } }).then((res) => res.data.data.id);
+			id = await api
+				.post('/flows', { ...values, folder: props.folder ?? null }, { params: { fields: ['id'] } })
+				.then((res) => res.data.data.id);
 		} else {
 			id = await api
 				.patch(`/flows/${props.primaryKey}`, values, { params: { fields: ['id'] } })

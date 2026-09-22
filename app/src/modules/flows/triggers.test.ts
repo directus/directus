@@ -46,3 +46,28 @@ describe('webhook trigger options', () => {
 		expect(cacheQueryParams!['meta']['hidden']).toBe(true);
 	});
 });
+
+describe('manual trigger options', () => {
+	const { triggers } = getTriggers();
+	const manual = triggers.find((t) => t.id === 'manual')!;
+	const options = (manual.options as (opts: Record<string, any>) => Record<string, any>[])({});
+
+	test('location field offers a hidden choice', () => {
+		const location = options.find((o) => o['field'] === 'location');
+
+		expect(location!['meta']['options']['choices'].map((choice: Record<string, any>) => choice['value'])).toEqual([
+			'both',
+			'collection',
+			'item',
+			'hidden',
+		]);
+	});
+
+	test('requireSelection field is hidden for item only and hidden locations', () => {
+		const requireSelection = options.find((o) => o['field'] === 'requireSelection');
+
+		expect(requireSelection!['meta']['conditions']).toEqual([
+			{ rule: { location: { _in: ['item', 'hidden'] } }, hidden: true },
+		]);
+	});
+});
