@@ -27,6 +27,10 @@ const props = defineProps<{
 	active?: boolean;
 	edits?: Record<string, any>;
 	stageOnSave?: boolean;
+	junctionCollection?: string;
+	junctionField?: string;
+	circularField?: string;
+	junctionFieldLocation?: string;
 }>();
 
 const emit = defineEmits<{
@@ -42,6 +46,17 @@ const { save, cancel, saving, validationErrors } = useActions();
 const { collection } = toRefs(props);
 const { primaryKeyField } = useCollection(collection);
 const { getTranslationsFields, saveBatchWithTranslations } = useTranslationsFields();
+const fieldsStore = useFieldsStore();
+const junctionEdits = ref<Record<string, any>>({});
+const hasJunction = computed(() => props.stageOnSave && props.junctionCollection && props.junctionField);
+
+const junctionFields = computed(() => {
+	if (!hasJunction.value) return [];
+
+	return fieldsStore.getFieldsForCollection(props.junctionCollection!).filter((field) => {
+		return !field.schema?.is_primary_key && field.field !== props.junctionField && field.field !== props.circularField;
+	});
+});
 
 function useEdits() {
 	const localEdits = ref<Record<string, any>>({});
@@ -89,9 +104,16 @@ function useActions() {
 
 	async function save() {
 		if (props.stageOnSave) {
-			emit('input', internalEdits.value);
+			emit(
+				'input',
+				hasJunction.value
+					? { ...junctionEdits.value, [props.junctionField!]: internalEdits.value }
+					: internalEdits.value,
+			);
+
 			internalActive.value = false;
 			internalEdits.value = {};
+			junctionEdits.value = {};
 			return;
 		}
 
@@ -140,6 +162,7 @@ function useActions() {
 	function cancel() {
 		internalActive.value = false;
 		internalEdits.value = {};
+		junctionEdits.value = {};
 	}
 }
 
@@ -248,13 +271,21 @@ function useTranslationsFields() {
 			<PrivateViewHeaderBarActionButton :label="$t('save')" :loading="saving" icon="check" @click="save" />
 		</template>
 
-		<div class="drawer-batch-content">
+		<div class="drawer-batch-content" :class="{ swap: hasJunction && junctionFieldLocation === 'top' }">
 			<VForm
 				v-model="internalEdits"
 				:collection="collection"
 				batch-mode
 				primary-key="+"
 				:validation-errors="validationErrors"
+			/>
+			<VForm
+				v-if="hasJunction"
+				v-model="junctionEdits"
+				:fields="junctionFields"
+				batch-mode
+				primary-key="+"
+				:show-no-visible-fields="false"
 			/>
 		</div>
 	</VDrawer>
@@ -266,7 +297,14 @@ function useTranslationsFields() {
 }
 
 .drawer-batch-content {
+	display: flex;
+	flex-direction: column;
+	gap: var(--theme--form--row-gap);
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
+
+	&.swap {
+		flex-direction: column-reverse;
+	}
 }
 </style>

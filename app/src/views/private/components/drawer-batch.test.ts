@@ -12,6 +12,7 @@ const mockFetchAll = vi.hoisted(() => vi.fn().mockResolvedValue([]));
 
 const mockFieldsStore = vi.hoisted(() => ({
 	getField: vi.fn(),
+	getFieldsForCollection: vi.fn().mockReturnValue([]),
 	getPrimaryKeyFieldForCollection: vi.fn(),
 }));
 
@@ -66,13 +67,72 @@ function mountDrawerBatch(props: Record<string, any> = {}) {
 			plugins: [i18n],
 			directives: { tooltip: Tooltip },
 			stubs: {
-				VDrawer: { template: '<div><slot /><slot name="actions" /></div>' },
-				VForm: { template: '<div />' },
+				VDrawer: { name: 'VDrawer', template: '<div><slot /><slot name="actions" /></div>' },
+				VForm: { name: 'VForm', props: ['fields', 'modelValue'], emits: ['update:modelValue'], template: '<div />' },
 				PrivateViewHeaderBarActionButton: { template: '<button />' },
 			},
 		},
 	});
 }
+
+describe('staged junction edits', () => {
+	it('discards junction edits when cancelling', async () => {
+		const wrapper = mountDrawerBatch({
+			collection: 'tags',
+			stageOnSave: true,
+			junctionCollection: 'articles_tags',
+			junctionField: 'tag_id',
+			circularField: 'article_id',
+		});
+
+		const forms = wrapper.findAllComponents({ name: 'VForm' });
+		await forms[1]!.vm.$emit('update:modelValue', { note: 'Discard this' });
+		await wrapper.findComponent({ name: 'VDrawer' }).vm.$emit('cancel');
+		expect(forms[1]!.props('modelValue')).toEqual({});
+		expect(wrapper.emitted('input')).toBeUndefined();
+	});
+
+	it('shows junction fields without allowing relationship keys to be changed', () => {
+		mockFieldsStore.getFieldsForCollection.mockReturnValue([
+			{ field: 'id', schema: { is_primary_key: true } },
+			{ field: 'article_id' },
+			{ field: 'tag_id' },
+			{ field: 'note' },
+		]);
+
+		const wrapper = mountDrawerBatch({
+			collection: 'tags',
+			stageOnSave: true,
+			junctionCollection: 'articles_tags',
+			junctionField: 'tag_id',
+			circularField: 'article_id',
+		});
+
+		const forms = wrapper.findAllComponents({ name: 'VForm' });
+		expect(forms).toHaveLength(2);
+		expect(forms[1]!.props('fields')).toEqual([{ field: 'note' }]);
+	});
+
+	it('stages junction values alongside nested related edits and clears both after applying', async () => {
+		const wrapper = mountDrawerBatch({
+			collection: 'tags',
+			stageOnSave: true,
+			junctionCollection: 'articles_tags',
+			junctionField: 'tag_id',
+			circularField: 'article_id',
+		});
+
+		const forms = wrapper.findAllComponents({ name: 'VForm' });
+		expect(forms).toHaveLength(2);
+		await forms[0]!.vm.$emit('update:modelValue', { name: 'Updated' });
+		await forms[1]!.vm.$emit('update:modelValue', { note: 'Selected only' });
+		await wrapper.findComponent({ name: 'VDrawer' }).vm.$emit('apply');
+		expect(wrapper.emitted('input')).toEqual([[{ note: 'Selected only', tag_id: { name: 'Updated' } }]]);
+		expect(mockApi.patch).not.toHaveBeenCalled();
+		expect(forms[0]!.props('modelValue')).toEqual({});
+		expect(forms[1]!.props('modelValue')).toEqual({});
+	});
+});
 
 function setupTranslationsRelation() {
 	mockFieldsStore.getField.mockImplementation((_collection: string, field: string) => {
