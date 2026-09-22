@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { zip } from 'lodash';
+import { zip } from 'lodash-es';
 import { expect, test } from 'vitest';
 import VNotice from './v-notice.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
