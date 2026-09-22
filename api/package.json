@@ -229,7 +229,6 @@
 		"@types/proxy-addr": "catalog:",
 		"@types/qs": "catalog:",
 		"@types/sanitize-html": "catalog:",
-		"@types/stream-json": "catalog:",
 		"@types/wellknown": "catalog:",
 		"@types/ws": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
@@ -243,6 +242,7 @@
 	"optionalDependencies": {
 		"@keyv/redis": "catalog:",
 		"braintrust": "catalog:",
+		"mailtrap": "catalog:",
 		"mysql2": "catalog:",
 		"nodemailer-mailgun-transport": "catalog:",
 		"oracledb": "catalog:",
