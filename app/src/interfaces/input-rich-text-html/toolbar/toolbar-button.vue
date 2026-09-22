@@ -14,9 +14,12 @@ const props = defineProps<{
 	tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
 }>();
 
-const { t } = useI18n();
+const { t, te } = useI18n();
 
 const placement = computed(() => props.tooltipPlacement ?? 'top');
+
+// A contributed button has a text. A core button has an i18n key.
+const label = computed(() => (te(props.button.label) ? t(props.button.label) : props.button.label));
 </script>
 
 <template>
@@ -29,7 +32,7 @@ const placement = computed(() => props.tooltipPlacement ?? 'top');
 	/>
 	<VButton
 		v-else
-		v-tooltip:[placement]="t(button.label)"
+		v-tooltip:[placement]="label"
 		class="toolbar-button"
 		ghost
 		:active="!!(editor && button.isActive?.(editor, context))"

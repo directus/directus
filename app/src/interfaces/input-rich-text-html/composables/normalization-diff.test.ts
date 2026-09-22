@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
+import { buildFieldSchema } from '../extensions';
 import { buildCustomFormats } from '../extensions/custom-formats';
-import { comparisonSchema, computeNormalizationDiff, computeValueNormalizationDiff } from './normalization-diff';
+import { computeNormalizationDiff, computeValueNormalizationDiff } from './normalization-diff';
 
 function removedText(code: string): string {
 	const changes = computeNormalizationDiff(code);
@@ -121,12 +122,12 @@ describe('computeValueNormalizationDiff', () => {
 	});
 });
 
-describe('comparisonSchema', () => {
+describe('comparison-mode schema', () => {
 	test('accepts the diff spans the comparison view feeds the editor', () => {
 		const value = '<p><span class="comparison-diff--added">a</span></p>';
-		const { extensions, schemaKey } = comparisonSchema(null);
+		const { extensions, key } = buildFieldSchema({ comparisonMode: true });
 
-		expect(computeValueNormalizationDiff(value, extensions, schemaKey)).toBeNull();
+		expect(computeValueNormalizationDiff(value, extensions, key)).toBeNull();
 		expect(computeValueNormalizationDiff(value)).not.toBeNull();
 	});
 });

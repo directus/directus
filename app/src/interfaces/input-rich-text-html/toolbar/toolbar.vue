@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RichTextToolbarButton } from '@directus/extensions';
 import { cssVar } from '@directus/utils/browser';
 import type { Editor } from '@tiptap/vue-3';
 import { useResizeObserver } from '@vueuse/core';
@@ -7,7 +8,7 @@ import { useI18n } from 'vue-i18n';
 import type { CustomFormat } from '../extensions/custom-formats';
 import { type ToolbarButton, toolbarButtons, type ToolbarContext } from './buttons';
 import { computeToolbarLayout, type LayoutMeasurements, type RenderGroup } from './compute-toolbar-layout';
-import { toolbarGroups } from './groups';
+import { ToolbarGroup, toolbarGroups } from './groups';
 import ToolbarButtonComp from './toolbar-button.vue';
 import ToolbarPopover from './toolbar-popover.vue';
 import { useClipboardActions } from './use-clipboard-actions';
@@ -23,11 +24,13 @@ const props = withDefaults(
 		font?: 'sans-serif' | 'serif' | 'monospace';
 		/** Custom formats built from the field's `customFormats` option; auto-appends the styles dropdown. */
 		customFormats?: CustomFormat[];
+		/** Buttons of the richtext extensions the field's `extensions` option opted into. */
+		contributedButtons?: RichTextToolbarButton[];
 		disabled?: boolean;
 		fullscreen?: boolean;
 		visualaid?: boolean;
 	}>(),
-	{ font: 'sans-serif', customFormats: () => [] },
+	{ font: 'sans-serif', customFormats: () => [], contributedButtons: () => [] },
 );
 
 const emit = defineEmits<{
@@ -89,6 +92,33 @@ const MEASUREMENTS: LayoutMeasurements = {
 	keyWidths,
 };
 
+const contributedMap = computed<Record<string, ToolbarButton>>(() =>
+	Object.fromEntries(
+		props.contributedButtons.map((button) => [
+			button.key,
+			{
+				icon: button.icon,
+				label: button.label,
+				// the core ToolbarButton type gives a context object that a contribution must not get
+				command: (editor) => button.command(editor),
+				...(button.isActive ? { isActive: (editor) => button.isActive!(editor) } : {}),
+			} satisfies ToolbarButton,
+		]),
+	),
+);
+
+const allButtons = computed<Record<string, ToolbarButton>>(() => ({
+	...toolbarButtons,
+	...contributedMap.value,
+}));
+
+// The priority is low. Therefore these buttons are the first buttons in the "Show More" menu.
+const allGroups = computed<ToolbarGroup[]>(() => {
+	const keys = Object.keys(contributedMap.value);
+	if (keys.length === 0) return toolbarGroups;
+	return [...toolbarGroups, { id: 'contributed', priority: 10, keys }];
+});
+
 const TOOLBAR_ALIASES: Record<string, string[]> = { 'ltr rtl': ['ltr', 'rtl'] };
 
 // keys present in the field config AND the registry; `styles` is never user-configured — it's
@@ -96,7 +126,7 @@ const TOOLBAR_ALIASES: Record<string, string[]> = { 'ltr rtl': ['ltr', 'rtl'] };
 const selectedKeys = computed(() => {
 	const keys = props.toolbar
 		.flatMap((key) => TOOLBAR_ALIASES[key] ?? [key])
-		.filter((key) => key !== 'styles' && Boolean(toolbarButtons[key]));
+		.filter((key) => key !== 'styles' && Boolean(allButtons.value[key]));
 
 	if (props.customFormats.length > 0) keys.push('styles');
 	return keys;
@@ -131,7 +161,7 @@ useResizeObserver(container, ([entry]) => {
 });
 
 const layout = computed(() =>
-	computeToolbarLayout(selectedKeys.value, toolbarGroups, availableWidth.value, MEASUREMENTS),
+	computeToolbarLayout(selectedKeys.value, allGroups.value, availableWidth.value, MEASUREMENTS),
 );
 
 const visibleGroups = computed(() => layout.value.visible);
@@ -140,7 +170,7 @@ const hasOverflow = computed(() => overflowGroups.value.length > 0);
 
 function resolve(group: RenderGroup): { key: string; button: ToolbarButton }[] {
 	return group.keys.map((key) => {
-		const button = toolbarButtons[key]!;
+		const button = allButtons.value[key]!;
 		const extra = key === 'styles' ? { formats: props.customFormats } : styleDefaults.value[key];
 		if (!extra) return { key, button };
 		return { key, button: { ...button, componentProps: { ...button.componentProps, ...extra } } };

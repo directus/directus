@@ -31,7 +31,7 @@ describe('generateExtensionsEntrypoint', () => {
 		];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [];"`,
+			`"export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const richtexts = [];export const operations = [];"`,
 		);
 	});
 
@@ -100,7 +100,7 @@ describe('generateExtensionsEntrypoint', () => {
 		] as ExtensionSettings[];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [];"`,
+			`"export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const richtexts = [];export const operations = [];"`,
 		);
 	});
 
@@ -126,7 +126,44 @@ describe('generateExtensionsEntrypoint', () => {
 		const mockSettings = [{ source: 'local', folder: 'mock-panel-extension', enabled: true }] as ExtensionSettings[];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"import panel0 from './extensions/panel/index.js';export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [panel0];export const themes = [];export const operations = [];"`,
+			`"import panel0 from './extensions/panel/index.js';export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [panel0];export const themes = [];export const richtexts = [];export const operations = [];"`,
+		);
+	});
+
+	it('imports an enabled richtext extension and drops a disabled one', () => {
+		const mockExtensions: {
+			module: Map<string, Extension>;
+			registry: Map<string, Extension>;
+			local: Map<string, Extension>;
+		} = {
+			module: new Map(),
+			registry: new Map(),
+			local: new Map(),
+		};
+
+		mockExtensions.local.set('mock-callout-extension', {
+			path: './extensions/callout',
+			name: 'mock-callout-extension',
+			type: 'richtext',
+			entrypoint: 'index.js',
+			local: true,
+		});
+
+		mockExtensions.local.set('mock-kbd-extension', {
+			path: './extensions/kbd',
+			name: 'mock-kbd-extension',
+			type: 'richtext',
+			entrypoint: 'index.js',
+			local: true,
+		});
+
+		const mockSettings = [
+			{ source: 'local', folder: 'mock-callout-extension', enabled: true },
+			{ source: 'local', folder: 'mock-kbd-extension', enabled: false },
+		] as ExtensionSettings[];
+
+		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
+			`"import richtext0 from './extensions/callout/index.js';export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const richtexts = [richtext0];export const operations = [];"`,
 		);
 	});
 
@@ -154,7 +191,7 @@ describe('generateExtensionsEntrypoint', () => {
 		] as ExtensionSettings[];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"import operation0 from './extensions/operation/app.js';export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [operation0];"`,
+			`"import operation0 from './extensions/operation/app.js';export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const richtexts = [];export const operations = [operation0];"`,
 		);
 	});
 
@@ -211,7 +248,7 @@ describe('generateExtensionsEntrypoint', () => {
 		] as ExtensionSettings[];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"import {interfaces as interfaceBundle0,operations as operationBundle0} from './extensions/bundle/app.js';export const interfaces = [...interfaceBundle0];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [...operationBundle0];"`,
+			`"import {interfaces as interfaceBundle0,operations as operationBundle0} from './extensions/bundle/app.js';export const interfaces = [...interfaceBundle0];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const richtexts = [];export const operations = [...operationBundle0];"`,
 		);
 	});
 
@@ -317,7 +354,7 @@ describe('generateExtensionsEntrypoint', () => {
 		];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"import display0 from './extensions/display/index.js';import operation0 from './extensions/operation/app.js';import {layouts as layoutBundle0,operations as operationBundle0} from './extensions/bundle/app.js';export const interfaces = [];export const displays = [display0];export const layouts = [...layoutBundle0];export const modules = [];export const panels = [];export const themes = [];export const operations = [operation0,...operationBundle0];"`,
+			`"import display0 from './extensions/display/index.js';import operation0 from './extensions/operation/app.js';import {layouts as layoutBundle0,operations as operationBundle0} from './extensions/bundle/app.js';export const interfaces = [];export const displays = [display0];export const layouts = [...layoutBundle0];export const modules = [];export const panels = [];export const themes = [];export const richtexts = [];export const operations = [operation0,...operationBundle0];"`,
 		);
 	});
 });

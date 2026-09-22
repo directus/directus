@@ -139,6 +139,7 @@ extension_layout: Layout
 extension_module: Module
 extension_panel: Panel
 extension_theme: Theme
+extension_richtext: Rich Text
 extension_hook: Hook
 extension_endpoint: Endpoint
 extension_operation: Operation
@@ -149,6 +150,7 @@ extension_layouts: Layouts
 extension_modules: Modules
 extension_panels: Panels
 extension_themes: Themes
+extension_richtexts: Rich Text
 extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operations
@@ -2785,6 +2787,9 @@ interfaces:
     wysiwyg: WYSIWYG
     description: A rich-text editor writing HTML content
     toolbar: Toolbar
+    extensions: Extensions
+    extensions_placeholder: Select extensions...
+    extensions_note: Extensions this field can use. Markup from unselected extensions is removed on save.
     custom_formats: Custom Formats
     custom_formats_note:
       A list of custom formats. Each entry needs a `title` plus either an `inline` tag, a `block` tag, a `selector` of

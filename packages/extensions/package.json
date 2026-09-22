@@ -41,6 +41,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@tiptap/core": "catalog:",
 		"@types/fs-extra": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
@@ -54,12 +55,16 @@
 		"vue-router": "catalog:"
 	},
 	"peerDependencies": {
+		"@tiptap/core": "catalog:",
 		"knex": "catalog:",
 		"pino": "catalog:",
 		"vue": "catalog:",
 		"vue-router": "catalog:"
 	},
 	"peerDependenciesMeta": {
+		"@tiptap/core": {
+			"optional": true
+		},
 		"knex": {
 			"optional": true
 		},

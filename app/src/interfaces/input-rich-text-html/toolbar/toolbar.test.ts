@@ -1,3 +1,4 @@
+import type { RichTextToolbarButton } from '@directus/extensions';
 import TextAlign from '@tiptap/extension-text-align';
 import StarterKit from '@tiptap/starter-kit';
 import { Editor } from '@tiptap/vue-3';
@@ -11,7 +12,11 @@ import Toolbar from './toolbar.vue';
 
 let editor: Editor;
 
-function mountToolbar(toolbar: string[], customFormats: CustomFormat[] = []) {
+function mountToolbar(
+	toolbar: string[],
+	customFormats: CustomFormat[] = [],
+	contributedButtons: RichTextToolbarButton[] = [],
+) {
 	editor = new Editor({
 		extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
 		content: '<p>x</p>',
@@ -25,7 +30,10 @@ function mountToolbar(toolbar: string[], customFormats: CustomFormat[] = []) {
 		routes: [{ path: '/', component: { template: '<div />' } }],
 	});
 
-	return mount(Toolbar, { props: { editor, toolbar, customFormats }, global: { plugins: [pinia, i18n, router] } });
+	return mount(Toolbar, {
+		props: { editor, toolbar, customFormats, contributedButtons },
+		global: { plugins: [pinia, i18n, router] },
+	});
 }
 
 afterEach(() => editor?.destroy());
@@ -82,5 +90,34 @@ describe('Toolbar', () => {
 	test('no styles dropdown when customFormats is empty', () => {
 		const wrapper = mountToolbar(['bold']);
 		expect(wrapper.find('.style-list-button').exists()).toBe(false);
+	});
+});
+
+describe('contributed buttons', () => {
+	const callout: RichTextToolbarButton = { key: 'callout', icon: 'info', label: 'Callout', command: () => {} };
+
+	test('renders a richtext extension button when the field selects its key', () => {
+		const wrapper = mountToolbar(['bold', 'callout'], [], [callout]);
+		expect(wrapper.findAll('.toolbar-button')).toHaveLength(2);
+	});
+
+	// the button only exists once the field opts the extension in, so an unknown key is dropped
+	test('drops the key when the field enabled no extension that contributes it', () => {
+		const wrapper = mountToolbar(['bold', 'callout']);
+		expect(wrapper.findAll('.toolbar-button')).toHaveLength(1);
+	});
+
+	// this is the case the user hits: extension enabled, but the field never opted the key in
+	test('renders nothing when the field does not select the key', () => {
+		const wrapper = mountToolbar(['bold'], [], [callout]);
+		expect(wrapper.findAll('.toolbar-button')).toHaveLength(1);
+	});
+
+	test('renders a namespaced contribution next to the core button it is named after', () => {
+		const bold: RichTextToolbarButton = { key: 'spike:bold', icon: 'star', label: 'Spike', command: () => {} };
+		const wrapper = mountToolbar(['bold', 'spike:bold'], [], [bold]);
+
+		const icons = wrapper.findAll('.toolbar-button .v-icon i').map((icon) => icon.attributes('data-icon'));
+		expect(icons).toEqual(['format_bold', 'star']);
 	});
 });
