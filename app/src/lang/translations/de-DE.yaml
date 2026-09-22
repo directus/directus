@@ -1512,7 +1512,6 @@ manage_registered_clients: 'Registrierte Clients verwalten'
 no_oauth_clients: 'Es wurden noch keine OAuth-Clients registriert.'
 revoke_client: 'Client widerrufen'
 revoke_client_confirm: 'Sind Sie sicher, dass Sie diesen Client widerrufen möchten? Alle zugehörigen Token und Sitzungen werden gelöscht.'
-settings_flows: Flows
 settings_system_logs: Systemprotokolle
 settings_presets: Lesezeichen
 settings_translations: Übersetzungen
