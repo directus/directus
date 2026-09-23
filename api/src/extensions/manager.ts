@@ -72,7 +72,7 @@ const env = useEnv();
 
 const defaultOptions: ExtensionManagerOptions = {
 	schedule: true,
-	watch: env['EXTENSIONS_AUTO_RELOAD'] as boolean,
+	watch: env.EXTENSIONS_AUTO_RELOAD,
 };
 
 export class ExtensionManager {
@@ -276,7 +276,7 @@ export class ExtensionManager {
 	private async load(options?: ExtensionSyncOptions): Promise<void> {
 		const logger = useLogger();
 
-		if (env['EXTENSIONS_LOCATION']) {
+		if (env.EXTENSIONS_LOCATION) {
 			try {
 				await syncExtensions(options);
 			} catch (error) {
@@ -300,7 +300,7 @@ export class ExtensionManager {
 
 		await Promise.all([this.registerInternalOperations(), this.registerApiExtensions()]);
 
-		if (env['SERVE_APP']) {
+		if (env.SERVE_APP) {
 			await this.generateExtensionBundle();
 		}
 
@@ -416,7 +416,7 @@ export class ExtensionManager {
 
 		if (!file) return null;
 
-		const tempDir = join(env['TEMP_PATH'] as string, 'app-extensions');
+		const tempDir = join(env.TEMP_PATH, 'app-extensions');
 		const tmpStorage = new DriverLocal({ root: tempDir });
 
 		if ((await tmpStorage.exists(file)) === false) return null;
@@ -584,7 +584,7 @@ export class ExtensionManager {
 
 		try {
 			/** Opt In for now. Should be @deprecated later to always use rolldown! */
-			const rollDirection = (env['EXTENSIONS_ROLLDOWN'] ?? false) ? rolldown : rollup;
+			const rollDirection = env.EXTENSIONS_ROLLDOWN ? rolldown : rollup;
 
 			const bundle = await rollDirection({
 				input: 'entry',
@@ -593,7 +593,7 @@ export class ExtensionManager {
 				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports }), nodeResolve({ browser: true })],
 			});
 
-			const tempDir = join(env['TEMP_PATH'] as string, 'app-extensions');
+			const tempDir = join(env.TEMP_PATH, 'app-extensions');
 
 			const { output } = await bundle.write({
 				format: 'es',
@@ -616,9 +616,6 @@ export class ExtensionManager {
 	private async registerSandboxedApiExtension(extension: ApiExtension | HybridExtension) {
 		const logger = useLogger();
 
-		const sandboxMemory = Number(env['EXTENSIONS_SANDBOX_MEMORY']);
-		const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
-
 		const entrypointPath = path.resolve(
 			extension.path,
 			isTypeIn(extension, HYBRID_EXTENSION_TYPES) ? extension.entrypoint.api : extension.entrypoint,
@@ -627,7 +624,7 @@ export class ExtensionManager {
 		const extensionCode = await readFile(entrypointPath, 'utf-8');
 
 		const isolate = new ivm.Isolate({
-			memoryLimit: sandboxMemory,
+			memoryLimit: env.EXTENSIONS_SANDBOX_MEMORY,
 			onCatastrophicError: (error) => {
 				logger.error(`Error in API extension sandbox of ${extension.type} "${extension.name}"`);
 				logger.error(error);
@@ -651,7 +648,7 @@ export class ExtensionManager {
 			return sdkModule;
 		});
 
-		await module.evaluate({ timeout: sandboxTimeout });
+		await module.evaluate({ timeout: env.EXTENSIONS_SANDBOX_TIMEOUT });
 
 		const cb = await module.namespace.get('default', { reference: true });
 
@@ -662,7 +659,7 @@ export class ExtensionManager {
 		);
 
 		await context.evalClosure(code, [cb, ...hostFunctions.map((fn) => new ivm.Reference(fn))], {
-			timeout: sandboxTimeout,
+			timeout: env.EXTENSIONS_SANDBOX_TIMEOUT,
 			filename: '<extensions-sandbox>',
 		});
 
@@ -1032,7 +1029,7 @@ export class ExtensionManager {
 	private handleExtensionError({ error, reason }: { error?: unknown; reason: string }): void {
 		const logger = useLogger();
 
-		if (toBoolean(env['EXTENSIONS_MUST_LOAD'])) {
+		if (env.EXTENSIONS_MUST_LOAD) {
 			logger.error('EXTENSION_MUST_LOAD is enabled and an extension failed to load.');
 			logger.error(reason);
 			if (error) logger.error(error);

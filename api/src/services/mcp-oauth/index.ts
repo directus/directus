@@ -183,6 +183,8 @@ function getStringParam(params: Record<string, unknown>, key: string, redirectab
 	return value;
 }
 
+const env = useEnv();
+
 /**
  * OAuth 2.1 authorization server for MCP (Model Context Protocol) access.
  *
@@ -238,15 +240,15 @@ export class McpOAuthService {
 	 */
 	async getAuthorizationServerMetadata(): Promise<Record<string, unknown>> {
 		const { issuerUrl } = getMcpUrls();
-		const env = useEnv();
-		const baseUrl = env['PUBLIC_URL'] as string;
+
+		const baseUrl = env.PUBLIC_URL;
 
 		const settings = await this.knex('directus_settings')
 			.select('mcp_oauth_dcr_enabled', 'mcp_oauth_cimd_enabled')
 			.first();
 
-		const dcrEnabled = toBoolean(env['MCP_OAUTH_DCR_ENABLED']) && toBoolean(settings?.mcp_oauth_dcr_enabled);
-		const cimdEnabled = toBoolean(env['MCP_OAUTH_CIMD_ENABLED']) && toBoolean(settings?.mcp_oauth_cimd_enabled);
+		const dcrEnabled = env.MCP_OAUTH_DCR_ENABLED && toBoolean(settings?.mcp_oauth_dcr_enabled);
+		const cimdEnabled = env.MCP_OAUTH_CIMD_ENABLED && toBoolean(settings?.mcp_oauth_cimd_enabled);
 
 		const authorizationEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'authorize');
 		const tokenEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'token');
@@ -294,11 +296,10 @@ export class McpOAuthService {
 	 * @throws {OAuthError} `invalid_client_metadata` or `invalid_redirect_uri`
 	 */
 	async registerClient(body: unknown): Promise<DCRResponse> {
-		const env = useEnv();
 		const logger = useLogger();
 
 		// DCR enabled gate: env AND setting must both be true
-		if (!toBoolean(env['MCP_OAUTH_DCR_ENABLED'])) {
+		if (!env.MCP_OAUTH_DCR_ENABLED) {
 			logger.debug({ reason: 'dcr_env_disabled' }, 'MCP OAuth DCR registration rejected');
 			throw new OAuthError(404, 'not_found', 'Dynamic client registration is not available');
 		}
@@ -439,8 +440,7 @@ export class McpOAuthService {
 		}
 
 		// Policy: global client cap to bound table growth from unauthenticated DCR (0 disables)
-		const parsed = Number(env['MCP_OAUTH_MAX_CLIENTS']);
-		const maxClients = Number.isNaN(parsed) ? 10_000 : parsed;
+		const maxClients = Number.isNaN(env.MCP_OAUTH_MAX_CLIENTS) ? 10_000 : env.MCP_OAUTH_MAX_CLIENTS;
 
 		if (maxClients > 0) {
 			const [{ count }] = (await this.knex('directus_oauth_clients').count('* as count')) as [
@@ -608,9 +608,8 @@ export class McpOAuthService {
 		}
 
 		// Validate resource (RFC 8707)
-		const env = useEnv();
 		const { resourceUrl: expectedResource } = getMcpUrls();
-		const requireResource = env['MCP_OAUTH_REQUIRE_RESOURCE'] === true;
+		const requireResource = env.MCP_OAUTH_REQUIRE_RESOURCE;
 		const resolvedResource = resource || (!requireResource ? expectedResource : null);
 
 		if (!resolvedResource) {
@@ -751,8 +750,7 @@ export class McpOAuthService {
 		const codeHash = this.hashToken(rawCode);
 
 		// Store code (never store raw code)
-		const env = useEnv();
-		const codeExpiry = new Date(Date.now() + getMilliseconds(env['MCP_OAUTH_AUTH_CODE_TTL'], 0));
+		const codeExpiry = new Date(Date.now() + getMilliseconds(env.MCP_OAUTH_AUTH_CODE_TTL, 0));
 
 		await transaction(this.knex, async (trx) => {
 			await trx('directus_oauth_codes').insert({
@@ -826,7 +824,6 @@ export class McpOAuthService {
 	 */
 	async exchangeCode(params: TokenParams, context: TokenContext): Promise<TokenResponse> {
 		const { nanoid } = await import('nanoid');
-		const env = useEnv();
 		const logger = useLogger();
 
 		// Pre-transaction: resolve client_id and authenticate
@@ -889,8 +886,8 @@ export class McpOAuthService {
 		// 4. Single transaction: burn-first, then validate, then create grant
 		const sessionToken = nanoid(64);
 		const sessionHash = this.hashToken(sessionToken);
-		const refreshTtl = getMilliseconds(env['REFRESH_TOKEN_TTL'], 0);
-		const accessTtl = getMilliseconds(env['ACCESS_TOKEN_TTL'], 0);
+		const refreshTtl = getMilliseconds(env.REFRESH_TOKEN_TTL, 0);
+		const accessTtl = getMilliseconds(env.ACCESS_TOKEN_TTL, 0);
 		const sessionExpiry = new Date(Date.now() + refreshTtl);
 		const grantId = crypto.randomUUID();
 
@@ -925,7 +922,7 @@ export class McpOAuthService {
 			}
 
 			const resolvedExchangeResource =
-				params.resource || (!env['MCP_OAUTH_REQUIRE_RESOURCE'] ? codeRecord['resource'] : null);
+				params.resource || (!env.MCP_OAUTH_REQUIRE_RESOURCE ? codeRecord['resource'] : null);
 
 			if (codeRecord['resource'] !== resolvedExchangeResource) {
 				logger.warn(
@@ -1075,7 +1072,6 @@ export class McpOAuthService {
 	 */
 	async refreshToken(params: RefreshParams, context: TokenContext): Promise<TokenResponse> {
 		const { nanoid } = await import('nanoid');
-		const env = useEnv();
 		const logger = useLogger();
 
 		const { clientId: resolvedClientId, basicAuth } = this.resolveClientId(params);
@@ -1090,7 +1086,7 @@ export class McpOAuthService {
 			throw new OAuthError(400, 'invalid_request', 'refresh_token is required');
 		}
 
-		if (env['MCP_OAUTH_REQUIRE_RESOURCE'] === true && !params.resource) {
+		if (env.MCP_OAUTH_REQUIRE_RESOURCE && !params.resource) {
 			throw new OAuthError(400, 'invalid_target', 'resource is required');
 		}
 
@@ -1143,7 +1139,7 @@ export class McpOAuthService {
 		}
 
 		// 6. Validate resource matches grant's stored resource (RFC 8707)
-		const resolvedRefreshResource = params.resource || (!env['MCP_OAUTH_REQUIRE_RESOURCE'] ? grant['resource'] : null);
+		const resolvedRefreshResource = params.resource || (!env.MCP_OAUTH_REQUIRE_RESOURCE ? grant['resource'] : null);
 
 		if (grant['resource'] !== resolvedRefreshResource) {
 			throw new OAuthError(400, 'invalid_target', 'resource mismatch');
@@ -1162,8 +1158,8 @@ export class McpOAuthService {
 		// 9. Rotate session
 		const newSessionToken = nanoid(64);
 		const newSessionHash = this.hashToken(newSessionToken);
-		const refreshTtl = getMilliseconds(env['REFRESH_TOKEN_TTL'], 0);
-		const accessTtl = getMilliseconds(env['ACCESS_TOKEN_TTL'], 0);
+		const refreshTtl = getMilliseconds(env.REFRESH_TOKEN_TTL, 0);
+		const accessTtl = getMilliseconds(env.ACCESS_TOKEN_TTL, 0);
 		const newExpiry = new Date(Date.now() + refreshTtl);
 		const resource = grant['resource'] as string;
 		const scope = (grant['scope'] as string) || MCP_ACCESS_SCOPE;
@@ -1370,7 +1366,6 @@ export class McpOAuthService {
 	 *    b) Idle authorized (has consents but no sessions/grants, older than MCP_OAUTH_CLIENT_IDLE_TTL; disabled when '0')
 	 */
 	async cleanup(): Promise<void> {
-		const env = useEnv();
 		const now = new Date();
 		const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
 
@@ -1416,7 +1411,7 @@ export class McpOAuthService {
 		}
 
 		// 5a. Tier 1: Never-authorized clients (no consent records, no active sessions/grants)
-		const unusedTtl = getMilliseconds(env['MCP_OAUTH_CLIENT_UNUSED_TTL'], DEFAULT_UNUSED_CLIENT_TTL_MS);
+		const unusedTtl = getMilliseconds(env.MCP_OAUTH_CLIENT_UNUSED_TTL, DEFAULT_UNUSED_CLIENT_TTL_MS);
 		const unusedCutoff = new Date(now.getTime() - unusedTtl);
 
 		const neverAuthorizedClients = await this.knex('directus_oauth_clients')
@@ -1439,7 +1434,7 @@ export class McpOAuthService {
 		}
 
 		// 5b. Tier 2: Idle authorized clients (have consents but no active sessions/grants)
-		const idleTtl = getMilliseconds(env['MCP_OAUTH_CLIENT_IDLE_TTL'], 0);
+		const idleTtl = getMilliseconds(env.MCP_OAUTH_CLIENT_IDLE_TTL, 0);
 
 		if (idleTtl > 0) {
 			const idleCutoff = new Date(now.getTime() - idleTtl);
@@ -1493,10 +1488,9 @@ export class McpOAuthService {
 		}
 
 		// --- CIMD path ---
-		const env = useEnv();
 
 		// Gate 1: CIMD enabled (env AND setting)
-		if (!toBoolean(env['MCP_OAUTH_CIMD_ENABLED'])) {
+		if (!env.MCP_OAUTH_CIMD_ENABLED) {
 			throw new OAuthError(400, 'invalid_client', 'CIMD client registration is disabled');
 		}
 
@@ -1725,12 +1719,10 @@ export class McpOAuthService {
 	 * Handles concurrent inserts via unique constraint catch + SELECT fallback.
 	 */
 	private async insertCimdClient(clientId: string): Promise<Record<string, unknown>> {
-		const env = useEnv();
 		const logger = useLogger();
 
 		// Gate: Max clients cap (shared with DCR)
-		const parsed = Number(env['MCP_OAUTH_MAX_CLIENTS']);
-		const maxClients = Number.isNaN(parsed) ? 10_000 : parsed;
+		const maxClients = Number.isNaN(env.MCP_OAUTH_MAX_CLIENTS) ? 10_000 : env.MCP_OAUTH_MAX_CLIENTS;
 
 		if (maxClients > 0) {
 			const [{ count }] = (await this.knex('directus_oauth_clients').count('* as count')) as [

@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { InvalidProviderConfigError } from '@directus/errors';
-import { toArray, toBoolean } from '@directus/utils';
+import { toArray } from '@directus/utils';
 import type { AuthDriver } from './auth/auth.js';
 import {
 	LDAPAuthDriver,
@@ -34,15 +34,15 @@ export async function registerAuthProviders(): Promise<void> {
 	const logger = useLogger();
 	const options = { knex: getDatabase() };
 
-	const providerNames = toArray(env['AUTH_PROVIDERS'] as string);
+	const providerNames = env.AUTH_PROVIDERS;
 
 	const sso_allowed = getEntitlementManager().isEntitled('sso_enabled');
 
-	if (sso_allowed === false && env['AUTH_PROVIDERS'] && providerNames.length > 0) {
+	if (sso_allowed === false && env.AUTH_PROVIDERS.length > 0 && providerNames.length > 0) {
 		logger.warn('you have SSO providers configured these will be unavailable under the current license tier');
 	}
 
-	if (sso_allowed === false && toBoolean(env['AUTH_DISABLE_DEFAULT'])) {
+	if (sso_allowed === false && env.AUTH_DISABLE_DEFAULT) {
 		logger.warn('you cannot disable the default auth provider under the current license tier');
 	}
 
@@ -50,7 +50,7 @@ export async function registerAuthProviders(): Promise<void> {
 	const defaultProvider = getProviderInstance('local', options)!;
 	providers.set(DEFAULT_AUTH_PROVIDER, defaultProvider);
 
-	if (!env['AUTH_PROVIDERS']) {
+	if (env.AUTH_PROVIDERS.length === 0) {
 		return;
 	}
 

@@ -57,7 +57,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 	]);
 
 	return {
-		url: env['PUBLIC_URL'] as string,
+		url: env.PUBLIC_URL,
 		version: version,
 		database: getDatabaseClient(),
 
@@ -82,7 +82,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 		database_size: databaseSize ?? 0,
 		files_size_total: filesizes.total,
 
-		websockets_enabled: toBoolean(env['WEBSOCKETS_ENABLED'] ?? false),
+		websockets_enabled: env.WEBSOCKETS_ENABLED,
 
 		...settings,
 

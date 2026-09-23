@@ -10,8 +10,8 @@ export const getSecret = () => {
 
 	const env = useEnv();
 
-	if (env['SECRET']) {
-		return env['SECRET'] as string;
+	if (env.SECRET) {
+		return env.SECRET;
 	}
 
 	_cache.secret = nanoid(32);

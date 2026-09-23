@@ -94,7 +94,7 @@ export default abstract class SocketController {
 	protected getRateLimiter() {
 		const env = useEnv();
 
-		if (toBoolean(env['RATE_LIMITER_ENABLED']) === true) {
+		if (env.RATE_LIMITER_ENABLED) {
 			return createRateLimiter('RATE_LIMITER', {
 				keyPrefix: 'websocket',
 				...getConfigFromEnv('RATE_LIMITER_WEBSOCKETS_'),
@@ -146,7 +146,7 @@ export default abstract class SocketController {
 		const env = useEnv();
 		const origin = request.headers['origin'];
 		const cookies = request.headers.cookie ? cookie.parse(request.headers.cookie) : {};
-		const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
+		const sessionCookieName = env.SESSION_COOKIE_NAME;
 
 		const accountabilityOverrides: UpgradeContext['accountabilityOverrides'] = {
 			ip: getIPFromReq(request) ?? null,

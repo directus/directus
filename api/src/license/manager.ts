@@ -75,7 +75,7 @@ export class LicenseManager {
 	private source: LicenseSource = null;
 	private initialized = false;
 	private rpc = useRPC<Pick<LicenseManager, 'syncState'>>(this, LICENSE_CHANNEL);
-	private store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
+	private store = useStore<LicenseStore>(env.LICENSE_NAMESPACE);
 
 	/**
 	 * Initialize license state based on the following state permutations.
@@ -106,8 +106,8 @@ export class LicenseManager {
 					return cb(store);
 				};
 
-				const envKey = env['LICENSE_KEY'] as string | undefined;
-				const envToken = env['LICENSE_TOKEN'] as string | undefined;
+				const envKey = env['LICENSE_KEY'];
+				const envToken = env['LICENSE_TOKEN'];
 
 				// CASE A
 				if (envKey && envToken) {
@@ -190,7 +190,7 @@ export class LicenseManager {
 
 	// Env-sourced licenses can never be managed via the API, independent of the flag.
 	public getEditable(): boolean {
-		return toBoolean(env['LICENSE_KEY_MANAGEMENT_ENABLED']) && this.source !== 'env';
+		return env.LICENSE_KEY_MANAGEMENT_ENABLED && this.source !== 'env';
 	}
 
 	public async getLicense(options?: { database?: Knex }): Promise<License> {
@@ -306,7 +306,7 @@ export class LicenseManager {
 			const { token, new_project_id } = await activateKey({
 				license_key: key,
 				project_id: project_id!,
-				public_url: env['PUBLIC_URL'] as string,
+				public_url: env.PUBLIC_URL,
 			});
 
 			await settingsService.upsertSingleton({
@@ -347,7 +347,7 @@ export class LicenseManager {
 			await deactivateKey({
 				license_key: this.licenseKey!,
 				project_id: project_id!,
-				public_url: env['PUBLIC_URL'] as string,
+				public_url: env.PUBLIC_URL,
 			});
 
 			await this.syncLicense({ kind: 'downgrade' });
@@ -376,7 +376,7 @@ export class LicenseManager {
 				{
 					license_key: this.licenseKey!,
 					project_id: project_id!,
-					public_url: env['PUBLIC_URL'] as string,
+					public_url: env.PUBLIC_URL,
 				},
 				{ license_key: newKey },
 			);
@@ -446,7 +446,7 @@ export class LicenseManager {
 					{
 						license_key: key,
 						project_id: project_id!,
-						public_url: env['PUBLIC_URL'] as string,
+						public_url: env.PUBLIC_URL,
 					},
 					refreshPayload,
 				);
@@ -483,7 +483,7 @@ export class LicenseManager {
 			const { url } = await billingPortal({
 				license_key: this.licenseKey!,
 				project_id: project_id!,
-				public_url: env['PUBLIC_URL'] as string,
+				public_url: env.PUBLIC_URL,
 			});
 
 			return url;
@@ -503,7 +503,7 @@ export class LicenseManager {
 			const addons = await readAddons({
 				license_key: this.licenseKey!,
 				project_id: project_id!,
-				public_url: env['PUBLIC_URL'] as string,
+				public_url: env.PUBLIC_URL,
 			});
 
 			return addons.available_addons.map((addon) => ({
@@ -539,7 +539,7 @@ export class LicenseManager {
 				{
 					license_key: this.licenseKey!,
 					project_id: project_id!,
-					public_url: env['PUBLIC_URL'] as string,
+					public_url: env.PUBLIC_URL,
 				},
 				{
 					addons: [
@@ -583,7 +583,7 @@ export class LicenseManager {
 				{
 					license_key: this.licenseKey!,
 					project_id: project_id!,
-					public_url: env['PUBLIC_URL'] as string,
+					public_url: env.PUBLIC_URL,
 				},
 				{ addon_ids: [addonId] },
 			);

@@ -5,7 +5,6 @@ import type { RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible'
 import { useLogger } from '../logger/index.js';
 import { createRateLimiter } from '../rate-limiter.js';
 import asyncHandler from '../utils/async-handler.js';
-import { validateEnv } from '../utils/validate-env.js';
 
 const RATE_LIMITER_GLOBAL_KEY = 'global-rate-limit';
 
@@ -16,8 +15,7 @@ let checkRateLimit: RequestHandler = (_req, _res, next) => next();
 
 export let rateLimiterGlobal: RateLimiterRedis | RateLimiterMemory;
 
-if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
-	validateEnv(['RATE_LIMITER_GLOBAL_DURATION', 'RATE_LIMITER_GLOBAL_POINTS']);
+if (env.RATE_LIMITER_GLOBAL_ENABLED) {
 	validateConfiguration();
 
 	rateLimiterGlobal = createRateLimiter('RATE_LIMITER_GLOBAL');
@@ -30,7 +28,7 @@ if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
 
 			res.set('Retry-After', String(Math.round(rateLimiterRes.msBeforeNext / 1000)));
 			throw new HitRateLimitError({
-				limit: +(env['RATE_LIMITER_GLOBAL_POINTS'] as string),
+				limit: env.RATE_LIMITER_GLOBAL_POINTS,
 				reset: new Date(Date.now() + rateLimiterRes.msBeforeNext),
 			});
 		}
@@ -47,8 +45,7 @@ function validateConfiguration() {
 		process.exit(1);
 	}
 
-	const globalPointsPerSec =
-		Number(env['RATE_LIMITER_GLOBAL_POINTS']) / Math.max(Number(env['RATE_LIMITER_GLOBAL_DURATION']), 1);
+	const globalPointsPerSec = env.RATE_LIMITER_GLOBAL_POINTS / Math.max(env.RATE_LIMITER_GLOBAL_DURATION, 1);
 
 	const regularPointsPerSec = Number(env['RATE_LIMITER_POINTS']) / Math.max(Number(env['RATE_LIMITER_DURATION']), 1);
 

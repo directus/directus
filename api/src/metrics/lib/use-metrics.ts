@@ -1,5 +1,4 @@
 import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import { createMetrics } from './create-metrics.js';
 
 export const _cache: {
@@ -7,9 +6,9 @@ export const _cache: {
 } = { metrics: undefined };
 
 export const useMetrics = () => {
-	const env = useEnv();
+	const { METRICS_ENABLED } = useEnv();
 
-	if (!toBoolean(env['METRICS_ENABLED'])) {
+	if (!METRICS_ENABLED) {
 		return;
 	}
 

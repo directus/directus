@@ -258,7 +258,7 @@ function validateSort(sort: string[]) {
 }
 
 function validateRelationalDepth(query: Query) {
-	const maxRelationalDepth = Number(env['MAX_RELATIONAL_DEPTH']) > 2 ? Number(env['MAX_RELATIONAL_DEPTH']) : 2;
+	const maxRelationalDepth = Math.max(env.MAX_RELATIONAL_DEPTH, 2);
 
 	// Process the fields in the same way as api/src/utils/get-ast-from-query.ts
 	let fields = ['*'];

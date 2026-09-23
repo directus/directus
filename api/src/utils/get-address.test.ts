@@ -52,7 +52,7 @@ describe('getAddress', async () => {
 
 		vi.mocked(useEnv).mockReturnValue(
 			asEnv({
-				PORT: String(serverPort),
+				PORT: serverPort,
 				HOST: serverHost,
 			}),
 		);

@@ -54,7 +54,7 @@ vi.mock('@directus/storage', () => ({
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
-		STORAGE_LOCATIONS: 'local',
+		STORAGE_LOCATIONS: ['local'],
 		PUBLIC_URL: 'http://localhost:8055',
 		CORS_ALLOWED_HEADERS: ['*'],
 		CORS_EXPOSED_HEADERS: ['*'],

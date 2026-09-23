@@ -23,9 +23,9 @@ export function createMetrics() {
 	const env = useEnv();
 	const logger = useLogger();
 
-	const services: MetricService[] = (env['METRICS_SERVICES'] as MetricService[] | undefined) ?? [];
-	const metricNamePrefix = env['METRICS_NAME_PREFIX'] ?? 'directus_';
-	const metricsHealthCheckPrefix = env['METRICS_HEALTH_CHECK_PREFIX'] as string;
+	const services: MetricService[] = (env.METRICS_SERVICES as MetricService[] | undefined) ?? [];
+	const metricNamePrefix = env.METRICS_NAME_PREFIX;
+	const metricsHealthCheckPrefix = env.METRICS_HEALTH_CHECK_PREFIX;
 	const aggregates = new Map();
 
 	/**
@@ -152,21 +152,21 @@ export function createMetrics() {
 	}
 
 	function getCacheErrorMetric(): Counter | null {
-		if (services.includes('cache') === false || env['CACHE_ENABLED'] !== true) {
+		if (services.includes('cache') === false || !env.CACHE_ENABLED) {
 			return null;
 		}
 
-		if (env['CACHE_STORE'] === 'redis' && redisConfigAvailable() !== true) {
+		if (env.CACHE_STORE === 'redis' && redisConfigAvailable() !== true) {
 			return null;
 		}
 
-		let metric = register.getSingleMetric(`${metricNamePrefix}cache_${env['CACHE_STORE']}_connection_errors`) as
+		let metric = register.getSingleMetric(`${metricNamePrefix}cache_${env.CACHE_STORE}_connection_errors`) as
 			| Counter
 			| undefined;
 
 		if (!metric) {
 			metric = new Counter({
-				name: `${metricNamePrefix}cache_${env['CACHE_STORE']}_connection_errors`,
+				name: `${metricNamePrefix}cache_${env.CACHE_STORE}_connection_errors`,
 				help: 'Cache connection error count',
 			});
 		}
@@ -271,7 +271,7 @@ export function createMetrics() {
 
 		const storage = await getStorage();
 
-		for (const location of toArray(env['STORAGE_LOCATIONS'] as string)) {
+		for (const location of env.STORAGE_LOCATIONS) {
 			const disk = storage.location(location);
 
 			const metric = getStorageErrorMetric(location);

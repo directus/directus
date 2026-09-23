@@ -21,9 +21,9 @@ const env = useEnv();
 const retentionLockKey = 'schedule--data-retention';
 const retentionLockTimeout = 10 * 60 * 1000; // 10 mins
 
-const ACTIVITY_RETENTION_TIMEFRAME = getMilliseconds(env['ACTIVITY_RETENTION']);
-const FLOW_LOGS_RETENTION_TIMEFRAME = getMilliseconds(env['FLOW_LOGS_RETENTION']);
-const REVISIONS_RETENTION_TIMEFRAME = getMilliseconds(env['REVISIONS_RETENTION']);
+const ACTIVITY_RETENTION_TIMEFRAME = getMilliseconds(env.ACTIVITY_RETENTION);
+const FLOW_LOGS_RETENTION_TIMEFRAME = getMilliseconds(env.FLOW_LOGS_RETENTION);
+const REVISIONS_RETENTION_TIMEFRAME = getMilliseconds(env.REVISIONS_RETENTION);
 
 const retentionTasks: RetentionTask[] = [
 	{
@@ -42,7 +42,7 @@ export async function handleRetentionJob() {
 	const database = getDatabase();
 	const logger = useLogger();
 	const lock = useLock();
-	const batch = Number(env['RETENTION_BATCH']);
+	const batch = env.RETENTION_BATCH;
 	const lockTime = await lock.get(retentionLockKey);
 	const now = Date.now();
 	const helpers = getHelpers(database);
@@ -117,11 +117,11 @@ export async function handleRetentionJob() {
 export default async function schedule(): Promise<boolean> {
 	const env = useEnv();
 
-	if (!toBoolean(env['RETENTION_ENABLED'])) {
+	if (!env.RETENTION_ENABLED) {
 		return false;
 	}
 
-	if (!validateCron(String(env['RETENTION_SCHEDULE']))) {
+	if (!validateCron(env.RETENTION_SCHEDULE)) {
 		return false;
 	}
 
@@ -138,7 +138,7 @@ export default async function schedule(): Promise<boolean> {
 		});
 	}
 
-	scheduleSynchronizedJob('retention', String(env['RETENTION_SCHEDULE']), handleRetentionJob);
+	scheduleSynchronizedJob('retention', env.RETENTION_SCHEDULE, handleRetentionJob);
 
 	return true;
 }

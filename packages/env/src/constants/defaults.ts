@@ -1,9 +1,11 @@
 import { resolve } from 'node:path';
 import { cwd } from 'node:process';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
+import type { CastKey, Value } from '../types/env-type.js';
 
 export const DEFAULTS = {
 	CONFIG_PATH: resolve(cwd(), '.env') as string,
+	LOG_LEVEL: 'info',
 
 	HOST: '0.0.0.0',
 	PORT: 8055,
@@ -19,9 +21,9 @@ export const DEFAULTS = {
 
 	TEMP_PATH: './node_modules/.directus',
 
-	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
+	DB_EXCLUDE_TABLES: ['spatial_ref_sys', 'sysdiagrams'],
 
-	STORAGE_LOCATIONS: 'local',
+	STORAGE_LOCATIONS: ['local'] as string[],
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
 
@@ -80,8 +82,8 @@ export const DEFAULTS = {
 	CORS_ENABLED: false,
 	CORS_ORIGIN: false,
 	CORS_METHODS: 'GET,POST,PATCH,DELETE',
-	CORS_ALLOWED_HEADERS: 'Content-Type,Authorization',
-	CORS_EXPOSED_HEADERS: 'Content-Range',
+	CORS_ALLOWED_HEADERS: ['Content-Type', 'Authorization'] as string[],
+	CORS_EXPOSED_HEADERS: ['Content-Range'] as string[],
 	CORS_CREDENTIALS: true,
 	CORS_MAX_AGE: 18000,
 
@@ -90,16 +92,16 @@ export const DEFAULTS = {
 	CACHE_TTL: '5m',
 	CACHE_NAMESPACE: 'system-cache',
 	CACHE_AUTO_PURGE: false,
-	CACHE_AUTO_PURGE_IGNORE_LIST: 'directus_activity,directus_presets',
-	CACHE_CONTROL_S_MAXAGE: '0',
+	CACHE_AUTO_PURGE_IGNORE_LIST: ['directus_activity', 'directus_presets'],
+	CACHE_CONTROL_S_MAXAGE: 0,
 	CACHE_SCHEMA: true,
 	CACHE_SCHEMA_MAX_ITERATIONS: 100,
 	CACHE_SCHEMA_SYNC_TIMEOUT: 10000,
 	CACHE_SCHEMA_FREEZE_ENABLED: false,
-	CACHE_VALUE_MAX_SIZE: false,
 	CACHE_SKIP_ALLOWED: false,
+	CACHE_DEPLOYMENT_TTL: '5s',
 
-	AUTH_PROVIDERS: '',
+	AUTH_PROVIDERS: [] as string[],
 	AUTH_DISABLE_DEFAULT: false,
 
 	PACKAGE_FILE_LOCATION: '.',
@@ -153,10 +155,20 @@ export const DEFAULTS = {
 	USERS_ADMIN_ACCESS_LIMIT: Infinity as number,
 	USERS_APP_ACCESS_LIMIT: Infinity as number,
 	USERS_API_ACCESS_LIMIT: Infinity as number,
+	USER_REGISTER_URL_ALLOW_LIST: [] as string[],
+	USER_INVITE_URL_ALLOW_LIST: [] as string[],
+	PASSWORD_RESET_URL_ALLOW_LIST: [] as string[],
 
 	MAX_JSON_QUERY_DEPTH: 10,
 
-	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings',
+	FILE_METADATA_ALLOW_LIST: [
+		'ifd0.Make',
+		'ifd0.Model',
+		'exif.FNumber',
+		'exif.ExposureTime',
+		'exif.FocalLength',
+		'exif.ISOSpeedRatings',
+	],
 
 	TUS_ENABLED: false,
 	TUS_CHUNK_SIZE: DEFAULT_CHUNK_SIZE as number, // 8mb
@@ -187,6 +199,8 @@ export const DEFAULTS = {
 		'users_me_tfa_disable',
 		'utils_cache_clear',
 	] as string[],
+	GRAPHQL_SCHEMA_CACHE_CAPACITY: 100,
+
 	WEBSOCKETS_ENABLED: false,
 	WEBSOCKETS_REST_ENABLED: true,
 	WEBSOCKETS_REST_AUTH: 'handshake',
@@ -200,6 +214,7 @@ export const DEFAULTS = {
 	WEBSOCKETS_HEARTBEAT_PERIOD: 30,
 	WEBSOCKETS_LOGS_ENABLED: true,
 	WEBSOCKETS_LOGS_PATH: '/websocket/logs',
+	WEBSOCKETS_LOGS_LEVEL: 'info',
 	WEBSOCKETS_COLLAB_ENABLED: true,
 	WEBSOCKETS_COLLAB_INSTANCE_TIMEOUT: 10000,
 	WEBSOCKETS_COLLAB_PERMISSIONS_CACHE_CAPACITY: 2000,
@@ -207,30 +222,32 @@ export const DEFAULTS = {
 	WEBSOCKETS_COLLAB_LOCAL_CLEANUP_INTERVAL: 60000,
 	WEBSOCKETS_COLLAB_STORE_NAMESPACE: 'collab',
 
-	FLOWS_ENV_ALLOW_LIST: false,
 	FLOWS_RUN_SCRIPT_MAX_MEMORY: 32,
 	FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
+
+	REDIS_BUS_NAMESPACE: 'directus:bus',
+	REDIS_LOCK_NAMESPACE: 'directus:lock',
+	REDIS_PERMISSIONS_NAMESPACE: 'permissions',
+	REDIS_COUNTERS_NAMESPACE: 'directus:counters',
 
 	PRESSURE_LIMITER_ENABLED: true,
 	PRESSURE_LIMITER_SAMPLE_INTERVAL: 250,
 	PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION: 0.99,
 	PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY: 500,
-	PRESSURE_LIMITER_MAX_MEMORY_RSS: false,
 	PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED: false,
-	PRESSURE_LIMITER_RETRY_AFTER: false,
 
 	HEALTHCHECK_ENABLED: true,
 	HEALTHCHECK_NAMESPACE: 'directus:healthcheck',
-	HEALTHCHECK_SERVICES: 'database,redis,storage,email',
+	HEALTHCHECK_SERVICES: ['database', 'redis', 'storage', 'email'],
 	HEALTHCHECK_CACHE_TTL: '5m',
 
 	METRICS_ENABLED: false,
-	METRICS_SERVICES: 'database,cache,redis,storage',
+	METRICS_SERVICES: ['database', 'cache', 'redis', 'storage'],
 	METRICS_SCHEDULE: '*/1 * * * *',
 	METRICS_NAME_PREFIX: 'directus_',
 	METRICS_HEALTH_CHECK_PREFIX: 'directus-metric-',
 
-	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
+	FILES_MIME_TYPE_ALLOW_LIST: ['*/*'],
 	FILES_DELETE_ORIGINAL_ON_MOVE: false,
 	FILES_MAX_UPLOAD_CONCURRENCY: Infinity as number,
 
@@ -252,13 +269,13 @@ export const DEFAULTS = {
 	MCP_OAUTH_CLIENT_IDLE_TTL: '0',
 	MCP_OAUTH_REQUIRE_RESOURCE: false,
 	MCP_OAUTH_CLEANUP_SCHEDULE: '*/15 * * * *',
-	MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: '',
-	MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: 'raycast://oauth,cursor://cursor.mcp,cursor://anysphere.cursor-mcp',
+	MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [] as string[],
+	MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: ['raycast://oauth', 'cursor://cursor.mcp', 'cursor://anysphere.cursor-mcp'],
 	MCP_OAUTH_DCR_ENABLED: false,
 	MCP_OAUTH_CIMD_ENABLED: false,
 	MCP_OAUTH_CIMD_ALLOW_HTTP: false,
-	MCP_OAUTH_CIMD_ALLOWED_DOMAINS: '',
-	MCP_OAUTH_CIMD_BLOCKED_TLDS: 'test,localhost,invalid,example,local,onion',
+	MCP_OAUTH_CIMD_ALLOWED_DOMAINS: [] as string[],
+	MCP_OAUTH_CIMD_BLOCKED_TLDS: ['test', 'localhost', 'invalid', 'example', 'local', 'onion'],
 
 	AI_ENABLED: true,
 	AI_DEVTOOLS_ENABLED: false,
@@ -274,4 +291,12 @@ export const DEFAULTS = {
 
 	LICENSE_NAMESPACE: 'license',
 	LICENSE_KEY_MANAGEMENT_ENABLED: true,
+} as const;
+
+/**
+ * Checked as a separate statement rather than through `satisfies` on the object above, as
+ * `isolatedDeclarations` can't derive the declaration type of an exported `satisfies` expression
+ */
+DEFAULTS satisfies {
+	readonly [Key in CastKey]?: Value<Key> extends (infer Item)[] ? readonly Item[] : Value<Key>;
 };

@@ -12,14 +12,12 @@ import isUrlAllowed from '../../utils/is-url-allowed.js';
  */
 export function resolveLoginRedirect(redirect: unknown, opts: { provider?: string | undefined } = {}) {
 	const env = useEnv();
-	const publicURL = env['PUBLIC_URL'] as string;
+	const publicURL = env.PUBLIC_URL;
 
 	// Default empty redirect to root
 	if (!redirect) return '/';
 
 	if (typeof redirect !== 'string') throw new Error('"redirect" must be a string');
-
-	if (!publicURL) throw new Error('"PUBLIC_URL" must be defined');
 
 	// Relative URL
 	if (URL.canParse(redirect) === false) {

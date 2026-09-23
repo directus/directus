@@ -1,5 +1,4 @@
 import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { email } from 'zod';
 import { SettingsService } from '../../services/settings.js';
@@ -15,13 +14,13 @@ export async function up(knex: Knex): Promise<void> {
 		table.dropColumn('accepted_terms');
 	});
 
-	const env = useEnv();
+	const { PROJECT_OWNER } = useEnv();
 
 	const settingsService = new SettingsService({ schema: await getSchema() });
 
-	if (email().safeParse(env['PROJECT_OWNER']).success) {
+	if (email().safeParse(PROJECT_OWNER).success) {
 		await settingsService.setOwner({
-			project_owner: env['PROJECT_OWNER'] as string,
+			project_owner: PROJECT_OWNER!,
 			org_name: null,
 			project_usage: null,
 			product_updates: false,
@@ -30,9 +29,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	const env = useEnv();
-
-	const acceptedTerms: boolean = toBoolean(env['ACCEPT_TERMS']);
+	const { ACCEPT_TERMS } = useEnv();
 
 	await knex.schema.alterTable('directus_settings', (table) => {
 		table.dropColumn('project_owner');
@@ -40,6 +37,6 @@ export async function down(knex: Knex): Promise<void> {
 		table.dropColumn('org_name');
 		table.dropColumn('product_updates');
 		table.dropColumn('project_status');
-		table.boolean('accepted_terms').defaultTo(acceptedTerms);
+		table.boolean('accepted_terms').defaultTo(ACCEPT_TERMS);
 	});
 }

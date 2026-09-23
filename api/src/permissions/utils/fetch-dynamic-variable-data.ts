@@ -100,7 +100,7 @@ async function fetchContextData(
 	fetch: (fields: string[]) => Promise<Record<string, any>>,
 ) {
 	const { cache } = getCache();
-	const env = useEnv();
+	const { CACHE_ENABLED } = useEnv();
 
 	const fields = Array.from(permissionContext[key]!);
 
@@ -117,7 +117,7 @@ async function fetchContextData(
 	if (!data) {
 		data = await fetch(fields);
 
-		if (cache && env['CACHE_ENABLED'] !== false) {
+		if (cache && CACHE_ENABLED) {
 			await setCacheValue(cache, cacheKey, data);
 		}
 	}

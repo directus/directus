@@ -43,13 +43,15 @@ export interface FetchResult {
 	ttlMs: number | null;
 }
 
+const env = useEnv();
+
 /**
  * Detect whether a client_id is a CIMD URL or a DCR-registered ID.
  * Returns 'cimd' for valid CIMD URLs, 'dcr' for anything else that should go to DB lookup,
  * or null if it looks like a CIMD URL but fails validation.
  */
 export function detectClientIdType(clientId: string): 'dcr' | 'cimd' | null {
-	if (clientId.startsWith('https://') || (useEnv()['MCP_OAUTH_CIMD_ALLOW_HTTP'] && clientId.startsWith('http://'))) {
+	if (clientId.startsWith('https://') || (env.MCP_OAUTH_CIMD_ALLOW_HTTP && clientId.startsWith('http://'))) {
 		return isValidCimdClientId(clientId) ? 'cimd' : null;
 	}
 
@@ -61,7 +63,6 @@ export function detectClientIdType(clientId: string): 'dcr' | 'cimd' | null {
  */
 export function isValidCimdClientId(input: string): boolean {
 	const logger = useLogger();
-	const env = useEnv();
 
 	let url: URL;
 
@@ -73,7 +74,7 @@ export function isValidCimdClientId(input: string): boolean {
 	}
 
 	// Protocol check
-	const allowHttp = env['MCP_OAUTH_CIMD_ALLOW_HTTP'] as boolean;
+	const allowHttp = env.MCP_OAUTH_CIMD_ALLOW_HTTP;
 
 	if (url.protocol !== 'https:' && !(allowHttp && url.protocol === 'http:')) {
 		logger.debug({ client_id: input, reason: 'not HTTPS' }, 'CIMD client_id rejected');
@@ -121,7 +122,7 @@ export function isValidCimdClientId(input: string): boolean {
 	}
 
 	// Blocked TLDs
-	const envTlds = env['MCP_OAUTH_CIMD_BLOCKED_TLDS'] as string[];
+	const envTlds = env.MCP_OAUTH_CIMD_BLOCKED_TLDS as string[];
 	const tlds = envTlds.length > 0 ? envTlds : DEFAULT_BLOCKED_TLDS;
 	const suffixes = tlds.map((t) => `.${t.toLowerCase()}`);
 
@@ -149,8 +150,7 @@ export function isValidCimdClientId(input: string): boolean {
 
 /** Read allowed domains from env, filtering empty strings. */
 export function getAllowedDomains(): string[] {
-	const env = useEnv();
-	return (env['MCP_OAUTH_CIMD_ALLOWED_DOMAINS'] as string[]).filter((s) => s !== '');
+	return env.MCP_OAUTH_CIMD_ALLOWED_DOMAINS.filter((s) => s !== '');
 }
 
 /**

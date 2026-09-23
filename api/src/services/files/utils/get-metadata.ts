@@ -9,14 +9,14 @@ import { useLogger } from '../../../logger/index.js';
 import { getSharpInstance } from '../lib/get-sharp-instance.js';
 import { parseIptc, parseXmp } from './parse-image-metadata.js';
 
-const env = useEnv();
+const { FILE_METADATA_ALLOW_LIST } = useEnv();
 const logger = useLogger();
 
 export type Metadata = Partial<Pick<File, 'height' | 'width' | 'description' | 'title' | 'tags' | 'metadata'>>;
 
 export async function getMetadata(
 	stream: Readable,
-	allowList: string | string[] = env['FILE_METADATA_ALLOW_LIST'] as string[],
+	allowList: string | string[] = FILE_METADATA_ALLOW_LIST as string[],
 ): Promise<Metadata> {
 	const transformer = getSharpInstance();
 

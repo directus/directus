@@ -30,7 +30,7 @@ export default defineOperationApi<Options>({
 	) => {
 		await useFlowsEmailRateLimiter(flow!.id);
 
-		const env = useEnv();
+		const { EMAIL_FROM } = useEnv();
 
 		const mailService = new MailService({ schema: await getSchema({ database }), accountability, knex: database });
 		const mailObject: EmailOptions = { to, subject, cc, bcc, replyTo };
@@ -39,7 +39,7 @@ export default defineOperationApi<Options>({
 
 		// An incomplete `from` object is rejected by the mail service, so only set it when there's a name to use
 		if (trimmedFromName) {
-			mailObject.from = { name: trimmedFromName, address: env['EMAIL_FROM'] as string };
+			mailObject.from = { name: trimmedFromName, address: EMAIL_FROM };
 		}
 
 		const safeBody = typeof body !== 'string' ? JSON.stringify(body) : body;

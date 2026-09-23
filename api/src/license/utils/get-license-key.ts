@@ -7,12 +7,12 @@ import { getSchema } from '../../utils/get-schema.js';
 export async function getLicenseKey(options?: {
 	database?: Knex;
 }): Promise<{ source: LicenseSource; key: string | null }> {
-	const env = useEnv();
+	const { LICENSE_KEY } = useEnv();
 
-	if (env['LICENSE_KEY']) {
+	if (LICENSE_KEY) {
 		return {
 			source: 'env',
-			key: String(env['LICENSE_KEY']),
+			key: LICENSE_KEY,
 		};
 	}
 

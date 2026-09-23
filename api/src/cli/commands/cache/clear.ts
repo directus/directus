@@ -4,7 +4,7 @@ import { getEntitlementManager } from '../../../license/index.js';
 import { useLogger } from '../../../logger/index.js';
 
 export default async function cacheClear({ system, data }: { system?: boolean; data?: boolean }): Promise<void> {
-	const env = useEnv();
+	const env = useEnv(false);
 	const logger = useLogger();
 
 	if (env['CACHE_STORE'] !== 'redis') {

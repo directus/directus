@@ -28,6 +28,7 @@
 		"@directus/ai": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",
+		"@directus/env": "workspace:*",
 		"@types/express": "catalog:",
 		"@types/geojson": "catalog:",
 		"@types/nodemailer": "catalog:",

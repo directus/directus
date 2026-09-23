@@ -15,7 +15,6 @@ import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
 import { useLogger } from '../logger/index.js';
 import { useMetrics } from '../metrics/index.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
-import { validateEnv } from '../utils/validate-env.js';
 import { getHelpers } from './helpers/index.js';
 
 type QueryInfo = Partial<Knex.Sql> & {
@@ -37,7 +36,6 @@ export function getDatabase(): Knex {
 		return database;
 	}
 
-	const env = useEnv();
 	const logger = useLogger();
 	const metrics = useMetrics();
 
@@ -49,51 +47,6 @@ export function getDatabase(): Knex {
 		pool: poolConfig = {},
 		...connectionConfig
 	} = getConfigFromEnv('DB_', { omitPrefix: 'DB_EXCLUDE_TABLES' });
-
-	const requiredEnvVars = ['DB_CLIENT'];
-
-	switch (client) {
-		case 'sqlite3':
-			requiredEnvVars.push('DB_FILENAME');
-			break;
-
-		case 'oracledb':
-			if (!env['DB_CONNECT_STRING']) {
-				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
-			} else {
-				requiredEnvVars.push('DB_USER', 'DB_PASSWORD', 'DB_CONNECT_STRING');
-			}
-
-			break;
-
-		case 'cockroachdb':
-		case 'pg':
-			if (!connectionString) {
-				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER');
-			} else {
-				requiredEnvVars.push('DB_CONNECTION_STRING');
-			}
-
-			break;
-		case 'mysql':
-			if (!env['DB_SOCKET_PATH']) {
-				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
-			} else {
-				requiredEnvVars.push('DB_DATABASE', 'DB_USER', 'DB_PASSWORD', 'DB_SOCKET_PATH');
-			}
-
-			break;
-		case 'mssql':
-			if (!env['DB_TYPE'] || env['DB_TYPE'] === 'default') {
-				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
-			}
-
-			break;
-		default:
-			requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
-	}
-
-	validateEnv(requiredEnvVars);
 
 	const knexConfig: Knex.Config = {
 		client,
@@ -343,7 +296,7 @@ export async function validateDatabaseExtensions(): Promise<void> {
 }
 
 async function validateDatabaseCharset(database?: Knex): Promise<void> {
-	const env = useEnv();
+	const { DB_DATABASE, DB_EXCLUDE_TABLES } = useEnv();
 	database = database ?? getDatabase();
 	const logger = useLogger();
 
@@ -352,19 +305,17 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 
 		const tables = await database('information_schema.tables')
 			.select({ name: 'TABLE_NAME', collation: 'TABLE_COLLATION' })
-			.where({ TABLE_SCHEMA: env['DB_DATABASE'] });
+			.where({ TABLE_SCHEMA: DB_DATABASE });
 
 		const columns = await database('information_schema.columns')
 			.select({ table_name: 'TABLE_NAME', name: 'COLUMN_NAME', collation: 'COLLATION_NAME' })
-			.where({ TABLE_SCHEMA: env['DB_DATABASE'] })
+			.where({ TABLE_SCHEMA: DB_DATABASE })
 			.whereNot({ COLLATION_NAME: collation });
-
-		const excludedTables: string[] = toArray(env['DB_EXCLUDE_TABLES'] as string[]);
 
 		let inconsistencies = '';
 
 		for (const table of tables) {
-			if (excludedTables.includes(table.name)) continue;
+			if (DB_EXCLUDE_TABLES.includes(table.name)) continue;
 
 			const tableColumns = columns.filter((column) => column.table_name === table.name);
 			const tableHasInvalidCollation = table.collation !== collation;

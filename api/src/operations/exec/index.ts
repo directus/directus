@@ -22,8 +22,8 @@ export default defineOperationApi<Options>({
 	id: 'exec',
 	handler: async ({ code }, { data, env, logger }) => {
 		const allowedEnv = data['$env'] ?? {};
-		const isolateSizeMb = env['FLOWS_RUN_SCRIPT_MAX_MEMORY'];
-		const scriptTimeoutMs = env['FLOWS_RUN_SCRIPT_TIMEOUT'];
+		const isolateSizeMb = env.FLOWS_RUN_SCRIPT_MAX_MEMORY;
+		const scriptTimeoutMs = env.FLOWS_RUN_SCRIPT_TIMEOUT;
 
 		const isolate = new ivm.Isolate({ memoryLimit: isolateSizeMb });
 		const context = isolate.createContextSync();

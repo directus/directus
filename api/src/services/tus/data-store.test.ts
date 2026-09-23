@@ -17,7 +17,7 @@ vi.mock('@directus/env', async () => {
 	const { mockEnv } = await import('../../test-utils/env.js');
 
 	return mockEnv({
-		STORAGE_LOCATIONS: 'local',
+		STORAGE_LOCATIONS: ['local'],
 		STORAGE_LOCAL_DRIVER: 'local',
 		STORAGE_LOCAL_ROOT: '.',
 		EXTENSIONS_PATH: './extensions',
@@ -36,7 +36,7 @@ describe('TusDataStore.create', () => {
 	const schema = { collections: {}, relations: [] } as unknown as SchemaOverview;
 
 	const baseEnv = {
-		STORAGE_LOCATIONS: 'local',
+		STORAGE_LOCATIONS: ['local'],
 		STORAGE_LOCAL_DRIVER: 'local',
 		STORAGE_LOCAL_ROOT: '.',
 		EXTENSIONS_PATH: './extensions',

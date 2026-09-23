@@ -19,7 +19,7 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 
 	logger.info('Initializing bootstrap...');
 
-	const env = useEnv();
+	const env = useEnv(false);
 
 	const database = getDatabase();
 
@@ -53,13 +53,13 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 
 		const settingsService = new SettingsService({ schema });
 
-		if (env['PROJECT_NAME'] && typeof env['PROJECT_NAME'] === 'string' && env['PROJECT_NAME'].length > 0) {
-			await settingsService.upsertSingleton({ project_name: env['PROJECT_NAME'] });
+		if (env.PROJECT_NAME) {
+			await settingsService.upsertSingleton({ project_name: env.PROJECT_NAME });
 		}
 
-		if (email().safeParse(env['PROJECT_OWNER']).success) {
+		if (email().safeParse(env.PROJECT_OWNER).success) {
 			await settingsService.setOwner({
-				project_owner: env['PROJECT_OWNER'] as string,
+				project_owner: env.PROJECT_OWNER!,
 				org_name: null,
 				project_usage: null,
 				product_updates: false,

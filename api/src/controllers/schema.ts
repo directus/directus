@@ -17,7 +17,7 @@ import { queryFlag } from '../utils/query-flag.js';
 const env = useEnv();
 const router = express.Router();
 
-const IMPORT_MAX_FILE_SIZE = bytes.parse(env['IMPORT_MAX_FILE_SIZE'] as string) ?? undefined;
+const IMPORT_MAX_FILE_SIZE = bytes.parse(env.IMPORT_MAX_FILE_SIZE) ?? undefined;
 
 /** Accepts a single collection name or a list, always normalizing to a string array. */
 const collectionList = z.union([z.string(), z.array(z.string())]).transform((value) => toArray(value));

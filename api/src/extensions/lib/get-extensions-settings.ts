@@ -76,11 +76,11 @@ export const getExtensionsSettings = async ({
 		let marketplaceId;
 
 		if (source === 'registry') {
-			const env = useEnv();
+			const { MARKETPLACE_REGISTRY } = useEnv();
 			const listOptions: ListOptions = {};
 
-			if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
-				listOptions.registry = env['MARKETPLACE_REGISTRY'];
+			if (MARKETPLACE_REGISTRY) {
+				listOptions.registry = MARKETPLACE_REGISTRY;
 			}
 
 			const marketplace = await list({ search: extension.name }, listOptions);

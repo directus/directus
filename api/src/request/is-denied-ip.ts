@@ -3,17 +3,16 @@ import { IpBlocklist } from '@directus/utils/node';
 import { useLogger } from '../logger/index.js';
 
 export function isDeniedIp(ip: string): boolean {
-	const env = useEnv();
+	const { IMPORT_IP_DENY_LIST } = useEnv();
 	const logger = useLogger();
 
-	const ipDenyList = env['IMPORT_IP_DENY_LIST'] as string[];
-	if (ipDenyList.length === 0) return false;
+	if (IMPORT_IP_DENY_LIST.length === 0) return false;
 
 	const blockList = new IpBlocklist();
 	let blockNetworkInterfaces = false;
 
 	try {
-		for (const blockNetworkRaw of ipDenyList) {
+		for (const blockNetworkRaw of IMPORT_IP_DENY_LIST) {
 			const blockNetwork = blockNetworkRaw.trim();
 
 			if (blockNetwork === '0.0.0.0') {
