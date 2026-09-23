@@ -11,7 +11,6 @@ import type { EnvType } from '../types/env-type.js';
  * - `CORS_ORIGIN`: `true` to reflect the request origin, or the allowed origin(s)
  * - `IP_TRUST_PROXY`: a boolean, hop count, or comma separated list of trusted addresses
  * - `IP_CUSTOM_HEADER`: `false` to disable, or the name of the header to read the IP from
- * - `PRESSURE_LIMITER_RETRY_AFTER`: `false` to omit the header, or the retry delay
  * - `TUS_CHUNK_SIZE`: a number of bytes, or a human readable size like `10mb`
  */
 export const TYPE_MAP = {
