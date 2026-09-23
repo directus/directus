@@ -49,7 +49,7 @@ test('Defaults that have a type set is casted', () => {
 	vi.mocked(readFileSync).mockReturnValueOnce('file-from-file-content');
 	vi.mocked(readFileSync).mockReturnValueOnce('elem1,elem2');
 
-	const env = createEnv(false);
+	const env = createEnv();
 
 	expect(env).toEqual({
 		PROCESS1: 'test-process',

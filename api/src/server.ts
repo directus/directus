@@ -2,7 +2,7 @@ import * as http from 'http';
 import * as https from 'https';
 import type { ListenOptions } from 'net';
 import url from 'url';
-import { useEnv } from '@directus/env';
+import { isValidEnv, useEnv } from '@directus/env';
 import { getNodeEnv } from '@directus/utils/node';
 import type { TerminusOptions } from '@godaddy/terminus';
 import { createTerminus } from '@godaddy/terminus';
@@ -161,6 +161,13 @@ export async function createServer(): Promise<http.Server> {
 }
 
 export async function startServer(): Promise<void> {
+	const missingEnvKeys = isValidEnv(env);
+
+	if (missingEnvKeys.length > 0) {
+		logger.error(`"${missingEnvKeys.join(',')}" Environment Variable(s) is missing.`);
+		process.exit(1);
+	}
+
 	const server = await createServer();
 
 	let listenOptions: ListenOptions;

@@ -19,7 +19,7 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 
 	logger.info('Initializing bootstrap...');
 
-	const env = useEnv(false);
+	const env = useEnv();
 
 	const database = getDatabase();
 

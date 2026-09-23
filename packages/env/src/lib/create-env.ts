@@ -10,14 +10,11 @@ import { readConfigurationFromProcess } from '../utils/read-configuration-from-p
 import { removeFileSuffix } from '../utils/remove-file-suffix.js';
 import { cast } from './cast.js';
 import { readConfigurationFromFile } from './read-configuration-from-file.js';
-import { isValidEnv } from './valid-env.js';
 
 /**
  * Loads the environment variables from the process and the env file.
- * @param exit If set to false, will not exit the process and instead return the env
- * @returns the env config
  */
-export const createEnv = (exit: boolean = true): Env => {
+export const createEnv = (): Env => {
 	const baseConfiguration = readConfigurationFromProcess();
 	const fileConfiguration = readConfigurationFromFile(getConfigPath());
 
@@ -49,25 +46,6 @@ export const createEnv = (exit: boolean = true): Env => {
 		}
 
 		output[key] = cast(value, key);
-	}
-
-	// Skip validation in test environemnts
-	if (process.env['NODE_ENV'] === 'test') {
-		return output as Env;
-	}
-
-	const missingEnvKeys = isValidEnv(output);
-
-	if (missingEnvKeys.length > 0) {
-		// TODO Should we use logger here or is a console.error fine?
-		if (exit) {
-			// eslint-disable-next-line no-console
-			console.error(`"${missingEnvKeys.join(',')}" Environment Variable(s) is missing.`);
-			process.exit(1);
-		} else {
-			// eslint-disable-next-line no-console
-			console.warn(`"${missingEnvKeys.join(',')}" Environment Variable(s) is missing.`);
-		}
 	}
 
 	// Every variable that has a default is guaranteed to be present, as the defaults are seeded first
