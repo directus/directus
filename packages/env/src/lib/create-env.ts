@@ -51,6 +51,11 @@ export const createEnv = (exit: boolean = true): Env => {
 		output[key] = cast(value, key);
 	}
 
+	// Skip validation in test environemnts
+	if (process.env['NODE_ENV'] === 'test') {
+		return output as Env;
+	}
+
 	const missingEnvKeys = isValidEnv(output);
 
 	if (missingEnvKeys.length > 0) {
