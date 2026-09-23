@@ -67,6 +67,12 @@ One click. Fully provisioned with PostgreSQL, Redis, and S3-compatible storage, 
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.com/deploy/directus-official?referralCode=b2RDZT)
 
+### Deploy on ZopDay
+
+One click to ZopCloud, or into your own AWS, GCP or Azure account — you own and bill the infrastructure directly.
+
+[![Deploy on ZopDay](https://zop.dev/deploytozopday-inkhard.svg)](https://zop.dev/zopday/app/deploy?image=directus/directus:latest&port=8055)
+
 ---
 
 ## 🙋 Community Help
