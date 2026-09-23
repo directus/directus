@@ -8,6 +8,7 @@ import { getInternalModules, registerModules } from './modules';
 import { getInternalOperations, registerOperations } from './operations';
 import { getInternalPanels, registerPanels } from './panels';
 import { registerRichTexts } from './rich-text/register';
+import { validateRichTexts } from './rich-text/validate';
 import { registerThemes } from './themes/register';
 import { getRootPath } from './utils/get-root-path';
 import { translate } from './utils/translate-object-values';
@@ -71,7 +72,7 @@ export function registerExtensions(app: App): void {
 	registerPanels(panels, app);
 	registerOperations(operations, app);
 	registerThemes(themes);
-	registerRichTexts(richtexts);
+	registerRichTexts(validateRichTexts(richtexts));
 
 	watch(
 		i18n.global.locale,
