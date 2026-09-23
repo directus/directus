@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import CodeMirror from 'codemirror';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import InputCode from './input-code.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
@@ -158,6 +158,7 @@ describe('InputCode', () => {
 
 		expect(wrapper.find('.input-code v-button-stub').attributes('disabled')).toBe('true');
 	});
+
 	it('should preserve cursor and scroll position when the value changes while focused', async () => {
 		wrapper = mount(InputCode, {
 			props: {
@@ -207,5 +208,4 @@ describe('InputCode', () => {
 		expect(editor.setCursor).not.toHaveBeenCalled();
 		expect(editor.scrollTo).not.toHaveBeenCalled();
 	});
-
 });
