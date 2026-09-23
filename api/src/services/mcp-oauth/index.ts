@@ -183,8 +183,6 @@ function getStringParam(params: Record<string, unknown>, key: string, redirectab
 	return value;
 }
 
-const env = useEnv();
-
 /**
  * OAuth 2.1 authorization server for MCP (Model Context Protocol) access.
  *
@@ -239,6 +237,8 @@ export class McpOAuthService {
 	 * `client_id_metadata_document_supported` (CIMD).
 	 */
 	async getAuthorizationServerMetadata(): Promise<Record<string, unknown>> {
+		const env = useEnv();
+
 		const { issuerUrl } = getMcpUrls();
 
 		const baseUrl = env.PUBLIC_URL;
@@ -296,6 +296,8 @@ export class McpOAuthService {
 	 * @throws {OAuthError} `invalid_client_metadata` or `invalid_redirect_uri`
 	 */
 	async registerClient(body: unknown): Promise<DCRResponse> {
+		const env = useEnv();
+
 		const logger = useLogger();
 
 		// DCR enabled gate: env AND setting must both be true
@@ -527,6 +529,8 @@ export class McpOAuthService {
 		userId: string,
 		sessionHash: string,
 	): Promise<ValidateResponse> {
+		const env = useEnv();
+
 		// Phase 1: Check pre-trust params for duplicates (non-redirectable)
 		checkDuplicateParams(params, PRE_TRUST_DUPLICATE_PARAMS, false);
 
@@ -686,6 +690,8 @@ export class McpOAuthService {
 	 * @throws {OAuthError} If consent JWT is invalid, expired, or session-mismatched
 	 */
 	async processDecision(params: DecisionParams, userId: string, sessionToken: string): Promise<string> {
+		const env = useEnv();
+
 		const { signed_params, approved } = params;
 
 		// Verify consent JWT
@@ -823,6 +829,8 @@ export class McpOAuthService {
 	 * @throws {OAuthError} `invalid_grant` for code issues, `invalid_target` for resource mismatch
 	 */
 	async exchangeCode(params: TokenParams, context: TokenContext): Promise<TokenResponse> {
+		const env = useEnv();
+
 		const { nanoid } = await import('nanoid');
 		const logger = useLogger();
 
@@ -1071,6 +1079,8 @@ export class McpOAuthService {
 	 * @see exchangeCode for initial token issuance
 	 */
 	async refreshToken(params: RefreshParams, context: TokenContext): Promise<TokenResponse> {
+		const env = useEnv();
+
 		const { nanoid } = await import('nanoid');
 		const logger = useLogger();
 
@@ -1366,6 +1376,8 @@ export class McpOAuthService {
 	 *    b) Idle authorized (has consents but no sessions/grants, older than MCP_OAUTH_CLIENT_IDLE_TTL; disabled when '0')
 	 */
 	async cleanup(): Promise<void> {
+		const env = useEnv();
+
 		const now = new Date();
 		const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
 
@@ -1472,6 +1484,8 @@ export class McpOAuthService {
 	 * CIMD clients are fetched/cached on first contact.
 	 */
 	async resolveClientWithFetch(clientId: string): Promise<Record<string, unknown>> {
+		const env = useEnv();
+
 		const logger = useLogger();
 		const type = detectClientIdType(clientId);
 
@@ -1719,6 +1733,8 @@ export class McpOAuthService {
 	 * Handles concurrent inserts via unique constraint catch + SELECT fallback.
 	 */
 	private async insertCimdClient(clientId: string): Promise<Record<string, unknown>> {
+		const env = useEnv();
+
 		const logger = useLogger();
 
 		// Gate: Max clients cap (shared with DCR)

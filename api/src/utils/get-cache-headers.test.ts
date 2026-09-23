@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import type { Accountability } from '@directus/types';
 import type { Request } from 'express';
 import { describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../__utils__/as-env.js';
+import { mockEnv } from '../test-utils/env.js';
 import { getCacheControlHeader } from './get-cache-headers.js';
 
 vi.mock('@directus/env');
@@ -209,7 +209,7 @@ describe('get cache headers', () => {
 				}),
 			} as Partial<Request>;
 
-			vi.mocked(useEnv).mockReturnValue(asEnv(scenario.input.env));
+			vi.mocked(useEnv).mockReturnValue(mockEnv(scenario.input.env));
 
 			const { ttl, globalCacheSettings, personalized } = scenario.input;
 

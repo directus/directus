@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { Redis } from 'ioredis';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../../__utils__/as-env.js';
+import { mockEnv } from '../../test-utils/env.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { _cache, useRedis } from './use-redis.js';
 
@@ -18,7 +18,7 @@ beforeEach(() => {
 		return mockRedis;
 	} as unknown as typeof Redis);
 
-	vi.mocked(useEnv).mockReturnValue(asEnv({}));
+	vi.mocked(useEnv).mockReturnValue(mockEnv({}));
 });
 
 afterEach(() => {

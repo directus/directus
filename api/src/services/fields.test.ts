@@ -3,9 +3,9 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Field, RawField } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../__utils__/as-env.js';
 import * as cacheModule from '../cache.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
+import { mockEnv } from '../test-utils/env.js';
 import {
 	createMockKnex,
 	createMockTableBuilder,
@@ -18,9 +18,10 @@ import * as getSchemaModule from '../utils/get-schema.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
+});
 
 vi.mock('../../src/database/index', async () => {
 	const { mockDatabase } = await import('../test-utils/database.js');
@@ -196,7 +197,8 @@ describe('Integration Tests', () => {
 				vi.mocked(cacheModule.getCacheValue).mockResolvedValueOnce(mockColumns);
 
 				vi.mocked(useEnv).mockReturnValue(
-					asEnv({
+					mockEnv({
+						AUTH_PROVIDERS: [],
 						CACHE_SCHEMA: true,
 					}),
 				);

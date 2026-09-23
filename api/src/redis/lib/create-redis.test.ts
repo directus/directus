@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { Redis } from 'ioredis';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../../__utils__/as-env.js';
+import { mockEnv } from '../../test-utils/env.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { createRedis } from './create-redis.js';
 
@@ -26,8 +26,8 @@ afterEach(() => {
 describe('createRedis', () => {
 	test('Creates and returns new Redis instance from connection string', () => {
 		const connectionString = 'test-connection-string';
-		const mockEnv = { REDIS: connectionString };
-		vi.mocked(useEnv).mockReturnValue(asEnv(mockEnv));
+		const envValues = { REDIS: connectionString };
+		vi.mocked(useEnv).mockReturnValue(mockEnv(envValues));
 
 		const redis = createRedis();
 
@@ -37,8 +37,8 @@ describe('createRedis', () => {
 
 	test('Uses Redis connection object if Redis connection string is missing', () => {
 		const redisHost = 'test-host';
-		const mockEnv = { REDIS_HOST: redisHost };
-		vi.mocked(useEnv).mockReturnValue(asEnv(mockEnv));
+		const envValues = { REDIS_HOST: redisHost };
+		vi.mocked(useEnv).mockReturnValue(mockEnv(envValues));
 
 		const mockConfig = { host: redisHost };
 

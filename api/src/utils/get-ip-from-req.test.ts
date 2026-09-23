@@ -1,7 +1,7 @@
 import type { IncomingMessage } from 'http';
 import { useEnv } from '@directus/env';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../__utils__/as-env.js';
+import { mockEnv } from '../test-utils/env.js';
 import { getIPFromReq } from './get-ip-from-req.js';
 
 const warn = vi.fn();
@@ -19,7 +19,7 @@ afterEach(() => {
 describe('getIPFromReq', () => {
 	test('Removes null if ip is undefined', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				IP_TRUST_PROXY: true,
 			}),
 		);
@@ -34,7 +34,7 @@ describe('getIPFromReq', () => {
 
 	test('Returns ip if provided', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				IP_TRUST_PROXY: true,
 			}),
 		);
@@ -49,7 +49,7 @@ describe('getIPFromReq', () => {
 
 	test('Removes `::ffff:` prefix from IPV4 addressed in IPV6 format', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				IP_TRUST_PROXY: true,
 			}),
 		);
@@ -64,7 +64,7 @@ describe('getIPFromReq', () => {
 
 	test('Returns overriden ip if IP_CUSTOM_HEADER is set with valid IP', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				IP_TRUST_PROXY: true,
 				IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
 			}),
@@ -81,7 +81,7 @@ describe('getIPFromReq', () => {
 	describe('Custom IP header warning', () => {
 		test('Warns when custom header does not return a valid IP', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					IP_TRUST_PROXY: true,
 					IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
 				}),
@@ -98,7 +98,7 @@ describe('getIPFromReq', () => {
 
 		test('Does not warn when the custom header returns a valid IP', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					IP_TRUST_PROXY: true,
 					IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
 				}),
@@ -114,7 +114,7 @@ describe('getIPFromReq', () => {
 
 		test.each(['/server/ping', '/server/info'])('Suppresses the warning on the no-auth endpoint %s', (path) => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					IP_TRUST_PROXY: true,
 					IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
 				}),
@@ -133,7 +133,7 @@ describe('getIPFromReq', () => {
 
 		test('Suppresses the warning on excluded endpoints even with a query string', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					IP_TRUST_PROXY: true,
 					IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
 				}),
@@ -150,7 +150,7 @@ describe('getIPFromReq', () => {
 
 		test('Suppresses the warning regardless of path casing', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					IP_TRUST_PROXY: true,
 					IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
 				}),
@@ -167,7 +167,7 @@ describe('getIPFromReq', () => {
 
 		test('Does not throw and still warns on a malformed request target', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					IP_TRUST_PROXY: true,
 					IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
 				}),
@@ -184,7 +184,7 @@ describe('getIPFromReq', () => {
 
 		test('Still warns on other /server endpoints', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					IP_TRUST_PROXY: true,
 					IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
 				}),
@@ -203,7 +203,7 @@ describe('getIPFromReq', () => {
 	describe('IP_TRUST_PROXY', () => {
 		test('Returns remoteAddress when false', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					IP_TRUST_PROXY: false,
 				}),
 			);
@@ -218,7 +218,7 @@ describe('getIPFromReq', () => {
 
 		test('Returns left most x-forwarded-for value if true', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					IP_TRUST_PROXY: true,
 				}),
 			);
@@ -233,7 +233,7 @@ describe('getIPFromReq', () => {
 
 		test('Returns last trusted ip in the subnet if string value', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					IP_TRUST_PROXY: '127.0.0.0/30',
 				}),
 			);
@@ -248,7 +248,7 @@ describe('getIPFromReq', () => {
 
 		test('Returns next entry after last trusted ip in csv if csv string value', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					IP_TRUST_PROXY: '127.0.0.1,128.1.0.3',
 				}),
 			);
@@ -263,7 +263,7 @@ describe('getIPFromReq', () => {
 
 		test('Returns next entry after last trusted ip for array value', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					IP_TRUST_PROXY: ['127.0.0.1', '127.0.0.4'],
 				}),
 			);

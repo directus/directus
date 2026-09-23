@@ -3,7 +3,7 @@ import type { ListenOptions } from 'net';
 import { useEnv } from '@directus/env';
 import getPort from 'get-port';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../__utils__/as-env.js';
+import { mockEnv } from '../test-utils/env.js';
 import { getAddress } from './get-address.js';
 
 vi.mock('@directus/env');
@@ -39,7 +39,7 @@ describe('getAddress', async () => {
 		server = await createServer();
 
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				UNIX_SOCKET_PATH: serverSocket,
 			}),
 		);
@@ -51,7 +51,7 @@ describe('getAddress', async () => {
 		server = await createServer();
 
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PORT: serverPort,
 				HOST: serverHost,
 			}),

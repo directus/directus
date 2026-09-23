@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../../__utils__/as-env.js';
+import { mockEnv } from '../../test-utils/env.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
@@ -19,7 +19,7 @@ describe('Email Rate Limiter', () => {
 	describe('useEmailRateLimiterQueue', () => {
 		test('should resolve to undefined when rate limiter is not enabled', async () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					RATE_LIMITER_EMAIL_ENABLED: 'false',
 				}),
 			);
@@ -32,7 +32,7 @@ describe('Email Rate Limiter', () => {
 
 		test('should be able to consume all points without error', async () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					RATE_LIMITER_EMAIL_ENABLED: 'true',
 					RATE_LIMITER_EMAIL_POINTS: 3,
 					RATE_LIMITER_EMAIL_DURATION: 10,
@@ -51,7 +51,7 @@ describe('Email Rate Limiter', () => {
 
 		test('should throw an error after all points have been consumed', async () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					RATE_LIMITER_EMAIL_ENABLED: 'true',
 					RATE_LIMITER_EMAIL_POINTS: 3,
 					RATE_LIMITER_EMAIL_DURATION: 10,
@@ -75,7 +75,7 @@ describe('Email Rate Limiter', () => {
 
 		test('should be able to fill the queue without error', async () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					RATE_LIMITER_EMAIL_ENABLED: 'true',
 					RATE_LIMITER_EMAIL_POINTS: 1,
 					RATE_LIMITER_EMAIL_DURATION: 0.02, // 20ms keep this low for test speed
@@ -94,7 +94,7 @@ describe('Email Rate Limiter', () => {
 
 		test('should throw an error after the queue is full', async () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					RATE_LIMITER_EMAIL_ENABLED: 'true',
 					RATE_LIMITER_EMAIL_POINTS: 1,
 					RATE_LIMITER_EMAIL_DURATION: 1,
@@ -118,7 +118,7 @@ describe('Email Rate Limiter', () => {
 
 		test('should include a custom message in the error', async () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					RATE_LIMITER_EMAIL_ENABLED: 'true',
 					RATE_LIMITER_EMAIL_POINTS: 1,
 					RATE_LIMITER_EMAIL_DURATION: 1,

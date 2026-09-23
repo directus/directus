@@ -19,6 +19,8 @@ export function resolveLoginRedirect(redirect: unknown, opts: { provider?: strin
 
 	if (typeof redirect !== 'string') throw new Error('"redirect" must be a string');
 
+	if (!publicURL) throw new Error('"PUBLIC_URL" must be defined');
+
 	// Relative URL
 	if (URL.canParse(redirect) === false) {
 		try {

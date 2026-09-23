@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../../__utils__/as-env.js';
+import { mockEnv } from '../../test-utils/env.js';
 import { generateCallbackUrl } from './generate-callback-url.js';
 
 vi.mock('@directus/env');
@@ -12,7 +12,7 @@ describe('generateCallbackUrl', () => {
 		vi.clearAllMocks();
 
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL,
 			}),
 		);
@@ -27,9 +27,9 @@ describe('generateCallbackUrl', () => {
 
 		test('falls back to PUBLIC_URL when request origin does not match any allowed origin', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL,
-					AUTH_ALLOWED_PUBLIC_URLS: 'https://directus.example.com',
+					AUTH_ALLOWED_PUBLIC_URLS: ['https://directus.example.com'],
 				}),
 			);
 
@@ -42,9 +42,9 @@ describe('generateCallbackUrl', () => {
 	describe('with AUTH_ALLOWED_PUBLIC_URLS', () => {
 		test('uses matching origin from AUTH_ALLOWED_PUBLIC_URLS', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL,
-					AUTH_ALLOWED_PUBLIC_URLS: 'https://api-eu.directus.example.com,https://api-us.directus.example.com',
+					AUTH_ALLOWED_PUBLIC_URLS: ['https://api-eu.directus.example.com', 'https://api-us.directus.example.com'],
 				}),
 			);
 
@@ -55,9 +55,9 @@ describe('generateCallbackUrl', () => {
 
 		test('preserves subpath from matched AUTH_ALLOWED_PUBLIC_URLS entry', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL,
-					AUTH_ALLOWED_PUBLIC_URLS: 'https://mysite.com/api',
+					AUTH_ALLOWED_PUBLIC_URLS: ['https://mysite.com/api'],
 				}),
 			);
 
@@ -69,7 +69,7 @@ describe('generateCallbackUrl', () => {
 
 		test('works with array of allowed origins', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL,
 					AUTH_ALLOWED_PUBLIC_URLS: ['https://api-eu.directus.example.com', 'https://api-us.directus.example.com/v1'],
 				}),
@@ -82,9 +82,9 @@ describe('generateCallbackUrl', () => {
 
 		test('matches on protocol and host only (without port)', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL,
-					AUTH_ALLOWED_PUBLIC_URLS: 'https://directus.example.com/subpath',
+					AUTH_ALLOWED_PUBLIC_URLS: ['https://directus.example.com/subpath'],
 				}),
 			);
 
@@ -96,9 +96,9 @@ describe('generateCallbackUrl', () => {
 
 		test('matches on protocol and host with custom port', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL,
-					AUTH_ALLOWED_PUBLIC_URLS: 'http://localhost:8055/api,http://127.0.0.1:8055/api',
+					AUTH_ALLOWED_PUBLIC_URLS: ['http://localhost:8055/api', 'http://127.0.0.1:8055/api'],
 				}),
 			);
 
@@ -109,9 +109,9 @@ describe('generateCallbackUrl', () => {
 
 		test('skips invalid URLs in AUTH_ALLOWED_PUBLIC_URLS', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL,
-					AUTH_ALLOWED_PUBLIC_URLS: 'invalid-url,https://directus.example.com',
+					AUTH_ALLOWED_PUBLIC_URLS: ['invalid-url', 'https://directus.example.com'],
 				}),
 			);
 

@@ -5,8 +5,8 @@ import { useEnv } from '@directus/env';
 import { buildSchema, GraphQLError, NoSchemaIntrospectionCustomRule, validate } from 'graphql';
 import type { Context, SubscribePayload } from 'graphql-ws';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../../__utils__/as-env.js';
 import { GraphQLService } from '../../services/index.js';
+import { mockEnv } from '../../test-utils/env.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { ConnectionParams } from '../messages.js';
 import type { GraphQLSocket, UpgradeContext } from '../types.js';
@@ -69,7 +69,7 @@ function payload(overrides: Partial<SubscribePayload> = {}): SubscribePayload {
 describe('GraphQL WebSocket onSubscribe', () => {
 	beforeEach(() => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
 				GRAPHQL_INTROSPECTION: true,
 			}),
@@ -122,7 +122,7 @@ describe('GraphQL WebSocket onSubscribe', () => {
 
 	test('applies GRAPHQL_QUERY_TOKEN_LIMIT as maxTokens when parsing', async () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				GRAPHQL_QUERY_TOKEN_LIMIT: 1,
 				GRAPHQL_INTROSPECTION: true,
 			}),
@@ -135,7 +135,7 @@ describe('GraphQL WebSocket onSubscribe', () => {
 
 	test('honours GRAPHQL_INTROSPECTION=false by adding the no-introspection rule', async () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
 				GRAPHQL_INTROSPECTION: false,
 			}),
@@ -158,7 +158,7 @@ describe('GraphQL WebSocket onSubscribe', () => {
 
 	test('strips field suggestions from validation errors when introspection is disabled', async () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
 				GRAPHQL_INTROSPECTION: false,
 			}),
@@ -194,7 +194,7 @@ describe('GraphQLSubscriptionController handshake upgrade', () => {
 
 	beforeEach(() => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				WEBSOCKETS_GRAPHQL_PATH: '/graphql',
 				WEBSOCKETS_GRAPHQL_AUTH: 'handshake',
 				WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT: 10,

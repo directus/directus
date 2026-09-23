@@ -1,13 +1,13 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../__utils__/as-env.js';
+import { mockEnv } from '../test-utils/env.js';
 import { getConfigFromEnv } from './get-config-from-env.js';
 
 vi.mock('@directus/env');
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			CASING_KEY: 'key',
 			CASING_KEY_value: 'value',
 			OBJECT_BRAND__COLOR: 'purple',

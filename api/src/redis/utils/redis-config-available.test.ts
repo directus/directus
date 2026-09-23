@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { afterEach, expect, test, vi } from 'vitest';
-import { asEnv } from '../../__utils__/as-env.js';
+import { mockEnv } from '../../test-utils/env.js';
 import { redisConfigAvailable } from './redis-config-available.js';
 
 vi.mock('@directus/env');
@@ -11,7 +11,7 @@ afterEach(() => {
 
 test('Returns true if REDIS_ENABLED is true', () => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			REDIS_ENABLED: true,
 		}),
 	);
@@ -21,7 +21,7 @@ test('Returns true if REDIS_ENABLED is true', () => {
 
 test('Returns false if REDIS_ENABLED is false', () => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			REDIS_ENABLED: false,
 		}),
 	);
@@ -31,7 +31,7 @@ test('Returns false if REDIS_ENABLED is false', () => {
 
 test('Returns true if REDIS exists in environment', () => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			REDIS: 'redis://test',
 		}),
 	);
@@ -41,7 +41,7 @@ test('Returns true if REDIS exists in environment', () => {
 
 test('Returns true if one or more environment variables start with REDIS_', () => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			REDIS_HOST: 'test',
 			REDIS_PORT: 1234,
 		}),
@@ -51,5 +51,5 @@ test('Returns true if one or more environment variables start with REDIS_', () =
 });
 
 test('Returns false if no Redis environment variables exist', () => {
-	vi.mocked(useEnv).mockReturnValue(asEnv({}));
+	vi.mocked(useEnv).mockReturnValue(mockEnv({}));
 });

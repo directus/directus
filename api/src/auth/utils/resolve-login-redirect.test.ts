@@ -1,9 +1,13 @@
 import { useEnv } from '@directus/env';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../../__utils__/as-env.js';
+import { mockEnv } from '../../test-utils/env.js';
 import { resolveLoginRedirect } from './resolve-login-redirect.js';
 
 vi.mock('@directus/env');
+
+vi.mock('../../logger/index.js', () => ({
+	useLogger: vi.fn().mockReturnValue({ warn: vi.fn() }),
+}));
 
 const PUBLIC_URL = 'https://directus.example.com';
 
@@ -89,7 +93,7 @@ describe('resolveLoginRedirect', () => {
 		vi.clearAllMocks();
 
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL,
 			}),
 		);
@@ -105,19 +109,19 @@ describe('resolveLoginRedirect', () => {
 		});
 
 		test('throws when PUBLIC_URL is missing', () => {
-			vi.mocked(useEnv).mockReturnValue(asEnv({}));
+			vi.mocked(useEnv).mockReturnValue(mockEnv({}));
 
 			expect(() => resolveLoginRedirect('/admin')).toThrow('"PUBLIC_URL" must be defined');
 		});
 
 		test('throws when PUBLIC_URL is empty string', () => {
-			vi.mocked(useEnv).mockReturnValue(asEnv({ PUBLIC_URL: '' }));
+			vi.mocked(useEnv).mockReturnValue(mockEnv({ PUBLIC_URL: '' }));
 
 			expect(() => resolveLoginRedirect('/admin')).toThrow('"PUBLIC_URL" must be defined');
 		});
 
 		test('throws when PUBLIC_URL is invalid', () => {
-			vi.mocked(useEnv).mockReturnValue(asEnv({ PUBLIC_URL: 'invalid-url' }));
+			vi.mocked(useEnv).mockReturnValue(mockEnv({ PUBLIC_URL: 'invalid-url' }));
 
 			expect(() => resolveLoginRedirect('https://example.com/admin')).toThrow('PUBLIC_URL must be a valid URL');
 		});
@@ -153,7 +157,7 @@ describe('resolveLoginRedirect', () => {
 
 			test('rejects non-http/https deep link even when in allow list', () => {
 				vi.mocked(useEnv).mockReturnValue(
-					asEnv({
+					mockEnv({
 						PUBLIC_URL,
 						AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'myapp://auth/callback',
 					}),
@@ -171,7 +175,7 @@ describe('resolveLoginRedirect', () => {
 			});
 
 			test('allows matching custom port', () => {
-				vi.mocked(useEnv).mockReturnValue(asEnv({ PUBLIC_URL: 'http://localhost:8055' }));
+				vi.mocked(useEnv).mockReturnValue(mockEnv({ PUBLIC_URL: 'http://localhost:8055' }));
 
 				expect(resolveLoginRedirect('http://localhost:8055/admin')).toBe('http://localhost:8055/admin');
 			});
@@ -193,7 +197,7 @@ describe('resolveLoginRedirect', () => {
 			});
 
 			test('rejects different port', () => {
-				vi.mocked(useEnv).mockReturnValue(asEnv({ PUBLIC_URL: 'http://localhost:8055' }));
+				vi.mocked(useEnv).mockReturnValue(mockEnv({ PUBLIC_URL: 'http://localhost:8055' }));
 
 				expect(() => resolveLoginRedirect('http://localhost:3000/admin')).toThrow(
 					'App "redirect" must match PUBLIC_URL',
@@ -209,7 +213,7 @@ describe('resolveLoginRedirect', () => {
 
 		describe('PUBLIC_URL with sub path', () => {
 			beforeEach(() => {
-				vi.mocked(useEnv).mockReturnValue(asEnv({ PUBLIC_URL: SUB_PATH_URL }));
+				vi.mocked(useEnv).mockReturnValue(mockEnv({ PUBLIC_URL: SUB_PATH_URL }));
 			});
 
 			test.each(VALID_SUB_PATH_REDIRECTS)('allows "$input"', ({ input }) => {
@@ -233,7 +237,7 @@ describe('resolveLoginRedirect', () => {
 	describe('provider redirect allow list', () => {
 		test('allows cross-domain redirect when in allow list', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL: 'https://directus.example.com',
 					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://frontend.com/auth/callback',
 				}),
@@ -246,7 +250,7 @@ describe('resolveLoginRedirect', () => {
 
 		test('allows redirect from array allow list', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL,
 					AUTH_GITHUB_REDIRECT_ALLOW_LIST: ['https://example.com/one', 'https://example.com/two'],
 				}),
@@ -257,7 +261,7 @@ describe('resolveLoginRedirect', () => {
 
 		test('implicitly allows PUBLIC_URL when allow list is configured', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL,
 					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://other.com/callback',
 				}),
@@ -268,7 +272,7 @@ describe('resolveLoginRedirect', () => {
 
 		test('rejects URL not in allow list and not matching PUBLIC_URL', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL,
 					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://allowed.com/callback',
 				}),
@@ -287,7 +291,7 @@ describe('resolveLoginRedirect', () => {
 
 		test.each(ALLOW_LIST_EXTRA_PARAMS)('allows allow-listed URL with extra params "$input"', ({ input }) => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL,
 					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://frontend.com/callback',
 				}),
@@ -298,7 +302,7 @@ describe('resolveLoginRedirect', () => {
 
 		test('rejects allow-listed URL with different path', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL,
 					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://frontend.com/callback',
 				}),
@@ -311,7 +315,7 @@ describe('resolveLoginRedirect', () => {
 
 		test('rejects @-based authority confusion even when allow list configured', () => {
 			vi.mocked(useEnv).mockReturnValue(
-				asEnv({
+				mockEnv({
 					PUBLIC_URL,
 					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://frontend.com/callback',
 				}),
@@ -325,7 +329,7 @@ describe('resolveLoginRedirect', () => {
 		describe('with sub path PUBLIC_URL', () => {
 			test('allows allow-listed redirect', () => {
 				vi.mocked(useEnv).mockReturnValue(
-					asEnv({
+					mockEnv({
 						PUBLIC_URL: 'https://directus.example.com/subpath',
 						AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://frontend.com/callback',
 					}),
@@ -338,7 +342,7 @@ describe('resolveLoginRedirect', () => {
 
 			test('implicitly allows PUBLIC_URL with sub path', () => {
 				vi.mocked(useEnv).mockReturnValue(
-					asEnv({
+					mockEnv({
 						PUBLIC_URL: 'https://directus.example.com/subpath',
 						AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://other.com/callback',
 					}),

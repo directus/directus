@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { asEnv } from '../../__utils__/as-env.js';
+import { mockEnv } from '../../test-utils/env.js';
 import { type TelemetryReport } from '../types/report.js';
 import { type OwnerReport, sendReport } from './send-report.js';
 
@@ -19,7 +19,7 @@ test('Posts stringified report to configured ingress URL', async () => {
 	const mockIngress = 'https://example.com';
 
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			TELEMETRY_URL: mockIngress,
 		}),
 	);
@@ -44,7 +44,7 @@ test('Sets optional authorization header based on configured auth var', async ()
 	const mockIngress = 'https://example.com';
 
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			TELEMETRY_URL: mockIngress,
 			TELEMETRY_AUTHORIZATION: 'test-auth',
 		}),
@@ -77,7 +77,7 @@ test('Throws error if post was not successful', async () => {
 	const mockIngress = 'https://example.com';
 
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			TELEMETRY_URL: mockIngress,
 			TELEMETRY_AUTHORIZATION: 'test-auth',
 		}),
@@ -92,7 +92,7 @@ test('Sends to /v1/owner on owner payload', async () => {
 	const mockIngress = 'https://example.com';
 
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			COMPLIANCE_URL: mockIngress,
 			TELEMETRY_AUTHORIZATION: 'test-auth',
 			PROJECT_OWNER_ENABLED: true,
@@ -107,7 +107,7 @@ test('Sends to /v1/owner on owner payload', async () => {
 
 test('Does not send owner report when PROJECT_OWNER_ENABLED is false', async () => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			COMPLIANCE_URL: 'https://example.com',
 			PROJECT_OWNER_ENABLED: false,
 		}),
@@ -120,7 +120,7 @@ test('Does not send owner report when PROJECT_OWNER_ENABLED is false', async () 
 
 test('Still sends telemetry report when PROJECT_OWNER_ENABLED is false', async () => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			TELEMETRY_URL: 'https://example.com',
 			PROJECT_OWNER_ENABLED: false,
 		}),

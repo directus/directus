@@ -5,8 +5,8 @@ import { useLogger } from '../../../logger/index.js';
 import cacheClear from './clear.js';
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../../../test-utils/env.js');
-	return mockEnv({ CACHE_STORE: 'redis', REDIS_ENABLED: false });
+	const { mockUseEnv } = await import('../../../test-utils/env.js');
+	return mockUseEnv({ CACHE_STORE: 'redis', REDIS_ENABLED: false });
 });
 
 vi.mock('../../../cache.js', () => ({

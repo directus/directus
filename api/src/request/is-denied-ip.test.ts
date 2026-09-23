@@ -2,8 +2,8 @@ import os from 'node:os';
 import { useEnv } from '@directus/env';
 import type { Logger } from 'pino';
 import { afterEach, expect, test, vi } from 'vitest';
-import { asEnv } from '../__utils__/as-env.js';
 import { useLogger } from '../logger/index.js';
+import { mockEnv } from '../test-utils/env.js';
 import { isDeniedIp } from './is-denied-ip.js';
 
 vi.mock('node:os');
@@ -15,7 +15,7 @@ afterEach(() => {
 });
 
 test(`Returns false if deny list is empty`, async () => {
-	vi.mocked(useEnv).mockReturnValue(asEnv({ IMPORT_IP_DENY_LIST: [] }));
+	vi.mocked(useEnv).mockReturnValue(mockEnv({ IMPORT_IP_DENY_LIST: [] }));
 
 	const result = isDeniedIp('203.0.113.1');
 
@@ -23,7 +23,7 @@ test(`Returns false if deny list is empty`, async () => {
 });
 
 test(`Returns false if IP is not in deny list`, async () => {
-	vi.mocked(useEnv).mockReturnValue(asEnv({ IMPORT_IP_DENY_LIST: ['192.168.1.0/24'] }));
+	vi.mocked(useEnv).mockReturnValue(mockEnv({ IMPORT_IP_DENY_LIST: ['192.168.1.0/24'] }));
 
 	const result = isDeniedIp('10.0.0.1');
 
@@ -31,7 +31,7 @@ test(`Returns false if IP is not in deny list`, async () => {
 });
 
 test(`Returns true if IP is in deny list`, async () => {
-	vi.mocked(useEnv).mockReturnValue(asEnv({ IMPORT_IP_DENY_LIST: ['192.168.1.0/24'] }));
+	vi.mocked(useEnv).mockReturnValue(mockEnv({ IMPORT_IP_DENY_LIST: ['192.168.1.0/24'] }));
 
 	const result = isDeniedIp('192.168.1.100');
 
@@ -39,7 +39,7 @@ test(`Returns true if IP is in deny list`, async () => {
 });
 
 test(`Returns true and logs error if deny list is invalid`, async () => {
-	vi.mocked(useEnv).mockReturnValue(asEnv({ IMPORT_IP_DENY_LIST: ['invalid'] }));
+	vi.mocked(useEnv).mockReturnValue(mockEnv({ IMPORT_IP_DENY_LIST: ['invalid'] }));
 
 	const mockLogger = {
 		warn: vi.fn(),
@@ -55,7 +55,7 @@ test(`Returns true and logs error if deny list is invalid`, async () => {
 });
 
 test(`Checks against IPs of local network interfaces if deny list contains 0.0.0.0`, async () => {
-	vi.mocked(useEnv).mockReturnValue(asEnv({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] }));
+	vi.mocked(useEnv).mockReturnValue(mockEnv({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] }));
 
 	vi.mocked(os.networkInterfaces).mockReturnValue({});
 
@@ -66,7 +66,7 @@ test(`Checks against IPs of local network interfaces if deny list contains 0.0.0
 });
 
 test(`Returns true if IP matches resolved local network interface address`, async () => {
-	vi.mocked(useEnv).mockReturnValue(asEnv({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] }));
+	vi.mocked(useEnv).mockReturnValue(mockEnv({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] }));
 
 	vi.mocked(os.networkInterfaces).mockReturnValue({
 		fa0: undefined,
@@ -98,7 +98,7 @@ test(`Returns true if IP matches resolved local network interface address`, asyn
 });
 
 test(`Returns true if IP matches resolved to local loopback devices`, async () => {
-	vi.mocked(useEnv).mockReturnValue(asEnv({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] }));
+	vi.mocked(useEnv).mockReturnValue(mockEnv({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] }));
 
 	vi.mocked(os.networkInterfaces).mockReturnValue({
 		fa0: undefined,
@@ -120,7 +120,7 @@ test(`Returns true if IP matches resolved to local loopback devices`, async () =
 });
 
 test(`Returns true if IPv6-mapped IPv4 loopback address is checked against 0.0.0.0 deny list`, async () => {
-	vi.mocked(useEnv).mockReturnValue(asEnv({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] }));
+	vi.mocked(useEnv).mockReturnValue(mockEnv({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] }));
 
 	const mockLogger = {
 		warn: vi.fn(),
@@ -170,7 +170,7 @@ test(`Returns true if IPv6-mapped IPv4 loopback address is checked against 0.0.0
 
 test(`Returns true if IPv6-mapped IPv4 private network addresses are checked against explicit deny list`, async () => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			IMPORT_IP_DENY_LIST: ['192.168.0.0/16', '10.0.0.0/8', '172.16.0.0/12'],
 		}),
 	);
@@ -186,7 +186,7 @@ test(`Returns true if IPv6-mapped IPv4 private network addresses are checked aga
 
 test(`Returns true if IPv6-mapped AWS metadata IP is checked against explicit deny list`, async () => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			IMPORT_IP_DENY_LIST: ['169.254.169.254'],
 		}),
 	);

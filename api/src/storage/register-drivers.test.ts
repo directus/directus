@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import type { Driver, StorageManager } from '@directus/storage';
 import { randWord } from '@ngneat/falso';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { asEnv } from '../__utils__/as-env.js';
+import { mockEnv } from '../test-utils/env.js';
 import { getStorageDriver } from './get-storage-driver.js';
 import { registerDrivers } from './register-drivers.js';
 
@@ -30,7 +30,7 @@ beforeEach(() => {
 		name: randWord(),
 	};
 
-	vi.mocked(useEnv).mockReturnValue(asEnv({}));
+	vi.mocked(useEnv).mockReturnValue(mockEnv({}));
 });
 
 afterEach(() => {
@@ -45,7 +45,7 @@ test('Does nothing if no storage drivers are configured in Env', async () => {
 
 test('Ignores environment variables that do not start with STORAGE_ and end with _DRIVER', async () => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			[`NOSTORAGE_${randWord().toUpperCase()}_DRIVER`]: randWord(),
 			[`STORAGE_${randWord().toUpperCase()}_NODRIVER`]: randWord(),
 		}),
@@ -58,7 +58,7 @@ test('Ignores environment variables that do not start with STORAGE_ and end with
 
 test('Only registers driver once per library', async () => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			[`STORAGE_${randWord().toUpperCase()}_DRIVER`]: sample.name,
 			[`STORAGE_${randWord().toUpperCase()}_DRIVER`]: sample.name,
 		}),
@@ -71,7 +71,7 @@ test('Only registers driver once per library', async () => {
 
 test('Gets storage driver for name', async () => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			[`STORAGE_${randWord().toUpperCase()}_DRIVER`]: sample.name,
 		}),
 	);
@@ -83,7 +83,7 @@ test('Gets storage driver for name', async () => {
 
 test('Registers storage driver to manager', async () => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			[`STORAGE_${randWord().toUpperCase()}_DRIVER`]: sample.name,
 		}),
 	);

@@ -1,13 +1,14 @@
 import { useEnv } from '@directus/env';
 import { CronJob } from 'cron';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../__utils__/as-env.js';
+import { mockEnv } from '../test-utils/env.js';
 import * as schedule from '../utils/schedule.js';
 import { handleMetricsJob, default as metricsSchedule } from './metrics.js';
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
+});
 
 vi.spyOn(schedule, 'validateCron');
 
@@ -24,7 +25,7 @@ vi.mock('cron', async (importOriginal) => {
 });
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue(asEnv({ METRICS_ENABLED: true, METRICS_SCHEDULE: '0 0 * * *' }));
+	vi.mocked(useEnv).mockReturnValue(mockEnv({ METRICS_ENABLED: true, METRICS_SCHEDULE: '0 0 * * *' }));
 });
 
 afterEach(() => {
@@ -33,7 +34,7 @@ afterEach(() => {
 
 describe('metrics', () => {
 	test('Returns early when metrics is disabled', async () => {
-		vi.mocked(useEnv).mockReturnValue(asEnv({ METRICS_ENABLED: false, METRICS_SCHEDULE: '0 0 * * *' }));
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ METRICS_ENABLED: false, METRICS_SCHEDULE: '0 0 * * *' }));
 
 		const res = await metricsSchedule();
 
@@ -42,7 +43,7 @@ describe('metrics', () => {
 	});
 
 	test('Returns early for invalid metrics schedule', async () => {
-		vi.mocked(useEnv).mockReturnValue(asEnv({ METRICS_ENABLED: true, METRICS_SCHEDULE: '#' }));
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ METRICS_ENABLED: true, METRICS_SCHEDULE: '#' }));
 
 		const res = await metricsSchedule();
 

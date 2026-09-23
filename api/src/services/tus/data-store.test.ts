@@ -3,8 +3,8 @@ import { ForbiddenError, UnsupportedMediaTypeError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import type { Upload } from '@tus/utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../../__utils__/as-env.js';
 import getDatabase from '../../database/index.js';
+import { mockEnv } from '../../test-utils/env.js';
 import { createMockKnex, resetKnexMocks } from '../../test-utils/knex.js';
 import { ItemsService } from '../items.js';
 import { TusDataStore } from './data-store.js';
@@ -14,9 +14,9 @@ vi.mock('../../database/index.js', () => ({ default: vi.fn() }));
 vi.mock('../../logger/index.js', () => ({ useLogger: () => ({ warn: vi.fn() }) }));
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../../test-utils/env.js');
+	const { mockUseEnv } = await import('../../test-utils/env.js');
 
-	return mockEnv({
+	return mockUseEnv({
 		STORAGE_LOCATIONS: ['local'],
 		STORAGE_LOCAL_DRIVER: 'local',
 		STORAGE_LOCAL_ROOT: '.',
@@ -64,7 +64,7 @@ describe('TusDataStore.create', () => {
 		});
 
 	beforeEach(() => {
-		vi.mocked(useEnv).mockReturnValue(asEnv(baseEnv));
+		vi.mocked(useEnv).mockReturnValue(mockEnv(baseEnv));
 		vi.mocked(getDatabase).mockReturnValue(db);
 		vi.mocked(ItemsService.prototype.createOne).mockResolvedValue('generated-pk');
 
@@ -126,7 +126,7 @@ describe('TusDataStore.create', () => {
 	});
 
 	test('rejects an upload whose type is not in FILES_MIME_TYPE_ALLOW_LIST', async () => {
-		vi.mocked(useEnv).mockReturnValue(asEnv({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' }));
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' }));
 
 		const store = makeStore();
 
@@ -138,7 +138,7 @@ describe('TusDataStore.create', () => {
 	});
 
 	test('accepts an upload whose type matches FILES_MIME_TYPE_ALLOW_LIST', async () => {
-		vi.mocked(useEnv).mockReturnValue(asEnv({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' }));
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' }));
 
 		const store = makeStore();
 

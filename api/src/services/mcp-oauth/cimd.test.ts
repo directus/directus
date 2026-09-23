@@ -27,6 +27,8 @@ vi.mock('@directus/env', () => ({
 		MCP_OAUTH_CIMD_ALLOW_HTTP: false,
 		MCP_OAUTH_CIMD_BLOCKED_TLDS: ['test', 'localhost', 'invalid', 'example', 'local', 'onion'],
 		MCP_OAUTH_CIMD_ALLOWED_DOMAINS: [],
+		MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+		MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 	}),
 }));
 
@@ -100,6 +102,8 @@ describe('detectClientIdType', () => {
 			MCP_OAUTH_CIMD_ALLOW_HTTP: true,
 			MCP_OAUTH_CIMD_BLOCKED_TLDS: [],
 			MCP_OAUTH_CIMD_ALLOWED_DOMAINS: [],
+			MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+			MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 		} as any);
 
 		expect(detectClientIdType('http://myapp.dev/client')).toBe('cimd');
@@ -108,6 +112,8 @@ describe('detectClientIdType', () => {
 			MCP_OAUTH_CIMD_ALLOW_HTTP: false,
 			MCP_OAUTH_CIMD_BLOCKED_TLDS: ['test', 'localhost', 'invalid', 'example', 'local', 'onion'],
 			MCP_OAUTH_CIMD_ALLOWED_DOMAINS: [],
+			MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+			MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 		} as any);
 	});
 });

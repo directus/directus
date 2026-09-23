@@ -56,7 +56,7 @@ describe('Casting of default configuration', () => {
 			return value;
 		});
 
-		const env = createEnv();
+		const env = createEnv(false);
 
 		expect(env).toEqual({
 			PROCESS: 'test-process',
@@ -72,7 +72,7 @@ describe('Casting of default configuration', () => {
 	test('Default config without default type gets not casted', () => {
 		vi.mocked(getDefaultType).mockReturnValue(null);
 
-		const env = createEnv();
+		const env = createEnv(false);
 
 		expect(env).toEqual({
 			PROCESS: 'test-process',
@@ -87,7 +87,7 @@ describe('Casting of default configuration', () => {
 });
 
 test('Combines process/file based config with defaults', () => {
-	const env = createEnv();
+	const env = createEnv(false);
 
 	expect(env).toEqual({
 		PROCESS: 'test-process',
@@ -100,7 +100,7 @@ test('Combines process/file based config with defaults', () => {
 test('Reads file configuration from config path', () => {
 	vi.mocked(getConfigPath).mockReturnValue('./test/config/path');
 
-	createEnv();
+	createEnv(false);
 
 	expect(readConfigurationFromFile).toHaveBeenCalledWith('./test/config/path');
 });
@@ -126,7 +126,7 @@ describe('File based configuration', () => {
 			PROCESS_FILE: './test/path',
 		});
 
-		const env = createEnv();
+		const env = createEnv(false);
 
 		expect(removeFileSuffix).toHaveBeenCalledWith('PROCESS_FILE');
 		expect(readFileSync).toHaveBeenCalledWith('./test/path', { encoding: 'utf8' });
@@ -145,7 +145,7 @@ describe('File based configuration', () => {
 			PROCESS_FILE: 'array:./test/path',
 		});
 
-		createEnv();
+		createEnv(false);
 
 		expect(removeFileSuffix).toHaveBeenCalledWith('PROCESS_FILE');
 		expect(readFileSync).toHaveBeenCalledWith('./test/path', { encoding: 'utf8' });
@@ -162,7 +162,7 @@ test('Passthrough file variables that are not Directus configuration flags', () 
 		return false;
 	});
 
-	const env = createEnv();
+	const env = createEnv(false);
 
 	expect(readFileSync).not.toHaveBeenCalled();
 
@@ -193,7 +193,7 @@ test('Throws error if file could not be read', () => {
 		throw new Error('nah');
 	});
 
-	expect(() => createEnv()).toThrowErrorMatchingInlineSnapshot(
+	expect(() => createEnv(false)).toThrowErrorMatchingInlineSnapshot(
 		`[Error: Failed to read value from file "./test/path", defined in environment variable "TEST_FILE".]`,
 	);
 });
@@ -201,7 +201,7 @@ test('Throws error if file could not be read', () => {
 test('Casts regular values', () => {
 	vi.mocked(cast).mockImplementation((value) => `cast-${value}`);
 
-	const env = createEnv();
+	const env = createEnv(false);
 
 	expect(env).toEqual({
 		PROCESS: 'cast-test-process',

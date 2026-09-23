@@ -1,7 +1,7 @@
 import type { IncomingMessage } from 'http';
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { asEnv } from '../../__utils__/as-env.js';
+import { mockEnv } from '../../test-utils/env.js';
 import { isOriginAllowed } from './is-origin-allowed.js';
 
 vi.mock('@directus/env');
@@ -27,7 +27,7 @@ function fakeRequest({ origin, host, forwardedHost, remoteAddress = '203.0.113.1
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue(
-		asEnv({
+		mockEnv({
 			PUBLIC_URL: '/',
 			IP_TRUST_PROXY: false,
 			CORS_ENABLED: false,
@@ -87,7 +87,7 @@ describe('same-origin requests', () => {
 describe('X-Forwarded-Host / IP_TRUST_PROXY', () => {
 	test('Ignores X-Forwarded-Host when proxy is not trusted', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: false,
@@ -109,7 +109,7 @@ describe('X-Forwarded-Host / IP_TRUST_PROXY', () => {
 
 	test('Honors X-Forwarded-Host when proxy is trusted', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: true,
 				CORS_ENABLED: false,
@@ -130,7 +130,7 @@ describe('X-Forwarded-Host / IP_TRUST_PROXY', () => {
 
 	test('Uses the first hop of a comma-separated X-Forwarded-Host', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: true,
 				CORS_ENABLED: false,
@@ -151,7 +151,7 @@ describe('X-Forwarded-Host / IP_TRUST_PROXY', () => {
 
 	test('Trusts X-Forwarded-Host only from a configured proxy subnet', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: '10.0.0.0/8',
 				CORS_ENABLED: false,
@@ -188,7 +188,7 @@ describe('X-Forwarded-Host / IP_TRUST_PROXY', () => {
 describe('PUBLIC_URL matching', () => {
 	test('Allows an origin matching the configured PUBLIC_URL', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: 'https://directus.example',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: false,
@@ -202,7 +202,7 @@ describe('PUBLIC_URL matching', () => {
 
 	test('Rejects an origin that does not match PUBLIC_URL', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: 'https://directus.example',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: false,
@@ -215,7 +215,7 @@ describe('PUBLIC_URL matching', () => {
 
 	test('Compares the full origin including port', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: 'https://directus.example:8443',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: false,
@@ -229,7 +229,7 @@ describe('PUBLIC_URL matching', () => {
 
 	test('Ignores a relative PUBLIC_URL', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: false,
@@ -244,7 +244,7 @@ describe('PUBLIC_URL matching', () => {
 describe('CORS_ORIGIN allowlist', () => {
 	test('Does not consult CORS_ORIGIN when CORS is disabled', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: false,
@@ -257,7 +257,7 @@ describe('CORS_ORIGIN allowlist', () => {
 
 	test('Allows any origin when CORS_ORIGIN is true', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: true,
@@ -270,7 +270,7 @@ describe('CORS_ORIGIN allowlist', () => {
 
 	test('Rejects all origins when CORS_ORIGIN is false', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: true,
@@ -283,7 +283,7 @@ describe('CORS_ORIGIN allowlist', () => {
 
 	test('Does not treat a "*" wildcard as allow-any (cannot carry credentials)', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: true,
@@ -296,7 +296,7 @@ describe('CORS_ORIGIN allowlist', () => {
 
 	test('Does not treat an empty-string CORS_ORIGIN as allow-any', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: true,
@@ -309,7 +309,7 @@ describe('CORS_ORIGIN allowlist', () => {
 
 	test('Honors a "true" entry inside an array CORS_ORIGIN (reflect any)', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: true,
@@ -322,7 +322,7 @@ describe('CORS_ORIGIN allowlist', () => {
 
 	test('Does not treat a "*" entry inside an array as allow-any', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: true,
@@ -336,7 +336,7 @@ describe('CORS_ORIGIN allowlist', () => {
 
 	test('Matches a string CORS_ORIGIN exactly', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: true,
@@ -350,7 +350,7 @@ describe('CORS_ORIGIN allowlist', () => {
 
 	test('Matches any entry in an array CORS_ORIGIN', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: true,
@@ -364,7 +364,7 @@ describe('CORS_ORIGIN allowlist', () => {
 
 	test('Matches a RegExp CORS_ORIGIN', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: true,
@@ -378,7 +378,7 @@ describe('CORS_ORIGIN allowlist', () => {
 
 	test('Matches a RegExp entry inside an array CORS_ORIGIN', () => {
 		vi.mocked(useEnv).mockReturnValue(
-			asEnv({
+			mockEnv({
 				PUBLIC_URL: '/',
 				IP_TRUST_PROXY: false,
 				CORS_ENABLED: true,

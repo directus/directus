@@ -43,14 +43,14 @@ export interface FetchResult {
 	ttlMs: number | null;
 }
 
-const env = useEnv();
-
 /**
  * Detect whether a client_id is a CIMD URL or a DCR-registered ID.
  * Returns 'cimd' for valid CIMD URLs, 'dcr' for anything else that should go to DB lookup,
  * or null if it looks like a CIMD URL but fails validation.
  */
 export function detectClientIdType(clientId: string): 'dcr' | 'cimd' | null {
+	const env = useEnv();
+
 	if (clientId.startsWith('https://') || (env.MCP_OAUTH_CIMD_ALLOW_HTTP && clientId.startsWith('http://'))) {
 		return isValidCimdClientId(clientId) ? 'cimd' : null;
 	}
@@ -62,6 +62,7 @@ export function detectClientIdType(clientId: string): 'dcr' | 'cimd' | null {
  * Strict CIMD client_id URL validation with debug logging on each rejection.
  */
 export function isValidCimdClientId(input: string): boolean {
+	const env = useEnv();
 	const logger = useLogger();
 
 	let url: URL;
@@ -150,7 +151,7 @@ export function isValidCimdClientId(input: string): boolean {
 
 /** Read allowed domains from env, filtering empty strings. */
 export function getAllowedDomains(): string[] {
-	return env.MCP_OAUTH_CIMD_ALLOWED_DOMAINS.filter((s) => s !== '');
+	return useEnv().MCP_OAUTH_CIMD_ALLOWED_DOMAINS.filter((s) => s !== '');
 }
 
 /**
