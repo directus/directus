@@ -1,6 +1,6 @@
 import { useAppStore } from '@directus/stores';
 import { createTestingPinia } from '@pinia/testing';
-import { createHead } from '@unhead/vue';
+import { createHead } from '@unhead/vue/client';
 import { mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
