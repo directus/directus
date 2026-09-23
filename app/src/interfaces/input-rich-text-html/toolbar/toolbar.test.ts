@@ -114,22 +114,22 @@ describe('contributed buttons', () => {
 	});
 
 	test('renders a namespaced contribution next to the core button it is named after', () => {
-		const bold: RichTextToolbarButton = { key: 'spike:bold', icon: 'star', label: 'Spike', command: () => {} };
-		const wrapper = mountToolbar(['bold', 'spike:bold'], [], [bold]);
+		const bold: RichTextToolbarButton = { key: 'ext:bold', icon: 'star', label: 'Star', command: () => {} };
+		const wrapper = mountToolbar(['bold', 'ext:bold'], [], [bold]);
 
 		const icons = wrapper.findAll('.toolbar-button .v-icon i').map((icon) => icon.attributes('data-icon'));
 		expect(icons).toEqual(['format_bold', 'star']);
 	});
 
 	test('keeps the core button when a contribution arrives with a bare core key', () => {
-		const bold: RichTextToolbarButton = { key: 'bold', icon: 'star', label: 'Spike', command: () => {} };
+		const bold: RichTextToolbarButton = { key: 'bold', icon: 'star', label: 'Star', command: () => {} };
 		const wrapper = mountToolbar(['bold'], [], [bold]);
 
 		const icons = wrapper.findAll('.toolbar-button .v-icon i').map((icon) => icon.attributes('data-icon'));
 		expect(icons).toEqual(['format_bold']);
 	});
 
-	test('two extensions with the same button key both render', () => {
+	test('renders one button per extension when two namespace the same key', () => {
 		const a: RichTextToolbarButton = { key: 'ext-a:callout', icon: 'info', label: 'A', command: () => {} };
 		const b: RichTextToolbarButton = { key: 'ext-b:callout', icon: 'star', label: 'B', command: () => {} };
 		const wrapper = mountToolbar(['ext-a:callout', 'ext-b:callout'], [], [a, b]);

@@ -1,10 +1,10 @@
 import type { RichTextConfig } from '@directus/extensions';
 import {
 	type AnyExtension,
+	type Attributes,
 	flattenExtensions,
 	getExtensionField,
-	type MarkConfig,
-	type NodeConfig,
+	type GlobalAttributes,
 	splitExtensions,
 } from '@tiptap/core';
 import { editorExtensions } from '@/interfaces/input-rich-text-html/extensions';
@@ -47,14 +47,17 @@ function validateShape(config: unknown): string | null {
 		for (const button of buttons) {
 			if (!isObject(button)) return 'every button must be an object';
 			if (typeof button['key'] !== 'string' || !SLUG.test(button['key'])) return 'button "key" must match [a-z0-9-]+';
-			if (keys.has(button['key'])) return `button key "${button['key']}" is used twice`;
-			keys.add(button['key']);
-			if (typeof button['icon'] !== 'string') return `button "${button['key']}" needs an "icon" string`;
-			if (typeof button['label'] !== 'string') return `button "${button['key']}" needs a "label" string`;
-			if (typeof button['command'] !== 'function') return `button "${button['key']}" needs a "command" function`;
+			const key = button['key'];
+			const invalid = (problem: string) => `button "${key}" ${problem}`;
+
+			if (keys.has(key)) return `button key "${key}" is used twice`;
+			keys.add(key);
+			if (typeof button['icon'] !== 'string') return invalid('needs an "icon" string');
+			if (typeof button['label'] !== 'string') return invalid('needs a "label" string');
+			if (typeof button['command'] !== 'function') return invalid('needs a "command" function');
 
 			if (button['isActive'] !== undefined && typeof button['isActive'] !== 'function') {
-				return `button "${button['key']}" has an "isActive" that is not a function`;
+				return invalid('has an "isActive" that is not a function');
 			}
 		}
 	}
@@ -62,7 +65,25 @@ function validateShape(config: unknown): string | null {
 	return null;
 }
 
-function validateNames(config: RichTextConfig): string | null {
+function callAttributesField<T>(
+	extension: AnyExtension,
+	field: 'addGlobalAttributes' | 'addAttributes',
+	context: object = {},
+): T | undefined {
+	const getAttributes = getExtensionField<(() => T) | undefined>(extension, field, {
+		name: extension.name,
+		options: extension.options,
+		storage: extension.storage,
+		...context,
+	});
+
+	return getAttributes?.();
+}
+
+const findReservedKey = (attributes: object = {}) =>
+	Object.keys(attributes).find((name) => PRESERVED_ATTRIBUTE_KEYS.has(name));
+
+function validateConflicts(config: RichTextConfig): string | null {
 	const contributed = flattenExtensions(config.extensions ?? []);
 	const core = getCoreNames();
 
@@ -73,19 +94,12 @@ function validateNames(config: RichTextConfig): string | null {
 	const { nodeExtensions, markExtensions } = splitExtensions([...flattenExtensions(editorExtensions), ...contributed]);
 
 	for (const extension of contributed) {
-		const addGlobalAttributes = getExtensionField<AnyExtension['config']['addGlobalAttributes']>(
-			extension,
-			'addGlobalAttributes',
-			{
-				name: extension.name,
-				options: extension.options,
-				storage: extension.storage,
-				extensions: [...nodeExtensions, ...markExtensions],
-			},
-		);
+		const globalAttributes = callAttributesField<GlobalAttributes>(extension, 'addGlobalAttributes', {
+			extensions: [...nodeExtensions, ...markExtensions],
+		});
 
-		for (const globalAttribute of addGlobalAttributes?.() ?? []) {
-			const clash = Object.keys(globalAttribute.attributes).find((name) => PRESERVED_ATTRIBUTE_KEYS.has(name));
+		for (const { attributes } of globalAttributes ?? []) {
+			const clash = findReservedKey(attributes);
 			if (clash) return `global attribute "${clash}" is reserved by the core editor`;
 		}
 	}
@@ -93,17 +107,25 @@ function validateNames(config: RichTextConfig): string | null {
 	const { nodeExtensions: ownNodes, markExtensions: ownMarks } = splitExtensions(contributed);
 
 	for (const extension of [...ownNodes, ...ownMarks]) {
-		const addAttributes = getExtensionField<NodeConfig['addAttributes'] | MarkConfig['addAttributes']>(
-			extension,
-			'addAttributes',
-			{ name: extension.name, options: extension.options, storage: extension.storage },
-		);
-
-		const clash = Object.keys(addAttributes?.() ?? {}).find((name) => PRESERVED_ATTRIBUTE_KEYS.has(name));
+		const clash = findReservedKey(callAttributesField<Attributes>(extension, 'addAttributes'));
 		if (clash) return `attribute "${clash}" on "${extension.name}" is reserved by the core editor`;
 	}
 
 	return null;
+}
+
+function findRejection(config: unknown, ids: Set<string>): string | null {
+	try {
+		const shapeError = validateShape(config);
+		if (shapeError) return shapeError;
+
+		const richText = config as RichTextConfig;
+		if (ids.has(richText.id)) return 'another richtext extension already uses this id';
+
+		return validateConflicts(richText);
+	} catch (error) {
+		return `extension threw while being validated: ${error instanceof Error ? error.message : String(error)}`;
+	}
 }
 
 export function validateRichTexts(configs: unknown[]): RichTextConfig[] {
@@ -111,26 +133,18 @@ export function validateRichTexts(configs: unknown[]): RichTextConfig[] {
 	const ids = new Set<string>();
 
 	for (const config of configs) {
-		const label = isObject(config) && typeof config['id'] === 'string' ? `"${config['id']}"` : '(unknown id)';
-		let reason: string | null;
-
-		try {
-			reason = validateShape(config);
-
-			if (!reason && ids.has((config as RichTextConfig).id)) reason = 'another richtext extension already uses this id';
-			if (!reason) reason = validateNames(config as RichTextConfig);
-		} catch (error) {
-			reason = `extension threw while being validated: ${error instanceof Error ? error.message : String(error)}`;
-		}
+		const reason = findRejection(config, ids);
 
 		if (reason) {
+			const label = isObject(config) && typeof config['id'] === 'string' ? `"${config['id']}"` : '(unknown id)';
 			// eslint-disable-next-line no-console
 			console.error(`Richtext extension ${label} was not loaded: ${reason}`);
 			continue;
 		}
 
-		ids.add((config as RichTextConfig).id);
-		valid.push(config as RichTextConfig);
+		const richText = config as RichTextConfig;
+		ids.add(richText.id);
+		valid.push(richText);
 	}
 
 	return valid;
