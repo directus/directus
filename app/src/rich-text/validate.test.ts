@@ -113,6 +113,29 @@ describe('validateRichTexts', () => {
 		expect(ids([{ id: 'tone', name: 'Tone', extensions: [Tone] }])).toEqual(['tone']);
 	});
 
+	test('rejects a node attribute that PreservedAttributes already owns', () => {
+		const ClassyCallout = Callout.extend({
+			name: 'classyCallout',
+			addAttributes: () => ({ class: { default: null } }),
+		});
+
+		expect(ids([{ id: 'classy', name: 'Classy', extensions: [ClassyCallout] }])).toEqual([]);
+		expect(error.mock.calls[0]!.join(' ')).toContain('"class"');
+	});
+
+	test('rejects a mark attribute that PreservedAttributes already owns', () => {
+		const Tag = Mark.create({ name: 'tag', addAttributes: () => ({ dataAttributes: { default: null } }) });
+
+		expect(ids([{ id: 'tag', name: 'Tag', extensions: [Tag] }])).toEqual([]);
+		expect(error.mock.calls[0]!.join(' ')).toContain('"dataAttributes"');
+	});
+
+	test('keeps a node attribute PreservedAttributes does not own', () => {
+		const Variant = Callout.extend({ name: 'variantCallout', addAttributes: () => ({ variant: { default: 'info' } }) });
+
+		expect(ids([{ id: 'variant', name: 'Variant', extensions: [Variant] }])).toEqual(['variant']);
+	});
+
 	test('rejects an extension whose addExtensions throws', () => {
 		const Broken = Extension.create({
 			name: 'broken',

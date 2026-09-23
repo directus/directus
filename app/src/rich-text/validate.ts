@@ -1,5 +1,12 @@
 import type { RichTextConfig } from '@directus/extensions';
-import { type AnyExtension, flattenExtensions, getExtensionField, splitExtensions } from '@tiptap/core';
+import {
+	type AnyExtension,
+	flattenExtensions,
+	getExtensionField,
+	type MarkConfig,
+	type NodeConfig,
+	splitExtensions,
+} from '@tiptap/core';
 import { editorExtensions } from '@/interfaces/input-rich-text-html/extensions';
 import { ComparisonDiff } from '@/interfaces/input-rich-text-html/extensions/comparison-diff';
 
@@ -91,6 +98,19 @@ function validateNames(config: RichTextConfig): string | null {
 			const clash = Object.keys(globalAttribute.attributes).find((name) => PRESERVED_ATTRIBUTES.has(name));
 			if (clash) return `global attribute "${clash}" is reserved by the core editor`;
 		}
+	}
+
+	const { nodeExtensions: ownNodes, markExtensions: ownMarks } = splitExtensions(contributed);
+
+	for (const extension of [...ownNodes, ...ownMarks]) {
+		const addAttributes = getExtensionField<NodeConfig['addAttributes'] | MarkConfig['addAttributes']>(
+			extension,
+			'addAttributes',
+			{ name: extension.name, options: extension.options, storage: extension.storage },
+		);
+
+		const clash = Object.keys(addAttributes?.() ?? {}).find((name) => PRESERVED_ATTRIBUTES.has(name));
+		if (clash) return `attribute "${clash}" on "${extension.name}" is reserved by the core editor`;
 	}
 
 	return null;
