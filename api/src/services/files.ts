@@ -20,7 +20,7 @@ import type {
 	Query,
 	QueryOptions,
 } from '@directus/types';
-import { normalizePath, toBoolean } from '@directus/utils';
+import { normalizePath } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import { clone, cloneDeep } from 'lodash-es';
