@@ -1,5 +1,4 @@
 import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import { CronJob } from 'cron';
 import { useLogger } from '../logger/index.js';
 import { useMetrics } from '../metrics/index.js';

@@ -27,7 +27,7 @@ import type {
 	PromiseCallback,
 	ScheduleHandler,
 } from '@directus/types';
-import { isTypeIn, toBoolean } from '@directus/utils';
+import { isTypeIn } from '@directus/utils';
 import { pathToRelativeUrl, processId } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
 import nodeResolveDefault from '@rollup/plugin-node-resolve';

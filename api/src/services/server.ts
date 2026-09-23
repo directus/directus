@@ -10,7 +10,6 @@ import type {
 	ServerHealth,
 	ServerHealthCheck,
 } from '@directus/types';
-import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';

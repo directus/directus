@@ -84,7 +84,7 @@ export class LogsHandler {
 	 * @param client
 	 */
 	subscribe(logLevel: string, client: WebSocketClient) {
-		let allowedLogLevelNames = [];
+		let allowedLogLevelNames;
 
 		try {
 			allowedLogLevelNames = Object.keys(getAllowedLogLevels(logLevel));

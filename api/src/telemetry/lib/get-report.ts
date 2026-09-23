@@ -1,5 +1,4 @@
 import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import { getHelpers } from '../../database/helpers/index.js';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';

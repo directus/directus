@@ -10,7 +10,7 @@ import { isObject } from '@directus/utils';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { isArray, merge, toArray } from 'lodash-es';
+import { isArray, merge } from 'lodash-es';
 import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
 import { useLogger } from '../logger/index.js';
 import { useMetrics } from '../metrics/index.js';

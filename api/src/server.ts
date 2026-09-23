@@ -3,7 +3,6 @@ import * as https from 'https';
 import type { ListenOptions } from 'net';
 import url from 'url';
 import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
 import type { TerminusOptions } from '@godaddy/terminus';
 import { createTerminus } from '@godaddy/terminus';

@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, RouteNotFoundError } from '@directus/errors';
-import { toBoolean } from '@directus/utils';
 import { format } from 'date-fns';
 import { Router } from 'express';
 import z from 'zod';

@@ -6,7 +6,7 @@ import { useEnv } from '@directus/env';
 import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { WebSocketMessage } from '@directus/types';
-import { parseJSON, toBoolean } from '@directus/utils';
+import { parseJSON } from '@directus/utils';
 import cookie from 'cookie';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
 import WebSocket, { type Server, WebSocketServer } from 'ws';

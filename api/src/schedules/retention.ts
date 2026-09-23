@@ -1,6 +1,5 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
@@ -55,7 +54,7 @@ export async function handleRetentionJob() {
 	await lock.set(retentionLockKey, Date.now());
 
 	for (const task of retentionTasks) {
-		let count = 0;
+		let count: number;
 
 		if (task.timeframe === undefined) {
 			// skip disabled tasks

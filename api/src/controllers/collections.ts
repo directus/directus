@@ -52,7 +52,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		schema: req.schema,
 	});
 
-	let result: Item[] = [];
+	let result: Item[];
 
 	if (req.body.keys) {
 		result = await collectionsService.readMany(req.body.keys);

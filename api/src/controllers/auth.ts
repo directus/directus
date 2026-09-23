@@ -1,7 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
-import { toBoolean } from '@directus/utils';
 import type { Request } from 'express';
 import { Router } from 'express';
 import {

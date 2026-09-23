@@ -27,7 +27,6 @@ import {
 	verifyLicense,
 } from '@directus/license';
 import type { Accountability } from '@directus/types';
-import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionCache } from '../permissions/cache.js';

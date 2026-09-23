@@ -116,7 +116,7 @@ export async function runAst(
 		const nestedNodes = applyParentFilters(schema, nestedCollectionNodes, items);
 
 		for (const nestedNode of nestedNodes) {
-			let nestedItems: Item[] | null = [];
+			let nestedItems: Item[] | null;
 
 			if (nestedNode.type === 'o2m') {
 				let hasMore = true;
