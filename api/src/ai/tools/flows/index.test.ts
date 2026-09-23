@@ -2,7 +2,7 @@ import type { Accountability, FlowRaw, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 import { FlowsService } from '../../../services/flows.js';
 import { ItemsService } from '../../../services/items.js';
-import { flows } from './index.js';
+import { flows, FlowsValidateSchema } from './index.js';
 
 vi.mock('../../../services/flows');
 vi.mock('../../../services/items');
@@ -36,7 +36,9 @@ describe('flows tool', () => {
 				deleteOne: vi.fn(),
 			};
 
-			vi.mocked(FlowsService).mockImplementation(() => mockFlowsService as unknown as FlowsService);
+			vi.mocked(FlowsService).mockImplementation(function () {
+				return mockFlowsService as unknown as FlowsService;
+			});
 
 			mockLayoutService = {
 				readByQuery: vi.fn().mockResolvedValue([]),
@@ -45,10 +47,9 @@ describe('flows tool', () => {
 
 			// FlowsService extends ItemsService, so its automocked constructor runs
 			// through this implementation too; dispatch on the collection
-			vi.mocked(ItemsService).mockImplementation(
-				(collection) =>
-					(collection === 'directus_operations' ? mockLayoutService : mockFlowsService) as unknown as ItemsService,
-			);
+			vi.mocked(ItemsService).mockImplementation(function (collection) {
+				return (collection === 'directus_operations' ? mockLayoutService : mockFlowsService) as unknown as ItemsService;
+			});
 		});
 
 		describe('CREATE action', () => {
@@ -221,6 +222,21 @@ describe('flows tool', () => {
 					data: mockKey,
 				});
 			});
+		});
+	});
+
+	describe('validation schema', () => {
+		test.each([
+			['assigns a folder', 'folder-uuid'],
+			['clears the folder', null],
+		])('%s', (_label, folder) => {
+			const result = FlowsValidateSchema.safeParse({ action: 'update', key: 'flow-uuid', data: { folder } });
+
+			expect(result.success).toBe(true);
+
+			const parsed = result.success && result.data.action === 'update' ? result.data : undefined;
+
+			expect(parsed?.data).toEqual({ folder });
 		});
 	});
 
