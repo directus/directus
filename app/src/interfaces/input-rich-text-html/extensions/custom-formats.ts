@@ -1,4 +1,5 @@
 import { type AnyExtension, Mark, mergeAttributes } from '@tiptap/vue-3';
+import { isPreservedAttributeName } from './preserved-attributes';
 
 /**
  * Legacy TinyMCE `customFormats` (`style_formats`) entries. `inline` becomes a dynamic mark;
@@ -117,13 +118,6 @@ function blockTarget(tag: string): BlockTarget | null {
  */
 export const CONVERTIBLE_TYPES = new Set(['paragraph', 'heading']);
 
-const PRESERVED_ATTRIBUTES = new Set(['id', 'title', 'role', 'lang', 'dir']);
-
-/** Block formats can only carry attributes `preserved-attributes.ts` round-trips. */
-function isPreservedAttribute(name: string): boolean {
-	return PRESERVED_ATTRIBUTES.has(name) || name.startsWith('data-') || name.startsWith('aria-');
-}
-
 function warn(message: string, entry: unknown): void {
 	// eslint-disable-next-line no-console
 	console.warn(`[wysiwyg] ${message}`, entry);
@@ -177,7 +171,7 @@ function blockAnchors(entry: BlockFormatEntry): {
 	for (const [attribute, value] of Object.entries(entry.attributes ?? {})) {
 		// `attributes: { class }` is the same intent as `classes`; merge so toggling off strips it too
 		if (attribute === 'class') classes.push(...classList(String(value)));
-		else if (isPreservedAttribute(attribute)) attributes[attribute] = String(value);
+		else if (isPreservedAttributeName(attribute)) attributes[attribute] = String(value);
 		else ignored.push(attribute);
 	}
 

@@ -9,19 +9,9 @@ import {
 } from '@tiptap/core';
 import { editorExtensions } from '@/interfaces/input-rich-text-html/extensions';
 import { ComparisonDiff } from '@/interfaces/input-rich-text-html/extensions/comparison-diff';
+import { PRESERVED_ATTRIBUTE_KEYS } from '@/interfaces/input-rich-text-html/extensions/preserved-attributes';
 
 const SLUG = /^[a-z0-9-]+$/;
-
-const PRESERVED_ATTRIBUTES = new Set([
-	'class',
-	'id',
-	'title',
-	'role',
-	'lang',
-	'dir',
-	'dataAttributes',
-	'ariaAttributes',
-]);
 
 let coreNames: Set<string> | undefined;
 
@@ -95,7 +85,7 @@ function validateNames(config: RichTextConfig): string | null {
 		);
 
 		for (const globalAttribute of addGlobalAttributes?.() ?? []) {
-			const clash = Object.keys(globalAttribute.attributes).find((name) => PRESERVED_ATTRIBUTES.has(name));
+			const clash = Object.keys(globalAttribute.attributes).find((name) => PRESERVED_ATTRIBUTE_KEYS.has(name));
 			if (clash) return `global attribute "${clash}" is reserved by the core editor`;
 		}
 	}
@@ -109,7 +99,7 @@ function validateNames(config: RichTextConfig): string | null {
 			{ name: extension.name, options: extension.options, storage: extension.storage },
 		);
 
-		const clash = Object.keys(addAttributes?.() ?? {}).find((name) => PRESERVED_ATTRIBUTES.has(name));
+		const clash = Object.keys(addAttributes?.() ?? {}).find((name) => PRESERVED_ATTRIBUTE_KEYS.has(name));
 		if (clash) return `attribute "${clash}" on "${extension.name}" is reserved by the core editor`;
 	}
 

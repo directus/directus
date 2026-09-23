@@ -19,11 +19,28 @@ const OWN_TITLE_TYPES = new Set(['link', 'abbreviation']);
 /** Block types the Direction extension already models `dir` on; a global `dir` would double-render. */
 const OWN_DIR_TYPES = new Set(['paragraph', 'heading', 'blockquote', 'bulletList', 'orderedList', 'listItem']);
 
+const PASSTHROUGH_NAMES = ['class', 'id', 'title', 'role', 'lang', 'dir'] as const;
+
 const WILDCARD_PREFIXES = ['data-', 'aria-'] as const;
+
+/** The Tiptap attribute keys PreservedAttributes adds; other extensions must not redefine them. */
+export const PRESERVED_ATTRIBUTE_KEYS: ReadonlySet<string> = new Set([
+	...PASSTHROUGH_NAMES,
+	'dataAttributes',
+	'ariaAttributes',
+]);
+
+/** True when PreservedAttributes round-trips an HTML attribute with this name. */
+export function isPreservedAttributeName(name: string): boolean {
+	return (
+		(PASSTHROUGH_NAMES as readonly string[]).includes(name) ||
+		WILDCARD_PREFIXES.some((prefix) => name.startsWith(prefix))
+	);
+}
 
 /** True when the element carries an attribute PreservedAttributes would round-trip. */
 export function hasPreservedAttributes(element: HTMLElement): boolean {
-	if (['class', 'id', 'title', 'role', 'lang', 'dir'].some((name) => element.getAttribute(name))) return true;
+	if (PASSTHROUGH_NAMES.some((name) => element.getAttribute(name))) return true;
 	return Array.from(element.attributes).some(({ name }) => WILDCARD_PREFIXES.some((prefix) => name.startsWith(prefix)));
 }
 
