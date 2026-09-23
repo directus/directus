@@ -94,6 +94,34 @@ describe('validateRichTexts', () => {
 		expect(ids([{ id: 'my-kit', name: 'Kit', extensions: [Kit] }])).toEqual([]);
 	});
 
+	test('rejects a name with the custom format prefix', () => {
+		const Format = Mark.create({ name: 'customFormat_0' });
+		expect(ids([{ id: 'my-format', name: 'Format', extensions: [Format] }])).toEqual([]);
+	});
+
+	test('rejects a later extension that reuses another extension name and names both', () => {
+		const configs = [
+			{ id: 'ext-a', name: 'A', extensions: [Callout] },
+			{ id: 'ext-b', name: 'B', extensions: [Callout] },
+		];
+
+		expect(ids(configs)).toEqual(['ext-a']);
+
+		const message = error.mock.calls[0]!.join(' ');
+		expect(message).toContain('"ext-b"');
+		expect(message).toContain('"callout"');
+		expect(message).toContain('"ext-a"');
+	});
+
+	test('does not reserve the names of a rejected extension', () => {
+		const configs = [
+			{ id: 'ext-a', name: 'A', extensions: [Callout], buttons: [button, button] },
+			{ id: 'ext-b', name: 'B', extensions: [Callout] },
+		];
+
+		expect(ids(configs)).toEqual(['ext-b']);
+	});
+
 	test('rejects a global attribute that PreservedAttributes already owns', () => {
 		const Classes = Extension.create({
 			name: 'classes',

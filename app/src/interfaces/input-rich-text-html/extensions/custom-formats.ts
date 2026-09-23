@@ -118,6 +118,9 @@ function blockTarget(tag: string): BlockTarget | null {
  */
 export const CONVERTIBLE_TYPES = new Set(['paragraph', 'heading']);
 
+/** Prefix of the per-field mark names; reserved because fields add these marks after extensions register. */
+export const CUSTOM_FORMAT_PREFIX = 'customFormat_';
+
 function warn(message: string, entry: unknown): void {
 	// eslint-disable-next-line no-console
 	console.warn(`[wysiwyg] ${message}`, entry);
@@ -367,7 +370,7 @@ export function buildCustomFormats(raw: unknown): BuiltCustomFormats {
 	const parsed = parseOption(raw);
 
 	parsed.forEach((entry, index) => {
-		const built = buildEntry(entry, `customFormat_${index}`, false);
+		const built = buildEntry(entry, `${CUSTOM_FORMAT_PREFIX}${index}`, false);
 		if (!built) return;
 		formats.push(built.format);
 		extensions.push(...built.extensions);

@@ -9,6 +9,7 @@ import {
 } from '@tiptap/core';
 import { editorExtensions } from '@/interfaces/input-rich-text-html/extensions';
 import { ComparisonDiff } from '@/interfaces/input-rich-text-html/extensions/comparison-diff';
+import { CUSTOM_FORMAT_PREFIX } from '@/interfaces/input-rich-text-html/extensions/custom-formats';
 import { PRESERVED_ATTRIBUTE_KEYS } from '@/interfaces/input-rich-text-html/extensions/preserved-attributes';
 
 const SLUG = /^[a-z0-9-]+$/;
@@ -83,12 +84,15 @@ function callAttributesField<T>(
 const findReservedKey = (attributes: object = {}) =>
 	Object.keys(attributes).find((name) => PRESERVED_ATTRIBUTE_KEYS.has(name));
 
-function validateConflicts(config: RichTextConfig): string | null {
+function validateConflicts(config: RichTextConfig, owners: Map<string, string>): string | null {
 	const contributed = flattenExtensions(config.extensions ?? []);
 	const core = getCoreNames();
 
-	for (const extension of contributed) {
-		if (core.has(extension.name)) return `"${extension.name}" is a core node, mark or extension name`;
+	for (const { name } of contributed) {
+		if (core.has(name)) return `"${name}" is a core node, mark or extension name`;
+		if (name.startsWith(CUSTOM_FORMAT_PREFIX))
+			return `"${name}" uses the "${CUSTOM_FORMAT_PREFIX}" prefix reserved for field custom formats`;
+		if (owners.has(name)) return `"${name}" is already defined by richtext extension "${owners.get(name)}"`;
 	}
 
 	const { nodeExtensions, markExtensions } = splitExtensions([...flattenExtensions(editorExtensions), ...contributed]);
@@ -114,7 +118,7 @@ function validateConflicts(config: RichTextConfig): string | null {
 	return null;
 }
 
-function findRejection(config: unknown, ids: Set<string>): string | null {
+function findRejection(config: unknown, ids: Set<string>, owners: Map<string, string>): string | null {
 	try {
 		const shapeError = validateShape(config);
 		if (shapeError) return shapeError;
@@ -122,7 +126,7 @@ function findRejection(config: unknown, ids: Set<string>): string | null {
 		const richText = config as RichTextConfig;
 		if (ids.has(richText.id)) return 'another richtext extension already uses this id';
 
-		return validateConflicts(richText);
+		return validateConflicts(richText, owners);
 	} catch (error) {
 		return `extension threw while being validated: ${error instanceof Error ? error.message : String(error)}`;
 	}
@@ -131,9 +135,11 @@ function findRejection(config: unknown, ids: Set<string>): string | null {
 export function validateRichTexts(configs: unknown[]): RichTextConfig[] {
 	const valid: RichTextConfig[] = [];
 	const ids = new Set<string>();
+	// Tiptap only warns on duplicate names and one definition silently wins, so the first to load keeps the name
+	const owners = new Map<string, string>();
 
 	for (const config of configs) {
-		const reason = findRejection(config, ids);
+		const reason = findRejection(config, ids, owners);
 
 		if (reason) {
 			const label = isObject(config) && typeof config['id'] === 'string' ? `"${config['id']}"` : '(unknown id)';
@@ -144,6 +150,11 @@ export function validateRichTexts(configs: unknown[]): RichTextConfig[] {
 
 		const richText = config as RichTextConfig;
 		ids.add(richText.id);
+
+		for (const { name } of flattenExtensions(richText.extensions ?? [])) {
+			owners.set(name, richText.id);
+		}
+
 		valid.push(richText);
 	}
 
