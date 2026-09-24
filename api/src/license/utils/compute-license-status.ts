@@ -5,7 +5,7 @@ import { isInCoreGracePeriod } from './is-in-core-grace-period.js';
 /**
  * Compute the operational license status.
  */
-export async function computeLicenseStatus(license: Directus.License | null): Promise<LicenseStatus | null> {
+export async function computeLicenseStatus(license: Directus.License | null): Promise<LicenseStatus> {
 	const entitlementManager = getEntitlementManager().fork(license?.entitlements ?? null);
 
 	const isWithinLimits = await entitlementManager.checkAll();
