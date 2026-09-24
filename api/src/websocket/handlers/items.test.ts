@@ -95,7 +95,10 @@ describe('WebSocket heartbeat handler', () => {
 		}));
 
 		const createOne = vi.fn();
-		(ItemsService as Mock).mockImplementation(() => ({ createOne }));
+
+		(ItemsService as Mock).mockImplementation(function () {
+			return { createOne };
+		});
 
 		const fakeClient = mockClient();
 
@@ -124,7 +127,10 @@ describe('WebSocket heartbeat handler', () => {
 		const createOne = vi.fn(),
 			readOne = vi.fn();
 
-		(ItemsService as Mock).mockImplementation(() => ({ createOne, readOne }));
+		(ItemsService as Mock).mockImplementation(function () {
+			return { createOne, readOne };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -151,7 +157,10 @@ describe('WebSocket heartbeat handler', () => {
 		const createMany = vi.fn(),
 			readMany = vi.fn();
 
-		(ItemsService as Mock).mockImplementation(() => ({ createMany, readMany }));
+		(ItemsService as Mock).mockImplementation(function () {
+			return { createMany, readMany };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -175,9 +184,17 @@ describe('WebSocket heartbeat handler', () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
 		const readByQuery = vi.fn();
-		(ItemsService as Mock).mockImplementation(() => ({ readByQuery }));
+
+		(ItemsService as Mock).mockImplementation(function () {
+			return { readByQuery };
+		});
+
 		const getMetaForQuery = vi.fn();
-		(MetaService as Mock).mockImplementation(() => ({ getMetaForQuery }));
+
+		(MetaService as Mock).mockImplementation(function () {
+			return { getMetaForQuery };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -204,7 +221,10 @@ describe('WebSocket heartbeat handler', () => {
 		const updateOne = vi.fn(),
 			readOne = vi.fn();
 
-		(ItemsService as Mock).mockImplementation(() => ({ updateOne, readOne }));
+		(ItemsService as Mock).mockImplementation(function () {
+			return { updateOne, readOne };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -231,9 +251,16 @@ describe('WebSocket heartbeat handler', () => {
 		const updateMany = vi.fn(),
 			readMany = vi.fn();
 
-		(ItemsService as Mock).mockImplementation(() => ({ updateMany, readMany }));
+		(ItemsService as Mock).mockImplementation(function () {
+			return { updateMany, readMany };
+		});
+
 		const getMetaForQuery = vi.fn();
-		(MetaService as Mock).mockImplementation(() => ({ getMetaForQuery }));
+
+		(MetaService as Mock).mockImplementation(function () {
+			return { getMetaForQuery };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -261,9 +288,16 @@ describe('WebSocket heartbeat handler', () => {
 		const updateBatch = vi.fn(),
 			readMany = vi.fn();
 
-		(ItemsService as Mock).mockImplementation(() => ({ updateBatch, readMany }));
+		(ItemsService as Mock).mockImplementation(function () {
+			return { updateBatch, readMany };
+		});
+
 		const getMetaForQuery = vi.fn();
-		(MetaService as Mock).mockImplementation(() => ({ getMetaForQuery }));
+
+		(MetaService as Mock).mockImplementation(function () {
+			return { getMetaForQuery };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -288,7 +322,11 @@ describe('WebSocket heartbeat handler', () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
 		const deleteOne = vi.fn();
-		(ItemsService as Mock).mockImplementation(() => ({ deleteOne }));
+
+		(ItemsService as Mock).mockImplementation(function () {
+			return { deleteOne };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -311,7 +349,11 @@ describe('WebSocket heartbeat handler', () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
 		const deleteMany = vi.fn();
-		(ItemsService as Mock).mockImplementation(() => ({ deleteMany }));
+
+		(ItemsService as Mock).mockImplementation(function () {
+			return { deleteMany };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -334,7 +376,11 @@ describe('WebSocket heartbeat handler', () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
 		const deleteByQuery = vi.fn();
-		(ItemsService as Mock).mockImplementation(() => ({ deleteByQuery }));
+
+		(ItemsService as Mock).mockImplementation(function () {
+			return { deleteByQuery };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -359,7 +405,10 @@ describe('WebSocket heartbeat handler', () => {
 		}));
 
 		const createOne = vi.fn();
-		(ItemsService as Mock).mockImplementation(() => ({ createOne }));
+
+		(ItemsService as Mock).mockImplementation(function () {
+			return { createOne };
+		});
 
 		const fakeClient = mockClient();
 
