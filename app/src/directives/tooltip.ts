@@ -37,25 +37,31 @@ export function resolveAlign(binding: DirectiveBinding): TooltipAlign {
 	return ALIGNS.find((a) => binding.modifiers[a]) ?? 'center';
 }
 
-const FOCUSABLE = ['button', 'a[href]', 'input', 'select', 'textarea', '[tabindex]'];
-
-const FOCUSABLE_SELECTOR = FOCUSABLE.join(', ');
-const FOCUSABLE_CHILD_SELECTOR = FOCUSABLE.map((selector) => `:scope > ${selector}`).join(', ');
-
-export function resolveTrigger(element: HTMLElement): HTMLElement {
-	if (element.matches(FOCUSABLE_SELECTOR)) {
-		return element;
-	}
-
-	return element.querySelector<HTMLElement>(FOCUSABLE_CHILD_SELECTOR) ?? element;
-}
-
 interface TooltipHandlers {
-	trigger: HTMLElement;
 	enter: () => void;
 	leave: () => void;
-	focus: () => void;
-	blur: () => void;
+	focusin: (event: FocusEvent) => void;
+	focusout: (event: FocusEvent) => void;
+	cleanup: () => void;
+}
+
+function addDescribedBy(element: HTMLElement): void {
+	const ids = element.getAttribute('aria-describedby')?.split(/\s+/).filter(Boolean) ?? [];
+
+	if (!ids.includes(TOOLTIP_CONTENT_ID)) {
+		element.setAttribute('aria-describedby', [...ids, TOOLTIP_CONTENT_ID].join(' '));
+	}
+}
+
+function removeDescribedBy(element: HTMLElement): void {
+	const ids = element.getAttribute('aria-describedby')?.split(/\s+/).filter(Boolean) ?? [];
+	const remaining = ids.filter((id) => id !== TOOLTIP_CONTENT_ID);
+
+	if (remaining.length > 0) {
+		element.setAttribute('aria-describedby', remaining.join(' '));
+	} else {
+		element.removeAttribute('aria-describedby');
+	}
 }
 
 export interface TooltipValue {
@@ -66,6 +72,25 @@ export interface TooltipValue {
 export function resolveTooltipValue(value: string | TooltipValue): { content: string; kbd: string[] | undefined } {
 	if (typeof value === 'string') return { content: value, kbd: undefined };
 	return { content: value.text, kbd: value.kbd };
+}
+
+/** Whether two tooltip binding values would render the same tooltip. */
+export function isSameTooltipValue(
+	a: string | TooltipValue | false | null | undefined,
+	b: string | TooltipValue | false | null | undefined,
+): boolean {
+	if (a === b) {
+		return true;
+	}
+
+	if (!a || !b) {
+		return false;
+	}
+
+	const resolvedA = resolveTooltipValue(a);
+	const resolvedB = resolveTooltipValue(b);
+
+	return resolvedA.content === resolvedB.content && resolvedA.kbd?.join() === resolvedB.kbd?.join();
 }
 
 interface TooltipState extends Omit<TooltipPayload, 'delayDuration'> {
@@ -131,12 +156,12 @@ export function getGlobalTooltip() {
 
 const handlerMap = new WeakMap<HTMLElement, TooltipHandlers>();
 
-function mounted(element: HTMLElement, binding: DirectiveBinding): void {
+function beforeMount(element: HTMLElement, binding: DirectiveBinding): void {
 	if (!binding.value) return;
 
-	const trigger = resolveTrigger(element);
 	const virtualRef = { getBoundingClientRect: () => element.getBoundingClientRect() };
 	const { content, kbd } = resolveTooltipValue(binding.value);
+	let described: HTMLElement | null = null;
 
 	const buildPayload = (delayDuration: number) => ({
 		content,
@@ -149,6 +174,21 @@ function mounted(element: HTMLElement, binding: DirectiveBinding): void {
 		virtualRef,
 	});
 
+	// Focus belongs to this tooltip unless a closer tooltip host or an opted-out element sits in between
+	const owns = (node: EventTarget | null): node is HTMLElement => {
+		if (!(node instanceof HTMLElement) || !element.contains(node)) {
+			return false;
+		}
+
+		for (let current: HTMLElement | null = node; current && current !== element; current = current.parentElement) {
+			if (handlerMap.has(current) || current.hasAttribute('data-no-tooltip')) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+
 	const enter = () => {
 		let delay = 500;
 		if (binding.modifiers['instant']) delay = 0;
@@ -156,23 +196,52 @@ function mounted(element: HTMLElement, binding: DirectiveBinding): void {
 		openTooltip(buildPayload(delay));
 	};
 
-	const focus = () => {
-		if (!trigger.matches(':focus-visible')) {
+	// focusin/focusout bubble, so this also works when the directive sits on a wrapper around the focusable element
+	const focusin = (event: FocusEvent) => {
+		const target = event.target;
+
+		if (!owns(target)) {
+			return;
+		}
+
+		addDescribedBy(target);
+		described = target;
+
+		// Mouse clicks also move focus, but hover already handles those
+		if (!target.matches(':focus-visible')) {
 			return;
 		}
 
 		openTooltip(buildPayload(binding.modifiers['instant'] ? 0 : 500), true);
 	};
 
-	const leave = closeTooltip;
-	const blur = closeTooltip;
+	const focusout = (event: FocusEvent) => {
+		if (described && event.target === described) {
+			removeDescribedBy(described);
+			described = null;
+		}
 
-	handlerMap.set(element, { trigger, enter, leave, focus, blur });
+		if (owns(event.relatedTarget)) {
+			return;
+		}
+
+		closeTooltip();
+	};
+
+	const cleanup = () => {
+		if (described) {
+			removeDescribedBy(described);
+			described = null;
+		}
+	};
+
+	const leave = closeTooltip;
+
+	handlerMap.set(element, { enter, leave, focusin, focusout, cleanup });
 	element.addEventListener('mouseenter', enter);
 	element.addEventListener('mouseleave', leave);
-	trigger.addEventListener('focus', focus);
-	trigger.addEventListener('blur', blur);
-	trigger.setAttribute('aria-describedby', TOOLTIP_CONTENT_ID);
+	element.addEventListener('focusin', focusin);
+	element.addEventListener('focusout', focusout);
 }
 
 function unmounted(element: HTMLElement): void {
@@ -181,28 +250,23 @@ function unmounted(element: HTMLElement): void {
 	if (handlers) {
 		element.removeEventListener('mouseenter', handlers.enter);
 		element.removeEventListener('mouseleave', handlers.leave);
-		handlers.trigger.removeEventListener('focus', handlers.focus);
-		handlers.trigger.removeEventListener('blur', handlers.blur);
+		element.removeEventListener('focusin', handlers.focusin);
+		element.removeEventListener('focusout', handlers.focusout);
+		handlers.cleanup();
 		handlerMap.delete(element);
-		handlers.trigger.removeAttribute('aria-describedby');
 		closeTooltip();
 	}
 }
 
 const Tooltip: Directive = {
-	mounted,
+	beforeMount,
 	unmounted,
 	updated(element, binding) {
-		const handlers = handlerMap.get(element);
-
-		const triggerChanged = handlers !== undefined && resolveTrigger(element) !== handlers.trigger;
-
-		if (binding.value === binding.oldValue && !triggerChanged) return;
-
+		if (isSameTooltipValue(binding.value, binding.oldValue)) return;
 		unmounted(element);
 
 		if (binding.value) {
-			mounted(element, binding);
+			beforeMount(element, binding);
 		}
 	},
 };
