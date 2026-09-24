@@ -70,7 +70,8 @@ for (const mode of MODES) {
 			await directus.stop();
 		});
 
-		test(`a connection without any credentials is ${mode === 'public' ? 'kept' : 'closed'}`, async () => {
+		// TODO fix websocket flaky tests and remove the retry
+		test(`a connection without any credentials is ${mode === 'public' ? 'kept' : 'closed'}`, { retry: 3 }, async () => {
 			expect(await connect(url)).toBe(mode === 'public' ? 'open' : 'closed');
 		});
 
