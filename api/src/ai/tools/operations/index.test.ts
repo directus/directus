@@ -43,14 +43,17 @@ describe('operations tool', () => {
 				readOne: vi.fn().mockResolvedValue({ operation: null }),
 			};
 
-			vi.mocked(OperationsService).mockImplementation(() => mockOperationsService as unknown as OperationsService);
+			vi.mocked(OperationsService).mockImplementation(function () {
+				return mockOperationsService as unknown as OperationsService;
+			});
 
 			// Layout shifts run on a plain ItemsService('directus_operations'); alias
 			// it to the operations mock so all shift assertions land in one place
-			vi.mocked(ItemsService).mockImplementation(
-				(collection) =>
-					(collection === 'directus_flows' ? mockFlowsItemsService : mockOperationsService) as unknown as ItemsService,
-			);
+			vi.mocked(ItemsService).mockImplementation(function (collection) {
+				return (collection === 'directus_flows'
+					? mockFlowsItemsService
+					: mockOperationsService) as unknown as ItemsService;
+			});
 		});
 
 		describe('CREATE action', () => {

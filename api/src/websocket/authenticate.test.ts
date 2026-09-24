@@ -27,10 +27,12 @@ vi.mock('./utils/get-expires-at-for-token', () => ({
 vi.mock('../utils/get-schema');
 
 vi.mock('../services/authentication', () => ({
-	AuthenticationService: vi.fn(() => ({
-		login: vi.fn().mockReturnValue({ accessToken: '123', refreshToken: 'refresh', expires: 123456 }),
-		refresh: vi.fn().mockReturnValue({ accessToken: '456', refreshToken: 'refresh' }),
-	})),
+	AuthenticationService: vi.fn(function () {
+		return {
+			login: vi.fn().mockReturnValue({ accessToken: '123', refreshToken: 'refresh', expires: 123456 }),
+			refresh: vi.fn().mockReturnValue({ accessToken: '456', refreshToken: 'refresh' }),
+		};
+	}),
 }));
 
 vi.mock('../database');

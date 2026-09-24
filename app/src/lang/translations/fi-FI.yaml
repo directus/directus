@@ -934,7 +934,6 @@ licensing:
   entitlements:
     collections: Kokoelmat
     flows: Toiminnot
-settings_flows: Toiminnot
 settings_presets: Kirjainmerkit
 settings_translations: Käännökset
 one_or_more_options_are_missing: Yksi tai useampi vaihtoehto puuttuu

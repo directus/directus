@@ -21,7 +21,9 @@ const mockAuthenticationService = {
 
 // Mock the authentication service to prevent cascade imports
 vi.mock('../../services/authentication.js', () => ({
-	AuthenticationService: vi.fn(() => mockAuthenticationService),
+	AuthenticationService: vi.fn(function () {
+		return mockAuthenticationService;
+	}),
 }));
 
 // Mock the middleware to prevent cascade imports
@@ -110,10 +112,12 @@ const mockUpdateOne = vi.fn().mockResolvedValue(undefined);
 // Mock the services that would cause import issues
 vi.mock('../../services/users.js', () => {
 	return {
-		UsersService: vi.fn(() => ({
-			createOne: mockCreateOne,
-			updateOne: mockUpdateOne,
-		})),
+		UsersService: vi.fn(function () {
+			return {
+				createOne: mockCreateOne,
+				updateOne: mockUpdateOne,
+			};
+		}),
 	};
 });
 
