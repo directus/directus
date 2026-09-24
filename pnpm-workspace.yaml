@@ -89,6 +89,7 @@ catalog:
   '@supabase/storage-js': 2.112.3
   '@tiptap/core': 3.31.3
   '@tiptap/extension-image': 3.31.3
+  '@tiptap/extension-link': 3.31.3
   '@tiptap/extension-subscript': 3.31.3
   '@tiptap/extension-superscript': 3.31.3
   '@tiptap/extension-table': 3.31.3

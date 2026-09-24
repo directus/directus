@@ -263,7 +263,7 @@ const {
 	linkDrawerOpen,
 	linkSelection,
 	isEditingLink,
-	isImageLink,
+	targetsImage,
 	isLinkSaveable,
 	openLinkDrawer,
 	closeLinkDrawer,
@@ -412,7 +412,7 @@ onKeyStroke('Escape', () => {
 			v-model="linkDrawerOpen"
 			v-model:link-selection="linkSelection"
 			:editing="isEditingLink"
-			:image-link="isImageLink"
+			:targets-image="targetsImage"
 			:saveable="isLinkSaveable"
 			@save="saveLink"
 			@unlink="unlink"

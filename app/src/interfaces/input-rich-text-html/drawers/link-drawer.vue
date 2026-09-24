@@ -11,7 +11,7 @@ defineProps<{
 	editing: boolean;
 	saveable: boolean;
 	/** The link targets a selected image, which has no display text to edit. */
-	imageLink?: boolean;
+	targetsImage?: boolean;
 }>();
 
 const emit = defineEmits<{ save: []; cancel: []; unlink: [] }>();
@@ -39,7 +39,7 @@ const selection = defineModel<LinkSelection>('linkSelection', { required: true }
 						@update:model-value="selection.url = $event || null"
 					/>
 				</div>
-				<div v-if="!imageLink" class="field full">
+				<div v-if="!targetsImage" class="field full">
 					<div class="type-label">{{ $t('display_text') }}</div>
 					<VInput
 						:model-value="selection.displayText ?? undefined"

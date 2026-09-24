@@ -2,6 +2,7 @@ import { Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test } from 'vitest';
 import { shallowRef } from 'vue';
 import { editorExtensions } from '../extensions';
+import { selectNode } from '../test-utils';
 import { useLink } from './use-link';
 
 const editors: Editor[] = [];
@@ -197,54 +198,44 @@ describe('image link', () => {
 	// a block after the image keeps StarterKit's trailing-node paragraph out of the expected HTML
 	const AFTER = '<p>y</p>';
 
-	function selectImage(editor: Editor) {
-		let imagePos = -1;
-
-		editor.state.doc.descendants((node, pos) => {
-			if (node.type.name === 'image') imagePos = pos;
-		});
-
-		editor.commands.setNodeSelection(imagePos);
-	}
-
 	test('openLinkDrawer on an unlinked image is image mode, not editing, with an empty url', () => {
-		const { editor, isImageLink, isEditingLink, linkSelection, openLinkDrawer } = setup(`<p>x</p>${IMAGE}`);
-		selectImage(editor.value);
+		const { editor, targetsImage, isEditingLink, linkSelection, openLinkDrawer } = setup(`<p>x</p>${IMAGE}`);
+		selectNode(editor.value, 'image');
 
 		openLinkDrawer();
 
-		expect(isImageLink.value).toBe(true);
+		expect(targetsImage.value).toBe(true);
 		expect(isEditingLink.value).toBe(false);
 		expect(linkSelection.value.url).toBeNull();
 		expect(linkSelection.value.displayText).toBeNull();
 	});
 
 	test('openLinkDrawer on a text link is not image mode', () => {
-		const { editor, isImageLink, openLinkDrawer } = setup('<p><a href="https://directus.io">hello</a></p>');
+		const { editor, targetsImage, openLinkDrawer } = setup('<p><a href="https://directus.io">hello</a></p>');
 		editor.value.commands.setTextSelection(3);
 
 		openLinkDrawer();
 
-		expect(isImageLink.value).toBe(false);
+		expect(targetsImage.value).toBe(false);
 	});
 
 	test('openLinkDrawer on a linked image prefills url, title and newTab and is editing', () => {
-		const { editor, isImageLink, isEditingLink, linkSelection, openLinkDrawer } = setup(
+		const { editor, targetsImage, isEditingLink, linkSelection, openLinkDrawer } = setup(
 			`<a href="https://directus.io" target="_blank"><img src="/assets/abc" alt="a" title="Home"></a>`,
 		);
 
-		selectImage(editor.value);
+		selectNode(editor.value, 'image');
 
 		openLinkDrawer();
 
-		expect(isImageLink.value).toBe(true);
+		expect(targetsImage.value).toBe(true);
 		expect(isEditingLink.value).toBe(true);
 		expect(linkSelection.value).toMatchObject({ url: 'https://directus.io', title: 'Home', newTab: true });
 	});
 
 	test('saveLink wraps the selected image in an anchor instead of inserting text', () => {
 		const { editor, linkSelection, openLinkDrawer, saveLink } = setup(`<p>x</p>${IMAGE}${AFTER}`);
-		selectImage(editor.value);
+		selectNode(editor.value, 'image');
 		openLinkDrawer();
 
 		linkSelection.value = { ...linkSelection.value, url: 'https://directus.io', title: 'Home', newTab: true };
@@ -258,7 +249,7 @@ describe('image link', () => {
 
 	test('saveLink on an image omits target and rel when newTab is false', () => {
 		const { editor, linkSelection, openLinkDrawer, saveLink } = setup(`${IMAGE}${AFTER}`);
-		selectImage(editor.value);
+		selectNode(editor.value, 'image');
 		openLinkDrawer();
 
 		linkSelection.value = { ...linkSelection.value, url: 'https://directus.io', newTab: false };
@@ -273,7 +264,7 @@ describe('image link', () => {
 			`<a href="https://directus.io" target="_blank" rel="noopener noreferrer nofollow"><img class="hero" src="/assets/abc" alt="a"></a>${AFTER}`,
 		);
 
-		selectImage(editor.value);
+		selectNode(editor.value, 'image');
 		openLinkDrawer();
 
 		linkSelection.value = { ...linkSelection.value, url: 'https://directus.io/new' };
@@ -287,7 +278,7 @@ describe('image link', () => {
 
 	test('saveLink on an image refuses a script href', () => {
 		const { editor, linkSelection, openLinkDrawer, saveLink } = setup(`${IMAGE}${AFTER}`);
-		selectImage(editor.value);
+		selectNode(editor.value, 'image');
 		openLinkDrawer();
 
 		linkSelection.value = { ...linkSelection.value, url: 'javascript:alert(1)' };
@@ -299,7 +290,7 @@ describe('image link', () => {
 
 	test('unlink on a linked image drops the anchor and keeps the image', () => {
 		const { editor, openLinkDrawer, unlink } = setup(`${LINKED_IMAGE}${AFTER}`);
-		selectImage(editor.value);
+		selectNode(editor.value, 'image');
 		openLinkDrawer();
 
 		unlink();
@@ -308,13 +299,13 @@ describe('image link', () => {
 	});
 
 	test('closeLinkDrawer resets image mode', () => {
-		const { editor, isImageLink, openLinkDrawer, closeLinkDrawer } = setup(IMAGE);
-		selectImage(editor.value);
+		const { editor, targetsImage, openLinkDrawer, closeLinkDrawer } = setup(IMAGE);
+		selectNode(editor.value, 'image');
 		openLinkDrawer();
 
 		closeLinkDrawer();
 
-		expect(isImageLink.value).toBe(false);
+		expect(targetsImage.value).toBe(false);
 	});
 });
 

@@ -1,6 +1,7 @@
 import { Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test } from 'vitest';
 import { editorExtensions } from '../extensions';
+import { selectNode } from '../test-utils';
 import { toolbarButtons } from './buttons';
 
 const editors: Editor[] = [];
@@ -12,14 +13,7 @@ afterEach(() => {
 function editorWithSelectedImage(content: string): Editor {
 	const editor = new Editor({ extensions: editorExtensions, content });
 	editors.push(editor);
-
-	let imagePos = -1;
-
-	editor.state.doc.descendants((node, pos) => {
-		if (node.type.name === 'image') imagePos = pos;
-	});
-
-	editor.commands.setNodeSelection(imagePos);
+	selectNode(editor, 'image');
 	return editor;
 }
 

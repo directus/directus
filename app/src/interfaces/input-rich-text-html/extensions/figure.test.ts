@@ -2,6 +2,7 @@ import { Extension } from '@tiptap/core';
 import { Plugin } from '@tiptap/pm/state';
 import { Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test } from 'vitest';
+import { selectNode } from '../test-utils';
 import { editorExtensions } from './index';
 
 const editors: Editor[] = [];
@@ -26,19 +27,6 @@ function setup(content: string) {
 function html(editor: Editor): string {
 	const out = editor.getHTML();
 	return out.endsWith(TAIL) ? out.slice(0, -TAIL.length) : out;
-}
-
-/** Selects the first node of `type` in the document. */
-function selectNode(editor: Editor, type: string) {
-	let pos: number | undefined;
-
-	editor.state.doc.descendants((node, nodePos) => {
-		if (pos === undefined && node.type.name === type) pos = nodePos;
-	});
-
-	expect(pos, `no ${type} node in the document`).toBeDefined();
-	editor.commands.setNodeSelection(pos!);
-	return pos!;
 }
 
 /** Places the text cursor at the end of the first node of `type`. */

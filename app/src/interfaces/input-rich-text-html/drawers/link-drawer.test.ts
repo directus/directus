@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import { createI18n } from 'vue-i18n';
 import LinkDrawer from './link-drawer.vue';
 
-function mountDrawer(imageLink: boolean) {
+function mountDrawer(targetsImage: boolean) {
 	const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
 
 	return mount(LinkDrawer, {
@@ -12,7 +12,7 @@ function mountDrawer(imageLink: boolean) {
 			linkSelection: { url: null, displayText: null, title: null, newTab: true },
 			editing: false,
 			saveable: false,
-			imageLink,
+			targetsImage,
 		},
 		global: {
 			plugins: [i18n],

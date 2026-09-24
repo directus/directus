@@ -1,5 +1,6 @@
 import { type Editor, mergeAttributes } from '@tiptap/core';
 import { Image } from '@tiptap/extension-image';
+import { isAllowedUri } from '@tiptap/extension-link';
 import type { DOMOutputSpec } from '@tiptap/pm/model';
 
 /**
@@ -18,8 +19,8 @@ export type ImageLink = { href: string; target: string | null; rel: string | nul
 declare module '@tiptap/core' {
 	interface Commands<ReturnType> {
 		imageLink: {
-			/** Sets the link on the selected image; extra keys (eg `title`) are applied as image attributes. */
-			setImageLink: (attrs: ImageLink & Record<string, unknown>) => ReturnType;
+			/** Sets the link on the selected image; `title` is the image's own tooltip. */
+			setImageLink: (attrs: ImageLink & { title?: string | null }) => ReturnType;
 			unsetImageLink: () => ReturnType;
 		};
 	}
@@ -27,14 +28,6 @@ declare module '@tiptap/core' {
 
 export function isImageLinkActive(editor: Editor): boolean {
 	return editor.isActive('image') && Boolean(editor.getAttributes('image').href);
-}
-
-/** Same allow-list as the Link mark; a scheme-less (relative) href is always allowed. */
-const ALLOWED_PROTOCOLS = ['http', 'https', 'ftp', 'ftps', 'mailto', 'tel', 'callto', 'sms', 'cid', 'xmpp'];
-
-function isAllowedHref(href: string): boolean {
-	const scheme = href.trim().match(/^([a-z][a-z0-9+.-]*):/i)?.[1];
-	return !scheme || ALLOWED_PROTOCOLS.includes(scheme.toLowerCase());
 }
 
 /**
@@ -50,7 +43,8 @@ function wrappingLink(img: HTMLElement): ImageLink | null {
 	);
 
 	const href = anchor.getAttribute('href');
-	if (!onlyImage || !href || !isAllowedHref(href)) return null;
+	// same allow-list as the Link mark, so an image link cannot smuggle in what a text link rejects
+	if (!onlyImage || !href || !isAllowedUri(href)) return null;
 
 	return { href, target: anchor.getAttribute('target') || null, rel: anchor.getAttribute('rel') || null };
 }
@@ -95,7 +89,7 @@ export const CustomImage = Image.extend({
 				(attrs) =>
 				({ commands }) => {
 					// same guard as parsing, so the drawer cannot store what a load would drop
-					if (!isAllowedHref(attrs.href)) return false;
+					if (!isAllowedUri(attrs.href)) return false;
 					return commands.updateAttributes(this.name, attrs);
 				},
 			unsetImageLink:
