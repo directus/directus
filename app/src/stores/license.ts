@@ -76,7 +76,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const isCore = computed(() => info.value?.source === null);
 
-	const wasDowngraded = computed(() => info.value?.downgrade_reason != null);
+	const downgradeReason = computed(() => (isCore.value ? (info.value?.invalid_reason ?? null) : null));
+	const warningReason = computed(() => (isCore.value ? null : (info.value?.invalid_reason ?? null)));
 
 	const customPermissionRulesEnabled = computed(() => isEntitlementEnabled('custom_permission_rules_enabled'));
 
@@ -246,7 +247,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		isLocked,
 		isCoreGrace,
 		isCore,
-		wasDowngraded,
+		downgradeReason,
+		warningReason,
 		customPermissionRulesEnabled,
 		isLicensed,
 		customLLMEnabled,

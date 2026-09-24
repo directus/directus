@@ -8,7 +8,7 @@ import { useUserStore } from '@/stores/user';
 
 const userStore = useUserStore();
 const licenseStore = useLicenseStore();
-const { info, pendingResolution, wasDowngraded, isLocked, isCoreGrace } = storeToRefs(licenseStore);
+const { info, pendingResolution, downgradeReason, isLocked, isCoreGrace } = storeToRefs(licenseStore);
 
 const cookies = useCookies(['license-resolution-acknowledged']);
 
@@ -26,7 +26,7 @@ const isGracePrompt = computed(
 );
 
 // Downgrade acknowledgement clears server-side after resolve()
-const isDowngradePrompt = computed(() => wasDowngraded.value && !isLocked.value);
+const isDowngradePrompt = computed(() => downgradeReason.value !== null && !isLocked.value);
 
 const open = computed({
 	get: () => {

@@ -8,11 +8,10 @@ import { isInCoreGracePeriod } from './is-in-core-grace-period.js';
 export async function computeLicenseStatus(license: Directus.License | null): Promise<LicenseStatus> {
 	const entitlementManager = getEntitlementManager().fork(license?.entitlements ?? null);
 
-	if (!license) {
-		const isWithinLimits = await entitlementManager.checkAll();
+	const isWithinLimits = await entitlementManager.checkAll();
 
+	if (!license) {
 		// The core upgrade grace period allowes one to bypasses limit checks
-		// Ideally enough time to obtain a license
 		const isWithinCoreGracePeriod = await isInCoreGracePeriod();
 		if (isWithinLimits === false && isWithinCoreGracePeriod) return 'grace';
 
@@ -21,15 +20,21 @@ export async function computeLicenseStatus(license: Directus.License | null): Pr
 		return 'active';
 	}
 
-	const isWithinLimits = await entitlementManager.checkAll();
 	if (isWithinLimits === false) return 'locked';
 
 	// current time in seconds
 	const now = Math.floor(Date.now() / 1000);
 	const expires = license.meta.expires_at ?? license.meta.renews_at ?? -1;
+	const grace = license.meta.grace_period;
 
 	if (expires === -1 || now < expires) return 'active';
-	if (expires < now && expires + license.meta.grace_period > now) return 'grace';
+	if (grace === -1 || grace + expires > now) return 'grace';
 
-	throw new Error('License is expired beyond grace period');
+	/**
+	 * Past expiry and grace period.
+	 *
+	 * The manager caches the license and downgrades it eventually, keep reporting 'active'
+	 * until that downgrade lands rather than leave it in broken state
+	 */
+	return 'active';
 }

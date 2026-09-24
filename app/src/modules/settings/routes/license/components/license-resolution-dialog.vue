@@ -45,7 +45,7 @@ const { t } = useI18n();
 const router = useRouter();
 
 const licenseStore = useLicenseStore();
-const { info, pendingResolution } = storeToRefs(licenseStore);
+const { info, pendingResolution, downgradeReason } = storeToRefs(licenseStore);
 
 const userStore = useUserStore();
 
@@ -58,7 +58,7 @@ const scope = computed<ResolveScope>(() => {
 	if (info.value.status === 'locked') return 'locked';
 
 	// Downgraded to core (within limits): informational acknowledgement.
-	if (info.value.downgrade_reason != null) return 'no_resolution';
+	if (downgradeReason.value !== null) return 'no_resolution';
 
 	return 'manual';
 });
@@ -72,15 +72,25 @@ const graceCountdown = computed<{ days: number; date: string } | null>(() => {
 	return { days, date };
 });
 
-type TitleKey = ResolveScope | InvalidLicenseStatus;
+type TranslationKey = ResolveScope | InvalidLicenseStatus;
 
 const title = computed<string>(() => {
-	const reason = info.value?.downgrade_reason;
-	const key: TitleKey = reason && (scope.value === 'locked' || scope.value === 'no_resolution') ? reason : scope.value;
+	const reason = downgradeReason.value;
+
+	const key: TranslationKey =
+		reason && (scope.value === 'locked' || scope.value === 'no_resolution') ? reason : scope.value;
+
 	return t(`licensing.resolve_title_${key}`);
 });
 
-const noticeMessage = computed(() => t(`licensing.resolve_notice_${scope.value}`));
+const noticeMessage = computed<string>(() => {
+	const reason = downgradeReason.value;
+
+	// A locked project keeps its scope notice
+	const key: TranslationKey = reason && scope.value === 'no_resolution' ? reason : scope.value;
+
+	return t(`licensing.resolve_notice_${key}`);
+});
 
 const severity = computed<'warning' | 'danger'>(() => {
 	return scope.value === 'grace' || scope.value === 'no_resolution' ? 'warning' : 'danger';
