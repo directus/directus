@@ -117,7 +117,19 @@ watch(stringValue, () => {
 	if (props.type === 'json' && codemirror?.getValue() === props.value) return;
 
 	if (codemirror?.getValue() !== stringValue.value) {
+		// A full setValue resets the cursor and scroll position, so an auto-format that only
+		// changed indentation still throws the user back to the top. Keep the selection when
+		// the editor already has focus, which is when the reset is disruptive.
+		const hasFocus = codemirror.hasFocus();
+		const cursor = hasFocus ? codemirror.getCursor() : null;
+		const scrollTop = codemirror.getScrollInfo().top;
+
 		codemirror?.setValue(stringValue.value || '');
+
+		if (cursor) {
+			codemirror.setCursor(cursor);
+			codemirror.scrollTo(null, scrollTop);
+		}
 	}
 });
 
