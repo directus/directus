@@ -1291,6 +1291,50 @@ vi.mocked(useBus).mockReturnValue(testBus.bus as any);
 
 ---
 
+### lock.ts
+
+Provides an in-memory stand-in for the lock kv that refuses a held key, the way redlock does with `retryCount: 0`. Use
+it to drive who wins an election, and what happens when a holder's lease runs out.
+
+#### `createMockLock()`
+
+**Returns:** `{ lock, abandon, hold, isHeld, fail }`
+
+- `lock` — a `usingLock` spy that runs the callback while holding the key, handing it the lease's abort signal
+- `abandon(key)` — frees the key as if the holder's lease had expired, aborting the signal it was given
+- `hold(key)` — occupies the key as if another instance held it
+- `isHeld(key)` — whether the key is currently held
+- `fail()` — makes every subsequent `usingLock` throw
+
+```typescript
+vi.mock('../lock/index.js');
+
+const testLock = createMockLock();
+vi.mocked(useLock).mockReturnValue(testLock.lock as any);
+```
+
+---
+
+### logger.ts
+
+Provides a logger with every level stubbed. Prefer it over a partial `{ warn: vi.fn() }`, which fails with "is not a
+function" the moment the code under test logs at another level.
+
+#### `createMockLogger()`
+
+**Returns:** `{ fatal, error, warn, info, debug, trace, child }` — all spies; `child` returns the same logger
+
+```typescript
+vi.mock('../logger/index.js');
+
+const logger = createMockLogger();
+vi.mocked(useLogger).mockReturnValue(logger as any);
+
+expect(logger.warn).toHaveBeenCalledWith('...');
+```
+
+---
+
 ### store.ts
 
 Provides a `useStore` mock backed by an in-memory map, with the critical section serialized the way the real store's
