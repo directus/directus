@@ -12,7 +12,6 @@ type UsableLink = {
 	linkDrawerOpen: Ref<boolean>;
 	linkSelection: Ref<LinkSelection>;
 	isEditingLink: Ref<boolean>;
-	/** The drawer targets a selected image (link stored on the node, no display text) rather than text. */
 	isImageLink: Ref<boolean>;
 	isLinkSaveable: ComputedRef<boolean>;
 	openLinkDrawer: () => void;
@@ -55,8 +54,7 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 		linkDrawerOpen.value = true;
 		isImageLink.value = editor.value.isActive('image');
 
-		// a selected image: the link lives on the node (extensions/image.ts) and its tooltip is the
-		// image's own title
+		// the tooltip of a linked image is the image's own title
 		if (isImageLink.value) {
 			const attrs = editor.value.getAttributes('image');
 			isEditingLink.value = Boolean(attrs.href);

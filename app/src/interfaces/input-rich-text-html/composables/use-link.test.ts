@@ -191,7 +191,6 @@ test('unlink removes the link mark from the link under the cursor', () => {
 	expect(html).toContain('hello');
 });
 
-// image links live on the image node (extensions/image.ts), not on the Link mark
 describe('image link', () => {
 	const IMAGE = '<img src="/assets/abc" alt="a">';
 	const LINKED_IMAGE = `<a href="https://directus.io" target="_blank" rel="noopener noreferrer nofollow">${IMAGE}</a>`;

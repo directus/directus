@@ -25,7 +25,6 @@ declare module '@tiptap/core' {
 	}
 }
 
-/** True when the selection is on an image that carries a link. */
 export function isImageLinkActive(editor: Editor): boolean {
 	return editor.isActive('image') && Boolean(editor.getAttributes('image').href);
 }

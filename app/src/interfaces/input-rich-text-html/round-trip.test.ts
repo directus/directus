@@ -276,8 +276,6 @@ describe('round-trip: image', () => {
 		expect(out).toContain('height="80"');
 	});
 
-	// the link lives on the image node (href/target/rel attributes) because the Link mark cannot
-	// wrap a block node; these must survive unchanged or the normalization warning locks the editor
 	const LINKED: Record<string, string> = {
 		'linked image': '<a href="https://directus.io"><img src="/assets/abc" alt="a"></a>',
 		'linked image opening in a new tab':

@@ -168,9 +168,7 @@ const editor = useEditor({
 			return false;
 		},
 		handleDOMEvents: {
-			// `handleClick` receives the mouseup event, whose preventDefault cannot stop navigation. A
-			// linked image's outer `<a>` is a contenteditable="false" leaf, so the browser would follow it
-			// on a plain click; text links inside editable content never navigate.
+			// handleClick fires on mouseup, too late to preventDefault; the browser would follow a linked image's `<a>`
 			click: (view, event) => {
 				if (!view.editable || event.button !== 0) return false;
 				const link = (event.target as HTMLElement | null)?.closest('a');
