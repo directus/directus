@@ -24,3 +24,11 @@ fields:
   - field: user_created
     special:
       - user-created
+  - field: folder
+    width: half
+    readonly: true
+    special:
+      - m2o
+    display: related-values
+    display_options:
+      template: '{{ name }}'

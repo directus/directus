@@ -1,571 +1,345 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useBus } from '../bus/index.js';
+import { useLock } from '../lock/index.js';
 import { useLogger } from '../logger/index.js';
-import { runExclusive, waitForBusMessage, withTimeout } from './run-exclusive.js';
-import { useStore } from './store.js';
+import { withResolvers } from '../test-utils/async.js';
+import { createMockBus } from '../test-utils/bus.js';
+import { createMockLock } from '../test-utils/lock.js';
+import { createMockLogger } from '../test-utils/logger.js';
+import { inflight, runExclusive } from './run-exclusive.js';
 
 vi.mock('../bus/index.js');
+vi.mock('../lock/index.js');
 vi.mock('../logger/index.js');
-vi.mock('./store.js');
 
-const CHANNEL = 'directus:exclusive:key:bus';
+const CHANNEL = 'exclusive:key';
 
-const HEARTBEAT_INTERVAL = 3333;
+let testBus: ReturnType<typeof createMockBus>;
+let testLock: ReturnType<typeof createMockLock>;
+let logger: ReturnType<typeof createMockLogger>;
 
-/**
- * A promise with its settle functions exposed.
- *
- * Used to drive the tests off explicit signals rather than elapsed time, so nothing
- * depends on how fast the machine running them happens to be.
- */
-function deferred<T = void>() {
-	let resolve!: (value: T) => void;
-	let reject!: (error: unknown) => void;
+beforeEach(() => {
+	vi.useFakeTimers();
 
-	const promise = new Promise<T>((res, rej) => {
-		resolve = res;
-		reject = rej;
-	});
+	testBus = createMockBus();
+	testLock = createMockLock();
+	logger = createMockLogger();
 
-	return { promise, resolve, reject };
-}
+	vi.mocked(useBus).mockReturnValue(testBus.bus as any);
+	vi.mocked(useLock).mockReturnValue(testLock.lock as any);
+	vi.mocked(useLogger).mockReturnValue(logger as any);
+});
 
-/** In-memory bus, mirroring the synchronous delivery of `BusLocal` */
-function createTestBus() {
-	const handlers = new Map<string, Set<(payload: any) => void>>();
+afterEach(() => {
+	vi.useRealTimers();
+	vi.clearAllMocks();
+	inflight.clear();
+});
 
-	/** Lets a test act while the leader is publishing, and hold it there by returning a promise */
-	let onPublish: (() => void | Promise<void>) | undefined;
+async function startLeader(options?: Parameters<typeof runExclusive>[2]) {
+	const running = withResolvers();
+	const fn = withResolvers<string>();
 
-	return {
-		bus: {
-			publish: vi.fn(async (channel: string, payload: unknown) => {
-				handlers.get(channel)?.forEach((handler) => handler(payload));
-				await onPublish?.();
-			}),
-			subscribe: vi.fn(async (channel: string, handler: (payload: any) => void) => {
-				const set = handlers.get(channel) ?? new Set();
-				set.add(handler);
-				handlers.set(channel, set);
-			}),
-			unsubscribe: vi.fn(async (channel: string, handler: (payload: any) => void) => {
-				handlers.get(channel)?.delete(handler);
-			}),
-		},
-		subscriberCount: (channel: string) => handlers.get(channel)?.size ?? 0,
-		setOnPublish: (callback: (() => void | Promise<void>) | undefined) => (onPublish = callback),
-	};
-}
-
-/**
- * In-memory store shared across invocations, with a serialized critical section.
- */
-function createTestStore() {
-	const state = new Map<string, unknown>();
-	const ops: string[] = [];
-
-	let queue: Promise<unknown> = Promise.resolve();
-	let shouldFail = false;
-	let settled = 0;
-	let waiters: { count: number; resolve: () => void }[] = [];
-
-	function recordSettled() {
-		settled++;
-
-		waiters = waiters.filter((waiter) => {
-			if (settled < waiter.count) return true;
-
-			waiter.resolve();
-
-			return false;
-		});
-	}
-
-	const store = vi.fn((callback: (store: any) => Promise<unknown>) => {
-		const run = () => {
-			if (shouldFail) throw new Error('store unavailable');
-
-			return callback({
-				has: async (key: string) => state.has(key),
-				get: async (key: string) => {
-					ops.push(`get:${key}`);
-					return state.get(key);
-				},
-				set: async (key: string, value: unknown) => {
-					ops.push(`set:${key}`);
-					state.set(key, value);
-				},
-				delete: async (key: string) => {
-					ops.push(`delete:${key}`);
-					state.delete(key);
-				},
-			});
-		};
-
-		const result = queue.then(run, run);
-
-		queue = result.catch(() => {});
-		result.then(recordSettled, recordSettled);
-
-		return result;
-	});
-
-	return {
-		store,
-		state,
-		ops,
-		/**
-		 * Resolves once `count` store operations have settled.
-		 */
-		whenSettled: (count: number) => {
-			if (settled >= count) return Promise.resolve();
-
-			const waiter = deferred();
-			waiters.push({ count, resolve: waiter.resolve });
-
-			return waiter.promise;
-		},
-		fail: () => (shouldFail = true),
-	};
-}
-
-describe('runExclusive', () => {
-	let testBus: ReturnType<typeof createTestBus>;
-	let testStore: ReturnType<typeof createTestStore>;
-	let logger: { warn: ReturnType<typeof vi.fn> };
-
-	beforeEach(() => {
-		vi.useFakeTimers();
-
-		testBus = createTestBus();
-		testStore = createTestStore();
-		logger = { warn: vi.fn() };
-
-		vi.mocked(useBus).mockReturnValue(testBus.bus as any);
-		vi.mocked(useStore).mockReturnValue(testStore.store as any);
-		vi.mocked(useLogger).mockReturnValue(logger as any);
-	});
-
-	afterEach(() => {
-		vi.useRealTimers();
-		vi.clearAllMocks();
-	});
-
-	async function startLeader() {
-		const running = deferred();
-		const fn = deferred<string>();
-
-		const leader = runExclusive('key', () => {
+	const leader = runExclusive(
+		'key',
+		() => {
 			running.resolve();
 			return fn.promise;
-		});
+		},
+		options,
+	);
 
-		await running.promise;
+	await running.promise;
 
-		return { leader, finish: fn.resolve, fail: fn.reject };
-	}
+	return { leader, finish: fn.resolve, fail: fn.reject };
+}
 
-	test('should run fn and report itself as the leader when uncontended', async () => {
+async function startFollower(options?: Parameters<typeof runExclusive>[2]) {
+	testLock.hold('key');
+
+	const fn = vi.fn().mockResolvedValue('own');
+	const follower = runExclusive('key', fn, options);
+
+	await vi.waitFor(() => expect(testLock.lock.usingLock).toHaveBeenCalled());
+
+	return { follower, fn };
+}
+
+function failRelease() {
+	testLock.lock.usingLock.mockImplementationOnce(async (_key, callback) => {
+		await callback(new AbortController().signal);
+		throw new Error('release failed');
+	});
+}
+
+describe('leader', () => {
+	test('should run fn and report itself as the leader on win', async () => {
 		const fn = vi.fn().mockResolvedValue('result');
 
 		await expect(runExclusive('key', fn)).resolves.toEqual({ result: 'result', leader: true });
 		expect(fn).toHaveBeenCalledTimes(1);
+		expect(testLock.isHeld('key')).toBe(false);
 	});
 
-	test('should run fn once for concurrent callers and share the result', async () => {
-		const running = deferred();
-		const finish = deferred<string>();
-
-		const fn = vi.fn(() => {
-			running.resolve();
-			return finish.promise;
-		});
-
-		const outcomes = Promise.all(Array.from({ length: 5 }, () => runExclusive('key', fn)));
-
-		await running.promise;
-
-		// All five have elected, so the leader can finish without any of them arriving late
-		await testStore.whenSettled(5);
-		finish.resolve('result');
-
-		await expect(outcomes).resolves.toEqual([
-			{ result: 'result', leader: true },
-			{ result: 'result', leader: false },
-			{ result: 'result', leader: false },
-			{ result: 'result', leader: false },
-			{ result: 'result', leader: false },
-		]);
-
-		expect(fn).toHaveBeenCalledTimes(1);
-	});
-
-	test('should not run fn in a follower', async () => {
-		const { leader, finish } = await startLeader();
-
-		const followerFn = vi.fn().mockResolvedValue('other');
-		const follower = runExclusive('key', followerFn);
-
-		await testStore.whenSettled(2);
-		finish('result');
-
-		await expect(leader).resolves.toEqual({ result: 'result', leader: true });
-		await expect(follower).resolves.toEqual({ result: 'result', leader: false });
-		expect(followerFn).not.toHaveBeenCalled();
-	});
-
-	test('should reject both the leader and its followers when fn keeps failing', async () => {
-		const { leader, fail } = await startLeader();
-
-		const follower = runExclusive('key', vi.fn(), { maxAttempts: 1 });
-
-		await testStore.whenSettled(2);
-		fail(new Error('boom'));
-
-		await expect(leader).rejects.toThrow('boom');
-		await expect(follower).rejects.toThrow('boom');
-	});
-
-	test('should retry fn up to maxAttempts', async () => {
-		const fn = vi.fn().mockRejectedValueOnce(new Error('boom')).mockResolvedValue('result');
-
-		await expect(runExclusive('key', fn, { maxAttempts: 3 })).resolves.toEqual({
-			result: 'result',
-			leader: true,
-		});
-
-		expect(fn).toHaveBeenCalledTimes(2);
-	});
-
-	test('should stop retrying fn at maxAttempts', async () => {
-		const fn = vi.fn().mockRejectedValue(new Error('boom'));
-
-		await expect(runExclusive('key', fn, { maxAttempts: 2 })).rejects.toThrow('boom');
-		expect(fn).toHaveBeenCalledTimes(2);
-	});
-
-	test('should release the lease so a later invocation can lead again', async () => {
-		await runExclusive('key', async () => 'first');
-
-		expect(testStore.state.has('leader')).toBe(false);
-
-		const fn = vi.fn().mockResolvedValue('second');
-
-		await expect(runExclusive('key', fn)).resolves.toEqual({ result: 'second', leader: true });
-		expect(fn).toHaveBeenCalledTimes(1);
-	});
-
-	test('should release the lease when fn fails', async () => {
-		const fn = vi.fn().mockRejectedValue(new Error('boom'));
-
-		await expect(runExclusive('key', fn, { maxAttempts: 1 })).rejects.toThrow('boom');
-		expect(testStore.state.has('leader')).toBe(false);
-	});
-
-	test('should lead, not wait, when arriving between the release and the publish', async () => {
-		const fn = vi.fn().mockResolvedValue('result');
-		const arrival = deferred<unknown>();
-
-		// Hold the leader inside publish so the arriving caller elects mid-publish. The lease
-		// is already released by then, so it has to lead rather than wait for a message that
-		// has been handed to subscribers already.
-		testBus.setOnPublish(async () => {
-			testBus.setOnPublish(undefined);
-			arrival.resolve(runExclusive('key', fn));
-
-			// The leader's own election and release account for the first two
-			await testStore.whenSettled(3);
-		});
-
-		await expect(runExclusive('key', fn)).resolves.toEqual({ result: 'result', leader: true });
-		await expect(arrival.promise).resolves.toEqual({ result: 'result', leader: true });
-		expect(fn).toHaveBeenCalledTimes(2);
-	});
-
-	test('should unsubscribe when the election fails', async () => {
-		testStore.fail();
-
-		await expect(runExclusive('key', vi.fn())).rejects.toThrow('store unavailable');
-
-		// The bus is a process-wide singleton, so a stray handler would outlive the call
-		expect(testBus.subscriberCount(CHANNEL)).toBe(0);
-	});
-
-	test('should fail the leader when the result cannot be published', async () => {
-		testBus.bus.publish.mockRejectedValue(new Error('publish unavailable'));
-
-		// Followers never re-elect, so nobody gets the result and the run has failed
-		await expect(runExclusive('key', async () => 'result')).rejects.toThrow('publish unavailable');
-	});
-
-	test('should release the lease when the result cannot be published', async () => {
-		testBus.bus.publish.mockRejectedValue(new Error('publish unavailable'));
-
-		await expect(runExclusive('key', async () => 'result')).rejects.toThrow('publish unavailable');
-		expect(testStore.state.has('leader')).toBe(false);
-	});
-
-	test('should unsubscribe the leader before running fn', async () => {
-		const { leader, finish } = await startLeader();
-
-		expect(testBus.subscriberCount(CHANNEL)).toBe(0);
-
-		finish('result');
-		await leader;
-
-		expect(testBus.subscriberCount(CHANNEL)).toBe(0);
-	});
-
-	test('should unsubscribe a follower that times out waiting for the leader', async () => {
-		const { leader, finish } = await startLeader();
-
-		const follower = runExclusive('key', vi.fn(), { timeout: 1000 });
-		await testStore.whenSettled(2);
-
-		expect(testBus.subscriberCount(CHANNEL)).toBe(1);
-
-		const timedOut = expect(follower).rejects.toThrow('timeout');
-		await vi.advanceTimersByTimeAsync(1000);
-		await timedOut;
-
-		expect(testBus.subscriberCount(CHANNEL)).toBe(0);
-
-		finish('result');
-		await expect(leader).resolves.toEqual({ result: 'result', leader: true });
-	});
-
-	test('should reject the leader when fn finishes after the timeout', async () => {
-		const running = deferred();
-		const fn = deferred<string>();
-
-		const leader = runExclusive(
-			'key',
-			() => {
-				running.resolve();
-				return fn.promise;
-			},
-			{ timeout: 1000 },
-		);
-
-		await running.promise;
-
-		await vi.advanceTimersByTimeAsync(1001);
-		fn.resolve('result');
-
-		await expect(leader).rejects.toThrow('timeout');
-	});
-
-	test('should hand a leader that outran the timeout to its followers as a failure', async () => {
-		const running = deferred();
-		const fn = deferred<string>();
-
-		const leader = runExclusive(
-			'key',
-			() => {
-				running.resolve();
-				return fn.promise;
-			},
-			{ timeout: 1000 },
-		);
-
-		await running.promise;
-
-		// Long enough for the leader to outrun its timeout, short enough for the follower to still wait
-		const follower = runExclusive('key', vi.fn(), { timeout: 5000 });
-		await testStore.whenSettled(2);
-
-		await vi.advanceTimersByTimeAsync(1001);
-		fn.resolve('result');
-
-		await expect(leader).rejects.toThrow('timeout');
-		await expect(follower).rejects.toThrow('timeout');
-	});
-
-	test('should not retry fn once the timeout has passed', async () => {
-		const fn = vi.fn(async () => {
-			await new Promise((resolve) => setTimeout(resolve, 1001));
+	test('should reject the leader when fn throws before it returns a promise', async () => {
+		const throwing = () => {
 			throw new Error('failed');
-		});
+		};
 
-		const leader = runExclusive('key', fn, { timeout: 1000, maxAttempts: 3 });
-
-		const timedOut = expect(leader).rejects.toThrow('timeout');
-		await vi.advanceTimersByTimeAsync(1001);
-		await timedOut;
-
-		expect(fn).toHaveBeenCalledTimes(1);
+		await expect(runExclusive('key', throwing)).rejects.toThrow('failed');
 	});
 
-	test('should publish the result even when releasing the lease fails', async () => {
+	test('should publish the outcome for followers on other instances', async () => {
+		await runExclusive('key', () => 'result');
+
+		expect(testBus.bus.publish).toHaveBeenCalledWith(CHANNEL, { ok: true, result: 'result' });
+	});
+
+	test.each([
+		{ thrown: new Error('failed'), published: 'failed' },
+		{ thrown: 'not an error', published: 'not an error' },
+	])(
+		'should publish a failure as its message, rejecting the leader with what fn threw',
+		async ({ thrown, published }) => {
+			await expect(runExclusive('key', () => Promise.reject(thrown))).rejects.toBe(thrown);
+
+			expect(testBus.bus.publish).toHaveBeenCalledWith(CHANNEL, { ok: false, error: published });
+		},
+	);
+
+	test('should keep, but not publish, a result finished after losing the lock', async () => {
 		const { leader, finish } = await startLeader();
 
-		const follower = runExclusive('key', vi.fn());
-		await testStore.whenSettled(2);
-
-		testStore.fail();
+		testLock.abandon('key');
 		finish('result');
 
 		await expect(leader).resolves.toEqual({ result: 'result', leader: true });
+		expect(testBus.bus.publish).not.toHaveBeenCalled();
+		expect(logger.warn).toHaveBeenCalledOnce();
+	});
+});
+
+describe('callers in this process', () => {
+	test('should run fn once for concurrent callers in this process and share the result', async () => {
+		const { promise, resolve } = withResolvers<string>();
+		const fn = vi.fn(() => promise);
+
+		const leader = runExclusive('key', fn);
+		const joined = runExclusive('key', fn);
+
+		resolve('result');
+
+		await expect(leader).resolves.toEqual({ result: 'result', leader: true });
+		await expect(joined).resolves.toEqual({ result: 'result', leader: false });
+		expect(fn).toHaveBeenCalledTimes(1);
+		expect(testLock.lock.usingLock).toHaveBeenCalledTimes(1);
+	});
+
+	test('should reject the leader and the callers joined to it with the error fn threw', async () => {
+		const { leader, fail } = await startLeader();
+		const joined = runExclusive('key', vi.fn());
+
+		fail(new Error('failed'));
+
+		await expect(leader).rejects.toThrow('failed');
+		await expect(joined).rejects.toThrow('failed');
+		expect(testLock.isHeld('key')).toBe(false);
+		expect(testLock.lock.usingLock).toHaveBeenCalledTimes(1);
+	});
+
+	test.each([
+		{ previous: 'finished', fn: () => 'first' },
+		{ previous: 'failed', fn: () => Promise.reject(new Error('first')) },
+	])('should start a new run once the previous one has $previous', async ({ fn }) => {
+		await runExclusive('key', fn).catch(() => {});
+
+		await expect(runExclusive('key', () => 'second')).resolves.toEqual({ result: 'second', leader: true });
+	});
+
+	test('should run different keys independently', async () => {
+		const { leader, finish } = await startLeader();
+		await expect(runExclusive('other', () => 'other')).resolves.toEqual({ result: 'other', leader: true });
+
+		finish('result');
+
+		await expect(leader).resolves.toEqual({ result: 'result', leader: true });
+	});
+});
+
+describe('followers', () => {
+	test('should resolve a follower with the outcome another instance published', async () => {
+		const { follower, fn } = await startFollower();
+
+		await testBus.bus.publish(CHANNEL, { ok: true, result: 'result' });
+
 		await expect(follower).resolves.toEqual({ result: 'result', leader: false });
-
-		expect(logger.warn).toHaveBeenCalledWith(expect.any(Error), 'Could not release exclusive lease');
+		expect(fn).not.toHaveBeenCalled();
+		expect(testLock.lock.usingLock).toHaveBeenCalledTimes(1);
 	});
 
-	describe('heartbeat', () => {
-		test('should renew the lease while fn is running', async () => {
-			const { leader, finish } = await startLeader();
+	test('should reject a follower with the failure another instance published', async () => {
+		const { follower } = await startFollower();
 
-			expect(testStore.ops).toEqual(['get:leader', 'set:leader']);
+		await testBus.bus.publish(CHANNEL, { ok: false, error: 'failed' });
 
-			await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL);
-
-			expect(testStore.ops).toEqual(['get:leader', 'set:leader', 'get:leader', 'set:leader']);
-
-			finish('result');
-			await expect(leader).resolves.toEqual({ result: 'result', leader: true });
-		});
-
-		test('should not renew a lease it no longer owns', async () => {
-			const { leader, finish } = await startLeader();
-
-			// Simulate the lease expiring and being taken over by another invocation
-			testStore.state.set('leader', 'someone-else');
-
-			await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL);
-
-			expect(testStore.state.get('leader')).toBe('someone-else');
-
-			finish('result');
-			await expect(leader).resolves.toEqual({ result: 'result', leader: true });
-
-			// The takeover must survive this invocation finishing
-			expect(testStore.state.get('leader')).toBe('someone-else');
-		});
-
-		test('should stop renewing once fn has settled', async () => {
-			await runExclusive('key', async () => 'result');
-
-			testStore.store.mockClear();
-			await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL * 3);
-
-			expect(testStore.store).not.toHaveBeenCalled();
-		});
-
-		test('should log, not reject, when renewing the lease fails', async () => {
-			const rejections: unknown[] = [];
-			const onUnhandled = (error: unknown) => rejections.push(error);
-			process.on('unhandledRejection', onUnhandled);
-
-			try {
-				const { leader, finish } = await startLeader();
-
-				testStore.fail();
-				await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL);
-
-				finish('result');
-				await expect(leader).resolves.toEqual({ result: 'result', leader: true });
-
-				// Give any stray rejection a turn to surface
-				await vi.advanceTimersByTimeAsync(0);
-
-				expect(rejections).toEqual([]);
-
-				expect(logger.warn).toHaveBeenCalledWith(expect.any(Error), 'Could not renew exclusive lease');
-			} finally {
-				process.off('unhandledRejection', onUnhandled);
-			}
-		});
-	});
-});
-
-describe('waitForBusMessage', () => {
-	let testBus: ReturnType<typeof createTestBus>;
-
-	beforeEach(() => {
-		vi.useFakeTimers();
-
-		testBus = createTestBus();
-		vi.mocked(useBus).mockReturnValue(testBus.bus as any);
+		await expect(follower).rejects.toThrow('failed');
 	});
 
-	afterEach(() => {
-		vi.useRealTimers();
-		vi.clearAllMocks();
+	test('should keep waiting while the leader still holds the lock', async () => {
+		const { follower, fn } = await startFollower({ lease: 1000 });
+
+		await vi.advanceTimersByTimeAsync(5000);
+		expect(fn).not.toHaveBeenCalled();
+
+		await testBus.bus.publish(CHANNEL, { ok: true, result: 'result' });
+		await expect(follower).resolves.toEqual({ result: 'result', leader: false });
 	});
 
-	test('should subscribe before returning', async () => {
-		await waitForBusMessage('channel');
+	test('should take over from a leader that went away once its lease runs out', async () => {
+		const { follower, fn } = await startFollower({ lease: 1000 });
 
-		expect(testBus.bus.subscribe).toHaveBeenCalledWith('channel', expect.any(Function));
-		expect(testBus.subscriberCount('channel')).toBe(1);
-	});
-
-	test('should resolve with the next message and unsubscribe', async () => {
-		const { done } = await waitForBusMessage<string>('channel');
-
-		await testBus.bus.publish('channel', 'payload');
-
-		await expect(done()).resolves.toBe('payload');
-		expect(testBus.subscriberCount('channel')).toBe(0);
-	});
-
-	test('should reject and unsubscribe on timeout', async () => {
-		const { done } = await waitForBusMessage('channel', { timeout: 1000 });
-
-		const timedOut = expect(done()).rejects.toThrow('timeout');
+		testLock.abandon('key');
 		await vi.advanceTimersByTimeAsync(1000);
-		await timedOut;
 
-		expect(testBus.subscriberCount('channel')).toBe(0);
+		await expect(follower).resolves.toEqual({ result: 'own', leader: true });
+		expect(fn).toHaveBeenCalledTimes(1);
+		expect(logger.warn).toHaveBeenCalledOnce();
 	});
 
-	test('should unsubscribe on cancel', async () => {
-		const { cancel } = await waitForBusMessage('channel');
+	test('should follow, not run fn, when an outcome lands while it takes the lock', async () => {
+		const fn = vi.fn();
 
-		await cancel();
+		testLock.lock.usingLock.mockImplementationOnce(async (_key, callback) => {
+			await testBus.bus.publish(CHANNEL, { ok: true, result: 'result' });
+			return callback(new AbortController().signal);
+		});
 
-		expect(testBus.subscriberCount('channel')).toBe(0);
+		await expect(runExclusive('key', fn)).resolves.toEqual({ result: 'result', leader: false });
+		expect(fn).not.toHaveBeenCalled();
 	});
 
-	test('should ignore an unsubscribe failure', async () => {
-		testBus.bus.unsubscribe.mockRejectedValue(new Error('boom'));
+	test('should leave no listener or timer behind once the run settles', async () => {
+		const { follower } = await startFollower();
 
-		const { cancel } = await waitForBusMessage('channel');
+		await testBus.bus.publish(CHANNEL, { ok: true, result: 'result' });
+		await follower;
 
-		await expect(cancel()).resolves.toBeUndefined();
-	});
-});
-
-describe('withTimeout', () => {
-	beforeEach(() => {
-		vi.useFakeTimers();
-	});
-
-	afterEach(() => {
-		vi.useRealTimers();
-	});
-
-	test('should resolve when the promise settles first', async () => {
-		await expect(withTimeout(Promise.resolve('result'), 1000)).resolves.toBe('result');
-	});
-
-	test('should reject with the original error when the promise rejects first', async () => {
-		await expect(withTimeout(Promise.reject(new Error('boom')), 1000)).rejects.toThrow('boom');
-	});
-
-	test('should reject when the timeout expires first', async () => {
-		const timedOut = expect(withTimeout(new Promise(() => {}), 1000)).rejects.toThrow('timeout');
-
-		await vi.advanceTimersByTimeAsync(1000);
-		await timedOut;
-	});
-
-	test('should clear the timer once the promise settles', async () => {
-		const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
-
-		await withTimeout(Promise.resolve('result'), 1000);
-
-		expect(clearTimeoutSpy).toHaveBeenCalled();
+		expect(testBus.subscriberCount(CHANNEL)).toBe(0);
 		expect(vi.getTimerCount()).toBe(0);
+	});
+});
+
+describe('timeouts', () => {
+	test('should reject a follower that ran out of time, then stop retrying for leader and listening', async () => {
+		const { follower } = await startFollower({ timeout: 3000 });
+		const settled = expect(follower).rejects.toThrow('timed out after 3000ms');
+
+		await vi.advanceTimersByTimeAsync(3000);
+		await settled;
+
+		expect(testBus.subscriberCount(CHANNEL)).toBe(0);
+
+		const attempts = testLock.lock.usingLock.mock.calls.length;
+
+		await vi.advanceTimersByTimeAsync(60_000);
+
+		expect(testLock.lock.usingLock).toHaveBeenCalledTimes(attempts);
+		expect(vi.getTimerCount()).toBe(0);
+	});
+
+	test('should fail a leader and its followers that outran the timeout and release lock', async () => {
+		const { leader } = await startLeader({ timeout: 3000 });
+		const led = expect(leader).rejects.toThrow('timed out after 3000ms');
+
+		const joined = expect(runExclusive('key', vi.fn(), { timeout: 60_000 })).rejects.toThrow('timed out after 3000ms');
+
+		await vi.advanceTimersByTimeAsync(3000);
+		await led;
+		await joined;
+
+		expect(testLock.isHeld('key')).toBe(false);
+		expect(testLock.lock.usingLock).toHaveBeenCalledTimes(1);
+	});
+
+	test('should time out, rather than run fn, when the lock cannot be taken', async () => {
+		testLock.fail();
+
+		const fn = vi.fn();
+		const settled = expect(runExclusive('key', fn, { timeout: 3000 })).rejects.toThrow('timed out after 3000ms');
+
+		await vi.advanceTimersByTimeAsync(3000);
+		await settled;
+
+		expect(fn).not.toHaveBeenCalled();
+	});
+
+	test('should reject by its timeout, and not run fn, when the bus never answers', async () => {
+		testBus.bus.subscribe.mockReturnValueOnce(new Promise(() => {}));
+
+		const fn = vi.fn();
+		const settled = expect(runExclusive('key', fn, { timeout: 1000 })).rejects.toThrow('timed out after 1000ms');
+
+		await vi.advanceTimersByTimeAsync(1000);
+		await settled;
+
+		expect(fn).not.toHaveBeenCalled();
+	});
+
+	test('should reject by its timeout, and not run fn, when the lock is only granted after it', async () => {
+		const granted = withResolvers();
+
+		testLock.lock.usingLock.mockImplementationOnce(async (_key, callback) => {
+			await granted.promise;
+			return callback(new AbortController().signal);
+		});
+
+		const fn = vi.fn();
+		const settled = expect(runExclusive('key', fn, { timeout: 1000 })).rejects.toThrow('timed out after 1000ms');
+
+		await vi.advanceTimersByTimeAsync(1000);
+		await settled;
+
+		granted.resolve();
+		await vi.advanceTimersByTimeAsync(0);
+
+		expect(fn).not.toHaveBeenCalled();
+		expect(testBus.bus.publish).not.toHaveBeenCalled();
+	});
+});
+
+describe('bus and lock failures', () => {
+	test('should reject, and not run fn, when it cannot listen for the outcome', async () => {
+		testBus.bus.subscribe.mockRejectedValueOnce(new Error('bus unavailable'));
+
+		const fn = vi.fn();
+
+		await expect(runExclusive('key', fn)).rejects.toThrow('bus unavailable');
+		expect(fn).not.toHaveBeenCalled();
+	});
+
+	test('should keep its result when it cannot be published', async () => {
+		testBus.bus.publish.mockRejectedValueOnce(new Error('bus unavailable'));
+
+		await expect(runExclusive('key', () => 'result')).resolves.toEqual({ result: 'result', leader: true });
+		expect(logger.warn).toHaveBeenCalled();
+	});
+
+	test('should log, not fail, when the bus listener cannot be released', async () => {
+		testBus.bus.unsubscribe.mockRejectedValueOnce(new Error('bus unavailable'));
+
+		await expect(runExclusive('key', () => 'result')).resolves.toEqual({ result: 'result', leader: true });
+		expect(logger.warn).toHaveBeenCalled();
+	});
+
+	test('should keep its result when the lock cannot be released', async () => {
+		failRelease();
+
+		await expect(runExclusive('key', () => 'result')).resolves.toEqual({ result: 'result', leader: true });
+	});
+
+	test('should keep its error when the lock cannot be released', async () => {
+		failRelease();
+
+		await expect(runExclusive('key', () => Promise.reject(new Error('failed')))).rejects.toThrow('failed');
 	});
 });

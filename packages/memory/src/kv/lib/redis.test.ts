@@ -368,6 +368,15 @@ describe('usingLock', () => {
 		kv['redlock'].using = vi.fn();
 
 		await kv.usingLock(mockKey, callback);
-		expect(kv['redlock'].using).toHaveBeenCalledWith([mockNamespacedKey], 5000, callback);
+		expect(kv['redlock'].using).toHaveBeenCalledWith([mockNamespacedKey], 5000, {}, callback);
+	});
+
+	test('Passes the given settings on to redlock', async () => {
+		const callback = vi.fn();
+		kv['redlock'].using = vi.fn();
+
+		await kv.usingLock(mockKey, callback, { retryCount: 3 });
+
+		expect(kv['redlock'].using).toHaveBeenCalledWith([mockNamespacedKey], 5000, { retryCount: 3 }, callback);
 	});
 });

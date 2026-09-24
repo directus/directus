@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "39.1.0",
+	"version": "39.2.1",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -229,7 +229,6 @@
 		"@types/proxy-addr": "catalog:",
 		"@types/qs": "catalog:",
 		"@types/sanitize-html": "catalog:",
-		"@types/stream-json": "catalog:",
 		"@types/wellknown": "catalog:",
 		"@types/ws": "catalog:",
 		"@vitest/coverage-v8": "catalog:",

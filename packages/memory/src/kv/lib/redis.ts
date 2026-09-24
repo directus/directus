@@ -11,6 +11,7 @@ import {
 } from '../../utils/index.js';
 import type { ExtendedRedis, KvConfigRedis } from '../index.js';
 import type { Kv } from '../types/class.js';
+import type { LockSettings } from '../types/lock.js';
 
 export const SET_MAX_SCRIPT = `
   local key = KEYS[1]
@@ -149,8 +150,15 @@ export class KvRedis implements Kv {
 		};
 	}
 
-	async usingLock<T>(key: string, callback: () => Promise<T>): Promise<T> {
-		return this.redlock.using([withNamespace(key, this.namespace)], Math.floor(this.lockTimeout), callback);
+	async usingLock<T>(key: string, callback: (signal: AbortSignal) => Promise<T>, settings?: LockSettings): Promise<T> {
+		const { duration, ...rest } = settings ?? {};
+
+		return this.redlock.using(
+			[withNamespace(key, this.namespace)],
+			Math.floor(duration ?? this.lockTimeout),
+			rest,
+			callback,
+		);
 	}
 
 	async clear(): Promise<void> {

@@ -44,7 +44,7 @@ import { computeLicenseStatus } from './utils/compute-license-status.js';
 import { handleLicenseError, isLicenseInactive, isLicenseInvalid, toReason } from './utils/errors.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
-import { useRPC } from './utils/use-rpc.js';
+import { type ExtractMethods, useRPC } from './utils/use-rpc.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -81,7 +81,7 @@ export class LicenseManager {
 	private source: LicenseSource = null;
 	/** True for the duration of {@link initialize}, while the management guards do not apply */
 	private initializing = false;
-	private rpc = useRPC<Pick<LicenseManager, 'syncState'>>(this, LICENSE_CHANNEL);
+	private rpc: ExtractMethods<Pick<LicenseManager, 'syncState'>> | null = null;
 	private store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
 
 	/**
@@ -89,6 +89,9 @@ export class LicenseManager {
 	 */
 	public async initialize(): Promise<void> {
 		this.initializing = true;
+
+		// Listen before the boot run, so a broadcast from whoever leads it cannot arrive unheard
+		this.rpc ??= await useRPC<Pick<LicenseManager, 'syncState'>>(this, LICENSE_CHANNEL);
 
 		// initialize the manager if not done yet
 		getEntitlementManager();
@@ -761,7 +764,7 @@ export class LicenseManager {
 		// clear permission cache when the license entitlements change
 		await clearPermissionCache();
 		await this.syncState({ leader: true });
-		await this.rpc.syncState();
+		await this.rpc?.syncState();
 	}
 
 	/**

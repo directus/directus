@@ -1,217 +1,208 @@
-import { randomUUID } from 'node:crypto';
-import { useEnv } from '@directus/env';
 import { useBus } from '../bus/index.js';
+import { useLock } from '../lock/index.js';
 import { useLogger } from '../logger/index.js';
-import { useStore } from './store.js';
+import { withTimeout } from './with-timeout.js';
 
-type Outcome<T> = { ok: true; result: T } | { ok: false; error: string };
+type Outcome<T, E = string> = { ok: true; result: T } | { ok: false; error: E };
+
+export type RunExclusiveResult<T> = { result: T; leader: boolean };
+
+export type RunExclusiveOptions = {
+	/**
+	 * How long to wait for a result before giving up, in ms.
+	 * Taken from the caller that starts the run; callers joining it in this process share its deadline.
+	 * @default 300_000
+	 */
+	timeout?: number;
+	/** How long the lock lasts without a refresh, in ms @default 15_000 */
+	lease?: number;
+};
+
+/** Runs in flight in this process, so concurrent local callers share one election */
+export const inflight = new Map<string, Promise<RunExclusiveResult<unknown>>>();
 
 /**
- * Runs `fn` exclusively for the given key.
+ * Runs `fn` once across all instances for the given key.
+ * One caller takes the lock and executes `fn`, the rest wait for its outcome.
  *
- * If another invocation already holds the lease, waits for its result
- * instead of running `fn`.
- *
- * CAVEAT: Exclusivity requires Redis, for local no exclusivity is currently guaranteed.
+ * Not a guarantee: a leader that loses its lock mid-run is replaced while its `fn` carries on,
+ * so `fn` should be idempotent
  *
  * @param key Key identifying the exclusive operation.
- * @param fn Function to execute once the lease is acquired.
+ * @param fn Function to execute.
  * @param options Execution options.
- * @param options.timeout Maximum time to wait for the current leader's result.
- * @param options.maxAttempts Maximum number of attempts when `fn` fails.
- * @returns The operation result and whether this invocation was the leader.
+ * @returns The outcome of `fn` and whether this invocation executed it.
  */
-export async function runExclusive<T>(
+export function runExclusive<T>(
 	key: string,
 	fn: () => Promise<T> | T,
-	options?: { timeout?: number; maxAttempts?: number },
-) {
-	const env = useEnv();
+	options?: RunExclusiveOptions,
+): Promise<RunExclusiveResult<T>> {
+	const existing = inflight.get(key) as Promise<RunExclusiveResult<T>> | undefined;
 
-	const namespace = (env['REDIS_EXCLUSIVE_NAMESPACE'] as string) ?? 'directus:exclusive';
-	const busChannel = `${namespace}:${key}:bus`;
+	if (existing) return existing.then(({ result }) => ({ result, leader: false }));
+
+	// unified timeout for caller and worker
 	const timeout = options?.timeout ?? 300_000;
-	const maxAttempts = options?.maxAttempts ?? 1;
+	const expired = `Exclusive run "${key}" timed out after ${timeout}ms`;
 
-	// Renew often enough to tolerate a missed heartbeat without letting
-	// a healthy lease expire during normal operation.
-	const ttl = 10_000;
-	const lease = Math.floor(ttl / 3);
+	const instance = new ExclusiveRun(key, fn, { timeout, lease: options?.lease ?? 15_000, expired });
 
-	const uid = randomUUID();
-	const bus = useBus();
+	const pending = withTimeout(instance.run(), timeout, expired).finally(() => inflight.delete(key));
 
-	const store = useStore<{ leader: string }>(`${namespace}:${key}`, { ttl });
+	inflight.set(key, pending);
 
-	// Subscribe before acquiring the lease so followers can't miss the result.
-	const { done, cancel } = await waitForBusMessage<Outcome<T>>(busChannel, { timeout });
+	return pending;
+}
 
-	let isLeader: boolean;
+class ExclusiveRun<T> {
+	private readonly bus = useBus();
+	private readonly lock = useLock();
+	private readonly logger = useLogger();
 
-	try {
-		isLeader = await store(async (store) => {
-			const leader = await store.get('leader');
+	/** Bus channel the leader publishes the outcome on */
+	private readonly channel: string;
+	/** When the run should stop, as a timestamp in ms */
+	private readonly deadline: number;
+	/** How long the lock lasts without a refresh, in ms */
+	private readonly lease: number;
+	/** Error message for a run that hit its deadline */
+	private readonly expired: string;
 
-			// Someone else holds the lease
-			if (leader) return false;
+	/** Whether an outcome has already arrived on the bus */
+	private received = false;
 
-			await store.set('leader', uid);
-
-			return true;
-		});
-	} catch (error) {
-		await cancel();
-		throw error;
+	constructor(
+		private readonly key: string,
+		private readonly fn: () => Promise<T> | T,
+		options: Required<RunExclusiveOptions> & { expired: string },
+	) {
+		this.channel = `exclusive:${key}`;
+		this.deadline = Date.now() + options.timeout;
+		this.lease = options.lease;
+		this.expired = options.expired;
 	}
 
-	if (!isLeader) {
-		const outcome = await done();
+	/**
+	 * Attempt to run the function as leader, if already running, wait for the result
+	 */
+	async run(): Promise<RunExclusiveResult<T>> {
+		let followed = false;
 
-		if (!outcome.ok) {
-			throw new Error(outcome.error);
-		}
+		// TODO: Replace with Promise.withResolvers once supported
+		let deliver!: (outcome: Outcome<T>) => void;
 
-		return { result: outcome.result, leader: false };
-	}
+		const published = new Promise<Outcome<T>>((resolve) => (deliver = resolve));
 
-	await cancel();
+		const onMessage = (outcome: Outcome<T>) => {
+			this.received = true;
+			deliver(outcome);
+		};
 
-	const { cancel: cancelHeartbeat } = heartbeat(store, uid, lease);
-
-	let outcome: Outcome<T> = { ok: false, error: 'unknown' };
-	const startedAt = Date.now();
-
-	try {
-		for (let attempt = 0; attempt < maxAttempts; attempt++) {
-			try {
-				outcome = { ok: true, result: await fn() };
-			} catch (error) {
-				outcome = { ok: false, error: error instanceof Error ? error.message : String(error) };
-			}
-
-			// Followers stopped waiting, so there is no one left to hand a result to and no point
-			// attempting again
-			if (Date.now() - startedAt > timeout) {
-				outcome = { ok: false, error: 'timeout' };
-				break;
-			}
-
-			if (outcome.ok) break;
-		}
-	} finally {
-		// Release heartbeat & leader before publishing, so no window of indication that still a leader
-		cancelHeartbeat();
+		// Listen before trying lock so an outcome published in between is caught
+		await this.bus.subscribe(this.channel, onMessage);
 
 		try {
-			await store(async (store) => {
-				const leader = await store.get('leader');
+			while (true) {
+				const led = await this.tryLead();
 
-				// Only release if we still own the lease
-				if (leader === uid) {
-					await store.delete('leader');
+				if (led) {
+					if (followed) {
+						this.logger.warn(`Exclusive run "${this.key}" taken over: no outcome from previous leader`);
+					}
+
+					if (!led.ok) throw led.error;
+
+					return { result: led.result, leader: true };
 				}
-			});
-		} catch (error) {
-			useLogger().warn(error, `Could not release exclusive lease`);
-		}
-	}
 
-	await bus.publish(busChannel, outcome);
+				followed = true;
 
-	if (!outcome.ok) {
-		throw new Error(outcome.error);
-	}
+				// As a follower, wait for rety (lease ending) or message from leader
+				const outcome = await withTimeout(published, Math.min(this.lease, this.remaining())).catch(() => {
+					// ignore, timeout means nothing published this lease, not a failure
+				});
 
-	return { result: outcome.result, leader: true };
-}
+				if (outcome) {
+					if (!outcome.ok) throw new Error(outcome.error);
 
-/**
- * Subscribes to a bus channel and waits for the next message.
- *
- * The subscription is automatically removed when the message is received,
- * the wait times out, or `cancel()` is called.
- *
- * @param channel Bus channel to subscribe to.
- * @param options Wait options.
- * @param options.timeout Maximum time to wait for a message.
- * @returns Controls for awaiting or cancelling the subscription.
- */
-export async function waitForBusMessage<T>(channel: string, options?: { timeout?: number }) {
-	const bus = useBus();
-	const timeout = options?.timeout ?? 10_000;
+					return { result: outcome.result, leader: false };
+				}
 
-	let resolveMessage: (payload: T) => void;
-
-	const onMessage = (payload: T) => {
-		resolveMessage(payload);
-	};
-
-	const messagePromise = new Promise<T>((res) => (resolveMessage = res));
-
-	// Subscribe before returning so the caller cannot miss a message.
-	await bus.subscribe(channel, onMessage);
-
-	async function done() {
-		try {
-			return await withTimeout(messagePromise, timeout);
-		} finally {
-			// Always remove the subscription, including on timeout.
-			await cancel();
-		}
-	}
-
-	async function cancel() {
-		await bus.unsubscribe(channel, onMessage).catch(() => {});
-	}
-
-	return {
-		done,
-		cancel,
-	};
-}
-
-/**
- * Resolves with `promise` if it settles before the timeout.
- *
- * Rejects with a timeout error if `ms` elapses first.
- *
- * @param promise Promise to wait for.
- * @param ms Maximum time to wait, in milliseconds.
- * @returns The result of `promise`.
- * @throws {Error} If the timeout expires before `promise` settles.
- */
-export async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-	let rejectTimeout: (error: Error) => void;
-	const timeout = new Promise<never>((_, reject) => (rejectTimeout = reject));
-
-	const timer = setTimeout(() => rejectTimeout(new Error('timeout')), ms);
-
-	try {
-		return await Promise.race([promise, timeout]);
-	} finally {
-		// The timer is no longer needed once the promise settles.
-		clearTimeout(timer);
-	}
-}
-
-function heartbeat(store: ReturnType<typeof useStore<{ leader: string }>>, uid: string, interval: number) {
-	const logger = useLogger();
-
-	const timer = setInterval(() => {
-		store(async (store) => {
-			const leader = await store.get('leader');
-
-			if (leader === uid) {
-				await store.set('leader', uid);
+				if (this.remaining() <= 0) throw new Error(this.expired);
 			}
-		}).catch((error) => {
-			logger.warn(error, `Could not renew exclusive lease`);
-		});
-	}, interval);
-
-	function cancel() {
-		clearInterval(timer);
+		} finally {
+			await this.bus.unsubscribe(this.channel, onMessage).catch((error) => {
+				this.logger.warn(error, `Exclusive run "${this.key}" could not unsubscribe`);
+			});
+		}
 	}
 
-	return { cancel };
+	/**
+	 * Attempt to lead (i.e. execute `fn`)
+	 *
+	 * @returns the outcome of `fn`, or `undefined` when someone else holds the lock
+	 */
+	private async tryLead(): Promise<Outcome<T, unknown> | undefined> {
+		let outcome: Outcome<T, unknown> | undefined;
+
+		try {
+			await this.lock.usingLock(
+				this.key,
+				async (signal) => {
+					// An outcome landed while taking the lock, or the caller already gave up, so there is nothing left to run
+					if (this.received || this.remaining() <= 0) return;
+
+					outcome = await this.runFn(signal);
+				},
+				{
+					duration: this.lease,
+					// Try once, wait for outcome or lease end instead of retrying/requing lock while held
+					retryCount: 0,
+				},
+			);
+		} catch (error) {
+			// Either the lock is held elsewhere or it could not be released, not a failure state
+			this.logger.debug(error, `Exclusive run "${this.key}" did not get the lock`);
+		}
+
+		return outcome;
+	}
+
+	/**
+	 * Runs `fn` while holding the lock, and shares its outcome if still leading
+	 *
+	 * @returns the outcome of `fn`
+	 */
+	private async runFn(signal: AbortSignal): Promise<Outcome<T, unknown>> {
+		let outcome: Outcome<T, unknown>;
+
+		try {
+			const result = await withTimeout(this.fn(), this.remaining(), this.expired);
+			outcome = { ok: true, result };
+		} catch (error) {
+			outcome = { ok: false, error };
+		}
+
+		// Error only on lost instance, takeover will ensure the rest continue to run
+		if (signal.aborted) {
+			this.logger.warn(`Exclusive run "${this.key}" lost its lock before finishing`);
+			return outcome;
+		}
+
+		const message: Outcome<T> = outcome.ok
+			? outcome
+			: { ok: false, error: outcome.error instanceof Error ? outcome.error.message : String(outcome.error) };
+
+		await this.bus.publish(this.channel, message).catch((error) => {
+			this.logger.warn(error, `Exclusive run "${this.key}" could not publish its outcome`);
+		});
+
+		return outcome;
+	}
+
+	/** Time left before the deadline, in ms */
+	private remaining(): number {
+		return this.deadline - Date.now();
+	}
 }

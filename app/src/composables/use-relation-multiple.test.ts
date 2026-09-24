@@ -1,5 +1,5 @@
 import { flushPromises, mount } from '@vue/test-utils';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { afterEach, describe, expect, MockInstance, test, vi } from 'vitest';
 import { computed, defineComponent, h, ref, toRefs } from 'vue';
 import { RelationM2A } from './use-relation-m2a';
@@ -149,6 +149,24 @@ const TestComponent = defineComponent({
 	render: () => h('div'),
 });
 
+const LaggingTestComponent = defineComponent({
+	props: ['value', 'relation', 'id'], // eslint-disable-line vue/require-prop-types
+	emits: ['update:value'],
+	setup(props, { emit }) {
+		const value = computed({
+			get: () => props.value,
+			set: (newValue) => emit('update:value', newValue),
+		});
+
+		const { relation, id } = toRefs(props);
+
+		const query = computed<RelationQueryMultiple>(() => ({ limit: 15, page: 1, fields: ['id'] }));
+
+		return { ...useRelationMultiple(value, query, relation, id, ref(null)) };
+	},
+	render: () => h('div'),
+});
+
 /*
 Facility                 Worker
 ┌─────────────┐          ┌─────────────────┐
@@ -266,6 +284,36 @@ describe('test o2m relation', () => {
 			],
 			delete: [],
 		});
+	});
+
+	test('updating an item twice before the display items refresh keeps a single update entry', async () => {
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		wrapper.vm.update({ id: 2, name: 'test2-edited' });
+		wrapper.vm.update({ id: 2, name: 'test2-edited again' });
+
+		await flushPromises();
+
+		expect(wrapper.vm.value).toEqual({
+			create: [],
+			update: [{ id: 2, name: 'test2-edited again' }],
+			delete: [],
+		});
+
+		const changes = cloneDeep(workerData);
+
+		changes.splice(1, 1, {
+			id: 2,
+			name: 'test2-edited again',
+			facility: 1,
+			$edits: 0,
+			$type: 'updated',
+			$index: 0,
+		});
+
+		expect(wrapper.vm.displayItems).toEqual(changes);
 	});
 
 	test('removing an item', async () => {
@@ -1032,6 +1080,7 @@ describe('refresh signal', () => {
 
 	test('refetches the rows when the provided signal is bumped', async () => {
 		const sdkSpy = vi.spyOn(sdk, 'request');
+		sdkSpy.mockClear();
 
 		const wrapper = mount(RefreshSignalProvider, {
 			props: { relation: relationO2M, id: 1 },
@@ -1051,6 +1100,7 @@ describe('refresh signal', () => {
 
 	test('does not refetch while the signal is unchanged', async () => {
 		const sdkSpy = vi.spyOn(sdk, 'request');
+		sdkSpy.mockClear();
 
 		mount(RefreshSignalProvider, {
 			props: { relation: relationO2M, id: 1 },
@@ -1060,5 +1110,49 @@ describe('refresh signal', () => {
 		await flushPromises();
 
 		expect(countFetches(sdkSpy)).toBe(1);
+	});
+});
+
+describe('value round-trip lag', () => {
+	test('a created item shows in displayItems before the value comes back through props', async () => {
+		const wrapper = mount(LaggingTestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems).toHaveLength(workerData.length);
+
+		wrapper.vm.create({ name: 'draft' });
+
+		expect(wrapper.vm.displayItems).toContainEqual(
+			expect.objectContaining({ name: 'draft', $type: 'created', $index: 0 }),
+		);
+	});
+
+	test('editing a just-created item in the same tick keeps a single create entry', async () => {
+		const wrapper = mount(LaggingTestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems).toHaveLength(workerData.length);
+
+		wrapper.vm.create({ name: 'F' });
+
+		const created = wrapper.vm.displayItems.find((item: Record<string, any>) => item.$type === 'created');
+
+		wrapper.vm.update({ ...created, name: 'First line' });
+
+		const emitted = wrapper.emitted('update:value');
+
+		expect(emitted).toHaveLength(2);
+
+		expect(emitted?.at(-1)?.[0]).toEqual({
+			create: [{ name: 'First line' }],
+			update: [],
+			delete: [],
+		});
 	});
 });

@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import type { Field } from '@directus/types';
 import { computed, inject, ref } from 'vue';
 import VFieldTemplate from '@/components/v-field-template/v-field-template.vue';
 import VNotice from '@/components/v-notice.vue';
+import { useFakePreviewBaseUrlField } from '@/composables/use-fake-preview-base-url-field';
 import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
+import { useSettingsStore } from '@/stores/settings';
 
 const props = withDefaults(
 	defineProps<{
@@ -15,6 +18,7 @@ const props = withDefaults(
 		collectionName?: string;
 		fields?: FieldNode[];
 		injectVersionField?: boolean;
+		injectPreviewBaseUrlField?: boolean;
 		includeRelations?: boolean;
 	}>(),
 	{
@@ -27,6 +31,7 @@ defineEmits<{
 }>();
 
 const collectionsStore = useCollectionsStore();
+const settingsStore = useSettingsStore();
 
 const values = inject('values', ref<Record<string, any>>({}));
 
@@ -49,8 +54,18 @@ const collection = computed(() => {
 const versioningEnabled = computed(() => Boolean(values.value.versioning && props.injectVersionField));
 const { fakeVersionField } = useFakeVersionField(collection, versioningEnabled);
 
+const previewBaseUrlEnabled = computed(() =>
+	Boolean(props.injectPreviewBaseUrlField && settingsStore.settings?.preview_base_url),
+);
+
+const { fakePreviewBaseUrlField } = useFakePreviewBaseUrlField(collection, previewBaseUrlEnabled);
+
 const injectFields = computed(() => {
-	return fakeVersionField.value ? { fields: [fakeVersionField.value] } : null;
+	const fields = [fakeVersionField.value, fakePreviewBaseUrlField.value].filter(
+		(field): field is Field => field !== null,
+	);
+
+	return fields.length ? { fields } : null;
 });
 
 const { treeList, loadFieldRelations } = useFieldTree(collection, injectFields, () => true, props.includeRelations);
