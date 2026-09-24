@@ -96,24 +96,25 @@ export class LicenseManager {
 		// initialize the manager if not done yet
 		getEntitlementManager();
 
-		try {
-			await runExclusive('license-boot', async () => {
-				const envKey = env['LICENSE_KEY'] as string | undefined;
-				const envToken = env['LICENSE_TOKEN'] as string | undefined;
-
-				const settingsService = new SettingsService({ schema: await getSchema() });
-
-				const { license_key: dbKey, license_token: dbToken } = await settingsService.readSingleton({
-					fields: ['license_key', 'license_token'],
-				});
-
-				const action = computeBootAction({ envKey, envToken, dbKey, dbToken });
-
-				await this.executeBootAction(action);
-			});
-		} finally {
+		const { leader } = await runExclusive('license-boot', () => this.boot()).finally(() => {
 			this.initializing = false;
-		}
+		});
+
+		// Sync manually for followers. Depending on leader broadcast would have `initialize` resolve before the sync completes
+		if (!leader) await this.syncState();
+	}
+
+	private async boot(): Promise<void> {
+		const envKey = env['LICENSE_KEY'] as string | undefined;
+		const envToken = env['LICENSE_TOKEN'] as string | undefined;
+
+		const settingsService = new SettingsService({ schema: await getSchema() });
+
+		const { license_key: dbKey, license_token: dbToken } = await settingsService.readSingleton({
+			fields: ['license_key', 'license_token'],
+		});
+
+		await this.executeBootAction(computeBootAction({ envKey, envToken, dbKey, dbToken }));
 	}
 
 	/** Run a boot action */
@@ -763,8 +764,11 @@ export class LicenseManager {
 
 		// clear permission cache when the license entitlements change
 		await clearPermissionCache();
-		await this.syncState({ leader: true });
-		await this.rpc?.syncState();
+		await this.syncState({ local: true });
+
+		await this.rpc?.syncState().catch((error) => {
+			logger.warn(error, 'Could not broadcast the license change');
+		});
 	}
 
 	/**
@@ -772,8 +776,13 @@ export class LicenseManager {
 	 *
 	 * Every instance derives its own, so the RPC only has to signal that something changed rather
 	 * than carry one instance's view of it.
+	 *
+	 * @param options.local Whether the change was made on this instance
 	 */
-	public async syncState(options?: { leader?: boolean }) {
+	public async syncState(options?: { local?: boolean }) {
+		// While booting, only the boot action's own sync applies; followers sync themselves once the run is over
+		if (this.initializing && !options?.local) return;
+
 		const { source: keySource, key } = await getLicenseKey();
 		const { source: tokenSource, token } = await getLicenseToken();
 
@@ -786,9 +795,9 @@ export class LicenseManager {
 			const verified = await this.verify(token);
 
 			if (!verified) {
-				logger.warn('The stored license token could not be verified, switching to core tier.');
+				logger.warn('The stored license token could not be verified, switching to core tier');
 
-				if (options?.leader === true) {
+				if (options?.local) {
 					await this.store(async (store) => {
 						return store.set('invalidReason', 'verification');
 					}).catch((error) => {
