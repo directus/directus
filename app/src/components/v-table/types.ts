@@ -7,10 +7,20 @@ export type HeaderRaw = {
 	align?: Alignment;
 	sortable?: boolean;
 	width?: number | null;
+	flex?: number | null;
 	[key: string]: any;
 };
 
-export type Header = Required<HeaderRaw>;
+export type Header = {
+	text: string;
+	value: string;
+	description: string | null;
+	align: Alignment;
+	sortable: boolean;
+	width: number | null;
+	flex?: number | null;
+	[key: string]: any;
+};
 
 export type Item = {
 	[key: string]: any;
