@@ -377,11 +377,6 @@ describe('usingLock', () => {
 
 		await kv.usingLock(mockKey, callback, { retryCount: 3 });
 
-		expect(kv['redlock'].using).toHaveBeenCalledWith(
-			[mockNamespacedKey],
-			5000,
-			{ retryCount: 3 },
-			callback,
-		);
+		expect(kv['redlock'].using).toHaveBeenCalledWith([mockNamespacedKey], 5000, { retryCount: 3 }, callback);
 	});
 });
