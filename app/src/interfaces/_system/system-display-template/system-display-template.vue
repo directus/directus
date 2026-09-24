@@ -7,6 +7,7 @@ import { useFakePreviewBaseUrlField } from '@/composables/use-fake-preview-base-
 import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
+import { useSettingsStore } from '@/stores/settings';
 
 const props = withDefaults(
 	defineProps<{
@@ -30,6 +31,7 @@ defineEmits<{
 }>();
 
 const collectionsStore = useCollectionsStore();
+const settingsStore = useSettingsStore();
 
 const values = inject('values', ref<Record<string, any>>({}));
 
@@ -52,7 +54,10 @@ const collection = computed(() => {
 const versioningEnabled = computed(() => Boolean(values.value.versioning && props.injectVersionField));
 const { fakeVersionField } = useFakeVersionField(collection, versioningEnabled);
 
-const previewBaseUrlEnabled = computed(() => Boolean(props.injectPreviewBaseUrlField));
+const previewBaseUrlEnabled = computed(() =>
+	Boolean(props.injectPreviewBaseUrlField && settingsStore.settings?.preview_base_url),
+);
+
 const { fakePreviewBaseUrlField } = useFakePreviewBaseUrlField(collection, previewBaseUrlEnabled);
 
 const injectFields = computed(() => {
