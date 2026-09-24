@@ -275,4 +275,34 @@ describe('round-trip: image', () => {
 		expect(out).toContain('width="100"');
 		expect(out).toContain('height="80"');
 	});
+
+	// the link lives on the image node (href/target/rel attributes) because the Link mark cannot
+	// wrap a block node; these must survive unchanged or the normalization warning locks the editor
+	const LINKED: Record<string, string> = {
+		'linked image': '<a href="https://directus.io"><img src="/assets/abc" alt="a"></a>',
+		'linked image opening in a new tab':
+			'<a href="https://directus.io" target="_blank" rel="noopener noreferrer"><img src="/assets/abc" alt="a"></a>',
+		'linked image inside a figure with a caption':
+			'<figure><a href="https://directus.io"><img src="/assets/abc" alt="a"></a><figcaption>cap</figcaption></figure>',
+		'text link next to a linked image':
+			'<p><a href="https://directus.io/text">link</a></p><a href="https://directus.io/img"><img src="/assets/abc" alt="a"></a>',
+		'linked image with preserved attributes':
+			'<a href="https://directus.io"><img class="hero" id="cover" data-lightbox="gallery" src="/assets/abc" alt="a"></a>',
+	};
+
+	test.each(Object.entries(LINKED))('%s survives round-trip unchanged', (_name, html) => {
+		expect(roundTrip(html)).toBe(html);
+	});
+
+	test('an image link with a script href keeps the image and drops the link', () => {
+		expect(roundTrip('<a href="javascript:alert(1)"><img src="/assets/abc" alt="a"></a>')).toBe(
+			'<img src="/assets/abc" alt="a">',
+		);
+	});
+
+	test('an anchor wrapping text and an image is still a text link', () => {
+		const out = roundTrip('<p><a href="https://directus.io">before<img src="/assets/abc" alt="a"></a></p>');
+
+		expect(out).toContain('<a href="https://directus.io">before</a>');
+	});
 });

@@ -7,7 +7,12 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
-defineProps<{ editing: boolean; saveable: boolean }>();
+defineProps<{
+	editing: boolean;
+	saveable: boolean;
+	/** The link targets a selected image, which has no display text to edit. */
+	imageLink?: boolean;
+}>();
 
 const emit = defineEmits<{ save: []; cancel: []; unlink: [] }>();
 
@@ -34,7 +39,7 @@ const selection = defineModel<LinkSelection>('linkSelection', { required: true }
 						@update:model-value="selection.url = $event || null"
 					/>
 				</div>
-				<div class="field full">
+				<div v-if="!imageLink" class="field full">
 					<div class="type-label">{{ $t('display_text') }}</div>
 					<VInput
 						:model-value="selection.displayText ?? undefined"

@@ -167,13 +167,25 @@ const editor = useEditor({
 
 			return false;
 		},
-		// Cmd/Ctrl+click opens links in a new tab (parity with TinyMCE)
-		handleClick: (_view, _pos, event) => {
-			if (event.button !== 0 || !(event.metaKey || event.ctrlKey)) return false;
-			const link = (event.target as HTMLElement | null)?.closest('a');
-			if (!link?.href) return false;
-			window.open(link.href, '_blank', 'noopener,noreferrer');
-			return true;
+		handleDOMEvents: {
+			// `handleClick` receives the mouseup event, whose preventDefault cannot stop navigation. A
+			// linked image's outer `<a>` is a contenteditable="false" leaf, so the browser would follow it
+			// on a plain click; text links inside editable content never navigate.
+			click: (view, event) => {
+				if (!view.editable || event.button !== 0) return false;
+				const link = (event.target as HTMLElement | null)?.closest('a');
+				if (!link?.href) return false;
+
+				event.preventDefault();
+
+				// Cmd/Ctrl+click opens links in a new tab (parity with TinyMCE)
+				if (event.metaKey || event.ctrlKey) {
+					window.open(link.href, '_blank', 'noopener,noreferrer');
+					return true;
+				}
+
+				return false;
+			},
 		},
 	},
 	onCreate: ({ editor }) => {
@@ -253,6 +265,7 @@ const {
 	linkDrawerOpen,
 	linkSelection,
 	isEditingLink,
+	isImageLink,
 	isLinkSaveable,
 	openLinkDrawer,
 	closeLinkDrawer,
@@ -401,6 +414,7 @@ onKeyStroke('Escape', () => {
 			v-model="linkDrawerOpen"
 			v-model:link-selection="linkSelection"
 			:editing="isEditingLink"
+			:image-link="isImageLink"
 			:saveable="isLinkSaveable"
 			@save="saveLink"
 			@unlink="unlink"
@@ -646,8 +660,10 @@ onKeyStroke('Escape', () => {
 	}
 
 	// `.range-selected` (RangeSelectedAtoms) covers selections that merely span the leaf, which
-	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image
-	:is(img, hr, .page-break):is(.ProseMirror-selectednode, .range-selected) {
+	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image.
+	// A linked image renders as `<a><img></a>`, so the class lands on the anchor, not the img
+	:is(img, hr, .page-break):is(.ProseMirror-selectednode, .range-selected),
+	a:is(.ProseMirror-selectednode, .range-selected) > img {
 		outline: 2px solid var(--theme--primary);
 	}
 
