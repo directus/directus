@@ -52,6 +52,7 @@ describe('Service / Files', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		resetEnvMock();
+		vi.mocked(useEnv).mockReset();
 	});
 
 	afterEach(() => {
@@ -365,6 +366,45 @@ describe('Service / Files', () => {
 				});
 
 				expect(mockStorage.location).toHaveBeenCalledWith('local');
+			});
+
+			describe('storage path validation', () => {
+				const extensionsEnv = {
+					STORAGE_LOCATIONS: 'local,extstore',
+					STORAGE_EXTSTORE_DRIVER: 'local',
+					STORAGE_EXTSTORE_ROOT: './extstore',
+					EXTENSIONS_LOCATION: 'extstore',
+				};
+
+				beforeEach(() => {
+					Object.assign(mockEnvOverrides, extensionsEnv);
+				});
+
+				afterEach(() => {
+					for (const key of Object.keys(extensionsEnv)) delete mockEnvOverrides[key];
+				});
+
+				test('should reject a replacement that points the existing filename_disk at the extensions location', async () => {
+					tracker.on
+						.select(
+							'select "folder", "filename_download", "filename_disk", "title", "description", "metadata", "storage" from "directus_files" where "id" = ?',
+						)
+						.response({ storage: 'local', filename_disk: 'extensions/evil/index.js' });
+
+					await expect(
+						service.uploadOne(
+							new PassThrough(),
+							{
+								storage: 'extstore',
+								type: 'text/javascript',
+								filename_download: 'index.js',
+							},
+							sample.id,
+						),
+					).rejects.toBeInstanceOf(ForbiddenError);
+
+					expect(mockDriver.write).not.toHaveBeenCalled();
+				});
 			});
 
 			describe('uploadOne - permanent filesystem errors', () => {
@@ -684,6 +724,52 @@ describe('Service / Files', () => {
 
 			expect(mockDriver.move).not.toHaveBeenCalled();
 			expect(mockDriver.delete).not.toHaveBeenCalled();
+		});
+
+		describe('storage path validation', () => {
+			const extensionsEnv = {
+				STORAGE_LOCATIONS: 'local,extstore',
+				STORAGE_EXTSTORE_DRIVER: 'local',
+				STORAGE_EXTSTORE_ROOT: './extstore',
+				EXTENSIONS_LOCATION: 'extstore',
+			};
+
+			beforeEach(() => {
+				Object.assign(mockEnvOverrides, extensionsEnv);
+
+				vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
+					{ id: 1, storage: 'extstore', filename_disk: 'old-file.jpg' },
+				]);
+			});
+
+			afterEach(() => {
+				for (const key of Object.keys(extensionsEnv)) delete mockEnvOverrides[key];
+			});
+
+			test('should validate against the storage location of the existing file', async () => {
+				// The rename happens on the location of the existing file, not on the default location
+				await service.updateMany([1], { filename_disk: 'extensions/evil/index.js' });
+
+				expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(
+					[1],
+					{ filename_disk: 'extensions/evil/index.js' },
+					expect.objectContaining({ preMutationError: expect.any(ForbiddenError) }),
+				);
+
+				expect(mockDriver.move).not.toHaveBeenCalled();
+			});
+
+			test('should validate against the storage location of the existing file when another one is provided', async () => {
+				await service.updateMany([1], { storage: 'local', filename_disk: 'extensions/evil/index.js' });
+
+				expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(
+					[1],
+					{ storage: 'local', filename_disk: 'extensions/evil/index.js' },
+					expect.objectContaining({ preMutationError: expect.any(ForbiddenError) }),
+				);
+
+				expect(mockDriver.move).not.toHaveBeenCalled();
+			});
 		});
 	});
 
