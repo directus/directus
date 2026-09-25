@@ -1,6 +1,8 @@
 import { type AnyExtension, Editor } from '@tiptap/vue-3';
 import { type Change, diffLines } from 'diff';
 import { editorExtensions } from '../extensions';
+import { ComparisonDiff } from '../extensions/comparison-diff';
+import { buildCustomFormats } from '../extensions/custom-formats';
 import { decodePageBreaks, encodePageBreaks } from '../extensions/page-break';
 import { formatHtml } from './format-html';
 
@@ -37,8 +39,41 @@ export function computeNormalizationDiff(code: string, extraExtensions: AnyExten
  * Same check for the stored field value: both sides are compared in the encoded (stored)
  * representation so the page-break marker ↔ element boundary cancels out instead of reading
  * as a change.
+ *
+ * Each miss builds a throwaway editor, and a comparison asks the same question about the same value
+ * repeatedly (per side, per rendered interface, per revision pick), so verdicts are cached against
+ * `schemaKey`. Without one, only the base schema is cached — dynamic custom format marks reuse names.
  */
-export function computeValueNormalizationDiff(value: string, extraExtensions: AnyExtension[] = []): Change[] | null {
+export function computeValueNormalizationDiff(
+	value: string,
+	extraExtensions: AnyExtension[] = [],
+	schemaKey?: string,
+): Change[] | null {
+	const key = schemaKey ?? (extraExtensions.length === 0 ? '' : null);
+
+	if (key === null) return valueNormalizationDiff(value, extraExtensions);
+
+	const cacheKey = `${key}\u0000${value}`;
+	if (verdictCache.has(cacheKey)) return verdictCache.get(cacheKey)!;
+
+	const verdict = valueNormalizationDiff(value, extraExtensions);
+
+	if (verdictCache.size >= VERDICT_CACHE_SIZE) verdictCache.delete(verdictCache.keys().next().value!);
+	verdictCache.set(cacheKey, verdict);
+
+	return verdict;
+}
+
+/** The schema the comparison view renders with, so its verdicts are shared with the interface. */
+export function comparisonSchema(customFormats: unknown): { extensions: AnyExtension[]; schemaKey: string } {
+	const { extensions, key } = buildCustomFormats(customFormats);
+	return { extensions: [...extensions, ComparisonDiff], schemaKey: `comparison\u0000${key}` };
+}
+
+const VERDICT_CACHE_SIZE = 24;
+const verdictCache = new Map<string, Change[] | null>();
+
+function valueNormalizationDiff(value: string, extraExtensions: AnyExtension[]): Change[] | null {
 	const decoded = decodePageBreaks(value);
 	return diffFormatted(encodePageBreaks(decoded), encodePageBreaks(roundTrip(decoded, extraExtensions)));
 }

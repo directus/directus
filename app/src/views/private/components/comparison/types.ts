@@ -47,6 +47,8 @@ export type NormalizedComparison = {
 export type ComparisonData = {
 	base: Record<string, any>;
 	incoming: Record<string, any>;
+	displayBase?: Record<string, any>;
+	displayIncoming?: Record<string, any>;
 	mainVersionMeta?: Pick<Activity, 'timestamp' | 'user'>;
 	selectableDeltas?: Revision[] | ContentVersion[];
 	revisionFields?: Set<string>;

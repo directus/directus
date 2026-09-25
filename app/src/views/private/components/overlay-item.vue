@@ -4,7 +4,7 @@ import { isSystemCollection } from '@directus/system-data';
 import { ContentVersion, Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { useElementSize } from '@vueuse/core';
-import { isEmpty, set, uniqBy } from 'lodash';
+import { isEmpty, set, uniqBy } from 'lodash-es';
 import { computed, type Ref, ref, toRefs, unref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -651,7 +651,12 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VSkeletonLoader v-if="loading || templateDataLoading" class="title-loader" type="text" />
 
 			<h1 v-else class="type-title">
-				<RenderTemplate :collection="templateCollection?.collection" :item="templateData" :template="template" />
+				<RenderTemplate
+					:collection="templateCollection?.collection"
+					:item="templateData"
+					:template="template"
+					show-collection-name
+				/>
 			</h1>
 		</template>
 

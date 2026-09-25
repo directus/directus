@@ -69,6 +69,7 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>, z.infer<typ
 	keywords: ['media', 'upload', 'import', 'asset metadata', 'attachments', 'documents'],
 	annotations: {
 		title: 'Directus - Files',
+		destructiveHint: true,
 	},
 	inputSchema: FilesInputSchema,
 	validateSchema: FilesValidateSchema,

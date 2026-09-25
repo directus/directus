@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { computed } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VSelect from '@/components/v-select/v-select.vue';

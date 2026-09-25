@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ContentVersion } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { buildAiTranslationDraft, isAiTranslateAvailable } from './ai-translation';
@@ -15,7 +15,6 @@ import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
-import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -64,7 +63,6 @@ const { relationInfo } = useRelationM2M(collection, field);
 const { locale } = useI18n();
 
 const fieldsStore = useFieldsStore();
-const licenseStore = useLicenseStore();
 const serverStore = useServerStore();
 const aiStore = useAiStore();
 
@@ -82,7 +80,7 @@ const aiTranslateAvailable = computed(() =>
 		availableModelCount: aiStore.models.length,
 		disabled: props.disabled,
 		nonEditable: props.nonEditable,
-		licenseEntitlement: licenseStore.aiTranslationsEnabled,
+		licenseEntitlement: serverStore.info.license?.entitlements.ai_translations_enabled as boolean,
 	}),
 );
 

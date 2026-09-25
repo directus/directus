@@ -57,11 +57,12 @@ const FoldersOutputSchema = z.object({
 export const folders = defineTool<z.infer<typeof FoldersValidateSchema>, z.infer<typeof FoldersOutputSchema>>({
 	name: 'folders',
 	description:
-		'Reads and changes Directus file folders. Use to organize files into folder hierarchies or inspect existing folder records.',
+		'Reads and changes Directus folders. Use to organize files or Flows into folder hierarchies or inspect existing folder records.',
 	instructions: requireText(resolve(__dirname, './prompt.md')),
-	keywords: ['directories', 'media folders', 'file organization', 'parent folder'],
+	keywords: ['directories', 'media folders', 'file organization', 'flow organization', 'parent folder'],
 	annotations: {
 		title: 'Directus - Folders',
+		destructiveHint: true,
 	},
 	inputSchema: FoldersInputSchema,
 	validateSchema: FoldersValidateSchema,

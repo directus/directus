@@ -65,6 +65,7 @@ export const relations = defineTool<z.infer<typeof RelationsValidateSchema>, z.i
 	keywords: ['relationships', 'foreign keys', 'm2o', 'o2m', 'm2m', 'm2a', 'junction'],
 	annotations: {
 		title: 'Directus - Relations',
+		destructiveHint: true,
 	},
 	inputSchema: RelationsInputSchema,
 	validateSchema: RelationsValidateSchema,
