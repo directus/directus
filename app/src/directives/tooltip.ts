@@ -37,7 +37,21 @@ export function resolveAlign(binding: DirectiveBinding): TooltipAlign {
 	return ALIGNS.find((a) => binding.modifiers[a]) ?? 'center';
 }
 
+const FOCUSABLE = ['button', 'a[href]', 'input', 'select', 'textarea', '[tabindex]'];
+
+const FOCUSABLE_SELECTOR = FOCUSABLE.join(', ');
+const FOCUSABLE_CHILD_SELECTOR = FOCUSABLE.map((selector) => `:scope > ${selector}`).join(', ');
+
+export function resolveTrigger(element: HTMLElement): HTMLElement {
+	if (element.matches(FOCUSABLE_SELECTOR)) {
+		return element;
+	}
+
+	return element.querySelector<HTMLElement>(FOCUSABLE_CHILD_SELECTOR) ?? element;
+}
+
 interface TooltipHandlers {
+	trigger: HTMLElement;
 	enter: () => void;
 	leave: () => void;
 	focus: () => void;
@@ -117,9 +131,10 @@ export function getGlobalTooltip() {
 
 const handlerMap = new WeakMap<HTMLElement, TooltipHandlers>();
 
-function beforeMount(element: HTMLElement, binding: DirectiveBinding): void {
+function mounted(element: HTMLElement, binding: DirectiveBinding): void {
 	if (!binding.value) return;
 
+	const trigger = resolveTrigger(element);
 	const virtualRef = { getBoundingClientRect: () => element.getBoundingClientRect() };
 	const { content, kbd } = resolveTooltipValue(binding.value);
 
@@ -142,18 +157,22 @@ function beforeMount(element: HTMLElement, binding: DirectiveBinding): void {
 	};
 
 	const focus = () => {
+		if (!trigger.matches(':focus-visible')) {
+			return;
+		}
+
 		openTooltip(buildPayload(binding.modifiers['instant'] ? 0 : 500), true);
 	};
 
 	const leave = closeTooltip;
 	const blur = closeTooltip;
 
-	handlerMap.set(element, { enter, leave, focus, blur });
+	handlerMap.set(element, { trigger, enter, leave, focus, blur });
 	element.addEventListener('mouseenter', enter);
 	element.addEventListener('mouseleave', leave);
-	element.addEventListener('focus', focus);
-	element.addEventListener('blur', blur);
-	element.setAttribute('aria-describedby', TOOLTIP_CONTENT_ID);
+	trigger.addEventListener('focus', focus);
+	trigger.addEventListener('blur', blur);
+	trigger.setAttribute('aria-describedby', TOOLTIP_CONTENT_ID);
 }
 
 function unmounted(element: HTMLElement): void {
@@ -162,23 +181,28 @@ function unmounted(element: HTMLElement): void {
 	if (handlers) {
 		element.removeEventListener('mouseenter', handlers.enter);
 		element.removeEventListener('mouseleave', handlers.leave);
-		element.removeEventListener('focus', handlers.focus);
-		element.removeEventListener('blur', handlers.blur);
+		handlers.trigger.removeEventListener('focus', handlers.focus);
+		handlers.trigger.removeEventListener('blur', handlers.blur);
 		handlerMap.delete(element);
-		element.removeAttribute('aria-describedby');
+		handlers.trigger.removeAttribute('aria-describedby');
 		closeTooltip();
 	}
 }
 
 const Tooltip: Directive = {
-	beforeMount,
+	mounted,
 	unmounted,
 	updated(element, binding) {
-		if (binding.value === binding.oldValue) return;
+		const handlers = handlerMap.get(element);
+
+		const triggerChanged = handlers !== undefined && resolveTrigger(element) !== handlers.trigger;
+
+		if (binding.value === binding.oldValue && !triggerChanged) return;
+
 		unmounted(element);
 
 		if (binding.value) {
-			beforeMount(element, binding);
+			mounted(element, binding);
 		}
 	},
 };
