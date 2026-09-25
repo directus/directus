@@ -16,9 +16,17 @@ import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-const props = defineProps<{
-	collection: string;
-}>();
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		accept?: string;
+		placeholder?: string;
+		importHandler?: (file: File) => Promise<boolean>;
+	}>(),
+	{
+		accept: 'text/csv, application/json',
+	},
+);
 
 const emit = defineEmits(['refresh', 'download']);
 
@@ -74,6 +82,18 @@ function useUpload() {
 		formData.append('file', file);
 
 		try {
+			if (props.importHandler) {
+				importing.value = true;
+				const imported = await props.importHandler(file);
+
+				if (imported) {
+					clearFileInput();
+					emit('refresh');
+				}
+
+				return;
+			}
+
 			await api.post(`/utils/import/${collection.value}`, formData, {
 				onUploadProgress: (progressEvent: AxiosProgressEvent) => {
 					const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total!);
@@ -131,16 +151,10 @@ function useUpload() {
 							</template>
 							<template #input>
 								<label v-tooltip="file && file.name" for="import-file" class="import-file-label">
-									<input
-										id="import-file"
-										ref="fileInput"
-										type="file"
-										accept="text/csv, application/json"
-										@change="onChange"
-									/>
+									<input id="import-file" ref="fileInput" type="file" :accept="accept" @change="onChange" />
 								</label>
 								<span class="import-file-text" :class="{ 'no-file': !file }">
-									{{ file ? file.name : $t('import_data_input_placeholder') }}
+									{{ file ? file.name : (placeholder ?? $t('import_data_input_placeholder')) }}
 								</span>
 							</template>
 							<template #append>

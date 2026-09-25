@@ -312,6 +312,10 @@ delete_folder_dialog:
   move_content: Move content one level up
   delete_content: Delete all content
   content_behavior: What should happen to the folder contents?
+delete_flow_folder_dialog:
+  content_behavior: What should happen to this folder's subfolders? Your Flows will not be deleted.
+  move_content: Delete this folder only
+  delete_content: Delete this folder and its subfolders
 validation_errors_notice: 'The following fields have invalid values:'
 validation_value_is_invalid: Value is invalid
 validationError:
@@ -626,6 +630,14 @@ import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
 import_data_validation_errors_notice: 'The following rows have invalid values:'
 import_data_error_row: 'Row {rows}{field}:'
+export_flow: Export Flow
+export_flows: Export Flows
+flow_import_input_placeholder: JSON...
+flow_import_success: Flow imported successfully.
+flow_import_failed: Couldn't import Flow
+flow_import_not_json: This file isn't valid JSON.
+flow_import_invalid_file: This file isn't a Flow export.
+flow_import_foreign_operation: This file contains an operation that belongs to a different Flow.
 snapshot:
   export: Export Schema
   download: Download Snapshot (JSON)
@@ -1077,6 +1089,7 @@ translations_display_template: Translations Display Template
 n_items_selected: 'No Items Selected | One Item Selected | {n} Items Selected'
 per_page: Per Page
 all_files: All Files
+all_flows: All Flows
 my_files: My Files
 recent_files: Recent Files
 create_folder: Create Folder
@@ -1129,6 +1142,7 @@ trigger_flow_success: Flow "{flow}" triggered successfully
 field_name_placeholder: Enter field name...
 field_key_placeholder: Enter field key...
 trigger: Trigger
+trigger_type: Trigger Type
 trigger_options: Trigger Options
 view_trigger: View Trigger
 create_trigger: Create Trigger
@@ -1622,7 +1636,6 @@ no_oauth_clients: 'No OAuth clients have been registered yet.'
 revoke_client: 'Revoke Client'
 revoke_client_confirm:
   'Are you sure you want to revoke this client? All associated tokens and sessions will be deleted.'
-settings_flows: Flows
 settings_system_logs: System Logs
 settings_presets: Bookmarks
 settings_translations: Translations
@@ -1918,6 +1931,11 @@ fields:
     public_registration_verify_email: Verify Email
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
+    live_preview: Live Preview
+    preview_base_url: Preview Base URL
+    preview_base_url_note:
+      Selectable as a dynamic Preview Base URL variable in a collection's Preview URL, so the host can differ per
+      environment.
     visual_editor_urls: Visual Editor URLs
     report_feature_url: Report Feature URL
     report_bug_url: Report Bug URL
@@ -3194,6 +3212,7 @@ triggers:
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
+    hidden: None (Hidden)
     collection_page: Collection Page
     require_selection: Requires Selection
 a_flow_uuid: Select a Flow to trigger...
@@ -3257,6 +3276,8 @@ operations:
   mail:
     name: Send Email
     description: Send an email to one or more people
+    from_name: From Name
+    from_name_placeholder: Defaults to the project name
     to: To
     to_placeholder: Add email addresses and press enter...
     body: Body
@@ -3356,6 +3377,7 @@ date_precision: Date Precision
 export_dashboard: Export Dashboard
 duplicate_dashboard: Duplicate Dashboard
 duplicate_policy: Duplicate Policy
+duplicate_flow: Duplicate Flow
 search_dashboard: Search Dashboard...
 search_flow: Search Flow...
 percent: Percent
