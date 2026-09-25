@@ -40,3 +40,18 @@ test('Returns values spread across multiple places in multi-array path as flatte
 	const input = { test: [{ path: [{ test: 'example' }, { test: 'example2' }] }, { path: [{ test: 'another' }] }] };
 	expect(get(input, 'test.path.test')).toEqual(['example', 'example2', 'another']);
 });
+
+test('Returns falsy values in array path', () => {
+	const input = { test: [{ path: 0 }, { path: false }, { path: '' }, { falsePath: 'example' }] };
+	expect(get(input, 'test.path')).toEqual([0, false, '']);
+});
+
+test('Excludes only null and undefined in array path', () => {
+	const input = { test: [{ path: null }, { path: undefined }, { path: 0 }] };
+	expect(get(input, 'test.path')).toEqual([0]);
+});
+
+test('Keeps an all-falsy array instead of falling back to the default', () => {
+	const input = { test: [{ path: 0 }, { path: false }] };
+	expect(get(input, 'test.path', 'default value')).toEqual([0, false]);
+});

@@ -24,7 +24,11 @@ export function get(object: Record<string, any> | any[], path: string, defaultVa
 }
 
 function getArrayResult(object: unknown[], key: string): unknown[] | undefined {
-	const result = object.map((entry) => entry?.[key as keyof unknown]).filter((entry) => entry);
+	// Only null and undefined are excluded: falsy values (0, false, '') are
+	// real data and must survive array-path resolution (#28235).
+	const result = object
+		.map((entry) => entry?.[key as keyof unknown])
+		.filter((entry) => entry !== null && entry !== undefined);
 
 	return result.length > 0 ? result.flat() : undefined;
 }
