@@ -21,6 +21,7 @@ declare module '@tiptap/core' {
 		imageLink: {
 			/** Sets the link on the selected image; `title` is the image's own tooltip. */
 			setImageLink: (attrs: ImageLink & { title?: string | null }) => ReturnType;
+			/** Also clears `title`: only the link drawer can set it, so keeping it would strand it on the image. */
 			unsetImageLink: () => ReturnType;
 		};
 	}
@@ -95,7 +96,7 @@ export const CustomImage = Image.extend({
 			unsetImageLink:
 				() =>
 				({ commands }) =>
-					commands.updateAttributes(this.name, { href: null, target: null, rel: null }),
+					commands.updateAttributes(this.name, { href: null, target: null, rel: null, title: null }),
 		};
 	},
 });

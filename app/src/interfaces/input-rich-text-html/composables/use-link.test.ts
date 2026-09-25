@@ -298,6 +298,17 @@ describe('image link', () => {
 		expect(editor.value.getHTML()).toBe(`${IMAGE}${AFTER}`);
 	});
 
+	test('unlink on a linked image also removes the tooltip the link drawer set', () => {
+		const titled = '<img src="/assets/abc" alt="a" title="Tip">';
+		const { editor, openLinkDrawer, unlink } = setup(`<a href="https://directus.io">${titled}</a>${AFTER}`);
+		selectNode(editor.value, 'image');
+		openLinkDrawer();
+
+		unlink();
+
+		expect(editor.value.getHTML()).toBe(`${IMAGE}${AFTER}`);
+	});
+
 	test('closeLinkDrawer resets image mode', () => {
 		const { editor, targetsImage, openLinkDrawer, closeLinkDrawer } = setup(IMAGE);
 		selectNode(editor.value, 'image');
