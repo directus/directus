@@ -72,4 +72,14 @@ describe('getSchema', () => {
 		expect(bus.unsubscribe.mock.calls).toEqual(bus.subscribe.mock.calls);
 		expect(vi.getTimerCount()).toBe(0);
 	});
+
+	test('increments the lock with a ttl so an orphaned lock self-clears', async () => {
+		bus.subscribe.mockImplementation(async (_channel: string, handler: (options: { schema: SchemaOverview }) => void) =>
+			handler({ schema: SCHEMA }),
+		);
+
+		await getSchema();
+
+		expect(lock.increment).toHaveBeenCalledWith('schemaCache--preparing', 1, 30000);
+	});
 });

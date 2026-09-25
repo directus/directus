@@ -37,6 +37,20 @@ const RELEASE_SCRIPT = `
 	end
 `;
 
+export const INCREMENT_WITH_TTL_SCRIPT = `
+  local key = KEYS[1]
+  local amount = tonumber(ARGV[1])
+  local ttl = tonumber(ARGV[2])
+
+  local value = redis.call('INCRBY', key, amount)
+
+  if redis.call('PTTL', key) == -1 then
+    redis.call('PEXPIRE', key, ttl)
+  end
+
+  return value
+`;
+
 export class KvRedis implements Kv {
 	private redis: ExtendedRedis;
 	private namespace: string;
@@ -58,6 +72,13 @@ export class KvRedis implements Kv {
 			config.redis.defineCommand('release', {
 				numberOfKeys: 1,
 				lua: RELEASE_SCRIPT,
+			});
+		}
+
+		if ('incrementWithTtl' in config.redis === false) {
+			config.redis.defineCommand('incrementWithTtl', {
+				numberOfKeys: 1,
+				lua: INCREMENT_WITH_TTL_SCRIPT,
 			});
 		}
 
@@ -124,8 +145,14 @@ export class KvRedis implements Kv {
 		return exists !== 0;
 	}
 
-	async increment(key: string, amount = 1): Promise<number> {
-		return await this.redis.incrby(withNamespace(key, this.namespace), amount);
+	async increment(key: string, amount = 1, ttl?: number): Promise<number> {
+		const namespacedKey = withNamespace(key, this.namespace);
+
+		if (ttl) {
+			return await this.redis.incrementWithTtl(namespacedKey, amount, ttl);
+		}
+
+		return await this.redis.incrby(namespacedKey, amount);
 	}
 
 	async setMax(key: string, value: number): Promise<boolean> {

@@ -38,9 +38,12 @@ export interface Kv {
 	 *
 	 * @param key Key to increment in the store
 	 * @param [amount=1] Amount to increment. Defaults to 1
+	 * @param [ttl] If provided and the key does not already have an expiry, the key expires after this many
+	 * milliseconds. Used to let an orphaned counter (eg: a lock left behind by a killed process) self-clear
+	 * instead of persisting indefinitely.
 	 * @returns Updated value
 	 */
-	increment(key: string, amount?: number): MaybePromise<number>;
+	increment(key: string, amount?: number, ttl?: number): MaybePromise<number>;
 
 	/**
 	 * Save the given value to the store if the given value is larger than the existing value
