@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Warned when pasted content includes markup the WYSIWYG editor doesn't support, with the choice to paste it cleaned or to paste it raw and switch the field to the raw HTML editor
+Cleaned unsupported markup from pasted content in the WYSIWYG editor and flagged it inline, with a view of what was removed and the choice to undo the paste or redo it raw in the raw HTML editor

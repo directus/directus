@@ -11,8 +11,9 @@ import Interface from './input-rich-text-html.vue';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 
 /**
- * Paste-time guard: markup the schema can't represent is caught before it lands, so the value never
- * reaches storage in a state the load-time warning would lock (see use-normalization-warning.ts).
+ * Paste-time guard: markup the schema can't represent is cleaned as it lands and flagged inline, so
+ * the value never reaches storage in a state the load-time warning would lock (see
+ * use-normalization-warning.ts) and the loss is not silent.
  */
 /** The shape Figma puts on the clipboard: `data-*` round-trips, `style` never does. */
 const LOSSY = '<span style="white-space: pre-wrap;" data-metadata="figma">Grass</span>';
@@ -81,8 +82,22 @@ function paste(editor: Editor, html: string) {
 	return handled === true;
 }
 
-function dialog(wrapper: Awaited<ReturnType<typeof mountWithValue>>['wrapper']) {
+type Wrapper = Awaited<ReturnType<typeof mountWithValue>>['wrapper'];
+
+function dialog(wrapper: Wrapper) {
 	return wrapper.findComponent(PasteWarningDialog);
+}
+
+function notice(wrapper: Wrapper) {
+	return wrapper.find('.paste-notice');
+}
+
+/** A lossy paste followed by the notice link, which is how the dialog is reached. */
+async function pasteAndOpen(wrapper: Wrapper, editor: Editor, html: string) {
+	paste(editor, html);
+	await nextTick();
+	await notice(wrapper).find('a').trigger('click');
+	await nextTick();
 }
 
 describe('paste warning', () => {
@@ -226,7 +241,7 @@ describe('paste warning', () => {
 
 		await nextTick();
 
-		expect(dialog(wrapper).props('modelValue')).toBe(true);
+		expect(notice(wrapper).exists()).toBe(true);
 	});
 
 	test('a lossy inline fragment still warns', async () => {
@@ -235,53 +250,37 @@ describe('paste warning', () => {
 		expect(paste(editor, `<meta charset='utf-8'>${LOSSY}`)).toBe(true);
 		await nextTick();
 
-		expect(dialog(wrapper).props('modelValue')).toBe(true);
+		expect(notice(wrapper).exists()).toBe(true);
 	});
 
-	test('pasting anyway never stores the slice marker', async () => {
+	test('a lossy paste lands cleaned right away and shows the notice', async () => {
 		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+		editor.commands.setTextSelection(4);
+
+		expect(paste(editor, LOSSY)).toBe(true);
+		await nextTick();
+
+		expect(editor.getHTML()).not.toContain('white-space');
+		expect(editor.getText()).toContain('Grass');
+		expect(notice(wrapper).exists()).toBe(true);
+		expect(dialog(wrapper).props('modelValue')).toBe(false);
+	});
+
+	test('the cleaned paste never stores the slice marker', async () => {
+		const { editor } = await mountWithValue('<p>Hello</p>');
 		editor.commands.setTextSelection(6);
 
 		paste(editor, '<span style="white-space: pre-wrap;" data-pm-slice="1 1 []" data-metadata="figma">Grass</span>');
-		await nextTick();
-		dialog(wrapper).vm.$emit('confirm');
 		await nextTick();
 
 		expect(editor.getHTML()).toBe('<p>Hello<span data-metadata="figma">Grass</span></p>');
 	});
 
-	test('a lossy paste is blocked and opens the warning with the diff', async () => {
-		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
-
-		expect(paste(editor, LOSSY)).toBe(true);
-		await nextTick();
-
-		expect(dialog(wrapper).props('modelValue')).toBe(true);
-		expect(dialog(wrapper).props('diff')).not.toHaveLength(0);
-		expect(editor.getHTML()).toBe('<p>Hello</p>');
-	});
-
-	test('pasting anyway inserts the cleaned content at the selection', async () => {
-		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
-		editor.commands.setTextSelection(4);
-
-		paste(editor, LOSSY);
-		await nextTick();
-		dialog(wrapper).vm.$emit('confirm');
-		await nextTick();
-
-		expect(editor.getHTML()).not.toContain('white-space');
-		expect(editor.getText()).toContain('Grass');
-		expect(dialog(wrapper).props('modelValue')).toBe(false);
-	});
-
-	test('pasting cleaned stores a value the next load leaves unchanged', async () => {
+	test('the cleaned paste stores a value the next load leaves unchanged', async () => {
 		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
 		editor.commands.setTextSelection(6);
 
 		paste(editor, FIGMA_CLIPBOARD);
-		await nextTick();
-		dialog(wrapper).vm.$emit('confirm');
 		await nextTick();
 
 		const stored = wrapper.emitted('input')?.at(-1)?.[0] as string;
@@ -289,56 +288,155 @@ describe('paste warning', () => {
 		expect(computeValueNormalizationDiff(stored)).toBeNull();
 	});
 
+	test('the notice link opens the dialog with the diff and the undo options', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+
+		await pasteAndOpen(wrapper, editor, LOSSY);
+
+		expect(dialog(wrapper).props('modelValue')).toBe(true);
+		expect(dialog(wrapper).props('diff')).not.toHaveLength(0);
+		expect(dialog(wrapper).props('undoable')).toBe(true);
+	});
+
+	test('keeping the paste closes the dialog and the notice', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+
+		await pasteAndOpen(wrapper, editor, LOSSY);
+		dialog(wrapper).vm.$emit('keep');
+		await nextTick();
+
+		expect(dialog(wrapper).props('modelValue')).toBe(false);
+		expect(notice(wrapper).exists()).toBe(false);
+		expect(editor.getText()).toContain('Grass');
+	});
+
+	// the overlay click and Esc close through v-model, not through a button
+	test('closing the dialog from outside keeps the paste', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+
+		await pasteAndOpen(wrapper, editor, LOSSY);
+		dialog(wrapper).vm.$emit('update:modelValue', false);
+		await nextTick();
+
+		expect(notice(wrapper).exists()).toBe(false);
+		expect(editor.getText()).toContain('Grass');
+	});
+
+	test('undoing the paste restores the document', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+		editor.commands.setTextSelection(4);
+
+		await pasteAndOpen(wrapper, editor, LOSSY);
+		dialog(wrapper).vm.$emit('undo');
+		await nextTick();
+
+		expect(editor.getHTML()).toBe('<p>Hello</p>');
+		expect(wrapper.emitted('input')?.at(-1)).toEqual(['<p>Hello</p>']);
+		expect(notice(wrapper).exists()).toBe(false);
+		expect(dialog(wrapper).props('modelValue')).toBe(false);
+	});
+
+	// typing right before the paste must not ride along with it when it is undone
+	test('undoing the paste leaves what was typed before it', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+		editor.chain().setTextSelection(6).insertContent(' there').run();
+
+		await pasteAndOpen(wrapper, editor, LOSSY);
+		dialog(wrapper).vm.$emit('undo');
+		await nextTick();
+
+		expect(editor.getHTML()).toBe('<p>Hello there</p>');
+	});
+
 	test('editing raw swaps in the code interface with the clipboard HTML at the cursor', async () => {
 		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
 		editor.commands.setTextSelection(4);
 
-		paste(editor, LOSSY);
-		await nextTick();
+		await pasteAndOpen(wrapper, editor, LOSSY);
 		dialog(wrapper).vm.$emit('raw');
 		await nextTick();
 
 		expect(wrapper.emitted('input')?.at(-1)).toEqual([`<p>Hel</p><p>${LOSSY}</p><p>lo</p>`]);
 		expect(wrapper.findComponent(InterfaceInputCode).exists()).toBe(true);
+		expect(notice(wrapper).exists()).toBe(false);
+	});
+
+	// the split at a block edge would otherwise leave an empty `<p></p>` beside the paste
+	test('editing raw at the end of a block does not leave an empty block behind', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p><p>World</p>');
+		editor.commands.setTextSelection(6);
+
+		await pasteAndOpen(wrapper, editor, LOSSY);
+		dialog(wrapper).vm.$emit('raw');
+		await nextTick();
+
+		expect(wrapper.emitted('input')?.at(-1)).toEqual([`<p>Hello</p><p>${LOSSY}</p><p>World</p>`]);
+	});
+
+	test('editing raw inside an empty block replaces that block', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p><p></p><p>World</p>');
+		editor.commands.setTextSelection(8);
+
+		await pasteAndOpen(wrapper, editor, LOSSY);
+		dialog(wrapper).vm.$emit('raw');
+		await nextTick();
+
+		expect(wrapper.emitted('input')?.at(-1)).toEqual([`<p>Hello</p><p>${LOSSY}</p><p>World</p>`]);
 	});
 
 	test('editing raw on an empty editor keeps the clipboard HTML alone', async () => {
 		const { wrapper, editor } = await mountWithValue(null);
 
-		paste(editor, LOSSY);
-		await nextTick();
+		await pasteAndOpen(wrapper, editor, LOSSY);
 		dialog(wrapper).vm.$emit('raw');
 		await nextTick();
 
 		expect(wrapper.emitted('input')?.at(-1)).toEqual([`<p>${LOSSY}</p>`]);
 	});
 
-	test('dismissing the warning drops the paste and leaves the document untouched', async () => {
+	// once the document moved on, an undo would take out the wrong thing
+	test('an edit after the paste takes undo and raw off the dialog', async () => {
 		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+		editor.commands.setTextSelection(6);
 
 		paste(editor, LOSSY);
 		await nextTick();
-		dialog(wrapper).vm.$emit('cancel');
+		// away from the paste, so history opens a new event instead of extending the paste's
+		editor.chain().setTextSelection(1).insertContent('x').run();
+		await notice(wrapper).find('a').trigger('click');
 		await nextTick();
 
-		expect(editor.getHTML()).toBe('<p>Hello</p>');
-		expect(dialog(wrapper).props('modelValue')).toBe(false);
-		expect(wrapper.emitted('input')).toBeUndefined();
+		expect(dialog(wrapper).props('undoable')).toBe(false);
+
+		dialog(wrapper).vm.$emit('undo');
+		await nextTick();
+
+		expect(editor.getHTML()).toBe('<p>xHello<span data-metadata="figma">Grass</span></p>');
+		expect(notice(wrapper).exists()).toBe(false);
 	});
 
-	// the overlay click closes through v-model, not through a button, and must not keep the paste
-	// alive for a later confirm
-	test('closing the warning from outside drops the paste', async () => {
+	test('undoing the paste from the editor dismisses the notice', async () => {
 		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
 
 		paste(editor, LOSSY);
 		await nextTick();
-		dialog(wrapper).vm.$emit('update:modelValue', false);
-		await nextTick();
-		dialog(wrapper).vm.$emit('confirm');
+		editor.commands.undo();
 		await nextTick();
 
 		expect(editor.getHTML()).toBe('<p>Hello</p>');
-		expect(wrapper.emitted('input')).toBeUndefined();
+		expect(notice(wrapper).exists()).toBe(false);
+	});
+
+	test('an external value change dismisses the notice', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+
+		paste(editor, LOSSY);
+		await nextTick();
+		await wrapper.setProps({ value: '<p>Other</p>' });
+		await flushPromises();
+		await nextTick();
+
+		expect(editor.getHTML()).toBe('<p>Other</p>');
+		expect(notice(wrapper).exists()).toBe(false);
 	});
 });

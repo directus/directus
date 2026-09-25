@@ -190,10 +190,18 @@ const editor = useEditor({
 	},
 });
 
-const { pasteWarningOpen, pasteWarningDiff, handlePaste, confirmPaste, takeRawPaste, cancelPaste } = usePasteWarning(
-	editor,
-	customFormatExtensions,
-);
+const {
+	pasteNoticeVisible,
+	pasteWarningOpen,
+	pasteWarningDiff,
+	pasteUndoable,
+	handlePaste,
+	openPasteWarning,
+	keepPaste,
+	undoPaste,
+	takeRawPaste,
+	dismissPasteWarning,
+} = usePasteWarning(editor, customFormatExtensions);
 
 function onEditorClick() {
 	if (props.disabled || props.nonEditable || props.comparisonMode) return;
@@ -331,6 +339,8 @@ watch(
 		if (!editor.value) return;
 		// compare the encoded (stored) form so a re-emitted page-break marker doesn't look like a change
 		if (encodePageBreaks(editor.value.getHTML()) === props.value) return;
+		// the content the notice refers to is gone with the replaced value
+		dismissPasteWarning();
 		syncValue(editor.value, props.value);
 		if (!props.nonEditable || props.comparisonMode) checkValue();
 	},
@@ -350,6 +360,10 @@ onKeyStroke('Escape', () => {
 		<a v-if="!comparisonMode" :href="normalizationDocsUrl" target="_blank" rel="noopener noreferrer">
 			{{ t('wysiwyg_options.normalization_locked_learn_more') }}
 		</a>
+	</VNotice>
+	<VNotice v-if="pasteNoticeVisible && !rawMode" type="warning" multiline class="paste-notice">
+		{{ t('wysiwyg_options.paste_warning_notice') }}
+		<a href="#" @click.prevent="openPasteWarning">{{ t('wysiwyg_options.paste_warning_see_removed') }}</a>
 	</VNotice>
 	<div
 		class="wysiwyg"
@@ -460,8 +474,9 @@ onKeyStroke('Escape', () => {
 		<PasteWarningDialog
 			v-model="pasteWarningOpen"
 			:diff="pasteWarningDiff"
-			@confirm="confirmPaste"
-			@cancel="cancelPaste"
+			:undoable="pasteUndoable"
+			@keep="keepPaste"
+			@undo="undoPaste"
 			@raw="onPasteRaw"
 		/>
 	</div>
@@ -514,7 +529,8 @@ onKeyStroke('Escape', () => {
 	}
 }
 
-.normalization-notice {
+.normalization-notice,
+.paste-notice {
 	margin-block-end: 0.5rem;
 }
 

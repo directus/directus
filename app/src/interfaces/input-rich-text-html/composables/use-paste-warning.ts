@@ -1,5 +1,6 @@
 import { getHTMLFromFragment } from '@tiptap/core';
-import { DOMParser as ProseMirrorDOMParser, type Schema } from '@tiptap/pm/model';
+import { closeHistory, undoDepth } from '@tiptap/pm/history';
+import { DOMParser as ProseMirrorDOMParser, type Node as ProseMirrorNode, type Schema } from '@tiptap/pm/model';
 import type { EditorView } from '@tiptap/pm/view';
 import type { AnyExtension, Editor } from '@tiptap/vue-3';
 import type { Change } from 'diff';
@@ -8,50 +9,73 @@ import { encodePageBreaks } from '../extensions/page-break';
 import { findMarkupLoss } from './markup-loss';
 import { diffFormatted, roundTrip } from './normalization-diff';
 
-type PendingPaste = { html: string; from: number; to: number; event: ClipboardEvent };
+type CleanedPaste = { html: string; from: number; to: number; depth: number };
 
 type UsablePasteWarning = {
+	pasteNoticeVisible: Ref<boolean>;
 	pasteWarningOpen: Ref<boolean>;
 	pasteWarningDiff: Ref<Change[]>;
+	pasteUndoable: Ref<boolean>;
 	handlePaste: (view: EditorView, event: ClipboardEvent) => boolean;
-	confirmPaste: () => void;
+	openPasteWarning: () => void;
+	keepPaste: () => void;
+	undoPaste: () => void;
 	takeRawPaste: () => string | null;
-	cancelPaste: () => void;
+	dismissPasteWarning: () => void;
 };
 
 /**
- * Guards the paste that lands markup the schema can't represent (Figma and Word wrap their output
- * in spans the editor drops): holds the clipboard HTML back, shows what a paste would lose, and
- * lets the user choose the cleaned version or the raw HTML. Without it the loss only surfaces on
- * the next load, as the read-only lock in use-normalization-warning.ts.
+ * Flags the paste that lands markup the schema can't represent (Figma and Word wrap their output
+ * in spans the editor drops): the cleaned version goes in right away, and a notice says so with a
+ * way to see what was removed, take the paste back out, or redo it raw. Without it the loss only
+ * surfaces on the next load, as the read-only lock in use-normalization-warning.ts.
  */
 export function usePasteWarning(
 	editor: Ref<Editor | undefined>,
 	extraExtensions: AnyExtension[] = [],
 ): UsablePasteWarning {
+	const pasteNoticeVisible = ref(false);
 	const pasteWarningOpen = ref(false);
 	const pasteWarningDiff = ref<Change[]>([]);
-	let pending: PendingPaste | null = null;
+	const pasteUndoable = ref(false);
+	let cleaned: CleanedPaste | null = null;
 	let replaying = false;
 
-	// the overlay click closes the dialog through v-model without a button, and is a cancel too
+	// a Cmd+Z past the paste takes it out through the editor's own history, so the notice would
+	// otherwise offer to undo something else
+	watch(
+		editor,
+		(instance) => {
+			instance?.on('update', ({ editor }) => {
+				if (cleaned && undoDepth(editor.state) < cleaned.depth) dismissPasteWarning();
+			});
+		},
+		{ immediate: true },
+	);
+
+	// the overlay click and Esc close the dialog through v-model, which counts as keeping the paste
 	watch(pasteWarningOpen, (open) => {
-		if (!open) pending = null;
+		if (!open) keepPaste();
 	});
 
 	return {
+		pasteNoticeVisible,
 		pasteWarningOpen,
 		pasteWarningDiff,
+		pasteUndoable,
 		handlePaste,
-		confirmPaste,
+		openPasteWarning,
+		keepPaste,
+		undoPaste,
 		takeRawPaste,
-		cancelPaste,
+		dismissPasteWarning,
 	};
 
-	// `true` stops ProseMirror from inserting anything, so the document only changes once the dialog
-	// is answered. Plain text carries no markup to lose and never reaches the check. The gate is
-	// what the schema drops, not whether it rewrites: `<b>` to `<strong>` or an implied `<tbody>`
-	// is not a loss. The textual diff is only the picture shown in the dialog.
+	// `true` stops ProseMirror from inserting the clipboard as-is; the cleaned copy goes in through
+	// pasteHTML instead, so it keeps the ordinary paste semantics and lands as one history event.
+	// Plain text carries no markup to lose and never reaches the check. The gate is what the schema
+	// drops, not whether it rewrites: `<b>` to `<strong>` or an implied `<tbody>` is not a loss. The
+	// textual diff is only the picture shown in the dialog.
 	function handlePaste(view: EditorView, event: ClipboardEvent) {
 		if (replaying) return false;
 
@@ -65,53 +89,79 @@ export function usePasteWarning(
 		const diff = diffFormatted(html, normalized);
 		if (diff === null) return false;
 
+		// normalized first so the stored value matches its own reload (a `pre-wrap` span keeps
+		// whitespace that collapses once the span is gone)
 		const { from, to } = view.state.selection;
-		pending = { html, from, to, event };
-		pasteWarningDiff.value = diff;
-		pasteWarningOpen.value = true;
-		return true;
-	}
-
-	// normalized first so the stored value matches its own reload (a `pre-wrap` span keeps whitespace
-	// that collapses once the span is gone); pasteHTML keeps the ordinary paste semantics
-	function confirmPaste() {
-		const paste = take();
-		if (!paste || !editor.value) return;
-
-		editor.value.chain().focus().setTextSelection({ from: paste.from, to: paste.to }).run();
 		replaying = true;
 
 		try {
-			editor.value.view.pasteHTML(roundTrip(paste.html, extraExtensions), paste.event);
+			// typing right before the paste would otherwise share its history event, and undo both
+			view.dispatch(closeHistory(view.state.tr));
+			view.pasteHTML(normalized, event);
 		} finally {
 			replaying = false;
 		}
+
+		cleaned = { html, from, to, depth: undoDepth(view.state) };
+		pasteWarningDiff.value = diff;
+		pasteNoticeVisible.value = true;
+		return true;
+	}
+
+	// undo is only exact while the paste is still the newest history event
+	function openPasteWarning() {
+		if (!cleaned || !editor.value) return;
+		pasteUndoable.value = undoDepth(editor.value.state) === cleaned.depth;
+		pasteWarningOpen.value = true;
+	}
+
+	function keepPaste() {
+		dismissPasteWarning();
+	}
+
+	function undoPaste() {
+		takeUndone();
+		dismissPasteWarning();
 	}
 
 	/**
-	 * The stored HTML with the clipboard spliced in verbatim where the cursor was, for raw editing.
+	 * The stored HTML with the clipboard spliced in verbatim where the paste went, for raw editing.
 	 * A cursor inside a block splits that block in two — the trade for keeping the paste untouched.
+	 * A cursor at a block's edge leaves an empty half behind, which is dropped.
 	 */
 	function takeRawPaste() {
-		const paste = take();
+		const paste = takeUndone();
 		if (!paste || !editor.value) return null;
+		dismissPasteWarning();
 		if (editor.value.isEmpty) return paste.html;
 
 		const { doc, schema } = editor.value.state;
-		const before = getHTMLFromFragment(doc.cut(0, paste.from).content, schema);
-		const after = getHTMLFromFragment(doc.cut(paste.to, doc.content.size).content, schema);
+		let before = doc.cut(0, paste.from).content;
+		let after = doc.cut(paste.to, doc.content.size).content;
 
-		return encodePageBreaks(before + paste.html + after);
+		const emptyBlock = (node: ProseMirrorNode | null | undefined) =>
+			!!node && node.isTextblock && node.content.size === 0;
+
+		if (emptyBlock(before.lastChild)) before = before.cut(0, before.size - before.lastChild!.nodeSize);
+		if (emptyBlock(after.firstChild)) after = after.cut(after.firstChild!.nodeSize);
+
+		return encodePageBreaks(getHTMLFromFragment(before, schema) + paste.html + getHTMLFromFragment(after, schema));
 	}
 
-	function cancelPaste() {
-		take();
-	}
-
-	function take() {
-		const paste = pending;
-		pending = null;
+	function dismissPasteWarning() {
+		cleaned = null;
+		pasteUndoable.value = false;
+		pasteNoticeVisible.value = false;
 		pasteWarningOpen.value = false;
+	}
+
+	// takes the cleaned paste back out of the document, leaving it as it was before the paste
+	function takeUndone() {
+		if (!cleaned || !editor.value) return null;
+		if (undoDepth(editor.value.state) !== cleaned.depth) return null;
+
+		const paste = cleaned;
+		editor.value.chain().focus().undo().run();
 		return paste;
 	}
 }
