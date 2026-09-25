@@ -8,12 +8,12 @@ import { getInternalModules, registerModules } from './modules';
 import { getInternalOperations, registerOperations } from './operations';
 import { getInternalPanels, registerPanels } from './panels';
 import { registerRichTexts } from './rich-text/register';
-import { validateRichTexts } from './rich-text/validate';
 import { registerThemes } from './themes/register';
 import { getRootPath } from './utils/get-root-path';
 import { translate } from './utils/translate-object-values';
 
 let customExtensions: AppExtensionConfigs | null = null;
+let validRichTexts: AppExtensionConfigs['richtexts'] = [];
 
 const extensions: RefRecord<AppExtensionConfigs> = {
 	interfaces: shallowRef([]),
@@ -32,8 +32,10 @@ const onDehydrateCallbacks: (() => Promise<void>)[] = [];
 const allModules = shallowRef<ModuleConfig[]>([]);
 
 export async function loadExtensions(): Promise<void> {
+	let loaded: AppExtensionConfigs;
+
 	try {
-		customExtensions = import.meta.env.DEV
+		loaded = import.meta.env.DEV
 			? await import(/* @vite-ignore */ '@directus-extensions')
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/sources/index.js`);
 	} catch (err: any) {
@@ -41,6 +43,15 @@ export async function loadExtensions(): Promise<void> {
 		console.warn(`Couldn't load extensions`);
 		// eslint-disable-next-line no-console
 		console.warn(err);
+		return;
+	}
+
+	customExtensions = loaded;
+
+	// the validator pulls in the whole Tiptap editor, so only pay for it when a richtext extension is installed
+	if (loaded.richtexts.length > 0) {
+		const { validateRichTexts } = await import('./rich-text/validate');
+		validRichTexts = validateRichTexts(loaded.richtexts);
 	}
 }
 
@@ -52,8 +63,6 @@ export function registerExtensions(app: App): void {
 	const panels = getInternalPanels();
 	const operations = getInternalOperations();
 	const themes = []; // Themes is the first extension type that doesn't rely on internally scoped extensions
-	// richtext contributes into the WYSIWYG interface, so it has no internal registry of its own
-	const richtexts: AppExtensionConfigs['richtexts'] = [];
 
 	if (customExtensions !== null) {
 		interfaces.push(...customExtensions.interfaces);
@@ -63,7 +72,6 @@ export function registerExtensions(app: App): void {
 		panels.push(...customExtensions.panels);
 		operations.push(...customExtensions.operations);
 		themes.push(...customExtensions.themes);
-		richtexts.push(...customExtensions.richtexts);
 	}
 
 	registerInterfaces(interfaces, app);
@@ -72,7 +80,8 @@ export function registerExtensions(app: App): void {
 	registerPanels(panels, app);
 	registerOperations(operations, app);
 	registerThemes(themes);
-	registerRichTexts(validateRichTexts(richtexts));
+	// richtext contributes into the WYSIWYG interface, so it has no internal registry of its own
+	registerRichTexts(validRichTexts);
 
 	watch(
 		i18n.global.locale,

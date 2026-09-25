@@ -3,6 +3,7 @@ import {
 	type AnyExtension,
 	type Attributes,
 	flattenExtensions,
+	getAttributesFromExtensions,
 	getExtensionField,
 	type GlobalAttributes,
 	splitExtensions,
@@ -14,11 +15,36 @@ import { PRESERVED_ATTRIBUTE_KEYS } from '@/interfaces/input-rich-text-html/exte
 
 const SLUG = /^[a-z0-9-]+$/;
 
-let coreNames: Set<string> | undefined;
+interface CoreSchema {
+	names: Set<string>;
+	/** Attribute names each core node or mark type defines, from its own and from global attributes. */
+	attributes: Map<string, Set<string>>;
+	nodeTypes: string[];
+	markTypes: string[];
+}
 
-function getCoreNames() {
-	coreNames ??= new Set(flattenExtensions([...editorExtensions, ComparisonDiff]).map((extension) => extension.name));
-	return coreNames;
+let coreSchema: CoreSchema | undefined;
+
+function getCoreSchema(): CoreSchema {
+	if (coreSchema) return coreSchema;
+
+	const core = flattenExtensions([...editorExtensions, ComparisonDiff]);
+	const { nodeExtensions, markExtensions } = splitExtensions(core);
+	const attributes = new Map<string, Set<string>>();
+
+	for (const { type, name } of getAttributesFromExtensions(core)) {
+		attributes.set(type, (attributes.get(type) ?? new Set()).add(name));
+	}
+
+	coreSchema = {
+		names: new Set(core.map((extension) => extension.name)),
+		attributes,
+		// mirrors what Tiptap resolves the `nodes` and `*` shorthands to
+		nodeTypes: nodeExtensions.filter((extension) => extension.name !== 'text').map((extension) => extension.name),
+		markTypes: markExtensions.map((extension) => extension.name),
+	};
+
+	return coreSchema;
 }
 
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
@@ -84,12 +110,41 @@ function callAttributesField<T>(
 const findReservedKey = (attributes: object = {}) =>
 	Object.keys(attributes).find((name) => PRESERVED_ATTRIBUTE_KEYS.has(name));
 
+function resolveGlobalTypes(types: GlobalAttributes[number]['types'], core: CoreSchema): string[] {
+	if (Array.isArray(types)) return types;
+	if (types === '*') return [...core.nodeTypes, ...core.markTypes];
+	if (types === 'nodes') return core.nodeTypes;
+	if (types === 'marks') return core.markTypes;
+	return [];
+}
+
+/**
+ * A later attribute definition wins when Tiptap builds the schema, so a contributed global attribute
+ * named after one a core type already has would silently replace it (e.g. `textAlign` on
+ * `paragraph` with a new default).
+ */
+function findCoreAttributeClash(
+	types: GlobalAttributes[number]['types'],
+	attributes: object = {},
+	core: CoreSchema,
+): { type: string; name: string } | undefined {
+	for (const type of resolveGlobalTypes(types, core)) {
+		const coreAttributes = core.attributes.get(type);
+		if (!coreAttributes) continue;
+
+		const name = Object.keys(attributes).find((key) => coreAttributes.has(key));
+		if (name) return { type, name };
+	}
+
+	return undefined;
+}
+
 function validateConflicts(config: RichTextConfig, owners: Map<string, string>): string | null {
 	const contributed = flattenExtensions(config.extensions ?? []);
-	const core = getCoreNames();
+	const core = getCoreSchema();
 
 	for (const { name } of contributed) {
-		if (core.has(name)) return `"${name}" is a core node, mark or extension name`;
+		if (core.names.has(name)) return `"${name}" is a core node, mark or extension name`;
 		if (name.startsWith(CUSTOM_FORMAT_PREFIX))
 			return `"${name}" uses the "${CUSTOM_FORMAT_PREFIX}" prefix reserved for field custom formats`;
 		if (owners.has(name)) return `"${name}" is already defined by richtext extension "${owners.get(name)}"`;
@@ -102,9 +157,12 @@ function validateConflicts(config: RichTextConfig, owners: Map<string, string>):
 			extensions: [...nodeExtensions, ...markExtensions],
 		});
 
-		for (const { attributes } of globalAttributes ?? []) {
-			const clash = findReservedKey(attributes);
-			if (clash) return `global attribute "${clash}" is reserved by the core editor`;
+		for (const { types, attributes } of globalAttributes ?? []) {
+			const reserved = findReservedKey(attributes);
+			if (reserved) return `global attribute "${reserved}" is reserved by the core editor`;
+
+			const clash = findCoreAttributeClash(types, attributes, core);
+			if (clash) return `global attribute "${clash.name}" is already defined on core type "${clash.type}"`;
 		}
 	}
 
