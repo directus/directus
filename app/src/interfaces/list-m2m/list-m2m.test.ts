@@ -53,6 +53,7 @@ vi.mock('@/composables/use-relation-permissions', () => ({
 const mockGetField = vi.hoisted(() => vi.fn(() => null as any));
 const mockGetWidth = vi.hoisted(() => vi.fn((_key: string, defaultWidth: number) => defaultWidth));
 const mockUpdateWidths = vi.hoisted(() => vi.fn());
+const mockUpdate = vi.hoisted(() => vi.fn());
 
 vi.mock('@/composables/use-column-widths', () => ({
 	useColumnWidths: () => ({ getWidth: mockGetWidth, updateWidths: mockUpdateWidths }),
@@ -69,7 +70,7 @@ vi.mock('@/stores/fields', () => ({
 vi.mock('@/composables/use-relation-multiple', () => ({
 	useRelationMultiple: () => ({
 		create: vi.fn(),
-		update: vi.fn(),
+		update: mockUpdate,
 		remove: vi.fn(),
 		select: vi.fn(),
 		displayItems: ref([{ id: '1', related_id: { id: '10' }, $type: 'existingItem', $index: 0, $edits: 0 }]),
@@ -165,7 +166,7 @@ const tableGlobalWithHeaderEmit: GlobalMountOptions = {
 			name: 'VTable',
 			template: '<div class="v-table" />',
 			props: ['modelValue', 'headers', 'items'],
-			emits: ['update:headers'],
+			emits: ['update:headers', 'update:modelValue'],
 		},
 	},
 };
@@ -179,6 +180,39 @@ const listProps = {
 };
 
 describe('list-m2m', () => {
+	it('stages batch junction edits on selected relations without nesting them into related records', async () => {
+		const wrapper = mount(ListM2M, {
+			props: { ...listProps, layout: LAYOUTS.TABLE },
+			global: tableGlobalWithHeaderEmit,
+		});
+
+		const table = wrapper.findComponent({ name: 'VTable' });
+
+		await table.vm.$emit('update:modelValue', [
+			{ id: 1, related_id: { id: 10 }, $type: 'existingItem', $index: 0, $edits: 0 },
+			{ related_id: { id: 20 }, $type: 'created', $index: 1, $edits: 0 },
+		]);
+
+		const drawer = wrapper.findComponent({ name: 'DrawerBatch' });
+		await drawer.vm.$emit('input', { note: 'Selected only', related_id: { name: 'Updated' } });
+
+		expect(mockUpdate.mock.calls.map(([changes]) => changes)).toEqual([
+			{
+				id: 1,
+				note: 'Selected only',
+				related_id: { id: 10, name: 'Updated' },
+				$type: 'existingItem',
+				$index: 0,
+				$edits: 0,
+			},
+			{ note: 'Selected only', related_id: { id: 20, name: 'Updated' }, $type: 'created', $index: 1, $edits: 0 },
+		]);
+
+		expect(drawer.props('junctionCollection')).toBe('junction-collection');
+		expect(drawer.props('junctionField')).toBe('related_id');
+		expect(drawer.props('circularField')).toBe('item_id');
+	});
+
 	it('should mount', () => {
 		const wrapper = mount(ListM2M, {
 			props: listProps,
