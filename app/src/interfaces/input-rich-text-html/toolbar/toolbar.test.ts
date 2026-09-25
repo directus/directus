@@ -7,8 +7,10 @@ import { createPinia } from 'pinia';
 import { afterEach, describe, expect, test } from 'vitest';
 import { createI18n } from 'vue-i18n';
 import { createMemoryHistory, createRouter } from 'vue-router';
+import { buildFieldSchema } from '../extensions';
 import { buildCustomFormats, type CustomFormat } from '../extensions/custom-formats';
 import Toolbar from './toolbar.vue';
+import { registerRichTexts } from '@/rich-text/register';
 
 let editor: Editor;
 
@@ -36,7 +38,19 @@ function mountToolbar(
 	});
 }
 
-afterEach(() => editor?.destroy());
+afterEach(() => {
+	editor?.destroy();
+	registerRichTexts([]);
+});
+
+// the buttons exactly as the interface hands them to the toolbar, keys prefixed by extension id
+function fieldButtons(configs: { id: string; buttons: RichTextToolbarButton[] }[]) {
+	registerRichTexts(configs.map((config) => ({ ...config, name: config.id })));
+	return buildFieldSchema({ extensions: configs.map((config) => config.id) }).buttons;
+}
+
+const iconsOf = (wrapper: ReturnType<typeof mountToolbar>) =>
+	wrapper.findAll('.toolbar-button .v-icon i').map((icon) => icon.attributes('data-icon'));
 
 describe('Toolbar', () => {
 	// initial availableWidth is Infinity, so everything is visible (no ResizeObserver fired)
@@ -113,11 +127,30 @@ describe('contributed buttons', () => {
 		expect(wrapper.findAll('.toolbar-button')).toHaveLength(1);
 	});
 
-	test('renders a namespaced contribution next to the core button it is named after', () => {
-		const bold: RichTextToolbarButton = { key: 'spike:bold', icon: 'star', label: 'Spike', command: () => {} };
-		const wrapper = mountToolbar(['bold', 'spike:bold'], [], [bold]);
+	test('renders a contribution with a core key next to the core button', () => {
+		const buttons = fieldButtons([
+			{ id: 'ext', buttons: [{ key: 'bold', icon: 'star', label: 'Star', command: () => {} }] },
+		]);
 
-		const icons = wrapper.findAll('.toolbar-button .v-icon i').map((icon) => icon.attributes('data-icon'));
-		expect(icons).toEqual(['format_bold', 'star']);
+		const wrapper = mountToolbar(['bold', 'ext:bold'], [], buttons);
+		expect(iconsOf(wrapper)).toEqual(['format_bold', 'star']);
+	});
+
+	// the toolbar still refuses a bare core key if a contribution ever skips the prefix
+	test('keeps the core button when a contribution arrives with a bare core key', () => {
+		const bold: RichTextToolbarButton = { key: 'bold', icon: 'star', label: 'Star', command: () => {} };
+		const wrapper = mountToolbar(['bold'], [], [bold]);
+
+		expect(iconsOf(wrapper)).toEqual(['format_bold']);
+	});
+
+	test('renders one button per extension when two use the same key', () => {
+		const buttons = fieldButtons([
+			{ id: 'ext-a', buttons: [{ key: 'callout', icon: 'info', label: 'A', command: () => {} }] },
+			{ id: 'ext-b', buttons: [{ key: 'callout', icon: 'star', label: 'B', command: () => {} }] },
+		]);
+
+		const wrapper = mountToolbar(['ext-a:callout', 'ext-b:callout'], [], buttons);
+		expect(iconsOf(wrapper)).toEqual(['info', 'star']);
 	});
 });

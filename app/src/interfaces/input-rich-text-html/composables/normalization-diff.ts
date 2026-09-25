@@ -1,6 +1,6 @@
 import { type AnyExtension, Editor } from '@tiptap/vue-3';
 import { type Change, diffLines } from 'diff';
-import { editorExtensions } from '../extensions';
+import { fieldEditorExtensions } from '../extensions';
 import { decodePageBreaks, encodePageBreaks } from '../extensions/page-break';
 import { formatHtml } from './format-html';
 
@@ -8,7 +8,7 @@ import { formatHtml } from './format-html';
 // actually gets stored. `extraExtensions` is the per-field slice from buildFieldSchema the live
 // editor was built with — without it that markup reads as dropped and falsely trips the warning.
 function roundTrip(html: string, extraExtensions: AnyExtension[]): string {
-	const editor = new Editor({ extensions: [...editorExtensions, ...extraExtensions], content: html });
+	const editor = new Editor({ extensions: fieldEditorExtensions(extraExtensions), content: html });
 	const out = editor.getHTML();
 	editor.destroy();
 	return out;

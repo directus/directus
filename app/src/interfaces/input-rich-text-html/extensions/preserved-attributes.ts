@@ -1,4 +1,11 @@
-import { Extension } from '@tiptap/core';
+import {
+	type AnyExtension,
+	Extension,
+	type ExtensionAttribute,
+	flattenExtensions,
+	fromString,
+	getAttributesFromExtensions,
+} from '@tiptap/core';
 
 /**
  * Round-trips `class`, `id`, `title`, `role`, `lang`, `dir`, `data-*` and `aria-*` on every node and
@@ -19,11 +26,28 @@ const OWN_TITLE_TYPES = new Set(['link', 'abbreviation']);
 /** Block types the Direction extension already models `dir` on; a global `dir` would double-render. */
 const OWN_DIR_TYPES = new Set(['paragraph', 'heading', 'blockquote', 'bulletList', 'orderedList', 'listItem']);
 
+const PASSTHROUGH_NAMES = ['class', 'id', 'title', 'role', 'lang', 'dir'] as const;
+
 const WILDCARD_PREFIXES = ['data-', 'aria-'] as const;
+
+/** The Tiptap attribute keys PreservedAttributes adds; other extensions must not redefine them. */
+export const PRESERVED_ATTRIBUTE_KEYS: ReadonlySet<string> = new Set([
+	...PASSTHROUGH_NAMES,
+	'dataAttributes',
+	'ariaAttributes',
+]);
+
+/** True when PreservedAttributes round-trips an HTML attribute with this name. */
+export function isPreservedAttributeName(name: string): boolean {
+	return (
+		(PASSTHROUGH_NAMES as readonly string[]).includes(name) ||
+		WILDCARD_PREFIXES.some((prefix) => name.startsWith(prefix))
+	);
+}
 
 /** True when the element carries an attribute PreservedAttributes would round-trip. */
 export function hasPreservedAttributes(element: HTMLElement): boolean {
-	if (['class', 'id', 'title', 'role', 'lang', 'dir'].some((name) => element.getAttribute(name))) return true;
+	if (PASSTHROUGH_NAMES.some((name) => element.getAttribute(name))) return true;
 	return Array.from(element.attributes).some(({ name }) => WILDCARD_PREFIXES.some((prefix) => name.startsWith(prefix)));
 }
 
@@ -36,14 +60,39 @@ function passthroughAttribute(name: string) {
 	};
 }
 
-function wildcardAttribute(name: string, prefix: (typeof WILDCARD_PREFIXES)[number]) {
+/**
+ * HTML names that other attributes of the type parse from this element and render back. Probed per
+ * element with the parsed value, since an attribute's rendered name can depend on it.
+ */
+function ownedNames(element: HTMLElement, owners: ExtensionAttribute[]): Set<string> {
+	const owned = new Set<string>();
+
+	for (const { name, attribute } of owners) {
+		if (!attribute.rendered) continue;
+
+		const value = attribute.parseHTML ? attribute.parseHTML(element) : fromString(element.getAttribute(name));
+		if (value === null || value === undefined) continue;
+
+		const rendered = attribute.renderHTML ? attribute.renderHTML({ [name]: value }) : { [name]: value };
+		for (const htmlName of Object.keys(rendered ?? {})) owned.add(htmlName);
+	}
+
+	return owned;
+}
+
+// an owned name is left to its owner; a second copy here would go stale once the owner changes it
+function wildcardAttribute(name: string, prefix: (typeof WILDCARD_PREFIXES)[number], owners: ExtensionAttribute[]) {
 	return {
 		default: null,
 		parseHTML: (element: HTMLElement) => {
+			const matches = Array.from(element.attributes).filter(({ name: attrName }) => attrName.startsWith(prefix));
+			if (matches.length === 0) return null;
+
+			const owned = owners.length > 0 ? ownedNames(element, owners) : new Set<string>();
 			const attrs: Record<string, string> = {};
 
-			for (const { name: attrName, value } of Array.from(element.attributes)) {
-				if (attrName.startsWith(prefix)) attrs[attrName] = value;
+			for (const { name: attrName, value } of matches) {
+				if (!owned.has(attrName)) attrs[attrName] = value;
 			}
 
 			return Object.keys(attrs).length > 0 ? attrs : null;
@@ -64,11 +113,36 @@ function wildcardAttribute(name: string, prefix: (typeof WILDCARD_PREFIXES)[numb
 	};
 }
 
-export const PreservedAttributes = Extension.create({
+export interface PreservedAttributesOptions {
+	/**
+	 * The editor's other extensions. Tiptap hands addGlobalAttributes only the node and mark
+	 * extensions, so global attributes from plain extensions are visible only through this list.
+	 */
+	extensions: AnyExtension[];
+}
+
+function attributesByType(extensions: AnyExtension[]): Map<string, ExtensionAttribute[]> {
+	const byType = new Map<string, ExtensionAttribute[]>();
+
+	for (const extensionAttribute of getAttributesFromExtensions(flattenExtensions(extensions))) {
+		const list = byType.get(extensionAttribute.type) ?? [];
+		list.push(extensionAttribute);
+		byType.set(extensionAttribute.type, list);
+	}
+
+	return byType;
+}
+
+export const PreservedAttributes = Extension.create<PreservedAttributesOptions>({
 	name: 'preservedAttributes',
+
+	addOptions() {
+		return { extensions: [] };
+	},
 
 	addGlobalAttributes() {
 		const types = this.extensions.map((extension) => extension.name).filter((name) => !EXCLUDED_TYPES.has(name));
+		const owners = attributesByType(this.options.extensions);
 
 		return [
 			{
@@ -82,10 +156,16 @@ export const PreservedAttributes = Extension.create({
 					},
 					role: passthroughAttribute('role'),
 					lang: passthroughAttribute('lang'),
-					dataAttributes: wildcardAttribute('dataAttributes', 'data-'),
-					ariaAttributes: wildcardAttribute('ariaAttributes', 'aria-'),
 				},
 			},
+			// one entry per type, as each type has its own set of attributes that may own a name
+			...types.map((type) => ({
+				types: [type],
+				attributes: {
+					dataAttributes: wildcardAttribute('dataAttributes', 'data-', owners.get(type) ?? []),
+					ariaAttributes: wildcardAttribute('ariaAttributes', 'aria-', owners.get(type) ?? []),
+				},
+			})),
 			{
 				// link/abbreviation model their own `title`; a global one there would double-render
 				types: types.filter((name) => !OWN_TITLE_TYPES.has(name)),
