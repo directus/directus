@@ -75,13 +75,13 @@ vi.mock('ldapts', () => {
 	};
 });
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../../test-utils/env.js');
+	return mockUseEnv({
 		REFRESH_TOKEN_COOKIE_NAME: 'directus_refresh_token',
 		SESSION_COOKIE_NAME: 'directus_session_token',
-		EMAIL_TEMPLATES_PATH: './templates',
-	}),
-}));
+	});
+});
 
 vi.mock('../../logger/index.js', () => ({
 	useLogger: vi.fn().mockReturnValue({

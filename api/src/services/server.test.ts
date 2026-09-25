@@ -3,20 +3,18 @@ import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import getMailer from '../mailer.js';
+import { mockEnv } from '../test-utils/env.js';
 import { ServerService } from './server.js';
 
-const mockEnv = vi.hoisted(() => ({
-	EMAIL_TEMPLATES_PATH: './templates',
-	MCP_ENABLED: true,
-	AI_ENABLED: true,
-	MCP_OAUTH_ENABLED: true,
-	MCP_OAUTH_DCR_ENABLED: false,
-	MCP_OAUTH_CIMD_ENABLED: true,
-}));
+// Shared object rather than a fixed return value, so individual tests can amend it in place. The
+// factory seeds it with the test defaults, which several modules read as they're imported.
+const testEnv = vi.hoisted(() => ({}) as Record<string, unknown>);
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn(() => mockEnv),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../test-utils/env.js');
+	Object.assign(testEnv, mockEnv());
+	return { useEnv: vi.fn(() => testEnv) };
+});
 
 vi.mock('./settings.js', () => ({
 	SettingsService: vi.fn().mockImplementation(function () {
@@ -68,20 +66,23 @@ describe('ServerService', () => {
 		db = knex({ client: MockClient });
 		tracker = createTracker(db);
 
-		Object.assign(mockEnv, {
-			EMAIL_TEMPLATES_PATH: './templates',
-			MCP_ENABLED: true,
-			AI_ENABLED: true,
-			MCP_OAUTH_ENABLED: true,
-			MCP_OAUTH_DCR_ENABLED: false,
-			MCP_OAUTH_CIMD_ENABLED: true,
-		});
+		Object.assign(
+			testEnv,
+			mockEnv({
+				PROJECT_OWNER_ENABLED: true,
+				MCP_ENABLED: true,
+				AI_ENABLED: true,
+				MCP_OAUTH_ENABLED: true,
+				MCP_OAUTH_DCR_ENABLED: false,
+				MCP_OAUTH_CIMD_ENABLED: true,
+			}),
+		);
 
-		vi.mocked(useEnv).mockReturnValue(mockEnv as any);
+		vi.mocked(useEnv).mockReturnValue(testEnv as any);
 	});
 
 	test('health reports an email error when the transport cannot be built', async () => {
-		Object.assign(mockEnv, { HEALTHCHECK_SERVICES: 'email', EMAIL_VERIFY_SETUP: true });
+		Object.assign(testEnv, { HEALTHCHECK_SERVICES: ['email'], EMAIL_VERIFY_SETUP: true });
 
 		vi.mocked(getMailer).mockImplementation(() => {
 			throw new Error('The EMAIL_MAILTRAP_TOKEN env var is required for the mailtrap transport');
@@ -130,7 +131,7 @@ describe('ServerService', () => {
 	});
 
 	test('serverInfo respects PROJECT_OWNER_ENABLED=false for authenticated users', async () => {
-		Object.assign(mockEnv, { PROJECT_OWNER_ENABLED: false });
+		Object.assign(testEnv, { PROJECT_OWNER_ENABLED: false });
 
 		tracker.on.select('directus_users').response([{ id: 'user-id' }]);
 

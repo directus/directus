@@ -4,7 +4,7 @@ import { Router } from 'express';
 import { useMetrics } from '../metrics/index.js';
 import asyncHandler from '../utils/async-handler.js';
 
-const env = useEnv();
+const { METRICS_TOKENS } = useEnv();
 const router = Router();
 const metrics = useMetrics();
 
@@ -15,10 +15,7 @@ router.get(
 			return next();
 		}
 
-		// support Bearer Token of type `Metrics`
-		const metricTokens = env['METRICS_TOKENS'] as string[] | undefined;
-
-		if (!req.headers || !req.headers.authorization || !metricTokens) {
+		if (!req.headers || !req.headers.authorization || !METRICS_TOKENS) {
 			throw new ForbiddenError();
 		}
 
@@ -28,7 +25,7 @@ router.get(
 			throw new ForbiddenError();
 		}
 
-		if (metricTokens.find((mt) => mt.toString() === parts[1]) !== undefined) {
+		if (METRICS_TOKENS.find((mt) => mt.toString() === parts[1]) !== undefined) {
 			return next();
 		}
 

@@ -8,7 +8,11 @@ import { validateAccess } from '../permissions/modules/validate-access/validate-
 import { ItemsService } from './items.js';
 import { SharesService } from './shares.js';
 
-vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
+});
+
 vi.mock('../logger/index.js', () => ({ useLogger: vi.fn().mockReturnValue({ error: vi.fn() }) }));
 
 vi.mock('../permissions/cache.js', () => ({ clearCache: vi.fn(), useCache: vi.fn() }));

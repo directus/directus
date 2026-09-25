@@ -30,7 +30,7 @@ import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
 
-const env = useEnv();
+const { PUBLIC_URL } = useEnv();
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -93,8 +93,8 @@ class OASSpecsService implements SpecificationSubService {
 		const paths = await this.generatePaths(schemaForSpec, permissions, tags);
 		const components = await this.generateComponents(schemaForSpec, tags);
 
-		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
-		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
+		const isDefaultPublicUrl = PUBLIC_URL === '/';
+		const url = isDefaultPublicUrl && host ? host : PUBLIC_URL;
 
 		const hashedVersion = hash({
 			now: new Date().toISOString(),

@@ -17,14 +17,9 @@ import { ImportService } from './import.js';
 const holder = vi.hoisted(() => ({ trx: null as any }));
 const cache: { importCount?: number } = {};
 
-const envConfig = vi.hoisted(() => ({
-	MAX_IMPORT_ERRORS: 1000,
-	EMAIL_TEMPLATES_PATH: './templates',
-	EXTENSIONS_PATH: './extensions',
-	IMPORT_TIMEOUT: '1m',
-	IMPORT_MAX_CONCURRENCY: 10,
-	CACHE_AUTO_PURGE: false as boolean,
-}));
+// Shared object rather than a fixed return value, so individual tests can amend it in place. The
+// factory seeds it with the test defaults, which several modules read as they're imported.
+const envConfig = vi.hoisted(() => ({}) as Record<string, unknown>);
 
 vi.mock('../../utils/store.js', () => ({
 	useStore: () => (callback: (store: any) => void) => {
@@ -40,9 +35,21 @@ vi.mock('../../utils/store.js', () => ({
 vi.mock('../../stores/notifications.js');
 vi.mock('../users.js');
 
-vi.mock('@directus/env', () => ({
-	useEnv: () => envConfig,
-}));
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../../test-utils/env.js');
+
+	Object.assign(
+		envConfig,
+		mockEnv({
+			MAX_IMPORT_ERRORS: 1000,
+			IMPORT_TIMEOUT: '1m',
+			IMPORT_MAX_CONCURRENCY: 10,
+			CACHE_AUTO_PURGE: false,
+		}),
+	);
+
+	return { useEnv: () => envConfig };
+});
 
 vi.mock('../../permissions/modules/validate-access/validate-access.js', () => ({
 	validateAccess: vi.fn(),

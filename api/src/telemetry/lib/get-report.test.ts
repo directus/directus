@@ -3,6 +3,7 @@ import { version } from 'directus/version';
 import { type Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
+import { mockEnv } from '../../test-utils/env.js';
 import { fetchUserCount, type UserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 import { useBufferedCounter } from '../counter/use-buffered-counter.js';
 import { formatApiRequestCounts } from '../utils/format-api-request-counts.js';
@@ -26,11 +27,10 @@ vi.mock('../../database/helpers/index.js', () => ({
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
-		EMAIL_TEMPLATES_PATH: './templates',
-	}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../../test-utils/env.js');
+	return mockUseEnv();
+});
 
 vi.mock('../utils/get-item-count.js');
 vi.mock('../utils/get-storage.js');
@@ -43,7 +43,7 @@ vi.mock('../utils/get-settings.js');
 vi.mock('../counter/use-buffered-counter.js');
 vi.mock('../utils/format-api-request-counts.js');
 
-let mockEnv: Record<string, unknown>;
+let envValues: Record<string, unknown>;
 let mockDb: Knex;
 let mockUserCounts: UserCount;
 let mockUserItemCounts: UserItemCount;
@@ -54,7 +54,7 @@ let mockSettings: TelemetrySettings;
 let mockRequestCounts: Record<string, number>;
 
 beforeEach(() => {
-	mockEnv = {
+	envValues = {
 		PUBLIC_URL: 'test-public-url',
 	};
 
@@ -84,7 +84,7 @@ beforeEach(() => {
 
 	mockRequestCounts = { get: 100, post: 50, patch: 20, delete: 5 };
 
-	vi.mocked(useEnv).mockReturnValue(mockEnv);
+	vi.mocked(useEnv).mockReturnValue(mockEnv(envValues));
 	vi.mocked(getDatabase).mockReturnValue(mockDb);
 
 	vi.mocked(useBufferedCounter).mockReturnValue({
@@ -124,7 +124,7 @@ test('Returns environment information', async () => {
 
 	const report = await getReport();
 
-	expect(report.url).toBe(mockEnv['PUBLIC_URL']);
+	expect(report.url).toBe(envValues['PUBLIC_URL']);
 	expect(report.database).toBe('test-db');
 	expect(report.version).toBe(version);
 });

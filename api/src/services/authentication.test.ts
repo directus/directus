@@ -76,15 +76,15 @@ vi.mock('../utils/get-milliseconds.js', () => ({
 	getMilliseconds: vi.fn().mockReturnValue(900000),
 }));
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
-		EMAIL_TEMPLATES_PATH: './templates',
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({
 		LOGIN_STALL_TIME: 0,
 		ACCESS_TOKEN_TTL: '15m',
 		REFRESH_TOKEN_TTL: '7d',
 		SESSION_COOKIE_TTL: '1d',
-	}),
-}));
+	});
+});
 
 vi.mock('jsonwebtoken', () => ({
 	default: {

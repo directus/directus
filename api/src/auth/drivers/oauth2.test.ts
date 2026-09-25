@@ -12,13 +12,13 @@ import type { Logger } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getAuthProvider } from '../../auth.js';
 import { useLogger } from '../../logger/index.js';
+import { mockEnv } from '../../test-utils/env.js';
 import { createOAuth2AuthRouter, OAuth2AuthDriver } from './oauth2.js';
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn(() => ({
-		EMAIL_TEMPLATES_PATH: './templates',
-	})),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../../test-utils/env.js');
+	return mockUseEnv();
+});
 
 vi.mock('../../auth.js', () => ({
 	getAuthProvider: vi.fn(),
@@ -212,10 +212,12 @@ describe('OAuth2AuthDriver', () => {
 			});
 
 			test('passes clientOptionsOverrides from env to Client constructor', () => {
-				vi.mocked(useEnv).mockReturnValue({
-					EMAIL_TEMPLATES_PATH: './templates',
-					AUTH_GITHUB_CLIENT_TEST: 'test',
-				});
+				vi.mocked(useEnv).mockReturnValue(
+					mockEnv({
+						EMAIL_TEMPLATES_PATH: './templates',
+						AUTH_GITHUB_CLIENT_TEST: 'test',
+					}),
+				);
 
 				const config = createOAuth2Config();
 				new OAuth2AuthDriver({ knex: {} as any }, config);
@@ -1323,10 +1325,12 @@ describe('createOAuth2AuthRouter', () => {
 	}
 
 	test('sets secure cookie option to true when AUTH_TEST_COOKIE_SECURE is true', () => {
-		vi.mocked(useEnv).mockReturnValue({
-			EMAIL_TEMPLATES_PATH: './templates',
-			AUTH_TEST_COOKIE_SECURE: true,
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			mockEnv({
+				EMAIL_TEMPLATES_PATH: './templates',
+				AUTH_TEST_COOKIE_SECURE: true,
+			}),
+		);
 
 		const mockDriver = {
 			generateCodeVerifier: vi.fn(() => 'test-verifier'),
@@ -1350,10 +1354,12 @@ describe('createOAuth2AuthRouter', () => {
 	});
 
 	test('sets secure cookie option to false when AUTH_TEST_COOKIE_SECURE is false', () => {
-		vi.mocked(useEnv).mockReturnValue({
-			EMAIL_TEMPLATES_PATH: './templates',
-			AUTH_TEST_COOKIE_SECURE: false,
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			mockEnv({
+				EMAIL_TEMPLATES_PATH: './templates',
+				AUTH_TEST_COOKIE_SECURE: false,
+			}),
+		);
 
 		const mockDriver = {
 			generateCodeVerifier: vi.fn(() => 'test-verifier'),

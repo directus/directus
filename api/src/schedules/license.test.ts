@@ -11,8 +11,8 @@ vi.spyOn(schedule, 'validateCron');
 // `@directus/env` is pulled in transitively (logger reads it at import time).
 // Same pattern used in the other schedule tests until logger migrates to useLogger everywhere.
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv();
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
 });
 
 vi.mock('../license/manager.js');

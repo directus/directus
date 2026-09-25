@@ -10,8 +10,8 @@ import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv();
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
 });
 
 vi.mock('../../src/database/index', async () => {

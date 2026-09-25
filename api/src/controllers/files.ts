@@ -75,7 +75,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 			return busboy.emit('error', new InvalidPayloadError({ reason: `File is missing filename` }));
 		}
 
-		if (isMimeTypeAllowed(mimeType, env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]) === false) {
+		if (isMimeTypeAllowed(mimeType, env.FILES_MIME_TYPE_ALLOW_LIST as string[]) === false) {
 			return busboy.emit('error', new InvalidPayloadError({ reason: `File is of invalid content type` }));
 		}
 
@@ -139,7 +139,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		let keys: PrimaryKey | PrimaryKey[] = [];
+		let keys: PrimaryKey | PrimaryKey[];
 
 		if (req.is('multipart/form-data')) {
 			keys = res.locals['savedFiles'];
@@ -267,7 +267,7 @@ router.patch(
 			schema: req.schema,
 		});
 
-		let keys: PrimaryKey[] = [];
+		let keys: PrimaryKey[];
 
 		if (Array.isArray(req.body)) {
 			keys = await service.updateBatch(req.body);

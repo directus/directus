@@ -89,7 +89,7 @@ export const relations = defineTool<z.infer<typeof RelationsValidateSchema>, z.i
 		}
 
 		if (args.action === 'read') {
-			let result = null;
+			let result;
 
 			if (args.field && args.collection) {
 				result = await service.readOne(args.collection, args.field);

@@ -26,10 +26,10 @@ import type {
 } from './types.js';
 import { verifyPermissions } from './verify-permissions.js';
 
-const env = useEnv();
-
-const CLUSTER_CLEANUP_CRON = String(env['WEBSOCKETS_COLLAB_CLUSTER_CLEANUP_CRON']);
-const LOCAL_CLEANUP_INTERVAL = Number(env['WEBSOCKETS_COLLAB_LOCAL_CLEANUP_INTERVAL']);
+const {
+	WEBSOCKETS_COLLAB_CLUSTER_CLEANUP_CRON: CLUSTER_CLEANUP_CRON,
+	WEBSOCKETS_COLLAB_LOCAL_CLEANUP_INTERVAL: LOCAL_CLEANUP_INTERVAL,
+} = useEnv();
 
 /**
  * Handler responsible for subscriptions

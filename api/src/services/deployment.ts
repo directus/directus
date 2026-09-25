@@ -26,7 +26,7 @@ import { DeploymentRunsService } from './deployment-runs.js';
 import { ItemsService } from './items.js';
 
 const env = useEnv();
-const DEPLOYMENT_CACHE_TTL = getMilliseconds(env['CACHE_DEPLOYMENT_TTL']) || 5000; // Default 5s
+const DEPLOYMENT_CACHE_TTL = getMilliseconds(env.CACHE_DEPLOYMENT_TTL);
 const SYNC_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
 
 export class DeploymentService extends ItemsService<DeploymentConfig> {
@@ -287,8 +287,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			}
 		}
 
-		const publicUrl = env['PUBLIC_URL'] as string;
-		const webhookUrl = `${publicUrl}/deployments/webhooks/${provider}`;
+		const webhookUrl = `${env.PUBLIC_URL}/deployments/webhooks/${provider}`;
 
 		logger.debug(
 			`[webhook:${provider}] Registering webhook → ${webhookUrl} for ${projectExternalIds.length} project(s)`,

@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import type { CollectionAccess, GraphQLParams } from '@directus/types';
-import { toBoolean } from '@directus/utils';
 import {
 	GraphQLBoolean,
 	GraphQLEnumType,
@@ -87,7 +86,7 @@ export function injectSystemResolvers(
 
 	if (gql.accountability?.user) {
 		ServerInfo.addFields({
-			rateLimit: env['RATE_LIMITER_ENABLED']
+			rateLimit: env.RATE_LIMITER_ENABLED
 				? {
 						type: new GraphQLObjectType({
 							name: 'server_info_rate_limit',
@@ -98,7 +97,7 @@ export function injectSystemResolvers(
 						}),
 					}
 				: GraphQLBoolean,
-			rateLimitGlobal: env['RATE_LIMITER_GLOBAL_ENABLED']
+			rateLimitGlobal: env.RATE_LIMITER_GLOBAL_ENABLED
 				? {
 						type: new GraphQLObjectType({
 							name: 'server_info_rate_limit_global',
@@ -109,13 +108,13 @@ export function injectSystemResolvers(
 						}),
 					}
 				: GraphQLBoolean,
-			websocket: toBoolean(env['WEBSOCKETS_ENABLED'])
+			websocket: env.WEBSOCKETS_ENABLED
 				? {
 						type: new GraphQLObjectType({
 							name: 'server_info_websocket',
 							fields: {
 								rest: {
-									type: toBoolean(env['WEBSOCKETS_REST_ENABLED'])
+									type: env.WEBSOCKETS_REST_ENABLED
 										? new GraphQLObjectType({
 												name: 'server_info_websocket_rest',
 												fields: {
@@ -135,7 +134,7 @@ export function injectSystemResolvers(
 										: GraphQLBoolean,
 								},
 								graphql: {
-									type: toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
+									type: env.WEBSOCKETS_GRAPHQL_ENABLED
 										? new GraphQLObjectType({
 												name: 'server_info_websocket_graphql',
 												fields: {
@@ -155,7 +154,7 @@ export function injectSystemResolvers(
 										: GraphQLBoolean,
 								},
 								heartbeat: {
-									type: toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']) ? GraphQLInt : GraphQLBoolean,
+									type: env.WEBSOCKETS_HEARTBEAT_ENABLED ? GraphQLInt : GraphQLBoolean,
 								},
 							},
 						}),
@@ -173,7 +172,7 @@ export function injectSystemResolvers(
 		});
 	}
 
-	if (env['OPENAPI_ENABLED'] !== false) {
+	if (env.OPENAPI_ENABLED) {
 		schemaComposer.Query.addFields({
 			server_specs_oas: {
 				type: GraphQLJSON,
@@ -186,7 +185,7 @@ export function injectSystemResolvers(
 	}
 
 	/** Globally available query */
-	if (env['GRAPHQL_INTROSPECTION'] !== false) {
+	if (env.GRAPHQL_INTROSPECTION) {
 		schemaComposer.Query.addFields({
 			server_specs_graphql: {
 				type: GraphQLString,
@@ -230,7 +229,7 @@ export function injectSystemResolvers(
 		},
 	});
 
-	if (toBoolean(env['HEALTHCHECK_ENABLED']) !== false) {
+	if (env.HEALTHCHECK_ENABLED) {
 		schemaComposer.Query.addFields({
 			server_health: {
 				type: GraphQLJSON,

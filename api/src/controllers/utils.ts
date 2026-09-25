@@ -26,7 +26,7 @@ const router = Router();
 
 const env = useEnv();
 
-const IMPORT_MAX_FILE_SIZE = bytes.parse(env['IMPORT_MAX_FILE_SIZE'] as string) ?? undefined;
+const IMPORT_MAX_FILE_SIZE = bytes.parse(env.IMPORT_MAX_FILE_SIZE) ?? undefined;
 
 const randomStringSchema = z.object({
 	length: z.coerce.number().int().min(1).max(500).default(32),
