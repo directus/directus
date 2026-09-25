@@ -37,7 +37,7 @@ export const readRevision =
 		query?: TQuery,
 	): RestCommand<ReadRevisionOutput<Schema, TQuery>, Schema> =>
 	() => {
-		throwIfEmpty(String(key), 'Key cannot be empty');
+		throwIfEmpty(key, 'Key cannot be empty');
 
 		return {
 			path: `/revisions/${key}`,
