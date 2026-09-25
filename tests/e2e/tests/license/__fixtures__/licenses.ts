@@ -1,11 +1,7 @@
-/**
- * license fixtures for the e2e suite.
- *
- */
-
 export { createLicense } from '@directus/mock-license-server';
 export type { MockLicense as License } from '@directus/mock-license-server';
 
+/** Keys pre-registered in the mock license server. */
 export const LICENSE_KEYS = {
 	/** -1 limits, all features on. The global e2e instance boots with this key. */
 	UNLIMITED: 'D0000-00000-00000-00000-0000K',

@@ -3320,6 +3320,9 @@ importers:
       '@directus/sdk':
         specifier: workspace:*
         version: link:../../sdk
+      '@directus/system-data':
+        specifier: workspace:*
+        version: link:../../packages/system-data
       date-fns:
         specifier: 'catalog:'
         version: 4.1.0

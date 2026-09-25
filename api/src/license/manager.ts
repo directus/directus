@@ -44,6 +44,7 @@ import { computeLicenseStatus } from './utils/compute-license-status.js';
 import { handleLicenseError, isLicenseInactive, isLicenseInvalid, toReason } from './utils/errors.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
+import { handleLicenseError } from './utils/handle-license-error.js';
 import { type ExtractMethods, useRPC } from './utils/use-rpc.js';
 
 const env = useEnv();
@@ -171,6 +172,7 @@ export class LicenseManager {
 			}
 
 			// env has no option to update key via the UI, hard exit to allow resolution
+
 			throw new Error(
 				`Unable to validate the ${env['LICENSE_KEY'] ? 'LICENSE_KEY' : 'LICENSE_TOKEN'}, please check its value and try again.`,
 				{ cause: error },
@@ -782,7 +784,6 @@ export class LicenseManager {
 	public async syncState(options?: { local?: boolean }) {
 		// While booting, only the boot action's own sync applies; followers sync themselves once the run is over
 		if (this.initializing && !options?.local) return;
-
 		const { source: keySource, key } = await getLicenseKey();
 		const { source: tokenSource, token } = await getLicenseToken();
 
