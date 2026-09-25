@@ -259,6 +259,7 @@ describe('Integration Tests', () => {
 					c.field('date_field').date();
 					c.field('datetime_field').dateTime();
 					c.field('timestamp_field').timestamp();
+					c.field('time_field').time();
 				})
 				.build();
 
@@ -272,6 +273,18 @@ describe('Integration Tests', () => {
 			});
 
 			describe('processes dates', () => {
+				test('passes a time string through to the database on create', () => {
+					const result = service.processDates(fieldEntries, [{ time_field: '10:15:30' }], 'create');
+
+					expect(result).toMatchObject([{ time_field: '10:15:30' }]);
+				});
+
+				test('rejects an unparseable timestamp on create', () => {
+					expect(() => service.processDates(fieldEntries, [{ timestamp_field: 'not-a-date' }], 'create')).toThrow(
+						'Invalid Timestamp format in field "timestamp_field"',
+					);
+				});
+
 				test('with zero values', () => {
 					const result = service.processDates(
 						fieldEntries,

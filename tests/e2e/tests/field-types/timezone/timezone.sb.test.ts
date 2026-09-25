@@ -29,8 +29,6 @@ const SAMPLES: Sample[] = Array.from({ length: 24 }).flatMap((_, hour) => {
 	];
 });
 
-const isOracle = database === 'oracle';
-
 /** How far `timeZone` is ahead of UTC at `date`, in milliseconds. */
 function offsetOf(timeZone: string, date: Date) {
 	const parts = Object.fromEntries(
@@ -95,8 +93,7 @@ for (const timezone of TIMEZONES) {
 							schema: { is_primary_key: true, has_auto_increment: true },
 						},
 						{ field: 'date', type: 'date', meta: {}, schema: {} },
-						// Oracle has no time only type
-						...(isOracle ? [] : [{ field: 'time', type: 'time', meta: {}, schema: {} }]),
+						{ field: 'time', type: 'time', meta: {}, schema: {} },
 						{ field: 'datetime', type: 'dateTime', meta: {}, schema: {} },
 						{ field: 'timestamp', type: 'timestamp', meta: {}, schema: {} },
 						{ field: 'date_created', type: 'timestamp', meta: {}, schema: {} },
@@ -116,10 +113,8 @@ for (const timezone of TIMEZONES) {
 		});
 
 		test('stores and returns every value in the timezone it was given in', async () => {
-			const payload = SAMPLES.map((sample) => (isOracle ? { ...sample, time: undefined } : sample));
-
 			const before = Date.now();
-			await api.request(createItems(COLLECTION, payload as any));
+			await api.request(createItems(COLLECTION, SAMPLES as any));
 			const after = Date.now();
 
 			const items = await api.request(readItems(COLLECTION, { fields: ['*'], limit: -1, sort: ['id'] } as any));
@@ -131,8 +126,7 @@ for (const timezone of TIMEZONES) {
 
 				expect(item.date).toBe(sample.date);
 				expect(item.datetime).toBe(sample.datetime);
-
-				if (!isOracle) expect(item.time).toBe(sample.time);
+				expect(item.time).toBe(sample.time);
 
 				// A timestamp is normalized to UTC, keeping the instant it referred to
 				expect(item.timestamp.substring(0, 19)).toBe(new Date(sample.timestamp).toISOString().substring(0, 19));
@@ -144,6 +138,17 @@ for (const timezone of TIMEZONES) {
 
 				expect(item.date_updated).toBeNull();
 			}
+
+			// A time filter has to hit the same wall clock the value was stored with
+			const sample = SAMPLES[0]!;
+
+			const filtered = await api.request(
+				readItems(COLLECTION, { fields: ['time'], filter: { time: { _eq: sample.time } }, limit: -1 } as any),
+			);
+
+			expect(filtered.map((item: any) => item.time)).toEqual(
+				SAMPLES.filter((s) => s.time === sample.time).map((s) => s.time),
+			);
 		});
 
 		test('stamps date_updated in the same timezone on update', async () => {
