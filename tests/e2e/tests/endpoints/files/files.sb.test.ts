@@ -16,6 +16,7 @@ import {
 } from '@directus/sdk';
 import type { Permission } from '@directus/types';
 import { database } from '@utils/constants.js';
+import { directusError } from '@utils/errors.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
 import { useSandbox } from '@utils/sandbox.js';
@@ -255,15 +256,11 @@ describe('/files/tus', () => {
 
 describe('POST /files forbidden storage paths', () => {
 	test('rejects an upload that writes into the extensions directory', async () => {
-		await expect(uploadToLocal('extensions/evil.js')).rejects.toMatchObject({
-			errors: [expect.objectContaining({ extensions: expect.objectContaining({ code: 'FORBIDDEN' }) })],
-		});
+		await expect(uploadToLocal('extensions/evil.js')).rejects.toMatchObject(directusError('FORBIDDEN'));
 	});
 
 	test('rejects an upload that writes into the temp directory', async () => {
-		await expect(uploadToLocal('temp/evil.js')).rejects.toMatchObject({
-			errors: [expect.objectContaining({ extensions: expect.objectContaining({ code: 'FORBIDDEN' }) })],
-		});
+		await expect(uploadToLocal('temp/evil.js')).rejects.toMatchObject(directusError('FORBIDDEN'));
 	});
 
 	test('allows an upload to a sibling folder that merely shares the extensions prefix', async () => {
