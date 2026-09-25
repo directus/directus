@@ -90,8 +90,8 @@ export class KvLocal implements Kv {
 		};
 	}
 
-	usingLock<T>(_key: string, callback: () => Promise<T>): Promise<T> {
-		return callback();
+	usingLock<T>(_key: string, callback: (signal: AbortSignal) => Promise<T>): Promise<T> {
+		return callback(new AbortController().signal);
 	}
 
 	clear(): void {

@@ -1,6 +1,6 @@
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, LimitExceededError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Accountability, Collection, FieldMutationOptions } from '@directus/types';
+import type { Accountability, Collection, FieldMutationOptions, RawCollection } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
 import { createMockKnex, resetKnexMocks, setupSystemCollectionMocks } from '../test-utils/knex.js';
@@ -8,6 +8,10 @@ import * as getSchemaModule from '../utils/get-schema.js';
 import { CollectionsService } from './collections.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
+
+const entitlements = vi.hoisted(() => ({ assert: vi.fn(), clearCache: vi.fn() }));
+
+vi.mock('../license/index.js', () => ({ getEntitlementManager: () => entitlements }));
 
 vi.mock('@directus/env', async () => {
 	const { mockEnv } = await import('../test-utils/env.js');
@@ -711,5 +715,70 @@ describe('Integration Tests', () => {
 				expect(deleteOneSpy).toHaveBeenCalledTimes(2);
 			});
 		});
+	});
+});
+
+describe('collections entitlement', () => {
+	const { db, tracker, mockSchemaBuilder } = createMockKnex();
+	const service = () => new CollectionsService({ knex: db, schema, accountability: null });
+
+	beforeEach(() => {
+		vi.restoreAllMocks();
+		vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
+		tracker.on.select('directus_collections').response([]);
+	});
+
+	afterEach(() => {
+		resetKnexMocks(tracker, mockSchemaBuilder);
+		vi.clearAllMocks();
+	});
+
+	test.each<[string, NonNullable<RawCollection['meta']>]>([
+		['without a status (defaults to active)', {}],
+		['with status active', { status: 'active' }],
+	])('createOne of a table %s consumes a collection slot', async (_, meta) => {
+		await service().createOne({ collection: 'new_collection', schema: {}, meta });
+
+		expect(entitlements.assert).toHaveBeenCalledWith('collections', { adding: 1, knex: db });
+	});
+
+	test.each<[string, Pick<RawCollection, 'schema' | 'meta'>]>([
+		['a folder (schema:null)', { schema: null, meta: {} }],
+		['an inactive collection', { schema: {}, meta: { status: 'inactive' } }],
+	])('createOne of %s does not consume a collection slot', async (_, payload) => {
+		await service().createOne({ collection: 'new_collection', ...payload });
+
+		expect(entitlements.assert).not.toHaveBeenCalled();
+	});
+
+	test('createOne over the limit rejects before the table is created', async () => {
+		entitlements.assert.mockRejectedValueOnce(new LimitExceededError({ category: 'collections' }));
+
+		await expect(service().createOne({ collection: 'new_collection', schema: {}, meta: {} })).rejects.toBeInstanceOf(
+			LimitExceededError,
+		);
+
+		expect(mockSchemaBuilder.createTable).not.toHaveBeenCalled();
+	});
+
+	test('activating a collection consumes a collection slot', async () => {
+		await service().updateOne('test_collection', { meta: { status: 'active' } } as Partial<Collection>);
+
+		expect(entitlements.assert).toHaveBeenCalledWith('collections', { adding: 1, knex: db });
+	});
+
+	test.each([
+		['deactivating', { status: 'inactive' }],
+		['a non-status edit', { note: 'updated note' }],
+	])('%s is allowed without a limit check, even while over the limit', async (_, meta) => {
+		await service().updateOne('test_collection', { meta } as Partial<Collection>);
+
+		expect(entitlements.assert).not.toHaveBeenCalled();
+	});
+
+	test('updateOne invalidates the cached collection count, so a deactivation frees the slot', async () => {
+		await service().updateOne('test_collection', { meta: { status: 'inactive' } } as Partial<Collection>);
+
+		expect(entitlements.clearCache).toHaveBeenCalledWith('collections');
 	});
 });

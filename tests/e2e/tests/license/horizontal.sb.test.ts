@@ -1,57 +1,86 @@
 import { activateLicense, readLicense } from '@directus/license';
-import { mockClient } from '@directus/mock-license-server';
 import { type Sandbox } from '@directus/sandbox';
-import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
+import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
 import { useSandbox } from '@utils/sandbox.js';
-import { afterAll, beforeAll, expect, test } from 'vitest';
-import { createLicense } from './__fixtures__/licenses.js';
+import { afterAll, beforeAll, describe, expect, test } from 'vitest';
+import { LICENSE_KEYS } from './__fixtures__/licenses.js';
 
-const license = createLicense({ meta: { name: 'horizontal-test' } });
+function clients(directus: Sandbox) {
+	return directus.apis.map(({ port }) =>
+		createDirectus<any>(`http://localhost:${port}`).with(rest()).with(staticToken('admin')),
+	);
+}
 
-let directus: Sandbox;
-let api1: DirectusClient<any> & RestClient<any>;
-let api2: DirectusClient<any> & RestClient<any>;
+async function expectLicenseOnEveryInstance(directus: Sandbox, expected: Record<string, unknown>) {
+	for (const api of clients(directus)) {
+		await expect.poll(() => api.request(readLicense()), { timeout: 5000, interval: 100 }).toMatchObject(expected);
+	}
+}
 
-beforeAll(async () => {
-	directus = await useSandbox(database, {
-		port: sandboxPort(0),
-		instances: '2',
-		hooks: {
-			async beforeApi({ env }) {
-				await mockClient.registerLicense(env.LICENSE_API_URL!, license);
-			},
-		},
-		extras: {
-			license: true,
-			redis: true,
-		},
+describe('boot with a license', () => {
+	let directus: Sandbox;
+
+	beforeAll(async () => {
+		directus = await useSandbox(database, {
+			port: sandboxPort(0),
+			instances: '2',
+			env: { LICENSE_KEY: LICENSE_KEYS.LIMITED },
+			extras: { license: true, redis: true },
+		});
 	});
 
-	api1 = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
-	api2 = createDirectus<any>(`http://localhost:${directus.apis[1]!.port}`).with(rest()).with(staticToken('admin'));
+	afterAll(async () => {
+		await directus?.stop();
+	});
+
+	test('every instance receives the same license', async () => {
+		await expectLicenseOnEveryInstance(directus, { name: 'LIMITED', source: 'env', status: 'active' });
+	});
+
+	test('a restart retains license cross instance', async () => {
+		await directus.restartApi();
+
+		await expectLicenseOnEveryInstance(directus, { name: 'LIMITED', source: 'env', status: 'active' });
+	});
 });
 
-afterAll(async () => {
-	await directus?.stop();
-});
+describe('activation post boot', () => {
+	let directus: Sandbox;
 
-test('activation on one instance: license syncs to all instances via RPC', async () => {
-	const [before1, before2] = await Promise.all([api1.request(readLicense()), api2.request(readLicense())]);
+	beforeAll(async () => {
+		directus = await useSandbox(database, {
+			port: sandboxPort(1),
+			instances: '2',
+			extras: { license: true, redis: true },
+		});
+	});
 
-	expect(before1).toEqual(before2);
+	afterAll(async () => {
+		await directus?.stop();
+	});
 
-	await api1.request(activateLicense({ license_key: license.key }));
+	test('the license syncs to every other instance, and survives a restart', async () => {
+		const [api1, api2] = clients(directus);
 
-	// Poll until the inter-instance RPC broadcast settles on instance 2.
-	await expect
-		.poll(() => api2.request(readLicense()), { timeout: 5000, interval: 100 })
-		.toMatchObject({ name: license.meta.name, source: 'settings' });
+		const [before1, before2] = await Promise.all([api1!.request(readLicense()), api2!.request(readLicense())]);
 
-	const [after1, after2] = await Promise.all([api1.request(readLicense()), api2.request(readLicense())]);
+		expect(before1).toEqual(before2);
 
-	expect(after1).toEqual(after2);
-	expect(after1).toMatchObject({ name: license.meta.name, source: 'settings' });
-	expect(after1).not.toEqual(before1);
+		await api1!.request(activateLicense({ license_key: LICENSE_KEYS.LIMITED }));
+
+		await expect
+			.poll(() => api2!.request(readLicense()), { timeout: 5000, interval: 100 })
+			.toMatchObject({ name: 'LIMITED', source: 'settings' });
+
+		const [after1, after2] = await Promise.all([api1!.request(readLicense()), api2!.request(readLicense())]);
+
+		expect(after1).toEqual(after2);
+		expect(after1).not.toEqual(before1);
+
+		await directus.restartApi();
+
+		await expectLicenseOnEveryInstance(directus, { name: 'LIMITED', source: 'settings', status: 'active' });
+	});
 });
