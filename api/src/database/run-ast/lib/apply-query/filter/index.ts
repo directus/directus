@@ -65,6 +65,8 @@ export function applyFilter(
 				filterPath.length > 1 ||
 				(!(key.includes('(') && key.includes(')')) && schema.collections[collection]?.fields[key]?.type === 'alias')
 			) {
+				if (isResolvedThroughSubQuery(key, value, collection)) continue;
+
 				const { hasMultiRelational, isJoinAdded } = addJoin({
 					path: filterPath,
 					collection,
@@ -83,6 +85,21 @@ export function applyFilter(
 				}
 			}
 		}
+	}
+
+	/**
+	 * `_some`/`_none` on a top level o2m/o2a alias is resolved with a `whereIn`/`whereNotIn` subquery
+	 * in `addWhereClauses`, so a join for it would never be referenced.
+	 */
+	function isResolvedThroughSubQuery(key: string, value: Record<string, any>, collection: string) {
+		const childKey = Object.keys(value ?? {})[0];
+
+		if (childKey !== '_none' && childKey !== '_some') return false;
+
+		const pathRoot = key.split(':')[0]!;
+		const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
+
+		return Boolean(relation) && (relationType === 'o2m' || relationType === 'o2a');
 	}
 
 	function addWhereClauses(
