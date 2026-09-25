@@ -9,20 +9,8 @@ import { IpBlocklist } from './ip-blocklist.js';
 export function ipInNetworks(ip: string, networks: string[]): boolean {
 	const blockList = new IpBlocklist();
 
-	for (const blockNetworkRaw of networks) {
-		const blockNetwork = blockNetworkRaw.trim();
-
-		if (blockNetwork.includes('-')) {
-			blockList.parseRange(blockNetwork);
-			continue;
-		}
-
-		if (blockNetwork.includes('/')) {
-			blockList.parseSubnet(blockNetwork);
-			continue;
-		}
-
-		blockList.parseAddress(blockNetwork);
+	for (const blockNetwork of networks) {
+		blockList.parseNetwork(blockNetwork.trim());
 	}
 
 	return blockList.checkAddress(ip);
