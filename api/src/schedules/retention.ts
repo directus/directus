@@ -81,10 +81,11 @@ export async function handleRetentionJob() {
 			try {
 				let records = [];
 				const isMySQL = helpers.schema.isOneOfClients(['mysql']);
+				const deletesRevisions = task.collection === 'directus_activity' || task.collection === 'directus_revisions';
 
 				// mysql/maria does not allow limit within a subquery
 				// https://dev.mysql.com/doc/refman/8.4/en/subquery-restrictions.html
-				if (isMySQL) {
+				if (isMySQL || deletesRevisions) {
 					records = await subquery.then((r) => r.map((r) => r.id));
 
 					if (records.length === 0) {
@@ -92,8 +93,23 @@ export async function handleRetentionJob() {
 					}
 				}
 
+				if (deletesRevisions) {
+					let revisionIds = records;
+
+					if (task.collection === 'directus_activity') {
+						revisionIds = await database('directus_revisions')
+							.select('id')
+							.whereIn('activity', records)
+							.then((revisions) => revisions.map((revision) => revision.id));
+					}
+
+					if (revisionIds.length > 0) {
+						await database('directus_revisions').update({ parent: null }).whereIn('parent', revisionIds);
+					}
+				}
+
 				count = await database(task.collection)
-					.whereIn('id', isMySQL ? records : subquery)
+					.whereIn('id', isMySQL || deletesRevisions ? records : subquery)
 					.delete();
 			} catch (error) {
 				logger.error(error, `Retention failed for Collection ${task.collection}`);
