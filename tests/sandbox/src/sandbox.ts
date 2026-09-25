@@ -15,6 +15,7 @@ import {
 	bootstrap,
 	buildApi,
 	createDatabase,
+	dockerDown,
 	dockerUp,
 	loadSchema,
 	saveSchema,
@@ -69,8 +70,10 @@ export type Options = {
 		redis: boolean;
 		/** Auth provider */
 		saml: boolean;
+		/** Directory server, used as an auth provider */
+		ldap: boolean;
 		/** Storage provider */
-		minio: boolean;
+		rustfs: boolean;
 		/** Email server */
 		maildev: boolean;
 		/** License server */
@@ -116,6 +119,9 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 
 	const port = await getPort(options?.port ?? process.env['PORT'] ?? 8055);
 
+	if (options?.docker?.name) options.docker.name = options.docker.name.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+	if (options?.docker?.suffix) options.docker.suffix = options.docker.suffix.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+
 	return merge(
 		{
 			build: false,
@@ -139,8 +145,9 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 			export: false,
 			extras: {
 				redis: false,
+				ldap: false,
 				maildev: false,
-				minio: false,
+				rustfs: false,
 				saml: false,
 				license: false,
 			},
@@ -193,7 +200,7 @@ export async function sandboxes(
 	}[] = [];
 
 	let build: ChildProcessWithoutNullStreams | undefined;
-	const projects: { project: string; logger: Logger; env: Env }[] = [];
+	const projects: { project: string; logger: Logger; env: Env; keep: boolean }[] = [];
 
 	let license: ChildProcessWithoutNullStreams | undefined;
 
@@ -216,7 +223,7 @@ export async function sandboxes(
 
 				try {
 					const project = await dockerUp(database, opts, env, logger);
-					if (project) projects.push({ project, logger, env });
+					if (project) projects.push({ project, logger, env, keep: opts.docker.keep });
 
 					await bootstrap(opts, env, logger);
 					if (opts.schema) await loadSchema(opts.schema, env, logger);
@@ -253,6 +260,10 @@ export async function sandboxes(
 		}
 
 		kill(license);
+
+		await Promise.all(
+			projects.filter(({ keep }) => !keep).map(({ project, logger, env }) => dockerDown(project, env, logger)),
+		);
 	}
 
 	return { sandboxes, stop, restartApis };
@@ -332,6 +343,8 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 
 		kill(app);
 		kill(license);
+
+		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
 
 		const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 		logger.info(`Stopped sandbox ${time}`);

@@ -43,7 +43,9 @@ describe('fields tool', () => {
 				deleteField: vi.fn(),
 			};
 
-			vi.mocked(FieldsService).mockImplementation(() => mockFieldsService as unknown as FieldsService);
+			vi.mocked(FieldsService).mockImplementation(function () {
+				return mockFieldsService as unknown as FieldsService;
+			});
 		});
 
 		describe('CREATE action', () => {
