@@ -23,8 +23,8 @@
 	"scripts": {
 		"build": "tsdown src/index.ts --dts",
 		"dev": "tsdown src/index.ts --dts --watch",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"test": "vitest run --project unit",
+		"test:integration": "vitest run --project integration"
 	},
 	"dependencies": {
 		"@directus/errors": "workspace:*",
