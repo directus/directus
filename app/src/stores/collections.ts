@@ -2,7 +2,7 @@ import formatTitle from '@directus/format-title';
 import { isSystemCollection } from '@directus/system-data';
 import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/types';
 import { getCollectionType } from '@directus/utils';
-import { isEqual, isNil, omit } from 'lodash';
+import { isEqual, isNil, omit } from 'lodash-es';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useLicenseStore } from './license';
