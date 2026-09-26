@@ -98,6 +98,9 @@ describe('FlowDrawer - save', () => {
 
 		const wrapper = mount(FlowDrawer, { global, props: { active: true, primaryKey: 'flow-1', folder: 'folder-a' } });
 
+		// Only changed fields are sent. Exercise an edit before asserting the
+		// update payload omits the current folder.
+		(wrapper.vm as any).updateField('name', 'Renamed Flow');
 		await (wrapper.vm as any).save();
 
 		expect(api.patch).toHaveBeenCalledWith(
