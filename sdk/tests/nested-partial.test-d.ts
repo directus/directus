@@ -2,17 +2,20 @@ import { assertType, describe, expectTypeOf, test } from 'vitest';
 import type {
 	CollectionName,
 	DirectusComment,
+	DirectusFile,
 	DirectusFlow,
 	DirectusPreset,
 	DirectusRole,
 	DirectusUser,
 	DirectusVersion,
+	JsonValue,
 	NestedPartial,
 	QueryFields,
 	ReadFlowOutput,
 	StringLiteralUnion,
 } from '../src/index.js';
-import type { TestSchema } from './schema.js';
+import { createItem, createItems, updateItem, updateItems } from '../src/index.js';
+import type { CollectionB, CollectionC, TestSchema } from './schema.js';
 
 describe('NestedPartial', () => {
 	test('only the object member of a union becomes partial', () => {
@@ -184,5 +187,119 @@ describe('StringLiteralUnion on the read path', () => {
 
 		// @ts-expect-error status is not relational — an object field-spec must be rejected
 		assertType<ItemFields>([{ status: ['*'] }]);
+	});
+});
+
+describe('NestedPartial maps literal field-type markers on the write path (#21599)', () => {
+	test('a json field accepts any JsonValue, not the literal "json"', () => {
+		type Case = NestedPartial<CollectionB>;
+
+		expectTypeOf<Case['json_field']>().toEqualTypeOf<JsonValue | null | undefined>();
+
+		assertType<Case>({ json_field: { test: 'object' } });
+		assertType<Case>({ json_field: ['a', 'b'] });
+		// the marker string itself is now just a plain string value, which is valid JSON
+		assertType<Case>({ json_field: 'json' });
+		assertType<Case>({ json_field: null });
+
+		// @ts-expect-error a function is not a JsonValue
+		assertType<Case>({ json_field: () => 'nope' });
+	});
+
+	test('a csv field accepts string[], not the literal "csv"', () => {
+		type Case = NestedPartial<CollectionB>;
+
+		expectTypeOf<Case['csv_field']>().toEqualTypeOf<string[] | null | undefined>();
+
+		assertType<Case>({ csv_field: ['a', 'b'] });
+
+		// @ts-expect-error a csv field is a string[] on input, not a single string
+		assertType<Case>({ csv_field: 'a,b' });
+	});
+
+	test('datetime, date and time fields accept a string, not the literal marker', () => {
+		type Case = NestedPartial<CollectionC>;
+
+		expectTypeOf<Case['dt_field']>().toEqualTypeOf<string | null | undefined>();
+		expectTypeOf<Case['date_field']>().toEqualTypeOf<string | null | undefined>();
+		expectTypeOf<Case['time_field']>().toEqualTypeOf<string | null | undefined>();
+
+		assertType<Case>({
+			dt_field: '2024-02-27T11:27:25+00:00',
+			date_field: '2024-02-27',
+			time_field: '11:27:25',
+		});
+
+		// @ts-expect-error dt_field is a string on input, not a number
+		assertType<Case>({ dt_field: 123 });
+	});
+
+	test('non-marker fields are left untouched', () => {
+		type Case = NestedPartial<CollectionC>;
+
+		// plain strings and relations keep their existing behavior
+		expectTypeOf<Case['nullable']>().toEqualTypeOf<string | null | undefined>();
+		expectTypeOf<Case['non_nullable']>().toEqualTypeOf<string | undefined>();
+
+		assertType<Case>({ parent_id: { string_field: 'nested' } });
+	});
+
+	test('markers on core collection types map too (created_on is a datetime)', () => {
+		type Case = NestedPartial<DirectusFile<TestSchema>>;
+
+		expectTypeOf<Case['created_on']>().toEqualTypeOf<string | undefined>();
+
+		assertType<Case>({ created_on: '2024-02-27T11:27:25+00:00' });
+	});
+});
+
+describe('createItem / updateItem accept literal-typed field values (#21599)', () => {
+	test('createItem and createItems accept the real values for marker fields', () => {
+		createItem<TestSchema, 'collection_b', any>('collection_b', {
+			json_field: { test: 'object' },
+			csv_field: ['a', 'b'],
+		});
+
+		createItem<TestSchema, 'collection_c', any>('collection_c', {
+			dt_field: '2024-02-27T11:27:25+00:00',
+			date_field: '2024-02-27',
+			time_field: '11:27:25',
+		});
+
+		createItems<TestSchema, 'collection_c', any>('collection_c', [{ dt_field: '2024-02-27T11:27:25+00:00' }]);
+	});
+
+	test('updateItem and updateItems accept the real values for marker fields', () => {
+		updateItem<TestSchema, 'collection_c', any>('collection_c', 1, {
+			dt_field: '2024-02-27T11:27:25+00:00',
+		});
+
+		updateItems<TestSchema, 'collection_b', any>('collection_b', [1], {
+			json_field: { nested: { ok: true } },
+		});
+	});
+
+	test('wrong value types are still rejected on create', () => {
+		createItem<TestSchema, 'collection_c', any>('collection_c', {
+			// @ts-expect-error dt_field is a string on input, not an object
+			dt_field: { wrong: 'input' },
+		});
+
+		createItem<TestSchema, 'collection_b', any>('collection_b', {
+			// @ts-expect-error csv_field is a string[] on input, not a single string
+			csv_field: 'not an array',
+		});
+	});
+
+	test('wrong value types are still rejected on update', () => {
+		updateItem<TestSchema, 'collection_c', any>('collection_c', 1, {
+			// @ts-expect-error dt_field is a string on input, not an object
+			dt_field: { wrong: 'input' },
+		});
+
+		updateItem<TestSchema, 'collection_b', any>('collection_b', 1, {
+			// @ts-expect-error json_field is a JsonValue, a bare function is not valid
+			json_field: () => 'nope',
+		});
 	});
 });
