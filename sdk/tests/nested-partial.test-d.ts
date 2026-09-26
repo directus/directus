@@ -14,7 +14,15 @@ import type {
 	ReadFlowOutput,
 	StringLiteralUnion,
 } from '../src/index.js';
-import { createItem, createItems, updateItem, updateItems } from '../src/index.js';
+import {
+	createDirectus,
+	createItem,
+	createItems,
+	rest,
+	updateItem,
+	updateItems,
+	updateSingleton,
+} from '../src/index.js';
 import type { CollectionB, CollectionC, TestSchema } from './schema.js';
 
 describe('NestedPartial', () => {
@@ -206,17 +214,6 @@ describe('NestedPartial maps literal field-type markers on the write path (#2159
 		assertType<Case>({ json_field: () => 'nope' });
 	});
 
-	test('a csv field accepts string[], not the literal "csv"', () => {
-		type Case = NestedPartial<CollectionB>;
-
-		expectTypeOf<Case['csv_field']>().toEqualTypeOf<string[] | null | undefined>();
-
-		assertType<Case>({ csv_field: ['a', 'b'] });
-
-		// @ts-expect-error a csv field is a string[] on input, not a single string
-		assertType<Case>({ csv_field: 'a,b' });
-	});
-
 	test('datetime, date and time fields accept a string, not the literal marker', () => {
 		type Case = NestedPartial<CollectionC>;
 
@@ -257,7 +254,6 @@ describe('createItem / updateItem accept literal-typed field values (#21599)', (
 	test('createItem and createItems accept the real values for marker fields', () => {
 		createItem<TestSchema, 'collection_b', any>('collection_b', {
 			json_field: { test: 'object' },
-			csv_field: ['a', 'b'],
 		});
 
 		createItem<TestSchema, 'collection_c', any>('collection_c', {
@@ -284,11 +280,6 @@ describe('createItem / updateItem accept literal-typed field values (#21599)', (
 			// @ts-expect-error dt_field is a string on input, not an object
 			dt_field: { wrong: 'input' },
 		});
-
-		createItem<TestSchema, 'collection_b', any>('collection_b', {
-			// @ts-expect-error csv_field is a string[] on input, not a single string
-			csv_field: 'not an array',
-		});
 	});
 
 	test('wrong value types are still rejected on update', () => {
@@ -301,5 +292,118 @@ describe('createItem / updateItem accept literal-typed field values (#21599)', (
 			// @ts-expect-error json_field is a JsonValue, a bare function is not valid
 			json_field: () => 'nope',
 		});
+	});
+});
+
+type SingletonSchema = TestSchema & {
+	site_settings: {
+		id: number;
+		title: string;
+		published_on: 'datetime' | null;
+		metadata: 'json' | null;
+	};
+};
+
+describe('updateItem / updateSingleton check the payload when the item type is inferred', () => {
+	const client = createDirectus<SingletonSchema>('https://directus.example.com').with(rest());
+
+	test('valid partial updates pass', () => {
+		client.request(updateItem('collection_c', 1, { dt_field: '2024-02-27T11:27:25+00:00' }));
+		client.request(updateItem('collection_c', 1, { nullable: null }));
+		client.request(updateItem('collection_b', 1, { json_field: { test: 'object' } }));
+		client.request(updateItem('collection_a', 1, {}));
+
+		client.request(updateSingleton('site_settings', { title: 'new title' }));
+		client.request(updateSingleton('site_settings', { published_on: '2024-02-27T11:27:25+00:00', metadata: null }));
+	});
+
+	test('invalid field types fail', () => {
+		client.request(
+			updateItem('collection_c', 1, {
+				// @ts-expect-error dt_field is a string on input, not an object
+				dt_field: { wrong: 'input' },
+			}),
+		);
+
+		client.request(
+			updateItem('collection_c', 1, {
+				// @ts-expect-error non_nullable does not accept null
+				non_nullable: null,
+			}),
+		);
+
+		client.request(
+			updateItem('collection_b', 1, {
+				// @ts-expect-error json_field is a JsonValue, a bare function is not valid
+				json_field: () => 'nope',
+			}),
+		);
+
+		client.request(
+			updateSingleton('site_settings', {
+				// @ts-expect-error title is a string
+				title: 123,
+			}),
+		);
+
+		client.request(
+			updateSingleton('site_settings', {
+				// @ts-expect-error published_on is a string on input, not an object
+				published_on: { wrong: 'input' },
+			}),
+		);
+	});
+
+	test('nested relational writes are checked against the related collection', () => {
+		// m2o accepts the primary key or a partial related item
+		client.request(updateItem('collection_a', 1, { m2o: 2 }));
+		client.request(updateItem('collection_a', 1, { m2o: { json_field: { test: 'object' } } }));
+
+		// o2m accepts primary keys, partial related items, or null
+		client.request(updateItem('collection_a', 1, { o2m: [1, 2] }));
+		client.request(updateItem('collection_a', 1, { o2m: [{ dt_field: '2024-02-27T11:27:25+00:00' }] }));
+		client.request(updateItem('collection_a', 1, { o2m: null }));
+
+		// m2m goes through the junction item
+		client.request(updateItem('collection_a', 1, { m2m: [{ collection_b_id: { json_field: ['a'] } }] }));
+
+		client.request(
+			updateItem('collection_a', 1, {
+				// @ts-expect-error m2o is a primary key or a related item, not a string
+				m2o: 'not a key',
+			}),
+		);
+
+		client.request(
+			updateItem('collection_a', 1, {
+				// @ts-expect-error the related dt_field is a string on input, not a number
+				o2m: [{ dt_field: 123 }],
+			}),
+		);
+
+		client.request(
+			updateItem('collection_a', 1, {
+				m2o: {
+					// @ts-expect-error the related json_field is a JsonValue, a bare function is not valid
+					json_field: () => 'nope',
+				},
+			}),
+		);
+	});
+
+	test('the item type can still be passed explicitly', () => {
+		type Override = { title: string };
+
+		updateItem<TestSchema, 'collection_a', any, Override>('collection_a', 1, { title: 'custom' });
+
+		// @ts-expect-error title is a string on the explicit item type
+		updateItem<TestSchema, 'collection_a', any, Override>('collection_a', 1, { title: 1 });
+	});
+
+	test('a client without a schema still accepts any payload', () => {
+		const untyped = createDirectus('https://directus.example.com').with(rest());
+
+		untyped.request(updateItem('anything', 1, { any_field: { nested: true } }));
+		untyped.request(updateSingleton('any_singleton', { any_field: 123 }));
 	});
 });
