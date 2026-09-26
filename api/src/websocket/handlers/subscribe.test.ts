@@ -17,9 +17,11 @@ vi.mock('../../utils/get-schema', () => ({
 }));
 
 vi.mock('../../services', () => ({
-	ItemsService: vi.fn(() => ({
-		readByQuery: vi.fn(),
-	})),
+	ItemsService: vi.fn(function () {
+		return {
+			readByQuery: vi.fn(),
+		};
+	}),
 	MetaService: vi.fn(),
 }));
 

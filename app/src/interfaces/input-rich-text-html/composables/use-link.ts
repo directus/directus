@@ -1,5 +1,6 @@
 import { type Editor, getMarkRange } from '@tiptap/vue-3';
 import { computed, ComputedRef, Ref, ref } from 'vue';
+import { isImageLinkActive } from '../extensions/image';
 
 export type LinkSelection = {
 	url: string | null;
@@ -12,6 +13,8 @@ type UsableLink = {
 	linkDrawerOpen: Ref<boolean>;
 	linkSelection: Ref<LinkSelection>;
 	isEditingLink: Ref<boolean>;
+	/** The drawer targets a selected image (linked or not) instead of text. */
+	targetsImage: Ref<boolean>;
 	isLinkSaveable: ComputedRef<boolean>;
 	openLinkDrawer: () => void;
 	closeLinkDrawer: () => void;
@@ -21,12 +24,24 @@ type UsableLink = {
 
 const defaultLinkSelection = (): LinkSelection => ({ url: null, displayText: null, title: null, newTab: true });
 
+/** A text link (Link mark) or a linked image (node attribute) is under the selection. */
+export function isAnyLinkActive(editor: Editor): boolean {
+	return editor.isActive('link') || isImageLinkActive(editor);
+}
+
+/** Removes whichever kind of link is under the selection. */
+export function unsetAnyLink(editor: Editor): void {
+	if (isImageLinkActive(editor)) editor.chain().focus().unsetImageLink().run();
+	else editor.chain().focus().extendMarkRange('link').unsetLink().run();
+}
+
 // tokens on an edited link are treated as author-set and preserved.
 const SECURITY_REL = ['noopener', 'noreferrer'];
 
 export function useLink(editor: Ref<Editor>): UsableLink {
 	const linkDrawerOpen = ref(false);
 	const isEditingLink = ref(false);
+	const targetsImage = ref(false);
 	const linkSelection = ref<LinkSelection>(defaultLinkSelection());
 	// the link's text when the drawer opened, so saveLink knows whether the display text changed
 	const originalText = ref('');
@@ -39,6 +54,7 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 		linkDrawerOpen,
 		linkSelection,
 		isEditingLink,
+		targetsImage,
 		isLinkSaveable,
 		openLinkDrawer,
 		closeLinkDrawer,
@@ -49,6 +65,25 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 	// inside an existing link: prefill from its attributes; otherwise seed from the selection (URL → url field, else display text)
 	function openLinkDrawer() {
 		linkDrawerOpen.value = true;
+		targetsImage.value = editor.value.isActive('image');
+
+		// the tooltip of a linked image is the image's own title
+		if (targetsImage.value) {
+			const attrs = editor.value.getAttributes('image');
+			isEditingLink.value = Boolean(attrs.href);
+			originalText.value = '';
+			originalRel.value = attrs.rel ?? '';
+
+			linkSelection.value = {
+				url: attrs.href ?? null,
+				displayText: null,
+				title: attrs.title ?? null,
+				newTab: isEditingLink.value ? attrs.target === '_blank' : true,
+			};
+
+			return;
+		}
+
 		isEditingLink.value = editor.value.isActive('link');
 
 		if (isEditingLink.value) {
@@ -82,6 +117,7 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 	function closeLinkDrawer() {
 		linkSelection.value = defaultLinkSelection();
 		isEditingLink.value = false;
+		targetsImage.value = false;
 		originalText.value = '';
 		originalRel.value = '';
 		linkDrawerOpen.value = false;
@@ -95,6 +131,12 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 		const text = displayText || href;
 		const rel = buildRel(newTab);
 		const attrs = { href, target: newTab ? '_blank' : null, rel, title: title || null };
+
+		if (targetsImage.value) {
+			editor.value.chain().focus().setImageLink(attrs).run();
+			closeLinkDrawer();
+			return;
+		}
 
 		const chain = editor.value.chain().focus();
 		if (isEditingLink.value) chain.extendMarkRange('link');
@@ -110,7 +152,7 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 	}
 
 	function unlink() {
-		editor.value.chain().focus().extendMarkRange('link').unsetLink().run();
+		unsetAnyLink(editor.value);
 		closeLinkDrawer();
 	}
 
