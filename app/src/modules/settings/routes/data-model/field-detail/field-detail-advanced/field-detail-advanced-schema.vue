@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Type } from '@directus/types';
 import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { TranslateResult, useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 import VCheckbox from '@/components/v-checkbox.vue';
@@ -126,6 +126,16 @@ const nullable = syncFieldDetailStoreProperty('field.schema.is_nullable', true);
 const unique = syncFieldDetailStoreProperty('field.schema.is_unique', false);
 const indexed = syncFieldDetailStoreProperty('field.schema.is_indexed', false);
 const numericScale = syncFieldDetailStoreProperty('field.schema.numeric_scale');
+
+watch(
+	unique,
+	(value) => {
+		if (value) {
+			indexed.value = true;
+		}
+	},
+	{ immediate: true },
+);
 
 const { t } = useI18n();
 
@@ -456,7 +466,12 @@ function useOnUpdate() {
 
 			<div v-if="!isAlias" class="field half-left">
 				<div class="label type-label">{{ $t('index') }}</div>
-				<VCheckbox v-model="indexed" :disabled="isGenerated || isPrimaryKey" :label="$t('value_index')" block />
+				<VCheckbox
+					v-model="indexed"
+					:disabled="isGenerated || isPrimaryKey || unique"
+					:label="$t('value_index')"
+					block
+				/>
 			</div>
 		</div>
 	</div>

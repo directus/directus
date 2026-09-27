@@ -998,18 +998,28 @@ export class FieldsService {
 		} else if (!existing?.is_primary_key) {
 			// primary key will already have unique/index constraints
 			if (field.schema?.is_unique === true) {
+				if (existing?.is_unique === false && existing?.is_indexed === true) {
+					table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
+				}
+
 				if ((!existing || existing.is_unique === false) && !options?.attemptConcurrentIndex) {
-					column.unique({ indexName: this.helpers.schema.generateIndexName('unique', collection, field.field) });
+					column.unique({
+						indexName: this.helpers.schema.generateIndexName('unique', collection, field.field),
+					});
 				}
 			} else if (field.schema?.is_unique === false && existing?.is_unique === true) {
 				table.dropUnique([field.field], this.helpers.schema.generateIndexName('unique', collection, field.field));
 			}
 
-			if (field.schema?.is_indexed === true) {
+			if (field.schema?.is_unique !== true && field.schema?.is_indexed === true) {
 				if ((!existing || existing.is_indexed === false) && !options?.attemptConcurrentIndex) {
 					column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
 				}
-			} else if (field.schema?.is_indexed === false && existing?.is_indexed === true) {
+			} else if (
+				field.schema?.is_unique !== true &&
+				field.schema?.is_indexed === false &&
+				existing?.is_indexed === true
+			) {
 				table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
 			}
 		}
@@ -1041,9 +1051,7 @@ export class FieldsService {
 				unique: true,
 				attemptConcurrentIndex,
 			});
-		}
-
-		if (field.schema?.is_indexed === true && (!existing || existing.is_indexed === false)) {
+		} else if (field.schema?.is_indexed === true && (!existing || existing.is_indexed === false)) {
 			await helpers.schema.createIndex(collection, field.field, {
 				unique: false,
 				attemptConcurrentIndex,
