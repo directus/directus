@@ -16,7 +16,7 @@ export default {};
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import { useElementVisibility, useEventListener } from '@vueuse/core';
-import { clamp } from 'lodash';
+import { clamp } from 'lodash-es';
 import { computed, ref, watch } from 'vue';
 import { useUserStore } from '@/stores/user';
 

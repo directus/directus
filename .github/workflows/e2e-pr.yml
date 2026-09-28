@@ -1,0 +1,16 @@
+name: Check
+
+on:
+  pull_request:
+    types:
+      - synchronize
+      - labeled
+
+permissions:
+  contents: read
+
+jobs:
+  e2e-tests:
+    name: End to End Tests
+    if: contains(github.event.pull_request.labels.*.name, 'Run E2E')
+    uses: ./.github/workflows/e2e.yml

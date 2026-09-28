@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ContentVersion, Filter } from '@directus/types';
 import { moveInArray } from '@directus/utils';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { computed, ref, toRefs } from 'vue';
 import Draggable from 'vuedraggable';
 import ItemPreview from './item-preview.vue';

@@ -1,4 +1,5 @@
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 // TODO better options for ouput typing
 
@@ -8,10 +9,13 @@ import type { RestCommand } from '../../types.js';
  * @param id
  * @param data
  * @returns Result of the flow, if any.
+ * @throws Will throw if id is empty
  */
 export const triggerFlow =
 	<Schema>(method: 'GET' | 'POST', id: string, data?: Record<string, string>): RestCommand<unknown, Schema> =>
 	() => {
+		throwIfEmpty(id, 'ID cannot be empty');
+
 		if (method === 'GET') {
 			return {
 				path: `/flows/trigger/${id}`,

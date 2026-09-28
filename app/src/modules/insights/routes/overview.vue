@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getEndpoint } from '@directus/utils';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DashboardDialog from '../components/dashboard-dialog.vue';

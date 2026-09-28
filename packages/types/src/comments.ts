@@ -8,6 +8,6 @@ export type Comment = {
 	comment: string;
 	date_created: string;
 	date_updated: string;
-	user_created: string | Partial<User>;
-	user_updated: string | Partial<User>;
+	user_created: string | Partial<User> | null;
+	user_updated: string | Partial<User> | null;
 };

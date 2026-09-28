@@ -2,7 +2,7 @@ import type { RequestOptions } from '@directus/sdk';
 import { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { flushPromises, mount } from '@vue/test-utils';
-import { pick } from 'lodash';
+import { pick } from 'lodash-es';
 import { describe, expect, test, vi } from 'vitest';
 import { defineComponent, ref } from 'vue';
 import NestedDraggable from './NestedDraggable.vue';

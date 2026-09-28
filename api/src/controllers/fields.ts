@@ -6,7 +6,7 @@ import type { Field, RawField, Type } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
 import { ALIAS_TYPES } from '../constants.js';
-import validateCollection from '../middleware/collection-exists.js';
+import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { FieldsService, systemFieldUpdateSchema } from '../services/fields.js';
@@ -34,7 +34,7 @@ router.get(
 
 router.get(
 	'/:collection',
-	validateCollection,
+	collectionExists,
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({
 			accountability: req.accountability,
@@ -51,7 +51,7 @@ router.get(
 
 router.get(
 	'/:collection/:field',
-	validateCollection,
+	collectionExists,
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({
 			accountability: req.accountability,
@@ -85,7 +85,7 @@ const newFieldSchema = Joi.object({
 
 router.post(
 	'/:collection',
-	validateCollection,
+	collectionExists,
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({
 			accountability: req.accountability,
@@ -123,7 +123,7 @@ router.post(
 
 router.patch(
 	'/:collection',
-	validateCollection,
+	collectionExists,
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({
 			accountability: req.accountability,
@@ -186,7 +186,7 @@ const updateSchema = Joi.object({
 
 router.patch(
 	'/:collection/:field',
-	validateCollection,
+	collectionExists,
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({
 			accountability: req.accountability,
@@ -232,7 +232,7 @@ router.patch(
 
 router.delete(
 	'/:collection/:field',
-	validateCollection,
+	collectionExists,
 	asyncHandler(async (req, _res, next) => {
 		const service = new FieldsService({
 			accountability: req.accountability,

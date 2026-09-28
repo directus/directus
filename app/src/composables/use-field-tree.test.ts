@@ -4,7 +4,8 @@ import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { ref, unref } from 'vue';
 import { cryptoStub } from '@/__utils__/crypto';
-import { useFieldTree } from '@/composables/use-field-tree';
+import { type FieldNode, useFieldTree } from '@/composables/use-field-tree';
+import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 
@@ -25,6 +26,20 @@ beforeEach(() => {
 		}),
 	);
 });
+
+function setInactiveCollections(inactive: string[]) {
+	const collectionsStore = useCollectionsStore();
+
+	collectionsStore.collections = ['a', 'b', 'c'].map((collection) => ({
+		collection,
+		meta: { status: inactive.includes(collection) ? 'inactive' : 'active' },
+		schema: {},
+	})) as any;
+}
+
+function getNode(treeList: FieldNode[], field: string) {
+	return treeList.find((node) => node.field === field);
+}
 
 test('Returns tree list of same length', () => {
 	const fieldsStore = useFieldsStore();
@@ -1099,4 +1114,163 @@ test('Returns tree list for M2A with multiple related collections', () => {
 			],
 		},
 	]);
+});
+
+test('Flags fields relating to an inactive collection as inactive', () => {
+	setInactiveCollections(['b']);
+
+	const fieldsStore = useFieldsStore();
+
+	fieldsStore.fields = [
+		{
+			collection: 'a',
+			field: 'title',
+			type: 'string',
+			schema: {},
+			meta: { id: 1, collection: 'a', field: 'title', special: null, group: null },
+			name: 'Title',
+		},
+		{
+			collection: 'a',
+			field: 'm2o_b',
+			type: 'integer',
+			schema: {},
+			meta: { id: 2, collection: 'a', field: 'm2o_b', special: ['m2o'], group: null },
+			name: 'M2O B',
+		},
+		{
+			collection: 'a',
+			field: 'o2m_b',
+			type: 'alias',
+			schema: null,
+			meta: { id: 3, collection: 'a', field: 'o2m_b', special: ['o2m'], group: null },
+			name: 'O2M B',
+		},
+	] as Field[];
+
+	const relationsStore = useRelationsStore();
+
+	relationsStore.relations = [
+		{
+			collection: 'a',
+			field: 'm2o_b',
+			related_collection: 'b',
+			schema: {},
+			meta: { id: 1, many_collection: 'a', many_field: 'm2o_b', one_collection: 'b', one_field: null },
+		},
+		{
+			collection: 'b',
+			field: 'a_id',
+			related_collection: 'a',
+			schema: {},
+			meta: { id: 2, many_collection: 'b', many_field: 'a_id', one_collection: 'a', one_field: 'o2m_b' },
+		},
+	] as Relation[];
+
+	const { treeList } = useFieldTree(ref('a'));
+
+	expect(getNode(unref(treeList), 'title')?.inactive).toBeUndefined();
+	expect(getNode(unref(treeList), 'm2o_b')?.inactive).toBe(true);
+	expect(getNode(unref(treeList), 'o2m_b')?.inactive).toBe(true);
+});
+
+test('Flags only the inactive branch of an M2A field', () => {
+	setInactiveCollections(['c']);
+
+	const fieldsStore = useFieldsStore();
+
+	fieldsStore.fields = [
+		{
+			collection: 'a',
+			field: 'm2a',
+			type: 'alias',
+			schema: null,
+			meta: { id: 1, collection: 'a', field: 'm2a', special: ['m2a'], group: null },
+			name: 'M2A',
+		},
+		{
+			collection: 'a_m2a',
+			field: 'a_id',
+			type: 'integer',
+			schema: {},
+			meta: { id: 2, collection: 'a_m2a', field: 'a_id', special: null, group: null },
+			name: 'A ID',
+		},
+		{
+			collection: 'a_m2a',
+			field: 'item',
+			type: 'string',
+			schema: {},
+			meta: { id: 3, collection: 'a_m2a', field: 'item', special: null, group: null },
+			name: 'Item',
+		},
+	] as Field[];
+
+	const relationsStore = useRelationsStore();
+
+	relationsStore.relations = [
+		{
+			collection: 'a_m2a',
+			field: 'a_id',
+			related_collection: 'a',
+			schema: {},
+			meta: {
+				id: 1,
+				many_collection: 'a_m2a',
+				many_field: 'a_id',
+				one_collection: 'a',
+				one_field: 'm2a',
+				one_collection_field: null,
+				one_allowed_collections: null,
+				junction_field: 'item',
+			},
+		},
+		{
+			collection: 'a_m2a',
+			field: 'item',
+			related_collection: null,
+			schema: null,
+			meta: {
+				id: 2,
+				many_collection: 'a_m2a',
+				many_field: 'item',
+				one_collection: null,
+				one_field: null,
+				one_collection_field: 'collection',
+				one_allowed_collections: ['b', 'c'],
+				junction_field: 'a_id',
+			},
+		},
+	] as Relation[];
+
+	const { treeList } = useFieldTree(ref('a'));
+
+	const junctionChildren = getNode(unref(treeList), 'm2a')?.children ?? [];
+
+	expect(getNode(junctionChildren, 'item:b')?.inactive).toBeUndefined();
+	expect(getNode(junctionChildren, 'item:c')?.inactive).toBe(true);
+});
+
+test('Flags every field of an inactive root collection as inactive', () => {
+	setInactiveCollections(['a']);
+
+	const fieldsStore = useFieldsStore();
+
+	fieldsStore.fields = [
+		{
+			collection: 'a',
+			field: 'title',
+			type: 'string',
+			schema: {},
+			meta: { id: 1, collection: 'a', field: 'title', special: null, group: null },
+			name: 'Title',
+		},
+	] as Field[];
+
+	const relationsStore = useRelationsStore();
+	relationsStore.relations = [] as Relation[];
+
+	const { treeList } = useFieldTree(ref('a'));
+
+	expect(getNode(unref(treeList), 'title')?.inactive).toBe(true);
 });

@@ -10,7 +10,7 @@ export type DirectusRole<Schema = any> = MergeCoreCollection<
 		name: string;
 		icon: string;
 		description: string | null;
-		parent: string | DirectusRole<Schema>;
+		parent: string | DirectusRole<Schema> | null;
 		children: string[] | DirectusRole<Schema>[];
 		policies: string[] | DirectusAccess<Schema>[];
 		users: string[] | DirectusUser<Schema>[];

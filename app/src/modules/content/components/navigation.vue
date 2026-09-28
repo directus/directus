@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isNil, orderBy } from 'lodash';
+import { isNil, orderBy } from 'lodash-es';
 import { computed, ref, toRefs } from 'vue';
 import { useNavigation } from '../composables/use-navigation';
 import NavigationItem from './NavigationItem.vue';

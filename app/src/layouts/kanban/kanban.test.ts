@@ -249,4 +249,54 @@ describe('Kanban layout', () => {
 
 		expect(wrapper.html()).toContain('Mar 20, 2025 12:23PM');
 	});
+
+	describe('inactive group collection', () => {
+		function mountBoard(groupCollectionInactive: boolean) {
+			return mount(Kanban, {
+				global: {
+					plugins: [i18n, pinia, router],
+					directives: { tooltip: vi.fn() },
+					stubs: { 'v-menu': true, 'v-dialog': true },
+					mocks: { $t: (key: string) => key, $n: (val: number) => val.toString() },
+					config: { warnHandler: () => null },
+				},
+				props: {
+					itemCount: 0,
+					totalCount: 0,
+					isFiltered: false,
+					limit: 100,
+					primaryKeyField: { field: 'id' },
+					groupedItems: [],
+					groupCollectionInactive,
+					change: vi.fn(),
+					changeGroupSort: vi.fn(),
+					addGroup: vi.fn(),
+					editGroup: vi.fn(),
+					deleteGroup: vi.fn(),
+					canReorderGroups: false,
+					canReorderItems: false,
+					canUpdateGroupTitle: false,
+					canDeleteGroups: false,
+					selection: [],
+					onClick: vi.fn(),
+					layoutOptions: null,
+					resetPresetAndRefresh: vi.fn(),
+				},
+			});
+		}
+
+		it('explains the empty board when the group collection is inactive', async () => {
+			const wrapper = mountBoard(true);
+			await flushPromises();
+
+			expect(wrapper.html()).toContain('layouts.kanban.group_collection_inactive');
+		});
+
+		it('stays quiet when the group collection is active', async () => {
+			const wrapper = mountBoard(false);
+			await flushPromises();
+
+			expect(wrapper.html()).not.toContain('layouts.kanban.group_collection_inactive');
+		});
+	});
 });

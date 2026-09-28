@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCollection, useShortcut } from '@directus/composables';
 import type { Field } from '@directus/types';
-import { clone } from 'lodash';
+import { clone } from 'lodash-es';
 import { computed, ref, unref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';

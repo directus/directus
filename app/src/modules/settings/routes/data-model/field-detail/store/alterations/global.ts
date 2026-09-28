@@ -1,4 +1,4 @@
-import { set } from 'lodash';
+import { set } from 'lodash-es';
 import { useFieldDetailStore } from '../index';
 import { State, StateUpdates } from '../types';
 import { useExtension } from '@/composables/use-extension';

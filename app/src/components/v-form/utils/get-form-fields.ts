@@ -1,5 +1,5 @@
 import { Field } from '@directus/types';
-import { cloneDeep, orderBy } from 'lodash';
+import { cloneDeep, orderBy } from 'lodash-es';
 import { computed, ComputedRef, Ref } from 'vue';
 import { FormField } from '@/components/v-form/types';
 import { useExtension } from '@/composables/use-extension';

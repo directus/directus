@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { Field } from '@directus/types';
-import { set } from 'lodash';
+import { set } from 'lodash-es';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { FIELD_TYPES_SELECT } from '@/constants';

@@ -9,7 +9,8 @@ services:
     ports:
       - ${DB_PORT}:5432
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_DATABASE}']
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_DATABASE} -h 127.0.0.1 -p 5432']
       interval: 5s
       timeout: 5s
       retries: 10
+      start_period: 30s

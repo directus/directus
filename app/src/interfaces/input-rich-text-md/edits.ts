@@ -1,5 +1,5 @@
 import { Position } from 'codemirror';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 
 export type Alteration =
 	| 'bold'

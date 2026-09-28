@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import { computed } from 'vue';
 import ModuleBarAvatar from './module-bar-avatar.vue';
 import ModuleBarButton from './module-bar-button.vue';

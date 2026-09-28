@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useShortcut } from '@directus/composables';
 import { applyOptionsData } from '@directus/utils';
-import { assign, isEmpty } from 'lodash';
+import { assign, isEmpty } from 'lodash-es';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { RouterView } from 'vue-router';
 import InsightsNavigation from '../components/navigation.vue';
@@ -52,6 +52,16 @@ const { updateAllowed } = useItemPermissions('directus_panels', props.primaryKey
 const now = new Date();
 
 const editMode = ref(false);
+
+const inactivePanelIds = computed(
+	() =>
+		new Set(
+			insightsStore
+				.getPanelsForDashboard(props.primaryKey)
+				.filter((panel) => insightsStore.isPanelInactive(panel))
+				.map(({ id }) => id),
+		),
+);
 
 const tiles = computed<AppTile[]>(() => {
 	const panels = insightsStore.getPanelsForDashboard(props.primaryKey);
@@ -286,7 +296,14 @@ const refreshInterval = computed({
 					indeterminate
 				/>
 				<div v-else class="panel-container" :class="{ loading: loading.includes(tile.id) }">
-					<div v-if="errors[tile.id]" class="panel-error">
+					<div
+						v-if="inactivePanelIds.has(tile.id)"
+						class="panel-no-data type-note"
+						:class="{ 'header-offset': tile.showHeader }"
+					>
+						{{ $t('collection_inactive') }}
+					</div>
+					<div v-else-if="errors[tile.id]" class="panel-error">
 						<VIcon name="warning" />
 						{{ $t('unexpected_error') }}
 						<VError :error="errors[tile.id]" />

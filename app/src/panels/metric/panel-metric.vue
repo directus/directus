@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Filter } from '@directus/types';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { computed, onBeforeUnmount, onMounted, onUpdated, ref } from 'vue';
 import { CSSProperties } from 'vue';
 import { useI18n } from 'vue-i18n';

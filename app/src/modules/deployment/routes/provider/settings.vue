@@ -9,7 +9,7 @@ import {
 	updateDeploymentProjects,
 } from '@directus/sdk';
 import type { DeploymentConfig } from '@directus/types';
-import { isEmpty, isEqual, isNil, pickBy } from 'lodash';
+import { isEmpty, isEqual, isNil, pickBy } from 'lodash-es';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import DeploymentNavigation from '../../components/navigation.vue';

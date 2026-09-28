@@ -6,6 +6,7 @@ import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-f
 import { extractFunctionName } from '../../../utils/extract-function-name.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 import { parseJsonFunction } from '../../helpers/fn/json/parse-function.js';
+import { isRelationTraversable } from '../utils/is-relation-traversable.js';
 
 export interface ConvertWildcardsOptions {
 	collection: string;
@@ -44,7 +45,17 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 	if (!allowedFields || allowedFields.length === 0) return [];
 
 	// In case of full read permissions
-	if (allowedFields[0] === '*') allowedFields = fieldsInCollection;
+	if (allowedFields.includes('*')) allowedFields = fieldsInCollection;
+
+	allowedFields = allowedFields.filter((fieldKey) => {
+		const relation = getRelation(context.schema.relations, options.collection, fieldKey);
+
+		if (!relation || (relation.collection === options.collection && relation.field === fieldKey)) {
+			return true;
+		}
+
+		return isRelationTraversable(context.schema, options.collection, fieldKey, relation);
+	});
 
 	for (let index = 0; index < fields.length; index++) {
 		const fieldKey = fields[index]!;
@@ -103,12 +114,13 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 				);
 			}
 
-			if (options.backlink === false) {
-				relationalFields = relationalFields.filter(
-					(relationField) =>
-						getRelation(context.schema.relations, options.collection, relationField) !== context.parentRelation,
-				);
-			}
+			relationalFields = relationalFields.filter((relationField) => {
+				const relation = getRelation(context.schema.relations, options.collection, relationField);
+
+				if (options.backlink === false && relation === context.parentRelation) return false;
+
+				return isRelationTraversable(context.schema, options.collection, relationField, relation);
+			});
 
 			const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 

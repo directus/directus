@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import type { ShowSelect } from '@directus/types';
-import { clone, throttle } from 'lodash';
+import { clone, throttle } from 'lodash-es';
 import { computed, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
 import { Header, Sort } from './types';
@@ -61,6 +61,8 @@ useEventListener(window, 'pointerup', onMouseUp);
 
 const headersWritable = useSync(props, 'headers', emit);
 
+const hasFlexColumn = computed(() => props.headers.some((header) => header.flex));
+
 function getClassesForHeader(header: Header) {
 	const classes: string[] = [];
 
@@ -70,6 +72,10 @@ function getClassesForHeader(header: Header) {
 
 	if (header.sortable || hasHeaderContextMenuSlot.value) {
 		classes.push('actionable');
+	}
+
+	if (header.inactive) {
+		classes.push('inactive');
 	}
 
 	if (header.width && header.width < 90) {
@@ -217,7 +223,12 @@ function toggleManualSort() {
 			</template>
 
 			<template #item="{ element: header }">
-				<th :class="getClassesForHeader(header)" class="cell" scope="col" :style="{ inlineSize: header.width + 'px' }">
+				<th
+					:class="getClassesForHeader(header)"
+					class="cell"
+					scope="col"
+					:style="{ inlineSize: header.flex ? '100%' : header.width + 'px' }"
+				>
 					<VMenu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
 						<template #activator="{ toggle }">
 							<div class="content reorder-handle">
@@ -265,7 +276,7 @@ function toggleManualSort() {
 					</div>
 
 					<span
-						v-if="showResize"
+						v-if="showResize && !header.flex"
 						class="resize-handle"
 						@click.stop
 						@pointerdown="onResizeHandleMouseDown(header, $event)"
@@ -278,7 +289,13 @@ function toggleManualSort() {
 				<td v-if="$slots['header-append']" class="manual append cell" @click.stop>
 					<slot name="header-append" />
 				</td>
-				<th v-if="hasItemAppendSlot && !$slots['header-append']" class="spacer cell" scope="col" />
+				<!-- The append placeholder mirrors the standard item-append cell (24px icon + padding) -->
+				<th
+					v-if="hasItemAppendSlot && !$slots['header-append']"
+					class="spacer cell"
+					scope="col"
+					:style="hasFlexColumn ? { inlineSize: '2.875rem' } : undefined"
+				/>
 			</template>
 		</Draggable>
 		<!-- </tr> -->
@@ -337,6 +354,10 @@ function toggleManualSort() {
 					opacity: 1;
 				}
 			}
+		}
+
+		&.inactive .header-btn .name {
+			color: var(--theme--foreground-subdued);
 		}
 
 		&.small {

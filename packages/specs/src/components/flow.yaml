@@ -58,3 +58,10 @@ properties:
     oneOf:
       - type: string
       - $ref: '../openapi.yaml#/components/schemas/Operations'
+  folder:
+    description: The UUID of the folder containing the flow.
+    example: 0cf0e03d-4364-45df-b77b-ca61f61869d2
+    oneOf:
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/Folders'
+    nullable: true

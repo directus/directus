@@ -1,8 +1,8 @@
-.mapboxgl-map {
+.maplibregl-map {
 	font: inherit;
 }
 
-.mapboxgl-ctrl-group {
+.maplibregl-ctrl-group {
 	overflow: hidden;
 	background: none;
 
@@ -51,8 +51,7 @@
 	}
 }
 
-.mapboxgl-search-location-dot,
-.mapboxgl-user-location-dot,
+.maplibregl-search-location-dot,
 .maplibregl-user-location-dot {
 	inline-size: 0.6875rem;
 	block-size: 0.6875rem;
@@ -69,14 +68,14 @@
 	}
 }
 
-.mapboxgl-search-location-dot {
+.maplibregl-search-location-dot {
 	&,
 	&::before {
 		background-color: var(--purple);
 	}
 }
 
-.mapboxgl-ctrl-attrib.mapboxgl-compact {
+.maplibregl-ctrl-attrib.maplibregl-compact {
 	min-inline-size: 1.375rem;
 	min-block-size: 1.375rem;
 	color: var(--theme--foreground);
@@ -84,13 +83,14 @@
 	border-radius: var(--theme--popover--menu--border-radius);
 	box-shadow: var(--theme--popover--menu--box-shadow);
 
-	button {
+	// The toggle is a <summary>, not a <button>, since maplibre rebuilt this control as <details>.
+	.maplibregl-ctrl-attrib-button {
 		opacity: 0.25;
 		transition: opacity var(--fast) var(--transition);
 	}
 
 	&:hover {
-		button {
+		.maplibregl-ctrl-attrib-button {
 			opacity: 0.75;
 		}
 	}
@@ -102,14 +102,13 @@
 		}
 	}
 
-	.maplibregl-ctrl-attrib-inner,
-	.mapboxgl-ctrl-attrib-inner {
+	.maplibregl-ctrl-attrib-inner {
 		font-size: 0.6875rem;
 		line-height: 1.6364;
 	}
 }
 
-.mapboxgl-ctrl-attrib:not(.mapboxgl-compact) {
+.maplibregl-ctrl-attrib:not(.maplibregl-compact) {
 	font-size: 0.8em;
 	color: var(--theme--foreground);
 	background: var(--theme--form--field--input--background);
@@ -198,31 +197,73 @@
 	color: unset;
 }
 
-.mapboxgl-ctrl-zoom-in::after {
+/*
+ * Draw's cursor rules are keyed on Mapbox GL class names that maplibre renamed, and overriding
+ * `constants.classes` cannot reach selectors baked into draw's own stylesheet. Restated here under
+ * the maplibre names; draw still writes the `mouse-*`/`mode-*`/`feature-*` state classes itself.
+ * Mirrors the cursor block in mapbox-gl-draw.css, minus its -moz-/-webkit-grab fallbacks.
+ */
+.maplibregl-map {
+	$canvas: '.maplibregl-canvas-container.maplibregl-interactive';
+
+	&.mouse-pointer #{$canvas} {
+		cursor: pointer;
+	}
+
+	&.mouse-move #{$canvas} {
+		cursor: move;
+	}
+
+	&.mouse-add #{$canvas} {
+		cursor: crosshair;
+	}
+
+	&.mouse-move.mode-direct_select #{$canvas} {
+		cursor: grab;
+	}
+
+	&.mode-direct_select.feature-vertex.mouse-move #{$canvas} {
+		cursor: move;
+	}
+
+	&.mode-direct_select.feature-midpoint.mouse-pointer #{$canvas} {
+		cursor: cell;
+	}
+
+	&.mode-direct_select.feature-feature.mouse-move #{$canvas} {
+		cursor: move;
+	}
+
+	&.mode-static.mouse-pointer #{$canvas} {
+		cursor: grab;
+	}
+}
+
+.maplibregl-ctrl-zoom-in::after {
 	content: 'add';
 }
 
-.mapboxgl-ctrl-zoom-out::after {
+.maplibregl-ctrl-zoom-out::after {
 	content: 'remove';
 }
 
-.mapboxgl-ctrl-compass::after {
+.maplibregl-ctrl-compass::after {
 	content: 'explore';
 }
 
-.mapboxgl-ctrl-geolocate::after {
+.maplibregl-ctrl-geolocate::after {
 	content: 'my_location';
 }
 
-.mapboxgl-ctrl-fitdata::after {
+.maplibregl-ctrl-fitdata::after {
 	content: 'crop_free';
 }
 
-.mapboxgl-ctrl-select::after {
+.maplibregl-ctrl-select::after {
 	content: 'select';
 }
 
-.mapboxgl-ctrl-unselect::after {
+.maplibregl-ctrl-unselect::after {
 	content: 'clear';
 }
 

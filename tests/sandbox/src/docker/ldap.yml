@@ -1,0 +1,14 @@
+services:
+  ldap:
+    # Ships with the directory below already configured:
+    #   Admin DN: cn=Manager,dc=my-domain,dc=com  Password: secret  Base DN: dc=my-domain,dc=com
+    image: cleanstart/openldap:latest
+    platform: linux/amd64
+    ports:
+      - ${LDAP_PORT}:389
+    healthcheck:
+      # Querying the root DSE works before any entry has been added
+      test: ['CMD', 'ldapsearch', '-x', '-H', 'ldap://localhost:389', '-b', '', '-s', 'base', '(objectClass=*)']
+      interval: 5s
+      timeout: 5s
+      retries: 20

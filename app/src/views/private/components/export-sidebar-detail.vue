@@ -3,7 +3,7 @@ import { useCollection } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import type { AxiosProgressEvent } from 'axios';
-import { debounce, pick } from 'lodash';
+import { debounce, pick } from 'lodash-es';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
@@ -576,7 +576,7 @@ async function exportDataFiles() {
 
 				<div class="field half-right">
 					<p class="type-label">{{ $t('folder') }}</p>
-					<FolderPicker v-if="location === 'files'" v-model="folder" />
+					<FolderPicker v-if="location === 'files'" v-model="folder" type="files" />
 					<VNotice v-else>{{ $t('not_available_for_local_downloads') }}</VNotice>
 				</div>
 

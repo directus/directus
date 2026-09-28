@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { keyMap, systemKeys } from '@directus/composables';
 import slugify from '@sindresorhus/slugify';
-import { isNil, omit } from 'lodash';
+import { isNil, omit } from 'lodash-es';
 import { computed, ref, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VIcon from './v-icon/v-icon.vue';

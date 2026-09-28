@@ -1,5 +1,5 @@
 import { Role } from '@directus/types';
-import { groupBy } from 'lodash';
+import { groupBy } from 'lodash-es';
 import { computed, ref, Ref, watch } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useGroupable, useSizeClass } from '@directus/composables';
-import { isEqual, isNil } from 'lodash';
+import { isEqual, isNil } from 'lodash-es';
 import { computed } from 'vue';
 import { RouteLocationRaw, useLink, useRoute } from 'vue-router';
 import VProgressCircular from './v-progress-circular.vue';

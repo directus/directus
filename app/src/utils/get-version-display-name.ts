@@ -1,7 +1,7 @@
 import { VERSION_KEY_DRAFT } from '@directus/constants';
 import formatTitle from '@directus/format-title';
 import type { ContentVersion } from '@directus/types';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { i18n } from '@/lang';
 
 export function getVersionDisplayName(version: Pick<ContentVersion, 'key' | 'name'> | null) {

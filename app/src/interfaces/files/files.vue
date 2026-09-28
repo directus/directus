@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { clamp, get, isEmpty, isNil, set } from 'lodash';
+import { clamp, get, isEmpty, isNil, set } from 'lodash-es';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRef, toRefs } from 'vue';
 import Draggable from 'vuedraggable';

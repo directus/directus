@@ -31,7 +31,9 @@ describe('relations tool ', () => {
 				deleteOne: vi.fn(),
 			};
 
-			vi.mocked(RelationsService).mockImplementation(() => mockRelationsService as unknown as RelationsService);
+			vi.mocked(RelationsService).mockImplementation(function () {
+				return mockRelationsService as unknown as RelationsService;
+			});
 		});
 
 		describe('CREATE action', () => {

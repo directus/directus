@@ -1,5 +1,5 @@
 import type { ModuleConfig } from '@directus/extensions';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { shallowRef, type ShallowRef } from 'vue';
 import { router } from '@/router';
 import { usePermissionsStore } from '@/stores/permissions';

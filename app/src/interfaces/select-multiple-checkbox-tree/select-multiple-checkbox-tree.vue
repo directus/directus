@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { computed, ref, toRefs, watch } from 'vue';
 import VCheckboxTree from '@/components/v-checkbox-tree/v-checkbox-tree.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';

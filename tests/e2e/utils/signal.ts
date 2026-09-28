@@ -45,6 +45,7 @@ export class Signal<T> {
 			};
 
 			this.subscribe(checkCondition);
+			checkCondition();
 		});
 	}
 }

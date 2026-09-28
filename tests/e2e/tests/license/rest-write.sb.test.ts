@@ -13,7 +13,7 @@ import {
 	updateLicenseAddon,
 } from '@directus/license';
 import { mockClient } from '@directus/mock-license-server';
-import { sandbox, type Sandbox } from '@directus/sandbox';
+import { type Sandbox } from '@directus/sandbox';
 import {
 	createCollection,
 	createDirectus,
@@ -32,9 +32,11 @@ import {
 	withToken,
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { getUID } from '@utils/getUID.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import { createLicense, LICENSE_KEYS } from './__fixtures__/licenses.js';
-import { withDefaultSandboxOptions } from './__fixtures__/sandbox.js';
 
 const SEATS_ADDON_ID = randomUUID();
 const COLLECTIONS_ADDON_ID = randomUUID();
@@ -84,12 +86,10 @@ let directus: Sandbox;
 let api: DirectusClient<any> & RestClient<any>;
 
 beforeAll(async () => {
-	directus = await sandbox(
-		database,
-		withDefaultSandboxOptions({
-			extras: { license: true },
-		}),
-	);
+	directus = await useSandbox(database, {
+		port: sandboxPort(0),
+		extras: { license: true },
+	});
 
 	api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 
@@ -404,17 +404,18 @@ describe('LICENSE_KEY_MANAGEMENT_ENABLED=false with source=settings', () => {
 	let managedApi: DirectusClient<any> & RestClient<any>;
 
 	beforeAll(async () => {
-		managedDirectus = await sandbox(
-			database,
-			withDefaultSandboxOptions({
-				hooks: {
-					beforeApi: async ({ env }) => {
-						await mockClient.registerLicense(env.LICENSE_API_URL!, managedLicense);
-					},
+		managedDirectus = await useSandbox(database, {
+			port: sandboxPort(1),
+			hooks: {
+				beforeApi: async ({ env }) => {
+					await mockClient.registerLicense(env.LICENSE_API_URL!, managedLicense);
 				},
-				extras: { license: true },
-			}),
-		);
+			},
+			extras: { license: true },
+			env: {
+				DB_FILENAME: `directus_test_${getUID()}_2.db`,
+			},
+		});
 
 		managedApi = createDirectus<any>(`http://localhost:${managedDirectus.apis[0].port}`)
 			.with(rest())

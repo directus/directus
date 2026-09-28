@@ -1,5 +1,5 @@
 import type { CoreSchema } from '../schema/index.js';
-import type { IfAny, UnpackList } from './utils.js';
+import type { IfAny, StringLiteralUnion, UnpackList } from './utils.js';
 
 /**
  * Get all available top level Item types from a given Schema
@@ -92,6 +92,15 @@ export type CompleteSchema<Schema> =
  * Merge custom schema with core schema
  */
 export type AllCollections<Schema> = RegularCollections<Schema> | RegularCollections<CoreSchema<Schema>>;
+
+/**
+ * Name of any collection (regular or singleton) in the schema, with autocomplete for known
+ * collections while still accepting any other string (e.g. for fields whose value set isn't
+ * enforced by the API)
+ */
+export type CollectionName<Schema> = StringLiteralUnion<
+	Extract<AllCollections<Schema> | SingletonCollections<Schema>, string>
+>;
 
 /**
  * Helper to extract a collection with fallback to defaults

@@ -1,5 +1,5 @@
 import type { User } from '@directus/types';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { computed, ref } from 'vue';
 import type { Info } from '@/stores/server';
 import { useServerStore } from '@/stores/server';

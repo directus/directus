@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { reactive, ref, watch } from 'vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';

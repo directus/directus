@@ -1,4 +1,4 @@
-import { isPlainObject } from 'lodash';
+import { isPlainObject } from 'lodash-es';
 import { useFieldsStore } from '@/stores/fields';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 

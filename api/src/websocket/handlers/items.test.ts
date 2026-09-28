@@ -18,6 +18,8 @@ vi.mock('../../utils/get-schema', () => ({
 	getSchema: vi.fn(),
 }));
 
+vi.mock('../../database/index');
+
 vi.mock('../../services', () => ({
 	ItemsService: vi.fn(),
 	MetaService: vi.fn(),
@@ -65,7 +67,7 @@ describe('WebSocket heartbeat handler', () => {
 		expect(spy).not.toBeCalled();
 	});
 
-	test('invalid collection should error', async () => {
+	test('unknown collection should error', async () => {
 		(getSchema as Mock).mockImplementation(() => ({ collections: {} }));
 		// receive message
 		const fakeClient = mockClient();
@@ -83,7 +85,38 @@ describe('WebSocket heartbeat handler', () => {
 
 		// expect error
 		expect(fakeClient.send).toBeCalledWith(
-			'{"type":"items","status":"error","error":{"code":"INVALID_COLLECTION","message":"The provided collection does not exists or is not accessible."}}',
+			'{"type":"items","status":"error","error":{"code":"FORBIDDEN","message":"You don\'t have permission to access collection \\"test\\" or it does not exist. Queried in root."}}',
+		);
+	});
+
+	test('system collection should error', async () => {
+		(getSchema as Mock).mockImplementation(() => ({
+			collections: { directus_users: { collection: 'directus_users', fields: {} } },
+		}));
+
+		const createOne = vi.fn();
+
+		(ItemsService as Mock).mockImplementation(function () {
+			return { createOne };
+		});
+
+		const fakeClient = mockClient();
+
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'items', collection: 'directus_users', action: 'create', data: {} },
+			},
+			{} as EventContext,
+		);
+
+		await vi.runAllTimersAsync();
+
+		expect(createOne).not.toBeCalled();
+
+		expect(fakeClient.send).toBeCalledWith(
+			'{"type":"items","status":"error","error":{"code":"INVALID_COLLECTION","message":"Cannot trigger an action on a system collection."}}',
 		);
 	});
 
@@ -94,7 +127,10 @@ describe('WebSocket heartbeat handler', () => {
 		const createOne = vi.fn(),
 			readOne = vi.fn();
 
-		(ItemsService as Mock).mockImplementation(() => ({ createOne, readOne }));
+		(ItemsService as Mock).mockImplementation(function () {
+			return { createOne, readOne };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -121,7 +157,10 @@ describe('WebSocket heartbeat handler', () => {
 		const createMany = vi.fn(),
 			readMany = vi.fn();
 
-		(ItemsService as Mock).mockImplementation(() => ({ createMany, readMany }));
+		(ItemsService as Mock).mockImplementation(function () {
+			return { createMany, readMany };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -145,9 +184,17 @@ describe('WebSocket heartbeat handler', () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
 		const readByQuery = vi.fn();
-		(ItemsService as Mock).mockImplementation(() => ({ readByQuery }));
+
+		(ItemsService as Mock).mockImplementation(function () {
+			return { readByQuery };
+		});
+
 		const getMetaForQuery = vi.fn();
-		(MetaService as Mock).mockImplementation(() => ({ getMetaForQuery }));
+
+		(MetaService as Mock).mockImplementation(function () {
+			return { getMetaForQuery };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -174,7 +221,10 @@ describe('WebSocket heartbeat handler', () => {
 		const updateOne = vi.fn(),
 			readOne = vi.fn();
 
-		(ItemsService as Mock).mockImplementation(() => ({ updateOne, readOne }));
+		(ItemsService as Mock).mockImplementation(function () {
+			return { updateOne, readOne };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -201,9 +251,16 @@ describe('WebSocket heartbeat handler', () => {
 		const updateMany = vi.fn(),
 			readMany = vi.fn();
 
-		(ItemsService as Mock).mockImplementation(() => ({ updateMany, readMany }));
+		(ItemsService as Mock).mockImplementation(function () {
+			return { updateMany, readMany };
+		});
+
 		const getMetaForQuery = vi.fn();
-		(MetaService as Mock).mockImplementation(() => ({ getMetaForQuery }));
+
+		(MetaService as Mock).mockImplementation(function () {
+			return { getMetaForQuery };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -231,9 +288,16 @@ describe('WebSocket heartbeat handler', () => {
 		const updateBatch = vi.fn(),
 			readMany = vi.fn();
 
-		(ItemsService as Mock).mockImplementation(() => ({ updateBatch, readMany }));
+		(ItemsService as Mock).mockImplementation(function () {
+			return { updateBatch, readMany };
+		});
+
 		const getMetaForQuery = vi.fn();
-		(MetaService as Mock).mockImplementation(() => ({ getMetaForQuery }));
+
+		(MetaService as Mock).mockImplementation(function () {
+			return { getMetaForQuery };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -258,7 +322,11 @@ describe('WebSocket heartbeat handler', () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
 		const deleteOne = vi.fn();
-		(ItemsService as Mock).mockImplementation(() => ({ deleteOne }));
+
+		(ItemsService as Mock).mockImplementation(function () {
+			return { deleteOne };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -281,7 +349,11 @@ describe('WebSocket heartbeat handler', () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
 		const deleteMany = vi.fn();
-		(ItemsService as Mock).mockImplementation(() => ({ deleteMany }));
+
+		(ItemsService as Mock).mockImplementation(function () {
+			return { deleteMany };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -304,7 +376,11 @@ describe('WebSocket heartbeat handler', () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
 		const deleteByQuery = vi.fn();
-		(ItemsService as Mock).mockImplementation(() => ({ deleteByQuery }));
+
+		(ItemsService as Mock).mockImplementation(function () {
+			return { deleteByQuery };
+		});
+
 		// receive message
 		const fakeClient = mockClient();
 
@@ -321,5 +397,39 @@ describe('WebSocket heartbeat handler', () => {
 		// expect service functions
 		expect(deleteByQuery).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
+	});
+
+	test('inactive collection should error', async () => {
+		(getSchema as Mock).mockImplementation(() => ({
+			collections: { test: { collection: 'test', status: 'inactive', fields: {} } },
+		}));
+
+		const createOne = vi.fn();
+
+		(ItemsService as Mock).mockImplementation(function () {
+			return { createOne };
+		});
+
+		const fakeClient = mockClient();
+
+		// An admin is told the collection is inactive without a permission lookup
+		(fakeClient as { accountability: unknown }).accountability = { admin: true, roles: [], user: null };
+
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'items', collection: 'test', action: 'create', data: {} },
+			},
+			{} as EventContext,
+		);
+
+		await vi.runAllTimersAsync();
+
+		expect(createOne).not.toBeCalled();
+
+		expect(fakeClient.send).toBeCalledWith(
+			'{"type":"items","status":"error","error":{"code":"COLLECTION_INACTIVE","message":"Collection \\"test\\" is inactive."}}',
+		);
 	});
 });

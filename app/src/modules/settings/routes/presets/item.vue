@@ -3,7 +3,7 @@ import { useLayout } from '@directus/composables';
 import { useShortcut } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { DeepPartial, Field, Filter, Preset } from '@directus/types';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
@@ -29,7 +29,7 @@ import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 type FormattedPreset = {
 	id: number;
 	scope: string;
-	collection: string;
+	collection: string | null;
 	layout: string | null;
 	name: string | null;
 	search: string | null;

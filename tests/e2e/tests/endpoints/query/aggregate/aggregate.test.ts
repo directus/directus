@@ -381,3 +381,158 @@ test('countAll returns the total number of matching items (GraphQL)', async () =
 
 	expect(Number(result.agg[0].countAll)).toBe(5);
 });
+
+test('sorts grouped results by the aggregated value (REST)', async () => {
+	const marker = 'group-sort';
+	const sizes = { a: 11, b: 15, c: 24 };
+
+	for (const [group, size] of Object.entries(sizes)) {
+		for (const i of range(size)) {
+			await api.request(createItem(collections.articles, { title: `${marker}-${group}-${i}`, group }));
+		}
+	}
+
+	const filter = { title: { _starts_with: marker } };
+
+	const result = await api.request(
+		aggregate(collections.articles, {
+			query: { filter, sort: ['-count.id'] },
+			groupBy: ['group'],
+			aggregate: { count: ['id'] },
+		}),
+	);
+
+	expect(result.map((row: any) => [row.group, Number(row.count.id)])).toEqual([
+		['c', 24],
+		['b', 15],
+		['a', 11],
+	]);
+});
+
+test('groups by a field literally named "group" (REST and GraphQL)', async () => {
+	const marker = 'group-named-group';
+	const groups = ['admin', 'editor', 'viewer'];
+
+	for (const i of range(6)) {
+		await api.request(createItem(collections.articles, { title: `${marker}-${i}`, group: groups[i % groups.length] }));
+	}
+
+	const filter = { title: { _starts_with: marker } };
+
+	const result = await api.request(
+		aggregate(collections.articles, { query: { filter }, groupBy: ['group'], aggregate: { count: ['id'] } }),
+	);
+
+	expect(Object.fromEntries(result.map((row: any) => [row.group, Number(row.count.id)]))).toEqual({
+		admin: 2,
+		editor: 2,
+		viewer: 2,
+	});
+
+	const gql = (await api.query(`
+		query {
+			agg: ${collections.articles}_aggregated(filter: { title: { _starts_with: "${marker}" } }, groupBy: ["group"]) {
+				count { id }
+				group
+			}
+		}
+	`)) as any;
+
+	expect(Object.fromEntries(gql.agg.map((row: any) => [row.group.group, Number(row.count.id)]))).toEqual({
+		admin: 2,
+		editor: 2,
+		viewer: 2,
+	});
+});
+
+test('groups by a function field (REST and GraphQL)', async () => {
+	const marker = 'group-function';
+	const years = [2024, 2025, 2026];
+
+	for (const i of range(6)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-${i}`,
+				release: `${years[i % years.length]}-02-01T00:00:00`,
+			}),
+		);
+	}
+
+	const filter = { title: { _starts_with: marker } };
+
+	const result = await api.request(
+		aggregate(collections.articles, {
+			query: { filter },
+			groupBy: ['year(release)'],
+			aggregate: { count: ['id'] },
+		}),
+	);
+
+	expect(result.length).toBe(years.length);
+
+	for (const row of result as any[]) {
+		expect(years).toContain(Number(row.release_year));
+		expect(Number(row.count.id)).toBe(2);
+	}
+
+	const gql = (await api.query(`
+		query {
+			agg: ${collections.articles}_aggregated(filter: { title: { _starts_with: "${marker}" } }, groupBy: ["year(release)"]) {
+				count { id }
+				group
+			}
+		}
+	`)) as any;
+
+	expect(gql.agg.length).toBe(years.length);
+
+	for (const row of gql.agg) {
+		expect(years).toContain(Number(row.group.release_year));
+		expect(Number(row.count.id)).toBe(2);
+	}
+});
+
+test('groups by multiple fields, regular and function', async () => {
+	const marker = 'group-multiple';
+	const groups = ['admin', 'editor'];
+	const years = [2024, 2025];
+
+	for (const i of range(8)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-${i}`,
+				group: groups[i % groups.length],
+				release: `${years[Math.floor(i / 2) % years.length]}-02-01T00:00:00`,
+			}),
+		);
+	}
+
+	const filter = { title: { _starts_with: marker } };
+
+	const byFields = await api.request(
+		aggregate(collections.articles, {
+			query: { filter },
+			groupBy: ['group', 'title'],
+			aggregate: { count: ['id'] },
+		}),
+	);
+
+	// Every article has a unique title, so grouping on it yields one row per item
+	expect(byFields.length).toBe(8);
+
+	const mixed = await api.request(
+		aggregate(collections.articles, {
+			query: { filter },
+			groupBy: ['group', 'year(release)'],
+			aggregate: { count: ['id'] },
+		}),
+	);
+
+	expect(mixed.length).toBe(groups.length * years.length);
+
+	for (const row of mixed as any[]) {
+		expect(groups).toContain(row.group);
+		expect(years).toContain(Number(row.release_year));
+		expect(Number(row.count.id)).toBe(2);
+	}
+});

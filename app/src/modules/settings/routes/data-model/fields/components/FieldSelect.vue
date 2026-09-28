@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Field, Width } from '@directus/types';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink, useRouter } from 'vue-router';

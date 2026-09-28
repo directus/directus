@@ -1,4 +1,4 @@
-import { set } from 'lodash';
+import { set } from 'lodash-es';
 import { HelperFunctions, State, StateUpdates } from '../types';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {

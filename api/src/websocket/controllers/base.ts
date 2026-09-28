@@ -241,7 +241,7 @@ export default abstract class SocketController {
 			} catch {
 				logger.debug('WebSocket authentication handshake failed');
 				const error = new WebSocketError('auth', 'AUTH_FAILED', 'Authentication handshake failed.');
-				handleWebSocketError(ws, error, 'auth');
+				handleWebSocketError(ws, error, { type: 'auth' });
 				ws.close();
 			}
 		});
@@ -267,7 +267,7 @@ export default abstract class SocketController {
 						`Too many messages, retry after ${timeout}ms.`,
 					);
 
-					handleWebSocketError(client, error, 'server');
+					handleWebSocketError(client, error, { type: 'server' });
 					logger.debug(`WebSocket#${client.uid} is rate limited`);
 					return;
 				}
@@ -280,7 +280,7 @@ export default abstract class SocketController {
 					`License is in a locked state and must be resolved`,
 				);
 
-				handleWebSocketError(client, error, 'server');
+				handleWebSocketError(client, error, { type: 'server' });
 				logger.debug(`WebSocket#${client.uid} closed due to license in locked state`);
 				return;
 			}
@@ -290,7 +290,7 @@ export default abstract class SocketController {
 			try {
 				message = this.parseMessage(data.toString());
 			} catch (err: any) {
-				handleWebSocketError(client, err, 'server');
+				handleWebSocketError(client, err, { type: 'server' });
 				return;
 			}
 
@@ -387,7 +387,7 @@ export default abstract class SocketController {
 					? error
 					: new WebSocketError('auth', 'AUTH_FAILED', 'Authentication failed.', message.uid);
 
-			handleWebSocketError(client, _error, 'auth');
+			handleWebSocketError(client, _error, { type: 'auth' });
 
 			if (this.authentication.mode !== 'public') {
 				client.close();
@@ -437,11 +437,11 @@ export default abstract class SocketController {
 		client.auth_timer = setTimeout(() => {
 			client.accountability = createDefaultAccountability(this.getAccountabilityOverrides(client));
 			client.expires_at = null;
-			handleWebSocketError(client, new TokenExpiredError(), 'auth');
+			handleWebSocketError(client, new TokenExpiredError(), { type: 'auth' });
 
 			waitForMessageType(client, 'auth', this.authentication.timeout).catch((msg: WebSocketMessage) => {
 				const error = new WebSocketError('auth', 'AUTH_TIMEOUT', 'Authentication timed out.', msg?.uid);
-				handleWebSocketError(client, error, 'auth');
+				handleWebSocketError(client, error, { type: 'auth' });
 
 				if (this.authentication.mode !== 'public') {
 					client.close();

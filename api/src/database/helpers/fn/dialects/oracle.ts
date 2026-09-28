@@ -14,35 +14,35 @@ const parseLocaltime = (columnType?: string) => {
 
 export class FnHelperOracle extends FnHelper {
 	year(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'IYYY')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'YYYY'))`, [table, column]);
 	}
 
 	month(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'MM')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'MM'))`, [table, column]);
 	}
 
 	week(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'IW')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'IW'))`, [table, column]);
 	}
 
 	day(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'DD')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'DD'))`, [table, column]);
 	}
 
 	weekday(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'D')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'D'))`, [table, column]);
 	}
 
 	hour(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'HH24')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'HH24'))`, [table, column]);
 	}
 
 	minute(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'MI')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'MI'))`, [table, column]);
 	}
 
 	second(table: string, column: string, options: FnHelperOptions): Knex.Raw {
-		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'SS')`, [table, column]);
+		return this.knex.raw(`TO_NUMBER(TO_CHAR(??.??${parseLocaltime(options?.type)}, 'SS'))`, [table, column]);
 	}
 
 	count(table: string, column: string, options?: FnHelperOptions): Knex.Raw<any> {
@@ -82,10 +82,10 @@ export class FnHelperOracle extends FnHelper {
 			return this.knex.raw(`JSON_VALUE(??.??, '${jsonPath}' RETURNING NUMBER)`, [table, column]);
 		}
 
-		// JSON_VALUE only returns scalar values (returns NULL for objects/arrays)
-		// JSON_QUERY only returns objects/arrays (returns NULL for scalars)
-		// COALESCE handles both cases
-		return this.knex.raw(`COALESCE(JSON_QUERY(??.??, '${jsonPath}'), JSON_VALUE(??.??, '${jsonPath}'))`, [
+		// JSON_VALUE returns scalar values (returns NULL for objects/arrays)
+		// JSON_QUERY returns objects/arrays
+		// COALESCE handles both cases with scalar values taking precedence
+		return this.knex.raw(`COALESCE(JSON_VALUE(??.??, '${jsonPath}'), JSON_QUERY(??.??, '${jsonPath}'))`, [
 			table,
 			column,
 			table,

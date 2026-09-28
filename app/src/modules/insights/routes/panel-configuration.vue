@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Panel } from '@directus/extensions';
-import { assign, clone, isUndefined, omitBy } from 'lodash';
+import { assign, clone, isUndefined, omitBy } from 'lodash-es';
 import { nanoid } from 'nanoid/non-secure';
 import { storeToRefs } from 'pinia';
 import { computed, reactive, unref } from 'vue';

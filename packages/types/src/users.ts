@@ -3,7 +3,7 @@ import type { Policy } from './policies.js';
 export type Role = {
 	id: string;
 	name: string;
-	description: string;
+	description: string | null;
 	icon: string;
 	users: string[];
 	parent: string | null;

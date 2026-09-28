@@ -131,7 +131,7 @@ export class GraphQLSubscriptionController extends SocketController {
 
 							await cb(JSON.stringify(message));
 						} catch (error) {
-							handleWebSocketError(client, error, MessageType.Error);
+							handleWebSocketError(client, error, { type: MessageType.Error });
 						}
 					});
 				},

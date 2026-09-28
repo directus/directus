@@ -32,7 +32,7 @@ import { queue } from 'async';
 import type { Knex } from 'knex';
 import ms, { type StringValue } from 'ms';
 import Papa from 'papaparse';
-import StreamArray from 'stream-json/streamers/StreamArray.js';
+import streamArray from 'stream-json/streamers/stream-array.js';
 import { getCache } from '../../cache.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
@@ -231,7 +231,7 @@ export class ImportService {
 	}
 
 	async importJSON(collection: string, stream: Readable, deadline?: number): Promise<void> {
-		const extractJSON = StreamArray.withParser();
+		const extractJSON = streamArray.withParserAsStream();
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
 		const isSingleton = this.schema.collections[collection]?.singleton ?? false;

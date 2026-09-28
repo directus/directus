@@ -4,7 +4,7 @@ import type { Comment, PrimaryKey, User } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { isThisYear, isToday, isYesterday } from 'date-fns';
 import dompurify from 'dompurify';
-import { flatten, groupBy, orderBy } from 'lodash';
+import { flatten, groupBy, orderBy } from 'lodash-es';
 import { computed, onMounted, ref, Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useSidebarStore } from '../private-view/stores/sidebar';

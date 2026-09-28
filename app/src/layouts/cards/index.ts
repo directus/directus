@@ -2,7 +2,7 @@ import { useCollection, useItems, useSync } from '@directus/composables';
 import { isPublishedVersionKey } from '@directus/constants';
 import { defineLayout } from '@directus/extensions';
 import { getFieldsFromTemplate } from '@directus/utils';
-import { clone } from 'lodash';
+import { clone } from 'lodash-es';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CardsActions from './actions.vue';

@@ -18,9 +18,10 @@ import {
 	updateUser,
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { LICENSE_KEYS } from './__fixtures__/licenses.js';
-import { withDefaultSandboxOptions } from './__fixtures__/sandbox.js';
 
 const LIMIT_EXCEEDED = {
 	errors: [expect.objectContaining({ extensions: expect.objectContaining({ code: 'LIMIT_EXCEEDED' }) })],
@@ -31,14 +32,12 @@ let api: DirectusClient<any> & RestClient<any>;
 let adminRole: string;
 
 beforeAll(async () => {
-	directus = await sandbox(
-		database,
-		withDefaultSandboxOptions({
-			env: { LICENSE_KEY: LICENSE_KEYS.TINY },
-			extras: { license: true },
-			knex: true,
-		}),
-	);
+	directus = await useSandbox(database, {
+		port: sandboxPort(0),
+		env: { LICENSE_KEY: LICENSE_KEYS.TINY },
+		extras: { license: true },
+		knex: true,
+	});
 
 	api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 
