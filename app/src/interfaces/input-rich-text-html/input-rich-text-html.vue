@@ -14,7 +14,7 @@ import LinkDrawer from './drawers/link-drawer.vue';
 import MediaDrawer from './drawers/media-drawer.vue';
 import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
-import { buildFieldSchema, editorExtensions } from './extensions';
+import { buildFieldSchema, fieldEditorExtensions } from './extensions';
 import { LinkShortcut } from './extensions/link-shortcut';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
@@ -145,8 +145,7 @@ const editor = useEditor({
 	// LinkShortcut is per-instance (its Mod-K handler opens this editor's drawer), so it stays out of
 	// the shared field schema the normalization checks re-parse with
 	extensions: [
-		...editorExtensions,
-		...fieldSchema.extensions,
+		...fieldEditorExtensions(fieldSchema.extensions),
 		LinkShortcut.configure({ onTrigger: () => openLinkDrawer() }),
 	],
 	content: '',

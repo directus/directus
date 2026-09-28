@@ -94,16 +94,17 @@ const MEASUREMENTS: LayoutMeasurements = {
 
 const contributedMap = computed<Record<string, ToolbarButton>>(() =>
 	Object.fromEntries(
-		props.contributedButtons.map((button) => [
-			button.key,
-			{
-				icon: button.icon,
-				label: button.label,
-				// the core ToolbarButton type gives a context object that a contribution must not get
-				command: (editor) => button.command(editor),
-				...(button.isActive ? { isActive: (editor) => button.isActive!(editor) } : {}),
-			} satisfies ToolbarButton,
-		]),
+		props.contributedButtons
+			.filter((button) => !(button.key in toolbarButtons))
+			.map((button) => [
+				button.key,
+				{
+					icon: button.icon,
+					label: button.label,
+					command: (editor) => button.command(editor),
+					...(button.isActive ? { isActive: (editor) => button.isActive!(editor) } : {}),
+				} satisfies ToolbarButton,
+			]),
 	),
 );
 

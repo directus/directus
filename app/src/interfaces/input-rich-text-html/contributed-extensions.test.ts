@@ -1,8 +1,8 @@
-import { Mark, mergeAttributes, Node } from '@tiptap/core';
+import { Extension, Mark, mergeAttributes, Node } from '@tiptap/core';
 import { Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test } from 'vitest';
 import { computeNormalizationDiff, computeValueNormalizationDiff } from './composables/normalization-diff';
-import { buildFieldSchema, editorExtensions } from './extensions';
+import { buildFieldSchema, fieldEditorExtensions } from './extensions';
 import { registerRichTexts } from '@/rich-text/register';
 
 const Callout = Node.create({
@@ -27,10 +27,10 @@ const configs = [
 const callout = '<div data-callout=""><p>hi</p></div>';
 const kbd = '<p><kbd>K</kbd></p>';
 
-// the live editor's schema: editorExtensions plus the field slice, exactly as input-rich-text-html.vue builds it
+// the live editor's schema, exactly as input-rich-text-html.vue builds it
 function roundTrip(html: string, enabled?: string[]) {
 	const editor = new Editor({
-		extensions: [...editorExtensions, ...buildFieldSchema({ extensions: enabled }).extensions],
+		extensions: fieldEditorExtensions(buildFieldSchema({ extensions: enabled }).extensions),
 		content: html,
 	});
 
@@ -70,6 +70,86 @@ describe('per-field richtext extensions', () => {
 	test('ignores an id no registered extension claims', () => {
 		registerRichTexts(configs);
 		expect(buildFieldSchema({ extensions: ['nope'] }).extensions).toHaveLength(0);
+	});
+});
+
+const Tone = Extension.create({
+	name: 'tone',
+	addGlobalAttributes: () => [
+		{
+			types: ['paragraph'],
+			attributes: {
+				tone: {
+					default: null,
+					parseHTML: (element) => element.getAttribute('data-tone'),
+					renderHTML: (attributes) => (attributes['tone'] ? { 'data-tone': attributes['tone'] } : {}),
+				},
+			},
+		},
+	],
+});
+
+const Badge = Node.create({
+	name: 'badge',
+	group: 'block',
+	content: 'inline*',
+	addAttributes: () => ({
+		variant: {
+			default: null,
+			parseHTML: (element) => element.getAttribute('data-variant'),
+			renderHTML: (attributes) => (attributes['variant'] ? { 'data-variant': attributes['variant'] } : {}),
+		},
+	}),
+	parseHTML: () => [{ tag: 'div[data-badge]' }],
+	renderHTML: ({ HTMLAttributes }) => ['div', mergeAttributes(HTMLAttributes, { 'data-badge': '' }), 0],
+});
+
+describe('data and aria attributes a contributed attribute owns', () => {
+	const ownerConfigs = [
+		{ id: 'spike-tone', name: 'Tone', extensions: [Tone] },
+		{ id: 'spike-badge', name: 'Badge', extensions: [Badge] },
+	];
+
+	function editorFor(html: string, enabled: string[]) {
+		return new Editor({
+			extensions: fieldEditorExtensions(buildFieldSchema({ extensions: enabled }).extensions),
+			content: html,
+		});
+	}
+
+	test('leaves a name a global attribute parses to that attribute', () => {
+		registerRichTexts(ownerConfigs);
+		const editor = editorFor('<p data-x="1" data-tone="warm">hi</p>', ['spike-tone']);
+
+		const attrs = editor.getJSON().content![0]!.attrs!;
+		expect(attrs['tone']).toBe('warm');
+		expect(attrs['dataAttributes']).toEqual({ 'data-x': '1' });
+		editor.destroy();
+	});
+
+	// the case a second copy would break: the owner clears its value and the stale copy renders it back
+	test('drops the name once the owner clears it', () => {
+		registerRichTexts(ownerConfigs);
+		const editor = editorFor('<p data-x="1" data-tone="warm">hi</p>', ['spike-tone']);
+
+		editor.commands.updateAttributes('paragraph', { tone: null });
+		expect(editor.getHTML()).toBe('<p data-x="1">hi</p>');
+		editor.destroy();
+	});
+
+	test('leaves a name a node attribute parses to that attribute', () => {
+		registerRichTexts(ownerConfigs);
+		const editor = editorFor('<div data-badge="" data-variant="new">hi</div>', ['spike-badge']);
+
+		editor.commands.setTextSelection(1);
+		editor.commands.updateAttributes('badge', { variant: null });
+		expect(editor.getHTML()).toContain('<div data-badge="">hi</div>');
+		editor.destroy();
+	});
+
+	test('keeps the name as a preserved attribute when the field did not enable the owner', () => {
+		registerRichTexts(ownerConfigs);
+		expect(roundTrip('<p data-tone="warm">hi</p>', [])).toBe('<p data-tone="warm">hi</p>');
 	});
 });
 
