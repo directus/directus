@@ -324,6 +324,7 @@ describe('Tooltip directive', () => {
 			'<div><button class="outer">Outer</button><span><button class="inner">Inner</button></span></div>',
 			'Outer',
 		);
+
 		mountNested(element.querySelector('span')!, 'Inner');
 		const inner = element.querySelector<HTMLElement>('.inner')!;
 
