@@ -49,9 +49,18 @@ export async function loadExtensions(): Promise<void> {
 	customExtensions = loaded;
 
 	// the validator pulls in the whole Tiptap editor, so only pay for it when a richtext extension is installed
-	if (loaded.richtexts.length > 0) {
+	if (loaded.richtexts.length === 0) return;
+
+	// the validator is a separate chunk, so its failure must not take the other extension types down with it
+	try {
 		const { validateRichTexts } = await import('./rich-text/validate');
 		validRichTexts = validateRichTexts(loaded.richtexts);
+	} catch (err: any) {
+		validRichTexts = [];
+		// eslint-disable-next-line no-console
+		console.warn(`Couldn't load richtext extensions`);
+		// eslint-disable-next-line no-console
+		console.warn(err);
 	}
 }
 
