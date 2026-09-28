@@ -141,6 +141,41 @@ describe('validateRichTexts', () => {
 		expect(ids([{ id: 'tone', name: 'Tone', extensions: [Tone] }])).toEqual(['tone']);
 	});
 
+	test('rejects a global attribute a core type already defines and names both', () => {
+		// a later definition wins in Tiptap's schema, so this would silently right-align every paragraph
+		const Align = Extension.create({
+			name: 'align',
+			addGlobalAttributes: () => [{ types: ['heading', 'paragraph'], attributes: { textAlign: { default: 'right' } } }],
+		});
+
+		expect(ids([{ id: 'align', name: 'Align', extensions: [Align] }])).toEqual([]);
+
+		const message = error.mock.calls[0]!.join(' ');
+		expect(message).toContain('"textAlign"');
+		expect(message).toContain('"heading"');
+	});
+
+	test('rejects a wildcard global attribute that a core type defines on its own', () => {
+		const Level = Extension.create({
+			name: 'level',
+			addGlobalAttributes: () => [{ types: 'nodes', attributes: { level: { default: 1 } } }],
+		});
+
+		expect(ids([{ id: 'level', name: 'Level', extensions: [Level] }])).toEqual([]);
+		expect(error.mock.calls[0]!.join(' ')).toContain('"heading"');
+	});
+
+	test('keeps a global attribute named after a core attribute when it only targets its own types', () => {
+		const Align = Extension.create({
+			name: 'calloutAlign',
+			addGlobalAttributes: () => [{ types: ['callout'], attributes: { textAlign: { default: null } } }],
+		});
+
+		expect(ids([{ id: 'callout-align', name: 'Callout Align', extensions: [Callout, Align] }])).toEqual([
+			'callout-align',
+		]);
+	});
+
 	test('rejects a node attribute that PreservedAttributes already owns', () => {
 		const ClassyCallout = Callout.extend({
 			name: 'classyCallout',
