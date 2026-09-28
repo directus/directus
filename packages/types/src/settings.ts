@@ -53,6 +53,7 @@ export type Settings = {
 	public_registration_verify_email: boolean;
 	public_registration_role: string | null;
 	public_registration_email_filter: Record<string, any> | null;
+	preview_base_url: string | null;
 	visual_editor_urls: Array<{ url: string }> | null;
 	auth_login_attempts: number;
 	auth_password_policy: string | null;
