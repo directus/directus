@@ -22,7 +22,7 @@ export class FnHelperMySQL extends FnHelper {
 	}
 
 	weekday(table: string, column: string): Knex.Raw {
-		return this.knex.raw('DAYOFWEEK(??.??)', [table, column]);
+		return this.knex.raw('(DAYOFWEEK(??.??) - 1)', [table, column]);
 	}
 
 	hour(table: string, column: string): Knex.Raw {
