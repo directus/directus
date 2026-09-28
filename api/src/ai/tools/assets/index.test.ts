@@ -33,8 +33,13 @@ describe('assets tool', () => {
 				getAsset: vi.fn(),
 			};
 
-			vi.mocked(AssetsService).mockImplementation(() => mockAssetsService as unknown as AssetsService);
-			vi.mocked(FilesService).mockImplementation(() => mockFilesService as unknown as FilesService);
+			vi.mocked(AssetsService).mockImplementation(function () {
+				return mockAssetsService as unknown as AssetsService;
+			});
+
+			vi.mocked(FilesService).mockImplementation(function () {
+				return mockFilesService as unknown as FilesService;
+			});
 		});
 
 		describe('READ asset', () => {
@@ -221,8 +226,13 @@ describe('assets tool', () => {
 				getAsset: vi.fn(),
 			};
 
-			vi.mocked(AssetsService).mockImplementation(() => mockAssetsService as unknown as AssetsService);
-			vi.mocked(FilesService).mockImplementation(() => mockFilesService as unknown as FilesService);
+			vi.mocked(AssetsService).mockImplementation(function () {
+				return mockAssetsService as unknown as AssetsService;
+			});
+
+			vi.mocked(FilesService).mockImplementation(function () {
+				return mockFilesService as unknown as FilesService;
+			});
 		});
 
 		test.each([null, 'application/pdf', 'text/plain'])(

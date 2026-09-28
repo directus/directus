@@ -1475,7 +1475,6 @@ manage_registered_clients: 'נהל לקוחות רשומים'
 no_oauth_clients: 'עדיין לא נרשמו לקוחות OAuth.'
 revoke_client: 'בטל לקוח'
 revoke_client_confirm: 'האם אתה בטוח שברצונך לבטל לקוח זה? כל האסימונים וההפעלות המשויכים יימחקו.'
-settings_flows: תהליכים
 settings_system_logs: יומני מערכת
 settings_presets: סימניות
 settings_translations: תרגומים
