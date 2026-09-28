@@ -4,7 +4,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { Editor } from '@tiptap/vue-3';
 import { mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
 import { createI18n } from 'vue-i18n';
 import { createMemoryHistory, createRouter } from 'vue-router';
 import { buildFieldSchema } from '../extensions';
@@ -157,6 +157,12 @@ describe('contributed buttons', () => {
 });
 
 describe('contributed button isolation', () => {
+	let error: MockInstance<typeof console.error>;
+
+	beforeEach(() => {
+		error = vi.spyOn(console, 'error').mockImplementation(() => {});
+	});
+
 	const boom = () => {
 		throw new Error('boom');
 	};
@@ -170,7 +176,6 @@ describe('contributed button isolation', () => {
 		wrapper.findAll('.toolbar-button button').find((button) => button.find(`[data-icon="${icon}"]`).exists())!;
 
 	test('disables a button whose command throws and keeps the core buttons working', async () => {
-		const error = vi.spyOn(console, 'error').mockImplementation(() => {});
 		const wrapper = mountToolbar(['bold', 'ext:callout'], [], failing({ command: boom }));
 
 		await buttonOf(wrapper, 'info').trigger('click');
@@ -185,7 +190,6 @@ describe('contributed button isolation', () => {
 	});
 
 	test('renders a button whose isActive throws as inactive and disabled', () => {
-		const error = vi.spyOn(console, 'error').mockImplementation(() => {});
 		const wrapper = mountToolbar(['ext:callout'], [], failing({ isActive: boom }));
 
 		expect(error).toHaveBeenCalledOnce();
@@ -194,7 +198,6 @@ describe('contributed button isolation', () => {
 	});
 
 	test('logs a failing button once', async () => {
-		const error = vi.spyOn(console, 'error').mockImplementation(() => {});
 		const wrapper = mountToolbar(['bold', 'ext:callout'], [], failing({ isActive: boom }));
 
 		editor.commands.selectAll();

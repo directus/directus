@@ -2,9 +2,15 @@ import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
 import type { Extension, ExtensionSettings } from '../../shared/types/index.js';
-import { generateExtensionsEntrypoint } from './generate-extensions-entrypoint.js';
+import { generateExtensionsEntrypoint, LOAD_HELPER } from './generate-extensions-entrypoint.js';
+
+// every non-empty entrypoint starts with the same helper, so the snapshots only hold what differs
+function afterLoadHelper(entrypoint: string): string {
+	expect(entrypoint.startsWith(LOAD_HELPER)).toBe(true);
+	return entrypoint.slice(LOAD_HELPER.length);
+}
 
 describe('generateExtensionsEntrypoint', () => {
 	it('returns an empty extension entrypoint if there is no App, Hybrid or Bundle extension', () => {
@@ -129,8 +135,8 @@ describe('generateExtensionsEntrypoint', () => {
 
 		const mockSettings = [{ source: 'local', folder: 'mock-panel-extension', enabled: true }] as ExtensionSettings[];
 
-		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"const load = async (name, importer) => { try { return await importer(); } catch (error) { console.error('Skipped extension ' + name + ' because it threw while loading:', error); return null; } };const [panel0] = await Promise.all([load("mock-panel-extension", () => import('./extensions/panel/index.js'))]);export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [panel0?.default].filter(Boolean);export const themes = [];export const richtexts = [];export const operations = [];"`,
+		expect(afterLoadHelper(generateExtensionsEntrypoint(mockExtensions, mockSettings))).toMatchInlineSnapshot(
+			`"const [panel0] = await Promise.all([load("mock-panel-extension", () => import('./extensions/panel/index.js'))]);export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [panel0?.default].filter(Boolean);export const themes = [];export const richtexts = [];export const operations = [];"`,
 		);
 	});
 
@@ -166,8 +172,8 @@ describe('generateExtensionsEntrypoint', () => {
 			{ source: 'local', folder: 'mock-kbd-extension', enabled: false },
 		] as ExtensionSettings[];
 
-		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"const load = async (name, importer) => { try { return await importer(); } catch (error) { console.error('Skipped extension ' + name + ' because it threw while loading:', error); return null; } };const [richtext0] = await Promise.all([load("mock-callout-extension", () => import('./extensions/callout/index.js'))]);export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const richtexts = [richtext0?.default].filter(Boolean);export const operations = [];"`,
+		expect(afterLoadHelper(generateExtensionsEntrypoint(mockExtensions, mockSettings))).toMatchInlineSnapshot(
+			`"const [richtext0] = await Promise.all([load("mock-callout-extension", () => import('./extensions/callout/index.js'))]);export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const richtexts = [richtext0?.default].filter(Boolean);export const operations = [];"`,
 		);
 	});
 
@@ -194,8 +200,8 @@ describe('generateExtensionsEntrypoint', () => {
 			{ source: 'local', folder: 'mock-operation-extension', enabled: true },
 		] as ExtensionSettings[];
 
-		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"const load = async (name, importer) => { try { return await importer(); } catch (error) { console.error('Skipped extension ' + name + ' because it threw while loading:', error); return null; } };const [operation0] = await Promise.all([load("mock-operation-extension", () => import('./extensions/operation/app.js'))]);export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const richtexts = [];export const operations = [operation0?.default].filter(Boolean);"`,
+		expect(afterLoadHelper(generateExtensionsEntrypoint(mockExtensions, mockSettings))).toMatchInlineSnapshot(
+			`"const [operation0] = await Promise.all([load("mock-operation-extension", () => import('./extensions/operation/app.js'))]);export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const richtexts = [];export const operations = [operation0?.default].filter(Boolean);"`,
 		);
 	});
 
@@ -251,8 +257,8 @@ describe('generateExtensionsEntrypoint', () => {
 			},
 		] as ExtensionSettings[];
 
-		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"const load = async (name, importer) => { try { return await importer(); } catch (error) { console.error('Skipped extension ' + name + ' because it threw while loading:', error); return null; } };const [bundle0] = await Promise.all([load("mock-bundle-extension", () => import('./extensions/bundle/app.js'))]);export const interfaces = [...(bundle0?.interfaces ?? [])].filter(Boolean);export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const richtexts = [];export const operations = [...(bundle0?.operations ?? [])].filter(Boolean);"`,
+		expect(afterLoadHelper(generateExtensionsEntrypoint(mockExtensions, mockSettings))).toMatchInlineSnapshot(
+			`"const [bundle0] = await Promise.all([load("mock-bundle-extension", () => import('./extensions/bundle/app.js'))]);export const interfaces = [...(bundle0?.interfaces ?? [])];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const richtexts = [];export const operations = [...(bundle0?.operations ?? [])];"`,
 		);
 	});
 
@@ -357,17 +363,19 @@ describe('generateExtensionsEntrypoint', () => {
 			},
 		];
 
-		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"const load = async (name, importer) => { try { return await importer(); } catch (error) { console.error('Skipped extension ' + name + ' because it threw while loading:', error); return null; } };const [display0,operation0,bundle0] = await Promise.all([load("mock-display-extension", () => import('./extensions/display/index.js')),load("mock-operation-extension", () => import('./extensions/operation/app.js')),load("mock-bundle0-extension", () => import('./extensions/bundle/app.js'))]);export const interfaces = [];export const displays = [display0?.default].filter(Boolean);export const layouts = [...(bundle0?.layouts ?? [])].filter(Boolean);export const modules = [];export const panels = [];export const themes = [];export const richtexts = [];export const operations = [operation0?.default,...(bundle0?.operations ?? [])].filter(Boolean);"`,
+		expect(afterLoadHelper(generateExtensionsEntrypoint(mockExtensions, mockSettings))).toMatchInlineSnapshot(
+			`"const [display0,operation0,bundle0] = await Promise.all([load("mock-display-extension", () => import('./extensions/display/index.js')),load("mock-operation-extension", () => import('./extensions/operation/app.js')),load("mock-bundle0-extension", () => import('./extensions/bundle/app.js'))]);export const interfaces = [];export const displays = [display0?.default].filter(Boolean);export const layouts = [...(bundle0?.layouts ?? [])];export const modules = [];export const panels = [];export const themes = [];export const richtexts = [];export const operations = [operation0?.default,...(bundle0?.operations ?? [])].filter(Boolean);"`,
 		);
 	});
 });
 
 describe('generateExtensionsEntrypoint load isolation', () => {
 	let dir: string;
+	let error: MockInstance<typeof console.error>;
 
 	beforeEach(async () => {
 		dir = await mkdtemp(path.join(tmpdir(), 'directus-entrypoint-'));
+		error = vi.spyOn(console, 'error').mockImplementation(() => {});
 	});
 
 	afterEach(async () => {
@@ -386,13 +394,11 @@ describe('generateExtensionsEntrypoint load isolation', () => {
 		return await import(pathToFileURL(file).href);
 	}
 
-	function extension(folder: string, type: 'panel' | 'richtext' = 'panel'): Extension {
-		return { path: `./${folder}`, name: folder, type, entrypoint: 'index.js', local: true };
+	function extension(folder: string): Extension {
+		return { path: `./${folder}`, name: folder, type: 'panel', entrypoint: 'index.js', local: true };
 	}
 
 	it('skips an extension whose module throws at load and still exports the others', async () => {
-		const error = vi.spyOn(console, 'error').mockImplementation(() => {});
-
 		await writeExtension('ext-a', 'index.js', `export default { id: 'a' };`);
 		await writeExtension('ext-b', 'index.js', `throw new Error('ext-b throws at load');`);
 		await writeExtension('ext-c', 'index.js', `export default { id: 'c' };`);
@@ -416,8 +422,6 @@ describe('generateExtensionsEntrypoint load isolation', () => {
 	});
 
 	it('drops the entries of a bundle whose module throws at load and keeps a healthy bundle', async () => {
-		const error = vi.spyOn(console, 'error').mockImplementation(() => {});
-
 		await writeExtension('bundle-a', 'app.js', `export const panels = [{ id: 'a' }];`);
 		await writeExtension('bundle-b', 'app.js', `throw new Error('bundle-b throws at load');`);
 

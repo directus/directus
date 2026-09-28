@@ -9,9 +9,8 @@ import type {
 	HybridExtension,
 } from '../../shared/types/index.js';
 
-// A static import graph fails as a whole when one module throws, so each extension is loaded on its
-// own and a failure only drops that extension.
-const LOAD_HELPER = `const load = async (name, importer) => { try { return await importer(); } catch (error) { console.error('Skipped extension ' + name + ' because it threw while loading:', error); return null; } };`;
+// one throwing module would fail a static import graph as a whole, so each extension loads on its own
+export const LOAD_HELPER = `const load = async (name, importer) => { try { return await importer(); } catch (error) { console.error('Skipped extension ' + name + ' because it threw while loading:', error); return null; } };`;
 
 export function generateExtensionsEntrypoint(
 	extensionMaps: { local: Map<string, Extension>; registry: Map<string, Extension>; module: Map<string, Extension> },
@@ -56,10 +55,11 @@ export function generateExtensionsEntrypoint(
 		}
 	}
 
-	const appOrHybridExtensionLoads = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].flatMap((type) =>
+	const extensionLoads = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].flatMap((type) =>
 		appOrHybridExtensions
 			.filter((extension) => extension.type === type)
 			.map((extension, i) => ({
+				type,
 				variable: `${type}${i}`,
 				name: extension.name,
 				url: pathToRelativeUrl(
@@ -71,15 +71,16 @@ export function generateExtensionsEntrypoint(
 			})),
 	);
 
-	const bundleExtensionLoads = bundleExtensions.map((extension, i) => ({
+	const bundleLoads = bundleExtensions.map((extension, i) => ({
+		types: new Set(extension.entries.map((entry) => entry.type)),
 		variable: `bundle${i}`,
 		name: extension.name,
 		url: pathToRelativeUrl(path.resolve(extension.path, extension.entrypoint.app)),
 	}));
 
-	const loads = [...appOrHybridExtensionLoads, ...bundleExtensionLoads];
+	const loads = [...extensionLoads, ...bundleLoads];
 
-	const extensionLoads =
+	const loadStatement =
 		loads.length > 0
 			? `${LOAD_HELPER}const [${loads.map((load) => load.variable).join(',')}] = await Promise.all([${loads
 					.map((load) => `load(${JSON.stringify(load.name)}, () => import('./${load.url}'))`)
@@ -87,22 +88,17 @@ export function generateExtensionsEntrypoint(
 			: '';
 
 	const extensionExports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].map((type) => {
-		const entries = appOrHybridExtensions
-			.filter((extension) => extension.type === type)
-			.map((_, i) => `${type}${i}?.default`)
-			.concat(
-				bundleExtensions
-					.map((extension, i) =>
-						extension.entries.some((entry) => entry.type === type) ? `...(bundle${i}?.${pluralize(type)} ?? [])` : null,
-					)
-					.filter((e): e is string => e !== null),
-			);
+		const defaults = extensionLoads.filter((load) => load.type === type).map((load) => `${load.variable}?.default`);
 
-		// a skipped extension leaves an undefined default export behind
-		const filter = entries.length > 0 ? '.filter(Boolean)' : '';
+		const spreads = bundleLoads
+			.filter((load) => load.types.has(type))
+			.map((load) => `...(${load.variable}?.${pluralize(type)} ?? [])`);
 
-		return `export const ${pluralize(type)} = [${entries.join(',')}]${filter};`;
+		// a skipped extension leaves an undefined default behind, a skipped bundle already spreads to nothing
+		const filter = defaults.length > 0 ? '.filter(Boolean)' : '';
+
+		return `export const ${pluralize(type)} = [${[...defaults, ...spreads].join(',')}]${filter};`;
 	});
 
-	return `${extensionLoads}${extensionExports.join('')}`;
+	return `${loadStatement}${extensionExports.join('')}`;
 }
