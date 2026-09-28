@@ -1,12 +1,53 @@
+import { writeFileSync } from 'fs';
+import { join } from 'path';
+import { SchemaBuilder } from '@directus/schema-builder';
 import { createDirectus, createItem, graphql, readItems, rest, staticToken } from '@directus/sdk';
 import { database, port } from '@utils/constants.js';
+import { getCallerFolder } from '@utils/getUID.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { range } from 'lodash-es';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 
+const schema = new SchemaBuilder({ test_schema: true })
+	.collection('articles', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+		c.field('author').m2o('users');
+		c.field('tags').m2m('tags');
+		c.field('links').o2m('links', 'article_id');
+		c.field('blocks').m2a(['date_blocks', 'text_blocks']);
+		c.field('votes').integer();
+		c.field('release').dateTime();
+	})
+	.collection('date_blocks', (c) => {
+		c.field('id').id();
+		c.field('date').date();
+	})
+	.collection('text_blocks', (c) => {
+		c.field('id').id();
+		c.field('text').string();
+	})
+	.collection('tags', (c) => {
+		c.field('id').id();
+		c.field('tag').string();
+	})
+	.collection('users', (c) => {
+		c.field('id').id();
+		c.field('name').string();
+	})
+	.collection('links', (c) => {
+		c.field('id').id();
+		c.field('link').string();
+	});
+
+const snapshot = schema.snapshot();
+const types = schema.types();
+
+writeFileSync(join(getCallerFolder(), 'schema.d.ts'), types);
+
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(graphql()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 test(`string _eq`, async () => {
 	const ids = (
@@ -349,7 +390,7 @@ test(`$FOLLOW filter resolves an ad hoc o2m relation`, async () => {
 	const result = await api.request(
 		readItems(collections.articles, {
 			filter: {
-				[`$FOLLOW(${collections.articles_tags},articles_id)`]: { _some: { tags_id: { _eq: tagId } } },
+				[`$FOLLOW(${collections.articles_tags_junction},articles_id)`]: { _some: { tags_id: { _eq: tagId } } },
 			} as any,
 		}),
 	);

@@ -1,7 +1,7 @@
 import { ok as assert } from 'node:assert/strict';
-import type { DeepPartial, Relation, SchemaOverview } from '@directus/types';
+import type { DeepPartial, Relation } from '@directus/types';
 import { merge } from 'lodash-es';
-import type { SchemaBuilder } from './builder.js';
+import type { BuiltSchema, SchemaBuilder } from './builder.js';
 import { CollectionBuilder } from './collection.js';
 import { RELATION_DEFAULTS } from './defaults.js';
 import { FieldBuilder } from './field.js';
@@ -121,33 +121,43 @@ export class RelationBuilder {
 		return this;
 	}
 
-	build(schema: SchemaOverview): Relation {
+	build(schema: BuiltSchema): Relation {
 		assert(this._data._kind === 'finished', 'Relation type is not configured');
+
+		const has_collection = (name: string) => schema.collections.some(({ collection }) => collection === name);
+
+		const has_field = (collection: string, name: string) =>
+			schema.fields.some((field) => field.collection === collection && field.field === name);
+
+		const add_collection = (name: string) => {
+			const collection = new CollectionBuilder(name);
+
+			collection.field('id').id();
+
+			const built = collection.build();
+			schema.collections.push(built.collection);
+			schema.fields.push(...built.fields);
+		};
 
 		// Generate related collection if not exists
 		if (this._data._type === 'm2o' || this._data._type === 'o2m') {
-			if (this._data.related_collection && this._data.related_collection in schema.collections === false) {
-				const collection = new CollectionBuilder(this._data.related_collection);
-
-				collection.field('id').id();
-				schema.collections[this._data.related_collection] = collection.build(schema);
+			if (this._data.related_collection && has_collection(this._data.related_collection) === false) {
+				add_collection(this._data.related_collection);
 			}
 		}
 
 		// Generate existing collection, if not exists
-		if (this._data.collection && this._data.collection in schema.collections === false) {
-			const collection = new CollectionBuilder(this._data.collection);
-
-			collection.field('id').id();
-
-			schema.collections[this._data.collection] = collection.build(schema);
+		if (this._data.collection && has_collection(this._data.collection) === false) {
+			add_collection(this._data.collection);
 		}
 
-		const collection = schema.collections[this._data.collection]!;
+		const collection = this._data.collection;
 
 		// Generate field for collection, if not exists
-		if (this._data.field && this._data.field in collection.fields === false) {
-			const key_type = collection.fields[collection.primary]!.type;
+		if (this._data.field && has_field(collection, this._data.field) === false) {
+			const key_type = schema.fields.find(
+				(field) => field.collection === collection && field.schema?.is_primary_key,
+			)!.type;
 
 			assert(
 				key_type === 'integer' || key_type === 'string',
@@ -156,27 +166,23 @@ export class RelationBuilder {
 
 			const field = new FieldBuilder(this._data.field)[key_type]();
 
-			collection.fields[this._data.field] = field.build(schema);
+			schema.fields.push(field.build(collection));
 		}
 
 		// Generate collection field and related a2o collections, for those that don't exist
 		if (this._data._type === 'a2o') {
 			const collection_field = this._data.meta?.one_collection_field;
 
-			if (collection_field && collection_field in collection.fields === false) {
+			if (collection_field && has_field(collection, collection_field) === false) {
 				const field = new FieldBuilder(collection_field).string();
 
-				collection.fields[collection_field] = field.build(schema);
+				schema.fields.push(field.build(collection));
 			}
 
 			for (const collection_name of this._data.meta?.one_allowed_collections ?? []) {
-				if (collection_name in schema.collections) continue;
+				if (has_collection(collection_name)) continue;
 
-				const collection = new CollectionBuilder(collection_name);
-
-				collection.field('id').id();
-
-				schema.collections[collection_name] = collection.build(schema);
+				add_collection(collection_name);
 			}
 		}
 
