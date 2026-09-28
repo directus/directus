@@ -92,10 +92,9 @@ const MEASUREMENTS: LayoutMeasurements = {
 	keyWidths,
 };
 
-// a contributed button that threw stays visible but disabled
 const failedButtons = ref(new Set<string>());
 
-function guard<T>(key: string, fallback: T, run: () => T): T {
+function runOrDisable<T>(key: string, fallback: T, run: () => T): T {
 	if (failedButtons.value.has(key)) return fallback;
 
 	try {
@@ -117,10 +116,10 @@ const contributedMap = computed<Record<string, ToolbarButton>>(() =>
 				{
 					icon: button.icon,
 					label: button.label,
-					command: (editor) => guard(button.key, undefined, () => button.command(editor)),
+					command: (editor) => runOrDisable(button.key, undefined, () => button.command(editor)),
 					disabled: () => failedButtons.value.has(button.key),
 					...(button.isActive
-						? { isActive: (editor) => guard(button.key, false, () => button.isActive!(editor)) }
+						? { isActive: (editor) => runOrDisable(button.key, false, () => button.isActive!(editor)) }
 						: {}),
 				} satisfies ToolbarButton,
 			]),
