@@ -11,15 +11,14 @@ import {
 	DIRECTUS_CORE_LICENSE,
 	type FeatureFlagEntitlementKey,
 	type InvalidLicenseStatus,
+	isLicenseServerError,
 	type LicenseAddonsOutput,
 	type LicensePendingResolution,
 	type LicensePendingResolutionOutput,
-	LicenseServerError,
 	type LicenseSource,
 	previewKey,
 	readAddons,
 	refreshLicense,
-	type RefreshLicenseInput,
 	ResolveInput,
 	updateAddonQuantity,
 	updateKey,
@@ -29,7 +28,7 @@ import type { Accountability } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionCache } from '../permissions/cache.js';
-import licenseCheckSchedule, { stopLicenseCheck } from '../schedules/license.js';
+import { stopLicenseCheck } from '../schedules/license.js';
 import { UsersService } from '../services/index.js';
 import { SettingsService } from '../services/settings.js';
 import { getSchema } from '../utils/get-schema.js';
@@ -41,10 +40,9 @@ import { getActiveSeats } from './entitlements/lib/seats.js';
 import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
 import { computeBootAction, type LicenseBootAction } from './utils/compute-boot-action.js';
 import { computeLicenseStatus } from './utils/compute-license-status.js';
-import { handleLicenseError, isLicenseInactive, isLicenseInvalid, toReason } from './utils/errors.js';
+import { handleLicenseError, isLicenseInactive, toReason } from './utils/errors.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
-import { handleLicenseError } from './utils/handle-license-error.js';
 import { type ExtractMethods, useRPC } from './utils/use-rpc.js';
 
 const env = useEnv();
@@ -91,7 +89,7 @@ export class LicenseManager {
 	public async initialize(): Promise<void> {
 		this.initializing = true;
 
-		// Listen before the boot run, so a broadcast from whoever leads it cannot arrive unheard
+		// Listen before the boot run, so a broadcast from leader will not be missed
 		this.rpc ??= await useRPC<Pick<LicenseManager, 'syncState'>>(this, LICENSE_CHANNEL);
 
 		// initialize the manager if not done yet
@@ -101,8 +99,11 @@ export class LicenseManager {
 			this.initializing = false;
 		});
 
-		// Sync manually for followers. Depending on leader broadcast would have `initialize` resolve before the sync completes
-		if (!leader) await this.syncState();
+		// Sync manually for followers.
+		// Depending on leader broadcast it could resolve `initialize` before the sync completes
+		if (!leader) {
+			await this.syncState();
+		}
 	}
 
 	private async boot(): Promise<void> {
@@ -155,28 +156,16 @@ export class LicenseManager {
 				throw error;
 			}
 
-			logger.error(error);
+			logger.error(error, 'License could not be verified or is invalid, switching to core tier');
 
-			// On error, boot into core for setting based keys as it can only be fixed via UI
-			if (action.source === 'settings') {
-				logger.error('License could not be verified or is invalid, switching to core tier.');
+			const syncLicenseState: SyncLicenseOptions = {};
 
-				// The key is kept so a renewed or reinstated license is picked back up on the next
-				// boot. Ensures a transient outage wont clear a valid key.
-				await this.syncLicense({
-					kind: 'clear-token',
-					invalidReason: toReason(error),
-				});
-
-				return;
+			if (isLicenseServerError(error)) {
+				syncLicenseState.invalidReason = toReason(error);
 			}
 
-			// env has no option to update key via the UI, hard exit to allow resolution
-
-			throw new Error(
-				`Unable to validate the ${env['LICENSE_KEY'] ? 'LICENSE_KEY' : 'LICENSE_TOKEN'}, please check its value and try again.`,
-				{ cause: error },
-			);
+			// Do not clear token, operate under existing if possible
+			await this.syncLicense(syncLicenseState);
 		}
 	}
 
@@ -269,8 +258,12 @@ export class LicenseManager {
 			return await previewKey({
 				license_key: key,
 			});
-		} catch (err) {
-			handleLicenseError(err);
+		} catch (error) {
+			if (isLicenseServerError(error)) {
+				handleLicenseError(error);
+			}
+
+			throw error;
 		}
 	}
 
@@ -280,20 +273,16 @@ export class LicenseManager {
 	public async activate(key: string) {
 		this.assertCanManageLicense();
 
-		// If a key is already present, treat as an update. Attempt direct activation on failure
+		// If a key is already present, treat as an update
 		if (this.licenseKey) {
-			try {
-				return await this.update(key);
-			} catch (err) {
-				logger.warn(err, 'Updating from the stored license key failed, attempting to activate the new key instead');
-			}
+			return this.update(key);
 		}
 
-		const settingsService = new SettingsService({ schema: await getSchema() });
-
-		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
-
 		try {
+			const settingsService = new SettingsService({ schema: await getSchema() });
+
+			const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
 			const { token, new_project_id } = await activateKey({
 				license_key: key,
 				project_id: project_id!,
@@ -307,17 +296,12 @@ export class LicenseManager {
 			});
 
 			await this.syncLicense();
-
-			// Register the license check on activate once persisted, initialization leaves it to the scheduler
-			if (!this.initializing) {
-				await licenseCheckSchedule();
-			}
-		} catch (err) {
-			if (err instanceof LicenseServerError) {
-				handleLicenseError(err);
+		} catch (error) {
+			if (isLicenseServerError(error)) {
+				handleLicenseError(error);
 			}
 
-			throw err;
+			throw error;
 		}
 	}
 
@@ -335,15 +319,21 @@ export class LicenseManager {
 				project_id: project_id!,
 				public_url: env['PUBLIC_URL'] as string,
 			});
-
-			await this.syncLicense({ kind: 'downgrade' });
-		} catch (err) {
-			if (err instanceof LicenseServerError) {
-				handleLicenseError(err);
+		} catch (error) {
+			if (!isLicenseServerError(error)) {
+				throw error;
 			}
 
-			throw err;
+			// Do not error for missing (INVALID_CREDENTIALS) or invalid (BINDING_MISMATCH) key,
+			// consider them already deactivated and downgrade
+			if (!isLicenseServerError(error, 'INVALID_CREDENTIALS') && !isLicenseServerError(error, 'BINDING_MISMATCH')) {
+				handleLicenseError(error);
+			}
+
+			logger.warn(error, 'Deactivating the stored license key failed, removing it locally');
 		}
+
+		await this.syncLicense({ kind: 'downgrade' });
 	}
 
 	/**
@@ -374,12 +364,12 @@ export class LicenseManager {
 			});
 
 			await this.syncLicense();
-		} catch (err) {
-			if (err instanceof LicenseServerError) {
-				handleLicenseError(err);
+		} catch (error) {
+			if (isLicenseServerError(error)) {
+				handleLicenseError(error);
 			}
 
-			throw err;
+			throw error;
 		}
 	}
 
@@ -396,29 +386,26 @@ export class LicenseManager {
 	}
 
 	/**
-	 * Verify a license token. On failure, downgrade and mark status 'expired'.
+	 * Verify the license token and renew it with the license server
+	 * Only a terminated license (canceled, suspended) clears the token.
 	 */
 	public async refresh(options?: { key?: string | null; token?: string | null }): Promise<void> {
 		const key = options?.key ?? this.licenseKey;
 		const token = options?.token ?? this.licenseToken;
 
 		let license: Directus.License | null = null;
-
 		let syncLicenseState: SyncLicenseOptions = {};
 
 		if (token) {
 			license = await this.verify(token);
 
 			if (!license) {
-				syncLicenseState.kind = 'clear-token';
 				syncLicenseState.invalidReason = 'verification';
 			}
 		}
 
 		/**
-		 *  A failed verification leaves the license unknown. Only an offline token comes without a
-		 *  key, so a key being present means the server is still worth asking for potential self heal
-		 *
+		 * Only an offline token comes without a key, so a key being present allows potential self heal
 		 * Safe to allow key fall-through as it is not possible to set both env key and token.
 		 */
 		if (license?.meta.offline === false || key) {
@@ -426,43 +413,41 @@ export class LicenseManager {
 				throw new InvalidPayloadError({ reason: 'A "key" is required' });
 			}
 
-			const entitlementManager = getEntitlementManager();
-			const settingsService = new SettingsService({ schema: await getSchema() });
-
-			const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
-
-			const refreshPayload: RefreshLicenseInput = {
-				usage_metrics: {
-					seats: await entitlementManager.getUsage('seats'),
-					collections: await entitlementManager.getUsage('collections'),
-					flows: await entitlementManager.getUsage('flows'),
-				},
-			};
-
 			try {
-				const { token } = await refreshLicense(
+				const entitlementManager = getEntitlementManager();
+				const settingsService = new SettingsService({ schema: await getSchema() });
+
+				const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+				const { token: renewed } = await refreshLicense(
 					{
 						license_key: key,
 						project_id: project_id!,
 						public_url: env['PUBLIC_URL'] as string,
 					},
-					refreshPayload,
+					{
+						usage_metrics: {
+							seats: await entitlementManager.getUsage('seats'),
+							collections: await entitlementManager.getUsage('collections'),
+							flows: await entitlementManager.getUsage('flows'),
+						},
+					},
 				);
 
 				await settingsService.upsertSingleton({
-					license_token: token,
+					license_token: renewed,
 				});
 
-				// reset any possible failed state
 				syncLicenseState = {};
-			} catch (err) {
-				logger.error(err);
+			} catch (error) {
+				logger.error(error);
 
-				const reason = toReason(err);
+				if (isLicenseServerError(error)) {
+					const reason = toReason(error);
 
-				// Expose out non transient license statuses
-				if (isLicenseInvalid(reason)) {
-					if (isLicenseInactive(reason)) syncLicenseState.kind = 'clear-token';
+					if (isLicenseInactive(reason)) {
+						syncLicenseState.kind = 'clear-token';
+					}
 
 					syncLicenseState.invalidReason = reason;
 				}
@@ -487,8 +472,12 @@ export class LicenseManager {
 			});
 
 			return url;
-		} catch (err) {
-			handleLicenseError(err);
+		} catch (error) {
+			if (isLicenseServerError(error)) {
+				handleLicenseError(error);
+			}
+
+			throw error;
 		}
 	}
 
@@ -520,8 +509,12 @@ export class LicenseManager {
 				active_quantity: addon.active_quantity,
 				scheduled_quantity: addon.scheduled_quantity,
 			}));
-		} catch (err) {
-			handleLicenseError(err);
+		} catch (error) {
+			if (isLicenseServerError(error)) {
+				handleLicenseError(error);
+			}
+
+			throw error;
 		}
 	}
 
@@ -562,12 +555,12 @@ export class LicenseManager {
 			});
 
 			await this.syncLicense();
-		} catch (err) {
-			if (err instanceof LicenseServerError) {
-				handleLicenseError(err);
+		} catch (error) {
+			if (isLicenseServerError(error)) {
+				handleLicenseError(error);
 			}
 
-			throw err;
+			throw error;
 		}
 	}
 
@@ -587,8 +580,12 @@ export class LicenseManager {
 				},
 				{ addon_ids: [addonId] },
 			);
-		} catch (err) {
-			handleLicenseError(err);
+		} catch (error) {
+			if (isLicenseServerError(error)) {
+				handleLicenseError(error);
+			}
+
+			throw error;
 		}
 	}
 
@@ -784,6 +781,7 @@ export class LicenseManager {
 	public async syncState(options?: { local?: boolean }) {
 		// While booting, only the boot action's own sync applies; followers sync themselves once the run is over
 		if (this.initializing && !options?.local) return;
+
 		const { source: keySource, key } = await getLicenseKey();
 		const { source: tokenSource, token } = await getLicenseToken();
 
@@ -793,20 +791,11 @@ export class LicenseManager {
 		let license: Directus.License | null = null;
 
 		if (token) {
-			const verified = await this.verify(token);
+			license = await this.verify(token);
 
-			if (!verified) {
-				logger.warn('The stored license token could not be verified, switching to core tier');
-
-				if (options?.local) {
-					await this.store(async (store) => {
-						return store.set('invalidReason', 'verification');
-					}).catch((error) => {
-						logger.warn(error, 'Could not record the license invalid reason');
-					});
-				}
-			} else {
-				license = verified;
+			if (license === null) {
+				// The reason should be recorded from refresh
+				logger.warn('The stored license token could not be verified, downgrading to core tier');
 			}
 		}
 
