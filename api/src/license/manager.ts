@@ -467,11 +467,10 @@ export class LicenseManager {
 			} catch (error) {
 				logger.warn(error, 'License refresh failed');
 
-				if (isLicenseServerError(error)) {
-					const reason = toReason(error);
+				// Anything but a license server error counts as unavailable
+				const reason = toReason(error);
 
-					syncLicenseState = { kind: isLicenseInactive(reason) ? 'clear-token' : undefined, invalidReason: reason };
-				}
+				syncLicenseState = { kind: isLicenseInactive(reason) ? 'clear-token' : undefined, invalidReason: reason };
 			}
 
 			if (renewedToken) {

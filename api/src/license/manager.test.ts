@@ -337,6 +337,19 @@ describe('initialize', () => {
 		await expect(manager.getInvalidReason()).resolves.toBe('expired');
 	});
 
+	test('a refresh rejecting with a non license server error records unavailable and keeps the token', async () => {
+		settings.readSingleton.mockResolvedValue({ license_key: KEY, license_token: 'token', project_id: 'project' });
+		vi.mocked(verifyLicense).mockResolvedValue(license('directus'));
+		vi.mocked(refreshLicense).mockRejectedValue(new TypeError("Cannot read properties of null (reading 'token')"));
+		entitlements.getUsage.mockResolvedValue(0);
+
+		const manager = new LicenseManager();
+		await manager.reconcile();
+
+		await expect(manager.getInvalidReason()).resolves.toBe('unavailable');
+		expect(settings.upsertSingleton).not.toHaveBeenCalledWith(expect.objectContaining({ license_token: null }));
+	});
+
 	test('a changed env key updates from the stored key', async () => {
 		env['LICENSE_KEY'] = 'D1111-11111-11111-11111-1111K';
 		settings.readSingleton.mockResolvedValue({ license_key: KEY, license_token: 'token', project_id: 'project' });
@@ -582,14 +595,14 @@ describe('refresh', () => {
 		await expect(manager.getInvalidReason()).resolves.toBe('expired');
 	});
 
-	test('a token that fails verification records verification when the renewal fails too', async () => {
+	test('a token that fails verification records the renewal failure when the renewal fails too', async () => {
 		vi.mocked(verifyLicense).mockRejectedValue(new Error('expired'));
 		vi.mocked(refreshLicense).mockRejectedValue(new Error('license server unreachable'));
 
 		const manager = new LicenseManager();
 		await manager.refresh({ key: KEY, token: 'token' });
 
-		await expect(manager.getInvalidReason()).resolves.toBe('verification');
+		await expect(manager.getInvalidReason()).resolves.toBe('unavailable');
 	});
 
 	test('a renewal after a failed verification clears the verification reason', async () => {
