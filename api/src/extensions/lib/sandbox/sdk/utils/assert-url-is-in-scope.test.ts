@@ -1,14 +1,20 @@
-import { expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { assertUrlIsInScope } from './assert-url-is-in-scope.js';
 
-test('allows a URL that matches one of the configured scopes', () => {
-	expect(() =>
-		assertUrlIsInScope('https://allowed.example/path', ['https://other.example/**', 'https://allowed.example/**']),
-	).not.toThrow();
-});
+const scopes = ['https://other.example/**', 'https://allowed.example/**'];
 
-test('rejects a URL that does not match a configured scope', () => {
-	expect(() => assertUrlIsInScope('https://blocked.example/path', ['https://allowed.example/**'])).toThrow(
-		'No permission to request "https://blocked.example/path"',
-	);
+describe('assertUrlIsInScope', () => {
+	test.each([
+		{ case: 'matches the first scope', url: 'https://other.example/path', scopes },
+		{ case: 'matches a later scope', url: 'https://allowed.example/path', scopes },
+	])('should allow a url that $case', ({ url, scopes }) => {
+		expect(() => assertUrlIsInScope(url, scopes)).not.toThrow();
+	});
+
+	test.each([
+		{ case: 'matches none of the scopes', url: 'https://blocked.example/path', scopes },
+		{ case: 'is checked against no scopes', url: 'https://allowed.example/path', scopes: [] },
+	])('should reject a url that $case', ({ url, scopes }) => {
+		expect(() => assertUrlIsInScope(url, scopes)).toThrow(`No permission to request "${url}"`);
+	});
 });
