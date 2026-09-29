@@ -42,7 +42,7 @@ import { EntitlementManager, getEntitlementManager } from './entitlements/manage
 import { computeLicenseAction, type LicenseAction } from './utils/compute-license-action.js';
 import { computeLicenseStatus } from './utils/compute-license-status.js';
 import { durationToCron } from './utils/duration-to-cron.js';
-import { handleLicenseError, toReason } from './utils/errors.js';
+import { isActivationMissing, toReason, translateLicenseError } from './utils/errors.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
 import { type ExtractMethods, useRPC } from './utils/use-rpc.js';
@@ -56,12 +56,11 @@ type LicenseStore = {
 	invalidReason: InvalidLicenseStatus | undefined;
 };
 
-type SyncLicenseOptions =
-	| {
-			kind?: 'downgrade' | 'clear-token';
-			invalidReason?: InvalidLicenseStatus;
-	  }
-	| { kind?: 'clear-status'; invalidReason?: undefined };
+type SyncLicenseOptions = {
+	kind?: 'downgrade' | 'clear-token' | undefined;
+	/** `null` clears the recorded reason, `undefined` leaves it as is */
+	invalidReason?: InvalidLicenseStatus | null | undefined;
+};
 
 let licenseManager: LicenseManager | undefined;
 
@@ -181,7 +180,7 @@ export class LicenseManager {
 		}
 
 		if (action.kind === 'clear-token') {
-			await this.syncLicense({ kind: 'clear-token' });
+			await this.syncLicense({ kind: 'clear-token', invalidReason: null });
 			return;
 		}
 
@@ -200,7 +199,7 @@ export class LicenseManager {
 					break;
 
 				case 'sync':
-					await this.syncLicense();
+					await this.syncLicense({ invalidReason: null });
 					break;
 			}
 		} catch (error) {
@@ -208,14 +207,7 @@ export class LicenseManager {
 				throw error;
 			}
 
-			const syncLicenseState: SyncLicenseOptions = {};
-
-			if (isLicenseServerError(error)) {
-				syncLicenseState.invalidReason = toReason(error);
-			}
-
-			// Keep the token so the current license stays in effect
-			await this.syncLicense(syncLicenseState);
+			await this.syncLicense({ invalidReason: isLicenseServerError(error) ? toReason(error) : undefined });
 
 			const message =
 				this.source === null
@@ -243,12 +235,12 @@ export class LicenseManager {
 	}
 
 	public async getInvalidReason(): Promise<InvalidLicenseStatus | null> {
-		const invalidStatus = await this.store(async (store) => store.get('invalidReason')).catch((error) => {
+		const invalidReason = await this.store(async (store) => store.get('invalidReason')).catch((error) => {
 			logger.warn(error, 'Could not read the license invalid reason');
 			return null;
 		});
 
-		return invalidStatus ?? null;
+		return invalidReason ?? null;
 	}
 
 	public getSource() {
@@ -297,11 +289,7 @@ export class LicenseManager {
 				license_key: key,
 			});
 		} catch (error) {
-			if (isLicenseServerError(error)) {
-				handleLicenseError(error);
-			}
-
-			throw error;
+			throw translateLicenseError(error);
 		}
 	}
 
@@ -315,23 +303,19 @@ export class LicenseManager {
 				return;
 			}
 
-			// Carry the current activation over
+			// A stored key may not be in effect, update from it to carry any activation over
 			try {
 				await this.applyUpdate(this.licenseKey, key);
 			} catch (error) {
-				// A missing (INVALID_CREDENTIALS) or foreign (BINDING_MISMATCH) key counts as deactivated, activate the new one
-				if (!isLicenseServerError(error, 'INVALID_CREDENTIALS') && !isLicenseServerError(error, 'BINDING_MISMATCH')) {
+				// A missing or bound elsewhere key counts as deactivated, activate the new one
+				if (!isActivationMissing(error)) {
 					throw error;
 				}
 
 				await this.applyActivation(key);
 			}
 		} catch (error) {
-			if (isLicenseServerError(error)) {
-				handleLicenseError(error);
-			}
-
-			throw error;
+			throw translateLicenseError(error);
 		}
 	}
 
@@ -353,7 +337,7 @@ export class LicenseManager {
 			project_id: new_project_id ?? project_id!,
 		});
 
-		await this.syncLicense();
+		await this.syncLicense({ invalidReason: null });
 	}
 
 	public async deactivate() {
@@ -371,19 +355,15 @@ export class LicenseManager {
 				public_url: env['PUBLIC_URL'] as string,
 			});
 		} catch (error) {
-			if (!isLicenseServerError(error)) {
-				throw error;
-			}
-
-			// A missing (INVALID_CREDENTIALS) or foreign (BINDING_MISMATCH) key counts as deactivated, downgrade
-			if (!isLicenseServerError(error, 'INVALID_CREDENTIALS') && !isLicenseServerError(error, 'BINDING_MISMATCH')) {
-				handleLicenseError(error);
+			// A missing or bound elsewhere key counts as deactivated, downgrade
+			if (!isActivationMissing(error)) {
+				throw translateLicenseError(error);
 			}
 
 			logger.warn(error, 'Deactivating the stored license key failed, removing it locally');
 		}
 
-		await this.syncLicense({ kind: 'downgrade' });
+		await this.syncLicense({ kind: 'downgrade', invalidReason: null });
 	}
 
 	/** Replace the current key with a new one */
@@ -394,11 +374,7 @@ export class LicenseManager {
 		try {
 			await this.applyUpdate(this.licenseKey!, newKey);
 		} catch (error) {
-			if (isLicenseServerError(error)) {
-				handleLicenseError(error);
-			}
-
-			throw error;
+			throw translateLicenseError(error);
 		}
 	}
 
@@ -423,7 +399,7 @@ export class LicenseManager {
 			project_id: project_id!,
 		});
 
-		await this.syncLicense();
+		await this.syncLicense({ invalidReason: null });
 	}
 
 	private async verify(token: string): Promise<Directus.License | null> {
@@ -447,7 +423,7 @@ export class LicenseManager {
 		const token = options?.token ?? this.licenseToken;
 
 		let license: Directus.License | null = null;
-		let syncLicenseState: SyncLicenseOptions = {};
+		let syncLicenseState: SyncLicenseOptions = { invalidReason: null };
 
 		if (token) {
 			license = await this.verify(token);
@@ -464,44 +440,44 @@ export class LicenseManager {
 				throw new InvalidPayloadError({ reason: 'A "key" is required' });
 			}
 
+			const entitlementManager = getEntitlementManager();
+			const settingsService = new SettingsService({ schema: await getSchema() });
+
+			const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+			const usage_metrics = {
+				seats: await entitlementManager.getUsage('seats'),
+				collections: await entitlementManager.getUsage('collections'),
+				flows: await entitlementManager.getUsage('flows'),
+			};
+
+			let renewedToken: string | null = null;
+
 			try {
-				const entitlementManager = getEntitlementManager();
-				const settingsService = new SettingsService({ schema: await getSchema() });
-
-				const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
-
-				const { token: renewed } = await refreshLicense(
+				const result = await refreshLicense(
 					{
 						license_key: key,
 						project_id: project_id!,
 						public_url: env['PUBLIC_URL'] as string,
 					},
-					{
-						usage_metrics: {
-							seats: await entitlementManager.getUsage('seats'),
-							collections: await entitlementManager.getUsage('collections'),
-							flows: await entitlementManager.getUsage('flows'),
-						},
-					},
+					{ usage_metrics },
 				);
 
-				await settingsService.upsertSingleton({
-					license_token: renewed,
-				});
-
-				syncLicenseState = {};
+				renewedToken = result.token;
 			} catch (error) {
-				logger.warn(error);
+				logger.warn(error, 'License refresh failed');
 
 				if (isLicenseServerError(error)) {
 					const reason = toReason(error);
 
-					if (isLicenseInactive(reason)) {
-						syncLicenseState.kind = 'clear-token';
-					}
-
-					syncLicenseState.invalidReason = reason;
+					syncLicenseState = { kind: isLicenseInactive(reason) ? 'clear-token' : undefined, invalidReason: reason };
 				}
+			}
+
+			if (renewedToken) {
+				await settingsService.upsertSingleton({ license_token: renewedToken });
+
+				syncLicenseState = { invalidReason: null };
 			}
 		}
 
@@ -524,11 +500,7 @@ export class LicenseManager {
 
 			return url;
 		} catch (error) {
-			if (isLicenseServerError(error)) {
-				handleLicenseError(error);
-			}
-
-			throw error;
+			throw translateLicenseError(error);
 		}
 	}
 
@@ -561,11 +533,7 @@ export class LicenseManager {
 				scheduled_quantity: addon.scheduled_quantity,
 			}));
 		} catch (error) {
-			if (isLicenseServerError(error)) {
-				handleLicenseError(error);
-			}
-
-			throw error;
+			throw translateLicenseError(error);
 		}
 	}
 
@@ -578,8 +546,10 @@ export class LicenseManager {
 
 		const entitlementManager = getEntitlementManager();
 
+		let refreshedToken: string;
+
 		try {
-			const { token } = await updateAddonQuantity(
+			const result = await updateAddonQuantity(
 				{
 					license_key: this.licenseKey!,
 					project_id: project_id!,
@@ -601,18 +571,16 @@ export class LicenseManager {
 				},
 			);
 
-			await settingsService.upsertSingleton({
-				license_token: token,
-			});
-
-			await this.syncLicense();
+			refreshedToken = result.token;
 		} catch (error) {
-			if (isLicenseServerError(error)) {
-				handleLicenseError(error);
-			}
-
-			throw error;
+			throw translateLicenseError(error);
 		}
+
+		await settingsService.upsertSingleton({
+			license_token: refreshedToken,
+		});
+
+		await this.syncLicense({ invalidReason: null });
 	}
 
 	public async removeAddon(addonId: string) {
@@ -632,11 +600,7 @@ export class LicenseManager {
 				{ addon_ids: [addonId] },
 			);
 		} catch (error) {
-			if (isLicenseServerError(error)) {
-				handleLicenseError(error);
-			}
-
-			throw error;
+			throw translateLicenseError(error);
 		}
 	}
 
@@ -650,14 +614,18 @@ export class LicenseManager {
 
 		let entitlements: Directus.Entitlements | null;
 
+		/**
+		 * Resolve against
+		 *  - a key: that key's license, when changing tier
+		 *  - `null`: the core license
+		 *  - omitted: the current license
+		 */
 		if (options.licenseKey) {
-			// Changing tier, resolve against the new key
 			const preview = await this.preview(options.licenseKey);
 			entitlements = preview.entitlements;
 		} else if (options.licenseKey === null) {
 			entitlements = null;
 		} else {
-			// Resolve against the current license
 			const license = await this.getLicense();
 			entitlements = license.entitlements;
 		}
@@ -765,28 +733,15 @@ export class LicenseManager {
 
 		if (await entitlementManager.checkAll()) {
 			// No broadcast needed, the reason lives in the shared store
-			await this.syncLicense({ kind: 'clear-status' });
+			await this.setInvalidReason(null);
 		}
 	}
 
 	/** Apply a license change and propagate it to all instances */
 	private async syncLicense(options?: SyncLicenseOptions) {
-		await this.store(async (store) => {
-			if (options?.invalidReason) {
-				await store.set('invalidReason', options.invalidReason);
-			} else {
-				await store.delete('invalidReason');
-			}
-		}).catch((error) => {
-			logger.warn(
-				error,
-				options?.invalidReason
-					? `Could not record the license invalid reason "${options.invalidReason}"`
-					: 'Could not clear the license invalid reason',
-			);
-		});
-
-		if (options?.kind === 'clear-status') return;
+		if (options?.invalidReason !== undefined) {
+			await this.setInvalidReason(options.invalidReason);
+		}
 
 		if (options?.kind === 'downgrade') {
 			const settingsService = new SettingsService({ schema: await getSchema() });
@@ -802,6 +757,26 @@ export class LicenseManager {
 		await this.rpc?.syncState().catch((error) => {
 			logger.warn(error, 'Could not broadcast the license change');
 		});
+	}
+
+	/** Record or clear the invalid reason */
+	private async setInvalidReason(reason: InvalidLicenseStatus | null) {
+		try {
+			await this.store(async (store) => {
+				if (reason) {
+					await store.set('invalidReason', reason);
+				} else {
+					await store.delete('invalidReason');
+				}
+			});
+		} catch (error) {
+			logger.warn(
+				error,
+				reason
+					? `Could not record the license invalid reason "${reason}"`
+					: 'Could not clear the license invalid reason',
+			);
+		}
 	}
 
 	/**

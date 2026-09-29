@@ -3,7 +3,7 @@ import { ErrorCode, isDirectusError, LicenseInvalidError } from '@directus/error
 import type { InvalidLicenseStatus } from '@directus/license';
 import { LicenseServerError } from '@directus/license';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { handleLicenseError, toReason } from './errors.js';
+import { isActivationMissing, toReason, translateLicenseError } from './errors.js';
 
 const warn = vi.fn();
 
@@ -15,17 +15,16 @@ function serverError(code: string, extensions?: Record<string, unknown>, status 
 	return new LicenseServerError({ message: 'Upstream detail', code, status, extensions });
 }
 
-/** Run the handler and assert on the error it maps to */
+/** Translate the error and assert on the error it maps to */
 function expectThrows(error: unknown, code: ErrorCode): DirectusError<unknown> {
-	try {
-		handleLicenseError(error);
-	} catch (thrown) {
-		expect(isDirectusError(thrown, code), `expected ${code}, got ${thrown}`).toBe(true);
-		return thrown as DirectusError<unknown>;
-	}
+	const thrown = translateLicenseError(error);
+
+	expect(isDirectusError(thrown, code), `expected ${code}, got ${thrown}`).toBe(true);
+
+	return thrown as DirectusError<unknown>;
 }
 
-describe('handleLicenseError', () => {
+describe('translateLicenseError', () => {
 	describe('the key cannot be used here', () => {
 		test.each([
 			['LICENSE_EXPIRED', 'expired', 'The license has expired'],
@@ -108,14 +107,11 @@ describe('handleLicenseError', () => {
 			const thrown = expectThrows(error, ErrorCode.ServiceUnavailable);
 			expect(thrown.message).toBe('Service "license" is unavailable. The licensing service could not be reached.');
 		});
+	});
 
-		test('a transport failure throws ServiceUnavailableError', () => {
-			const thrown = expectThrows(new Error('socket hang up'), ErrorCode.ServiceUnavailable);
-			expect(thrown.message).toBe('Service "license" is unavailable. The licensing service could not be reached.');
-		});
-
-		test('a non-error throws ServiceUnavailableError', () => {
-			expectThrows('nope', ErrorCode.ServiceUnavailable);
+	describe('leaves errors from outside the license server alone', () => {
+		test.each([new Error('socket hang up'), 'nope'])('%s is returned as is', (error) => {
+			expect(translateLicenseError(error)).toBe(error);
 		});
 	});
 
@@ -151,7 +147,6 @@ describe('handleLicenseError', () => {
 			[serverError('FORBIDDEN'), ErrorCode.Forbidden],
 			[serverError('REQUESTS_EXCEEDED'), ErrorCode.RequestsExceeded],
 			[serverError('SERVICE_UNAVAILABLE'), ErrorCode.ServiceUnavailable],
-			[new Error('Upstream detail'), ErrorCode.ServiceUnavailable],
 		])('%s is logged, not sent', (error, code) => {
 			const thrown = expectThrows(error, code);
 
@@ -159,6 +154,23 @@ describe('handleLicenseError', () => {
 			expect(thrown.message).not.toContain('Upstream detail');
 			expect(JSON.stringify(thrown.extensions ?? {})).not.toContain('Upstream detail');
 		});
+	});
+});
+
+describe('isActivationMissing', () => {
+	test.each(['INVALID_CREDENTIALS', 'NOT_FOUND', 'BINDING_MISMATCH'])('%s means the activation is missing', (code) => {
+		expect(isActivationMissing(serverError(code))).toBe(true);
+	});
+
+	test.each(['LICENSE_EXPIRED', 'LICENSE_CANCELED', 'ACTIVATION_LIMIT_EXCEEDED', 'SERVICE_UNAVAILABLE', 'FORBIDDEN'])(
+		'%s leaves the activation in place',
+		(code) => {
+			expect(isActivationMissing(serverError(code))).toBe(false);
+		},
+	);
+
+	test('an error from outside the license server leaves the activation in place', () => {
+		expect(isActivationMissing(new Error('socket hang up'))).toBe(false);
 	});
 });
 
@@ -172,9 +184,6 @@ describe('toReason', () => {
 			['NOT_FOUND', 'invalid_key'],
 			['ACTIVATION_LIMIT_EXCEEDED', 'activation_limit'],
 			['BINDING_MISMATCH', 'binding_mismatch'],
-			['SUBSCRIPTION_PAST_DUE', 'payment'],
-			['NO_PAYMENT_METHOD', 'payment'],
-			['BILLING_LINKAGE_MISSING', 'payment'],
 		] satisfies [string, InvalidLicenseStatus][])('%s reads as %s', (code, reason) => {
 			expect(toReason(serverError(code))).toBe(reason);
 		});
@@ -188,6 +197,9 @@ describe('toReason', () => {
 
 	describe('reports what says nothing about the license as unavailable', () => {
 		test.each([
+			'SUBSCRIPTION_PAST_DUE',
+			'NO_PAYMENT_METHOD',
+			'BILLING_LINKAGE_MISSING',
 			'FORBIDDEN',
 			'ADDON_NOT_ALLOWED',
 			'INVALID_PAYLOAD',

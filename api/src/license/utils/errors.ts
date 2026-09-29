@@ -27,36 +27,46 @@ const REASON_BY_FAILURE: Record<LicenseInvalidFailure, string> = {
 	binding_mismatch: 'The license key is bound to another project',
 };
 
-/** Translate a license request failure into a Directus error */
-export function handleLicenseError(error: unknown): never {
+/** Translate a license server error into a Directus error, returning any other error as is */
+export function translateLicenseError(error: unknown): unknown {
+	if (!isLicenseServerError(error)) return error;
+
 	const failure = getLicenseFailure(error);
 
 	useLogger().warn(error, `License request failed: ${failure}`);
 
 	if (isLicenseInvalid(failure)) {
-		throw new LicenseInvalidError({ failure, reason: REASON_BY_FAILURE[failure] });
+		return new LicenseInvalidError({ failure, reason: REASON_BY_FAILURE[failure] });
 	}
 
 	switch (failure) {
-		case 'invalid_request': {
-			const reason = isLicenseServerError(error) ? error.message.replace(/\.$/, '') : '';
-
-			throw new InvalidPayloadError({ reason: reason || 'The licensing service rejected the request' });
-		}
+		case 'invalid_request':
+			return new InvalidPayloadError({
+				reason: error.message.replace(/\.$/, ''),
+			});
 
 		case 'not_permitted':
 		case 'payment':
-			throw new ForbiddenError();
+			return new ForbiddenError();
 
 		case 'rate_limited': {
 			const { limit, retryAfter } = getLicenseRateLimit(error);
 
-			throw new HitRateLimitError({ limit, reset: new Date(Date.now() + retryAfter * 1000) });
+			return new HitRateLimitError({ limit, reset: new Date(Date.now() + retryAfter * 1000) });
 		}
 
 		case 'unavailable':
-			throw new ServiceUnavailableError({ service: 'license', reason: 'The licensing service could not be reached' });
+			return new ServiceUnavailableError({ service: 'license', reason: 'The licensing service could not be reached' });
 	}
+}
+
+/** Whether the error is due to the key being unknown or already bound */
+export function isActivationMissing(error: unknown): boolean {
+	if (!isLicenseServerError(error)) return false;
+
+	const failure = getLicenseFailure(error);
+
+	return failure === 'invalid_key' || failure === 'binding_mismatch';
 }
 
 /** Convert a license error to its invalid reason */

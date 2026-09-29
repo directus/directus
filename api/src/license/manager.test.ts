@@ -11,6 +11,7 @@ import {
 	verifyLicense,
 } from '@directus/license';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { clearCache as clearPermissionCache } from '../permissions/cache.js';
 import { runExclusive } from '../utils/run-exclusive.js';
 import { scheduleSynchronizedJob } from '../utils/schedule.js';
 import { LicenseManager } from './manager.js';
@@ -307,6 +308,21 @@ describe('initialize', () => {
 		expect(settings.upsertSingleton).not.toHaveBeenCalledWith(expect.objectContaining({ license_token: null }));
 	});
 
+	test('a check failing outside the license server keeps the recorded reason', async () => {
+		settings.readSingleton.mockResolvedValue({ license_key: KEY, license_token: 'token', project_id: 'project' });
+		vi.mocked(verifyLicense).mockResolvedValue(license('directus'));
+		vi.mocked(refreshLicense).mockRejectedValue(serverError('LICENSE_EXPIRED'));
+		entitlements.getUsage.mockResolvedValue(0);
+
+		const manager = new LicenseManager();
+		await manager.reconcile();
+
+		entitlements.getUsage.mockRejectedValue(new Error('database unreachable'));
+		await manager.reconcile();
+
+		await expect(manager.getInvalidReason()).resolves.toBe('expired');
+	});
+
 	test('a changed env key updates from the stored key', async () => {
 		env['LICENSE_KEY'] = 'D1111-11111-11111-11111-1111K';
 		settings.readSingleton.mockResolvedValue({ license_key: KEY, license_token: 'token', project_id: 'project' });
@@ -528,7 +544,7 @@ describe('refresh', () => {
 	test.each([
 		['LICENSE_EXPIRED', 'expired'],
 		['BINDING_MISMATCH', 'binding_mismatch'],
-		['SUBSCRIPTION_PAST_DUE', 'payment'],
+		['SUBSCRIPTION_PAST_DUE', 'unavailable'],
 		['SERVICE_UNAVAILABLE', 'unavailable'],
 	])('%s keeps the token, recording %s', async (code, reason) => {
 		vi.mocked(verifyLicense).mockResolvedValue(license('directus'));
@@ -623,6 +639,21 @@ describe('applyResolution', () => {
 
 		await expect(manager.getInvalidReason()).resolves.toBeNull();
 		expect(settings.upsertSingleton).not.toHaveBeenCalled();
+	});
+
+	test('clearing the reason neither resyncs nor broadcasts', async () => {
+		const manager = await managerWithReason();
+		const broadcast = vi.fn();
+		Object.assign(manager, { rpc: { syncState: broadcast } });
+		entitlements.checkAll.mockResolvedValue(true);
+		vi.mocked(clearPermissionCache).mockClear();
+		vi.mocked(getLicenseKey).mockClear();
+
+		await manager.applyResolution({});
+
+		expect(clearPermissionCache).not.toHaveBeenCalled();
+		expect(getLicenseKey).not.toHaveBeenCalled();
+		expect(broadcast).not.toHaveBeenCalled();
 	});
 
 	test('keeps the recorded reason while a limit is still exceeded', async () => {
