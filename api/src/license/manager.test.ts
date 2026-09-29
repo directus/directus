@@ -183,6 +183,17 @@ describe('license management guards', () => {
 		},
 	);
 
+	test('activate does not fall back when the new key is bound to this project elsewhere', async () => {
+		vi.mocked(updateKey).mockRejectedValue(serverError('REPLACEMENT_BINDING_MISMATCH'));
+
+		await expect(managerWith(activeFromSettings).activate('D1111-11111-11111-11111-1111K')).rejects.toMatchObject({
+			code: 'LICENSE_INVALID',
+			extensions: { failure: 'binding_mismatch' },
+		});
+
+		expect(activateKey).not.toHaveBeenCalled();
+	});
+
 	test('activate reports the rejection of the new key once it falls back to activating it', async () => {
 		vi.mocked(updateKey).mockRejectedValue(serverError('INVALID_CREDENTIALS'));
 		vi.mocked(activateKey).mockRejectedValue(serverError('LICENSE_NOT_FOUND'));

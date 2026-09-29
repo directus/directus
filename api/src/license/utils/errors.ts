@@ -60,13 +60,11 @@ export function translateLicenseError(error: unknown): unknown {
 	}
 }
 
-/** Whether the error is due to the key being unknown or already bound */
+/** Whether the stored key has no activation to carry over */
 export function isActivationMissing(error: unknown): boolean {
 	if (!isLicenseServerError(error)) return false;
 
-	const failure = getLicenseFailure(error);
-
-	return failure === 'invalid_key' || failure === 'binding_mismatch';
+	return getLicenseFailure(error) === 'invalid_key' || isLicenseServerError(error, 'BINDING_MISMATCH');
 }
 
 /** Convert a license error to its invalid reason */

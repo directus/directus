@@ -34,6 +34,7 @@ describe('translateLicenseError', () => {
 			['LICENSE_NOT_FOUND', 'invalid_key', 'The license key is not valid'],
 			['ACTIVATION_LIMIT_EXCEEDED', 'activation_limit', 'The license has reached its activation limit'],
 			['BINDING_MISMATCH', 'binding_mismatch', 'The license key is bound to another project'],
+			['REPLACEMENT_BINDING_MISMATCH', 'binding_mismatch', 'The license key is bound to another project'],
 		])('%s throws LicenseInvalidError carrying the %s discriminant', (code, failure, reason) => {
 			const thrown = expectThrows(serverError(code), ErrorCode.LicenseInvalid);
 
@@ -173,6 +174,7 @@ describe('isActivationMissing', () => {
 		'SERVICE_UNAVAILABLE',
 		'FORBIDDEN',
 		'NOT_FOUND',
+		'REPLACEMENT_BINDING_MISMATCH',
 	])('%s leaves the activation in place', (code) => {
 		expect(isActivationMissing(serverError(code))).toBe(false);
 	});
@@ -192,6 +194,7 @@ describe('toReason', () => {
 			['LICENSE_NOT_FOUND', 'invalid_key'],
 			['ACTIVATION_LIMIT_EXCEEDED', 'activation_limit'],
 			['BINDING_MISMATCH', 'binding_mismatch'],
+			['REPLACEMENT_BINDING_MISMATCH', 'binding_mismatch'],
 		] satisfies [string, InvalidLicenseStatus][])('%s reads as %s', (code, reason) => {
 			expect(toReason(serverError(code))).toBe(reason);
 		});
