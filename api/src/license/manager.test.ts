@@ -12,8 +12,10 @@ import {
 } from '@directus/license';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { clearCache as clearPermissionCache } from '../permissions/cache.js';
+import { UsersService } from '../services/index.js';
 import { runExclusive } from '../utils/run-exclusive.js';
 import { scheduleSynchronizedJob } from '../utils/schedule.js';
+import { EntitlementManager } from './entitlements/manager.js';
 import { LicenseManager } from './manager.js';
 import { durationToCron } from './utils/duration-to-cron.js';
 import { getLicenseKey } from './utils/get-license-key.js';
@@ -237,6 +239,7 @@ describe('license management guards', () => {
 	});
 
 	test.each([
+		['billingPortalUrl', (manager: LicenseManager) => manager.billingPortalUrl()],
 		['availableAddons', (manager: LicenseManager) => manager.availableAddons()],
 		['setAddonQuantity', (manager: LicenseManager) => manager.setAddonQuantity({ addonId: 'a', quantity: 1 })],
 		['removeAddon', (manager: LicenseManager) => manager.removeAddon('a')],
@@ -616,6 +619,35 @@ describe('refresh', () => {
 
 		await expect(manager.refresh({ key: KEY, token: null })).resolves.toBeUndefined();
 		await expect(manager.getInvalidReason()).resolves.toBe('canceled');
+	});
+});
+
+describe('pendingResolution', () => {
+	const setEntitlements = vi.fn();
+	const check = vi.fn();
+
+	beforeEach(() => {
+		vi.mocked(EntitlementManager).mockImplementation(function () {
+			return { setEntitlements, check } as any;
+		});
+
+		check.mockResolvedValue({ allowed: true, valid: true });
+	});
+
+	function failing(failed: string, result: object) {
+		check.mockImplementation(async (key: string) => (key === failed ? result : { allowed: true, valid: true }));
+	}
+
+	test('an admin without an email gets the ADMIN_MISSING_EMAIL blocker for SSO', async () => {
+		failing('sso_enabled', { valid: false });
+
+		vi.mocked(UsersService).mockImplementation(function () {
+			return { readOne: vi.fn().mockResolvedValue({ email: null, password: 'hash' }) } as any;
+		});
+
+		await expect(new LicenseManager().pendingResolution({ adminId: 'admin', licenseKey: null })).resolves.toEqual([
+			{ key: 'sso_enabled', kind: 'feature_gate', blockers: ['ADMIN_MISSING_EMAIL'] },
+		]);
 	});
 });
 
