@@ -35,7 +35,7 @@ const warningMessage = computed(() => {
 
 	let reason = 'generic';
 
-	if (['invalid_key', 'activation_limit', 'binding_mismatch'].includes(warningReason.value)) {
+	if (['invalid_key', 'activation_limit', 'binding_mismatch', 'unavailable'].includes(warningReason.value)) {
 		reason = warningReason.value;
 	}
 
@@ -43,6 +43,9 @@ const warningMessage = computed(() => {
 });
 
 const showWarning = computed(() => isAdmin.value && warningMessage.value !== null);
+
+// The licensing service being unreachable is usually transient
+const warningSeverity = computed(() => (warningReason.value === 'unavailable' ? 'warning' : 'danger'));
 
 const severity = computed(() =>
 	gracePeriodDaysRemaining.value !== null && gracePeriodDaysRemaining.value <= GRACE_DANGER_THRESHOLD_DAYS
@@ -62,7 +65,7 @@ const oigUrl = computed(() =>
 </script>
 
 <template>
-	<VNotice v-if="showWarning" type="danger" class="status-notice">
+	<VNotice v-if="showWarning" :type="warningSeverity" class="status-notice">
 		{{ warningMessage }}
 	</VNotice>
 	<VNotice v-if="show && isLocked" type="danger" class="status-notice">

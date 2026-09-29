@@ -1773,6 +1773,9 @@ license:
       Your license key is registered to a different project or URL, so it can no longer be renewed for this project.
       Your current license keeps working until it expires, after which Core tier limits will apply. Check that your
       project URL matches the one the key was activated with.
+    unavailable:
+      The licensing service could not be reached to renew your license. Your current license keeps working and will be
+      checked again automatically.
   pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
     grace_period_body: Manage your license key in Settings > License.
