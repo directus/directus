@@ -28,18 +28,19 @@ import type { Accountability } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionCache } from '../permissions/cache.js';
-import { stopLicenseCheck } from '../schedules/license.js';
 import { UsersService } from '../services/index.js';
 import { SettingsService } from '../services/settings.js';
 import { getSchema } from '../utils/get-schema.js';
 import { runExclusive } from '../utils/run-exclusive.js';
+import { type ScheduledJob, scheduleSynchronizedJob } from '../utils/schedule.js';
 import { useStore } from '../utils/store.js';
 import { getActiveCollections } from './entitlements/lib/collections.js';
 import { getActiveFlows } from './entitlements/lib/flows.js';
 import { getActiveSeats } from './entitlements/lib/seats.js';
 import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
-import { computeBootAction, type LicenseBootAction } from './utils/compute-boot-action.js';
+import { computeLicenseAction, type LicenseAction } from './utils/compute-license-action.js';
 import { computeLicenseStatus } from './utils/compute-license-status.js';
+import { durationToCron } from './utils/duration-to-cron.js';
 import { handleLicenseError, isLicenseInactive, toReason } from './utils/errors.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
@@ -78,10 +79,12 @@ export class LicenseManager {
 	private licenseToken: string | null = null;
 	/** Where the key or token comes from */
 	private source: LicenseSource = null;
-	/** True for the duration of {@link initialize}, while the management guards do not apply */
+	/** Ignores remote syncs while initializing */
 	private initializing = false;
 	private rpc: ExtractMethods<Pick<LicenseManager, 'syncState'>> | null = null;
 	private store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
+	/** Scheduled license check */
+	private check: { job: ScheduledJob | null; cron: string | null } | null = null;
 
 	/**
 	 * Establish license state from the environment and the database.
@@ -95,7 +98,7 @@ export class LicenseManager {
 		// initialize the manager if not done yet
 		getEntitlementManager();
 
-		const { leader } = await runExclusive('license-boot', () => this.boot()).finally(() => {
+		const { leader } = await runExclusive('license-reconcile', () => this.reconcile()).finally(() => {
 			this.initializing = false;
 		});
 
@@ -106,7 +109,8 @@ export class LicenseManager {
 		}
 	}
 
-	private async boot(): Promise<void> {
+	/** Run the license action for the current key and token */
+	public async reconcile(): Promise<void> {
 		const envKey = env['LICENSE_KEY'] as string | undefined;
 		const envToken = env['LICENSE_TOKEN'] as string | undefined;
 
@@ -116,11 +120,63 @@ export class LicenseManager {
 			fields: ['license_key', 'license_token'],
 		});
 
-		await this.executeBootAction(computeBootAction({ envKey, envToken, dbKey, dbToken }));
+		await this.executeLicenseAction(computeLicenseAction({ envKey, envToken, dbKey, dbToken }));
 	}
 
-	/** Run a boot action */
-	private async executeBootAction(action: LicenseBootAction): Promise<void> {
+	/** Schedule license check */
+	public async scheduleCheck(): Promise<void> {
+		const settingsService = new SettingsService({ schema: await getSchema() });
+		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+		const interval = this.getCheckInterval();
+
+		// Seeded by project so instances share one job
+		const cron = interval === null ? null : durationToCron(interval, String(project_id));
+
+		// Prevent concurrency
+		if (this.check && this.check.cron === cron) return;
+
+		const previous = this.check;
+
+		this.check = { cron, job: cron === null ? null : this.startCheck(cron) };
+
+		await previous?.job?.stop();
+	}
+
+	/** Start the check job */
+	private startCheck(cron: string): ScheduledJob {
+		return scheduleSynchronizedJob('license-check', cron, async () => {
+			try {
+				// Don't race a startup
+				await runExclusive('license-reconcile', async () => {
+					try {
+						await this.reconcile();
+					} catch (error) {
+						// Keep errors from followers
+						logger.error(error, 'License check failed');
+					}
+				});
+			} catch (error) {
+				logger.error(error, 'License check could not run');
+			}
+		});
+	}
+
+	/** The check interval in seconds */
+	private getCheckInterval(): number | null {
+		// Nothing to check
+		if (!this.licenseKey && !this.licenseToken) return null;
+
+		// Key not in effect, retry
+		if (this.source === null && this.licenseKey) return 3600;
+
+		const validationInterval = licenseCache.meta.validation_interval;
+
+		return validationInterval > 0 ? validationInterval : 43_200;
+	}
+
+	/** Run a license action, bypassing management guards */
+	private async executeLicenseAction(action: LicenseAction): Promise<void> {
 		if (action.kind === 'fatal') {
 			logger.fatal(action.message);
 			throw new Error(action.message);
@@ -134,13 +190,11 @@ export class LicenseManager {
 		try {
 			switch (action.kind) {
 				case 'activate':
-					await this.activate(action.key);
+					await this.applyActivation(action.key);
 					break;
 
 				case 'update':
-					// Operates on manager state, so seed it with the key being replaced
-					this.licenseKey = action.currentKey;
-					await this.update(action.key);
+					await this.applyUpdate(action.currentKey, action.key);
 					break;
 
 				case 'refresh':
@@ -156,7 +210,7 @@ export class LicenseManager {
 				throw error;
 			}
 
-			logger.error(error, 'License could not be verified or is invalid, switching to core tier');
+			logger.error(error, 'License could not be verified or is invalid');
 
 			const syncLicenseState: SyncLicenseOptions = {};
 
@@ -205,8 +259,6 @@ export class LicenseManager {
 	 * and env's LICENSE_KEY_MANAGEMENT_ENABLED !== false.
 	 */
 	private assertCanManageLicense() {
-		if (this.initializing) return;
-
 		if (this.getEditable() === false) {
 			throw new ForbiddenError({
 				reason: `You cannot manage license for the current license.`,
@@ -222,8 +274,6 @@ export class LicenseManager {
 	 * explicit key argument cannot bypass the guard.
 	 */
 	private assertLicenseExists() {
-		if (this.initializing) return;
-
 		if (this.licenseKey === null) {
 			throw new ForbiddenError({
 				reason: `There is no active license to manage.`,
@@ -279,23 +329,7 @@ export class LicenseManager {
 		}
 
 		try {
-			const settingsService = new SettingsService({ schema: await getSchema() });
-
-			const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
-
-			const { token, new_project_id } = await activateKey({
-				license_key: key,
-				project_id: project_id!,
-				public_url: env['PUBLIC_URL'] as string,
-			});
-
-			await settingsService.upsertSingleton({
-				license_key: key,
-				license_token: token,
-				project_id: new_project_id ?? project_id!,
-			});
-
-			await this.syncLicense();
+			await this.applyActivation(key);
 		} catch (error) {
 			if (isLicenseServerError(error)) {
 				handleLicenseError(error);
@@ -303,6 +337,27 @@ export class LicenseManager {
 
 			throw error;
 		}
+	}
+
+	/** Activate without guards */
+	private async applyActivation(key: string) {
+		const settingsService = new SettingsService({ schema: await getSchema() });
+
+		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+		const { token, new_project_id } = await activateKey({
+			license_key: key,
+			project_id: project_id!,
+			public_url: env['PUBLIC_URL'] as string,
+		});
+
+		await settingsService.upsertSingleton({
+			license_key: key,
+			license_token: token,
+			project_id: new_project_id ?? project_id!,
+		});
+
+		await this.syncLicense();
 	}
 
 	public async deactivate() {
@@ -343,27 +398,8 @@ export class LicenseManager {
 		this.assertCanManageLicense();
 		this.assertLicenseExists();
 
-		const settingsService = new SettingsService({ schema: await getSchema() });
-
-		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
-
 		try {
-			const { token } = await updateKey(
-				{
-					license_key: this.licenseKey!,
-					project_id: project_id!,
-					public_url: env['PUBLIC_URL'] as string,
-				},
-				{ license_key: newKey },
-			);
-
-			await settingsService.upsertSingleton({
-				license_key: newKey,
-				license_token: token,
-				project_id: project_id!,
-			});
-
-			await this.syncLicense();
+			await this.applyUpdate(this.licenseKey!, newKey);
 		} catch (error) {
 			if (isLicenseServerError(error)) {
 				handleLicenseError(error);
@@ -371,6 +407,30 @@ export class LicenseManager {
 
 			throw error;
 		}
+	}
+
+	/** Update without guards */
+	private async applyUpdate(currentKey: string, newKey: string) {
+		const settingsService = new SettingsService({ schema: await getSchema() });
+
+		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+		const { token } = await updateKey(
+			{
+				license_key: currentKey,
+				project_id: project_id!,
+				public_url: env['PUBLIC_URL'] as string,
+			},
+			{ license_key: newKey },
+		);
+
+		await settingsService.upsertSingleton({
+			license_key: newKey,
+			license_token: token,
+			project_id: project_id!,
+		});
+
+		await this.syncLicense();
 	}
 
 	private async verify(token: string): Promise<Directus.License | null> {
@@ -753,9 +813,6 @@ export class LicenseManager {
 		if (options?.kind === 'downgrade') {
 			const settingsService = new SettingsService({ schema: await getSchema() });
 			await settingsService.upsertSingleton({ license_key: null, license_token: null });
-
-			// Stop the periodic check
-			await stopLicenseCheck();
 		} else if (options?.kind === 'clear-token') {
 			const settingsService = new SettingsService({ schema: await getSchema() });
 			await settingsService.upsertSingleton({ license_token: null });
@@ -779,7 +836,7 @@ export class LicenseManager {
 	 * @param options.local Whether the change was made on this instance
 	 */
 	public async syncState(options?: { local?: boolean }) {
-		// While booting, only the boot action's own sync applies; followers sync themselves once the run is over
+		// Followers sync once initialized
 		if (this.initializing && !options?.local) return;
 
 		const { source: keySource, key } = await getLicenseKey();
@@ -804,5 +861,14 @@ export class LicenseManager {
 
 		licenseCache = license ?? DIRECTUS_CORE_LICENSE;
 		getEntitlementManager().setEntitlements(licenseCache.entitlements);
+
+		// Reschedule for the new state
+		if (this.check) {
+			try {
+				await this.scheduleCheck();
+			} catch (error) {
+				logger.warn(error, 'Could not reschedule the license check');
+			}
+		}
 	}
 }

@@ -12,7 +12,10 @@ import {
 	verifyLicense,
 } from '@directus/license';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { runExclusive } from '../utils/run-exclusive.js';
+import { scheduleSynchronizedJob } from '../utils/schedule.js';
 import { LicenseManager } from './manager.js';
+import { durationToCron } from './utils/duration-to-cron.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
 
@@ -66,13 +69,14 @@ vi.mock('../services/settings.js', () => ({
 vi.mock('../utils/get-schema.js', () => ({ getSchema: vi.fn() }));
 
 vi.mock('../utils/run-exclusive.js', () => ({
-	runExclusive: async (_name: string, fn: () => unknown) => ({ result: await fn(), leader: true }),
+	runExclusive: vi.fn(async (_name: string, fn: () => unknown) => ({ result: await fn(), leader: true })),
 }));
 
 vi.mock('./utils/use-rpc.js', () => ({ useRPC: async () => ({ syncState: vi.fn().mockResolvedValue(undefined) }) }));
 vi.mock('./utils/get-license-key.js', () => ({ getLicenseKey: vi.fn() }));
 vi.mock('./utils/get-license-token.js', () => ({ getLicenseToken: vi.fn() }));
-vi.mock('../schedules/license.js', () => ({ default: vi.fn(), stopLicenseCheck: vi.fn() }));
+
+vi.mock('../utils/schedule.js', () => ({ scheduleSynchronizedJob: vi.fn() }));
 
 vi.mock('./entitlements/manager.js', () => ({
 	EntitlementManager: vi.fn(),
@@ -155,10 +159,22 @@ describe('license management guards', () => {
 		expect(activateKey).not.toHaveBeenCalled();
 	});
 
+	test('activate on CORE activates the key', async () => {
+		vi.mocked(activateKey).mockResolvedValue({ token: 'token' });
+
+		await managerWith(core).activate(KEY);
+
+		expect(activateKey).toHaveBeenCalledWith(expect.objectContaining({ license_key: KEY }));
+		expect(updateKey).not.toHaveBeenCalled();
+	});
+
 	test('activate does not fall back over a transient update failure', async () => {
 		vi.mocked(updateKey).mockRejectedValue(serverError('SERVICE_UNAVAILABLE'));
 
-		await expect(managerWith(activeFromSettings).activate('D1111-11111-11111-11111-1111K')).rejects.toThrow();
+		await expect(managerWith(activeFromSettings).activate('D1111-11111-11111-11111-1111K')).rejects.toMatchObject({
+			code: 'LICENSE_SERVICE_UNAVAILABLE',
+		});
+
 		expect(activateKey).not.toHaveBeenCalled();
 	});
 
@@ -226,6 +242,30 @@ describe('initialize', () => {
 		expect(manager.getSource()).toBeNull();
 	});
 
+	test('a key the server rejects at boot records why', async () => {
+		settings.readSingleton.mockResolvedValue({ license_key: KEY, license_token: null, project_id: 'project' });
+		vi.mocked(activateKey).mockRejectedValue(serverError('BINDING_MISMATCH'));
+
+		const manager = new LicenseManager();
+		await manager.initialize();
+
+		await expect(manager.getInvalidReason()).resolves.toBe('binding_mismatch');
+	});
+
+	test('a token left without a key is cleared at boot', async () => {
+		settings.readSingleton.mockResolvedValue({ license_key: null, license_token: 'token', project_id: 'project' });
+
+		await new LicenseManager().initialize();
+
+		expect(settings.upsertSingleton).toHaveBeenCalledWith({ license_token: null });
+	});
+
+	test('a CORE boot that cannot read the license state fails, even when a second read would succeed', async () => {
+		vi.mocked(getLicenseKey).mockRejectedValueOnce(new Error('database unreachable'));
+
+		await expect(new LicenseManager().initialize()).rejects.toThrow('database unreachable');
+	});
+
 	test('a boot refresh failing outside the license server keeps the token', async () => {
 		settings.readSingleton.mockResolvedValue({ license_key: KEY, license_token: 'token', project_id: 'project' });
 		vi.mocked(verifyLicense).mockResolvedValue(license('directus'));
@@ -267,6 +307,165 @@ describe('initialize', () => {
 
 		await expect(new LicenseManager().initialize()).resolves.toBeUndefined();
 		expect(activateKey).toHaveBeenCalledWith(expect.objectContaining({ license_key: KEY }));
+	});
+});
+
+describe('reconcile', () => {
+	test('the API stays guarded while a license action runs', async () => {
+		env['LICENSE_KEY'] = KEY;
+
+		let finish!: (value: { token: string }) => void;
+		vi.mocked(activateKey).mockReturnValueOnce(new Promise((resolve) => (finish = resolve)));
+
+		const manager = new LicenseManager();
+		const running = manager.reconcile();
+		await vi.waitFor(() => expect(activateKey).toHaveBeenCalledOnce());
+
+		await expect(manager.activate(KEY)).rejects.toThrow('You cannot manage license for the current license.');
+
+		finish({ token: 'token' });
+		await running;
+	});
+});
+
+describe('license check', () => {
+	const stop = vi.fn();
+
+	beforeEach(() => {
+		vi.mocked(scheduleSynchronizedJob).mockReturnValue({ stop });
+	});
+
+	async function syncedManager(validationInterval: number | null, key: string | null = KEY) {
+		vi.mocked(getLicenseKey).mockResolvedValue({ source: key ? 'settings' : null, key });
+
+		if (validationInterval !== null) {
+			vi.mocked(getLicenseToken).mockResolvedValue({ source: 'settings', token: 'token' });
+
+			vi.mocked(verifyLicense).mockResolvedValue({
+				...license('directus'),
+				meta: { offline: false, validation_interval: validationInterval },
+			} as Directus.License);
+		}
+
+		const manager = new LicenseManager();
+		await manager.syncState();
+
+		return manager;
+	}
+
+	function scheduledCron() {
+		return vi.mocked(scheduleSynchronizedJob).mock.lastCall?.[1];
+	}
+
+	test.each([
+		['a healthy license at its validation_interval', 7200, KEY, 7200],
+		['a key with no license in effect hourly, to retry', null, KEY, 3600],
+		['an offline token without a validation_interval every 12 hours', -1, null, 43_200],
+	])('checks %s, seeded by the project', async (_, validationInterval, key, interval) => {
+		await (await syncedManager(validationInterval, key)).scheduleCheck();
+
+		expect(scheduledCron()).toBe(durationToCron(interval, 'project'));
+	});
+
+	test('no check runs without a key or token, until a key is activated', async () => {
+		const manager = await syncedManager(null, null);
+		await manager.scheduleCheck();
+
+		expect(scheduleSynchronizedJob).not.toHaveBeenCalled();
+
+		vi.mocked(getLicenseKey).mockResolvedValue({ source: 'settings', key: KEY });
+		vi.mocked(getLicenseToken).mockResolvedValue({ source: 'settings', token: 'token' });
+
+		vi.mocked(verifyLicense).mockResolvedValue({
+			...license('directus'),
+			meta: { offline: false, validation_interval: 7200 },
+		} as Directus.License);
+
+		await manager.syncState();
+
+		expect(scheduledCron()).toBe(durationToCron(7200, 'project'));
+	});
+
+	test('deactivating the key stops the check', async () => {
+		const manager = await syncedManager(7200);
+		await manager.scheduleCheck();
+
+		vi.mocked(getLicenseKey).mockResolvedValue({ source: null, key: null });
+		vi.mocked(getLicenseToken).mockResolvedValue({ source: null, token: null });
+
+		await manager.syncState();
+
+		expect(stop).toHaveBeenCalledOnce();
+		expect(scheduleSynchronizedJob).toHaveBeenCalledOnce();
+	});
+
+	test('a sync does not schedule a check that was never scheduled, as in the CLI', async () => {
+		await syncedManager(7200);
+
+		expect(scheduleSynchronizedJob).not.toHaveBeenCalled();
+	});
+
+	test('a key that activates on a tick, under the startup lock, moves the check from retrying to its validation_interval', async () => {
+		const manager = await syncedManager(null);
+		await manager.scheduleCheck();
+
+		settings.readSingleton.mockResolvedValue({ license_key: KEY, license_token: null, project_id: 'project' });
+		vi.mocked(activateKey).mockResolvedValue({ token: 'token' });
+		vi.mocked(getLicenseToken).mockResolvedValue({ source: 'settings', token: 'token' });
+
+		vi.mocked(verifyLicense).mockResolvedValue({
+			...license('directus'),
+			meta: { offline: false, validation_interval: 7200 },
+		} as Directus.License);
+
+		const [, , onTick] = vi.mocked(scheduleSynchronizedJob).mock.calls[0]!;
+		await onTick(new Date());
+
+		expect(runExclusive).toHaveBeenCalledWith('license-reconcile', expect.any(Function));
+		expect(activateKey).toHaveBeenCalledOnce();
+		expect(stop).toHaveBeenCalledOnce();
+		expect(scheduledCron()).toBe(durationToCron(7200, 'project'));
+	});
+
+	test('concurrent syncs leave a single check', async () => {
+		const manager = await syncedManager(null);
+		await manager.scheduleCheck();
+
+		vi.mocked(getLicenseToken).mockResolvedValue({ source: 'settings', token: 'token' });
+
+		vi.mocked(verifyLicense).mockResolvedValue({
+			...license('directus'),
+			meta: { offline: false, validation_interval: 7200 },
+		} as Directus.License);
+
+		await Promise.all([manager.syncState(), manager.syncState()]);
+
+		expect(stop).toHaveBeenCalledOnce();
+		expect(scheduleSynchronizedJob).toHaveBeenCalledTimes(2);
+	});
+
+	test('a reschedule that cannot read the project keeps the current check', async () => {
+		const manager = await syncedManager(null);
+		await manager.scheduleCheck();
+
+		vi.mocked(getLicenseKey).mockResolvedValue({ source: null, key: null });
+		settings.readSingleton.mockRejectedValueOnce(new Error('database unreachable'));
+
+		await manager.syncState();
+
+		expect(stop).not.toHaveBeenCalled();
+		expect(scheduleSynchronizedJob).toHaveBeenCalledOnce();
+	});
+
+	test('a failing tick is logged, not shared with an instance booting under the same lock', async () => {
+		const manager = await syncedManager(7200);
+		await manager.scheduleCheck();
+		vi.spyOn(manager, 'reconcile').mockRejectedValue(new Error('database unreachable'));
+
+		const [, , onTick] = vi.mocked(scheduleSynchronizedJob).mock.calls[0]!;
+		await onTick(new Date());
+
+		await expect(vi.mocked(runExclusive).mock.results.at(-1)!.value).resolves.toMatchObject({ result: undefined });
 	});
 });
 
