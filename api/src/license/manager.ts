@@ -87,24 +87,21 @@ export class LicenseManager {
 	/** Scheduled license check */
 	private check: { job: ScheduledJob | null; cron: string | null } | null = null;
 
-	/**
-	 * Establish license state from the environment and the database.
-	 */
+	/** Load license state from env and the database */
 	public async initialize(): Promise<void> {
 		this.initializing = true;
 
-		// Listen before the boot run, so a broadcast from leader will not be missed
+		// Listen first so a leader broadcast isn't missed
 		this.rpc ??= await useRPC<Pick<LicenseManager, 'syncState'>>(this, LICENSE_CHANNEL);
 
-		// initialize the manager if not done yet
+		// Create the entitlement manager if needed
 		getEntitlementManager();
 
 		const { leader } = await runExclusive('license-reconcile', () => this.reconcile()).finally(() => {
 			this.initializing = false;
 		});
 
-		// Sync manually for followers.
-		// Depending on leader broadcast it could resolve `initialize` before the sync completes
+		// Followers sync themselves, the leader broadcast can land after `initialize` resolves
 		if (!leader) {
 			await this.syncState();
 		}
@@ -124,7 +121,7 @@ export class LicenseManager {
 		await this.executeLicenseAction(computeLicenseAction({ envKey, envToken, dbKey, dbToken }));
 	}
 
-	/** Schedule license check */
+	/** Schedule the license check, stopping it when there is nothing to check */
 	public async scheduleCheck(): Promise<void> {
 		const settingsService = new SettingsService({ schema: await getSchema() });
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
@@ -134,7 +131,7 @@ export class LicenseManager {
 		// Seeded by project so instances share one job
 		const cron = interval === null ? null : durationToCron(interval, String(project_id));
 
-		// Prevent concurrency
+		// Already scheduled at this interval
 		if (this.check && this.check.cron === cron) return;
 
 		const previous = this.check;
@@ -148,12 +145,12 @@ export class LicenseManager {
 	private startCheck(cron: string): ScheduledJob {
 		return scheduleSynchronizedJob('license-check', cron, async () => {
 			try {
-				// Don't race a startup
+				// Don't run alongside a boot reconcile
 				await runExclusive('license-reconcile', async () => {
 					try {
 						await this.reconcile();
 					} catch (error) {
-						// Keep errors from followers
+						// Don't pass the error to instances waiting on the lock
 						logger.error(error, 'License check failed');
 					}
 				});
@@ -168,7 +165,7 @@ export class LicenseManager {
 		// Nothing to check
 		if (!this.licenseKey && !this.licenseToken) return null;
 
-		// Key not in effect, retry
+		// Key set but not in effect, retry hourly
 		if (this.source === null && this.licenseKey) return 3600;
 
 		const validationInterval = licenseCache.meta.validation_interval;
@@ -211,22 +208,27 @@ export class LicenseManager {
 				throw error;
 			}
 
-			logger.error(error, 'License could not be verified or is invalid');
-
 			const syncLicenseState: SyncLicenseOptions = {};
 
 			if (isLicenseServerError(error)) {
 				syncLicenseState.invalidReason = toReason(error);
 			}
 
-			// Do not clear token, operate under existing if possible
+			// Keep the token so the current license stays in effect
 			await this.syncLicense(syncLicenseState);
+
+			const message =
+				this.source === null
+					? 'License request failed, running on core tier'
+					: 'License request failed, continuing with the current license';
+
+			logger.warn(error, message);
 		}
 	}
 
-	// Env-sourced licenses can never be managed via the API, independent of the flag.
+	// Env licenses are never editable, whatever the flag
 	public getEditable(): boolean {
-		// Check env directly to ensure downgrade does not allow editable
+		// Read env directly, a downgrade clears the source
 		if (env['LICENSE_KEY'] || env['LICENSE_TOKEN']) return false;
 
 		return toBoolean(env['LICENSE_KEY_MANAGEMENT_ENABLED']);
@@ -253,12 +255,7 @@ export class LicenseManager {
 		return this.source;
 	}
 
-	/**
-	 * Throw if the current license cannot have its key changed (activate / update / deactivate).
-	 *
-	 * License management is only allowed when the license is editable, i.e. it is not env-sourced
-	 * and env's LICENSE_KEY_MANAGEMENT_ENABLED !== false.
-	 */
+	/** Throw unless the license is editable */
 	private assertCanManageLicense() {
 		if (this.getEditable() === false) {
 			throw new ForbiddenError({
@@ -268,11 +265,7 @@ export class LicenseManager {
 	}
 
 	/**
-	 * Throw if there is no active license to update or deactivate.
-	 *
-	 * Activation is the only management operation valid without an existing license;
-	 * update/deactivate require one. Checks manager state (not a passed-in key) so an
-	 * explicit key argument cannot bypass the guard.
+	 * Throw without a key to update or deactivate
 	 */
 	private assertLicenseExists() {
 		if (this.licenseKey === null) {
@@ -282,11 +275,7 @@ export class LicenseManager {
 		}
 	}
 
-	/**
-	 * Throw if the current license cannot have its entitlements changed (e.g. adding addons).
-	 *
-	 * Addons are supported for all licenses except core and offline.
-	 */
+	/** Throw for core and offline licenses, which don't support addons */
 	private assertCanManageAddons() {
 		if (this.source === null || this.licenseKey === null) {
 			throw new ForbiddenError({
@@ -301,9 +290,7 @@ export class LicenseManager {
 		return status === 'locked';
 	}
 
-	/**
-	 *  Check a license meta/info without activating it
-	 */
+	/** Preview a key's license without activating it */
 	public async preview(key: string) {
 		try {
 			return await previewKey({
@@ -318,9 +305,7 @@ export class LicenseManager {
 		}
 	}
 
-	/**
-	 * Activates a new license
-	 */
+	/** Activate a key */
 	public async activate(key: string) {
 		this.assertCanManageLicense();
 
@@ -334,8 +319,7 @@ export class LicenseManager {
 			try {
 				await this.applyUpdate(this.licenseKey, key);
 			} catch (error) {
-				// Do not error for missing (INVALID_CREDENTIALS) or invalid (BINDING_MISMATCH) key,
-				// consider them already deactivated and activate provided key
+				// A missing (INVALID_CREDENTIALS) or foreign (BINDING_MISMATCH) key counts as deactivated, activate the new one
 				if (!isLicenseServerError(error, 'INVALID_CREDENTIALS') && !isLicenseServerError(error, 'BINDING_MISMATCH')) {
 					throw error;
 				}
@@ -391,8 +375,7 @@ export class LicenseManager {
 				throw error;
 			}
 
-			// Do not error for missing (INVALID_CREDENTIALS) or invalid (BINDING_MISMATCH) key,
-			// consider them already deactivated and downgrade
+			// A missing (INVALID_CREDENTIALS) or foreign (BINDING_MISMATCH) key counts as deactivated, downgrade
 			if (!isLicenseServerError(error, 'INVALID_CREDENTIALS') && !isLicenseServerError(error, 'BINDING_MISMATCH')) {
 				handleLicenseError(error);
 			}
@@ -403,9 +386,7 @@ export class LicenseManager {
 		await this.syncLicense({ kind: 'downgrade' });
 	}
 
-	/**
-	 * Update from an existing key to a new key
-	 */
+	/** Replace the current key with a new one */
 	public async update(newKey: string) {
 		this.assertCanManageLicense();
 		this.assertLicenseExists();
@@ -458,7 +439,7 @@ export class LicenseManager {
 	}
 
 	/**
-	 * Verify the license token and renew it with the license server
+	 * Verify the token and renew it with the license server.
 	 * Only a terminated license (canceled, suspended) clears the token.
 	 */
 	public async refresh(options?: { key?: string | null; token?: string | null }): Promise<void> {
@@ -476,10 +457,8 @@ export class LicenseManager {
 			}
 		}
 
-		/**
-		 * Only an offline token comes without a key, so a key being present allows potential self heal
-		 * Safe to allow key fall-through as it is not possible to set both env key and token.
-		 */
+		// Only offline tokens lack a key, so a key lets a bad token self heal.
+		// Env key and token can't both be set, so falling through to the key is safe.
 		if (license?.meta.offline === false || key) {
 			if (!key) {
 				throw new InvalidPayloadError({ reason: 'A "key" is required' });
@@ -512,7 +491,7 @@ export class LicenseManager {
 
 				syncLicenseState = {};
 			} catch (error) {
-				logger.error(error);
+				logger.warn(error);
 
 				if (isLicenseServerError(error)) {
 					const reason = toReason(error);
@@ -661,11 +640,7 @@ export class LicenseManager {
 		}
 	}
 
-	/**
-	 * Retrieve entitlements that are pending resolution
-	 *
-	 * If no entitlements to resolve, an empty array will be returned
-	 */
+	/** Entitlements that need resolving, empty when none */
 	public async pendingResolution(options: {
 		adminId: string;
 		licenseKey?: string | null;
@@ -676,18 +651,18 @@ export class LicenseManager {
 		let entitlements: Directus.Entitlements | null;
 
 		if (options.licenseKey) {
-			// required resolution when changing tier
+			// Changing tier, resolve against the new key
 			const preview = await this.preview(options.licenseKey);
 			entitlements = preview.entitlements;
 		} else if (options.licenseKey === null) {
 			entitlements = null;
 		} else {
-			// possible resolution during current tier
+			// Resolve against the current license
 			const license = await this.getLicense();
 			entitlements = license.entitlements;
 		}
 
-		// New manager to ensure no conflicts with main manager
+		// Separate manager so the live entitlements are untouched
 		const entitlementManager = new EntitlementManager();
 		entitlementManager.setEntitlements(entitlements);
 
@@ -719,7 +694,6 @@ export class LicenseManager {
 			const usersService = new UsersService({ schema });
 			const adminUser = await usersService.readOne(options.adminId, { fields: ['email', 'password'] });
 
-			// Build blocklist for any additional requirements
 			const blockers: ('ADMIN_MISSING_EMAIL' | 'ADMIN_MISSING_PASSWORD')[] = [];
 
 			if (adminUser['email'] === null) {
@@ -758,11 +732,7 @@ export class LicenseManager {
 		return pendingResolution;
 	}
 
-	/**
-	 * Apply a resolution strategy
-	 *
-	 * Allows partial resolution
-	 */
+	/** Apply a resolution, which may be partial */
 	public async applyResolution(resolution: ResolveInput, ctx?: { accountability?: Accountability | undefined }) {
 		const entitlementManager = getEntitlementManager();
 		const cachesToClear: (CountableEntitlementKey | FeatureFlagEntitlementKey)[] = [];
@@ -782,9 +752,7 @@ export class LicenseManager {
 			cachesToClear.push('flows');
 		}
 
-		/**
-		 * Set all sso users to disabled and optional set the current admin email and password
-		 */
+		// Disable SSO users, optionally setting the current admin's email and password
 		if (resolution.sso_enabled) {
 			await entitlementManager.resolve('sso_enabled', resolution.sso_enabled, { accountability: ctx?.accountability });
 			if (!cachesToClear.includes('seats')) cachesToClear.push('seats');
@@ -796,14 +764,12 @@ export class LicenseManager {
 		}
 
 		if (await entitlementManager.checkAll()) {
-			// Deliberately does not propagate, every node already has license state synced
+			// No broadcast needed, the reason lives in the shared store
 			await this.syncLicense({ kind: 'clear-status' });
 		}
 	}
 
-	/**
-	 * Apply a state transition and propagate to all instances.
-	 */
+	/** Apply a license change and propagate it to all instances */
 	private async syncLicense(options?: SyncLicenseOptions) {
 		await this.store(async (store) => {
 			if (options?.invalidReason) {
@@ -830,7 +796,6 @@ export class LicenseManager {
 			await settingsService.upsertSingleton({ license_token: null });
 		}
 
-		// clear permission cache when the license entitlements change
 		await clearPermissionCache();
 		await this.syncState({ local: true });
 
@@ -840,10 +805,8 @@ export class LicenseManager {
 	}
 
 	/**
-	 * Re-resolve state from the environment and the database.
-	 *
-	 * Every instance derives its own, so the RPC only has to signal that something changed rather
-	 * than carry one instance's view of it.
+	 * Re-resolve state from env and the database.
+	 * Each instance derives its own, so the RPC only signals a change.
 	 *
 	 * @param options.local Whether the change was made on this instance
 	 */
@@ -863,12 +826,12 @@ export class LicenseManager {
 			license = await this.verify(token);
 
 			if (license === null) {
-				// The reason should be recorded from refresh
+				// refresh records the reason
 				logger.warn('The stored license token could not be verified, downgrading to core tier');
 			}
 		}
 
-		// An env key outranks a persisted token, always null if no license irrespective of source
+		// An env key outranks a persisted token, null without a license
 		this.source = license ? (keySource ?? tokenSource) : null;
 
 		licenseCache = license ?? DIRECTUS_CORE_LICENSE;
