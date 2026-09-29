@@ -923,7 +923,6 @@ errors:
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
   LICENSE_INVALID: License key cannot be applied
-  LICENSE_SERVICE_UNAVAILABLE: Licensing service unavailable
   LIMIT_EXCEEDED: 'Limit exceeded'
   METHOD_NOT_ALLOWED: Method not allowed
   NOT_NULL_VIOLATION: Value can't be null

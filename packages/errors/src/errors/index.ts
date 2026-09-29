@@ -25,7 +25,6 @@ export { LicenseInvalidError } from './license-invalid.js';
 export { LicenseManagedByEnvError } from './license-managed-by-env.js';
 export { LicenseOfflineUnsupportedError } from './license-offline-unsupported.js';
 export { LicenseResolveIncompleteError } from './license-resolve-incomplete.js';
-export { LicenseServiceUnavailableError } from './license-service-unavailable.js';
 export { LimitExceededError } from './limit-exceeded.js';
 export { MethodNotAllowedError } from './method-not-allowed.js';
 export { NotNullViolationError } from './not-null-violation.js';

@@ -25,7 +25,6 @@ export enum ErrorCode {
 	LicenseManagedByEnv = 'LICENSE_MANAGED_BY_ENV',
 	LicenseOfflineUnsupported = 'LICENSE_OFFLINE_UNSUPPORTED',
 	LicenseResolveIncomplete = 'LICENSE_RESOLVE_INCOMPLETE',
-	LicenseServiceUnavailable = 'LICENSE_SERVICE_UNAVAILABLE',
 	LimitExceeded = 'LIMIT_EXCEEDED',
 	MethodNotAllowed = 'METHOD_NOT_ALLOWED',
 	NotNullViolation = 'NOT_NULL_VIOLATION',
