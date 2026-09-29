@@ -82,6 +82,7 @@ beforeAll(async () => {
 	directus = await useSandbox(database, {
 		port: sandboxPort(0),
 		extras: { license: true },
+		knex: true,
 	});
 
 	api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
@@ -123,6 +124,24 @@ describe('license lifecycle', () => {
 			status: 'active',
 			entitlements: DIRECTUS_CORE_LICENSE.entitlements,
 			usage: { seats: 1, collections: 0, flows: 0 },
+		});
+	});
+
+	test('a stored key the license server no longer knows boots CORE and reports why', async () => {
+		const license = createLicense({ meta: { name: 'lifecycle-forgotten' } });
+
+		await mockClient.registerLicense(directus.env.LICENSE_API_URL!, license);
+		await api.request(activateLicense({ license_key: license.key }));
+
+		await directus.knex!('directus_settings').update({ license_token: null });
+		await fetch(`${directus.env.LICENSE_API_URL}/admin/license/${license.key}`, { method: 'DELETE' });
+
+		await directus.restartApi();
+
+		expect(await api.request(readLicense())).toMatchObject({
+			name: DIRECTUS_CORE_LICENSE.meta.name,
+			source: null,
+			invalid_reason: 'invalid_key',
 		});
 	});
 
