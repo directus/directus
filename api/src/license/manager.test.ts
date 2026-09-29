@@ -168,6 +168,41 @@ describe('license management guards', () => {
 		expect(updateKey).not.toHaveBeenCalled();
 	});
 
+	test.each(['INVALID_CREDENTIALS', 'BINDING_MISMATCH'])(
+		'activate over a stored key the server rejects with %s activates the new key, as there is no activation to carry over',
+		async (code) => {
+			vi.mocked(updateKey).mockRejectedValue(serverError(code));
+			vi.mocked(activateKey).mockResolvedValue({ token: 'token' });
+
+			await managerWith(activeFromSettings).activate('D1111-11111-11111-11111-1111K');
+
+			expect(activateKey).toHaveBeenCalledWith(
+				expect.objectContaining({ license_key: 'D1111-11111-11111-11111-1111K' }),
+			);
+
+			expect(settings.upsertSingleton).toHaveBeenCalledWith(
+				expect.objectContaining({ license_key: 'D1111-11111-11111-11111-1111K', license_token: 'token' }),
+			);
+		},
+	);
+
+	test('activate reports the rejection of the new key once it falls back to activating it', async () => {
+		vi.mocked(updateKey).mockRejectedValue(serverError('INVALID_CREDENTIALS'));
+		vi.mocked(activateKey).mockRejectedValue(serverError('NOT_FOUND'));
+
+		await expect(managerWith(activeFromSettings).activate('D1111-11111-11111-11111-1111K')).rejects.toMatchObject({
+			code: 'LICENSE_INVALID',
+		});
+	});
+
+	test('update reports a license server failure as an API error', async () => {
+		vi.mocked(updateKey).mockRejectedValue(serverError('SERVICE_UNAVAILABLE'));
+
+		await expect(managerWith(activeFromSettings).update('D1111-11111-11111-11111-1111K')).rejects.toMatchObject({
+			code: 'LICENSE_SERVICE_UNAVAILABLE',
+		});
+	});
+
 	test('activate does not fall back over a transient update failure', async () => {
 		vi.mocked(updateKey).mockRejectedValue(serverError('SERVICE_UNAVAILABLE'));
 

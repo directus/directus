@@ -323,13 +323,24 @@ export class LicenseManager {
 	public async activate(key: string) {
 		this.assertCanManageLicense();
 
-		// If a key is already present, treat as an update
-		if (this.licenseKey) {
-			return this.update(key);
-		}
-
 		try {
-			await this.applyActivation(key);
+			if (!this.licenseKey) {
+				await this.applyActivation(key);
+				return;
+			}
+
+			// Carry the current activation over
+			try {
+				await this.applyUpdate(this.licenseKey, key);
+			} catch (error) {
+				// Do not error for missing (INVALID_CREDENTIALS) or invalid (BINDING_MISMATCH) key,
+				// consider them already deactivated and activate provided key
+				if (!isLicenseServerError(error, 'INVALID_CREDENTIALS') && !isLicenseServerError(error, 'BINDING_MISMATCH')) {
+					throw error;
+				}
+
+				await this.applyActivation(key);
+			}
 		} catch (error) {
 			if (isLicenseServerError(error)) {
 				handleLicenseError(error);
