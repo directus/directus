@@ -6,9 +6,10 @@ import { clearSystemCache } from '../cache.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { ItemsService } from './items.js';
 
-export function isIpAccessValid(value?: string[] | null): boolean {
+export function isIpAccessValid(value?: unknown): boolean {
 	if (value === undefined) return false;
 	if (value === null) return true;
+	if (!Array.isArray(value)) return false;
 	if (Array.isArray(value) && value.length === 0) return true;
 
 	for (let ip of value) {
