@@ -1,6 +1,5 @@
 ---
 '@directus/memory': minor
-'@directus/env': patch
 '@directus/api': patch
 ---
 

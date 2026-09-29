@@ -24,6 +24,7 @@
 		"build": "tsdown src/index.ts --dts",
 		"dev": "tsdown src/index.ts --dts --watch",
 		"test": "vitest run --project unit",
+		"test:coverage": "vitest run --coverage --project unit",
 		"test:integration": "vitest run --project integration"
 	},
 	"dependencies": {
