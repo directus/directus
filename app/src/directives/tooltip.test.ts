@@ -384,4 +384,29 @@ describe('Tooltip directive', () => {
 
 		expect(getGlobalTooltip().state.open).toBe(true);
 	});
+
+	it('shows the new value when it changes while the control is focused', () => {
+		const element = mount('<div><button>Toggle</button></div>', 'Collapse');
+		const button = element.querySelector('button')!;
+
+		focus(button);
+
+		directive.updated!(element, makeBinding({ value: 'Expand', oldValue: 'Collapse' }), null!, null!);
+		vi.advanceTimersByTime(0);
+
+		expect(getGlobalTooltip().state.open).toBe(true);
+		expect(getGlobalTooltip().state.content).toBe('Expand');
+		expect(button.getAttribute('aria-describedby')).toBe(TOOLTIP_CONTENT_ID);
+	});
+
+	it('shows the new value when it changes while the control is hovered', () => {
+		const element = mount('<div><button>Toggle</button></div>', 'Collapse');
+		vi.spyOn(element, 'matches').mockImplementation((selector) => selector === ':hover');
+
+		directive.updated!(element, makeBinding({ value: 'Expand', oldValue: 'Collapse' }), null!, null!);
+		vi.advanceTimersByTime(0);
+
+		expect(getGlobalTooltip().state.open).toBe(true);
+		expect(getGlobalTooltip().state.content).toBe('Expand');
+	});
 });

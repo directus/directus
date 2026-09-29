@@ -242,6 +242,18 @@ function beforeMount(element: HTMLElement, binding: DirectiveBinding): void {
 	element.addEventListener('mouseleave', leave);
 	element.addEventListener('focusin', focusin);
 	element.addEventListener('focusout', focusout);
+
+	// A value change re-binds while the control may still be focused or hovered, and no new event will fire
+	const active = document.activeElement;
+
+	if (owns(active)) {
+		addDescribedBy(active);
+		described = active;
+	}
+
+	if (described?.matches(':focus-visible') || element.matches(':hover')) {
+		openTooltip(buildPayload(0), true);
+	}
 }
 
 function unmounted(element: HTMLElement): void {
