@@ -199,7 +199,7 @@ describe('license management guards', () => {
 		vi.mocked(updateKey).mockRejectedValue(serverError('SERVICE_UNAVAILABLE'));
 
 		await expect(managerWith(activeFromSettings).update('D1111-11111-11111-11111-1111K')).rejects.toMatchObject({
-			code: 'LICENSE_SERVICE_UNAVAILABLE',
+			code: 'SERVICE_UNAVAILABLE',
 		});
 	});
 
@@ -207,7 +207,7 @@ describe('license management guards', () => {
 		vi.mocked(updateKey).mockRejectedValue(serverError('SERVICE_UNAVAILABLE'));
 
 		await expect(managerWith(activeFromSettings).activate('D1111-11111-11111-11111-1111K')).rejects.toMatchObject({
-			code: 'LICENSE_SERVICE_UNAVAILABLE',
+			code: 'SERVICE_UNAVAILABLE',
 		});
 
 		expect(activateKey).not.toHaveBeenCalled();
@@ -228,7 +228,7 @@ describe('license management guards', () => {
 		vi.mocked(deactivateKey).mockRejectedValue(serverError('SERVICE_UNAVAILABLE'));
 
 		await expect(managerWith(activeFromSettings).deactivate()).rejects.toMatchObject({
-			code: 'LICENSE_SERVICE_UNAVAILABLE',
+			code: 'SERVICE_UNAVAILABLE',
 		});
 
 		expect(settings.upsertSingleton).not.toHaveBeenCalled();

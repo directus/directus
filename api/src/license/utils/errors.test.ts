@@ -1,12 +1,18 @@
 import type { DirectusError } from '@directus/errors';
-import { ErrorCode, isDirectusError } from '@directus/errors';
+import { ErrorCode, isDirectusError, LicenseInvalidError } from '@directus/errors';
 import type { InvalidLicenseStatus } from '@directus/license';
 import { LicenseServerError } from '@directus/license';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { handleLicenseError, toReason } from './errors.js';
 
-function serverError(code: string, extensions?: Record<string, unknown>) {
-	return new LicenseServerError({ message: 'Upstream detail', code, extensions });
+const warn = vi.fn();
+
+vi.mock('../../logger/index.js', () => ({
+	useLogger: () => ({ warn }),
+}));
+
+function serverError(code: string, extensions?: Record<string, unknown>, status = 400) {
+	return new LicenseServerError({ message: 'Upstream detail', code, status, extensions });
 }
 
 /** Run the handler and assert on the error it maps to */
@@ -22,66 +28,100 @@ function expectThrows(error: unknown, code: ErrorCode): DirectusError<unknown> {
 describe('handleLicenseError', () => {
 	describe('the key cannot be used here', () => {
 		test.each([
-			['LICENSE_EXPIRED', 'expired'],
-			['LICENSE_CANCELED', 'canceled'],
-			['LICENSE_SUSPENDED', 'suspended'],
-			['INVALID_CREDENTIALS', 'invalid_key'],
-			['NOT_FOUND', 'invalid_key'],
-			['INVALID_PAYLOAD', 'invalid_key'],
-			['ACTIVATION_LIMIT_EXCEEDED', 'activation_limit'],
-			['BINDING_MISMATCH', 'binding_mismatch'],
-		])('%s throws LicenseInvalidError carrying the %s discriminant', (code, failure) => {
+			['LICENSE_EXPIRED', 'expired', 'The license has expired'],
+			['LICENSE_CANCELED', 'canceled', 'The license has been canceled'],
+			['LICENSE_SUSPENDED', 'suspended', 'The license has been suspended'],
+			['INVALID_CREDENTIALS', 'invalid_key', 'The license key is not valid'],
+			['NOT_FOUND', 'invalid_key', 'The license key is not valid'],
+			['ACTIVATION_LIMIT_EXCEEDED', 'activation_limit', 'The license has reached its activation limit'],
+			['BINDING_MISMATCH', 'binding_mismatch', 'The license key is bound to another project'],
+		])('%s throws LicenseInvalidError carrying the %s discriminant', (code, failure, reason) => {
 			const thrown = expectThrows(serverError(code), ErrorCode.LicenseInvalid);
 
-			expect(thrown.message).toBe('License key cannot be applied. Upstream detail');
-			expect(thrown.extensions).toEqual({ failure, reason: 'Upstream detail' });
+			expect(thrown.message).toBe(`License key cannot be applied. ${reason}`);
+			expect(thrown.extensions).toEqual({ failure, reason });
 		});
 	});
 
 	describe('the request cannot be applied as sent', () => {
-		test.each(['LIMIT_OVERFLOW'])('%s throws InvalidPayloadError', (code) => {
-			const thrown = expectThrows(serverError(code), ErrorCode.InvalidPayload);
-			expect(thrown.message).toBe('Invalid payload. Upstream detail.');
+		test.each([
+			serverError('INVALID_PAYLOAD'),
+			serverError('LIMIT_OVERFLOW'),
+			serverError('UNSUPPORTED_MEDIA_TYPE'),
+			serverError('SOMETHING_NEW', undefined, 422),
+		])('$code throws InvalidPayloadError', (error) => {
+			expectThrows(error, ErrorCode.InvalidPayload);
+		});
+
+		test('passes the upstream reason through', () => {
+			const error = new LicenseServerError({
+				message: 'Addon seats quantity exceeds maximum of 10',
+				code: 'INVALID_PAYLOAD',
+				status: 400,
+			});
+
+			const thrown = expectThrows(error, ErrorCode.InvalidPayload);
+
+			expect(thrown.message).toBe('Invalid payload. Addon seats quantity exceeds maximum of 10.');
+			expect(thrown.extensions).toEqual({ reason: 'Addon seats quantity exceeds maximum of 10' });
+		});
+
+		test('drops a trailing period from the upstream reason', () => {
+			const error = new LicenseServerError({ message: 'Bad request.', code: 'INVALID_PAYLOAD', status: 400 });
+
+			expect(expectThrows(error, ErrorCode.InvalidPayload).message).toBe('Invalid payload. Bad request.');
+		});
+
+		test('falls back when the upstream reason is empty', () => {
+			const error = new LicenseServerError({ message: '', code: 'INVALID_PAYLOAD', status: 400 });
+
+			expect(expectThrows(error, ErrorCode.InvalidPayload).message).toBe(
+				'Invalid payload. The licensing service rejected the request.',
+			);
 		});
 	});
 
 	describe('the subscription does not allow the operation', () => {
 		test.each([
-			'FORBIDDEN',
-			'SUBSCRIPTION_PAST_DUE',
-			'NO_PAYMENT_METHOD',
-			'BILLING_LINKAGE_MISSING',
-			'ADDON_NOT_ALLOWED',
-		])('%s throws ForbiddenError', (code) => {
-			const thrown = expectThrows(serverError(code), ErrorCode.Forbidden);
-			expect(thrown.message).toBe('Upstream detail');
+			serverError('FORBIDDEN'),
+			serverError('SUBSCRIPTION_PAST_DUE'),
+			serverError('NO_PAYMENT_METHOD'),
+			serverError('BILLING_LINKAGE_MISSING'),
+			serverError('ADDON_NOT_ALLOWED'),
+			serverError('SOMETHING_NEW', undefined, 403),
+		])('$code throws ForbiddenError', (error) => {
+			const thrown = expectThrows(error, ErrorCode.Forbidden);
+			expect(thrown.message).toBe(`You don't have permission to access this.`);
 		});
 	});
 
 	describe('the service failed us', () => {
-		// The license client exhausts its own retries on the transient codes before they reach us
-		test.each(['OPERATION_IN_PROGRESS', 'CACHE_STALE', 'SERVICE_UNAVAILABLE', 'ROUTE_NOT_FOUND', 'SOMETHING_NEW'])(
-			'%s throws LicenseServiceUnavailableError',
-			(code) => {
-				const thrown = expectThrows(serverError(code), ErrorCode.LicenseServiceUnavailable);
-				expect(thrown.message).toBe('Licensing service is unreachable. Upstream detail');
-			},
-		);
-
-		test('a transport failure throws LicenseServiceUnavailableError', () => {
-			const thrown = expectThrows(new Error('socket hang up'), ErrorCode.LicenseServiceUnavailable);
-			expect(thrown.message).toBe('Licensing service is unreachable. socket hang up');
+		test.each([
+			serverError('OPERATION_IN_PROGRESS'),
+			serverError('CACHE_STALE'),
+			serverError('SERVICE_UNAVAILABLE'),
+			serverError('ROUTE_NOT_FOUND'),
+			serverError('INTERNAL_SERVER_ERROR'),
+			serverError('CONFLICT'),
+			serverError('SOMETHING_NEW', undefined, 500),
+		])('$code throws ServiceUnavailableError', (error) => {
+			const thrown = expectThrows(error, ErrorCode.ServiceUnavailable);
+			expect(thrown.message).toBe('Service "license" is unavailable. The licensing service could not be reached.');
 		});
 
-		test('a non-error throws LicenseServiceUnavailableError', () => {
-			const thrown = expectThrows('nope', ErrorCode.LicenseServiceUnavailable);
-			expect(thrown.message).toBe('Licensing service is unreachable. An unknown error occurred');
+		test('a transport failure throws ServiceUnavailableError', () => {
+			const thrown = expectThrows(new Error('socket hang up'), ErrorCode.ServiceUnavailable);
+			expect(thrown.message).toBe('Service "license" is unavailable. The licensing service could not be reached.');
+		});
+
+		test('a non-error throws ServiceUnavailableError', () => {
+			expectThrows('nope', ErrorCode.ServiceUnavailable);
 		});
 	});
 
 	describe('throttled', () => {
 		beforeEach(() => {
-			vi.useFakeTimers({ now: 1_735_689_600_000 }); // 2025-01-01T00:00:00Z
+			vi.useFakeTimers({ now: 1_735_689_600_000 });
 			return () => vi.useRealTimers();
 		});
 
@@ -99,6 +139,26 @@ describe('handleLicenseError', () => {
 
 			expect(thrown.extensions).toEqual({ limit: 0, reset: new Date('2025-01-01T00:00:01Z') });
 		});
+
+		test('an unknown code with a 429 status is throttled', () => {
+			expectThrows(serverError('SOMETHING_NEW', undefined, 429), ErrorCode.RequestsExceeded);
+		});
+	});
+
+	describe('keeps the upstream error out of the other responses', () => {
+		test.each([
+			[serverError('LICENSE_EXPIRED'), ErrorCode.LicenseInvalid],
+			[serverError('FORBIDDEN'), ErrorCode.Forbidden],
+			[serverError('REQUESTS_EXCEEDED'), ErrorCode.RequestsExceeded],
+			[serverError('SERVICE_UNAVAILABLE'), ErrorCode.ServiceUnavailable],
+			[new Error('Upstream detail'), ErrorCode.ServiceUnavailable],
+		])('%s is logged, not sent', (error, code) => {
+			const thrown = expectThrows(error, code);
+
+			expect(warn).toHaveBeenCalledWith(error, expect.any(String));
+			expect(thrown.message).not.toContain('Upstream detail');
+			expect(JSON.stringify(thrown.extensions ?? {})).not.toContain('Upstream detail');
+		});
 	});
 });
 
@@ -110,19 +170,27 @@ describe('toReason', () => {
 			['LICENSE_SUSPENDED', 'suspended'],
 			['INVALID_CREDENTIALS', 'invalid_key'],
 			['NOT_FOUND', 'invalid_key'],
-			['INVALID_PAYLOAD', 'invalid_key'],
 			['ACTIVATION_LIMIT_EXCEEDED', 'activation_limit'],
 			['BINDING_MISMATCH', 'binding_mismatch'],
+			['SUBSCRIPTION_PAST_DUE', 'payment'],
+			['NO_PAYMENT_METHOD', 'payment'],
+			['BILLING_LINKAGE_MISSING', 'payment'],
 		] satisfies [string, InvalidLicenseStatus][])('%s reads as %s', (code, reason) => {
 			expect(toReason(serverError(code))).toBe(reason);
+		});
+
+		test('reads the failure off a translated LicenseInvalidError', () => {
+			expect(
+				toReason(new LicenseInvalidError({ failure: 'suspended', reason: 'The license has been suspended' })),
+			).toBe('suspended');
 		});
 	});
 
 	describe('reports what says nothing about the license as unavailable', () => {
 		test.each([
 			'FORBIDDEN',
-			'SUBSCRIPTION_PAST_DUE',
 			'ADDON_NOT_ALLOWED',
+			'INVALID_PAYLOAD',
 			'LIMIT_OVERFLOW',
 			'REQUESTS_EXCEEDED',
 			'OPERATION_IN_PROGRESS',
@@ -130,6 +198,10 @@ describe('toReason', () => {
 			'ROUTE_NOT_FOUND',
 		])('%s reads as unavailable', (code) => {
 			expect(toReason(serverError(code))).toBe('unavailable');
+		});
+
+		test.each([400, 401, 403, 429, 500])('an unknown code with status %s reads as unavailable', (status) => {
+			expect(toReason(serverError('SOMETHING_NEW', undefined, status))).toBe('unavailable');
 		});
 
 		test('an unreachable service reads as unavailable', () => {

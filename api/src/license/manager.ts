@@ -11,6 +11,7 @@ import {
 	DIRECTUS_CORE_LICENSE,
 	type FeatureFlagEntitlementKey,
 	type InvalidLicenseStatus,
+	isLicenseInactive,
 	isLicenseServerError,
 	type LicenseAddonsOutput,
 	type LicensePendingResolution,
@@ -41,7 +42,7 @@ import { EntitlementManager, getEntitlementManager } from './entitlements/manage
 import { computeLicenseAction, type LicenseAction } from './utils/compute-license-action.js';
 import { computeLicenseStatus } from './utils/compute-license-status.js';
 import { durationToCron } from './utils/duration-to-cron.js';
-import { handleLicenseError, isLicenseInactive, toReason } from './utils/errors.js';
+import { handleLicenseError, toReason } from './utils/errors.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
 import { type ExtractMethods, useRPC } from './utils/use-rpc.js';
