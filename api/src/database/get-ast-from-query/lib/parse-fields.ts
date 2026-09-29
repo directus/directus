@@ -213,13 +213,16 @@ export async function parseFields(
 			fieldName = options.query.alias[fieldKey]!;
 		}
 
+		// Implicit $FOLLOW relations are only supported in filters, not as queryable fields
+		if (fieldName.startsWith('$FOLLOW')) continue;
+
 		const {
 			relation,
 			relationType,
 			oppositeCollection: relatedCollection,
 		} = getRelationInfo(context.schema.relations, options.parentCollection, fieldName);
 
-		if (!relation || !relationType) continue;
+		if (!relation || !relationType || relationType === 'o2a') continue;
 
 		let child: NestedCollectionNode | null = null;
 
