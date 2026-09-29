@@ -6,7 +6,6 @@ import {
 	type Directus,
 	DIRECTUS_CORE_LICENSE,
 	LicenseServerError,
-	LicenseVerificationUnavailableError,
 	refreshLicense,
 	updateKey,
 	verifyLicense,
@@ -97,11 +96,6 @@ function license(audience: 'directus' | 'monospace') {
 
 function serverError(code: string) {
 	return new LicenseServerError({ message: 'Upstream detail', code });
-}
-
-/** A JWT that decodes to the given expiry, signature and claims beyond `exp` are never checked here */
-function tokenExpiringAt(exp: number) {
-	return ['e30', Buffer.from(JSON.stringify({ exp })).toString('base64url'), 'sig'].join('.');
 }
 
 beforeEach(() => {
@@ -268,7 +262,7 @@ describe('initialize', () => {
 	])('%s that fails to activate boots CORE, keeping the key', async (_, keys) => {
 		if (keys.env) env['LICENSE_KEY'] = keys.env;
 		settings.readSingleton.mockResolvedValue({ license_key: keys.db, license_token: null, project_id: 'project' });
-		vi.mocked(activateKey).mockRejectedValue(new Error('license server unreachable'));
+		vi.mocked(activateKey).mockRejectedValue(serverError('SERVICE_UNAVAILABLE'));
 
 		const manager = new LicenseManager();
 
@@ -277,14 +271,17 @@ describe('initialize', () => {
 		expect(manager.getSource()).toBeNull();
 	});
 
-	test('a key the server rejects at boot records why', async () => {
+	test.each([
+		['BINDING_MISMATCH', 'binding_mismatch'],
+		['SERVICE_UNAVAILABLE', 'unavailable'],
+	])('a key that fails to activate at boot with %s records %s', async (code, reason) => {
 		settings.readSingleton.mockResolvedValue({ license_key: KEY, license_token: null, project_id: 'project' });
-		vi.mocked(activateKey).mockRejectedValue(serverError('BINDING_MISMATCH'));
+		vi.mocked(activateKey).mockRejectedValue(serverError(code));
 
 		const manager = new LicenseManager();
 		await manager.initialize();
 
-		await expect(manager.getInvalidReason()).resolves.toBe('binding_mismatch');
+		await expect(manager.getInvalidReason()).resolves.toBe(reason);
 	});
 
 	test('a token left without a key is cleared at boot', async () => {
@@ -670,17 +667,17 @@ describe('syncState', () => {
 		expect(manager.getSource()).toBe('env');
 	});
 
-	test('an unreachable JWKS does not keep a license past its token expiry', async () => {
-		const token = tokenExpiringAt(Math.floor(Date.now() / 1000) - 1);
-		vi.mocked(getLicenseToken).mockResolvedValue({ source: 'settings', token });
+	test('a license that no longer verifies drops to CORE on the next sync', async () => {
+		vi.mocked(getLicenseToken).mockResolvedValue({ source: 'settings', token: 'token' });
 		vi.mocked(verifyLicense).mockResolvedValueOnce(license('directus'));
 
 		const manager = new LicenseManager();
 		await manager.syncState();
 
-		vi.mocked(verifyLicense).mockRejectedValue(new LicenseVerificationUnavailableError());
+		vi.mocked(verifyLicense).mockRejectedValue(new Error('expired'));
 		await manager.syncState();
 
 		expect(entitlements.setEntitlements).toHaveBeenLastCalledWith(DIRECTUS_CORE_LICENSE.entitlements);
+		expect(manager.getSource()).toBeNull();
 	});
 });
