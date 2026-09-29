@@ -1,6 +1,6 @@
 import { Collection, Item, PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { has, merge, pick } from 'lodash';
+import { has, merge, pick } from 'lodash-es';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 import sdk, { requestEndpoint } from '@/sdk';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';

@@ -1,6 +1,6 @@
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldRaw, Relation } from '@directus/types';
-import { isEmpty, isEqual, isNil, merge, omit, orderBy } from 'lodash';
+import { isEmpty, isEqual, isNil, merge, omit, orderBy } from 'lodash-es';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';

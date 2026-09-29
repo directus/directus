@@ -118,6 +118,8 @@ time: সময়
 timestamp: টাইমস্ট্যাম্প
 uuid: ইউইউআইডি
 hash: হ্যাশ
+wysiwyg_options:
+  insertdatetime_time: সময়
 source_registry: মার্কেটপ্লেস
 fields:
   directus_settings:

@@ -60,14 +60,14 @@ pnpm format
 ### Testing
 
 ```bash
-# Run all tests (excluding blackbox tests)
+# Run all unit tests
 pnpm test
 
 # Run tests with coverage
 pnpm test:coverage
 
-# Run blackbox tests
-pnpm test:blackbox
+# Run end to end tests (requires Docker)
+cd tests/e2e && pnpm test
 
 # Run tests in watch mode (in specific package)
 cd packages/<package-name>

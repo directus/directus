@@ -9,6 +9,12 @@ import FormField from '@/components/v-form/components/form-field.vue';
 import VMenu from '@/components/v-menu.vue';
 import { i18n } from '@/lang';
 
+const { collectionInactive } = vi.hoisted(() => ({ collectionInactive: { value: false } }));
+
+vi.mock('@/utils/collection-status', () => ({
+	isFieldCollectionInactive: () => collectionInactive.value,
+}));
+
 beforeEach(() => {
 	for (const id of ['menu-outlet', 'dialog-outlet']) {
 		if (!document.getElementById(id)) {
@@ -60,6 +66,19 @@ const global = {
 };
 
 describe('FormField', () => {
+	it('shows a note when the field relates to an inactive collection', async () => {
+		collectionInactive.value = true;
+
+		const wrapper = mount(FormField, {
+			props: { field: baseField },
+			global,
+		});
+
+		expect(wrapper.text()).toContain('This collection is inactive');
+
+		collectionInactive.value = false;
+	});
+
 	it('should show FormFieldLabel in batch mode if field.meta.special does not include "no-data"', () => {
 		const wrapper = mount(FormField, {
 			props: {
@@ -98,6 +117,44 @@ describe('FormField', () => {
 		});
 
 		expect(wrapper.findComponent({ name: 'FormFieldLabel' }).exists()).toBe(false);
+	});
+
+	describe('interfaceLocked', () => {
+		// force the VMenu content (FormFieldMenu) to render without opening the menu
+		const globalWithOpenMenu = {
+			...global,
+			stubs: {
+				VMenu: { template: '<div><slot name="activator" :toggle="() => {}" :active="false" /><slot /></div>' },
+				// VListItem (inside FormFieldMenu) pulls in vue-router's useLink
+				VListItem: { template: '<li><slot /></li>' },
+			},
+		};
+
+		it('passes interfaceLocked=false to the menu by default', () => {
+			const wrapper = mount(FormField, { props: { field: baseField }, global: globalWithOpenMenu });
+
+			expect(wrapper.findComponent({ name: 'FormFieldMenu' }).props('interfaceLocked')).toBe(false);
+		});
+
+		it('relays the interface readonly signal to the menu', async () => {
+			const wrapper = mount(FormField, { props: { field: baseField }, global: globalWithOpenMenu });
+
+			wrapper.findComponent({ name: 'FormFieldInterface' }).vm.$emit('readonly', true);
+			await wrapper.vm.$nextTick();
+
+			expect(wrapper.findComponent({ name: 'FormFieldMenu' }).props('interfaceLocked')).toBe(true);
+		});
+
+		it('disables the raw editor drawer once the interface locks so viewing raw stays read-only', async () => {
+			const wrapper = mount(FormField, { props: { field: baseField }, global: globalWithOpenMenu });
+
+			expect(wrapper.findComponent({ name: 'FormFieldRawEditor' }).props('disabled')).toBe(false);
+
+			wrapper.findComponent({ name: 'FormFieldInterface' }).vm.$emit('readonly', true);
+			await wrapper.vm.$nextTick();
+
+			expect(wrapper.findComponent({ name: 'FormFieldRawEditor' }).props('disabled')).toBe(true);
+		});
 	});
 
 	describe('isNonEditable', () => {

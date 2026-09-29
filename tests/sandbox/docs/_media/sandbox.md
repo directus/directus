@@ -69,7 +69,7 @@ Exports a snapshot and type definition every 2 seconds
 
 #### extras?
 
-\{ `maildev?`: `boolean`; `minio?`: `boolean`; `redis?`: `boolean`; `saml?`: `boolean`; \}
+\{ `maildev?`: `boolean`; `redis?`: `boolean`; `rustfs?`: `boolean`; `saml?`: `boolean`; \}
 
 Enable redis,maildev,saml or other extras
 
@@ -79,17 +79,17 @@ Enable redis,maildev,saml or other extras
 
 Email server
 
-#### extras.minio?
-
-`boolean`
-
-Storage provider
-
 #### extras.redis?
 
 `boolean`
 
 Used for caching, forced to true if instances > 1
+
+#### extras.rustfs?
+
+`boolean`
+
+Storage provider
 
 #### extras.saml?
 

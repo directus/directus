@@ -59,9 +59,17 @@ export class DriverLocal implements TusDriver {
 	}
 
 	async exists(filepath: string): Promise<boolean> {
-		return access(this.fullPath(filepath))
-			.then(() => true)
-			.catch(() => false);
+		try {
+			await access(this.fullPath(filepath));
+			return true;
+		} catch (error) {
+			const code = (error as NodeJS.ErrnoException)?.code;
+
+			// ENOTDIR means a parent of the path is a file, ENAMETOOLONG that no such name can exist
+			if (code === 'ENOENT' || code === 'ENOTDIR' || code === 'ENAMETOOLONG') return false;
+
+			throw error;
+		}
 	}
 
 	async move(src: string, dest: string): Promise<void> {

@@ -86,13 +86,9 @@ function mountOverview() {
 		initialState: {
 			settingsStore: {
 				settings: {
-					ai_openai_api_key: null,
 					ai_openai_allowed_models: null,
-					ai_anthropic_api_key: 'anthropic-key',
 					ai_anthropic_allowed_models: ['claude-sonnet-4-6'],
-					ai_google_api_key: null,
 					ai_google_allowed_models: null,
-					ai_openai_compatible_api_key: null,
 					ai_openai_compatible_base_url: null,
 					ai_openai_compatible_models: null,
 					ai_translation_default_model: 'anthropic:claude-sonnet-4-6',
@@ -102,6 +98,7 @@ function mountOverview() {
 				info: {
 					ai_enabled: true,
 					mcp_enabled: true,
+					ai_providers: ['openai', 'anthropic'],
 				},
 			},
 		},
@@ -149,7 +146,6 @@ describe('settings ai overview', () => {
 		]);
 
 		await wrapper.findAllComponents(VFormStub)[0]!.vm.$emit('update:modelValue', {
-			ai_openai_api_key: 'openai-key',
 			ai_openai_allowed_models: ['gpt-5'],
 		});
 

@@ -2,7 +2,7 @@ import { isSystemCollection } from '@directus/system-data';
 import { Filter, Query } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { isEmpty, isUndefined, omitBy, pick, set, transform } from 'lodash';
+import { isEmpty, isUndefined, omitBy, pick, set, transform } from 'lodash-es';
 import { extractFieldFromFunction } from './extract-field-from-function';
 import { useFieldsStore } from '@/stores/fields';
 

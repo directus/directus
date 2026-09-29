@@ -44,6 +44,13 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return getDefaultIndexName(type, collection, fields);
 	}
 
+	/**
+	 * Whether the given collection has database triggers. Only meaningful for MS SQL.
+	 */
+	async hasTriggers(_collection: string): Promise<boolean> {
+		return false;
+	}
+
 	async changeToType(
 		table: string,
 		column: string,

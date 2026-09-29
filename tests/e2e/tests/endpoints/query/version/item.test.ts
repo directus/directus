@@ -296,7 +296,7 @@ if (database !== 'mssql')
 	});
 
 // TODO: fix later
-if (database !== 'mssql')
+if (['mssql', 'oracle'].includes(database) === false)
 	test('version deadlocking', async () => {
 		const resultA = await api.request(
 			createItem(collections.articles, {

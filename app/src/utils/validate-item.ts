@@ -5,7 +5,7 @@ import {
 	FailedValidationErrorExtensions,
 	joiValidationErrorItemToErrorExtensions,
 } from '@directus/validation';
-import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
+import { cloneDeep, flatten, isEmpty, isNil } from 'lodash-es';
 import { applyConditions } from './apply-conditions';
 import { isPresentationField } from './field-utils';
 import { parseFilter } from './parse-filter';

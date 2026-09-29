@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ApiOutput } from '@directus/types';
-import { groupBy } from 'lodash';
+import { groupBy } from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';

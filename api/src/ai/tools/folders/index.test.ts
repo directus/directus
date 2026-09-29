@@ -35,7 +35,9 @@ describe('folders tool', () => {
 				deleteMany: vi.fn(),
 			};
 
-			vi.mocked(FoldersService).mockImplementation(() => mockFoldersService as unknown as FoldersService);
+			vi.mocked(FoldersService).mockImplementation(function () {
+				return mockFoldersService as unknown as FoldersService;
+			});
 		});
 
 		describe('CREATE action', () => {
@@ -267,7 +269,9 @@ describe('folders tool', () => {
 				deleteMany: vi.fn(),
 			};
 
-			vi.mocked(FoldersService).mockImplementation(() => mockFoldersService);
+			vi.mocked(FoldersService).mockImplementation(function () {
+				return mockFoldersService;
+			});
 		});
 
 		test('should handle null result from readMany after create', async () => {
@@ -305,6 +309,23 @@ describe('folders tool', () => {
 					accountability: mockAccountability,
 				}),
 			).rejects.toThrow('Service error');
+		});
+	});
+
+	describe('validation schema', () => {
+		test.each(['files', 'flows'])('accepts the %s folder type', (type) => {
+			const result = folders.validateSchema?.safeParse({ action: 'create', data: { name: 'Folder', type } });
+
+			expect(result?.success).toBe(true);
+		});
+
+		test('rejects a folder type outside the known values', () => {
+			const result = folders.validateSchema?.safeParse({
+				action: 'create',
+				data: { name: 'Folder', type: 'dashboards' },
+			});
+
+			expect(result?.success).toBe(false);
 		});
 	});
 

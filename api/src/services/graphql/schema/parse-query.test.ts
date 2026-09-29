@@ -1,37 +1,18 @@
-import type { SelectionNode } from 'graphql';
+import type { FragmentDefinitionNode, SelectionNode } from 'graphql';
+import { buildSchema } from 'graphql';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import {
+	buildArgument,
+	buildField,
+	buildFilterArgument,
+	buildFragmentDefinition,
+	buildFragmentSpread,
+	buildInlineFragment,
+	buildResolveInfo,
+} from '../../../test-utils/graphql.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
+import { buildSelections } from '../utils/build-selections.js';
 import { getQuery } from './parse-query.js';
-
-// AST node helpers
-const field = (name: string, opts?: { alias?: string; args?: any[]; children?: any[] }) =>
-	({
-		kind: 'Field',
-		name: { value: name },
-		...(opts?.alias && { alias: { value: opts.alias } }),
-		...(opts?.args && { arguments: opts.args }),
-		...(opts?.children && { selectionSet: { selections: opts.children } }),
-	}) as unknown as SelectionNode;
-
-const inlineFragment = (type: string, children: any[]) =>
-	({
-		kind: 'InlineFragment',
-		typeCondition: { name: { value: type } },
-		selectionSet: { selections: children },
-	}) as unknown as SelectionNode;
-
-const gqlFilterArg = (filter: Record<string, any>): any => {
-	const toObjectValue = (obj: Record<string, any>): any => ({
-		kind: 'ObjectValue',
-		fields: Object.entries(obj).map(([key, val]) => ({
-			kind: 'ObjectField',
-			name: { value: key },
-			value: typeof val === 'object' ? toObjectValue(val) : { kind: 'StringValue', value: val },
-		})),
-	});
-
-	return { name: { value: 'filter' }, value: toObjectValue(filter) };
-};
 
 vi.mock('../../../utils/sanitize-query.js', () => ({
 	sanitizeQuery: vi.fn(async (q) => q),
@@ -98,34 +79,61 @@ const pageM2ASchema = {
 	],
 } as any;
 
+// The GraphQL schema get-types.ts generates for pageM2ASchema: `Page.contents` is a junction whose
+// `item` resolves to a union of the allowed collections
+const pageGqlSchema = buildSchema(`
+	type ComponentText { id: ID, text: String }
+	union page_content_item_union = ComponentText
+	type page_content { id: ID, item: page_content_item_union }
+	type count_functions { count: Int }
+	type Page { id: ID, title: String, contents: [page_content], contents_func: count_functions }
+	type Query { Page: [Page] }
+`);
+
+/** The selections a resolver hands to getQuery: fragments resolved against the GraphQL schema */
+const resolvedSelections = (selections: SelectionNode[], fragments?: Record<string, FragmentDefinitionNode>) =>
+	buildSelections(
+		buildResolveInfo({
+			selections,
+			...(fragments && { fragments }),
+			schema: pageGqlSchema,
+			returnType: pageGqlSchema.getQueryType()!.getFields()['Page']!.type,
+		}),
+	) ?? [];
+
+/** `contents { item { … } }`, the path to an m2a item */
+const contentItem = (children: SelectionNode[]) => [
+	buildField('contents', { children: [buildField('item', { children })] }),
+];
+
 describe('parseFields', () => {
 	afterEach(() => {
 		vi.clearAllMocks();
 	});
 
 	test('should parse simple field selection', async () => {
-		const selections = [field('id'), field('name')];
+		const selections = [buildField('id'), buildField('name')];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['id', 'name']);
 	});
 
 	test('should ignore __typename fields', async () => {
-		const selections = [field('__typename'), field('title')];
+		const selections = [buildField('__typename'), buildField('title')];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['title']);
 	});
 
 	test('should parse field with alias', async () => {
-		const selections = [field('author', { alias: 'writer' })];
+		const selections = [buildField('author', { alias: 'writer' })];
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['author']);
 		expect(query.alias).toEqual({ writer: 'author' });
 	});
 
 	test('should parse M2A InlineFragment with schema relations', async () => {
-		const selections = [field('parent', { children: [inlineFragment('child', [field('id')])] })];
+		const selections = [buildField('parent', { children: [buildInlineFragment('child', [buildField('id')])] })];
 
 		const query = await getQuery({}, m2aSchema, selections, mockVariableValues, mockAccountability, 'test_collection');
 		expect(query.fields).toEqual(['parent:child.id']);
@@ -133,7 +141,7 @@ describe('parseFields', () => {
 
 	test('should inline non-M2A InlineFragment without type prefix', async () => {
 		// Page { ...PageFragment } at root level, not M2A
-		const selections = [inlineFragment('Page', [field('id'), field('title')])];
+		const selections = [buildInlineFragment('Page', [buildField('id'), buildField('title')])];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability, 'Page');
 		expect(query.fields).toEqual(['id', 'title']);
@@ -152,54 +160,79 @@ describe('parseFields', () => {
 			],
 		} as any;
 
-		const selections = [field('author', { children: [inlineFragment('author', [field('name'), field('email')])] })];
+		const selections = [
+			buildField('author', { children: [buildInlineFragment('author', [buildField('name'), buildField('email')])] }),
+		];
 
 		const query = await getQuery({}, o2mSchema, selections, mockVariableValues, mockAccountability, 'Page');
 		expect(query.fields).toEqual(['author.name', 'author.email']);
 	});
 
 	test('should parse nested selectionSet', async () => {
-		const selections = [field('user', { children: [field('id'), field('email')] })];
+		const selections = [buildField('user', { children: [buildField('id'), buildField('email')] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['user.id', 'user.email']);
 	});
 
 	test('should parse field with arguments', async () => {
-		const limitArg = { name: { value: 'limit' }, value: { kind: 'IntValue', value: '10' } };
-		const selections = [field('posts', { args: [limitArg] })];
+		const limitArg = buildArgument('limit', 10);
+		const selections = [buildField('posts', { args: [limitArg] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['posts']);
 	});
 
 	test('should parse M2A InlineFragment with arguments', async () => {
-		const limitArg = { name: { value: 'limit' }, value: { kind: 'IntValue', value: '10' } };
+		const limitArg = buildArgument('limit', 10);
 
 		const selections = [
-			field('parent', {
-				children: [inlineFragment('child', [field('grandchild', { args: [limitArg] })])],
+			buildField('parent', {
+				children: [buildInlineFragment('child', [buildField('grandchild', { args: [limitArg] })])],
 			}),
 		];
 
-		vi.mocked(sanitizeQuery).mockResolvedValue({ limit: 10 });
+		// Only for this call: a lasting mock would hand every later test the same query object
+		vi.mocked(sanitizeQuery).mockResolvedValueOnce({ limit: 10 });
 
 		const query = await getQuery({}, m2aSchema, selections, mockVariableValues, mockAccountability, 'test_collection');
 		expect(query.fields).toEqual(['parent:child.grandchild']);
 
-		expect(query.deep).toStrictEqual({
+		expect(query.deep).toEqual({
 			parent__child: {
 				grandchild: {
-					_alias: {},
-					_deep: {},
 					_limit: 10,
 				},
 			},
 		});
 	});
 
+	test('should not corrupt a builtin via a prototype-polluting alias path', async () => {
+		const original = Object.prototype.toString.call;
+
+		const limitArg = buildArgument('limit', 10);
+
+		const selections = [
+			buildField('parent', {
+				children: [
+					buildField('some_relation', {
+						alias: 'toString',
+						children: [buildField('grandchild', { args: [limitArg] })],
+					}),
+				],
+			}),
+		];
+
+		vi.mocked(sanitizeQuery).mockResolvedValueOnce({ limit: 10 });
+
+		await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
+
+		expect(Object.prototype.toString.call).toBe(original);
+		expect(Object.prototype.toString.call([])).toBe('[object Array]');
+	});
+
 	test('should parse _func field with selectionSet', async () => {
-		const selections = [field('count_func', { children: [field('sum'), field('avg')] })];
+		const selections = [buildField('count_func', { children: [buildField('sum'), buildField('avg')] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['sum(count)', 'avg(count)']);
@@ -211,31 +244,31 @@ describe('parseFields', () => {
 	});
 
 	test('should transform json sub-field of _func with path arg into json() function string', async () => {
-		const pathArg = { name: { value: 'path' }, value: { kind: 'StringValue', value: 'color' } };
-		const selections = [field('metadata_func', { children: [field('json', { args: [pathArg] })] })];
+		const pathArg = buildArgument('path', 'color');
+		const selections = [buildField('metadata_func', { children: [buildField('json', { args: [pathArg] })] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['json(metadata, color)']);
 	});
 
 	test('should transform json sub-field of _func with nested dot-path', async () => {
-		const pathArg = { name: { value: 'path' }, value: { kind: 'StringValue', value: 'dimensions.width' } };
-		const selections = [field('metadata_func', { children: [field('json', { args: [pathArg] })] })];
+		const pathArg = buildArgument('path', 'dimensions.width');
+		const selections = [buildField('metadata_func', { children: [buildField('json', { args: [pathArg] })] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['json(metadata, dimensions.width)']);
 	});
 
 	test('should fall back to count(field) when json sub-field has no path arg', async () => {
-		const selections = [field('metadata_func', { children: [field('json'), field('count')] })];
+		const selections = [buildField('metadata_func', { children: [buildField('json'), buildField('count')] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['json(metadata)', 'count(metadata)']);
 	});
 
 	test('should not include json(field) literal when path arg is present', async () => {
-		const pathArg = { name: { value: 'path' }, value: { kind: 'StringValue', value: 'color' } };
-		const selections = [field('metadata_func', { children: [field('json', { args: [pathArg] })] })];
+		const pathArg = buildArgument('path', 'color');
+		const selections = [buildField('metadata_func', { children: [buildField('json', { args: [pathArg] })] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).not.toContain('json(metadata)');
@@ -243,12 +276,12 @@ describe('parseFields', () => {
 	});
 
 	test('should handle multiple json paths inside the same _func selection', async () => {
-		const colorArg = { name: { value: 'path' }, value: { kind: 'StringValue', value: 'color' } };
-		const brandArg = { name: { value: 'path' }, value: { kind: 'StringValue', value: 'brand' } };
+		const colorArg = buildArgument('path', 'color');
+		const brandArg = buildArgument('path', 'brand');
 
 		const selections = [
-			field('metadata_func', {
-				children: [field('json', { args: [colorArg] }), field('json', { args: [brandArg] })],
+			buildField('metadata_func', {
+				children: [buildField('json', { args: [colorArg] }), buildField('json', { args: [brandArg] })],
 			}),
 		];
 
@@ -258,10 +291,12 @@ describe('parseFields', () => {
 	});
 
 	test('should transform nested relational _func json sub-field', async () => {
-		const pathArg = { name: { value: 'path' }, value: { kind: 'StringValue', value: 'color' } };
+		const pathArg = buildArgument('path', 'color');
 
 		const selections = [
-			field('category', { children: [field('metadata_func', { children: [field('json', { args: [pathArg] })] })] }),
+			buildField('category', {
+				children: [buildField('metadata_func', { children: [buildField('json', { args: [pathArg] })] })],
+			}),
 		];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
@@ -270,16 +305,16 @@ describe('parseFields', () => {
 
 	test('M2A InlineFragment with full relation chain produces correct paths', async () => {
 		// contents → item → InlineFragment(ComponentText) with translation filter
-		const filterArg = gqlFilterArg({ languages_code: { code: { _eq: 'en-EN' } } });
+		const translationsFilter = buildFilterArgument({ languages_code: { code: { _eq: 'en-EN' } } });
 
 		const selections = [
-			field('contents', {
+			buildField('contents', {
 				children: [
-					field('item', {
+					buildField('item', {
 						children: [
-							inlineFragment('ComponentText', [
-								field('id'),
-								field('translations', { args: [filterArg], children: [field('id')] }),
+							buildInlineFragment('ComponentText', [
+								buildField('id'),
+								buildField('translations', { args: [translationsFilter], children: [buildField('id')] }),
 							]),
 						],
 					}),
@@ -287,7 +322,7 @@ describe('parseFields', () => {
 			}),
 		];
 
-		vi.mocked(sanitizeQuery).mockResolvedValue({
+		vi.mocked(sanitizeQuery).mockResolvedValueOnce({
 			filter: { languages_code: { code: { _eq: 'en-EN' } } },
 		});
 
@@ -309,7 +344,9 @@ describe('parseFields', () => {
 	});
 
 	test('should handle deeply nested fields', async () => {
-		const selections = [field('parent', { children: [field('child', { children: [field('grandchild')] })] })];
+		const selections = [
+			buildField('parent', { children: [buildField('child', { children: [buildField('grandchild')] })] }),
+		];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['parent.child.grandchild']);
@@ -327,7 +364,7 @@ describe('parseFields', () => {
 			],
 		} as any;
 
-		const selections = [field('author', { alias: 'a', children: [field('name')] })];
+		const selections = [buildField('author', { alias: 'a', children: [buildField('name')] })];
 
 		const query = await getQuery({}, schema, selections, mockVariableValues, mockAccountability, 'posts');
 
@@ -348,8 +385,8 @@ describe('parseFields', () => {
 		} as any;
 
 		const selections = [
-			field('author', { children: [field('name')] }),
-			field('author', { alias: 'a', children: [field('name')] }),
+			buildField('author', { children: [buildField('name')] }),
+			buildField('author', { alias: 'a', children: [buildField('name')] }),
 		];
 
 		const query = await getQuery({}, schema, selections, mockVariableValues, mockAccountability, 'posts');
@@ -372,9 +409,9 @@ describe('parseFields', () => {
 		} as any;
 
 		const selections = [
-			inlineFragment('blog_post', [
-				field('author', { children: [field('id')] }),
-				field('author', { alias: 'authorAlias', children: [field('id')] }),
+			buildInlineFragment('blog_post', [
+				buildField('author', { children: [buildField('id')] }),
+				buildField('author', { alias: 'authorAlias', children: [buildField('id')] }),
 			]),
 		];
 
@@ -397,11 +434,11 @@ describe('parseFields', () => {
 		} as any;
 
 		const selections = [
-			field('author', {
+			buildField('author', {
 				children: [
-					inlineFragment('author', [
-						field('posts', { children: [field('id')] }),
-						field('posts', { alias: 'recentPosts', children: [field('id')] }),
+					buildInlineFragment('author', [
+						buildField('posts', { children: [buildField('id')] }),
+						buildField('posts', { alias: 'recentPosts', children: [buildField('id')] }),
 					]),
 				],
 			}),
@@ -411,16 +448,17 @@ describe('parseFields', () => {
 
 		expect(query.fields).toContain('author.posts.id');
 		expect(query.fields).toContain('author.recentPosts.id');
+		expect(query.deep).toEqual({ author: { _alias: { recentPosts: 'posts' } } });
 	});
 
 	test('should parse aliased M2A relational field at top level', async () => {
 		const selections = [
-			field('parent', {
-				children: [inlineFragment('child', [field('id')])],
+			buildField('parent', {
+				children: [buildInlineFragment('child', [buildField('id')])],
 			}),
-			field('parent', {
+			buildField('parent', {
 				alias: 'parentAlias',
-				children: [inlineFragment('child', [field('id')])],
+				children: [buildInlineFragment('child', [buildField('id')])],
 			}),
 		];
 
@@ -428,5 +466,100 @@ describe('parseFields', () => {
 
 		expect(query.fields).toContain('parent:child.id');
 		expect(query.fields).toContain('parentAlias:child.id');
+	});
+});
+
+/**
+ * A fragment is a way of writing a selection, not a thing the query knows about, so these cover what
+ * getQuery makes of the selections a resolver hands it once the fragments in them are resolved
+ */
+/** What getQuery makes of a fragment once it is resolved, keyed by what each case pins down */
+type ResolvedFragmentCase = {
+	name: string;
+	selections: SelectionNode[];
+	fragments: Record<string, FragmentDefinitionNode>;
+	expected: { fields?: string[]; alias?: Record<string, string>; deep?: Record<string, unknown> };
+};
+
+const resolvedFragmentCases: ResolvedFragmentCase[] = [
+	{
+		// The intent of #26920: a named fragment on an m2a member has to keep naming its collection
+		name: 'named fragment on an m2a member scopes fields to that collection',
+		selections: contentItem([buildFragmentSpread('Text')]),
+		fragments: { Text: buildFragmentDefinition('Text', 'ComponentText', [buildField('text')]) },
+		expected: { fields: ['contents.item:ComponentText.text'] },
+	},
+	{
+		name: 'fragment on the m2a union type scopes fields to the member collection',
+		selections: contentItem([buildFragmentSpread('AnyBlock')]),
+		fragments: {
+			AnyBlock: buildFragmentDefinition('AnyBlock', 'page_content_item_union', [
+				buildInlineFragment('ComponentText', [buildField('text')]),
+			]),
+		},
+		expected: { fields: ['contents.item:ComponentText.text'] },
+	},
+	{
+		name: 'scalar fields inside a fragment are read as fields of the collection',
+		selections: [buildFragmentSpread('Fields')],
+		fragments: { Fields: buildFragmentDefinition('Fields', 'Page', [buildField('id'), buildField('title')]) },
+		expected: { fields: ['id', 'title'] },
+	},
+	{
+		name: 'a relational selection inside a fragment becomes a nested field path',
+		selections: [buildFragmentSpread('Fields')],
+		fragments: {
+			Fields: buildFragmentDefinition('Fields', 'Page', [buildField('contents', { children: [buildField('id')] })]),
+		},
+		expected: { fields: ['contents.id'] },
+	},
+	{
+		name: 'alias on a relational field inside a fragment is registered',
+		selections: [buildFragmentSpread('Fields')],
+		fragments: {
+			Fields: buildFragmentDefinition('Fields', 'Page', [
+				buildField('contents', { alias: 'blocks', children: [buildField('id')] }),
+			]),
+		},
+		expected: { fields: ['blocks.id'], alias: { blocks: 'contents' } },
+	},
+	{
+		name: 'arguments on a relational field inside a fragment reach the deep query',
+		selections: [buildFragmentSpread('Fields')],
+		fragments: {
+			Fields: buildFragmentDefinition('Fields', 'Page', [
+				buildField('contents', { args: [buildArgument('limit', 1)], children: [buildField('id')] }),
+			]),
+		},
+		expected: { fields: ['contents.id'], deep: { contents: { _limit: 1 } } },
+	},
+	{
+		name: 'the same fragment spread twice does not repeat its fields',
+		selections: [buildFragmentSpread('Fields'), buildFragmentSpread('Fields')],
+		fragments: { Fields: buildFragmentDefinition('Fields', 'Page', [buildField('title')]) },
+		expected: { fields: ['title'] },
+	},
+	{
+		name: 'fragment inside a function selection set keeps the function',
+		selections: [buildField('contents_func', { children: [buildFragmentSpread('Counted')] })],
+		fragments: { Counted: buildFragmentDefinition('Counted', 'count_functions', [buildField('count')]) },
+		expected: { fields: ['count(contents)'] },
+	},
+];
+
+describe('parseFields with resolved fragments', () => {
+	test.each(resolvedFragmentCases)('$name', async ({ selections, fragments, expected }) => {
+		const query = await getQuery(
+			{},
+			pageM2ASchema,
+			resolvedSelections(selections, fragments),
+			mockVariableValues,
+			mockAccountability,
+			'Page',
+		);
+
+		if (expected.fields) expect(query.fields).toEqual(expected.fields);
+		if (expected.alias) expect(query.alias).toEqual(expected.alias);
+		if (expected.deep) expect(query.deep).toEqual(expected.deep);
 	});
 });

@@ -20,6 +20,7 @@ This directory contains mock implementations for commonly used modules in servic
 - **[folders-service.ts](#folders-servicets)** - FoldersService mocks
 - **[test-helpers.ts](#test-helpersts)** - Test data factory functions
 - **[controllers.ts](#controllersts)** - Controller/router testing helpers
+- **[graphql.ts](#graphqlts)** - GraphQL AST selection builders and resolve info stubs
 
 ## Quick Start
 
@@ -1190,6 +1191,46 @@ const createOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedV
 
 // Test your code
 expect(createOneSpy).toHaveBeenCalledWith(expect.objectContaining({ field: 'value' }));
+```
+
+---
+
+### graphql.ts
+
+Builders for the GraphQL AST that resolvers receive, so tests can express a selection set without hand-writing nodes or
+parsing a query string.
+
+#### `buildField(name, options?)`
+
+A field selection: `options.alias` for `alias: name`, `options.args` for arguments, and `options.children` for a nested
+selection set.
+
+#### `buildInlineFragment(type, children)` / `buildFragmentSpread(name)` / `buildFragmentDefinition(name, type, children)`
+
+The three fragment nodes. A spread resolves against the `fragments` passed to `resolveInfo`, which is what a fragment
+definition is registered in.
+
+#### `buildArgument(name, value)` / `buildFilterArgument(filter)`
+
+Argument nodes: `arg` takes a scalar (an int for numbers, a string otherwise), `filterArg` takes the plain object form
+of a filter.
+
+#### `buildResolveInfo({ selections, fragments?, schema, returnType })`
+
+Stands in for the `GraphQLResolveInfo` a resolver receives. `schema` and `returnType` come from the executable schema
+under test, since the type of a selection set decides how fragments resolve.
+
+```typescript
+import { buildField, buildFragmentDefinition, buildFragmentSpread, buildResolveInfo } from '../test-utils/graphql.js';
+
+const info = buildResolveInfo({
+	selections: [buildFragmentSpread('Fields')],
+	fragments: { Fields: buildFragmentDefinition('Fields', 'article', [buildField('id'), buildField('title')]) },
+	schema,
+	returnType: schema.getQueryType()!.getFields()['article']!.type,
+});
+
+expect(buildSelections(info)).toEqual([buildField('id'), buildField('title')]);
 ```
 
 ---

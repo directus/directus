@@ -312,6 +312,10 @@ delete_folder_dialog:
   move_content: Move content one level up
   delete_content: Delete all content
   content_behavior: What should happen to the folder contents?
+delete_flow_folder_dialog:
+  content_behavior: What should happen to this folder's subfolders? Your Flows will not be deleted.
+  move_content: Delete this folder only
+  delete_content: Delete this folder and its subfolders
 validation_errors_notice: 'The following fields have invalid values:'
 validation_value_is_invalid: Value is invalid
 validationError:
@@ -626,6 +630,14 @@ import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
 import_data_validation_errors_notice: 'The following rows have invalid values:'
 import_data_error_row: 'Row {rows}{field}:'
+export_flow: Export Flow
+export_flows: Export Flows
+flow_import_input_placeholder: JSON...
+flow_import_success: Flow imported successfully.
+flow_import_failed: Couldn't import Flow
+flow_import_not_json: This file isn't valid JSON.
+flow_import_invalid_file: This file isn't a Flow export.
+flow_import_foreign_operation: This file contains an operation that belongs to a different Flow.
 snapshot:
   export: Export Schema
   download: Download Snapshot (JSON)
@@ -759,6 +771,7 @@ manual_string: Manually entered string
 save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
 save_and_quit: Save and Quit
+default_save_action_note: The action the Save button performs by default when editing an item.
 publish_and_quit: Publish and Quit
 publish_without_review: Publish without Review
 publish_anyway: Publish Anyway
@@ -885,6 +898,7 @@ account_created_successfully: Account Created Successfully
 auto_fill: Auto Fill
 corresponding_field: Corresponding Field
 errors:
+  COLLECTION_INACTIVE: Collection is inactive
   COLLECTION_NOT_FOUND: "Collection doesn't exist"
   CONTAINS_NULL_VALUES: Field contains null values
   CONTENT_TOO_LARGE: Submitted item/file is too large
@@ -1052,6 +1066,7 @@ items: Items
 upload_file: Upload File
 upload_file_indeterminate: Uploading File...
 upload_file_success: File Uploaded
+upload_files_empty: No Files to Upload
 upload_files_indeterminate: 'Uploading files {done}/{total}'
 upload_files_success: '{count} Files Uploaded'
 upload_pending: Upload Pending
@@ -1074,6 +1089,7 @@ translations_display_template: Translations Display Template
 n_items_selected: 'No Items Selected | One Item Selected | {n} Items Selected'
 per_page: Per Page
 all_files: All Files
+all_flows: All Flows
 my_files: My Files
 recent_files: Recent Files
 create_folder: Create Folder
@@ -1126,6 +1142,7 @@ trigger_flow_success: Flow "{flow}" triggered successfully
 field_name_placeholder: Enter field name...
 field_key_placeholder: Enter field key...
 trigger: Trigger
+trigger_type: Trigger Type
 trigger_options: Trigger Options
 view_trigger: View Trigger
 create_trigger: Create Trigger
@@ -1331,6 +1348,7 @@ right_align: Right Align
 fit_to_screen: Fit to Screen
 image_url: Image Url
 alt_text: Alternative Text
+caption: Caption
 media: Media
 quality: Quality
 width: Width
@@ -1352,6 +1370,7 @@ unlimited: Unlimited
 open_link_in: Open link in
 new_tab: New Tab
 save_image: Save Image
+save_link: Save Link
 save_media: Save Media
 wysiwyg_options:
   aligncenter: Align Center
@@ -1372,12 +1391,19 @@ wysiwyg_options:
   bullist: Bullet List
   numlist: Numbered List
   hr: Horizontal Rule
+  pagebreak: Page Break
+  insertdatetime: Insert Date/Time
+  insertdatetime_date: Date
+  insertdatetime_time: Time
+  insertdatetime_datetime: Date & Time
+  insertdatetime_locale: Localized
   link: Add/Edit Link
   unlink: Remove Link
   media: Add/Edit Media
   image: Add/Edit Image
   copy: Copy
   cut: Cut
+  default: Default
   paste: Paste
   heading: Heading
   h1: Heading 1
@@ -1389,6 +1415,7 @@ wysiwyg_options:
   pre: Preformatted
   fontselect: Select Font
   fontsizeselect: Select Font Size
+  styles: Formats
   indent: Indent
   outdent: Outdent
   undo: Undo
@@ -1397,10 +1424,49 @@ wysiwyg_options:
   removeformat: Remove Format
   selectall: Select All
   table: Table
+  table_cell: Cell
+  table_row: Row
+  table_column: Column
+  table_insert: Insert Table
+  table_insert_size: '{cols} × {rows}'
+  table_add_row_before: Add Row Above
+  table_add_row_after: Add Row Below
+  table_add_column_before: Add Column Left
+  table_add_column_after: Add Column Right
+  table_delete_row: Delete Row
+  table_delete_column: Delete Column
+  table_toggle_header_row: Toggle Header Row
+  table_toggle_header_column: Toggle Header Column
+  table_merge_cells: Merge Cells
+  table_split_cell: Split Cell
+  table_delete: Delete Table
   visualaid: View invisible elements
   source_code: Edit Source Code
+  source_code_normalization_notice: Markup that the editor can't represent is normalized when you save.
+  source_code_normalize_title: Some markup will be removed
+  source_code_normalize_body: The editor can't represent the highlighted markup, so it will be removed when you save.
+  save_anyway: Save Anyway
+  normalization_warning_title: Some formatting here isn't supported
+  normalization_warning_body:
+    This content includes items the new editor doesn't support, so the field is read-only for now. If you edit anyway,
+    those items will be removed when you save. To keep the stored HTML exactly as is, edit the raw HTML instead. This
+    warning will go away once the unsupported items are gone. If you already saved without them, you can bring the
+    original content back from Revisions.
+  normalization_warning_view_changes: View changes
+  normalization_warning_keep_readonly: Keep Read-only
+  normalization_warning_edit_anyway: Edit Anyway
+  normalization_warning_edit_raw: Edit Raw HTML
+  normalization_locked_notice:
+    This field includes formatting the new editor doesn't support, so it's read-only. Select the field to choose how to
+    edit it.
+  normalization_locked_learn_more: Learn what changed
+  normalization_comparison_notice:
+    This version includes formatting the editor can't display, so the stored HTML is shown as is. Applying it restores
+    the content unchanged.
   fullscreen: Full Screen
   directionality: Directionality
+  ltr: Left to Right
+  rtl: Right to Left
   lazy_loading: Lazy Load Image
   lazy_loading_label: Enable Lazy Loading
 dropdown: Dropdown
@@ -1570,7 +1636,6 @@ no_oauth_clients: 'No OAuth clients have been registered yet.'
 revoke_client: 'Revoke Client'
 revoke_client_confirm:
   'Are you sure you want to revoke this client? All associated tokens and sessions will be deleted.'
-settings_flows: Flows
 settings_system_logs: System Logs
 settings_presets: Bookmarks
 settings_translations: Translations
@@ -1677,6 +1742,8 @@ source_local: Local
 source_module: Node Module
 collection: Collection
 collections: Collections
+collection_inactive: This collection is inactive
+collection_inactive_copy: This view references {collection}, which is inactive.
 content: Content
 singleton: Singleton
 singleton_label: Treat as single object
@@ -1864,6 +1931,11 @@ fields:
     public_registration_verify_email: Verify Email
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
+    live_preview: Live Preview
+    preview_base_url: Preview Base URL
+    preview_base_url_note:
+      Selectable as a dynamic Preview Base URL variable in a collection's Preview URL, so the host can differ per
+      environment.
     visual_editor_urls: Visual Editor URLs
     report_feature_url: Report Feature URL
     report_bug_url: Report Bug URL
@@ -2733,16 +2805,20 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Custom Formats
     custom_formats_note:
-      List of TinyMCE Content Formats. See the TinyMCE documentation about [Content
-      Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) for more information.
-    options_override: Options Override
+      A list of custom formats. Each entry needs a `title` plus either an `inline` tag, a `block` tag, a `selector` of
+      block tags, or `items` to group entries into a submenu. Optional `classes`, `styles`, and `attributes` can also be
+      added. When set, a Formats dropdown is added to the toolbar. Formatting with `block` converts between paragraphs
+      and headings only, and `wrapper` entries are not supported.
+    options_override: Options Override (Deprecated)
     options_override_note:
-      The TinyMCE User Formatting keys and their values. See the TinyMCE documentation about [User
-      Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) for more information.
+      Deprecated legacy TinyMCE overrides. This value is no longer applied by the editor and is kept for reference only.
+      Use the other interface options instead, such as the Custom Formats option.
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
     media_preview_iframe_title: Media Preview
+    embed_invalid: The embed markup could not be parsed as media (video, audio, or iframe)
+    auto_height: Auto height
   input-block-editor:
     input-block-editor: Block Editor
     description: Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js
@@ -2876,6 +2952,8 @@ displays:
     down: Down
     nearest: Nearest
     up: Up
+    timezone: Timezone
+    timezone_note: IANA timezone identifier (e.g., 'America/New_York', 'UTC'). Leave empty to use local timezone.
   file:
     file: File
     description: Display files
@@ -2997,6 +3075,7 @@ layouts:
     group_field_placeholder: Field to group by...
     group_title: Group Title
     group_title_placeholder: Field for group titles...
+    group_collection_inactive: The collection this board groups by is inactive
     title: Card Title
     title_placeholder: Optional title field...
     text: Card Text
@@ -3133,6 +3212,7 @@ triggers:
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
+    hidden: None (Hidden)
     collection_page: Collection Page
     require_selection: Requires Selection
 a_flow_uuid: Select a Flow to trigger...
@@ -3196,6 +3276,8 @@ operations:
   mail:
     name: Send Email
     description: Send an email to one or more people
+    from_name: From Name
+    from_name_placeholder: Defaults to the project name
     to: To
     to_placeholder: Add email addresses and press enter...
     body: Body
@@ -3295,6 +3377,7 @@ date_precision: Date Precision
 export_dashboard: Export Dashboard
 duplicate_dashboard: Duplicate Dashboard
 duplicate_policy: Duplicate Policy
+duplicate_flow: Duplicate Flow
 search_dashboard: Search Dashboard...
 search_flow: Search Flow...
 percent: Percent

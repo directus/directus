@@ -31,6 +31,7 @@ function constructOperationTree(root: OperationRaw | null, operations: Operation
 		...omit(root, 'flow'),
 		resolve: constructOperationTree(resolveOperation, operations),
 		reject: constructOperationTree(rejectOperation, operations),
+		options: root.options ?? {},
 	};
 
 	return operationTree;

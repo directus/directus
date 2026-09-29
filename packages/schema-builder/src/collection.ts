@@ -8,7 +8,7 @@ type InitialCollectionOverview = Omit<CollectionOverview, 'primary' | 'fields'>;
 type FinalCollectionOverview = Omit<CollectionOverview, 'fields'>;
 
 export type CollectionOveriewBuilderOptions = Partial<
-	Pick<CollectionOverview, 'singleton' | 'accountability' | 'note'>
+	Pick<CollectionOverview, 'singleton' | 'accountability' | 'note' | 'status'>
 >;
 
 export class CollectionBuilder {

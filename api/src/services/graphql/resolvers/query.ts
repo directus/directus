@@ -6,7 +6,7 @@ import type { GraphQLService } from '../index.js';
 import { parseArgs } from '../schema/parse-args.js';
 import { getQuery } from '../schema/parse-query.js';
 import { getAggregateQuery } from '../utils/aggregate-query.js';
-import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
+import { buildSelections } from '../utils/build-selections.js';
 
 /**
  * Generic resolver that's used for every "regular" items/system query. Converts the incoming GraphQL AST / fragments into
@@ -15,7 +15,7 @@ import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
 export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo): Promise<Partial<Item> | null> {
 	let collection = info.fieldName;
 	if (gql.scope === 'system') collection = `directus_${collection}`;
-	const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
+	const selections = buildSelections(info);
 
 	if (!selections) return null;
 	const args: Record<string, any> = parseArgs(info.fieldNodes[0]!.arguments || [], info.variableValues);

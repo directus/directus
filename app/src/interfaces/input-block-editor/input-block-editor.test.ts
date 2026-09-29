@@ -17,24 +17,23 @@ describe('InputBlockEditor', () => {
 		let resolveReady!: () => void;
 		let resolveRender!: () => void;
 
-		vi.mocked(EditorJS).mockImplementation(
-			() =>
-				({
-					isReady: new Promise<void>((r) => (resolveReady = r)),
-					render: vi.fn(() => {
-						callOrder.push('render');
-						return new Promise<void>((r) => (resolveRender = r));
-					}),
-					clear: vi.fn(),
-					destroy: vi.fn(),
-					focus: vi.fn(),
-					on: vi.fn(),
-					saver: { save: vi.fn().mockResolvedValue({ blocks: [] }) },
-					readOnly: {
-						toggle: vi.fn((val: boolean) => callOrder.push(`toggle:${val}`)),
-					},
-				}) as any,
-		);
+		vi.mocked(EditorJS).mockImplementation(function () {
+			return {
+				isReady: new Promise<void>((r) => (resolveReady = r)),
+				render: vi.fn(() => {
+					callOrder.push('render');
+					return new Promise<void>((r) => (resolveRender = r));
+				}),
+				clear: vi.fn(),
+				destroy: vi.fn(),
+				focus: vi.fn(),
+				on: vi.fn(),
+				saver: { save: vi.fn().mockResolvedValue({ blocks: [] }) },
+				readOnly: {
+					toggle: vi.fn((val: boolean) => callOrder.push(`toggle:${val}`)),
+				},
+			} as any;
+		});
 
 		const wrapper = mount(InputBlockEditor, {
 			props: {
@@ -74,21 +73,20 @@ describe('InputBlockEditor', () => {
 		// This test should prevent a regression that results in data loss when the value is temporarily null and the field is disabled
 		const clear = vi.fn();
 
-		vi.mocked(EditorJS).mockImplementation(
-			() =>
-				({
-					isReady: Promise.resolve(),
-					render: vi.fn().mockResolvedValue(undefined),
-					clear,
-					destroy: vi.fn(),
-					focus: vi.fn(),
-					on: vi.fn(),
-					saver: { save: vi.fn().mockResolvedValue({ blocks: [] }) },
-					readOnly: {
-						toggle: vi.fn(),
-					},
-				}) as any,
-		);
+		vi.mocked(EditorJS).mockImplementation(function () {
+			return {
+				isReady: Promise.resolve(),
+				render: vi.fn().mockResolvedValue(undefined),
+				clear,
+				destroy: vi.fn(),
+				focus: vi.fn(),
+				on: vi.fn(),
+				saver: { save: vi.fn().mockResolvedValue({ blocks: [] }) },
+				readOnly: {
+					toggle: vi.fn(),
+				},
+			} as any;
+		});
 
 		const wrapper = mount(InputBlockEditor, {
 			props: {

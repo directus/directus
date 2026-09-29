@@ -64,21 +64,20 @@ export class HeartbeatHandler {
 
 	pingClients() {
 		const pendingClients = new Set<WebSocketClient>(this.controller.clients);
-		const activeClients = new Set<WebSocketClient>();
+		if (pendingClients.size === 0) return;
 
 		const timeout = setTimeout(() => {
 			// close connections that haven't responded
 			for (const client of pendingClients) {
 				client.close();
 			}
+
+			emitter.offAction('websocket.message', messageWatcher);
 		}, HEARTBEAT_FREQUENCY);
 
 		const messageWatcher: ActionHandler = ({ client }) => {
 			// any message means this connection is still open
-			if (!activeClients.has(client)) {
-				pendingClients.delete(client);
-				activeClients.add(client);
-			}
+			pendingClients.delete(client);
 
 			if (pendingClients.size === 0) {
 				clearTimeout(timeout);

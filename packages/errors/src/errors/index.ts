@@ -1,12 +1,14 @@
 export { AddonNotAvailableError } from './addon-not-available.js';
 export { AddonNotFoundError } from './addon-not-found.js';
 export { AddonQuantityOutOfRangeError } from './addon-quantity-out-of-range.js';
+export { CollectionInactiveError } from './collection-inactive.js';
 export { ContainsNullValuesError } from './contains-null-values.js';
 export { ContentTooLargeError } from './content-too-large.js';
 export { EmailLimitExceededError } from './email-limit-exceeded.js';
 export { ForbiddenError } from './forbidden.js';
 export { HitRateLimitError } from './hit-rate-limit.js';
 export { IllegalAssetTransformationError } from './illegal-asset-transformation.js';
+export { ImportCyclicalRelationError } from './import-cyclical-relation.js';
 export { InternalServerError } from './internal.js';
 export { InvalidCredentialsError } from './invalid-credentials.js';
 export { InvalidForeignKeyError } from './invalid-foreign-key.js';

@@ -69,6 +69,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	SECRET: 'string',
 
 	EXTENSIONS_ROLLDOWN: 'boolean',
+	EXTENSIONS_STORAGE_MAX_CONCURRENCY: 'number',
 
 	PROJECT_OWNER_ENABLED: 'boolean',
 
@@ -88,6 +89,11 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	MCP_OAUTH_CIMD_BLOCKED_TLDS: 'array',
 
 	EMAIL_SMTP_PASSWORD: 'string',
+
+	EMAIL_MAILTRAP_TOKEN: 'string',
+	EMAIL_MAILTRAP_SANDBOX: 'boolean',
+	EMAIL_MAILTRAP_TEST_INBOX_ID: 'number',
+	EMAIL_MAILTRAP_BULK: 'boolean',
 
 	'STORAGE_.+_SECRET': 'string',
 

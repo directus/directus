@@ -10,7 +10,7 @@ import {
 	enableMcpOAuthSettings,
 	expectJsonResponse,
 	loginAsAdminSession,
-} from '../auth/mcp-oauth-utils.js';
+} from '../auth/mcp-oauth/utils.js';
 import type { Schema } from './schema.d.ts';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken(adminToken));

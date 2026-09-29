@@ -1,6 +1,6 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Knex } from 'knex';
-import { convertToMySQLPath } from '../json/mysql-json-path.js';
+import { convertToJsonPath } from '../json/convert-json-path.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -61,7 +61,7 @@ export class FnHelperMySQL extends FnHelper {
 		}
 
 		// Convert dot notation to MySQL JSON path
-		const jsonPath = convertToMySQLPath(options.jsonPath);
+		const jsonPath = convertToJsonPath(options.jsonPath);
 
 		if (options?.jsonReturnType === 'numeric') {
 			// JSON_EXTRACT preserves the native numeric type from the JSON document.

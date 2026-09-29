@@ -1,6 +1,6 @@
 import { ForbiddenError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Permission, Query } from '@directus/types';
+import type { Accountability, Permission, Query } from '@directus/types';
 import { knex } from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
@@ -218,6 +218,50 @@ describe('MetaService', () => {
 			expect(fetchPolicies).not.toHaveBeenCalled();
 			expect(fetchPermissions).not.toHaveBeenCalled();
 			expect(result).toBe(10);
+		});
+
+		describe('flows folder scoping', () => {
+			const nonAdmin = createDefaultAccountability({ admin: false });
+
+			const countFor = async (collection: string, accountability: Accountability | null, query: Query = {}) => {
+				const service = new MetaService({ knex: db, accountability, schema: mockSchema });
+
+				vi.mocked(fetchPolicies).mockResolvedValue([]);
+				vi.mocked(fetchPermissions).mockResolvedValue([]);
+				vi.mocked(getCases).mockReturnValue({ cases: [], caseMap: {}, allowedFields: new Set() });
+
+				vi.mocked(applyQuery).mockReturnValue({
+					query: createMockQueryBuilder() as any,
+					hasJoins: false,
+					hasMultiRelationalFilter: false,
+				});
+
+				await service.filterCount(collection, query);
+
+				return vi.mocked(applyQuery).mock.calls[0]![3].filter;
+			};
+
+			test('hides flows folders from a non-admin folder count', async () => {
+				expect(await countFor('directus_folders', nonAdmin)).toEqual({ type: { _neq: 'flows' } });
+			});
+
+			test("keeps the caller's folder filter alongside the scoping", async () => {
+				const filter = { name: { _eq: 'Images' } };
+
+				expect(await countFor('directus_folders', nonAdmin, { filter })).toEqual({
+					_and: [filter, { type: { _neq: 'flows' } }],
+				});
+			});
+
+			test('leaves the admin folder count unscoped', async () => {
+				expect(await countFor('directus_folders', createDefaultAccountability({ admin: true }))).toBeNull();
+			});
+
+			test('leaves the file count alone', async () => {
+				const filter = { title: { _eq: 'Logo' } };
+
+				expect(await countFor('directus_files', nonAdmin, { filter })).toEqual(filter);
+			});
 		});
 
 		test('should perform permission checks for non-admin users', async () => {

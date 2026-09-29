@@ -57,6 +57,11 @@ export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'];
 
 export const ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'm2a', 'o2a', 'files', 'translations'];
 
+export const SNAPSHOT_VERSION = {
+	FULL: 1,
+	PARTIAL: 2,
+} as const;
+
 export const DEFAULT_AUTH_PROVIDER = 'default';
 
 export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];
@@ -98,6 +103,14 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 export const FILE_UPLOADS = {
 	MAX_SIZE: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string),
 	MAX_CONCURRENCY: Number(env['FILES_MAX_UPLOAD_CONCURRENCY']),
+};
+
+const extensionsStorageMaxConcurrency = Number(env['EXTENSIONS_STORAGE_MAX_CONCURRENCY']);
+
+/** Extensions */
+export const EXTENSIONS = {
+	/** p-queue requires a number >=1 or throws type error */
+	STORAGE_MAX_CONCURRENCY: extensionsStorageMaxConcurrency >= 1 ? extensionsStorageMaxConcurrency : 20,
 };
 
 /** Resumable uploads (TUS) */

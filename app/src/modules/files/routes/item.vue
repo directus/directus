@@ -325,7 +325,7 @@ function revert(values: Record<string, any>) {
 					<VCardTitle>{{ $t('move_to_folder') }}</VCardTitle>
 
 					<VCardText>
-						<FolderPicker v-model="selectedFolder" />
+						<FolderPicker v-model="selectedFolder" type="files" />
 					</VCardText>
 
 					<VCardActions>
@@ -367,7 +367,11 @@ function revert(values: Record<string, any>) {
 			>
 				<template #split-menu>
 					<SaveOptions
-						:disabled-options="createAllowed ? ['save-and-add-new'] : ['save-and-add-new', 'save-as-copy']"
+						:disabled-options="
+							createAllowed
+								? ['save-and-quit', 'save-and-add-new']
+								: ['save-and-quit', 'save-and-add-new', 'save-as-copy']
+						"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
 						@discard-and-stay="discardAndStay"

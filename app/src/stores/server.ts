@@ -29,6 +29,7 @@ export type Info = {
 	project_owner_enabled: boolean;
 	mcp_enabled: boolean;
 	ai_enabled: boolean;
+	ai_providers?: string[];
 	mcp_oauth_enabled: boolean;
 	mcp_oauth_dcr_enabled: boolean;
 	mcp_oauth_cimd_enabled: boolean;
@@ -108,6 +109,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		project_owner_enabled: true,
 		mcp_enabled: true,
 		ai_enabled: true,
+		ai_providers: [],
 		mcp_oauth_enabled: false,
 		mcp_oauth_dcr_enabled: false,
 		mcp_oauth_cimd_enabled: false,
@@ -154,6 +156,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.project_owner_enabled = serverInfoResponse.data.data?.project_owner_enabled;
 		info.mcp_enabled = serverInfoResponse.data.data?.mcp_enabled;
 		info.ai_enabled = serverInfoResponse.data.data?.ai_enabled;
+		info.ai_providers = serverInfoResponse.data.data?.ai_providers ?? [];
 		info.mcp_oauth_enabled = serverInfoResponse.data.data?.mcp_oauth_enabled;
 		info.mcp_oauth_dcr_enabled = serverInfoResponse.data.data?.mcp_oauth_dcr_enabled;
 		info.mcp_oauth_cimd_enabled = serverInfoResponse.data.data?.mcp_oauth_cimd_enabled;
@@ -186,6 +189,7 @@ export const useServerStore = defineStore('serverStore', () => {
 
 	const dehydrate = () => {
 		info.project = null;
+		info.ai_providers = [];
 
 		auth.providers = [];
 		auth.disableDefault = false;

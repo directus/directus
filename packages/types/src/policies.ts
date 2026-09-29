@@ -3,7 +3,7 @@ export interface Policy {
 	name: string;
 	icon: string;
 	description: string | null;
-	enforce_tfa: null | boolean;
+	enforce_tfa: boolean;
 	ip_access: string[] | null;
 	app_access: boolean;
 	admin_access: boolean;

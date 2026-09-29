@@ -54,7 +54,9 @@ describe('ExtensionsService', () => {
 
 		vi.mocked(getExtensionManager).mockReturnValue(mockExtensionManager);
 
-		vi.mocked(ItemsService).mockImplementation(() => mockExtensionsItemService);
+		vi.mocked(ItemsService).mockImplementation(function () {
+			return mockExtensionsItemService;
+		});
 
 		vi.mocked(registryDescribe).mockResolvedValue({
 			data: {

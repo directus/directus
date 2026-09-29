@@ -1,0 +1,132 @@
+import { describe, expect, test } from 'vitest';
+import { buildCustomFormats } from '../extensions/custom-formats';
+import { comparisonSchema, computeNormalizationDiff, computeValueNormalizationDiff } from './normalization-diff';
+
+function removedText(code: string): string {
+	const changes = computeNormalizationDiff(code);
+	expect(changes).not.toBeNull();
+	return changes!
+		.filter((change) => change.removed)
+		.map((change) => change.value)
+		.join('');
+}
+
+describe('computeNormalizationDiff', () => {
+	test('returns null for HTML the schema preserves', () => {
+		expect(computeNormalizationDiff('<p>hello <strong>world</strong></p>')).toBeNull();
+	});
+
+	test('returns null for a title attribute the schema preserves', () => {
+		expect(computeNormalizationDiff('<p><span title="Tooltip">text</span></p>')).toBeNull();
+	});
+
+	test('returns null for role, lang and dir the schema preserves', () => {
+		// authored in the editor's canonical render order (role, lang, aria-*, dir) so the textual
+		// diff only surfaces genuine loss, not attribute reordering
+		expect(
+			computeNormalizationDiff('<p><span role="note" lang="fr" aria-label="Note" dir="rtl">text</span></p>'),
+		).toBeNull();
+	});
+
+	test('returns null for cosmetic-only reformatting', () => {
+		// Same document, arbitrary incoming indentation/whitespace — no semantic change.
+		expect(computeNormalizationDiff('<ul>\n\n    <li><p>one</p></li>\n  <li><p>two</p></li>\n</ul>')).toBeNull();
+	});
+
+	test('returns null for a trailing space inside an inline-only block', () => {
+		// Tiptap trims the trailing space; the delta is cosmetic and must not warn.
+		expect(computeNormalizationDiff('<p>The content is pretty awesome </p>')).toBeNull();
+	});
+
+	test('flags dropped table markup', () => {
+		expect(removedText('<table><tbody><tr><td>a</td></tr></tbody></table>')).toContain('<table');
+	});
+
+	test('flags dropped element while keeping surrounding content', () => {
+		expect(removedText('<p>keep</p><object data="about:blank"></object>')).toContain('<object');
+	});
+
+	test('returns null for iframe preserved by the media node', () => {
+		expect(computeNormalizationDiff('<iframe src="about:blank"></iframe>')).toBeNull();
+	});
+
+	// Custom-format marks live only on the editor instance, so the round-trip must be told about them
+	// or their markup reads as dropped/reordered and falsely triggers the warning.
+	test('returns null for custom-format markup when its extensions are supplied', () => {
+		const { extensions } = buildCustomFormats([
+			{ title: 'Highlight', inline: 'span', classes: 'highlight', styles: { 'background-color': 'yellow' } },
+			{ title: 'Cite', inline: 'cite', classes: 'src' },
+		]);
+
+		expect(
+			computeNormalizationDiff(
+				'<p><span class="highlight" style="background-color: yellow;">a</span> <cite class="src">b</cite></p>',
+				extensions,
+			),
+		).toBeNull();
+	});
+
+	test('still flags custom-format markup when the extensions are missing', () => {
+		expect(removedText('<p><cite class="src">b</cite></p>')).toContain('cite');
+	});
+
+	// Block formats are plain preserved attributes rather than instance-only marks, so they need no
+	// extensions passed in and must never surface in the unsupported-content warning.
+	test('returns null for block-level custom-format markup without any extensions', () => {
+		const { extensions } = buildCustomFormats([
+			{ title: 'Dropcap', block: 'p', classes: 'dropcap' },
+			{ title: 'Eyebrow', selector: 'h2', classes: 'eyebrow' },
+		]);
+
+		expect(extensions).toHaveLength(0);
+
+		expect(
+			computeNormalizationDiff('<p class="intro dropcap" data-latex="true">a</p><h2 class="eyebrow">b</h2>'),
+		).toBeNull();
+	});
+});
+
+describe('computeValueNormalizationDiff', () => {
+	test('returns null for custom-format markup when its extensions are supplied', () => {
+		const { extensions } = buildCustomFormats([{ title: 'Cite', inline: 'cite', classes: 'src' }]);
+		expect(computeValueNormalizationDiff('<p><cite class="src">b</cite></p>', extensions)).toBeNull();
+	});
+
+	test('returns null for a stored value carrying block-level custom-format classes', () => {
+		expect(computeValueNormalizationDiff('<p class="dropcap">a</p><h2 class="eyebrow">b</h2>')).toBeNull();
+	});
+
+	test('reuses the verdict for a value already checked against the same schema', () => {
+		const value = '<p><cite class="src">b</cite></p>';
+		const first = computeValueNormalizationDiff(value);
+
+		expect(first).not.toBeNull();
+		expect(computeValueNormalizationDiff(value)).toBe(first);
+	});
+
+	test('keeps the verdicts of two custom-format schemas apart', () => {
+		const cite = buildCustomFormats([{ title: 'Cite', inline: 'cite', classes: 'src' }]);
+		const highlight = buildCustomFormats([{ title: 'Highlight', inline: 'span', classes: 'highlight' }]);
+		const value = '<p><cite class="src">b</cite></p>';
+
+		expect(computeValueNormalizationDiff(value, cite.extensions, cite.key)).toBeNull();
+		expect(computeValueNormalizationDiff(value, highlight.extensions, highlight.key)).not.toBeNull();
+	});
+
+	test('does not cache a schema it cannot identify', () => {
+		const { extensions } = buildCustomFormats([{ title: 'Cite', inline: 'cite', classes: 'src' }]);
+		const value = '<p><cite class="other">b</cite></p>';
+
+		expect(computeValueNormalizationDiff(value, extensions)).not.toBe(computeValueNormalizationDiff(value, extensions));
+	});
+});
+
+describe('comparisonSchema', () => {
+	test('accepts the diff spans the comparison view feeds the editor', () => {
+		const value = '<p><span class="comparison-diff--added">a</span></p>';
+		const { extensions, schemaKey } = comparisonSchema(null);
+
+		expect(computeValueNormalizationDiff(value, extensions, schemaKey)).toBeNull();
+		expect(computeValueNormalizationDiff(value)).not.toBeNull();
+	});
+});

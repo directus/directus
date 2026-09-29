@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';

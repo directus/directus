@@ -1,4 +1,3 @@
-import { appAccessMinimalPermissions } from '@directus/system-data';
 import type { Ref } from 'vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -29,16 +28,6 @@ export function useSave({ name, adminAccess, appAccess }: UseSaveOptions) {
 				admin_access: adminAccess.value,
 				app_access: appAccess.value,
 			});
-
-			if (appAccess.value === true && adminAccess.value === false) {
-				await api.post(
-					'/permissions',
-					appAccessMinimalPermissions.map((permission) => ({
-						...permission,
-						policy: policyResponse.data.data.id,
-					})),
-				);
-			}
 
 			router.push({ name: 'settings-policies-item', params: { primaryKey: policyResponse.data.data.id } });
 		} catch (error) {

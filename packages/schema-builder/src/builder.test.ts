@@ -85,6 +85,7 @@ test('Create primitive schema', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		  },
 		  "relations": [],
@@ -145,6 +146,7 @@ test('Create o2m relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		    "countries": {
 		      "accountability": "all",
@@ -187,6 +189,7 @@ test('Create o2m relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		  },
 		  "relations": [
@@ -273,6 +276,7 @@ test('Create m2o relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		    "countries": {
 		      "accountability": "all",
@@ -298,6 +302,7 @@ test('Create m2o relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		  },
 		  "relations": [
@@ -384,6 +389,7 @@ test('Create m2m relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		    "articles_tags_junction": {
 		      "accountability": "all",
@@ -439,6 +445,7 @@ test('Create m2m relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		    "tags": {
 		      "accountability": "all",
@@ -464,6 +471,7 @@ test('Create m2m relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		  },
 		  "relations": [
@@ -576,6 +584,7 @@ test('Create m2a relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		    "blog_builder": {
 		      "accountability": "all",
@@ -646,6 +655,7 @@ test('Create m2a relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		    "image": {
 		      "accountability": "all",
@@ -671,6 +681,7 @@ test('Create m2a relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		    "text": {
 		      "accountability": "all",
@@ -696,6 +707,7 @@ test('Create m2a relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		  },
 		  "relations": [
@@ -816,6 +828,7 @@ test('Create a2o relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		    "image": {
 		      "accountability": "all",
@@ -841,6 +854,7 @@ test('Create a2o relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		    "text": {
 		      "accountability": "all",
@@ -866,6 +880,7 @@ test('Create a2o relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		  },
 		  "relations": [
@@ -947,6 +962,7 @@ test('Create translations relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		    "blog_translations": {
 		      "accountability": "all",
@@ -1002,6 +1018,7 @@ test('Create translations relation', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		    "languages": {
 		      "accountability": "all",
@@ -1057,6 +1074,7 @@ test('Create translations relation', () => {
 		      "primary": "code",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		  },
 		  "relations": [
@@ -1168,6 +1186,7 @@ test('overwrite field', () => {
 		      "primary": "id",
 		      "singleton": false,
 		      "sortField": null,
+		      "status": "active",
 		    },
 		  },
 		  "relations": [],

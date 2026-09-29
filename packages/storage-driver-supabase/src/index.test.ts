@@ -320,6 +320,19 @@ describe('#read', () => {
 		);
 	});
 
+	/** An unread response body holds its connection open */
+	test('Cancels the response body it never reads', async () => {
+		const cancel = vi.fn().mockResolvedValue(undefined);
+
+		vi.mocked(fetch).mockReturnValue({ status: 400, body: { cancel } } as unknown as Promise<Response>);
+
+		await expect(driver.read(sample.path.input)).rejects.toThrowError(
+			new Error(`No stream returned for file "${sample.path.input}"`),
+		);
+
+		expect(cancel).toHaveBeenCalled();
+	});
+
 	test('Returns stream', async () => {
 		const stream = await driver.read(sample.path.input, { range: sample.range });
 
@@ -409,37 +422,62 @@ describe('#stat', () => {
 		expect(driver.stat(sample.path.input)).rejects.toThrowError(new Error(`File not found`));
 	});
 
-	test('Throws an error if storage error is returned', async () => {
+	/**
+	 * A failed lookup is not the same answer as an empty one, so the storage error has to reach the
+	 * caller instead of being reported as a missing file.
+	 */
+	test('Throws the storage error if the lookup failed', async () => {
+		const error = new Error('Service unavailable');
+
 		driver['bucket'] = {
 			list: vi.fn().mockReturnValue({
 				data: null,
-				error: true,
+				error,
 			}),
 		} as any;
 
-		expect(driver.stat(sample.path.input)).rejects.toThrowError(new Error(`File not found`));
+		await expect(driver.stat(sample.path.input)).rejects.toThrowError(error);
 	});
 });
 
 describe('#exists', () => {
-	beforeEach(() => {
-		driver.stat = vi.fn();
-	});
-
-	test('Returns true if stat returns the stats', async () => {
-		vi.mocked(driver.stat).mockResolvedValue({ size: sample.file.size, modified: sample.file.modified });
+	test('Returns true if the file is returned by list', async () => {
+		driver['bucket'] = {
+			list: vi.fn().mockReturnValue({
+				data: [{ metadata: { contentLength: sample.file.size, lastModified: sample.file.modified } }],
+				error: null,
+			}),
+		} as any;
 
 		const exists = await driver.exists(sample.path.input);
 
 		expect(exists).toBe(true);
 	});
 
-	test('Returns false if stat throws an error', async () => {
-		vi.mocked(driver.stat).mockRejectedValue(new Error());
+	test('Returns false if no file is returned by list', async () => {
+		driver['bucket'] = {
+			list: vi.fn().mockReturnValue({
+				data: [],
+				error: null,
+			}),
+		} as any;
 
 		const exists = await driver.exists(sample.path.input);
 
 		expect(exists).toBe(false);
+	});
+
+	test('Throws the storage error if the lookup failed', async () => {
+		const error = new Error('Service unavailable');
+
+		driver['bucket'] = {
+			list: vi.fn().mockReturnValue({
+				data: null,
+				error,
+			}),
+		} as any;
+
+		await expect(driver.exists(sample.path.input)).rejects.toThrowError(error);
 	});
 });
 

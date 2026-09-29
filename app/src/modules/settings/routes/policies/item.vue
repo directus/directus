@@ -155,7 +155,7 @@ function discardAndStay() {
 			>
 				<template #split-menu>
 					<SaveOptions
-						:disabled-options="['save-as-copy']"
+						:disabled-options="['save-and-quit', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@discard-and-stay="discardAndStay"

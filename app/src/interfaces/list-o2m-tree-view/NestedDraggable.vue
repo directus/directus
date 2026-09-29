@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ContentVersion, Filter } from '@directus/types';
 import { moveInArray } from '@directus/utils';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { computed, ref, toRefs } from 'vue';
 import Draggable from 'vuedraggable';
 import ItemPreview from './item-preview.vue';
@@ -232,7 +232,7 @@ function stageEdits(item: Record<string, any>) {
 				/>
 				<NestedDraggable
 					v-if="open[element[relationInfo.relatedPrimaryKeyField.field]]"
-					:model-value="element[field]"
+					:model-value="element.$staged?.[field] ?? element[field]"
 					:template="template"
 					:collection="collection"
 					:disabled="disabled"

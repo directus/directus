@@ -10,6 +10,7 @@ import DriverLocal from '@directus/storage-driver-local';
 import { move, remove } from 'fs-extra';
 import Queue from 'p-queue';
 import { extract } from 'tar';
+import { EXTENSIONS } from '../../../constants.js';
 import { useLogger } from '../../../logger/index.js';
 import { getStorage } from '../../../storage/index.js';
 import { getExtensionsPath } from '../get-extensions-path.js';
@@ -77,7 +78,7 @@ export class InstallationManager {
 				const storage = await getStorage();
 				const remoteDisk = storage.location(env['EXTENSIONS_LOCATION'] as string);
 
-				const queue = new Queue({ concurrency: 1000 });
+				const queue = new Queue({ concurrency: EXTENSIONS.STORAGE_MAX_CONCURRENCY });
 
 				for await (const filepath of tmpStorage.list(extractedPath)) {
 					const readStream = await tmpStorage.read(filepath);
@@ -120,7 +121,7 @@ export class InstallationManager {
 			const storage = await getStorage();
 			const remoteDisk = storage.location(env['EXTENSIONS_LOCATION'] as string);
 
-			const queue = new Queue({ concurrency: 1000 });
+			const queue = new Queue({ concurrency: EXTENSIONS.STORAGE_MAX_CONCURRENCY });
 
 			const prefix = join(env['EXTENSIONS_PATH'] as string, '.registry', folder);
 

@@ -346,6 +346,68 @@ test(`m2o original + alias inside a fragment`, async () => {
 	});
 });
 
+test(`m2o alias without the original inside a fragment`, async () => {
+	const id = (
+		await api.request(
+			createItem(collections.articles, {
+				title: `Article A`,
+				author: { name: 'Author A' },
+			}),
+		)
+	).id!;
+
+	const result = (
+		await api.query(`
+			fragment ArticleSummary on ${collections.articles} {
+				aliased: author {
+					name
+				}
+			}
+
+			query {
+				${collections.articles} (filter: { id: { _eq: "${id}" }}) {
+					...ArticleSummary
+				}
+			}
+		`)
+	)[collections.articles][0];
+
+	expect(result).toEqual({
+		aliased: { name: 'Author A' },
+	});
+});
+
+test(`o2m alias with arguments and without the original inside a fragment`, async () => {
+	const id = (
+		await api.request(
+			createItem(collections.articles, {
+				title: `Article A`,
+				links: [{ link: 'Link A' }, { link: 'Link B' }],
+			}),
+		)
+	).id!;
+
+	const result = (
+		await api.query(`
+			fragment ArticleSummary on ${collections.articles} {
+				aliased: links(limit: 1, sort: ["-link"]) {
+					link
+				}
+			}
+
+			query {
+				${collections.articles} (filter: { id: { _eq: "${id}" }}) {
+					...ArticleSummary
+				}
+			}
+		`)
+	)[collections.articles][0];
+
+	expect(result).toEqual({
+		aliased: [{ link: 'Link B' }],
+	});
+});
+
 test(`o2m original + alias inside a fragment`, async () => {
 	const id = (
 		await api.request(

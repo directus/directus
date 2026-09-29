@@ -18,22 +18,27 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 		.filter(([_, value]) => value)
 		.map(([key, _]) => key);
 
-	const project =
-		opts.docker.name ??
-		`sandbox_${database}${extrasList.map((extra) => '_' + extra).join('')}` +
-			(opts.docker.suffix ? `_${opts.docker.suffix}` : '');
-
 	const files = database === 'sqlite' ? extrasList : [database, ...extrasList];
-	const start = performance.now();
+
+	let project: string | undefined = undefined;
 
 	if (files.length > 0) {
+		project =
+			opts.docker.name ??
+			`sandbox_${database}${extrasList.map((extra) => '_' + extra).join('')}` +
+				(opts.docker.suffix ? `_${opts.docker.suffix}` : '');
+	}
+
+	const start = performance.now();
+
+	if (project) {
 		logger.info('Starting up Docker containers');
 
 		const result = spawnSync('docker', ['ps']);
 
 		if (result.status !== 0) {
 			logger.error('Docker is not running or installation is missing');
-			process.exit(1);
+			throw new Error('Docker is not running or installation is missing');
 		}
 
 		if (!opts.docker.keep) {
@@ -65,12 +70,20 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 			throw err;
 		});
 
+		let output = '';
+		docker.stdout.on('data', (data: unknown) => (output += String(data)));
+		docker.stderr.on('data', (data: unknown) => (output += String(data)));
+
 		logger.pipe(docker.stdout, 'debug');
-		// Docker logs debug info to stderr, even with COMPOSE_CONSOLE_LOGGING=1 for some reason.
-		// Should be changed to error once that is fixed.
 		logger.pipe(docker.stderr, 'debug');
 
-		await new Promise((resolve) => docker!.on('close', resolve));
+		const code = await new Promise<number | null>((resolve) => docker.on('close', resolve));
+
+		if (code !== 0) {
+			const details = output.trim();
+			logger.error(`Docker compose failed with exit code ${code}`);
+			throw new Error(`Docker compose failed with exit code ${code}${details ? `:\n${details}` : ''}`);
+		}
 	}
 
 	const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
@@ -87,6 +100,7 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 		logger.info(`Database stored at ${env.DB_FILENAME} ${time}`);
 	}
 
+	// Nothing to tear down when no compose file applied (sqlite without extras)
 	return project;
 }
 

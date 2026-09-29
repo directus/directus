@@ -1,5 +1,5 @@
 import { Field } from '@directus/types';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 
 /**
  * Get all fields that belong to a specific group, including nested groups

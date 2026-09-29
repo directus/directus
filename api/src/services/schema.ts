@@ -4,17 +4,19 @@ import type {
 	Accountability,
 	Snapshot,
 	SnapshotDiff,
+	SnapshotDiffMode,
 	SnapshotDiffWithHash,
+	SnapshotScope,
 	SnapshotWithHash,
 } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
-import { applyDiff } from '../utils/apply-diff.js';
-import { getSnapshotDiff } from '../utils/get-snapshot-diff.js';
-import { getSnapshot } from '../utils/get-snapshot.js';
 import { getVersionedHash } from '../utils/get-versioned-hash.js';
-import { validateApplyDiff } from '../utils/validate-diff.js';
-import { validateSnapshot } from '../utils/validate-snapshot.js';
+import { applyDiff } from '../utils/schema/apply-diff.js';
+import { getSnapshotDiff } from '../utils/schema/get-snapshot-diff.js';
+import { getSnapshot } from '../utils/schema/get-snapshot.js';
+import { validateApplyDiff } from '../utils/schema/validate-diff.js';
+import { validateSnapshot } from '../utils/schema/validate-snapshot.js';
 
 export class SchemaService {
 	knex: Knex;
@@ -25,10 +27,11 @@ export class SchemaService {
 		this.accountability = options.accountability ?? null;
 	}
 
-	async snapshot(): Promise<Snapshot> {
+	/** Snapshot the schema, optionally scoped to a subset of collections (a partial snapshot). Admin only. */
+	async snapshot(options?: { scope?: SnapshotScope | undefined }): Promise<Snapshot> {
 		if (this.accountability?.admin !== true) throw new ForbiddenError();
 
-		const currentSnapshot = await getSnapshot({ database: this.knex });
+		const currentSnapshot = await getSnapshot({ database: this.knex, scope: options?.scope });
 
 		return currentSnapshot;
 	}
@@ -47,14 +50,15 @@ export class SchemaService {
 
 	async diff(
 		snapshot: Snapshot,
-		options?: { currentSnapshot?: Snapshot; force?: boolean },
+		options?: { currentSnapshot?: Snapshot; force?: boolean; mode?: SnapshotDiffMode },
 	): Promise<SnapshotDiff | null> {
 		if (this.accountability?.admin !== true) throw new ForbiddenError();
 
 		validateSnapshot(snapshot, options?.force);
 
 		const currentSnapshot = options?.currentSnapshot ?? (await getSnapshot({ database: this.knex }));
-		const diff = getSnapshotDiff(currentSnapshot, snapshot);
+
+		const diff = getSnapshotDiff(currentSnapshot, snapshot, { mode: options?.mode });
 
 		if (
 			diff.collections.length === 0 &&

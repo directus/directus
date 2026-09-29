@@ -44,16 +44,19 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
 import { useCollectionPermissions, useItemPermissions } from '@/composables/use-permissions';
+import { usePreviewUrl } from '@/composables/use-preview-url';
+import { provideRefreshSignal } from '@/composables/use-refresh-signal';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { useAutoSave } from '@/modules/content/composables/use-auto-save';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
+import { isCollectionInactive } from '@/utils/collection-status';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { getPreviewVersionKey } from '@/utils/get-preview-version-key';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
@@ -101,6 +104,7 @@ const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
 const notificationsStore = useNotificationsStore();
+const settingsStore = useSettingsStore();
 
 const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
 
@@ -191,9 +195,12 @@ const {
 	isArchived,
 	saveAsCopy,
 	refresh,
+	refreshSignal,
 	getItem,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKeyParam, currentVersion, isItemlessVersion);
+
+provideRefreshSignal(refreshSignal);
 
 watch(
 	[item, isSingleton, primaryKeyParam],
@@ -400,11 +407,26 @@ const isFormNonEditable = computed(
 		!canAutoSwitchToDraft.value,
 );
 
-const disabledOptions = computed(() => {
+const baseDisabledOptions = computed(() => {
 	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
 	if (isNew.value) return ['save-as-copy'];
 	return [];
 });
+
+const defaultSaveAction = computed(() => {
+	const action = settingsStore.settings?.default_save_action;
+	const isSingleton = collectionInfo.value?.meta?.singleton === true;
+
+	if (action === 'save-and-stay') return 'save-and-stay';
+
+	if (action === 'save-and-create-new' && !isSingleton && !baseDisabledOptions.value.includes('save-and-add-new')) {
+		return 'save-and-add-new';
+	}
+
+	return 'save-and-quit';
+});
+
+const disabledOptions = computed(() => [...baseDisabledOptions.value, defaultSaveAction.value]);
 
 const currentVersionId = computed(() => currentVersion.value?.id ?? null);
 
@@ -415,20 +437,11 @@ watch(currentVersionId, async () => {
 	await refreshLivePreview();
 });
 
-const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
-
-const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKeyParam, {
-	template: previewTemplate,
-	injectData: computed(() => ({ $version: getPreviewVersionKey(currentVersion.value) })),
-});
-
-const previewUrl = computed(() => {
-	const { displayValue } = renderStringTemplate(previewTemplate.value, previewData.value);
-
-	if (!displayValue.value) return null;
-
-	return displayValue.value.trim() || null;
-});
+const { previewUrl, previewConfigured, fetchTemplateValues } = usePreviewUrl(
+	collectionInfo,
+	primaryKeyParam,
+	currentVersion,
+);
 
 const livePreviewFullWidth = useLocalStorage<boolean>('live-preview-full-width', false);
 const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
@@ -440,9 +453,7 @@ const breakpoints = useBreakpoints(BREAKPOINTS);
 const isMobile = breakpoints.smallerOrEqual('sm');
 const livePreviewSizeMinSize = computed(() => (isMobile.value ? 0 : 20));
 
-const livePreviewActive = computed(
-	() => !!collectionInfo.value?.meta?.preview_url && !unref(isNew) && livePreviewMode.value === 'split',
-);
+const livePreviewActive = computed(() => previewConfigured.value && !unref(isNew) && livePreviewMode.value === 'split');
 
 const livePreviewCollapsed = computed({
 	get() {
@@ -532,7 +543,7 @@ watch(
 	{ immediate: true },
 );
 
-const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
+const { flowDialogsContext, provideRunManualFlow, sidebarManualFlows } = useFlows({
 	collection,
 	primaryKey: existingPrimaryKey,
 	location: 'item',
@@ -657,6 +668,16 @@ async function saveAndQuit() {
 		if (props.singleton === false) router.push(collectionRoute.value);
 	} catch {
 		// Save shows unexpected error dialog
+	}
+}
+
+function saveDefault() {
+	if (defaultSaveAction.value === 'save-and-stay') {
+		saveAndStay();
+	} else if (defaultSaveAction.value === 'save-and-add-new') {
+		saveAndAddNew();
+	} else {
+		saveAndQuit();
 	}
 }
 
@@ -879,7 +900,7 @@ function usePublishActions() {
 				return;
 			}
 
-			const newItemKey = await publishVersion(version.id, { mainHash: version.hash });
+			const newItemKey = await publishVersion(version.id, { mainHash: version.hash! });
 			if (!newItemKey) return;
 
 			if (deleteVersionsAllowed.value) await deleteVersion(version.id);
@@ -1019,7 +1040,12 @@ function useAutoSwitchToDraft() {
 
 <template>
 	<ContentNotFound
-		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKeyParam !== null)"
+		v-if="
+			error ||
+			!collectionInfo ||
+			isCollectionInactive(collectionInfo) ||
+			(collectionInfo?.meta?.singleton === true && primaryKeyParam !== null)
+		"
 	/>
 
 	<PrivateView
@@ -1043,6 +1069,7 @@ function useAutoSwitchToDraft() {
 					:collection="collectionInfo.collection"
 					:item="templateData"
 					:template="collectionInfo.meta!.display_template"
+					show-collection-name
 				/>
 			</h1>
 		</template>
@@ -1208,11 +1235,12 @@ function useAutoSwitchToDraft() {
 					icon="check"
 					:loading="saving"
 					:disabled="!isSavable"
-					@click="saveAndQuit()"
+					@click="saveDefault()"
 				>
 					<template v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true" #split-menu>
 						<SaveOptions
 							:disabled-options="disabledOptions"
+							@save-and-quit="saveAndQuit"
 							@save-and-stay="saveAndStay"
 							@save-and-add-new="saveAndAddNew"
 							@save-as-copy="saveAsCopyAndNavigate"
@@ -1256,6 +1284,7 @@ function useAutoSwitchToDraft() {
 					:collab-context="collabContext"
 					:validation-errors="validationErrors"
 					:version="currentVersion"
+					:can-auto-switch-to-draft="canAutoSwitchToDraft"
 					:direction="userStore.textDirection"
 				/>
 			</template>
@@ -1383,7 +1412,7 @@ function useAutoSwitchToDraft() {
 					:primary-key="resolvedPrimaryKey"
 					:allowed="shareAllowed"
 				/>
-				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows />
+				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows="sidebarManualFlows" />
 			</template>
 		</template>
 

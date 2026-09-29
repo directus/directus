@@ -1,9 +1,10 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { getRelationInfo } from '@directus/utils';
 import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
-import { get, mapKeys, merge, set, uniq } from 'lodash-es';
+import { get, mapKeys, merge, uniq } from 'lodash-es';
 import { getRelatedCollection } from '../../../database/get-ast-from-query/utils/get-related-collection.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
+import { setDeep } from '../../../utils/set-deep.js';
 import { validateQuery } from '../../../utils/validate-query.js';
 import { filterReplaceM2A, filterReplaceM2ADeep } from '../utils/filter-replace-m2a.js';
 import { replaceFuncs } from '../utils/replace-funcs.js';
@@ -94,12 +95,12 @@ export async function getQuery(
 
 						// add nested aliases into deep query
 						if (selection.selectionSet) {
-							if (!query.deep) query.deep = {};
+							if (!query.deep) query.deep = Object.create(null);
 
 							const path = parent.replaceAll(':', '__');
 
-							set(
-								query.deep,
+							setDeep(
+								query.deep as Record<string, any>,
 								path,
 								merge({}, get(query.deep, parent), { _alias: { [selection.alias!.value]: selection.name.value } }),
 							);
@@ -155,14 +156,14 @@ export async function getQuery(
 			}
 
 			if (selection.kind === 'Field' && selection.arguments && selection.arguments.length > 0) {
-				if (!query.deep) query.deep = {};
+				if (!query.deep) query.deep = Object.create(null);
 
 				const args: Record<string, any> = parseArgs(selection.arguments, variableValues);
 
 				const path = (currentAlias ?? current).replaceAll(':', '__');
 
-				set(
-					query.deep,
+				setDeep(
+					query.deep as Record<string, any>,
 					path,
 					merge(
 						{},

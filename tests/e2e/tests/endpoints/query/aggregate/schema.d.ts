@@ -17,6 +17,7 @@ export type Articles = {
 	blocks: (string | number | ArticlesBlocks)[];
 	votes: string | number;
 	release: string | number;
+	group: string | number;
 };
 export type ArticlesBlocks = {
 	id: string | number;

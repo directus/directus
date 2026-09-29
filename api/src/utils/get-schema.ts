@@ -1,11 +1,11 @@
 import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
-import { systemCollectionRows } from '@directus/system-data';
-import type { Filter, SchemaOverview } from '@directus/types';
+import { isSystemCollection, systemCollectionRows } from '@directus/system-data';
+import type { BaseCollectionMeta, CollectionMeta, Filter, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray, toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
-import { mapValues, pick } from 'lodash-es';
+import { mapValues } from 'lodash-es';
 import { useBus } from '../bus/index.js';
 import { getMemorySchemaCache, setMemorySchemaCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
@@ -68,16 +68,15 @@ export async function getSchema(
 	if (currentProcessShouldHandleOperation === false) {
 		logger.trace('Schema cache is prepared in another process, waiting for result.');
 
-		const timeout: Promise<any> = new Promise((_, reject) =>
-			setTimeout(reject, env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number),
-		);
+		let timeoutId: NodeJS.Timeout | undefined;
+		let busListener: ((options: { schema: SchemaOverview | null }) => void) | undefined;
+
+		const timeout: Promise<any> = new Promise((_, reject) => {
+			timeoutId = setTimeout(reject, env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number);
+		});
 
 		const subscription = new Promise<SchemaOverview>((resolve, reject) => {
-			bus.subscribe(messageKey, busListener).catch(reject);
-
-			function busListener(options: { schema: SchemaOverview | null }) {
-				cleanup();
-
+			busListener = (options) => {
 				if (options.schema === null) {
 					return reject();
 				}
@@ -88,14 +87,24 @@ export async function getSchema(
 				} catch (e) {
 					reject(e);
 				}
-			}
+			};
 
-			function cleanup() {
-				bus.unsubscribe(messageKey, busListener).catch(reject);
-			}
+			bus.subscribe(messageKey, busListener).catch(reject);
 		});
 
-		return Promise.race([timeout, subscription]).catch(() => getSchema(options, attempt + 1));
+		try {
+			return await Promise.race([timeout, subscription]);
+		} catch {
+			// Fall through to the retry below
+		} finally {
+			if (timeoutId) clearTimeout(timeoutId);
+
+			if (busListener) {
+				await bus.unsubscribe(messageKey, busListener).catch((err) => logger.warn(err, `[schema-cache] ${err}`));
+			}
+		}
+
+		return getSchema(options, attempt + 1);
 	}
 
 	let schema: SchemaOverview | null = null;
@@ -127,12 +136,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 	const allCollections = await database.select('*').from('directus_collections');
 
-	const collections = [
-		...allCollections
-			.filter((c) => !('status' in c) || c['status'] === 'active')
-			.map((c) => pick(c, 'collection', 'singleton', 'note', 'sort_field', 'accountability')),
-		...systemCollectionRows,
-	];
+	const collections: (BaseCollectionMeta & Partial<CollectionMeta>)[] = [...allCollections, ...systemCollectionRows];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
 		if (toArray(env['DB_EXCLUDE_TABLES']).includes(collection)) {
@@ -152,6 +156,11 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 		const collectionMeta = collections.find((collectionMeta) => collectionMeta.collection === collection);
 
+		const status =
+			!isSystemCollection(collection) && collectionMeta && 'status' in collectionMeta
+				? collectionMeta.status
+				: 'active';
+
 		result.collections[collection] = {
 			collection,
 			primary: info.primary,
@@ -159,6 +168,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
 			accountability: collectionMeta ? collectionMeta.accountability : 'all',
+			status,
 			fields: mapValues(schemaOverview[collection]?.columns, (column) => {
 				return {
 					field: column.column_name,

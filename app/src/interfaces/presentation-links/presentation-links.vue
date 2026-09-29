@@ -2,7 +2,7 @@
 import { useSdk } from '@directus/composables';
 import type { Item, PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { pickBy } from 'lodash';
+import { pickBy } from 'lodash-es';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import VButton from '@/components/v-button.vue';

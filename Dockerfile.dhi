@@ -16,9 +16,6 @@ FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS builder
 
 RUN apk --no-cache add python3 py3-setuptools build-base
 
-# Install pm2 here so the hardened runtime image can copy it
-RUN npm install --global pm2@6
-
 WORKDIR /directus
 
 COPY package.json .
@@ -74,7 +71,6 @@ ENV \
 	PM2_HOME="/directus/.pm2" \
 	PIDUSAGE_SILENT="true"
 
-COPY --from=builder --chown=node:node /usr/local/lib/node_modules/pm2 /directus/pm2
 COPY --from=builder --chown=node:node /directus/ecosystem.config.cjs .
 COPY --from=builder --chown=node:node /directus/dist .
 COPY --chown=node:node docker-entrypoint.cjs .

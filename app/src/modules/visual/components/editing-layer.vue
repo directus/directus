@@ -28,7 +28,6 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useServerStore } from '@/stores/server';
-import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
@@ -78,7 +77,6 @@ watch(editOverlayActive, (isActive) => {
 
 function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
 	const serverStore = useServerStore();
-	const settingsStore = useSettingsStore();
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 	const collectionsStore = useCollectionsStore();
@@ -167,7 +165,7 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	}
 
 	function sendConfirm() {
-		const aiEnabled = serverStore.info.ai_enabled && settingsStore.availableAiProviders.length > 0;
+		const aiEnabled = serverStore.info.ai_enabled && (serverStore.info.ai_providers?.length ?? 0) > 0;
 
 		send('confirm', {
 			aiEnabled,

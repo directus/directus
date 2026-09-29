@@ -27,6 +27,7 @@ export type DirectusCollection<Schema = any> = {
 			preview_url: string | null;
 			versioning: boolean;
 			status: string;
+			autosave_revision_interval: number | null;
 		}
 	>;
 	schema:

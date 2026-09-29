@@ -3,7 +3,7 @@ import { PERMISSION_ACTIONS } from '@directus/constants';
 import { appAccessMinimalPermissions, isSystemCollection } from '@directus/system-data';
 import { type Alterations, Filter, Permission, PermissionsAction } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash';
+import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash-es';
 import { computed, inject, nextTick, type Ref, ref, toRefs, watch } from 'vue';
 import { AddCollection } from './add-collection/';
 import PermissionsDetail from './detail/permissions-detail.vue';
