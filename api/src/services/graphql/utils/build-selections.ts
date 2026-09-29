@@ -31,11 +31,11 @@ function replaceInSelections(
 			const children = replaceInSelections(fragment.selectionSet.selections, conditionType ?? parentType, info) ?? [];
 
 			// Check type condition within fragment to check for relevant collection for m2a union. Not applicable for other relations.
-			const narrowsUnion = parentType !== undefined && isAbstractType(parentType) && conditionType !== parentType;
+			const narrowsUnion = isAbstractType(parentType) && isObjectType(conditionType);
 
 			// The condition names no collection:
 			// - `...Fields` on a collection type
-			// - A fragment written on a `_union` type
+			// - A fragment written on a `_union` type, including the `_union` type of another m2a field
 			// - An inline fragment with no condition at all.
 			//
 			// A fragment without a type condition should be treated as regular selections.
