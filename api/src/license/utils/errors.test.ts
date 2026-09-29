@@ -31,7 +31,7 @@ describe('translateLicenseError', () => {
 			['LICENSE_CANCELED', 'canceled', 'The license has been canceled'],
 			['LICENSE_SUSPENDED', 'suspended', 'The license has been suspended'],
 			['INVALID_CREDENTIALS', 'invalid_key', 'The license key is not valid'],
-			['NOT_FOUND', 'invalid_key', 'The license key is not valid'],
+			['LICENSE_NOT_FOUND', 'invalid_key', 'The license key is not valid'],
 			['ACTIVATION_LIMIT_EXCEEDED', 'activation_limit', 'The license has reached its activation limit'],
 			['BINDING_MISMATCH', 'binding_mismatch', 'The license key is bound to another project'],
 		])('%s throws LicenseInvalidError carrying the %s discriminant', (code, failure, reason) => {
@@ -47,6 +47,7 @@ describe('translateLicenseError', () => {
 			serverError('INVALID_PAYLOAD'),
 			serverError('LIMIT_OVERFLOW'),
 			serverError('UNSUPPORTED_MEDIA_TYPE'),
+			serverError('NOT_FOUND', undefined, 404),
 			serverError('SOMETHING_NEW', undefined, 422),
 		])('$code throws InvalidPayloadError', (error) => {
 			expectThrows(error, ErrorCode.InvalidPayload);
@@ -158,16 +159,23 @@ describe('translateLicenseError', () => {
 });
 
 describe('isActivationMissing', () => {
-	test.each(['INVALID_CREDENTIALS', 'NOT_FOUND', 'BINDING_MISMATCH'])('%s means the activation is missing', (code) => {
-		expect(isActivationMissing(serverError(code))).toBe(true);
-	});
-
-	test.each(['LICENSE_EXPIRED', 'LICENSE_CANCELED', 'ACTIVATION_LIMIT_EXCEEDED', 'SERVICE_UNAVAILABLE', 'FORBIDDEN'])(
-		'%s leaves the activation in place',
+	test.each(['INVALID_CREDENTIALS', 'LICENSE_NOT_FOUND', 'BINDING_MISMATCH'])(
+		'%s means the activation is missing',
 		(code) => {
-			expect(isActivationMissing(serverError(code))).toBe(false);
+			expect(isActivationMissing(serverError(code))).toBe(true);
 		},
 	);
+
+	test.each([
+		'LICENSE_EXPIRED',
+		'LICENSE_CANCELED',
+		'ACTIVATION_LIMIT_EXCEEDED',
+		'SERVICE_UNAVAILABLE',
+		'FORBIDDEN',
+		'NOT_FOUND',
+	])('%s leaves the activation in place', (code) => {
+		expect(isActivationMissing(serverError(code))).toBe(false);
+	});
 
 	test('an error from outside the license server leaves the activation in place', () => {
 		expect(isActivationMissing(new Error('socket hang up'))).toBe(false);
@@ -181,7 +189,7 @@ describe('toReason', () => {
 			['LICENSE_CANCELED', 'canceled'],
 			['LICENSE_SUSPENDED', 'suspended'],
 			['INVALID_CREDENTIALS', 'invalid_key'],
-			['NOT_FOUND', 'invalid_key'],
+			['LICENSE_NOT_FOUND', 'invalid_key'],
 			['ACTIVATION_LIMIT_EXCEEDED', 'activation_limit'],
 			['BINDING_MISMATCH', 'binding_mismatch'],
 		] satisfies [string, InvalidLicenseStatus][])('%s reads as %s', (code, reason) => {
@@ -204,6 +212,7 @@ describe('toReason', () => {
 			'ADDON_NOT_ALLOWED',
 			'INVALID_PAYLOAD',
 			'LIMIT_OVERFLOW',
+			'NOT_FOUND',
 			'REQUESTS_EXCEEDED',
 			'OPERATION_IN_PROGRESS',
 			'CACHE_STALE',
