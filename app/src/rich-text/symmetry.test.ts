@@ -162,6 +162,21 @@ describe('warnAsymmetricRichTexts', () => {
 		expect(warn).not.toHaveBeenCalled();
 	});
 
+	test('keeps checking the other types when one renderHTML throws', () => {
+		const Throwing = Node.create({
+			name: 'throwing',
+			group: 'block',
+			content: 'block+',
+			parseHTML: () => [{ tag: 'div[data-throwing]' }],
+			renderHTML: () => {
+				throw new Error('boom');
+			},
+		});
+
+		warnAsymmetricRichTexts([{ id: 'mixed', name: 'Mixed', extensions: [Throwing, AsideCallout] }]);
+		expect(warnings()).toEqual([expect.stringContaining('node "asideCallout"')]);
+	});
+
 	test('skips a config without extensions', () => {
 		warnAsymmetricRichTexts([{ id: 'buttons', name: 'Buttons only' }]);
 		expect(warn).not.toHaveBeenCalled();

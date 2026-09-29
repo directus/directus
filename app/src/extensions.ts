@@ -64,12 +64,11 @@ export async function loadExtensions(): Promise<void> {
 		return;
 	}
 
-	// advisory only, so a failed symmetry chunk must not disable the extensions that passed validation
 	try {
 		const { warnAsymmetricRichTexts } = await import('./rich-text/symmetry');
 		warnAsymmetricRichTexts(validRichTexts);
 	} catch {
-		// nothing to report: the extensions still work, only the author hint is lost
+		// advisory only, so a failed symmetry chunk must not disable the extensions that passed validation
 	}
 }
 

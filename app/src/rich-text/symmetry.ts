@@ -21,24 +21,12 @@ function markSample(schema: Schema, type: MarkType): ProseMirrorNode | null {
 	return inParagraphDoc(schema, schema.text('x', [type.create()]));
 }
 
-function safeSample(sample: () => ProseMirrorNode | null): ProseMirrorNode | null {
-	try {
-		return sample();
-	} catch {
-		// ProseMirror throws when it cannot fill the type's content or marks
-		return null;
-	}
-}
-
 /**
  * Compares types as well as HTML: markup a core rule claims first (an `<h6>` read as `heading`) can
  * serialize to the same HTML while the contributed type is gone. Attributes stay out of the type
  * comparison because PreservedAttributes adds `data-*` names on parse without changing the HTML.
  */
-function findMismatch(schema: Schema, sample: () => ProseMirrorNode | null): string | null {
-	const doc = safeSample(sample);
-	if (!doc) return null;
-
+function findMismatch(schema: Schema, doc: ProseMirrorNode): string | null {
 	const html = getHTMLFromFragment(doc.content, schema);
 	const parsed = createDocument(html, schema);
 
@@ -80,7 +68,16 @@ export function warnAsymmetricRichTexts(configs: RichTextConfig[]): void {
 			];
 
 			for (const { label, sample } of checks) {
-				const mismatch = findMismatch(schema, sample);
+				let mismatch: string | null;
+
+				try {
+					const doc = sample();
+					mismatch = doc && findMismatch(schema, doc);
+				} catch {
+					// ProseMirror throws when it cannot fill a type, and a throwing renderHTML must not hide later types
+					continue;
+				}
+
 				if (!mismatch) continue;
 
 				// eslint-disable-next-line no-console
