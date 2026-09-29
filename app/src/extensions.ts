@@ -53,20 +53,23 @@ export async function loadExtensions(): Promise<void> {
 
 	// the validator is a separate chunk, so its failure must not take the other extension types down with it
 	try {
-		const [{ validateRichTexts }, { warnAsymmetricRichTexts }] = await Promise.all([
-			import('./rich-text/validate'),
-			import('./rich-text/symmetry'),
-		]);
-
-		const valid = validateRichTexts(loaded.richtexts);
-		warnAsymmetricRichTexts(valid);
-		validRichTexts = valid;
+		const { validateRichTexts } = await import('./rich-text/validate');
+		validRichTexts = validateRichTexts(loaded.richtexts);
 	} catch (err: any) {
 		validRichTexts = [];
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load richtext extensions`);
 		// eslint-disable-next-line no-console
 		console.warn(err);
+		return;
+	}
+
+	// advisory only, so a failed symmetry chunk must not disable the extensions that passed validation
+	try {
+		const { warnAsymmetricRichTexts } = await import('./rich-text/symmetry');
+		warnAsymmetricRichTexts(validRichTexts);
+	} catch {
+		// nothing to report: the extensions still work, only the author hint is lost
 	}
 }
 

@@ -52,7 +52,7 @@ const Kbd = Mark.create({
 	renderHTML: ({ HTMLAttributes }) => ['kbd', mergeAttributes(HTMLAttributes), 0],
 });
 
-const Highlight = Mark.create({
+const Marker = Mark.create({
 	name: 'marker',
 	parseHTML: () => [{ tag: 'mark' }],
 	renderHTML: () => ['span', { class: 'marker' }, 0],
@@ -105,10 +105,8 @@ describe('warnAsymmetricRichTexts', () => {
 	});
 
 	test('warns when the node survives but its HTML changes on the next save', () => {
-		/*
-		 * A freshly inserted node writes its own `data-kind` before the fixed `data-callout`. Parsing
-		 * stores `data-callout` as a preserved attribute, and preserved attributes render first.
-		 */
+		// a fresh node writes `data-kind` before `data-callout`, but parsing preserves `data-callout`,
+		// and preserved attributes render first
 		const KindCallout = Node.create({
 			name: 'kindCallout',
 			group: 'block',
@@ -129,7 +127,7 @@ describe('warnAsymmetricRichTexts', () => {
 	});
 
 	test('warns for an asymmetric mark', () => {
-		warnAsymmetricRichTexts([{ id: 'marker', name: 'Marker', extensions: [Highlight] }]);
+		warnAsymmetricRichTexts([{ id: 'marker', name: 'Marker', extensions: [Marker] }]);
 		expect(warnings()).toEqual([expect.stringContaining('mark "marker"')]);
 	});
 
@@ -149,7 +147,7 @@ describe('warnAsymmetricRichTexts', () => {
 
 	test('names each offending type once and only the offending ones', () => {
 		warnAsymmetricRichTexts([
-			{ id: 'mixed', name: 'Mixed', extensions: [Callout, AsideCallout, Kbd, Highlight] },
+			{ id: 'mixed', name: 'Mixed', extensions: [Callout, AsideCallout, Kbd, Marker] },
 			{ id: 'good', name: 'Good', extensions: [Emoji] },
 		]);
 
