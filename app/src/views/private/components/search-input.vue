@@ -144,7 +144,14 @@ function emitValue() {
 			@click="activate"
 			@focusout="onFocusOut"
 		>
-			<VIcon name="search" class="icon-search" :disabled :clickable="!active" @click="input?.focus()" />
+			<VIcon
+				v-tooltip.bottom="!active && !disabled && $t('search')"
+				name="search"
+				class="icon-search"
+				:disabled
+				:clickable="!active"
+				@click="input?.focus()"
+			/>
 
 			<input
 				ref="input"
