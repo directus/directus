@@ -243,3 +243,32 @@ describe('history timeframes', () => {
 		expect(licenseStore.activityHistoryTimeframe).toBeNull();
 	});
 });
+
+describe('invalid reason', () => {
+	test('reports a downgrade reason once running on core', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ source: null, invalid_reason: 'expired' });
+
+		expect(licenseStore.downgradeReason).toBe('expired');
+		expect(licenseStore.warningReason).toBeNull();
+	});
+
+	test('reports a warning reason while the license is still applied', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ source: 'settings', invalid_reason: 'binding_mismatch' });
+
+		expect(licenseStore.warningReason).toBe('binding_mismatch');
+		expect(licenseStore.downgradeReason).toBeNull();
+	});
+
+	test('reports no reason without an invalid reason', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ source: null, invalid_reason: null });
+
+		expect(licenseStore.downgradeReason).toBeNull();
+		expect(licenseStore.warningReason).toBeNull();
+	});
+});
