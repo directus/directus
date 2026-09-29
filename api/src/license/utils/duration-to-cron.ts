@@ -5,7 +5,7 @@ const ALLOWED_HOURS = [12, 8, 6, 4, 3, 2, 1];
 
 /**
  * Convert seconds to a cron, rounded down to 1, 2, 3, 4, 6, 8 or 12 hours.
- * The seed sets the minute, second and offset to ensure unified cron across instances
+ * The seed picks the minute, second and offset so every instance shares one schedule
  */
 export function durationToCron(duration: number, seed: string): string {
 	const [second, minute, phase] = createHash('sha256').update(seed).digest();

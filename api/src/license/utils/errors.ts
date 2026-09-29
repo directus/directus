@@ -27,9 +27,7 @@ const REASON_BY_FAILURE: Record<LicenseInvalidFailure, string> = {
 	binding_mismatch: 'The license key is bound to another project',
 };
 
-/**
- * Translate a license request failure into a directus error
- */
+/** Translate a license request failure into a Directus error */
 export function handleLicenseError(error: unknown): never {
 	const failure = getLicenseFailure(error);
 
@@ -61,9 +59,7 @@ export function handleLicenseError(error: unknown): never {
 	}
 }
 
-/**
- * Convert a license error to reason group
- */
+/** Convert a license error to its invalid reason */
 export function toReason(error: unknown): InvalidLicenseStatus {
 	if (isDirectusError(error, ErrorCode.LicenseInvalid)) {
 		return error.extensions.failure;

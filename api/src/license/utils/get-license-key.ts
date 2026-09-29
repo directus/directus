@@ -16,7 +16,7 @@ export async function getLicenseKey(options?: {
 		};
 	}
 
-	// Don't persist previous key data if env token is defined
+	// An env token ignores any stored key
 	if (env['LICENSE_TOKEN']) {
 		return {
 			source: 'env',
