@@ -53,8 +53,14 @@ export async function loadExtensions(): Promise<void> {
 
 	// the validator is a separate chunk, so its failure must not take the other extension types down with it
 	try {
-		const { validateRichTexts } = await import('./rich-text/validate');
-		validRichTexts = validateRichTexts(loaded.richtexts);
+		const [{ validateRichTexts }, { warnAsymmetricRichTexts }] = await Promise.all([
+			import('./rich-text/validate'),
+			import('./rich-text/symmetry'),
+		]);
+
+		const valid = validateRichTexts(loaded.richtexts);
+		warnAsymmetricRichTexts(valid);
+		validRichTexts = valid;
 	} catch (err: any) {
 		validRichTexts = [];
 		// eslint-disable-next-line no-console
