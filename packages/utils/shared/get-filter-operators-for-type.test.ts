@@ -140,4 +140,23 @@ describe('', () => {
 			'regex',
 		]);
 	});
+it.each([
+		'geometry.Point',
+		'geometry.LineString',
+		'geometry.Polygon',
+		'geometry.MultiPoint',
+		'geometry.MultiLineString',
+		'geometry.MultiPolygon',
+	] as const)('returns the filter operators for geometry subtype %s', (type) => {
+		expect(getFilterOperatorsForType(type)).toStrictEqual([
+			'eq',
+			'neq',
+			'null',
+			'nnull',
+			'intersects',
+			'nintersects',
+			'intersects_bbox',
+			'nintersects_bbox',
+		]);
+	});
 });
