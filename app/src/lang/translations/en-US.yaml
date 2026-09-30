@@ -2355,9 +2355,9 @@ continue_as: >-
 editing_role: '{role} Role'
 editing_policy: '{policy} Policy'
 public_policy_warning: >-
-  Be careful making changes to public policy permissions! Changes here affect what non-authenticated users can access
-  and the actions they can perform. For more information on best practices on the public policy {docs}.
-public_policy_warning_docs_link: read our recommendations in the docs
+  Changes here affect what unauthenticated users can access and the actions they can perform. Refer to {docs} for more
+  information.
+public_policy_warning_docs_link: our security best practices
 no_permissions: No Permissions
 permission_add_collection: Add Collection
 default_label: Default
