@@ -174,7 +174,7 @@ function discardAndStay() {
 		</template>
 
 		<div class="content">
-			<VNotice v-if="isPublicPolicy" type="warning">
+			<VNotice v-if="isPublicPolicy" class="public-policy-notice" type="warning">
 				<I18nT keypath="public_policy_warning" tag="span">
 					<template #docs>
 						<a :href="DIRECTUS_SECURITY_BEST_PRACTICES_URL" target="_blank" rel="noopener noreferrer">
@@ -232,5 +232,14 @@ function discardAndStay() {
 	display: flex;
 	flex-direction: column;
 	row-gap: var(--theme--form--row-gap);
+}
+
+.public-policy-notice {
+	max-inline-size: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
+
+	a {
+		text-decoration: underline;
+		color: var(--theme--primary);
+	}
 }
 </style>
