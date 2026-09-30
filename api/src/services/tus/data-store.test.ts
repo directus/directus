@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, UnsupportedMediaTypeError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, UnsupportedMediaTypeError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import type { Upload } from '@tus/utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -114,6 +114,42 @@ describe('TusDataStore.create', () => {
 		await store.create(makeUpload({}));
 
 		expect(mockDriver.createChunkedUpload).toHaveBeenCalledWith('generated-pk.jpg', expect.anything());
+	});
+
+	describe('replacements', () => {
+		const withTarget = (target: Record<string, unknown>) => {
+			tracker.reset();
+			tracker.on.select('directus_files').response([{ tus_id: null, ...target }]);
+			tracker.on.select('directus_settings').response([]);
+		};
+
+		test('rejects a target stored in another location, as the upload is written to this store', async () => {
+			withTarget({ storage: 'secondary', filename_disk: 'extensions/evil.js' });
+
+			const store = makeStore();
+
+			await expect(store.create(makeUpload({ id: 'target-id' }))).rejects.toThrow(InvalidPayloadError);
+			expect(ItemsService.prototype.createOne).not.toHaveBeenCalled();
+		});
+
+		test('rejects a target whose filename_disk is a forbidden location', async () => {
+			withTarget({ storage: 'local', filename_disk: 'extensions/evil.js' });
+
+			const store = makeStore();
+
+			await expect(store.create(makeUpload({ id: 'target-id' }))).rejects.toThrow(ForbiddenError);
+			expect(ItemsService.prototype.createOne).not.toHaveBeenCalled();
+		});
+
+		test('keeps pointing at a valid target', async () => {
+			withTarget({ storage: 'local', filename_disk: 'photo.jpg' });
+
+			const store = makeStore();
+
+			const result = await store.create(makeUpload({ id: 'target-id' }));
+
+			expect(result.metadata!['id']).toBe('target-id');
+		});
 	});
 
 	test('treat invalid id as create instead of replace', async () => {
