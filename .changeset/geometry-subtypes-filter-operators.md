@@ -4,4 +4,3 @@
 ---
 
 Fixed filtering and GraphQL typing of geometry subtype fields (e.g. `geometry.Point`)
-
