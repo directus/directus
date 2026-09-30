@@ -19,6 +19,7 @@ const mockEnvOverrides = vi.hoisted(
 	() =>
 		({
 			FILES_MIME_TYPE_ALLOW_LIST: '*/*',
+			STORAGE_LOCATIONS: 'local',
 		}) as Record<string, unknown>,
 );
 
@@ -100,6 +101,15 @@ describe('Service / Files', () => {
 					filename_disk: 'existing-file.jpg',
 				},
 				expect.objectContaining({ preMutationError: expect.any(ForbiddenError) }),
+			);
+		});
+
+		test('should throw InvalidPayloadError deferred when the storage location does not exist', async () => {
+			await service.createOne({ type: 'application/octet-stream', storage: 'missing' });
+
+			expect(ItemsService.prototype.createOne).toHaveBeenCalledWith(
+				{ type: 'application/octet-stream', storage: 'missing' },
+				expect.objectContaining({ preMutationError: expect.any(InvalidPayloadError) }),
 			);
 		});
 
@@ -376,12 +386,16 @@ describe('Service / Files', () => {
 					EXTENSIONS_LOCATION: 'extstore',
 				};
 
+				let previousEnv: Record<string, unknown>;
+
 				beforeEach(() => {
+					previousEnv = { ...mockEnvOverrides };
 					Object.assign(mockEnvOverrides, extensionsEnv);
 				});
 
 				afterEach(() => {
 					for (const key of Object.keys(extensionsEnv)) delete mockEnvOverrides[key];
+					Object.assign(mockEnvOverrides, previousEnv);
 				});
 
 				test('should reject a replacement that points the existing filename_disk at the extensions location', async () => {
@@ -578,6 +592,7 @@ describe('Service / Files', () => {
 
 		test('should delete original file when remote file exists and FILES_DELETE_ORIGINAL_ON_MOVE is true', async () => {
 			vi.mocked(useEnv).mockReturnValue({
+				STORAGE_LOCATIONS: 'local',
 				FILES_DELETE_ORIGINAL_ON_MOVE: 'true',
 			});
 
@@ -612,6 +627,7 @@ describe('Service / Files', () => {
 
 		test('should not delete original file when remote file exists and FILES_DELETE_ORIGINAL_ON_MOVE is false', async () => {
 			vi.mocked(useEnv).mockReturnValue({
+				STORAGE_LOCATIONS: 'local',
 				FILES_DELETE_ORIGINAL_ON_MOVE: 'false',
 			});
 
@@ -734,7 +750,10 @@ describe('Service / Files', () => {
 				EXTENSIONS_LOCATION: 'extstore',
 			};
 
+			let previousEnv: Record<string, unknown>;
+
 			beforeEach(() => {
+				previousEnv = { ...mockEnvOverrides };
 				Object.assign(mockEnvOverrides, extensionsEnv);
 
 				vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
@@ -744,6 +763,7 @@ describe('Service / Files', () => {
 
 			afterEach(() => {
 				for (const key of Object.keys(extensionsEnv)) delete mockEnvOverrides[key];
+				Object.assign(mockEnvOverrides, previousEnv);
 			});
 
 			test('should validate against the storage location of the existing file', async () => {
@@ -769,6 +789,56 @@ describe('Service / Files', () => {
 				);
 
 				expect(mockDriver.move).not.toHaveBeenCalled();
+			});
+
+			test('should validate against the new storage location when both are provided', async () => {
+				// Allowed where the file is renamed, but future writes to the new location would land in extensions
+				vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
+					{ id: 1, storage: 'local', filename_disk: 'old-file.jpg' },
+				]);
+
+				await service.updateMany([1], { storage: 'extstore', filename_disk: 'extensions/evil/index.js' });
+
+				expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(
+					[1],
+					{ storage: 'extstore', filename_disk: 'extensions/evil/index.js' },
+					expect.objectContaining({ preMutationError: expect.any(ForbiddenError) }),
+				);
+			});
+
+			test('should validate existing paths against the new storage location when only the storage changes', async () => {
+				vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
+					{ id: 1, storage: 'local', filename_disk: 'old-file.jpg' },
+					{ id: 2, storage: 'local', filename_disk: 'extensions/evil/index.js' },
+				]);
+
+				await service.updateMany([1, 2], { storage: 'extstore' });
+
+				expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(
+					[1, 2],
+					{ storage: 'extstore' },
+					expect.objectContaining({ preMutationError: expect.any(ForbiddenError) }),
+				);
+			});
+
+			test('should allow changing the storage when existing paths are valid there', async () => {
+				vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
+					{ id: 1, storage: 'local', filename_disk: 'old-file.jpg' },
+				]);
+
+				await service.updateMany([1], { storage: 'extstore' });
+
+				expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith([1], { storage: 'extstore' }, {});
+			});
+
+			test('should reject a storage location that does not exist', async () => {
+				await service.updateMany([1], { storage: 'missing' });
+
+				expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(
+					[1],
+					{ storage: 'missing' },
+					expect.objectContaining({ preMutationError: expect.any(InvalidPayloadError) }),
+				);
 			});
 		});
 	});

@@ -1,6 +1,6 @@
-import { ForbiddenError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { assertValidStoragePath } from './assert-valid-storage-path.js';
+import { assertValidStorageLocation, assertValidStoragePath } from './assert-valid-storage-path.js';
 
 const state = vi.hoisted(() => ({ env: {} as Record<string, unknown> }));
 
@@ -55,6 +55,10 @@ describe('assertValidStoragePath', () => {
 	test('blocks writing a file at exactly the extensions path', () => {
 		state.env['STORAGE_LOCAL_ROOT'] = '.';
 		expect(() => assertValidStoragePath('extensions', 'local')).toThrow(ForbiddenError);
+	});
+
+	test('rejects a storage location that does not exist', () => {
+		expect(() => assertValidStoragePath('extensions/evil.js', 'invalid')).toThrow(InvalidPayloadError);
 	});
 
 	describe('forbidden paths that resolve to the root', () => {
@@ -128,13 +132,13 @@ describe('assertValidStoragePath', () => {
 			expect(() => assertValidStoragePath('extensions/evil/index.mjs', 'extstore')).toThrow(ForbiddenError);
 		});
 
-		test('blocks a case variant of the extensions location', () => {
-			// `STORAGE_EXTSTORE_*` is looked up uppercased, so a case variant resolves to the same config
-			expect(() => assertValidStoragePath('extensions/evil/index.mjs', 'EXTSTORE')).toThrow(ForbiddenError);
+		test('rejects a case variant of the extensions location', () => {
+			// `STORAGE_EXTSTORE_*` is looked up uppercased, but the variant isn't a registered location
+			expect(() => assertValidStoragePath('extensions/evil/index.mjs', 'EXTSTORE')).toThrow(InvalidPayloadError);
 		});
 
-		test('blocks a padded variant of the extensions location', () => {
-			expect(() => assertValidStoragePath('extensions/evil/index.mjs', ' extstore ')).toThrow(ForbiddenError);
+		test('rejects a padded variant of the extensions location', () => {
+			expect(() => assertValidStoragePath('extensions/evil/index.mjs', ' extstore ')).toThrow(InvalidPayloadError);
 		});
 
 		test('does not over-block a sibling folder that shares the extensions prefix', () => {
@@ -158,5 +162,20 @@ describe('assertValidStoragePath', () => {
 
 			expect(() => assertValidStoragePath('extensions/x.jpg', 'local')).not.toThrow();
 		});
+	});
+});
+
+describe('assertValidStorageLocation', () => {
+	beforeEach(() => {
+		state.env = { ...baseEnv(), STORAGE_LOCATIONS: 'local, s3' };
+	});
+
+	test('allows a configured location', () => {
+		expect(() => assertValidStorageLocation('local')).not.toThrow();
+		expect(() => assertValidStorageLocation('s3')).not.toThrow();
+	});
+
+	test.each([['missing'], ['LOCAL'], [' s3'], [''], [null], [undefined], [1]])('rejects %j', (storage) => {
+		expect(() => assertValidStorageLocation(storage)).toThrow(InvalidPayloadError);
 	});
 });

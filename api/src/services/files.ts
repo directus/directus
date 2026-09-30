@@ -33,7 +33,7 @@ import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import { transaction } from '../utils/transaction.js';
 import { assertUniqueFilename } from './files/lib/assert-unique-filename.js';
-import { assertValidStoragePath } from './files/lib/assert-valid-storage-path.js';
+import { assertValidStorageLocation, assertValidStoragePath } from './files/lib/assert-valid-storage-path.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
 import { isMimeTypeAllowed } from './files/lib/is-mime-type-allowed.js';
 import { sanitizeFilepath } from './files/lib/sanitize-filepath.js';
@@ -77,6 +77,8 @@ export class FilesService extends ItemsService<File> {
 			...(existingFile ?? {}),
 			...clone(data),
 		};
+
+		assertValidStorageLocation(payload.storage);
 
 		if (payload.filename_disk) {
 			payload.filename_disk = sanitizeFilepath(payload.filename_disk);
@@ -334,16 +336,20 @@ export class FilesService extends ItemsService<File> {
 			throw new InvalidPayloadError({ reason: `"type" is required` });
 		}
 
-		if (data.filename_disk) {
-			data.filename_disk = sanitizeFilepath(data.filename_disk);
+		try {
+			if (data.storage !== undefined) {
+				assertValidStorageLocation(data.storage);
+			}
 
-			try {
+			if (data.filename_disk) {
+				data.filename_disk = sanitizeFilepath(data.filename_disk);
+
 				assertValidStoragePath(data.filename_disk, data.storage);
 				await assertUniqueFilename(this.knex, data.filename_disk);
-			} catch (err: any) {
-				// Defer the error to be thrown until after permission checks
-				opts.preMutationError = err;
 			}
+		} catch (err: any) {
+			// Defer the error to be thrown until after permission checks
+			opts.preMutationError = err;
 		}
 
 		const key = await super.createOne(data, opts);
@@ -384,6 +390,13 @@ export class FilesService extends ItemsService<File> {
 				const currentStorage = changedFiles[0]?.['storage'];
 
 				assertValidStoragePath(data.filename_disk, currentStorage ?? data.storage);
+
+				// If the the storage is updated the record ends up pointing at this path in the new location without
+				// actually moving the file between storages, later reads and renames act on the newly stored storage
+				if (data.storage !== undefined) {
+					assertValidStorageLocation(data.storage);
+					assertValidStoragePath(data.filename_disk, data.storage);
+				}
 
 				await assertUniqueFilename(this.knex, data.filename_disk, keys[0]);
 			} catch (err: any) {
@@ -465,6 +478,27 @@ export class FilesService extends ItemsService<File> {
 			opts.preMutationError = new InvalidPayloadError({
 				reason: '"filename_disk" cannot be modified in bulk operations',
 			});
+		} else if (data.storage !== undefined) {
+			// Changing the storage only repoints the records, so their existing paths have to be valid in the new location
+			try {
+				assertValidStorageLocation(data.storage);
+
+				const sudoFilesItemsService = new FilesService({
+					knex: this.knex,
+					schema: this.schema,
+				});
+
+				const files = await sudoFilesItemsService.readMany(keys, { fields: ['filename_disk'], limit: -1 });
+
+				for (const file of files) {
+					if (file.filename_disk) {
+						assertValidStoragePath(file.filename_disk, data.storage);
+					}
+				}
+			} catch (err: any) {
+				// Defer the error to be thrown until after permission checks
+				opts.preMutationError = err;
+			}
 		}
 
 		await super.updateMany(keys, data, opts);
