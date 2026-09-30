@@ -1,10 +1,14 @@
 ---
-'@directus/api': patch
+'@directus/api': major
 '@directus/utils': major
 ---
 
-Remove ip-matching dependency
+Removed the ip-matching dependency
 
 ::: notice
-Policies `ip_access` won't allow parsing of invalid subnets anymore. (e.g. `10.0.0.0/ 24` or `10.0.0.0/+24`)
+
+Policy `ip_access` values are now more strictly validated, subnets with a malformed prefix such as `10.0.0.0/ 24` or `10.0.0.0/+24` are no longer accepted.
+
+Existing policies that already store such a value will fail every request for users with that policy. Correct these values (e.g. to `10.0.0.0/24`) before upgrading.
+
 :::
