@@ -140,7 +140,7 @@ describe('', () => {
 			'regex',
 		]);
 	});
-it.each([
+	it.each([
 		'geometry.Point',
 		'geometry.LineString',
 		'geometry.Polygon',
