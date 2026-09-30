@@ -45,7 +45,7 @@ import { durationToCron } from './utils/duration-to-cron.js';
 import { isActivationMissing, toReason, translateLicenseError } from './utils/errors.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
-import { type ExtractMethods, useRPC } from './utils/use-rpc.js';
+import { type RPC, useRPC } from './utils/use-rpc.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -81,7 +81,7 @@ export class LicenseManager {
 	private source: LicenseSource = null;
 	/** Ignores remote syncs while initializing */
 	private initializing = false;
-	private rpc: ExtractMethods<Pick<LicenseManager, 'syncState'>> | null = null;
+	private rpc: RPC<LicenseManager, 'syncState'> | null = null;
 	private store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
 	/** Scheduled license check */
 	private check: { job: ScheduledJob | null; cron: string | null } | null = null;
@@ -91,7 +91,7 @@ export class LicenseManager {
 		this.initializing = true;
 
 		// Listen first so a leader broadcast isn't missed
-		this.rpc ??= await useRPC<Pick<LicenseManager, 'syncState'>>(this, LICENSE_CHANNEL);
+		this.rpc ??= await useRPC<LicenseManager, 'syncState'>(this, LICENSE_CHANNEL);
 
 		// Create the entitlement manager if needed
 		getEntitlementManager();

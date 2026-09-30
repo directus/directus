@@ -2,17 +2,19 @@ import { randomUUID } from 'crypto';
 import { useBus } from '../../bus/index.js';
 import { useLogger } from '../../logger/index.js';
 
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+/** Keys of `T` that are methods */
+type MethodKeys<T> = { [K in keyof T]: T[K] extends (...args: any[]) => unknown ? K : never }[keyof T];
 
-type PickMatching<T, V> = { [K in keyof T as T[K] extends V ? K : never]: T[K] };
-
-export type ExtractMethods<T> = PickMatching<T, Function>;
+/** Pick methods `K` of `T`  */
+export type RPC<T, K extends MethodKeys<T> = MethodKeys<T>> = {
+	[M in K]: T[M] extends (...args: infer A) => unknown ? (...args: A) => Promise<void> : never;
+};
 
 /**
  * Call functions on other instances as if they were local (remote procedure call).
  * The calling instance is skipped.
  */
-export async function useRPC<C>(self: C, channel: string): Promise<ExtractMethods<C>> {
+export async function useRPC<T, K extends MethodKeys<T> = MethodKeys<T>>(self: T, channel: string): Promise<RPC<T, K>> {
 	const uid = randomUUID();
 	const messenger = useBus();
 
