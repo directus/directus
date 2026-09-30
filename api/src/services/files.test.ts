@@ -831,6 +831,34 @@ describe('Service / Files', () => {
 				expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith([1], { storage: 'extstore' }, {});
 			});
 
+			test('should reject renaming a file that is not returned, like an upload in progress', async () => {
+				vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([]);
+
+				await service.updateMany([1], { filename_disk: 'new-file.jpg' });
+
+				expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(
+					[1],
+					{ filename_disk: 'new-file.jpg' },
+					expect.objectContaining({ preMutationError: expect.any(ForbiddenError) }),
+				);
+
+				expect(mockDriver.move).not.toHaveBeenCalled();
+			});
+
+			test('should reject changing the storage of a file that is not returned, like an upload in progress', async () => {
+				vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
+					{ id: 1, storage: 'local', filename_disk: 'old-file.jpg' },
+				]);
+
+				await service.updateMany([1, 2], { storage: 'extstore' });
+
+				expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(
+					[1, 2],
+					{ storage: 'extstore' },
+					expect.objectContaining({ preMutationError: expect.any(ForbiddenError) }),
+				);
+			});
+
 			test('should reject a storage location that does not exist', async () => {
 				await service.updateMany([1], { storage: 'missing' });
 

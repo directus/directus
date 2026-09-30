@@ -132,6 +132,7 @@ beforeAll(async () => {
 			suffix: getUID(),
 		},
 		cache: false,
+		knex: true,
 	});
 
 	apiUrl = `http://127.0.0.1:${directus.apis[0].port}`;
@@ -261,6 +262,40 @@ describe('/files/tus', () => {
 
 		expect(err).toBeInstanceOf(Error);
 		expect(err.originalResponse?.getStatus()).toBe(403);
+	});
+
+	test('rejects renaming an upload that is still in progress', async () => {
+		const name = `${randomUUID()}.bin`;
+		const encode = (value: string) => Buffer.from(value).toString('base64');
+
+		// Create the upload without sending any data, so it stays in progress
+		const response = await fetch(`${apiUrl}/files/tus`, {
+			method: 'POST',
+			headers: {
+				Authorization: 'Bearer admin',
+				'Tus-Resumable': '1.0.0',
+				'Upload-Length': '1024',
+				'Upload-Metadata': `filename_download ${encode(name)},type ${encode('application/octet-stream')}`,
+			},
+		});
+
+		expect(response.status).toBe(201);
+
+		// Uploads in progress are hidden from the api, so look the record up directly
+		const tusId = response.headers.get('location')!.split('/').pop();
+
+		const upload = await directus.knex!('directus_files')
+			.select('id', 'filename_disk')
+			.where({ tus_id: tusId })
+			.first();
+
+		await expect(api.request(updateFile(upload.id, { filename_disk: `renamed-${name}` }))).rejects.toMatchObject({
+			errors: [expect.objectContaining({ extensions: expect.objectContaining({ code: 'FORBIDDEN' }) })],
+		});
+
+		const record = await directus.knex!('directus_files').select('filename_disk').where({ id: upload.id }).first();
+
+		expect(record?.filename_disk).toBe(upload.filename_disk);
 	});
 });
 

@@ -6,6 +6,7 @@ import url from 'url';
 import { useEnv } from '@directus/env';
 import {
 	ContentTooLargeError,
+	ForbiddenError,
 	InternalServerError,
 	InvalidPayloadError,
 	ServiceUnavailableError,
@@ -364,14 +365,15 @@ export class FilesService extends ItemsService<File> {
 		data: Partial<File>,
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
+		// Fetch existing records to have data prior to change, dont require read permissions.
+		// In progress uploads TUS are hidden from FilesService reads, so they're missing from the results.
+		const sudoFilesItemsService = new FilesService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
 		if (keys.length === 1 && data.filename_disk) {
 			data.filename_disk = sanitizeFilepath(data.filename_disk);
-
-			// Fetch existing records to have data prior to change, dont require read permissions.
-			const sudoFilesItemsService = new FilesService({
-				knex: this.knex,
-				schema: this.schema,
-			});
 
 			const updatedFiles: Map<PrimaryKey, File> = new Map();
 
@@ -384,12 +386,17 @@ export class FilesService extends ItemsService<File> {
 			}
 
 			try {
+				const currentFile = changedFiles[0];
+
+				// In progress uploads and non-existent files can't be renamed
+				if (!currentFile) {
+					throw new ForbiddenError();
+				}
+
 				// A file is currently only renamed within the storage location it's currently stored in, we never
 				// move files between storages. Changing "data.storage" has no effect on where the file data is,
 				// which is why the new path is validated against the current location instead.
-				const currentStorage = changedFiles[0]?.['storage'];
-
-				assertValidStoragePath(data.filename_disk, currentStorage ?? data.storage);
+				assertValidStoragePath(data.filename_disk, currentFile['storage']);
 
 				// If the the storage is updated the record ends up pointing at this path in the new location without
 				// actually moving the file between storages, later reads and renames act on the newly stored storage
@@ -483,12 +490,12 @@ export class FilesService extends ItemsService<File> {
 			try {
 				assertValidStorageLocation(data.storage);
 
-				const sudoFilesItemsService = new FilesService({
-					knex: this.knex,
-					schema: this.schema,
-				});
-
 				const files = await sudoFilesItemsService.readMany(keys, { fields: ['filename_disk'], limit: -1 });
+
+				// In progress uploads and non-existent files can't be repointed
+				if (files.length !== new Set(keys).size) {
+					throw new ForbiddenError();
+				}
 
 				for (const file of files) {
 					if (file.filename_disk) {
