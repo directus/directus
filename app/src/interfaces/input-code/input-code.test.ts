@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import CodeMirror from 'codemirror';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import InputCode from './input-code.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
@@ -12,6 +13,11 @@ vi.mock('codemirror', () => {
 			on: vi.fn(),
 			getValue: vi.fn(() => ''),
 			setValue: vi.fn(),
+			hasFocus: vi.fn(() => false),
+			getCursor: vi.fn(() => ({ line: 0, ch: 0 })),
+			getScrollInfo: vi.fn(() => ({ top: 0 })),
+			setCursor: vi.fn(),
+			scrollTo: vi.fn(),
 		})),
 		Pos: vi.fn(),
 		registerHelper: vi.fn(),
@@ -151,5 +157,55 @@ describe('InputCode', () => {
 		`);
 
 		expect(wrapper.find('.input-code v-button-stub').attributes('disabled')).toBe('true');
+	});
+
+	it('should preserve cursor and scroll position when the value changes while focused', async () => {
+		wrapper = mount(InputCode, {
+			props: {
+				language: 'javascript',
+				value: 'const initial = true;',
+			},
+			global,
+		});
+
+		await vi.waitFor(() => {
+			expect(CodeMirror).toHaveBeenCalled();
+		});
+
+		const editor: any = (CodeMirror as any).mock.results[0]?.value;
+
+		editor.hasFocus.mockReturnValue(true);
+		editor.getCursor.mockReturnValue({ line: 3, ch: 7 });
+		editor.getScrollInfo.mockReturnValue({ top: 200 });
+
+		await wrapper.setProps({ value: 'const updated = true;' });
+
+		expect(editor.setValue).toHaveBeenCalledWith('const updated = true;');
+		expect(editor.setCursor).toHaveBeenCalledWith({ line: 3, ch: 7 });
+		expect(editor.scrollTo).toHaveBeenCalledWith(null, 200);
+	});
+
+	it('should not restore cursor position when the editor is not focused', async () => {
+		wrapper = mount(InputCode, {
+			props: {
+				language: 'javascript',
+				value: 'const initial = true;',
+			},
+			global,
+		});
+
+		await vi.waitFor(() => {
+			expect(CodeMirror).toHaveBeenCalled();
+		});
+
+		const editor: any = (CodeMirror as any).mock.results[0]?.value;
+
+		editor.hasFocus.mockReturnValue(false);
+
+		await wrapper.setProps({ value: 'const updated = true;' });
+
+		expect(editor.setValue).toHaveBeenCalledWith('const updated = true;');
+		expect(editor.setCursor).not.toHaveBeenCalled();
+		expect(editor.scrollTo).not.toHaveBeenCalled();
 	});
 });

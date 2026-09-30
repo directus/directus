@@ -120,6 +120,23 @@ test('Required fields', () => {
 	expect(result.length).toEqual(1);
 });
 
+test('Required m2m field cleared of all relations is rejected', () => {
+	const result = validateItem(
+		{
+			id: 1,
+			name: 'test',
+			email: 'test@test.com',
+			// Removing every related item leaves a changeset that only lists deletions
+			role: { create: [], update: [], delete: [1, 2] },
+		},
+		fields as Field[],
+		false,
+	);
+
+	expect(result.length).toEqual(1);
+	expect(result[0].field).toEqual('role');
+});
+
 test('Custom validation with $NOW dynamic variable does not throw', () => {
 	const fieldsWithValidation: DeepPartial<Field>[] = [
 		{

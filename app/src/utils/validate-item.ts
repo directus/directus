@@ -39,8 +39,16 @@ export function validateItem(
 		const relation = relationsStore.getRelationsForField(field.collection, field.field);
 		if (!relation.length) return;
 
-		const isEmptyArray = Array.isArray(updatedItem[field.field]) && isEmpty(updatedItem[field.field]);
-		if (isEmptyArray) updatedItem[field.field] = null;
+		const value = updatedItem[field.field];
+
+		const isEmptyArray = Array.isArray(value) && isEmpty(value);
+
+		// A relation field holding a changeset with no remaining additions still describes the
+		// currently related items, so a required field reads as populated when it is being cleared.
+		const isEmptyChangeset =
+			typeof value === 'object' && value !== null && !Array.isArray(value) && isEmpty(value.create);
+
+		if (isEmptyArray || isEmptyChangeset) updatedItem[field.field] = null;
 	});
 
 	if (includeCustomValidations) fields.forEach(applyValidationRules);
