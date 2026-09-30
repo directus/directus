@@ -50,6 +50,10 @@ import { type RPC, useRPC } from './utils/use-rpc.js';
 const env = useEnv();
 const logger = useLogger();
 const LICENSE_CHANNEL = `license`;
+/** Seconds between retries while a key is set but no license is in effect */
+const RETRY_INTERVAL = 3600;
+/** Seconds between checks when the license has no validation interval, e.g. an offline token */
+const DEFAULT_CHECK_INTERVAL = 43_200;
 let licenseCache: Directus.License = DIRECTUS_CORE_LICENSE;
 
 type LicenseStore = {
@@ -161,15 +165,15 @@ export class LicenseManager {
 
 	/** The check interval in seconds */
 	private getCheckInterval(): number | null {
-		// Nothing to check
+		// Nothing to check for "core"
 		if (!this.licenseKey && !this.licenseToken) return null;
 
 		// Key set but not in effect, retry hourly
-		if (this.source === null && this.licenseKey) return 3600;
+		if (this.source === null && this.licenseKey) return RETRY_INTERVAL;
 
 		const validationInterval = licenseCache.meta.validation_interval;
 
-		return validationInterval > 0 ? validationInterval : 43_200;
+		return validationInterval > 0 ? validationInterval : DEFAULT_CHECK_INTERVAL;
 	}
 
 	/** Run a license action, bypassing management guards */
