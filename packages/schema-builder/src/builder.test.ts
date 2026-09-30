@@ -1000,7 +1000,7 @@ test('Create translations relation', () => {
 		        },
 		        "languages_code": {
 		          "alias": false,
-		          "dbType": "integer",
+		          "dbType": "character varying",
 		          "defaultValue": null,
 		          "field": "languages_code",
 		          "generated": false,
@@ -1010,7 +1010,7 @@ test('Create translations relation', () => {
 		          "scale": null,
 		          "searchable": true,
 		          "special": [],
-		          "type": "integer",
+		          "type": "string",
 		          "validation": null,
 		        },
 		      },

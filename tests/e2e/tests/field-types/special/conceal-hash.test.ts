@@ -1,12 +1,64 @@
+import { writeFileSync } from 'fs';
 import { randomUUID } from 'node:crypto';
+import { join } from 'path';
+import { SchemaBuilder } from '@directus/schema-builder';
 import { createDirectus, createItem, readItems, rest, staticToken } from '@directus/sdk';
 import { port } from '@utils/constants.js';
+import { getCallerFolder } from '@utils/getUID.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.js';
 
+const schema = new SchemaBuilder({ test_schema: true })
+	.collection('articles', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+		c.field('author').m2o('users');
+		c.field('tags').m2m('tags');
+		c.field('links').o2m('links', 'article_id');
+		c.field('blocks').m2a(['date_blocks', 'text_blocks']);
+		c.field('votes').integer();
+		c.field('release').dateTime();
+
+		c.field('secret')
+			.string()
+			.options({ special: ['conceal'] });
+
+		c.field('secret_hash').hash();
+	})
+	.collection('date_blocks', (c) => {
+		c.field('id').id();
+		c.field('date').date();
+	})
+	.collection('text_blocks', (c) => {
+		c.field('id').id();
+		c.field('text').text();
+	})
+	.collection('tags', (c) => {
+		c.field('id').id();
+		c.field('tag').string();
+	})
+	.collection('users', (c) => {
+		c.field('id').id();
+		c.field('name').string();
+	})
+	.collection('links', (c) => {
+		c.field('id').id();
+		c.field('link').string();
+
+		c.field('secret')
+			.string()
+			.options({ special: ['conceal'] });
+
+		c.field('secret_hash').hash();
+	});
+
+const snapshot = schema.snapshot();
+
+writeFileSync(join(getCallerFolder(), 'schema.d.ts'), schema.types());
+
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 const marker = randomUUID();
 

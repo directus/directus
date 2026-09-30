@@ -1,38 +1,44 @@
-export type Schema = {
+export interface Schema {
 	categories: Categories[];
 	operators: Operators[];
 	singleton: Singleton;
 	tracks: Tracks[];
 	trains: Trains[];
-	trains_operators: TrainsOperators[];
-};
-export type Categories = {
-	id?: string | number;
-	name?: string | number;
-};
-export type Operators = {
-	id?: string | number;
-	name?: string | number;
-};
-export type Singleton = {
-	id?: string | number;
-	title?: string | number;
-};
-export type Tracks = {
-	id?: string | number;
-	train_id?: string | number | Trains;
-	from?: string | number;
-	to?: string | number;
-};
-export type Trains = {
-	id?: string | number;
-	name?: string | number;
-	operators: (string | number | TrainsOperators)[];
-	tracks: (string | number | Tracks)[];
-	category?: string | number | Categories;
-};
-export type TrainsOperators = {
-	id?: string | number;
-	trains_id?: string | number | Trains;
-	operators_id?: string | number | Operators;
-};
+	trains_operators_junction: TrainsOperatorsJunction[];
+}
+
+export interface Categories {
+	id: number;
+	name: string | null;
+}
+
+export interface Operators {
+	id: number;
+	name: string | null;
+}
+
+export interface Singleton {
+	id: number;
+	title: string | null;
+}
+
+export interface Tracks {
+	id: number;
+	from: string | null;
+	to: string | null;
+	train_id: number | Trains | null;
+}
+
+export interface Trains {
+	id: number;
+	name: string | null;
+	operators: number[] | TrainsOperatorsJunction[];
+	tracks: number[] | Tracks[];
+	category: number | Categories | null;
+}
+
+export interface TrainsOperatorsJunction {
+	id: number;
+	trains_id: number | Trains | null;
+	operators_id: number | Operators | null;
+}

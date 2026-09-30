@@ -5,7 +5,7 @@ import { COLLECTION_META_DEFAULTS } from './defaults.js';
 import { FieldBuilder } from './field.js';
 
 export type CollectionOveriewBuilderOptions = Partial<
-	Pick<CollectionOverview, 'singleton' | 'accountability' | 'note' | 'status'>
+	Pick<CollectionOverview, 'singleton' | 'accountability' | 'note' | 'status'> & Pick<CollectionMeta, 'versioning'>
 >;
 
 export type BuiltCollection = {

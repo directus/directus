@@ -1,17 +1,21 @@
 import { ok as assert } from 'node:assert/strict';
-import type { DeepPartial, Relation } from '@directus/types';
+import type { DeepPartial, Field, Relation } from '@directus/types';
 import { merge } from 'lodash-es';
 import type { BuiltSchema, SchemaBuilder } from './builder.js';
 import { CollectionBuilder } from './collection.js';
 import { RELATION_DEFAULTS } from './defaults.js';
 import { FieldBuilder } from './field.js';
 
+const FOREIGN_KEY_TYPES = ['integer', 'bigInteger', 'string', 'uuid'] as const;
+
+type ForeignKeyType = (typeof FOREIGN_KEY_TYPES)[number];
+
 export type InitialRelationOverview = Pick<Relation, 'collection' | 'field'> & { _kind: 'initial' };
 export type FinalRelationOverview = Relation & { _kind: 'finished'; _type: 'o2m' | 'm2o' | 'a2o' };
 
 export type RelationOveriewBuilderOptions = DeepPartial<{
 	meta: Pick<NonNullable<Relation['meta']>, 'id' | 'junction_field' | 'sort_field'>;
-	schema: Pick<NonNullable<Relation['schema']>, 'constraint_name' | 'foreign_key_schema'>;
+	schema: Pick<NonNullable<Relation['schema']>, 'constraint_name' | 'foreign_key_schema' | 'on_delete'>;
 }>;
 
 export class RelationBuilder {
@@ -121,6 +125,30 @@ export class RelationBuilder {
 		return this;
 	}
 
+	/** Resolves the type of the primary key(s) the relation is referencing */
+	private foreign_key(schema: BuiltSchema): { type: ForeignKeyType; column: Field['schema'] } {
+		assert(this._data._kind === 'finished', 'Relation type is not configured');
+
+		const primary_of = (name: string) =>
+			schema.fields.find((field) => field.collection === name && field.schema?.is_primary_key);
+
+		if (this._data._type === 'a2o') {
+			const keys = (this._data.meta?.one_allowed_collections ?? []).map(primary_of);
+			const type = keys[0]?.type;
+
+			// An a2o field can only share the type of the related primary keys if they all match
+			if (type && keys.every((key) => key?.type === type)) {
+				return { type: type as ForeignKeyType, column: keys[0]!.schema };
+			}
+
+			return { type: 'string', column: null };
+		}
+
+		const primary = primary_of(this._data.related_collection!)!;
+
+		return { type: primary.type as ForeignKeyType, column: primary.schema };
+	}
+
 	build(schema: BuiltSchema): Relation {
 		assert(this._data._kind === 'finished', 'Relation type is not configured');
 
@@ -151,25 +179,42 @@ export class RelationBuilder {
 			add_collection(this._data.collection);
 		}
 
+		// Generate related a2o collections, for those that don't exist
+		if (this._data._type === 'a2o') {
+			for (const collection_name of this._data.meta?.one_allowed_collections ?? []) {
+				if (has_collection(collection_name)) continue;
+
+				add_collection(collection_name);
+			}
+		}
+
 		const collection = this._data.collection;
+		const key = this.foreign_key(schema);
 
 		// Generate field for collection, if not exists
 		if (this._data.field && has_field(collection, this._data.field) === false) {
-			const key_type = schema.fields.find(
-				(field) => field.collection === collection && field.schema?.is_primary_key,
-			)!.type;
+			assert(FOREIGN_KEY_TYPES.includes(key.type), `Cannot generate related field for primary key type ${key.type}`);
 
-			assert(
-				key_type === 'integer' || key_type === 'string',
-				`Cannot generate related field for primary key type ${key_type}`,
-			);
+			const field = new FieldBuilder(this._data.field)[key.type]().build(collection);
 
-			const field = new FieldBuilder(this._data.field)[key_type]();
+			// Foreign keys reference existing values and should not be generated
+			field.meta!.special = null;
 
-			schema.fields.push(field.build(collection));
+			schema.fields.push(field);
 		}
 
-		// Generate collection field and related a2o collections, for those that don't exist
+		// Match the type of m2o fields to the primary key they are referencing
+		if (key.column && this._data._type !== 'a2o') {
+			const field = schema.fields.find((field) => field.collection === collection && field.field === this._data.field);
+
+			if (field?.schema && field.meta?.special?.includes('m2o') && field.type !== key.type) {
+				field.type = key.type;
+				field.schema.data_type = key.column.data_type;
+				field.schema.max_length = key.column.max_length;
+			}
+		}
+
+		// Generate collection field for a2o relations, if not exists
 		if (this._data._type === 'a2o') {
 			const collection_field = this._data.meta?.one_collection_field;
 
@@ -177,12 +222,6 @@ export class RelationBuilder {
 				const field = new FieldBuilder(collection_field).string();
 
 				schema.fields.push(field.build(collection));
-			}
-
-			for (const collection_name of this._data.meta?.one_allowed_collections ?? []) {
-				if (has_collection(collection_name)) continue;
-
-				add_collection(collection_name);
 			}
 		}
 

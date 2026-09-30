@@ -12,9 +12,10 @@ import { useSnapshot } from '@utils/use-snapshot.js';
 import { generateScopedUser } from '@utils/user-scoped.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot as schemaSnapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections, snapshot } = await useSnapshot<Schema>(api);
+const { collections, snapshot } = await useSnapshot<Schema>(api, schemaSnapshot);
 
 test('get permissions for admin', async () => {
 	const item = await api.request(createItem(collections.trains, { name: 'Train 1' }));
