@@ -7,19 +7,10 @@ import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { ItemsService } from './items.js';
 
 export function isIpAccessValid(value?: unknown): boolean {
-	if (value === undefined) return false;
 	if (value === null) return true;
 	if (!Array.isArray(value)) return false;
-	if (Array.isArray(value) && value.length === 0) return true;
 
-	for (let ip of value) {
-		if (typeof ip !== 'string' || ip.includes('*')) return false;
-		ip = ip.trim();
-
-		if (!IpBlocklist.isNetwork(ip)) return false;
-	}
-
-	return true;
+	return value.every((ip) => typeof ip === 'string' && !ip.includes('*') && IpBlocklist.isNetwork(ip.trim()));
 }
 
 export class PoliciesService extends ItemsService<Policy> {
