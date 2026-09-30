@@ -211,6 +211,15 @@ describe('license management guards', () => {
 		});
 	});
 
+	test('update activates the new key when the server rejects the stored key', async () => {
+		vi.mocked(updateKey).mockRejectedValue(serverError('BINDING_MISMATCH'));
+		vi.mocked(activateKey).mockResolvedValue({ token: 'token' });
+
+		await managerWith(activeFromSettings).update('D1111-11111-11111-11111-1111K');
+
+		expect(activateKey).toHaveBeenCalledWith(expect.objectContaining({ license_key: 'D1111-11111-11111-11111-1111K' }));
+	});
+
 	test('activate does not fall back over a transient update failure', async () => {
 		vi.mocked(updateKey).mockRejectedValue(serverError('SERVICE_UNAVAILABLE'));
 
@@ -363,6 +372,26 @@ describe('initialize', () => {
 
 		expect(activateKey).not.toHaveBeenCalled();
 	});
+
+	test.each(['INVALID_CREDENTIALS', 'BINDING_MISMATCH'])(
+		'a changed env key activates when the server rejects the stored key with %s',
+		async (code) => {
+			env['LICENSE_KEY'] = 'D1111-11111-11111-11111-1111K';
+			settings.readSingleton.mockResolvedValue({ license_key: KEY, license_token: 'token', project_id: 'project' });
+			vi.mocked(updateKey).mockRejectedValue(serverError(code));
+			vi.mocked(activateKey).mockResolvedValue({ token: 'new-token' });
+
+			await new LicenseManager().initialize();
+
+			expect(activateKey).toHaveBeenCalledWith(
+				expect.objectContaining({ license_key: 'D1111-11111-11111-11111-1111K' }),
+			);
+
+			expect(settings.upsertSingleton).toHaveBeenCalledWith(
+				expect.objectContaining({ license_key: 'D1111-11111-11111-11111-1111K', license_token: 'new-token' }),
+			);
+		},
+	);
 
 	test('a changed env key keeps the stored token without activating when the stored key cannot be reached', async () => {
 		env['LICENSE_KEY'] = 'D1111-11111-11111-11111-1111K';

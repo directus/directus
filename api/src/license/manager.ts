@@ -304,16 +304,7 @@ export class LicenseManager {
 			}
 
 			// A stored key may not be in effect, update from it to carry any activation over
-			try {
-				await this.applyUpdate(this.licenseKey, key);
-			} catch (error) {
-				// A missing or bound elsewhere key counts as deactivated, activate the new one
-				if (!isActivationMissing(error)) {
-					throw error;
-				}
-
-				await this.applyActivation(key);
-			}
+			await this.applyUpdate(this.licenseKey, key);
 		} catch (error) {
 			throw translateLicenseError(error);
 		}
@@ -378,20 +369,33 @@ export class LicenseManager {
 		}
 	}
 
-	/** Update without guards */
+	/** Update without guards, activating the new key when the current one has no activation */
 	private async applyUpdate(currentKey: string, newKey: string) {
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
-		const { token } = await updateKey(
-			{
-				license_key: currentKey,
-				project_id: project_id!,
-				public_url: env['PUBLIC_URL'] as string,
-			},
-			{ license_key: newKey },
-		);
+		let token: string;
+
+		try {
+			const result = await updateKey(
+				{
+					license_key: currentKey,
+					project_id: project_id!,
+					public_url: env['PUBLIC_URL'] as string,
+				},
+				{ license_key: newKey },
+			);
+
+			token = result.token;
+		} catch (error) {
+			// A missing or bound elsewhere key counts as deactivated, activate the new one
+			if (!isActivationMissing(error)) {
+				throw error;
+			}
+
+			return this.applyActivation(newKey);
+		}
 
 		await settingsService.upsertSingleton({
 			license_key: newKey,
