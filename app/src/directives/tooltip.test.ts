@@ -1,11 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { DirectiveBinding } from 'vue';
-import {
+import type { DirectiveBinding, ObjectDirective } from 'vue';
+import Tooltip, {
 	getGlobalTooltip,
 	isDisabled,
+	isSameTooltipValue,
 	resolveAlign,
 	resolveSide,
 	resolveTooltipValue,
+	TOOLTIP_CONTENT_ID,
 	type TooltipPayload,
 } from './tooltip';
 
@@ -140,21 +142,21 @@ describe('resolveTooltipValue', () => {
 	});
 });
 
-describe('getGlobalTooltip', () => {
-	const resetState = {
-		open: false,
-		content: '',
-		kbd: undefined,
-		side: 'top',
-		align: 'center',
-		inverted: false,
-		monospace: false,
-		virtualRef: null,
-	};
+const RESET_STATE = {
+	open: false,
+	content: '',
+	kbd: undefined,
+	side: 'top',
+	align: 'center',
+	inverted: false,
+	monospace: false,
+	virtualRef: null,
+};
 
+describe('getGlobalTooltip', () => {
 	beforeEach(() => {
 		vi.useFakeTimers();
-		Object.assign(getGlobalTooltip().state, resetState);
+		Object.assign(getGlobalTooltip().state, RESET_STATE);
 	});
 
 	afterEach(() => {
@@ -218,5 +220,193 @@ describe('getGlobalTooltip', () => {
 		closeTooltip();
 		vi.advanceTimersByTime(500);
 		expect(state.open).toBe(false);
+	});
+});
+
+describe('isSameTooltipValue', () => {
+	it('treats equal objects as the same value', () => {
+		expect(isSameTooltipValue({ text: 'Save', kbd: ['meta', 's'] }, { text: 'Save', kbd: ['meta', 's'] })).toBe(true);
+	});
+
+	it('detects changed text or keys', () => {
+		expect(isSameTooltipValue({ text: 'Save', kbd: ['meta', 's'] }, { text: 'Save', kbd: ['meta', 'x'] })).toBe(false);
+		expect(isSameTooltipValue('Save', 'Saved')).toBe(false);
+		expect(isSameTooltipValue('Save', false)).toBe(false);
+	});
+});
+
+describe('Tooltip directive', () => {
+	const directive = Tooltip as ObjectDirective<HTMLElement>;
+	const mounted: HTMLElement[] = [];
+
+	function mount(html: string, value: DirectiveBinding['value'] = 'Save') {
+		const element = createElement(html);
+		document.body.append(element);
+		directive.beforeMount!(element, makeBinding({ value, modifiers: { instant: true } }), null!, null);
+		mounted.push(element);
+		return element;
+	}
+
+	function mountNested(element: HTMLElement, value: string) {
+		directive.beforeMount!(element, makeBinding({ value, modifiers: { instant: true } }), null!, null);
+		mounted.push(element);
+	}
+
+	function focus(target: HTMLElement) {
+		target.focus();
+		vi.advanceTimersByTime(0);
+	}
+
+	beforeEach(() => {
+		vi.useFakeTimers();
+		Object.assign(getGlobalTooltip().state, RESET_STATE);
+	});
+
+	afterEach(() => {
+		for (const element of mounted.splice(0).reverse()) {
+			directive.unmounted!(element, makeBinding(), null!, null);
+			element.remove();
+		}
+
+		vi.useRealTimers();
+	});
+
+	it('opens when a deeply nested control gets keyboard focus', () => {
+		const element = mount('<div><span><span><button>Save</button></span></span></div>');
+		const button = element.querySelector('button')!;
+
+		focus(button);
+
+		expect(getGlobalTooltip().state.open).toBe(true);
+		expect(getGlobalTooltip().state.content).toBe('Save');
+		expect(button.getAttribute('aria-describedby')).toBe(TOOLTIP_CONTENT_ID);
+	});
+
+	it('stays open while focus moves inside the wrapper and closes when it leaves', () => {
+		const element = mount('<div><button>First</button><button>Second</button></div>');
+		const [first, second] = element.querySelectorAll('button');
+		const outside = mount('<button>Outside</button>', false);
+
+		focus(first!);
+		focus(second!);
+
+		expect(getGlobalTooltip().state.open).toBe(true);
+		expect(first!.hasAttribute('aria-describedby')).toBe(false);
+		expect(second!.getAttribute('aria-describedby')).toBe(TOOLTIP_CONTENT_ID);
+
+		focus(outside);
+
+		expect(getGlobalTooltip().state.open).toBe(false);
+		expect(second!.hasAttribute('aria-describedby')).toBe(false);
+	});
+
+	it('does not open when focus comes from a mouse click', () => {
+		const element = mount('<div><button>Save</button></div>');
+		const button = element.querySelector('button')!;
+		vi.spyOn(button, 'matches').mockImplementation((selector) => selector !== ':focus-visible');
+
+		focus(button);
+
+		expect(getGlobalTooltip().state.open).toBe(false);
+	});
+
+	it('still opens on hover of the wrapper', () => {
+		const element = mount('<div><button>Save</button></div>');
+
+		element.dispatchEvent(new Event('mouseenter'));
+		vi.advanceTimersByTime(0);
+
+		expect(getGlobalTooltip().state.open).toBe(true);
+	});
+
+	it('lets a nested tooltip host describe its own control', () => {
+		const element = mount(
+			'<div><button class="outer">Outer</button><span><button class="inner">Inner</button></span></div>',
+			'Outer',
+		);
+
+		mountNested(element.querySelector('span')!, 'Inner');
+		const inner = element.querySelector<HTMLElement>('.inner')!;
+
+		focus(element.querySelector<HTMLElement>('.outer')!);
+		focus(inner);
+
+		expect(getGlobalTooltip().state.open).toBe(true);
+		expect(getGlobalTooltip().state.content).toBe('Inner');
+		expect(inner.getAttribute('aria-describedby')).toBe(TOOLTIP_CONTENT_ID);
+	});
+
+	it('ignores controls opted out with data-no-tooltip', () => {
+		const element = mount('<div><button class="main">Save</button><button data-no-tooltip>More</button></div>');
+		const optedOut = element.querySelector<HTMLElement>('[data-no-tooltip]')!;
+
+		focus(element.querySelector<HTMLElement>('.main')!);
+		expect(getGlobalTooltip().state.open).toBe(true);
+
+		focus(optedOut);
+
+		expect(getGlobalTooltip().state.open).toBe(false);
+		expect(optedOut.hasAttribute('aria-describedby')).toBe(false);
+	});
+
+	it('preserves an existing aria-describedby on the control', () => {
+		const element = mount('<div><input aria-describedby="hint" /></div>');
+		const input = element.querySelector('input')!;
+
+		focus(input);
+		expect(input.getAttribute('aria-describedby')).toBe(`hint ${TOOLTIP_CONTENT_ID}`);
+
+		input.blur();
+		expect(input.getAttribute('aria-describedby')).toBe('hint');
+	});
+
+	it('removes its description on unmount while focused', () => {
+		const element = mount('<div><input aria-describedby="hint" /></div>');
+		const input = element.querySelector('input')!;
+
+		focus(input);
+		directive.unmounted!(element, makeBinding(), null!, null);
+
+		expect(input.getAttribute('aria-describedby')).toBe('hint');
+	});
+
+	it('keeps the tooltip open when re-rendered with an equal object value', () => {
+		const element = mount('<div><button>Bold</button></div>', { text: 'Bold', kbd: ['meta', 'b'] });
+
+		focus(element.querySelector('button')!);
+
+		directive.updated!(
+			element,
+			makeBinding({ value: { text: 'Bold', kbd: ['meta', 'b'] }, oldValue: { text: 'Bold', kbd: ['meta', 'b'] } }),
+			null!,
+			null!,
+		);
+
+		expect(getGlobalTooltip().state.open).toBe(true);
+	});
+
+	it('shows the new value when it changes while the control is focused', () => {
+		const element = mount('<div><button>Toggle</button></div>', 'Collapse');
+		const button = element.querySelector('button')!;
+
+		focus(button);
+
+		directive.updated!(element, makeBinding({ value: 'Expand', oldValue: 'Collapse' }), null!, null!);
+		vi.advanceTimersByTime(0);
+
+		expect(getGlobalTooltip().state.open).toBe(true);
+		expect(getGlobalTooltip().state.content).toBe('Expand');
+		expect(button.getAttribute('aria-describedby')).toBe(TOOLTIP_CONTENT_ID);
+	});
+
+	it('shows the new value when it changes while the control is hovered', () => {
+		const element = mount('<div><button>Toggle</button></div>', 'Collapse');
+		vi.spyOn(element, 'matches').mockImplementation((selector) => selector === ':hover');
+
+		directive.updated!(element, makeBinding({ value: 'Expand', oldValue: 'Collapse' }), null!, null!);
+		vi.advanceTimersByTime(0);
+
+		expect(getGlobalTooltip().state.open).toBe(true);
+		expect(getGlobalTooltip().state.content).toBe('Expand');
 	});
 });
