@@ -20,6 +20,9 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: About
+directus_mscl:
+data_processing_agreement: Data Processing Agreement
+setup_accept_license: setup_accept_license
 continue: Continue
 first_name: First Name
 last_name: Last Name
