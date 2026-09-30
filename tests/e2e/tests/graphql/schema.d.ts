@@ -1,5 +1,6 @@
 export interface Schema {
 	articles: Articles[];
+	blogs: Blogs[];
 	date_blocks: DateBlocks[];
 	text_blocks: TextBlocks[];
 	tags: Tags[];
@@ -7,6 +8,7 @@ export interface Schema {
 	links: Links[];
 	articles_tags_junction: ArticlesTagsJunction[];
 	articles_builder: ArticlesBuilder[];
+	blogs_builder: BlogsBuilder[];
 }
 
 export interface Articles {
@@ -16,6 +18,11 @@ export interface Articles {
 	tags: number[] | ArticlesTagsJunction[];
 	links: number[] | Links[];
 	blocks: number[] | ArticlesBuilder[];
+}
+
+export interface Blogs {
+	id: number;
+	blocks: number[] | BlogsBuilder[];
 }
 
 export interface DateBlocks {
@@ -54,5 +61,12 @@ export interface ArticlesBuilder {
 	id: number;
 	articles_id: number | Articles | null;
 	item: number | DateBlocks | TextBlocks | null;
+	collection: string | null;
+}
+
+export interface BlogsBuilder {
+	id: number;
+	blogs_id: number | Blogs | null;
+	item: number | TextBlocks | null;
 	collection: string | null;
 }

@@ -12,6 +12,10 @@ const schema = new SchemaBuilder({ test_schema: true })
 		c.field('links').o2m('links', 'article_id');
 		c.field('blocks').m2a(['date_blocks', 'text_blocks']);
 	})
+	.collection('blogs', (c) => {
+		c.field('id').id();
+		c.field('blocks').m2a(['text_blocks']);
+	})
 	.collection('date_blocks', (c) => {
 		c.field('id').id();
 		c.field('date').date();
