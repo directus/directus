@@ -2374,6 +2374,13 @@ public_policy_warning: >-
   Changes here affect what unauthenticated users can access and the actions they can perform. Refer to {docs} for more
   information.
 public_policy_warning_docs_link: our security best practices
+public_policy_dialog:
+  title: Change Public Access to System Collections?
+  copy: >-
+    You're about to change Public policy permissions on the following system collections. These actions will be
+    available to anyone, without logging in:
+  unfiltered_read_warning: Read access without a filter exposes every record in the collection.
+  best_practices_link: Read the security best practices
 no_permissions: No Permissions
 permission_add_collection: Add Collection
 default_label: Default

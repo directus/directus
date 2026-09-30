@@ -2,10 +2,12 @@
 import { useShortcut } from '@directus/composables';
 import { DIRECTUS_SECURITY_BEST_PRACTICES_URL, PUBLIC_POLICY_ID } from '@directus/constants';
 import { Policy } from '@directus/types';
+import { groupBy } from 'lodash-es';
 import { computed, ref, toRefs } from 'vue';
 import { I18nT } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import { getSystemPermissionChanges } from './get-system-permission-changes';
 import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -42,14 +44,17 @@ const { edits, hasEdits, item, saving, loading, save, remove, deleting, validati
 
 const isPublicPolicy = computed(() => primaryKey.value === PUBLIC_POLICY_ID);
 
+const { confirmSystemPermissions, systemPermissionActions, hasUnfilteredRead, guardSave, confirmSave } =
+	useSystemPermissionsGuard();
+
 const confirmDelete = ref(false);
 
 useShortcut('meta+s', () => {
-	if (hasEdits.value) saveAndStay();
+	if (hasEdits.value) guardSave(saveAndStay);
 });
 
 useShortcut('meta+shift+s', () => {
-	if (hasEdits.value) saveAndAddNew();
+	if (hasEdits.value) guardSave(saveAndAddNew);
 });
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
@@ -114,6 +119,49 @@ function discardAndStay() {
 	edits.value = {};
 	confirmLeave.value = false;
 }
+
+function useSystemPermissionsGuard() {
+	const pendingSave = ref<(() => Promise<void>) | null>(null);
+
+	const confirmSystemPermissions = computed({
+		get: () => pendingSave.value !== null,
+		set: (value) => {
+			if (!value) {
+				pendingSave.value = null;
+			}
+		},
+	});
+
+	const systemPermissionChanges = computed(() =>
+		isPublicPolicy.value ? getSystemPermissionChanges(edits.value.permissions) : [],
+	);
+
+	const systemPermissionActions = computed(() =>
+		Object.entries(groupBy(systemPermissionChanges.value, 'collection')).map(([collection, changes]) => ({
+			collection,
+			actions: changes.map(({ action }) => action),
+		})),
+	);
+
+	const hasUnfilteredRead = computed(() => systemPermissionChanges.value.some(({ unfilteredRead }) => unfilteredRead));
+
+	return { confirmSystemPermissions, systemPermissionActions, hasUnfilteredRead, guardSave, confirmSave };
+
+	function guardSave(saveFn: () => Promise<void>) {
+		if (systemPermissionChanges.value.length === 0) {
+			saveFn();
+			return;
+		}
+
+		pendingSave.value = saveFn;
+	}
+
+	async function confirmSave() {
+		const saveFn = pendingSave.value;
+		pendingSave.value = null;
+		await saveFn?.();
+	}
+}
 </script>
 
 <template>
@@ -156,13 +204,13 @@ function discardAndStay() {
 				icon="check"
 				:loading="saving"
 				:disabled="!hasEdits"
-				@click="saveAndQuit"
+				@click="guardSave(saveAndQuit)"
 			>
 				<template #split-menu>
 					<SaveOptions
 						:disabled-options="['save-and-quit', 'save-as-copy']"
-						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
+						@save-and-stay="guardSave(saveAndStay)"
+						@save-and-add-new="guardSave(saveAndAddNew)"
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
@@ -203,6 +251,38 @@ function discardAndStay() {
 			/>
 		</template>
 
+		<VDialog v-model="confirmSystemPermissions" @esc="confirmSystemPermissions = false" @apply="confirmSave">
+			<VCard class="system-permissions-card">
+				<VCardTitle>{{ $t('public_policy_dialog.title') }}</VCardTitle>
+				<VCardText class="system-permissions-confirm">
+					<p>{{ $t('public_policy_dialog.copy') }}</p>
+
+					<ul>
+						<li v-for="{ collection, actions } in systemPermissionActions" :key="collection">
+							<code>{{ collection }}</code>
+							{{ actions.map((action) => $t(action)).join(', ') }}
+						</li>
+					</ul>
+
+					<VNotice v-if="hasUnfilteredRead" type="danger">
+						{{ $t('public_policy_dialog.unfiltered_read_warning') }}
+					</VNotice>
+
+					<a :href="DIRECTUS_SECURITY_BEST_PRACTICES_URL" target="_blank" rel="noopener noreferrer">
+						{{ $t('public_policy_dialog.best_practices_link') }}
+					</a>
+				</VCardText>
+				<VCardActions>
+					<VButton secondary @click="confirmSystemPermissions = false">
+						{{ $t('cancel') }}
+					</VButton>
+					<VButton :loading="saving" @click="confirmSave">
+						{{ $t('save') }}
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<VCard>
 				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
@@ -232,6 +312,26 @@ function discardAndStay() {
 	display: flex;
 	flex-direction: column;
 	row-gap: var(--theme--form--row-gap);
+}
+
+.system-permissions-card {
+	max-inline-size: unset;
+	inline-size: min(39rem, calc(100vw - 2.25rem));
+}
+
+.system-permissions-confirm {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+
+	ul {
+		padding-inline-start: 1.25rem;
+	}
+
+	a {
+		text-decoration: underline;
+		color: var(--theme--primary);
+	}
 }
 
 .public-policy-notice {
