@@ -1,9 +1,12 @@
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { sandbox } from '@directus/sandbox';
 import {
 	createDirectus,
 	createPolicy,
 	createUser,
+	customEndpoint,
 	deleteFile,
 	type DirectusClient,
 	readAssetArrayBuffer,
@@ -11,6 +14,7 @@ import {
 	rest,
 	type RestClient,
 	staticToken,
+	updateFile,
 	updatePolicy,
 	uploadFiles,
 } from '@directus/sdk';
@@ -94,8 +98,12 @@ async function findFileByDownloadName(filenameDownload: string) {
 }
 
 async function uploadToLocal(filenameDisk: string) {
+	return uploadToStorage('local', filenameDisk);
+}
+
+async function uploadToStorage(storage: string, filenameDisk: string) {
 	const form = new FormData();
-	form.set('storage', 'local');
+	form.set('storage', storage);
 	form.set('filename_disk', filenameDisk);
 	form.set('file', new Blob([Buffer.from('forbidden-path-test')], { type: 'application/octet-stream' }), 'file.bin');
 
@@ -111,6 +119,9 @@ beforeAll(async () => {
 		prefix: `files-sb-${getUID()}`,
 		env: {
 			TUS_ENABLED: 'true',
+			STORAGE_LOCATIONS: 'local,secondary',
+			STORAGE_SECONDARY_DRIVER: 'local',
+			STORAGE_SECONDARY_ROOT: './uploads/secondary',
 			EXTENSIONS_PATH: './uploads/extensions',
 			TEMP_PATH: './uploads/temp',
 			DB_FILENAME: `directus_test_${getUID()}.db`,
@@ -253,22 +264,116 @@ describe('/files/tus', () => {
 	});
 });
 
-describe('POST /files forbidden storage paths', () => {
-	test('rejects an upload that writes into the extensions directory', async () => {
-		await expect(uploadToLocal('extensions/evil.js')).rejects.toMatchObject({
-			errors: [expect.objectContaining({ extensions: expect.objectContaining({ code: 'FORBIDDEN' }) })],
+describe('forbidden storage paths', () => {
+	const withCode = (code: string) =>
+		expect.objectContaining({
+			errors: [expect.objectContaining({ extensions: expect.objectContaining({ code }) })],
 		});
+
+	const forbidden = withCode('FORBIDDEN');
+	const invalidPayload = withCode('INVALID_PAYLOAD');
+
+	// The api runs from this process' cwd, so the "local" storage root resolves to the same folder
+	function existsInExtensions(filename: string) {
+		return existsSync(resolve('uploads', 'extensions', filename));
+	}
+
+	function createFileRecord(data: Record<string, unknown>) {
+		return api.request<{ id: string }>(
+			customEndpoint({
+				path: '/files',
+				method: 'POST',
+				body: JSON.stringify({ type: 'text/javascript', filename_download: 'index.js', ...data }),
+			}),
+		);
+	}
+
+	test('rejects an upload that writes into the extensions directory', async () => {
+		await expect(uploadToLocal('extensions/evil.js')).rejects.toEqual(forbidden);
 	});
 
 	test('rejects an upload that writes into the temp directory', async () => {
-		await expect(uploadToLocal('temp/evil.js')).rejects.toMatchObject({
-			errors: [expect.objectContaining({ extensions: expect.objectContaining({ code: 'FORBIDDEN' }) })],
-		});
+		await expect(uploadToLocal('temp/evil.js')).rejects.toEqual(forbidden);
 	});
 
 	test('allows an upload to a sibling folder that merely shares the extensions prefix', async () => {
 		const upload = await uploadToLocal('extensions-backup/image.jpg');
 
 		expect(upload.id).toBeDefined();
+	});
+
+	test('rejects renaming a file into the extensions directory', async () => {
+		const name = `${randomUUID()}.js`;
+		const file = await uploadToLocal(`${randomUUID()}.js`);
+
+		await expect(api.request(updateFile(file.id, { filename_disk: `extensions/${name}` }))).rejects.toEqual(forbidden);
+
+		expect(existsInExtensions(name)).toBe(false);
+
+		// The file is left in place
+		const downloaded = await api.request(readAssetArrayBuffer(file.id));
+		expect(Buffer.from(downloaded).toString()).toBe('forbidden-path-test');
+	});
+
+	test('rejects renaming a file into the extensions directory while claiming another storage', async () => {
+		const name = `${randomUUID()}.js`;
+		const file = await uploadToLocal(`${randomUUID()}.js`);
+
+		// The rename happens in the file's current location, regardless of the storage in the payload
+		await expect(
+			api.request(updateFile(file.id, { filename_disk: `extensions/${name}`, storage: 'secondary' })),
+		).rejects.toEqual(forbidden);
+
+		expect(existsInExtensions(name)).toBe(false);
+	});
+
+	test('rejects a file record on a storage location that does not exist', async () => {
+		await expect(
+			createFileRecord({ storage: 'missing', filename_disk: `extensions/${randomUUID()}.js` }),
+		).rejects.toEqual(invalidPayload);
+
+		await expect(createFileRecord({ storage: 'missing' })).rejects.toEqual(invalidPayload);
+	});
+
+	test('rejects moving a file record onto a storage where its path points into the extensions directory', async () => {
+		const name = `${randomUUID()}.js`;
+
+		// Harmless in "secondary", but the same path lands in the extensions folder in "local"
+		const file = await uploadToStorage('secondary', `extensions/${name}`);
+
+		await expect(api.request(updateFile(file.id, { storage: 'local' }))).rejects.toEqual(forbidden);
+
+		await expect(api.request(updateFile(file.id, { storage: 'missing' }))).rejects.toEqual(invalidPayload);
+	});
+
+	test('rejects a multipart replacement that writes into the extensions directory', async () => {
+		const name = `${randomUUID()}.js`;
+		const file = await uploadToStorage('secondary', `extensions/${name}`);
+
+		const form = new FormData();
+		form.set('storage', 'local');
+		form.set('file', new Blob([Buffer.from('replaced')], { type: 'text/javascript' }), name);
+
+		await expect(api.request(updateFile(file.id, form))).rejects.toEqual(forbidden);
+
+		expect(existsInExtensions(name)).toBe(false);
+	});
+
+	test('rejects a resumable replacement of a file stored in another location', async () => {
+		const name = `${randomUUID()}.js`;
+
+		// Resumable uploads always write to the first storage location, "local", where this path is the extensions folder
+		const file = await uploadToStorage('secondary', `extensions/${name}`);
+
+		const err = await uploadViaTus(Buffer.from('replaced'), {
+			filename_download: name,
+			type: 'text/javascript',
+			id: file.id,
+		}).catch((error) => error);
+
+		expect(err).toBeInstanceOf(Error);
+		expect(err.originalResponse?.getStatus()).toBe(400);
+
+		expect(existsInExtensions(name)).toBe(false);
 	});
 });
