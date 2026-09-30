@@ -13,6 +13,12 @@ export interface RichTextToolbarButton {
 export interface RichTextConfig {
 	id: string;
 	name: string;
+	/**
+	 * Every node and mark must be symmetric: `parseHTML` must read back exactly the markup
+	 * `renderHTML` writes, with a high enough `priority` that no core rule claims it first. If not,
+	 * every save of a field that enables the extension warns the user that saving alters the content.
+	 * The app checks each node and mark once at load and logs a console warning on a mismatch.
+	 */
 	extensions?: AnyExtension[];
 	buttons?: RichTextToolbarButton[];
 }
