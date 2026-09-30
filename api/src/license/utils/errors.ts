@@ -42,7 +42,7 @@ export function translateLicenseError(error: unknown): unknown {
 	switch (failure) {
 		case 'invalid_request':
 			return new InvalidPayloadError({
-				reason: error.message.replace(/\.$/, ''),
+				reason: error.message.replace(/\.$/, '') || 'The licensing service rejected the request',
 			});
 
 		case 'not_permitted':
