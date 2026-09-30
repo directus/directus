@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useShortcut } from '@directus/composables';
-import { DIRECTUS_PUBLIC_POLICY_DOCS_URL, PUBLIC_POLICY_ID } from '@directus/constants';
+import { DIRECTUS_SECURITY_BEST_PRACTICES_URL, PUBLIC_POLICY_ID } from '@directus/constants';
 import { Policy } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { I18nT } from 'vue-i18n';
@@ -177,7 +177,7 @@ function discardAndStay() {
 			<VNotice v-if="isPublicPolicy" type="warning">
 				<I18nT keypath="public_policy_warning" tag="span">
 					<template #docs>
-						<a :href="DIRECTUS_PUBLIC_POLICY_DOCS_URL" target="_blank" rel="noopener noreferrer">
+						<a :href="DIRECTUS_SECURITY_BEST_PRACTICES_URL" target="_blank" rel="noopener noreferrer">
 							{{ $t('public_policy_warning_docs_link') }}
 						</a>
 					</template>
