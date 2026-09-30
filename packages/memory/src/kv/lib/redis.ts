@@ -18,6 +18,10 @@ import type { Kv } from '../types/class.js';
  */
 export const CLEAR_SCAN_COUNT = 1000;
 
+/**
+ * Returning an interger is preferred over a boolean as Lua changes `false` -> `Nil/null` on return.
+ * See https://github.com/directus/directus/pull/28214
+ */
 export const SET_MAX_SCRIPT = `
   local key = KEYS[1]
   local value = tonumber(ARGV[1])
