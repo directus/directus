@@ -96,6 +96,7 @@ export type Sandboxes = {
 	sandboxes: {
 		apis: [Api, ...Api[]];
 		env: Env;
+		project: string | undefined;
 		logger: Logger;
 		knex?: Knex | undefined;
 	}[];
@@ -107,6 +108,7 @@ export type Sandbox = {
 	restartApi(): Promise<void>;
 	stop(): Promise<void>;
 	env: Env;
+	project: string | undefined;
 	apis: [Api, ...Api[]];
 	logger: Logger;
 	knex?: Knex | undefined;
@@ -192,6 +194,7 @@ export async function sandboxes(
 		apis: [Api, ...Api[]];
 		opts: Options;
 		env: Env;
+		project: string | undefined;
 		logger: Logger;
 		knex?: Knex | undefined;
 	}[] = [];
@@ -226,7 +229,7 @@ export async function sandboxes(
 					if (opts.schema) await loadSchema(opts.schema, env, logger);
 					if (opts.knex) knex = createDatabase(env, logger);
 					await opts.hooks.beforeApi?.({ env, logger, knex });
-					sandboxes[index] = { apis: await startApi(opts, env, logger), opts, env, logger, knex };
+					sandboxes[index] = { apis: await startApi(opts, env, logger), opts, env, logger, knex, project };
 				} catch (e) {
 					logger.error(String(e));
 					throw e;
@@ -350,6 +353,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	return {
 		stop,
 		restartApi,
+		project,
 		env,
 		logger,
 		// Getter so callers see the current apis after restartApi reassigns the

@@ -55,6 +55,39 @@ test('inline fragment on an m2a union type', async () => {
 	expect(result).toEqual({ blocks: [{ item: { text: 'Text Block A' } }] });
 });
 
+test('inline fragment from a different collection on an m2a union type', async () => {
+	const { id: textBlockId } = await api.request(createItem(collections.text_blocks, { text: 'Text Block A' }));
+
+	await api.request(
+		createItem(collections.articles, {
+			title: 'Article A',
+			blocks: [{ collection: collections.text_blocks, item: textBlockId! }],
+		}),
+	);
+
+	const { id } = await api.request(
+		createItem(collections.blogs, {
+			blocks: [{ collection: collections.text_blocks, item: textBlockId! }],
+		}),
+	);
+
+	const result = (
+		await api.query(`
+			fragment BlockItem on ${collections.articles_blocks}_item_union {
+				... on ${collections.text_blocks} { text }
+			}
+
+			query {
+				${collections.blogs} (filter: { id: { _eq: "${id}" }}) {
+					blocks { item { ...BlockItem } }
+				}
+			}
+		`)
+	)[collections.blogs][0];
+
+	expect(result).toEqual({ blocks: [{ item: { text: 'Text Block A' } }] });
+});
+
 test('fragment on each m2a member type', async () => {
 	const date = new Date().toISOString();
 

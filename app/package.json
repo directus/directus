@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "17.1.1",
+	"version": "18.0.1",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -84,6 +84,7 @@
 		"@sindresorhus/slugify": "catalog:",
 		"@tiptap/core": "catalog:",
 		"@tiptap/extension-image": "catalog:",
+		"@tiptap/extension-link": "catalog:",
 		"@tiptap/extension-subscript": "catalog:",
 		"@tiptap/extension-superscript": "catalog:",
 		"@tiptap/extension-table": "catalog:",
@@ -159,6 +160,7 @@
 		"tus-js-client": "catalog:",
 		"typescript": "catalog:",
 		"universal-cookie": "catalog:",
+		"uuid": "catalog:",
 		"vite": "catalog:",
 		"vite-plugin-vue-devtools": "catalog:",
 		"vitest": "catalog:",

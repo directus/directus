@@ -15,6 +15,7 @@ const HeaderDefaults: Header = {
 	align: 'left',
 	sortable: true,
 	width: null,
+	flex: null,
 	description: null,
 };
 
@@ -159,16 +160,21 @@ const columnStyle = computed<{ header: string; rows: string }>(() => {
 	};
 
 	function generate(useVal?: 'auto') {
+		const hasFlexColumn = internalHeaders.value.some((header) => header.flex);
+
 		let gridTemplateColumns = internalHeaders.value
 			.map((header) => {
-				return header.width ? (useVal ?? `${header.width}px`) : '8.125rem';
+				// Flex columns share the remaining space and shrink before the table overflows
+				if (header.flex) return `minmax(100px, ${header.flex}fr)`;
+				if (!header.width) return '8.125rem';
+				return useVal ?? `${header.width}px`;
 			})
 			.reduce((acc, val) => (acc += ' ' + val), '');
 
 		if (props.showSelect !== 'none') gridTemplateColumns = '2rem ' + gridTemplateColumns;
 		if (props.showManualSort) gridTemplateColumns = '2rem ' + gridTemplateColumns;
 
-		gridTemplateColumns = gridTemplateColumns + ' 1fr';
+		gridTemplateColumns += hasFlexColumn ? ' auto' : ' 1fr';
 
 		if (hasItemAppendSlot.value || hasHeaderAppendSlot.value) gridTemplateColumns += ' min-content';
 

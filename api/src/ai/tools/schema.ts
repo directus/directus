@@ -165,6 +165,7 @@ export const FlowItemInputSchema = z
 		date_created: z.string(),
 		user_created: z.string(),
 		accountability: z.enum(['all', 'activity']),
+		folder: z.union([z.string(), z.null()]),
 	})
 	.partial();
 
@@ -194,6 +195,7 @@ export const FolderItemInputSchema = z.object({
 	id: PrimaryKeyInputSchema.optional(),
 	name: z.string(),
 	parent: z.string().optional(),
+	type: z.enum(['files', 'flows']).optional(),
 });
 
 export const FolderItemValidateSchema = FolderItemInputSchema;

@@ -257,7 +257,7 @@ function openDuplicateDialog(item: PolicyItem) {
 				</VCardText>
 				<VCardActions>
 					<VButton secondary @click="duplicateDialogActive = false">{{ $t('cancel') }}</VButton>
-					<VButton :disabled="!duplicateName" :loading="duplicating" @click="duplicate">
+					<VButton :disabled="!duplicateName.trim()" :loading="duplicating" @click="duplicate">
 						{{ $t('duplicate') }}
 					</VButton>
 				</VCardActions>

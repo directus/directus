@@ -16,7 +16,9 @@ const mockNetlifyAPI = vi.hoisted(() => ({
 }));
 
 vi.mock('@netlify/api', () => ({
-	NetlifyAPI: vi.fn(() => mockNetlifyAPI),
+	NetlifyAPI: vi.fn(function () {
+		return mockNetlifyAPI;
+	}),
 }));
 
 describe('NetlifyDriver', () => {
@@ -456,7 +458,9 @@ describe('NetlifyDriver', () => {
 
 			vi.stubGlobal(
 				'WebSocket',
-				vi.fn(() => mockWebSocket),
+				vi.fn(function () {
+					return mockWebSocket;
+				}),
 			);
 		});
 

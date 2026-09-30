@@ -73,7 +73,7 @@ vi.mock('vue-router', () => ({
 
 vi.mock('@ai-sdk/vue', () => {
 	return {
-		Chat: vi.fn().mockImplementation((config: any) => {
+		Chat: vi.fn().mockImplementation(function (config: any) {
 			lastChatConfig = config;
 
 			// Create a reactive messages array so watchers in the store (e.g. the system-tool-result
@@ -96,7 +96,7 @@ vi.mock('@ai-sdk/vue', () => {
 });
 
 vi.mock('ai', () => ({
-	DefaultChatTransport: vi.fn((config: any) => {
+	DefaultChatTransport: vi.fn(function (config: any) {
 		lastTransportConfig = config;
 		return config;
 	}),
