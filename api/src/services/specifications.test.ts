@@ -96,7 +96,7 @@ describe('Integration Tests', () => {
 								.build(),
 							path: '/users',
 						},
-					])('retains x-metadata schema and meta parameter on $label', async ({ schema, path }) => {
+					])('retains Metadata schema and meta parameter on $label', async ({ schema, path }) => {
 						const service = new SpecificationService({
 							knex: db,
 							schema,
@@ -114,7 +114,7 @@ describe('Integration Tests', () => {
 						)?.content?.['application/json']?.schema;
 
 						expect(getSchema).toMatchObject({
-							properties: { meta: { $ref: '#/components/schemas/x-metadata' } },
+							properties: { meta: { $ref: '#/components/schemas/Metadata' } },
 						});
 					});
 				});

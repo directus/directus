@@ -32,7 +32,7 @@ get:
                 items:
                   $ref: '../../openapi.yaml#/components/schemas/Files'
               meta:
-                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+                $ref: '../../openapi.yaml#/components/schemas/Metadata'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
 
