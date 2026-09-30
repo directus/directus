@@ -394,6 +394,8 @@ export class LicenseManager {
 				throw error;
 			}
 
+			logger.warn(error, 'Updating from the stored license key failed, activating the new key');
+
 			return this.applyActivation(newKey);
 		}
 
@@ -410,10 +412,14 @@ export class LicenseManager {
 		try {
 			const license = await verifyLicense(token);
 
-			if (license.audience !== 'directus') return null;
+			if (license.audience !== 'directus') {
+				logger.warn(`License token is for "${license.audience}", not directus`);
+				return null;
+			}
 
 			return license;
-		} catch {
+		} catch (error) {
+			logger.warn(error, 'License token could not be verified');
 			return null;
 		}
 	}
@@ -752,6 +758,7 @@ export class LicenseManager {
 		} else if (options?.kind === 'clear-token') {
 			const settingsService = new SettingsService({ schema: await getSchema() });
 			await settingsService.upsertSingleton({ license_token: null });
+			logger.warn('Removed the stored license token, running on core tier');
 		}
 
 		await clearPermissionCache();
