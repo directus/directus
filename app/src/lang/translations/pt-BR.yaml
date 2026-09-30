@@ -22,6 +22,7 @@
 about: Sobre
 directus_mscl: Directus MSCL-1.0-GPL
 data_processing_agreement: Contrato de processamento de dados
+contact_support: contatar suporte
 setup_welcome: Bem-Vindo ao Directus
 setup_info: Vamos criar sua conta de administrador e começar seu projeto.
 setup_license_key_notice: >
@@ -40,6 +41,7 @@ license_onboarding_desc: >
   Digite sua chave abaixo para desbloquear seu plano completo. Empresas qualificadas com uma receita anual inferior a US$ 5 milhões podem se enquadrar em nosso {oig}.
 project_usage: Para que usar o Directus?
 project_usage_personal: Projeto pessoal/ paralelo (Side project)
+project_usage_commercial: Empresarial / Comercial
 setup_project: Configurar Projeto
 continue: Continuar
 first_name: Primeiro Nome
