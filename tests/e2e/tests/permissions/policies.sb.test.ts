@@ -3,10 +3,12 @@ import { sandbox, type Sandbox } from '@directus/sandbox';
 import { authentication, createDirectus, readUsers, rest, updateUser } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
-import { expect, test } from 'vitest';
+import { afterAll, beforeAll, expect, test } from 'vitest';
 
-test('long timeouts when editing access policy', async () => {
-	const directus = await sandbox(database, {
+let directus: Sandbox;
+
+beforeAll(async () => {
+	directus = await sandbox(database, {
 		env: {
 			LOG_LEVEL: 'debug',
 			DB_FILENAME: `directus_test_${getUID()}.db`,
@@ -18,7 +20,13 @@ test('long timeouts when editing access policy', async () => {
 			redis: true,
 		},
 	});
+});
 
+afterAll(async () => {
+	await directus.stop();
+});
+
+test('long timeouts when editing access policy', async () => {
 	const api = createDirectus<unknown>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(authentication());
 
 	await api.login({
@@ -72,8 +80,6 @@ test('long timeouts when editing access policy', async () => {
 		Math.abs(policy2End - policy1End),
 		`Expected 2nd (${Math.floor(policy2End)}ms) to be close to first (${Math.floor(policy1End)}ms)`,
 	).toBeLessThan(policy1End * 0.3 /* 30% difference */);
-
-	await directus.stop();
 });
 
 function execRedis(sandbox: Sandbox, command: string): Promise<string[]> {
