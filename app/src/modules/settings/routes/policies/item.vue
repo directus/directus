@@ -268,9 +268,13 @@ function useSystemPermissionsGuard() {
 						{{ $t('public_policy_dialog.unfiltered_read_warning') }}
 					</VNotice>
 
-					<a :href="DIRECTUS_SECURITY_BEST_PRACTICES_URL" target="_blank" rel="noopener noreferrer">
-						{{ $t('public_policy_dialog.best_practices_link') }}
-					</a>
+					<I18nT keypath="public_policy_dialog.best_practices" tag="p">
+						<template #docs>
+							<a :href="DIRECTUS_SECURITY_BEST_PRACTICES_URL" target="_blank" rel="noopener noreferrer">
+								{{ $t('public_policy_warning_docs_link') }}
+							</a>
+						</template>
+					</I18nT>
 				</VCardText>
 				<VCardActions>
 					<VButton secondary @click="confirmSystemPermissions = false">

@@ -2378,9 +2378,9 @@ public_policy_dialog:
   title: Change Public Access to System Collections?
   copy: >-
     You're about to change Public policy permissions on the following system collections. These actions will be
-    available to anyone, without logging in:
+    available to unauthenticated users:
   unfiltered_read_warning: Read access without a filter exposes every record in the collection.
-  best_practices_link: Read the security best practices
+  best_practices: Refer to {docs} for more information.
 no_permissions: No Permissions
 permission_add_collection: Add Collection
 default_label: Default
