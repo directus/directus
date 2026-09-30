@@ -53,6 +53,22 @@ export const editorExtensions = [
 	PreservedAttributes,
 ];
 
+/**
+ * The complete extension list for a field's editor: `editorExtensions` plus the field's additions,
+ * with PreservedAttributes told about every other attribute so a `data-*` or `aria-*` name that
+ * another attribute parses has one owner. Every site that builds a field editor must use this.
+ */
+export function fieldEditorExtensions(additions: AnyExtension[]): AnyExtension[] {
+	const others = [...editorExtensions.filter((extension) => extension !== PreservedAttributes), ...additions];
+
+	return [
+		...editorExtensions.map((extension) =>
+			extension === PreservedAttributes ? PreservedAttributes.configure({ extensions: others }) : extension,
+		),
+		...additions,
+	];
+}
+
 export interface FieldSchemaOptions {
 	/** Field `customFormats` option (array or JSON string); see custom-formats.ts. */
 	customFormats?: unknown;
