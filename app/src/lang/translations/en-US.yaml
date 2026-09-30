@@ -2354,6 +2354,10 @@ continue_as: >-
   {name} is currently authenticated. If you recognize this account, press continue.
 editing_role: '{role} Role'
 editing_policy: '{policy} Policy'
+public_policy_warning: >-
+  Be careful making changes to public policy permissions! Changes here affect what non-authenticated users can access
+  and the actions they can perform. For more information on best practices on the public policy {docs}.
+public_policy_warning_docs_link: read our recommendations in the docs
 no_permissions: No Permissions
 permission_add_collection: Add Collection
 default_label: Default
