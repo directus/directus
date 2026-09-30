@@ -140,6 +140,7 @@ describe('', () => {
 			'regex',
 		]);
 	});
+
 	it.each([
 		'geometry.Point',
 		'geometry.LineString',
