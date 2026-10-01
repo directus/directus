@@ -15,6 +15,7 @@ import {
 	bootstrap,
 	buildApi,
 	createDatabase,
+	dockerDown,
 	dockerUp,
 	loadSchema,
 	saveSchema,
@@ -69,6 +70,8 @@ export type Options = {
 		redis: boolean;
 		/** Auth provider */
 		saml: boolean;
+		/** Directory server, used as an auth provider */
+		ldap: boolean;
 		/** Storage provider */
 		rustfs: boolean;
 		/** Email server */
@@ -93,6 +96,7 @@ export type Sandboxes = {
 	sandboxes: {
 		apis: [Api, ...Api[]];
 		env: Env;
+		project: string | undefined;
 		logger: Logger;
 		knex?: Knex | undefined;
 	}[];
@@ -104,6 +108,7 @@ export type Sandbox = {
 	restartApi(): Promise<void>;
 	stop(): Promise<void>;
 	env: Env;
+	project: string | undefined;
 	apis: [Api, ...Api[]];
 	logger: Logger;
 	knex?: Knex | undefined;
@@ -113,6 +118,9 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 	if ((options as any)?.schema === true) options!.schema = 'snapshot.json';
 
 	const port = await getPort(options?.port ?? process.env['PORT'] ?? 8055);
+
+	if (options?.docker?.name) options.docker.name = options.docker.name.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+	if (options?.docker?.suffix) options.docker.suffix = options.docker.suffix.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
 
 	return merge(
 		{
@@ -137,6 +145,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 			export: false,
 			extras: {
 				redis: false,
+				ldap: false,
 				maildev: false,
 				rustfs: false,
 				saml: false,
@@ -185,12 +194,13 @@ export async function sandboxes(
 		apis: [Api, ...Api[]];
 		opts: Options;
 		env: Env;
+		project: string | undefined;
 		logger: Logger;
 		knex?: Knex | undefined;
 	}[] = [];
 
 	let build: ChildProcessWithoutNullStreams | undefined;
-	const projects: { project: string; logger: Logger; env: Env }[] = [];
+	const projects: { project: string; logger: Logger; env: Env; keep: boolean }[] = [];
 
 	let license: ChildProcessWithoutNullStreams | undefined;
 
@@ -213,13 +223,13 @@ export async function sandboxes(
 
 				try {
 					const project = await dockerUp(database, opts, env, logger);
-					if (project) projects.push({ project, logger, env });
+					if (project) projects.push({ project, logger, env, keep: opts.docker.keep });
 
 					await bootstrap(opts, env, logger);
 					if (opts.schema) await loadSchema(opts.schema, env, logger);
 					if (opts.knex) knex = createDatabase(env, logger);
 					await opts.hooks.beforeApi?.({ env, logger, knex });
-					sandboxes[index] = { apis: await startApi(opts, env, logger), opts, env, logger, knex };
+					sandboxes[index] = { apis: await startApi(opts, env, logger), opts, env, logger, knex, project };
 				} catch (e) {
 					logger.error(String(e));
 					throw e;
@@ -250,6 +260,10 @@ export async function sandboxes(
 		}
 
 		kill(license);
+
+		await Promise.all(
+			projects.filter(({ keep }) => !keep).map(({ project, logger, env }) => dockerDown(project, env, logger)),
+		);
 	}
 
 	return { sandboxes, stop, restartApis };
@@ -267,6 +281,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	let interval: NodeJS.Timeout;
 	let license: ChildProcessWithoutNullStreams | undefined;
 	let knex: Knex | undefined;
+	let project: string | undefined;
 
 	try {
 		// Rebuild directus
@@ -278,7 +293,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 			license = await startLicenseServer(env, logger);
 		}
 
-		await dockerUp(database, opts, env, logger);
+		project = await dockerUp(database, opts, env, logger);
 		await bootstrap(opts, env, logger);
 		if (opts.schema) await loadSchema(opts.schema, env, logger);
 		if (opts.knex) knex = createDatabase(env, logger);
@@ -329,6 +344,8 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		kill(app);
 		kill(license);
 
+		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
+
 		const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 		logger.info(`Stopped sandbox ${time}`);
 	}
@@ -336,6 +353,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	return {
 		stop,
 		restartApi,
+		project,
 		env,
 		logger,
 		// Getter so callers see the current apis after restartApi reassigns the

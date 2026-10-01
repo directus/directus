@@ -94,9 +94,11 @@ vi.mock('../../services/mcp-oauth/index.js', () => {
 });
 
 vi.mock('../../services/settings.js', () => ({
-	SettingsService: vi.fn().mockImplementation(() => ({
-		readSingleton: mockSettingsReadSingleton,
-	})),
+	SettingsService: vi.fn().mockImplementation(function () {
+		return {
+			readSingleton: mockSettingsReadSingleton,
+		};
+	}),
 }));
 
 vi.mock('../../utils/get-schema.js', () => ({

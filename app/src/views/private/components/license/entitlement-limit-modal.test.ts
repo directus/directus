@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import EntitlementLimitModal from './entitlement-limit-modal.vue';
 import { i18n } from '@/lang';
 
@@ -29,6 +29,12 @@ const global = {
 
 beforeEach(() => {
 	vi.spyOn(window, 'open').mockImplementation(() => null);
+});
+
+// Vitest 4 returns the existing spy when `spyOn` targets an already-spied method, so without
+// restoring it here `window.open` keeps its call history across tests.
+afterEach(() => {
+	vi.restoreAllMocks();
 });
 
 // --- seats, admin ---
