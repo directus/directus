@@ -202,7 +202,17 @@ export class FilesService extends ItemsService<File> {
 			schema: this.schema,
 		});
 
-		await sudoFilesItemsService.updateOne(primaryKey, { ...payload, ...metadata }, { emitEvents: false });
+		// Do not spread user payload or include non-calculated fields here
+		await sudoFilesItemsService.updateOne(
+			primaryKey,
+			{
+				...metadata,
+				filename_disk: payload.filename_disk,
+				filesize: payload.filesize,
+				uploaded_on: payload.uploaded_on,
+			},
+			{ emitEvents: false },
+		);
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(

@@ -130,6 +130,7 @@ describe('Service / Files', () => {
 
 	describe('uploadOne', () => {
 		let service: FilesService;
+		let superCreateOne: MockInstance;
 		let superUpdateOne: MockInstance;
 		let mockDriver: Driver;
 		let mockStorage: StorageManager;
@@ -147,7 +148,7 @@ describe('Service / Files', () => {
 
 			sample = {
 				id: 'test-file-id-123',
-				filesize: 500,
+				filesize: 0,
 			};
 
 			mockDriver = createMockDriver();
@@ -156,7 +157,7 @@ describe('Service / Files', () => {
 
 			tracker.on.select('select "storage_default_folder" from "directus_settings"').response([]);
 
-			vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(sample.id);
+			superCreateOne = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(sample.id);
 			superUpdateOne = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue(sample.id);
 		});
 
@@ -189,12 +190,6 @@ describe('Service / Files', () => {
 		});
 
 		test('should set the `uploaded_on` field to the current date', async () => {
-			tracker.on
-				.select(
-					'select "folder", "filename_download", "filename_disk", "title", "description", "metadata" from "directus_files" where "id" = ?',
-				)
-				.response(null);
-
 			const mockData = {
 				storage: 'local',
 				type: 'image/jpeg',
@@ -209,65 +204,73 @@ describe('Service / Files', () => {
 
 			vi.useRealTimers();
 
-			expect(superUpdateOne).toHaveBeenCalledWith(
+			expect(superUpdateOne).toHaveBeenCalledExactlyOnceWith(
 				sample.id,
-				expect.objectContaining({
-					...mockData,
+				{
+					filename_disk: `${sample.id}.jpg`,
+					filesize: sample.filesize,
 					uploaded_on: mockDate.toISOString(),
-				}),
+				},
 				{ emitEvents: false },
 			);
 		});
 
-		test('should update the `filename_disk` extension to the correct mimetype', async () => {
-			tracker.on
-				.select(
-					'select "folder", "filename_download", "filename_disk", "title", "description", "metadata" from "directus_files" where "id" = ?',
-				)
-				.response(null);
-
-			const mockDataJPG = {
-				storage: 'local',
-				type: 'image/jpeg',
-				filename_download: 'test.jpg',
-			};
-
-			const mockDataPNG = {
-				storage: 'local',
-				type: 'image/png',
-				filename_download: 'test.png',
-			};
-
+		test('should not pass client-supplied fields to the sudo write', async () => {
 			const mockDate = new Date();
 
 			vi.setSystemTime(mockDate);
 
-			await service.uploadOne(new PassThrough(), mockDataJPG);
-
-			expect(superUpdateOne).toHaveBeenCalledWith(
-				sample.id,
-				expect.objectContaining({
-					...mockDataJPG,
-					uploaded_on: mockDate.toISOString(),
-					filename_disk: `${sample.id}.jpg`,
-				}),
-				{ emitEvents: false },
-			);
-
-			await service.uploadOne(new PassThrough(), mockDataPNG);
-
-			expect(superUpdateOne).toHaveBeenCalledWith(
-				sample.id,
-				expect.objectContaining({
-					...mockDataPNG,
-					uploaded_on: mockDate.toISOString(),
-					filename_disk: `${sample.id}.png`,
-				}),
-				{ emitEvents: false },
-			);
+			await service.uploadOne(new PassThrough(), {
+				storage: 'local',
+				type: 'image/jpeg',
+				filename_download: 'test.jpg',
+				uploaded_by: 'some-other-user-id',
+				created_on: '2000-01-01T00:00:00.000Z',
+				modified_on: '2000-01-01T00:00:00.000Z',
+			});
 
 			vi.useRealTimers();
+
+			expect(superUpdateOne).toHaveBeenCalledExactlyOnceWith(
+				sample.id,
+				{
+					filename_disk: `${sample.id}.jpg`,
+					filesize: sample.filesize,
+					uploaded_on: mockDate.toISOString(),
+				},
+				{ emitEvents: false },
+			);
 		});
+
+		test.each([
+			['image/jpeg', 'test.jpg', 'jpg'],
+			['image/png', 'test.png', 'png'],
+		])(
+			'should update the `filename_disk` extension to match the %s mimetype',
+			async (type, filenameDownload, expectedExtension) => {
+				const mockDate = new Date();
+
+				vi.setSystemTime(mockDate);
+
+				await service.uploadOne(new PassThrough(), {
+					storage: 'local',
+					type,
+					filename_download: filenameDownload,
+				});
+
+				vi.useRealTimers();
+
+				expect(superUpdateOne).toHaveBeenCalledExactlyOnceWith(
+					sample.id,
+					{
+						filename_disk: `${sample.id}.${expectedExtension}`,
+						filesize: sample.filesize,
+						uploaded_on: mockDate.toISOString(),
+					},
+					{ emitEvents: false },
+				);
+			},
+		);
 
 		describe('storage default behavior', () => {
 			it('should default to the first STORAGE_LOCATIONS when storage is not provided', async () => {
@@ -284,13 +287,11 @@ describe('Service / Files', () => {
 					filename_download: 'test.jpg',
 				});
 
-				expect(superUpdateOne).toHaveBeenCalledWith(
-					sample.id,
-					expect.objectContaining({
-						storage: 'local',
-					}),
-					{ emitEvents: false },
-				);
+				expect(superCreateOne).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ storage: 'local' }), {
+					emitEvents: false,
+				});
+
+				expect(mockStorage.location).toHaveBeenCalledWith('local');
 			});
 
 			it('should use the provided storage when explicitly set', async () => {
@@ -308,13 +309,11 @@ describe('Service / Files', () => {
 					filename_download: 'test.jpg',
 				});
 
-				expect(superUpdateOne).toHaveBeenCalledWith(
-					sample.id,
-					expect.objectContaining({
-						storage: 's3',
-					}),
-					{ emitEvents: false },
-				);
+				expect(superCreateOne).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ storage: 's3' }), {
+					emitEvents: false,
+				});
+
+				expect(mockStorage.location).toHaveBeenCalledWith('s3');
 			});
 
 			it('should preserve the existing file storage on re-upload without storage', async () => {
@@ -335,13 +334,11 @@ describe('Service / Files', () => {
 					sample.id,
 				);
 
-				expect(superUpdateOne).toHaveBeenCalledWith(
-					sample.id,
-					expect.objectContaining({
-						storage: 's3',
-					}),
-					{ emitEvents: false },
-				);
+				expect(superUpdateOne).toHaveBeenNthCalledWith(1, sample.id, expect.objectContaining({ storage: 's3' }), {
+					emitEvents: false,
+				});
+
+				expect(mockStorage.location).toHaveBeenCalledWith('s3');
 			});
 
 			it('should override the existing file storage when explicitly provided', async () => {
@@ -363,13 +360,11 @@ describe('Service / Files', () => {
 					sample.id,
 				);
 
-				expect(superUpdateOne).toHaveBeenCalledWith(
-					sample.id,
-					expect.objectContaining({
-						storage: 'local',
-					}),
-					{ emitEvents: false },
-				);
+				expect(superUpdateOne).toHaveBeenNthCalledWith(1, sample.id, expect.objectContaining({ storage: 'local' }), {
+					emitEvents: false,
+				});
+
+				expect(mockStorage.location).toHaveBeenCalledWith('local');
 			});
 
 			describe('uploadOne - permanent filesystem errors', () => {

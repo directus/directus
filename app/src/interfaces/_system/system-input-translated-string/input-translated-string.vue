@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { snakeCase } from 'lodash';
+import { snakeCase } from 'lodash-es';
 import { computed, ref, unref, watch } from 'vue';
 import CustomTranslationsTooltip from './custom-translations-tooltip.vue';
 import VHighlight from '@/components/v-highlight.vue';

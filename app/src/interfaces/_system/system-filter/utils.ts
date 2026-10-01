@@ -1,6 +1,6 @@
 import type { ClientFilterOperator, FieldFilter, FieldFilterOperator, Filter } from '@directus/types';
 import { toArray } from '@directus/utils';
-import { get, isPlainObject } from 'lodash';
+import { get, isPlainObject } from 'lodash-es';
 
 export const JSON_VALUE_KEY = '$jsonValue';
 

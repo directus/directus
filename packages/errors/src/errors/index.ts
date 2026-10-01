@@ -1,6 +1,7 @@
 export { AddonNotAvailableError } from './addon-not-available.js';
 export { AddonNotFoundError } from './addon-not-found.js';
 export { AddonQuantityOutOfRangeError } from './addon-quantity-out-of-range.js';
+export { CollectionInactiveError } from './collection-inactive.js';
 export { ContainsNullValuesError } from './contains-null-values.js';
 export { ContentTooLargeError } from './content-too-large.js';
 export { EmailLimitExceededError } from './email-limit-exceeded.js';

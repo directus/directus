@@ -3,10 +3,12 @@ import { scheduleSynchronizedJob, validateCron } from './schedule.js';
 
 // Mock SynchronizedClock to isolate scheduling logic
 vi.mock('../synchronization.js', () => ({
-	SynchronizedClock: vi.fn().mockImplementation(() => ({
-		set: vi.fn().mockResolvedValue(true),
-		reset: vi.fn().mockResolvedValue(undefined),
-	})),
+	SynchronizedClock: vi.fn().mockImplementation(function () {
+		return {
+			set: vi.fn().mockResolvedValue(true),
+			reset: vi.fn().mockResolvedValue(undefined),
+		};
+	}),
 }));
 
 describe('validateCron', () => {

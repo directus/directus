@@ -1,6 +1,6 @@
 import { useCollection } from '@directus/composables';
 import { Field, ItemPermissions } from '@directus/types';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { computed, MaybeRef, ref, Ref, unref } from 'vue';
 import { Collection, IsNew } from '../../types';
 import type { FormField } from '@/components/v-form/types';
