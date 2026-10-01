@@ -1215,7 +1215,7 @@ definition is registered in.
 Argument nodes: `arg` takes a scalar (an int for numbers, a string otherwise), `filterArg` takes the plain object form
 of a filter.
 
-#### `buildResolveInfo({ selections, fragments?, schema, returnType })`
+#### `buildResolveInfo({ selections, selectionSets?, fragments?, schema, returnType })`
 
 Stands in for the `GraphQLResolveInfo` a resolver receives. `schema` and `returnType` come from the executable schema
 under test, since the type of a selection set decides how fragments resolve.
@@ -1226,6 +1226,20 @@ import { buildField, buildFragmentDefinition, buildFragmentSpread, buildResolveI
 const info = buildResolveInfo({
 	selections: [buildFragmentSpread('Fields')],
 	fragments: { Fields: buildFragmentDefinition('Fields', 'article', [buildField('id'), buildField('title')]) },
+	schema,
+	returnType: schema.getQueryType()!.getFields()['article']!.type,
+});
+
+expect(buildSelections(info)).toEqual([buildField('id'), buildField('title')]);
+```
+
+Use `selectionSets` instead of `selections` to stand in for a field that same-named fields from separate fragments were
+collected into: graphql-js merges those into a single resolver call that carries one `fieldNode` per fragment.
+
+```typescript
+// `query { ...A ...B }` with `A` on `article` and `B` on `article`, which both reach the resolver as one call
+const info = buildResolveInfo({
+	selectionSets: [[buildField('id')], [buildField('title')]],
 	schema,
 	returnType: schema.getQueryType()!.getFields()['article']!.type,
 });
