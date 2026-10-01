@@ -73,6 +73,11 @@ function getBlockedPaths(env: Record<string, unknown>): string[] {
 	const packageFilePath =
 		typeof packageFileLocation === 'string' ? path.join(packageFileLocation, 'package.json') : undefined;
 
+	const dbFilename = env['DB_CLIENT'] === 'sqlite3' ? env['DB_FILENAME'] : undefined;
+
+	const dbFilePaths =
+		typeof dbFilename === 'string' ? ['', '-journal', '-wal', '-shm'].map((suffix) => dbFilename + suffix) : [];
+
 	return [
 		getExtensionsPath(),
 		env['TEMP_PATH'],
@@ -80,6 +85,7 @@ function getBlockedPaths(env: Record<string, unknown>): string[] {
 		env['EMAIL_TEMPLATES_PATH'],
 		env['CONFIG_PATH'],
 		packageFilePath,
+		...dbFilePaths,
 	].filter((blockedPath) => typeof blockedPath === 'string');
 }
 
