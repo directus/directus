@@ -108,7 +108,7 @@ export class FoldersService extends ItemsService<Folder> {
 
 	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Folder[]> {
 		if (!isAdmin(this.accountability)) {
-			query.filter = mergeFilters(query.filter ?? null, { type: { _neq: 'flows' } });
+			query = { ...query, filter: mergeFilters(query.filter ?? null, { type: { _neq: 'flows' } }) };
 		}
 
 		return super.readByQuery(query, opts);
