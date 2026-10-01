@@ -70,8 +70,13 @@ export function assertValidStoragePath(filepath: string, storage?: string): void
 function getBlockedPaths(env: Record<string, unknown>): string[] {
 	const packageFileLocation = env['PACKAGE_FILE_LOCATION'];
 
-	const packageFilePath =
-		typeof packageFileLocation === 'string' ? path.join(packageFileLocation, 'package.json') : undefined;
+	// Module extensions are resolved from the package.json dependencies, installed in node_modules
+	const packagePaths =
+		typeof packageFileLocation === 'string'
+			? [path.join(packageFileLocation, 'package.json'), path.join(packageFileLocation, 'node_modules')]
+			: [];
+
+	packagePaths.push(path.resolve('node_modules'));
 
 	const dbFilename = env['DB_CLIENT'] === 'sqlite3' ? env['DB_FILENAME'] : undefined;
 
@@ -84,7 +89,7 @@ function getBlockedPaths(env: Record<string, unknown>): string[] {
 		env['MIGRATIONS_PATH'],
 		env['EMAIL_TEMPLATES_PATH'],
 		env['CONFIG_PATH'],
-		packageFilePath,
+		...packagePaths,
 		...dbFilePaths,
 	].filter((blockedPath) => typeof blockedPath === 'string');
 }

@@ -128,6 +128,18 @@ describe('assertValidStoragePath', () => {
 				error: false,
 			},
 			{
+				name: 'blocks writing into node_modules',
+				filepath: 'node_modules/lodash-es/lodash.js',
+				storage: 'local',
+				error: ForbiddenError,
+			},
+			{
+				name: 'allows a nested node_modules folder',
+				filepath: 'uploads/node_modules/x.js',
+				storage: 'local',
+				error: false,
+			},
+			{
 				name: 'blocks overwriting the config file',
 				filepath: '.env',
 				storage: 'local',
@@ -361,6 +373,13 @@ describe('assertValidStoragePath', () => {
 			{
 				name: 'blocks the package.json in an absolute PACKAGE_FILE_LOCATION inside a relative storage root',
 				filepath: 'project/package.json',
+				storage: 'local',
+				env: { STORAGE_LOCAL_ROOT: '.', PACKAGE_FILE_LOCATION: '/directus/project' },
+				error: ForbiddenError,
+			},
+			{
+				name: 'blocks the node_modules in an absolute PACKAGE_FILE_LOCATION inside a relative storage root',
+				filepath: 'project/node_modules/directus-extension-evil/dist/index.js',
 				storage: 'local',
 				env: { STORAGE_LOCAL_ROOT: '.', PACKAGE_FILE_LOCATION: '/directus/project' },
 				error: ForbiddenError,
