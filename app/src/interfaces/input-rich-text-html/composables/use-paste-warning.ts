@@ -229,10 +229,9 @@ function unwrapGoogleDocs(wrapper: Element) {
  * valid content.
  */
 function clipboardContent(html: string, schema: Schema): string {
-	// False positive: DOMParser builds an inert document, so no script runs and no resource loads here.
+	// No XSS Risk: DOMParser builds an inert document, so no script runs and no resource loads here.
 	// The output is NOT sanitized. It only goes to the ProseMirror schema parser or to raw mode as text,
 	// so it must never go into the live DOM (innerHTML, v-html).
-	// codeql[js/xss]
 	const body = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html').body;
 
 	for (const meta of Array.from(body.querySelectorAll('meta'))) meta.remove();
