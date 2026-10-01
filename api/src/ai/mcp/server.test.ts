@@ -600,7 +600,9 @@ describe('mcp server', () => {
 				readOne: vi.fn(),
 			};
 
-			vi.mocked(ItemsService).mockImplementation(() => mockItemsService as unknown as ItemsService);
+			vi.mocked(ItemsService).mockImplementation(function () {
+				return mockItemsService as unknown as ItemsService;
+			});
 		});
 
 		test('should return a json rpc error if no prompt collection defined', async () => {
@@ -804,7 +806,9 @@ describe('mcp server', () => {
 				readOne: vi.fn(),
 			};
 
-			vi.mocked(ItemsService).mockImplementation(() => mockItemsService as unknown as ItemsService);
+			vi.mocked(ItemsService).mockImplementation(function () {
+				return mockItemsService as unknown as ItemsService;
+			});
 		});
 
 		test('should return a json rpc error if no prompt collection defined', async () => {

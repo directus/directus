@@ -1,5 +1,5 @@
 import { createDirectus, createItem, deleteItems, graphql, readItems, rest, staticToken } from '@directus/sdk';
-import { database, port } from '@utils/constants.js';
+import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { afterAll, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
@@ -126,8 +126,7 @@ test('sorts by a m2m field', async () => {
 	expect(order(desc)).toEqual([5, 4, 3, 2, 1]);
 });
 
-// TODO: actually fix this on oracle, see https://github.com/directus/directus/issues/2825
-test.skipIf(database === 'oracle')('sorts by a function on a top level field', async () => {
+test('sorts by a function on a top level field', async () => {
 	const marker = 'sort-fn-top';
 	await seedArticles(marker, (n) => ({ release: `200${n}-01-01T00:00:00` }));
 

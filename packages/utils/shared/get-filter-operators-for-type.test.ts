@@ -106,19 +106,6 @@ describe('', () => {
 		]);
 	});
 
-	it('returns the filter operators for geometry', () => {
-		expect(getFilterOperatorsForType('geometry')).toStrictEqual([
-			'eq',
-			'neq',
-			'null',
-			'nnull',
-			'intersects',
-			'nintersects',
-			'intersects_bbox',
-			'nintersects_bbox',
-		]);
-	});
-
 	it('includes validation only types', () => {
 		expect(getFilterOperatorsForType('alias', { includeValidation: true })).toStrictEqual([
 			'contains',
@@ -139,5 +126,30 @@ describe('', () => {
 			'nin',
 			'regex',
 		]);
+	});
+
+	it.each([
+		'geometry',
+		'geometry.Point',
+		'geometry.LineString',
+		'geometry.Polygon',
+		'geometry.MultiPoint',
+		'geometry.MultiLineString',
+		'geometry.MultiPolygon',
+	] as const)('returns the filter operators for %s', (type) => {
+		expect(getFilterOperatorsForType(type)).toStrictEqual([
+			'eq',
+			'neq',
+			'null',
+			'nnull',
+			'intersects',
+			'nintersects',
+			'intersects_bbox',
+			'nintersects_bbox',
+		]);
+	});
+
+	it('does not add validation only operators to geometry subtypes', () => {
+		expect(getFilterOperatorsForType('geometry.Point', { includeValidation: true })).not.toContain('regex');
 	});
 });
