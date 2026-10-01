@@ -1,7 +1,11 @@
+import path from 'node:path';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { resetEnv, setEnv } from '../../../test-utils/env.js';
 import { assertValidStorageLocation, assertValidStoragePath } from './assert-valid-storage-path.js';
+
+// Fixed cwd for the test cases, resolved so it's a real absolute path on every platform (e.g. a drive on Windows)
+const cwd = path.resolve('/directus');
 
 vi.mock('@directus/env', async () => {
 	const { mockEnv } = await import('../../../test-utils/env.js');
@@ -46,7 +50,7 @@ describe('assertValidStorageLocation', () => {
 
 describe('assertValidStoragePath', () => {
 	beforeEach(() => {
-		vi.spyOn(process, 'cwd').mockReturnValue('/directus');
+		vi.spyOn(process, 'cwd').mockReturnValue(cwd);
 		resetEnv();
 	});
 

@@ -120,12 +120,9 @@ export class MailService {
 		// Prevent path traversal: only resolve templates that stay within their own templates directory.
 		let templatePath: string | null = null;
 
-		if (isWithinPath(customTemplatePath, customTemplatesDir, path.sep) && (await fse.pathExists(customTemplatePath))) {
+		if (isWithinPath(customTemplatePath, customTemplatesDir) && (await fse.pathExists(customTemplatePath))) {
 			templatePath = customTemplatePath;
-		} else if (
-			isWithinPath(systemTemplatePath, systemTemplatesDir, path.sep) &&
-			(await fse.pathExists(systemTemplatePath))
-		) {
+		} else if (isWithinPath(systemTemplatePath, systemTemplatesDir) && (await fse.pathExists(systemTemplatePath))) {
 			templatePath = systemTemplatePath;
 		}
 

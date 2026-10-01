@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { normalizePath, toArray } from '@directus/utils';
+import { toArray } from '@directus/utils';
 import { getExtensionsPath } from '../../../extensions/lib/get-extensions-path.js';
 import { isWithinPath } from '../../../utils/is-within-path.js';
 import { sanitizeFilepath } from './sanitize-filepath.js';
@@ -54,10 +54,11 @@ export function assertValidStoragePath(filepath: string, storage?: string): void
 
 	// Block local writes to any forbidden locations placed inside storage root
 	if (storageDriver === 'local') {
-		for (const blockedPath of getBlockedPaths(env)) {
-			const relativePath = getOverlappingPath(storageRoot, blockedPath);
+		// Resolve the file like the local driver does, so absolute and relative paths compare
+		const filePath = path.resolve(storageRoot, normalizedFilePath);
 
-			if (relativePath !== null && isWithinPath(normalizedFilePath, relativePath)) {
+		for (const blockedPath of getBlockedPaths()) {
+			if (isWithinPath(filePath, blockedPath)) {
 				throw new ForbiddenError();
 			}
 		}
@@ -67,7 +68,8 @@ export function assertValidStoragePath(filepath: string, storage?: string): void
 /**
  * Get the local file paths that Directus uploads should be prevented from uploading to
  */
-function getBlockedPaths(env: Record<string, unknown>): string[] {
+function getBlockedPaths(): string[] {
+	const env = useEnv();
 	const packageFileLocation = env['PACKAGE_FILE_LOCATION'];
 
 	// Module extensions are resolved from the package.json dependencies, installed in node_modules
@@ -92,25 +94,4 @@ function getBlockedPaths(env: Record<string, unknown>): string[] {
 		...packagePaths,
 		...dbFilePaths,
 	].filter((blockedPath) => typeof blockedPath === 'string');
-}
-
-/**
- * Get a forbidden directory relative to the storage root, to compare against filepaths within that root.
- * Both are resolved against the cwd like the local driver does, so absolute and relative paths compare.
- *
- * @returns The relative directory, an empty string when the whole root is forbidden, or null when they don't overlap
- */
-function getOverlappingPath(storageRoot: string, forbiddenPath: string): string | null {
-	const root = path.resolve(storageRoot);
-	const forbidden = path.resolve(forbiddenPath);
-
-	const isOutside = (relative: string) =>
-		relative === '..' || relative.startsWith('..' + path.sep) || path.isAbsolute(relative);
-
-	// The storage root is the forbidden directory or inside of it
-	if (isOutside(path.relative(forbidden, root)) === false) return '';
-
-	const relative = path.relative(root, forbidden);
-
-	return isOutside(relative) ? null : normalizePath(relative);
 }
