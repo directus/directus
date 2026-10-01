@@ -11,6 +11,9 @@ Updated outdated type definitions for `directus_notifications`, `directus_permis
 Breaking changes in `@directus/sdk`:
 - `DirectusNotification.id` is now correctly typed as `number`.
 - `DirectusField.schema` is now nullable.
+- `FieldMetaConditionOptionType` has been removed; condition `options` is now `Record<string, any>`.
+- `FieldMetaConditionType.hidden`, `readonly`, `required`, and `options` are now optional, and `rule` is typed as a filter.
+- All `ExtensionSchema` properties are now optional, and `DirectusExtension.schema` can also be an `ExtensionSchemaEntry`.
 
 Breaking changes in `@directus/types`:
 - `Notification.id` is now correctly typed as `number`.
