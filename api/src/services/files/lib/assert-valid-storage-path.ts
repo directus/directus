@@ -69,13 +69,16 @@ export function assertValidStoragePath(filepath: string, storage?: string): void
  */
 function getBlockedPaths(env: Record<string, unknown>): string[] {
 	const packageFileLocation = env['PACKAGE_FILE_LOCATION'];
-	const packageFilePath = typeof packageFileLocation === 'string' ? path.join(packageFileLocation, 'package.json') : undefined;
+
+	const packageFilePath =
+		typeof packageFileLocation === 'string' ? path.join(packageFileLocation, 'package.json') : undefined;
 
 	return [
 		getExtensionsPath(),
 		env['TEMP_PATH'],
 		env['MIGRATIONS_PATH'],
 		env['EMAIL_TEMPLATES_PATH'],
+		env['CONFIG_PATH'],
 		packageFilePath,
 	].filter((blockedPath) => typeof blockedPath === 'string');
 }

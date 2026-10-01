@@ -6,7 +6,8 @@ import { assertValidStorageLocation, assertValidStoragePath } from './assert-val
 vi.mock('@directus/env', async () => {
 	const { mockEnv } = await import('../../../test-utils/env.js');
 
-	return mockEnv();
+	// The default CONFIG_PATH is resolved against the real cwd on import, keep it relative to the mocked cwd instead
+	return mockEnv({ CONFIG_PATH: '.env' });
 });
 
 type TestCase = {
@@ -123,6 +124,18 @@ describe('assertValidStoragePath', () => {
 			{
 				name: 'allows a nested package.json',
 				filepath: 'uploads/package.json',
+				storage: 'local',
+				error: false,
+			},
+			{
+				name: 'blocks overwriting the config file',
+				filepath: '.env',
+				storage: 'local',
+				error: ForbiddenError,
+			},
+			{
+				name: 'allows a file that shares the config file prefix',
+				filepath: '.env.example',
 				storage: 'local',
 				error: false,
 			},
@@ -308,6 +321,13 @@ describe('assertValidStoragePath', () => {
 				filepath: 'project/package.json',
 				storage: 'local',
 				env: { STORAGE_LOCAL_ROOT: '.', PACKAGE_FILE_LOCATION: '/directus/project' },
+				error: ForbiddenError,
+			},
+			{
+				name: 'blocks an absolute JavaScript CONFIG_PATH inside a relative storage root',
+				filepath: 'config/directus.config.js',
+				storage: 'local',
+				env: { STORAGE_LOCAL_ROOT: '.', CONFIG_PATH: '/directus/config/directus.config.js' },
 				error: ForbiddenError,
 			},
 			{
