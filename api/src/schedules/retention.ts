@@ -2,6 +2,7 @@ import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
+import { chunk } from 'lodash-es';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { useLock } from '../lock/index.js';
@@ -20,6 +21,12 @@ const env = useEnv();
 
 const retentionLockKey = 'schedule--data-retention';
 const retentionLockTimeout = 10 * 60 * 1000; // 10 mins
+
+// Some databases cap how many values a single `whereIn` can hold. Chunk per-dialect instead of
+// relying on each database's own (much larger) default limit.
+const DEFAULT_IN_CLAUSE_CHUNK_SIZE = 10_000;
+const ORACLE_IN_CLAUSE_CHUNK_SIZE = 1_000;
+const MSSQL_IN_CLAUSE_CHUNK_SIZE = 2_000;
 
 const ACTIVITY_RETENTION_TIMEFRAME = getMilliseconds(env['ACTIVITY_RETENTION']);
 const FLOW_LOGS_RETENTION_TIMEFRAME = getMilliseconds(env['FLOW_LOGS_RETENTION']);
@@ -46,6 +53,12 @@ export async function handleRetentionJob() {
 	const lockTime = await lock.get(retentionLockKey);
 	const now = Date.now();
 	const helpers = getHelpers(database);
+
+	const inClauseChunkSize = helpers.schema.isOneOfClients(['oracle'])
+		? ORACLE_IN_CLAUSE_CHUNK_SIZE
+		: helpers.schema.isOneOfClients(['mssql'])
+			? MSSQL_IN_CLAUSE_CHUNK_SIZE
+			: DEFAULT_IN_CLAUSE_CHUNK_SIZE;
 
 	if (lockTime && Number(lockTime) > now - retentionLockTimeout) {
 		// ensure only one connected process
@@ -103,14 +116,23 @@ export async function handleRetentionJob() {
 							.then((revisions) => revisions.map((revision) => revision.id));
 					}
 
+					// parent has no cascade, so references to deleted revisions must be cleared first
 					if (revisionIds.length > 0) {
-						await database('directus_revisions').update({ parent: null }).whereIn('parent', revisionIds);
+						for (const idsChunk of chunk(revisionIds, inClauseChunkSize)) {
+							await database('directus_revisions').update({ parent: null }).whereIn('parent', idsChunk);
+						}
 					}
 				}
 
-				count = await database(task.collection)
-					.whereIn('id', isMySQL || deletesRevisions ? records : subquery)
-					.delete();
+				if (isMySQL || deletesRevisions) {
+					count = 0;
+
+					for (const idsChunk of chunk(records, inClauseChunkSize)) {
+						count += await database(task.collection).whereIn('id', idsChunk).delete();
+					}
+				} else {
+					count = await database(task.collection).whereIn('id', subquery).delete();
+				}
 			} catch (error) {
 				logger.error(error, `Retention failed for Collection ${task.collection}`);
 

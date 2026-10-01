@@ -161,4 +161,22 @@ describe('retention', () => {
 			tracker.history.all.indexOf(tracker.history.delete[0]!),
 		);
 	});
+
+	test('chunks the parent-nulling whereIn per the database in-clause limit', async () => {
+		mocks.isOneOfClients.mockImplementation((clients: string[]) => clients.includes('oracle'));
+		const { handleRetentionJob } = await import('./retention.js');
+
+		const revisionIds = Array.from({ length: 1500 }, (_, index) => index + 1);
+
+		tracker.on.select('directus_activity').responseOnce([{ id: 10 }]);
+		tracker.on.select('directus_revisions').responseOnce(revisionIds.map((id) => ({ id })));
+		tracker.on.update('directus_revisions').response(1);
+		tracker.on.delete('directus_activity').response(1);
+
+		await handleRetentionJob();
+
+		expect(tracker.history.update).toHaveLength(2);
+		expect(tracker.history.update[0]?.bindings).toEqual([null, ...revisionIds.slice(0, 1000)]);
+		expect(tracker.history.update[1]?.bindings).toEqual([null, ...revisionIds.slice(1000)]);
+	});
 });
