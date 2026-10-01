@@ -1,4 +1,4 @@
-import { createHmac } from 'node:crypto';
+import { createHash } from 'node:crypto';
 import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
 import { spec } from '@directus/specs';
@@ -13,7 +13,7 @@ import type {
 } from '@directus/types';
 import { getRelation, getRelationType } from '@directus/utils';
 import type { Knex } from 'knex';
-import { cloneDeep, isPlainObject, mergeWith } from 'lodash-es';
+import { cloneDeep, mergeWith } from 'lodash-es';
 import type {
 	OpenAPIObject,
 	ParameterObject,
@@ -27,10 +27,9 @@ import getDatabase from '../database/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
-import { byCodepoint } from '../utils/by-codepoint.js';
-import { getSecret } from '../utils/get-secret.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
+import { getSpecFingerprint } from './specifications/get-spec-fingerprint.js';
 
 const env = useEnv();
 
@@ -98,8 +97,8 @@ class OASSpecsService implements SpecificationSubService {
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
 		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
 
-		const hashedVersion = createHmac('sha256', getSecret())
-			.update(canonicalStringify({ tags, paths, components }))
+		const hashedVersion = createHash('sha256')
+			.update(getSpecFingerprint(schemaForSpec, permissions, tags))
 			.digest('hex');
 
 		const spec: OpenAPIObject = {
@@ -658,28 +657,4 @@ class GraphQLSpecsService implements SpecificationSubService {
 		if (scope === 'system') return this.system.getSchema('sdl');
 		return null;
 	}
-}
-
-/**
- * Recursively serializes to a canonical JSON string in one pass, so structurally equivalent
- * values always serialize the same way regardless of fetch order. Arrays are sorted by their
- * own (already canonical) JSON fragment, which avoids both a separate sort-key pass and a
- * second full-tree JSON.stringify over a rebuilt clone.
- */
-function canonicalStringify(value: unknown): string {
-	if (Array.isArray(value)) {
-		return `[${value.map(canonicalStringify).sort(byCodepoint).join(',')}]`;
-	}
-
-	if (isPlainObject(value)) {
-		const record = value as Record<string, unknown>;
-
-		const entries = Object.keys(record)
-			.sort(byCodepoint)
-			.map((key) => `${JSON.stringify(key)}:${canonicalStringify(record[key])}`);
-
-		return `{${entries.join(',')}}`;
-	}
-
-	return JSON.stringify(value);
 }
