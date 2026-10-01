@@ -36,7 +36,7 @@ const { DEFAULTS } = await vi.importActual<typeof import('@directus/env')>('@dir
  * @remarks
  * - Use setEnv() / resetEnv() to change values per test, instead of replacing the whole env with mockReturnValue()
  * - Modules that derive values from the env once at import time, like constants, don't see later setEnv() calls.
- *   Call setEnv() first, then resetEnvMock() and re-import the module with a dynamic import()
+ *   Call setEnv() first, then vi.resetModules() and re-import the module with a dynamic import()
  */
 export function mockEnv(overrides?: Record<string, unknown>) {
 	defaultEnv = {
@@ -49,14 +49,6 @@ export function mockEnv(overrides?: Record<string, unknown>) {
 	return {
 		useEnv: vi.fn(() => currentEnv),
 	};
-}
-
-/**
- * Clear the module cache, so modules imported afterwards are evaluated again with the current env.
- * The env mock itself is kept.
- */
-export function resetEnvMock() {
-	vi.resetModules();
 }
 
 let defaultEnv: Record<string, unknown> = {};
@@ -86,10 +78,11 @@ export function setEnv(overrides: Record<string, unknown> = {}) {
 
 /**
  * Restore the env returned by a `mockEnv()` mock to its defaults, undoing any `setEnv()` calls.
- * Unlike `resetEnvMock()`, this doesn't clear the module cache.
  */
 export function resetEnv() {
-	for (const key of Object.keys(currentEnv)) delete currentEnv[key];
+	for (const key of Object.keys(currentEnv)) {
+		delete currentEnv[key];
+	}
 
 	Object.assign(currentEnv, defaultEnv);
 }

@@ -5,7 +5,6 @@ import { Driver, StorageManager } from '@directus/storage';
 import { afterEach, beforeEach, describe, expect, it, type MockInstance, test, vi } from 'vitest';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
-import { resetEnvMock } from '../test-utils/env.js';
 import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
 import { createMockDriver, createMockStorage } from '../test-utils/storage.js';
 import { FilesService, ItemsService } from './index.js';
@@ -52,7 +51,7 @@ describe('Service / Files', () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-		resetEnvMock();
+		vi.resetModules();
 		vi.mocked(useEnv).mockReset();
 	});
 
