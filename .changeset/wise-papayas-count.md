@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed file uploads being able to write into the extensions directory when using the local driver
+Improved validation of storage locations and paths for files
