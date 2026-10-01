@@ -19,7 +19,7 @@ import { UserIntegrityCheckFlag } from '@directus/types';
 import { getRelationsForCollection } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import { assign, clone, cloneDeep, difference, omit, pick, without } from 'lodash-es';
+import { assign, clone, cloneDeep, difference, isNil, omit, pick, without } from 'lodash-es';
 import { getCache } from '../cache.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
@@ -113,7 +113,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		 * Validate 'read' permissions for the query to ensure no data leak (GHSA-2xcm-7h22-3m66)
 		 */
 		const items = await this.readByQuery(readQuery);
-		return items.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => pk);
+		return items.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => !isNil(pk));
 	}
 
 	/**
@@ -228,7 +228,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			// In case of an (big) integer primary key, it might be provided as the user can specify the value manually.
 			let primaryKey: undefined | PrimaryKey = payloadWithTypeCasting[primaryKeyField];
 
-			if (primaryKey) {
+			if (!isNil(primaryKey)) {
 				validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
 			}
 
@@ -239,7 +239,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const pkField = collectionInfo.fields[primaryKeyField];
 
 			if (
-				primaryKey &&
+				!isNil(primaryKey) &&
 				pkField &&
 				!opts.bypassAutoIncrementSequenceReset &&
 				['integer', 'bigInteger'].includes(pkField.type) &&
@@ -286,7 +286,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			// Most database support returning, those who don't tend to return the PK anyways
 			// (MySQL/SQLite). In case the primary key isn't know yet, we'll do a best-attempt at
 			// fetching it based on the last inserted row
-			if (!primaryKey) {
+			if (isNil(primaryKey)) {
 				// Fetching it with max should be safe, as we're in the context of the current transaction
 				const result = await trx.max(primaryKeyField, { as: 'id' }).from(this.collection).first();
 				primaryKey = result.id;
@@ -691,7 +691,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				for (const index in data) {
 					const item = data[index]!;
 					const primaryKey = item[primaryKeyField];
-					if (!primaryKey) throw new InvalidPayloadError({ reason: `Item in update misses primary key` });
+					if (isNil(primaryKey)) throw new InvalidPayloadError({ reason: `Item in update misses primary key` });
 
 					const combinedOpts: MutationOptions = {
 						autoPurgeCache: false,
@@ -1017,12 +1017,12 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 		const primaryKey: PrimaryKey | undefined = payload[primaryKeyField];
 
-		if (primaryKey) {
+		if (!isNil(primaryKey)) {
 			validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
 		}
 
 		const exists =
-			primaryKey &&
+			!isNil(primaryKey) &&
 			!!(await this.knex
 				.select(primaryKeyField)
 				.from(this.collection)

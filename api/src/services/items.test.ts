@@ -206,6 +206,31 @@ describe('Integration Tests', () => {
 
 				transactionSpy.mockRestore();
 			});
+
+			it('should return a provided primary key of 0', async () => {
+				vi.mocked(getDatabaseClient).mockReturnValue('postgres');
+
+				const mockQuery = {
+					insert: vi.fn().mockReturnThis(),
+					into: vi.fn().mockReturnThis(),
+					returning: vi.fn().mockResolvedValue([{ id: 0 }]),
+					max: vi.fn().mockReturnThis(),
+					from: vi.fn().mockReturnThis(),
+					first: vi.fn().mockResolvedValue({ id: 5 }),
+				};
+
+				const transactionSpy = vi.spyOn(db, 'transaction').mockImplementation(async (callback) => {
+					const trx = { ...db, ...mockQuery };
+					return await callback(trx as any);
+				});
+
+				const key = await service.createOne({ id: 0, name: 'Test' }, { bypassAutoIncrementSequenceReset: true });
+
+				expect(key).toBe(0);
+				expect(mockQuery.max).not.toHaveBeenCalled();
+
+				transactionSpy.mockRestore();
+			});
 		});
 
 		describe('createMany', () => {
@@ -385,6 +410,18 @@ describe('Integration Tests', () => {
 				expect(readByQuery).toHaveBeenCalledExactlyOnceWith({ filter: { id: { _gt: 0 } }, fields: ['id'] });
 
 				expect((readByQuery.mock.contexts[0] as ItemsService).accountability).toBe(accountability);
+
+				readByQuery.mockRestore();
+			});
+
+			it('should keep falsy primary keys', async () => {
+				const readByQuery = vi
+					.spyOn(ItemsService.prototype, 'readByQuery')
+					.mockResolvedValue([{ id: 0 }, { id: '' }, { id: null }, { id: 1 }]);
+
+				const keys = await service.getKeysByQuery({});
+
+				expect(keys).toEqual([0, '', 1]);
 
 				readByQuery.mockRestore();
 			});
