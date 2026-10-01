@@ -65,7 +65,7 @@ export class AuthenticationService {
 	): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
 
-		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
+		const STALL_TIME = env.LOGIN_STALL_TIME;
 		const timeStart = performance.now();
 
 		const provider = getAuthProvider(providerName);
@@ -259,7 +259,7 @@ export class AuthenticationService {
 		}
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL, 0));
 
 		if (options?.session) {
 			tokenPayload.session = refreshToken;
@@ -331,7 +331,7 @@ export class AuthenticationService {
 
 	async refresh(refreshToken: string, options?: Partial<{ session: boolean }>): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
-		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
+		const STALL_TIME = env.LOGIN_STALL_TIME;
 		const timeStart = performance.now();
 
 		if (!refreshToken) {
@@ -515,7 +515,7 @@ export class AuthenticationService {
 		}
 
 		// Keep the old session active for a short period of time
-		const GRACE_PERIOD = getMilliseconds(env['SESSION_REFRESH_GRACE_PERIOD'], 10_000);
+		const GRACE_PERIOD = getMilliseconds(env.SESSION_REFRESH_GRACE_PERIOD, 10_000);
 
 		// Update the existing session record to have a short safety timeout
 		// before expiring, and add the reference to the new session token

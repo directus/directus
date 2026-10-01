@@ -67,10 +67,10 @@ describe('#constructor', () => {
 		expect(monitor['options']).toEqual({
 			sampleInterval: 250,
 			resolution: 10,
-			maxMemoryHeapUsed: false,
-			maxMemoryRss: false,
-			maxEventLoopDelay: false,
-			maxEventLoopUtilization: false,
+			maxMemoryHeapUsed: undefined,
+			maxMemoryRss: undefined,
+			maxEventLoopDelay: undefined,
+			maxEventLoopUtilization: undefined,
 		});
 	});
 
@@ -91,10 +91,10 @@ describe('#constructor', () => {
 describe('#overloaded', () => {
 	test('Returns false if all settings are false', () => {
 		monitor = new PressureMonitor({
-			maxMemoryHeapUsed: false,
-			maxMemoryRss: false,
-			maxEventLoopDelay: false,
-			maxEventLoopUtilization: false,
+			maxMemoryHeapUsed: undefined,
+			maxMemoryRss: undefined,
+			maxEventLoopDelay: undefined,
+			maxEventLoopUtilization: undefined,
 		});
 
 		expect(monitor.overloaded).toBe(false);

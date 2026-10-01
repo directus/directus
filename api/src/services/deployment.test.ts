@@ -4,7 +4,6 @@ import type { Item } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
 import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
 import { DeploymentProjectsService } from './deployment-projects.js';
-import { DeploymentRunsService } from './deployment-runs.js';
 import { DeploymentService } from './deployment.js';
 import { ItemsService } from './items.js';
 

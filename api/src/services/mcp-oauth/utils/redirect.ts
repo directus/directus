@@ -31,7 +31,9 @@ function parseAllowedCustomRedirect(value: string): AllowedCustomRedirect | null
 }
 
 function getAllowedCustomRedirects(): AllowedCustomRedirect[] {
-	const values = (useEnv()['MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS'] as string[] | undefined) ?? [];
+	const env = useEnv();
+
+	const values = env.MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS;
 
 	return values.flatMap((value) => {
 		const redirect = parseAllowedCustomRedirect(value);
@@ -99,7 +101,7 @@ export function validateRedirectUri(uri: unknown): void {
 	}
 
 	// Optional operator-defined domain allowlist. Loopback bypasses to keep native OAuth clients working.
-	const allowedDomains = (useEnv()['MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS'] as string[]) ?? [];
+	const allowedDomains = useEnv().MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS;
 
 	if (
 		allowedDomains.length > 0 &&

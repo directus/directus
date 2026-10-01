@@ -3,8 +3,8 @@ import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getSharpInstance } from './get-sharp-instance.js';
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../../../test-utils/env.js');
-	return mockEnv();
+	const { mockUseEnv } = await import('../../../test-utils/env.js');
+	return mockUseEnv();
 });
 
 vi.mock('sharp', () => {

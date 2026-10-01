@@ -25,7 +25,7 @@ export async function uploadToGoogle(file: UploadedFile, apiKey: string): Promis
 		});
 	} catch (error) {
 		if (error instanceof Error && (error.name === 'AbortError' || error.name === 'TimeoutError')) {
-			throw new Error(`Google upload timed out after ${UPLOAD_TIMEOUT / 1000}s`);
+			throw new Error(`Google upload timed out after ${UPLOAD_TIMEOUT / 1000}s`, { cause: error });
 		}
 
 		throw error;

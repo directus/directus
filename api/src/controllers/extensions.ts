@@ -95,14 +95,14 @@ router.get(
 			query.sort = sort[0];
 		}
 
-		if (env['MARKETPLACE_TRUST'] === 'sandbox') {
+		if (env.MARKETPLACE_TRUST === 'sandbox') {
 			query.sandbox = true;
 		}
 
 		const options: ListOptions = {};
 
-		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
-			options.registry = env['MARKETPLACE_REGISTRY'];
+		if (env.MARKETPLACE_REGISTRY) {
+			options.registry = env.MARKETPLACE_REGISTRY;
 		}
 
 		let payload;
@@ -132,8 +132,8 @@ router.get(
 
 		const options: AccountOptions = {};
 
-		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
-			options.registry = env['MARKETPLACE_REGISTRY'];
+		if (env.MARKETPLACE_REGISTRY) {
+			options.registry = env.MARKETPLACE_REGISTRY;
 		}
 
 		let payload;
@@ -163,8 +163,8 @@ router.get(
 
 		const options: DescribeOptions = {};
 
-		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
-			options.registry = env['MARKETPLACE_REGISTRY'];
+		if (env.MARKETPLACE_REGISTRY) {
+			options.registry = env.MARKETPLACE_REGISTRY;
 		}
 
 		let payload;

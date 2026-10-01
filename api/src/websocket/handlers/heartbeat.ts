@@ -2,7 +2,6 @@ import { useEnv } from '@directus/env';
 import { ServiceUnavailableError } from '@directus/errors';
 import type { ActionHandler } from '@directus/types';
 import { WebSocketMessage } from '@directus/types';
-import { toBoolean } from '@directus/utils';
 import emitter from '../../emitter.js';
 import { getWebSocketController, WebSocketController } from '../controllers/index.js';
 import type { WebSocketClient } from '../types.js';
@@ -10,7 +9,7 @@ import { fmtMessage, getMessageType } from '../utils/message.js';
 
 const env = useEnv();
 
-const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_PERIOD']) * 1000;
+const HEARTBEAT_FREQUENCY = env.WEBSOCKETS_HEARTBEAT_PERIOD * 1000;
 
 export class HeartbeatHandler {
 	private pulse: NodeJS.Timeout | undefined;
@@ -33,7 +32,7 @@ export class HeartbeatHandler {
 			}
 		});
 
-		if (toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']) === true) {
+		if (env.WEBSOCKETS_HEARTBEAT_ENABLED) {
 			emitter.onAction('websocket.connect', () => this.checkClients());
 			emitter.onAction('websocket.error', () => this.checkClients());
 			emitter.onAction('websocket.close', () => this.checkClients());

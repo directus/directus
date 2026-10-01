@@ -27,6 +27,10 @@ export const cast = (value: unknown, key?: string): unknown => {
 			return toArray(value)
 				.map((v) => cast(v))
 				.filter((v) => v !== '');
+		case 'string-array':
+			return toArray(value)
+				.map((v) => toString(v))
+				.filter((v) => v !== '');
 		case 'json':
 			return tryJson(value);
 	}

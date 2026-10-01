@@ -21,14 +21,14 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 
 	// Support custom cache instance and TTL via res.locals
 	const cacheInstance = res.locals['cacheInstance'] || cache;
-	const cacheTTL = res.locals['cacheTTL'] ?? getMilliseconds(env['CACHE_TTL']);
+	const cacheTTL = res.locals['cacheTTL'] ?? getMilliseconds(env.CACHE_TTL);
 	const hasCustomCache = !!res.locals['cacheInstance'];
 
 	let exceedsMaxSize = false;
 
-	if (env['CACHE_VALUE_MAX_SIZE'] !== false) {
+	if (env.CACHE_VALUE_MAX_SIZE) {
 		const valueSize = res.locals['payload'] ? stringByteSize(JSON.stringify(res.locals['payload'])) : 0;
-		const maxSize = parseBytesConfiguration(env['CACHE_VALUE_MAX_SIZE'] as string);
+		const maxSize = parseBytesConfiguration(env.CACHE_VALUE_MAX_SIZE);
 		if (maxSize !== null) exceedsMaxSize = valueSize > maxSize;
 	}
 
@@ -37,7 +37,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		? res.locals['cache'] !== false && cacheInstance && !req.sanitizedQuery.export && exceedsMaxSize === false
 		: (req.method.toLowerCase() === 'get' || req.originalUrl?.startsWith('/graphql')) &&
 			req.originalUrl?.startsWith('/auth') === false &&
-			env['CACHE_ENABLED'] === true &&
+			env.CACHE_ENABLED &&
 			cache &&
 			!req.sanitizedQuery.export &&
 			res.locals['cache'] !== false &&

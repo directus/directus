@@ -8,11 +8,11 @@ export function getAddress(server: http.Server) {
 	if (address === null) {
 		// Before the 'listening' event has been emitted or after calling server.close()
 
-		if (env['UNIX_SOCKET_PATH']) {
-			return env['UNIX_SOCKET_PATH'];
+		if (env.UNIX_SOCKET_PATH) {
+			return env.UNIX_SOCKET_PATH;
 		}
 
-		return `${env['HOST']}:${env['PORT']}`;
+		return `${env.HOST}:${env.PORT}`;
 	}
 
 	if (typeof address === 'string') {

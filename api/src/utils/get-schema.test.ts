@@ -13,9 +13,9 @@ const lock = vi.hoisted(() => ({
 }));
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
+	const { mockUseEnv } = await import('../test-utils/env.js');
 
-	return mockEnv({
+	return mockUseEnv({
 		CACHE_SCHEMA: true,
 		CACHE_SCHEMA_MAX_ITERATIONS: 100,
 		CACHE_SCHEMA_SYNC_TIMEOUT: 10000,

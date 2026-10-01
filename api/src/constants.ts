@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import type { Settings, TransformationParams } from '@directus/types';
-import { toBoolean } from '@directus/utils';
 import bytes from 'bytes';
 import type { CookieOptions } from 'express';
 import { getMilliseconds } from './utils/get-milliseconds.js';
@@ -70,18 +69,18 @@ export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a
 
 export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
-	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
-	maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL'] as string),
-	secure: Boolean(env['REFRESH_TOKEN_COOKIE_SECURE']),
-	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
+	domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+	maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),
+	secure: env.REFRESH_TOKEN_COOKIE_SECURE,
+	sameSite: env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none',
 };
 
 export const SESSION_COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
-	domain: env['SESSION_COOKIE_DOMAIN'] as string,
-	maxAge: getMilliseconds(env['SESSION_COOKIE_TTL'] as string),
-	secure: Boolean(env['SESSION_COOKIE_SECURE']),
-	sameSite: (env['SESSION_COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
+	domain: env.SESSION_COOKIE_DOMAIN,
+	maxAge: getMilliseconds(env.SESSION_COOKIE_TTL),
+	secure: env.SESSION_COOKIE_SECURE,
+	sameSite: env.SESSION_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none',
 };
 
 export const OAS_REQUIRED_SCHEMAS = ['Error', 'Query', 'x-metadata'];
@@ -101,24 +100,22 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 
 /** File uploads */
 export const FILE_UPLOADS = {
-	MAX_SIZE: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string),
-	MAX_CONCURRENCY: Number(env['FILES_MAX_UPLOAD_CONCURRENCY']),
+	MAX_SIZE: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string | number),
+	MAX_CONCURRENCY: env.FILES_MAX_UPLOAD_CONCURRENCY,
 };
-
-const extensionsStorageMaxConcurrency = Number(env['EXTENSIONS_STORAGE_MAX_CONCURRENCY']);
 
 /** Extensions */
 export const EXTENSIONS = {
 	/** p-queue requires a number >=1 or throws type error */
-	STORAGE_MAX_CONCURRENCY: extensionsStorageMaxConcurrency >= 1 ? extensionsStorageMaxConcurrency : 20,
+	STORAGE_MAX_CONCURRENCY: env.EXTENSIONS_STORAGE_MAX_CONCURRENCY >= 1 ? env.EXTENSIONS_STORAGE_MAX_CONCURRENCY : 20,
 };
 
 /** Resumable uploads (TUS) */
 export const RESUMABLE_UPLOADS = {
-	ENABLED: toBoolean(env['TUS_ENABLED']),
-	CHUNK_SIZE: bytes.parse(env['TUS_CHUNK_SIZE'] as string),
-	EXPIRATION_TIME: getMilliseconds(env['TUS_UPLOAD_EXPIRATION'], 600_000 /* 10min */),
-	SCHEDULE: String(env['TUS_CLEANUP_SCHEDULE'] as string),
+	ENABLED: env.TUS_ENABLED,
+	CHUNK_SIZE: bytes.parse(env['TUS_CHUNK_SIZE'] as string | number),
+	EXPIRATION_TIME: getMilliseconds(env.TUS_UPLOAD_EXPIRATION, 600_000 /* 10min */),
+	SCHEDULE: env.TUS_CLEANUP_SCHEDULE,
 };
 
 export const ALLOWED_DB_DEFAULT_FUNCTIONS = ['gen_random_uuid()'];

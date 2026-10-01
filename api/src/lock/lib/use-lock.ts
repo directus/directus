@@ -15,12 +15,12 @@ export const useLock = () => {
 	}
 
 	if (redisConfigAvailable()) {
-		const env = useEnv();
+		const { REDIS_LOCK_NAMESPACE } = useEnv();
 
 		_cache.lock = createKv({
 			type: 'redis',
 			redis: useRedis(),
-			namespace: (env['REDIS_LOCK_NAMESPACE'] as string) ?? 'directus:lock',
+			namespace: REDIS_LOCK_NAMESPACE,
 		});
 	} else {
 		_cache.lock = createKv({ type: 'local' });

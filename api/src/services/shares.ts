@@ -144,7 +144,7 @@ export class SharesService extends ItemsService {
 		};
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL, 0));
 
 		if (options?.session) {
 			tokenPayload.session = refreshToken;
@@ -200,7 +200,7 @@ Hello!
 
 ${userName(userInfo)} has invited you to view an item in ${share['collection']}.
 
-[Open](${new Url(env['PUBLIC_URL'] as string).addPath('admin', 'shared', payload.share).toString()})
+[Open](${new Url(env.PUBLIC_URL).addPath('admin', 'shared', payload.share).toString()})
 `;
 
 		for (const email of payload.emails) {

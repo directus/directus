@@ -5,7 +5,6 @@ import path from 'path';
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { handlePressure } from '@directus/pressure';
-import { toBoolean } from '@directus/utils';
 import cookieParser from 'cookie-parser';
 import type { Request, RequestHandler, Response } from 'express';
 import express from 'express';
@@ -108,27 +107,25 @@ export default async function createApp(): Promise<express.Application> {
 		logger.warn(`Database migrations have not all been run`);
 	}
 
-	if (!env['SECRET']) {
+	if (!env.SECRET) {
 		logger.warn(
 			`"SECRET" env variable is missing. Using a random value instead. Tokens will not persist between restarts. This is not appropriate for production usage.`,
 		);
 	}
 
-	if (typeof env['SECRET'] === 'string' && Buffer.byteLength(env['SECRET']) < 32) {
+	if (typeof env.SECRET === 'string' && Buffer.byteLength(env.SECRET) < 32) {
 		logger.warn(
 			'"SECRET" env variable is shorter than 32 bytes which is insecure. This is not appropriate for production usage.',
 		);
 	}
 
-	if (!new Url(env['PUBLIC_URL'] as string).isAbsolute()) {
+	if (!new Url(env.PUBLIC_URL).isAbsolute()) {
 		logger.warn('"PUBLIC_URL" should be a full URL');
 	}
 
-	if (env['MCP_OAUTH_ENABLED'] === true) {
-		if (toBoolean(env['MCP_ENABLED']) !== true) {
-			logger.warn('MCP_OAUTH_ENABLED requires MCP_ENABLED=true. OAuth disabled.');
-			env['MCP_OAUTH_ENABLED'] = false;
-		}
+	if (env.MCP_OAUTH_ENABLED === true && env.MCP_ENABLED === false) {
+		logger.warn('MCP_OAUTH_ENABLED requires MCP_ENABLED=true. OAuth disabled.');
+		env.MCP_OAUTH_ENABLED = false;
 	}
 
 	await validateDatabaseExtensions();
@@ -150,17 +147,17 @@ export default async function createApp(): Promise<express.Application> {
 	const app = express();
 
 	app.disable('x-powered-by');
-	app.set('trust proxy', env['IP_TRUST_PROXY']);
+	app.set('trust proxy', env.IP_TRUST_PROXY);
 
 	app.set('query parser', (str: string) =>
 		qs.parse(str, {
-			depth: Number(env['QUERYSTRING_MAX_PARSE_DEPTH']),
-			arrayLimit: Number(env['QUERYSTRING_ARRAY_LIMIT']),
+			depth: env.QUERYSTRING_MAX_PARSE_DEPTH,
+			arrayLimit: env.QUERYSTRING_ARRAY_LIMIT,
 		}),
 	);
 
-	if (env['PRESSURE_LIMITER_ENABLED']) {
-		const sampleInterval = Number(env['PRESSURE_LIMITER_SAMPLE_INTERVAL']);
+	if (env.PRESSURE_LIMITER_ENABLED) {
+		const sampleInterval = env.PRESSURE_LIMITER_SAMPLE_INTERVAL;
 
 		if (Number.isNaN(sampleInterval) === true || Number.isFinite(sampleInterval) === false) {
 			throw new Error(`Invalid value for PRESSURE_LIMITER_SAMPLE_INTERVAL environment variable`);
@@ -169,12 +166,12 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(
 			handlePressure({
 				sampleInterval,
-				maxEventLoopUtilization: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION'] as number,
-				maxEventLoopDelay: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY'] as number,
-				maxMemoryRss: env['PRESSURE_LIMITER_MAX_MEMORY_RSS'] as number,
-				maxMemoryHeapUsed: env['PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED'] as number,
+				maxEventLoopUtilization: env.PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION,
+				maxEventLoopDelay: env.PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY,
+				maxMemoryRss: env.PRESSURE_LIMITER_MAX_MEMORY_RSS,
+				maxMemoryHeapUsed: env.PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED,
 				error: new ServiceUnavailableError({ service: 'api', reason: 'Under pressure' }),
-				retryAfter: env['PRESSURE_LIMITER_RETRY_AFTER'] as string,
+				retryAfter: env.PRESSURE_LIMITER_RETRY_AFTER,
 			}),
 		);
 	}
@@ -212,13 +209,10 @@ export default async function createApp(): Promise<express.Application> {
 		),
 	);
 
-	if (env['CROSS_ORIGIN_OPENER_POLICY_ENABLED']) {
+	if (env.CROSS_ORIGIN_OPENER_POLICY_ENABLED) {
 		app.use(
 			helmet.crossOriginOpenerPolicy({
-				policy: (env['CROSS_ORIGIN_OPENER_POLICY'] ?? 'same-origin-allow-popups') as
-					| 'same-origin'
-					| 'same-origin-allow-popups'
-					| 'unsafe-none',
+				policy: env.CROSS_ORIGIN_OPENER_POLICY as 'same-origin' | 'same-origin-allow-popups' | 'unsafe-none',
 			}),
 		);
 	}
@@ -238,14 +232,14 @@ export default async function createApp(): Promise<express.Application> {
 		next();
 	});
 
-	if (env['CORS_ENABLED'] === true) {
+	if (env.CORS_ENABLED) {
 		app.use(cors);
 	}
 
 	app.use((req, res, next) => {
 		(
 			express.json({
-				limit: env['MAX_PAYLOAD_SIZE'] as string,
+				limit: env.MAX_PAYLOAD_SIZE,
 				verify: (req, _res, buf) => {
 					(req as any).rawBody = buf;
 				},
@@ -264,8 +258,8 @@ export default async function createApp(): Promise<express.Application> {
 	app.use(extractToken);
 
 	app.get('/', (_req, res, next) => {
-		if (env['ROOT_REDIRECT']) {
-			res.redirect(env['ROOT_REDIRECT'] as string);
+		if (env.ROOT_REDIRECT !== '' && env.ROOT_REDIRECT !== 'false') {
+			res.redirect(env.ROOT_REDIRECT);
 		} else {
 			next();
 		}
@@ -274,12 +268,12 @@ export default async function createApp(): Promise<express.Application> {
 	app.get('/robots.txt', (_, res) => {
 		res.set('Content-Type', 'text/plain');
 		res.status(200);
-		res.send(env['ROBOTS_TXT']);
+		res.send(env.ROBOTS_TXT);
 	});
 
-	if (env['SERVE_APP']) {
+	if (env.SERVE_APP) {
 		const adminPath = require.resolve('@directus/app');
-		const adminUrl = new Url(env['PUBLIC_URL'] as string).addPath('admin');
+		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
 
 		const embeds = extensionManager.getEmbeds();
 
@@ -308,11 +302,11 @@ export default async function createApp(): Promise<express.Application> {
 	}
 
 	// use the rate limiter - all routes for now
-	if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
+	if (env.RATE_LIMITER_GLOBAL_ENABLED) {
 		app.use(rateLimiterGlobal);
 	}
 
-	if (env['RATE_LIMITER_ENABLED'] === true) {
+	if (env.RATE_LIMITER_ENABLED) {
 		app.use(rateLimiter);
 	}
 
@@ -321,14 +315,14 @@ export default async function createApp(): Promise<express.Application> {
 	// Public webhook endpoint (signature-verified by the provider)
 	app.use('/deployments/webhooks', deploymentWebhookRouter);
 
-	if (env['MCP_OAUTH_ENABLED'] === true) {
+	if (env.MCP_OAUTH_ENABLED) {
 		app.use(mcpOAuthPublicRouter);
 	}
 
 	app.use(authenticate);
 	app.use(mcpOAuthGuard);
 
-	if (env['MCP_OAUTH_ENABLED'] === true) {
+	if (env.MCP_OAUTH_ENABLED) {
 		app.use(mcpOAuthProtectedRouter);
 	}
 
@@ -358,7 +352,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
 
-	if (env['TUS_ENABLED'] === true) {
+	if (env.TUS_ENABLED) {
 		app.use('/files/tus', tusRouter);
 	}
 
@@ -368,18 +362,18 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/items', itemsRouter);
 	app.use('/license', licenseRouter);
 
-	if (toBoolean(env['MCP_ENABLED']) === true) {
+	if (env.MCP_ENABLED) {
 		app.use('/mcp', mcpRouter);
 	}
 
-	if (toBoolean(env['AI_ENABLED']) === true) {
+	if (env.AI_ENABLED) {
 		await initAIDevTools();
 		await initAITelemetry();
 		app.use('/ai', aiRouter);
 		app.use('/ai/files', aiFilesRouter);
 	}
 
-	if (env['METRICS_ENABLED'] === true) {
+	if (env.METRICS_ENABLED) {
 		app.use('/metrics', metricsRouter);
 	}
 
@@ -394,7 +388,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
 
-	if (toBoolean(env['MCP_OAUTH_ENABLED']) === true) {
+	if (env.MCP_OAUTH_ENABLED) {
 		app.use('/mcp-oauth/clients', mcpOAuthClientsRouter);
 	}
 
@@ -423,7 +417,7 @@ export default async function createApp(): Promise<express.Application> {
 	await projectSchedule();
 	await licenseSchedule();
 
-	if (env['MCP_OAUTH_ENABLED'] === true) {
+	if (env.MCP_OAUTH_ENABLED) {
 		await scheduleOAuthCleanup();
 	}
 

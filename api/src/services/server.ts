@@ -10,7 +10,6 @@ import type {
 	ServerHealth,
 	ServerHealthCheck,
 } from '@directus/types';
-import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
@@ -31,9 +30,9 @@ import { SettingsService } from './settings.js';
 
 const env = useEnv();
 const logger = useLogger();
-const HEALTHCHECK_CACHE_TTL = getMilliseconds(env['HEALTHCHECK_CACHE_TTL'], 300_000); // default 5 minute
+const HEALTHCHECK_CACHE_TTL = getMilliseconds(env.HEALTHCHECK_CACHE_TTL, 300_000); // default 5 minute
 
-const store = useStore<{ health: ServerHealth }>((env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck', {
+const store = useStore<{ health: ServerHealth }>(env.HEALTHCHECK_NAMESPACE, {
 	ttl: HEALTHCHECK_CACHE_TTL,
 });
 
@@ -93,16 +92,16 @@ export class ServerService {
 		}
 
 		if (this.accountability?.user) {
-			info['project_owner_enabled'] = toBoolean(env['PROJECT_OWNER_ENABLED'] ?? true);
+			info['project_owner_enabled'] = env.PROJECT_OWNER_ENABLED;
 
-			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
-			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
-			info['mcp_oauth_enabled'] = toBoolean(env['MCP_OAUTH_ENABLED'] ?? false);
-			info['mcp_oauth_dcr_enabled'] = toBoolean(env['MCP_OAUTH_DCR_ENABLED'] ?? false);
-			info['mcp_oauth_cimd_enabled'] = toBoolean(env['MCP_OAUTH_CIMD_ENABLED'] ?? false);
+			info['mcp_enabled'] = env.MCP_ENABLED;
+			info['ai_enabled'] = env.AI_ENABLED;
+			info['mcp_oauth_enabled'] = env.MCP_OAUTH_ENABLED;
+			info['mcp_oauth_dcr_enabled'] = env.MCP_OAUTH_DCR_ENABLED;
+			info['mcp_oauth_cimd_enabled'] = env.MCP_OAUTH_CIMD_ENABLED;
 
 			info['autoSave'] = {
-				revisionInterval: Number(env['AUTOSAVE_REVISION_INTERVAL']),
+				revisionInterval: env.AUTOSAVE_REVISION_INTERVAL,
 			};
 
 			if (info['ai_enabled']) {
@@ -130,63 +129,61 @@ export class ServerService {
 			}
 
 			info['files'] = {
-				mimeTypeAllowList: toArray(env['FILES_MIME_TYPE_ALLOW_LIST']),
+				mimeTypeAllowList: env.FILES_MIME_TYPE_ALLOW_LIST,
 			};
 
-			if (env['RATE_LIMITER_ENABLED']) {
+			if (env.RATE_LIMITER_ENABLED) {
 				info['rateLimit'] = {
-					points: env['RATE_LIMITER_POINTS'],
-					duration: env['RATE_LIMITER_DURATION'],
+					points: env.RATE_LIMITER_POINTS,
+					duration: env.RATE_LIMITER_DURATION,
 				};
 			} else {
 				info['rateLimit'] = false;
 			}
 
-			if (env['RATE_LIMITER_GLOBAL_ENABLED']) {
+			if (env.RATE_LIMITER_GLOBAL_ENABLED) {
 				info['rateLimitGlobal'] = {
-					points: env['RATE_LIMITER_GLOBAL_POINTS'],
-					duration: env['RATE_LIMITER_GLOBAL_DURATION'],
+					points: env.RATE_LIMITER_GLOBAL_POINTS,
+					duration: env.RATE_LIMITER_GLOBAL_DURATION,
 				};
 			} else {
 				info['rateLimitGlobal'] = false;
 			}
 
 			info['extensions'] = {
-				limit: env['EXTENSIONS_LIMIT'] ?? null,
+				limit: env.EXTENSIONS_LIMIT ?? null,
 			};
 
 			info['queryLimit'] = {
-				default: env['QUERY_LIMIT_DEFAULT'],
+				default: env.QUERY_LIMIT_DEFAULT,
 				max: Number.isFinite(env['QUERY_LIMIT_MAX']) ? env['QUERY_LIMIT_MAX'] : -1,
 			};
 
-			if (toBoolean(env['WEBSOCKETS_ENABLED'])) {
+			if (env.WEBSOCKETS_ENABLED) {
 				info['websocket'] = {};
 
-				info['websocket'].rest = toBoolean(env['WEBSOCKETS_REST_ENABLED'])
+				info['websocket'].rest = env.WEBSOCKETS_REST_ENABLED
 					? {
-							authentication: env['WEBSOCKETS_REST_AUTH'],
-							path: env['WEBSOCKETS_REST_PATH'],
+							authentication: env.WEBSOCKETS_REST_AUTH,
+							path: env.WEBSOCKETS_REST_PATH,
 						}
 					: false;
 
-				info['websocket'].graphql = toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
+				info['websocket'].graphql = env.WEBSOCKETS_GRAPHQL_ENABLED
 					? {
-							authentication: env['WEBSOCKETS_GRAPHQL_AUTH'],
-							path: env['WEBSOCKETS_GRAPHQL_PATH'],
+							authentication: env.WEBSOCKETS_GRAPHQL_AUTH,
+							path: env.WEBSOCKETS_GRAPHQL_PATH,
 						}
 					: false;
 
-				info['websocket'].heartbeat = toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED'])
-					? env['WEBSOCKETS_HEARTBEAT_PERIOD']
-					: false;
+				info['websocket'].heartbeat = env.WEBSOCKETS_HEARTBEAT_ENABLED ? env.WEBSOCKETS_HEARTBEAT_PERIOD : false;
 
-				info['websocket'].collaborativeEditing = toBoolean(env['WEBSOCKETS_COLLAB_ENABLED']);
+				info['websocket'].collaborativeEditing = env.WEBSOCKETS_COLLAB_ENABLED;
 
 				info['websocket'].logs =
-					toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && this.accountability.admin
+					env.WEBSOCKETS_LOGS_ENABLED && this.accountability.admin
 						? {
-								allowedLogLevels: getAllowedLogLevels((env['WEBSOCKETS_LOGS_LEVEL'] as string) || 'info'),
+								allowedLogLevels: getAllowedLogLevels(env.WEBSOCKETS_LOGS_LEVEL),
 							}
 						: false;
 			} else {
@@ -243,12 +240,12 @@ export class ServerService {
 
 		const checkID = nanoid(5);
 
-		const enabledServices = toArray(env['HEALTHCHECK_SERVICES'] as string[]);
+		const enabledServices = env.HEALTHCHECK_SERVICES;
 
 		const data: ServerHealth = {
 			status: 'ok',
 			releaseId: version,
-			serviceId: env['PUBLIC_URL'] as string,
+			serviceId: env.PUBLIC_URL,
 			checks: merge(...(await Promise.all([testDatabase(), testRedis(), testStorage(), testEmail()]))),
 		};
 
@@ -356,7 +353,7 @@ export class ServerService {
 			const redis = createKv({
 				type: 'redis',
 				redis: useRedis(),
-				namespace: (env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck',
+				namespace: env.HEALTHCHECK_NAMESPACE,
 				ttl: HEALTHCHECK_CACHE_TTL,
 			});
 
@@ -404,7 +401,7 @@ export class ServerService {
 
 			const checks: Record<string, ServerHealthCheck[]> = {};
 
-			for (const location of toArray(env['STORAGE_LOCATIONS'] as string)) {
+			for (const location of env.STORAGE_LOCATIONS) {
 				const disk = storage.location(location);
 				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase();
 
@@ -443,7 +440,7 @@ export class ServerService {
 		}
 
 		async function testEmail(): Promise<Record<string, ServerHealthCheck[]>> {
-			if (enabledServices.includes('email') === false || toBoolean(env['EMAIL_VERIFY_SETUP']) === false) {
+			if (enabledServices.includes('email') === false || !env.EMAIL_VERIFY_SETUP) {
 				return {};
 			}
 

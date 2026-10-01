@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import type { FieldNode, FragmentDefinitionNode, OperationDefinitionNode } from 'graphql';
 import { buildSchema, GraphQLError, Kind, parse, validate } from 'graphql';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { mockEnv } from '../../../test-utils/env.js';
 import { assertSensitiveMutationLimit, limitSensitiveMutations } from './limit-sensitive-mutations.js';
 
 vi.mock('@directus/env', () => ({ useEnv: vi.fn() }));
@@ -19,7 +20,7 @@ const DEFAULT_SENSITIVE_MUTATIONS = [
 const SENSITIVE_MUTATIONS = new Set(DEFAULT_SENSITIVE_MUTATIONS);
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({ GRAPHQL_SINGLE_USE_MUTATIONS: DEFAULT_SENSITIVE_MUTATIONS });
+	vi.mocked(useEnv).mockReturnValue(mockEnv({ GRAPHQL_SINGLE_USE_MUTATIONS: DEFAULT_SENSITIVE_MUTATIONS }));
 });
 
 const schema = buildSchema(`
@@ -226,7 +227,7 @@ describe('limitSensitiveMutations', () => {
 	});
 
 	test('guards only the mutations configured via GRAPHQL_SINGLE_USE_MUTATIONS', () => {
-		vi.mocked(useEnv).mockReturnValue({ GRAPHQL_SINGLE_USE_MUTATIONS: ['users_register'] });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ GRAPHQL_SINGLE_USE_MUTATIONS: ['users_register'] }));
 
 		// auth_login is no longer in the configured set, so aliased duplicates are allowed.
 		expect(

@@ -15,12 +15,12 @@ export const useCounters = () => {
 	let counter: Kv;
 
 	if (redisConfigAvailable()) {
-		const env = useEnv();
+		const { REDIS_COUNTERS_NAMESPACE } = useEnv();
 
 		counter = createKv({
 			type: 'redis',
 			redis: useRedis(),
-			namespace: (env['REDIS_COUNTERS_NAMESPACE'] as string) ?? 'directus:counters',
+			namespace: REDIS_COUNTERS_NAMESPACE,
 		});
 	} else {
 		counter = createKv({ type: 'local' });

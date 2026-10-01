@@ -43,8 +43,8 @@ export class ExtensionsService {
 
 		const describeOptions: DescribeOptions = {};
 
-		if (typeof env['MARKETPLACE_REGISTRY'] === 'string') {
-			describeOptions.registry = env['MARKETPLACE_REGISTRY'];
+		if (env.MARKETPLACE_REGISTRY) {
+			describeOptions.registry = env.MARKETPLACE_REGISTRY;
 		}
 
 		const extension = await describe(extensionId, describeOptions);
@@ -54,9 +54,7 @@ export class ExtensionsService {
 			throw new ForbiddenError();
 		}
 
-		const limit = env['EXTENSIONS_LIMIT'] ? Number(env['EXTENSIONS_LIMIT']) : null;
-
-		if (limit !== null) {
+		if (env.EXTENSIONS_LIMIT !== undefined) {
 			const currentlyInstalledCount = this.extensionsManager.extensions.length;
 
 			/**
@@ -68,7 +66,7 @@ export class ExtensionsService {
 
 			const afterInstallCount = currentlyInstalledCount + points;
 
-			if (afterInstallCount >= limit) {
+			if (afterInstallCount >= env.EXTENSIONS_LIMIT) {
 				throw new LimitExceededError({ category: 'Extensions' });
 			}
 		}

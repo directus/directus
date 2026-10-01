@@ -18,7 +18,7 @@ export type Credentials = {
 	options__encrypt?: boolean;
 };
 export default function createDBConnection(client: Driver, credentials: Credentials): Knex<any, unknown[]> {
-	let connection: any = {};
+	let connection: any;
 
 	if (client === 'sqlite3') {
 		const { filename } = credentials;

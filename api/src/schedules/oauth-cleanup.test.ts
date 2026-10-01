@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLogger } from '../logger/index.js';
+import { mockEnv } from '../test-utils/env.js';
 import { getSchema } from '../utils/get-schema.js';
 import * as schedule from '../utils/schedule.js';
 import { default as oauthCleanupSchedule } from './oauth-cleanup.js';
@@ -33,7 +34,7 @@ vi.spyOn(schedule, 'scheduleSynchronizedJob');
 vi.spyOn(schedule, 'validateCron');
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({ MCP_OAUTH_CLEANUP_SCHEDULE: '*/15 * * * *' });
+	vi.mocked(useEnv).mockReturnValue(mockEnv({ MCP_OAUTH_CLEANUP_SCHEDULE: '*/15 * * * *' }));
 });
 
 afterEach(() => {
@@ -43,7 +44,7 @@ afterEach(() => {
 
 describe('oauth cleanup schedule', () => {
 	test('returns early for invalid cleanup schedule', async () => {
-		vi.mocked(useEnv).mockReturnValue({ MCP_OAUTH_CLEANUP_SCHEDULE: '#' });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ MCP_OAUTH_CLEANUP_SCHEDULE: '#' }));
 
 		const res = await oauthCleanupSchedule();
 

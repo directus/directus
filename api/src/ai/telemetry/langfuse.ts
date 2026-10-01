@@ -1,4 +1,4 @@
-import type { useEnv } from '@directus/env';
+import type { Env } from '@directus/env';
 import type { AITelemetryState } from './index.js';
 
 const getStringAttribute = (attributes: Record<string, unknown>, key: string): string | undefined => {
@@ -63,25 +63,25 @@ export const createLangfuseInputOutputCompatSpanProcessor = () => {
 	};
 };
 
-export const applyLangfuseEnv = (env: ReturnType<typeof useEnv>) => {
-	const secretKey = env['LANGFUSE_SECRET_KEY'];
-	const publicKey = env['LANGFUSE_PUBLIC_KEY'];
-	const baseUrl = env['LANGFUSE_BASE_URL'];
+export const applyLangfuseEnv = (env: Env) => {
+	const secretKey = env.LANGFUSE_SECRET_KEY;
+	const publicKey = env.LANGFUSE_PUBLIC_KEY;
+	const baseUrl = env.LANGFUSE_BASE_URL;
 
-	if (typeof secretKey === 'string' && secretKey.length > 0) {
+	if (secretKey !== '') {
 		process.env['LANGFUSE_SECRET_KEY'] = secretKey;
 	}
 
-	if (typeof publicKey === 'string' && publicKey.length > 0) {
+	if (publicKey !== '') {
 		process.env['LANGFUSE_PUBLIC_KEY'] = publicKey;
 	}
 
-	if (typeof baseUrl === 'string' && baseUrl.length > 0) {
+	if (baseUrl !== '') {
 		process.env['LANGFUSE_BASE_URL'] = baseUrl;
 	}
 };
 
-export const initLangfuse = async (env: ReturnType<typeof useEnv>): Promise<AITelemetryState> => {
+export const initLangfuse = async (env: Env): Promise<AITelemetryState> => {
 	applyLangfuseEnv(env);
 
 	const [{ LangfuseSpanProcessor }, { NodeTracerProvider }] = await Promise.all([
@@ -94,7 +94,7 @@ export const initLangfuse = async (env: ReturnType<typeof useEnv>): Promise<AITe
 	} as any);
 
 	return {
-		recordIO: env['AI_TELEMETRY_RECORD_IO'] === true,
+		recordIO: env.AI_TELEMETRY_RECORD_IO,
 		tracerProvider: tracerProvider as AITelemetryState['tracerProvider'],
 	};
 };

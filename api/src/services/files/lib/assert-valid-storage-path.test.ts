@@ -7,7 +7,7 @@ const state = vi.hoisted(() => ({ env: {} as Record<string, unknown> }));
 vi.mock('@directus/env', () => ({ useEnv: () => state.env }));
 
 const baseEnv = (): Record<string, unknown> => ({
-	STORAGE_LOCATIONS: 'local',
+	STORAGE_LOCATIONS: ['local'],
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
 	EXTENSIONS_PATH: './extensions',
@@ -55,7 +55,7 @@ describe('assertValidStoragePath', () => {
 	describe('remote extension sync source', () => {
 		beforeEach(() => {
 			Object.assign(state.env, {
-				STORAGE_LOCATIONS: 'local,s3',
+				STORAGE_LOCATIONS: ['local', 's3'],
 				STORAGE_S3_DRIVER: 's3',
 				EXTENSIONS_LOCATION: 's3',
 			});

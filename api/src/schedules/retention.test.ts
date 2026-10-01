@@ -1,17 +1,19 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { mockEnv } from '../test-utils/env.js';
 import * as schedule from '../utils/schedule.js';
 import { handleRetentionJob, default as retentionSchedule } from './retention.js';
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
+});
 
 vi.spyOn(schedule, 'scheduleSynchronizedJob');
 vi.spyOn(schedule, 'validateCron');
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({ RETENTION_ENABLED: true, RETENTION_SCHEDULE: '0 0 * * *' });
+	vi.mocked(useEnv).mockReturnValue(mockEnv({ RETENTION_ENABLED: true, RETENTION_SCHEDULE: '0 0 * * *' }));
 });
 
 afterEach(() => {
@@ -20,7 +22,7 @@ afterEach(() => {
 
 describe('retention', () => {
 	test('Returns early when retention is disabled', async () => {
-		vi.mocked(useEnv).mockReturnValue({ RETENTION_ENABLED: false, RETENTION_SCHEDULE: '0 0 * * *' });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ RETENTION_ENABLED: false, RETENTION_SCHEDULE: '0 0 * * *' }));
 
 		const res = await retentionSchedule();
 
@@ -29,7 +31,7 @@ describe('retention', () => {
 	});
 
 	test('Returns early for invalid retention schedule', async () => {
-		vi.mocked(useEnv).mockReturnValue({ RETENTION_ENABLED: true, RETENTION_SCHEDULE: '#' });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ RETENTION_ENABLED: true, RETENTION_SCHEDULE: '#' }));
 
 		const res = await retentionSchedule();
 

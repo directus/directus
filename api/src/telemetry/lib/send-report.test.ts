@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { mockEnv } from '../../test-utils/env.js';
 import { type TelemetryReport } from '../types/report.js';
 import { type OwnerReport, sendReport } from './send-report.js';
 
@@ -17,9 +18,11 @@ afterEach(() => {
 test('Posts stringified report to configured ingress URL', async () => {
 	const mockIngress = 'https://example.com';
 
-	vi.mocked(useEnv).mockReturnValue({
-		TELEMETRY_URL: mockIngress,
-	});
+	vi.mocked(useEnv).mockReturnValue(
+		mockEnv({
+			TELEMETRY_URL: mockIngress,
+		}),
+	);
 
 	const url = new URL('/v1/metrics', mockIngress);
 
@@ -40,10 +43,12 @@ test('Posts stringified report to configured ingress URL', async () => {
 test('Sets optional authorization header based on configured auth var', async () => {
 	const mockIngress = 'https://example.com';
 
-	vi.mocked(useEnv).mockReturnValue({
-		TELEMETRY_URL: mockIngress,
-		TELEMETRY_AUTHORIZATION: 'test-auth',
-	});
+	vi.mocked(useEnv).mockReturnValue(
+		mockEnv({
+			TELEMETRY_URL: mockIngress,
+			TELEMETRY_AUTHORIZATION: 'test-auth',
+		}),
+	);
 
 	const url = new URL('/v1/metrics', mockIngress);
 
@@ -71,10 +76,12 @@ test('Throws error if post was not successful', async () => {
 
 	const mockIngress = 'https://example.com';
 
-	vi.mocked(useEnv).mockReturnValue({
-		TELEMETRY_URL: mockIngress,
-		TELEMETRY_AUTHORIZATION: 'test-auth',
-	});
+	vi.mocked(useEnv).mockReturnValue(
+		mockEnv({
+			TELEMETRY_URL: mockIngress,
+			TELEMETRY_AUTHORIZATION: 'test-auth',
+		}),
+	);
 
 	const mockReport = {} as unknown as TelemetryReport;
 
@@ -84,11 +91,13 @@ test('Throws error if post was not successful', async () => {
 test('Sends to /v1/owner on owner payload', async () => {
 	const mockIngress = 'https://example.com';
 
-	vi.mocked(useEnv).mockReturnValue({
-		COMPLIANCE_URL: mockIngress,
-		TELEMETRY_AUTHORIZATION: 'test-auth',
-		PROJECT_OWNER_ENABLED: true,
-	});
+	vi.mocked(useEnv).mockReturnValue(
+		mockEnv({
+			COMPLIANCE_URL: mockIngress,
+			TELEMETRY_AUTHORIZATION: 'test-auth',
+			PROJECT_OWNER_ENABLED: true,
+		}),
+	);
 
 	await sendReport({ project_owner: '' } as unknown as OwnerReport);
 
@@ -97,10 +106,12 @@ test('Sends to /v1/owner on owner payload', async () => {
 });
 
 test('Does not send owner report when PROJECT_OWNER_ENABLED is false', async () => {
-	vi.mocked(useEnv).mockReturnValue({
-		COMPLIANCE_URL: 'https://example.com',
-		PROJECT_OWNER_ENABLED: false,
-	});
+	vi.mocked(useEnv).mockReturnValue(
+		mockEnv({
+			COMPLIANCE_URL: 'https://example.com',
+			PROJECT_OWNER_ENABLED: false,
+		}),
+	);
 
 	await sendReport({ project_owner: '' } as unknown as OwnerReport);
 
@@ -108,10 +119,12 @@ test('Does not send owner report when PROJECT_OWNER_ENABLED is false', async () 
 });
 
 test('Still sends telemetry report when PROJECT_OWNER_ENABLED is false', async () => {
-	vi.mocked(useEnv).mockReturnValue({
-		TELEMETRY_URL: 'https://example.com',
-		PROJECT_OWNER_ENABLED: false,
-	});
+	vi.mocked(useEnv).mockReturnValue(
+		mockEnv({
+			TELEMETRY_URL: 'https://example.com',
+			PROJECT_OWNER_ENABLED: false,
+		}),
+	);
 
 	const mockReport = {} as unknown as TelemetryReport;
 

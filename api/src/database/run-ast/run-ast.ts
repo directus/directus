@@ -116,7 +116,7 @@ export async function runAst(
 		const nestedNodes = applyParentFilters(schema, nestedCollectionNodes, items);
 
 		for (const nestedNode of nestedNodes) {
-			let nestedItems: Item[] | null = [];
+			let nestedItems: Item[] | null;
 
 			if (nestedNode.type === 'o2m') {
 				let hasMore = true;
@@ -147,8 +147,8 @@ export async function runAst(
 				while (hasMore) {
 					const node = merge({}, nestedNode, {
 						query: {
-							limit: env['RELATIONAL_BATCH_SIZE'],
-							offset: batchCount * (env['RELATIONAL_BATCH_SIZE'] as number),
+							limit: env.RELATIONAL_BATCH_SIZE,
+							offset: batchCount * env.RELATIONAL_BATCH_SIZE,
 							page: null,
 						},
 					});
@@ -159,7 +159,7 @@ export async function runAst(
 						items = mergeWithParentItems(schema, nestedItems, items!, nestedNode, fieldAllowed)!;
 					}
 
-					if (!nestedItems || nestedItems.length < (env['RELATIONAL_BATCH_SIZE'] as number)) {
+					if (!nestedItems || nestedItems.length < env.RELATIONAL_BATCH_SIZE) {
 						hasMore = false;
 					}
 

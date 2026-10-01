@@ -35,7 +35,7 @@ export async function getSchema(
 
 	const env = useEnv();
 
-	if (options?.bypassCache || env['CACHE_SCHEMA'] === false) {
+	if (options?.bypassCache || !env.CACHE_SCHEMA) {
 		const database = options?.database || getDatabase();
 		const schemaInspector = createInspector(database);
 
@@ -59,7 +59,7 @@ export async function getSchema(
 	const messageKey = 'schemaCache--done';
 	const processId = await lock.increment(lockKey);
 
-	if (processId >= (env['CACHE_SCHEMA_MAX_ITERATIONS'] as number)) {
+	if (processId >= env.CACHE_SCHEMA_MAX_ITERATIONS) {
 		await lock.delete(lockKey);
 	}
 
@@ -72,7 +72,7 @@ export async function getSchema(
 		let busListener: ((options: { schema: SchemaOverview | null }) => void) | undefined;
 
 		const timeout: Promise<any> = new Promise((_, reject) => {
-			timeoutId = setTimeout(reject, env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number);
+			timeoutId = setTimeout(reject, env.CACHE_SCHEMA_SYNC_TIMEOUT);
 		});
 
 		const subscription = new Promise<SchemaOverview>((resolve, reject) => {
@@ -139,7 +139,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 	const collections: (BaseCollectionMeta & Partial<CollectionMeta>)[] = [...allCollections, ...systemCollectionRows];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
-		if (toArray(env['DB_EXCLUDE_TABLES']).includes(collection)) {
+		if ((env.DB_EXCLUDE_TABLES as string[]).includes(collection)) {
 			logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
 			continue;
 		}

@@ -58,8 +58,8 @@ import { validateFlatData } from './validate-flat-data.js';
 const env = useEnv();
 const logger = useLogger();
 
-const store = useStore<{ importCount: number | undefined }>(String(env['IMPORT_EXPORT_NAMESPACE']), {
-	ttl: ms((env['IMPORT_TIMEOUT'] as StringValue) ?? '1h'),
+const store = useStore<{ importCount: number | undefined }>(env.IMPORT_EXPORT_NAMESPACE, {
+	ttl: ms((env.IMPORT_TIMEOUT as StringValue) ?? '1h'),
 });
 
 class DryRunRollback extends Error {}
@@ -79,7 +79,7 @@ export class ImportService {
 		const limitReached = await store(async (store) => {
 			const count = (await store.get('importCount')) ?? 0;
 
-			if (count >= Number(env['IMPORT_MAX_CONCURRENCY'])) return true;
+			if (count >= env.IMPORT_MAX_CONCURRENCY) return true;
 
 			await store.set('importCount', count + 1);
 			return false;
@@ -154,7 +154,7 @@ export class ImportService {
 
 			// Share one IMPORT_TIMEOUT budget across both phases (receive + parse) so a background import
 			// can't run for up to 2x the timeout.
-			const deadline = Date.now() + ms(env['IMPORT_TIMEOUT'] as StringValue);
+			const deadline = Date.now() + ms(env.IMPORT_TIMEOUT as StringValue);
 
 			try {
 				tmpFile = await this.spoolToTmpFile(stream, deadline);
@@ -341,7 +341,7 @@ export class ImportService {
 						});
 					});
 
-					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+					const duration = ms(env.IMPORT_TIMEOUT as StringValue);
 					const delay = deadline !== undefined ? Math.max(0, deadline - Date.now()) : duration;
 
 					timeout = setTimeout(() => {
@@ -372,7 +372,7 @@ export class ImportService {
 		if (!tmpFile) throw new Error('Failed to create temporary file for import');
 
 		// Bound the receive phase so a stalled upload can't hang indefinitely.
-		const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+		const duration = ms(env.IMPORT_TIMEOUT as StringValue);
 		const delay = deadline !== undefined ? Math.max(0, deadline - Date.now()) : duration;
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), delay);
@@ -403,7 +403,7 @@ export class ImportService {
 
 	async importCSV(collection: string, stream: Readable): Promise<void> {
 		// One IMPORT_TIMEOUT budget across receive + parse (see import()'s background branch), so sync CSV can't hit 2x either.
-		const deadline = Date.now() + ms(env['IMPORT_TIMEOUT'] as StringValue);
+		const deadline = Date.now() + ms(env.IMPORT_TIMEOUT as StringValue);
 		const tmpFile = await this.spoolToTmpFile(stream, deadline);
 		return this.parseCsvFromTmpFile(collection, tmpFile, deadline);
 	}
@@ -569,7 +569,7 @@ export class ImportService {
 							});
 						});
 
-					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+					const duration = ms(env.IMPORT_TIMEOUT as StringValue);
 					const delay = deadline !== undefined ? Math.max(0, deadline - Date.now()) : duration;
 
 					timeout = setTimeout(() => {

@@ -38,7 +38,7 @@ export async function sanitizeQuery(
 			query.limit = limit === -1 && hasMaxLimit ? Number(env['QUERY_LIMIT_MAX']) : limit;
 		}
 	} else if (hasMaxLimit) {
-		query.limit = Math.min(Number(env['QUERY_LIMIT_DEFAULT']), Number(env['QUERY_LIMIT_MAX']));
+		query.limit = Math.min(env.QUERY_LIMIT_DEFAULT, Number(env['QUERY_LIMIT_MAX']));
 	}
 
 	if (rawQuery['fields']) {
@@ -112,7 +112,7 @@ export async function sanitizeQuery(
 function sanitizeFields(rawFields: any) {
 	if (!rawFields) return null;
 
-	let fields: string[] = [];
+	let fields: string[];
 
 	if (typeof rawFields === 'string') {
 		fields = splitFields(rawFields);
