@@ -79,7 +79,7 @@ describe('scheduleSynchronizedJob', () => {
 			expect(callback.mock.calls.length).toBeGreaterThan(maxSetTimeoutHours);
 
 			await job.stop();
-		});
+		}, 30_000); // test was timing out at 5_000 on CI
 
 		test('Should execute daily job for 30 days without missing executions', async () => {
 			const callback = vi.fn().mockResolvedValue(undefined);
