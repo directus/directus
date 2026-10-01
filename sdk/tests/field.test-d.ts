@@ -3,19 +3,8 @@ import type { DirectusField, FieldMetaConditionRule, FieldMetaConditionType } fr
 import type { TestSchema } from './schema.js';
 
 describe('DirectusField', () => {
-	test('schema properties require a null check before access', () => {
-		function getTableName(field: DirectusField<TestSchema>) {
-			// @ts-expect-error - schema may be null, must narrow first
-			return field.schema.table;
-		}
-
-		function getTableNameGuarded(field: DirectusField<TestSchema>) {
-			if (field.schema === null) return null;
-			return field.schema.table;
-		}
-
-		expectTypeOf(getTableName).toBeFunction();
-		expectTypeOf(getTableNameGuarded).toBeFunction();
+	test('schema is nullable', () => {
+		expectTypeOf<DirectusField<TestSchema>['schema']>().toBeNullable();
 	});
 
 	test('meta.system is optional and only ever true', () => {
@@ -31,9 +20,7 @@ describe('FieldMetaConditionType', () => {
 			name: 'my-condition',
 			rule: { status: { _eq: 'published' } },
 		});
-	});
 
-	test('optional properties can be provided', () => {
 		assertType<FieldMetaConditionType>({
 			name: 'my-condition',
 			hidden: true,
@@ -55,10 +42,6 @@ describe('FieldMetaConditionType', () => {
 });
 
 describe('FieldMetaConditionRule', () => {
-	test('accepts a single atomic field operator', () => {
-		assertType<FieldMetaConditionRule>({ status: { _eq: 'published' } });
-	});
-
 	test('accepts nesting via _and/_or', () => {
 		assertType<FieldMetaConditionRule>({
 			_and: [{ status: { _eq: 'published' } }, { title: { _nnull: true } }],
