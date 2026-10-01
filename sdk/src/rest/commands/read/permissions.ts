@@ -76,7 +76,7 @@ export const readItemPermissions =
 		key?: string | number,
 	): RestCommand<ReadItemPermissionsOutput, Schema> =>
 	() => {
-		throwIfEmpty(String(collection), 'Collection cannot be empty');
+		throwIfEmpty(collection as string, 'Collection cannot be empty');
 
 		const item = key ? `${collection as string}/${key}` : `${collection as string}`;
 

@@ -2,4 +2,4 @@
 '@directus/sdk': patch
 ---
 
-Added missing empty-parameter validation to `readActivity`, `deletePermission`, `readPermission`, `updatePermission`, and `readRevision`
+Fixed `readActivity`, `deletePermission`, `readPermission`, `updatePermission`, `readItemPermissions`, `readNotification`, and `readRevision` not rejecting a `null` or `undefined` key or collection
