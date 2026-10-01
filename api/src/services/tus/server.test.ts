@@ -91,7 +91,11 @@ describe('createTusServer', () => {
 
 		vi.mocked(getDatabase).mockReturnValue(mockDatabase);
 		vi.mocked(getSchema).mockResolvedValue(mockSchema);
-		vi.mocked(ItemsService).mockImplementation(() => mockItemsService);
+
+		vi.mocked(ItemsService).mockImplementation(function () {
+			return mockItemsService;
+		});
+
 		vi.mocked(extractMetadata).mockResolvedValue({});
 
 		vi.setSystemTime(MOCK_NOW);

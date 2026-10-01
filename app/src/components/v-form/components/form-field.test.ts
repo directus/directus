@@ -9,6 +9,12 @@ import FormField from '@/components/v-form/components/form-field.vue';
 import VMenu from '@/components/v-menu.vue';
 import { i18n } from '@/lang';
 
+const { collectionInactive } = vi.hoisted(() => ({ collectionInactive: { value: false } }));
+
+vi.mock('@/utils/collection-status', () => ({
+	isFieldCollectionInactive: () => collectionInactive.value,
+}));
+
 beforeEach(() => {
 	for (const id of ['menu-outlet', 'dialog-outlet']) {
 		if (!document.getElementById(id)) {
@@ -60,6 +66,19 @@ const global = {
 };
 
 describe('FormField', () => {
+	it('shows a note when the field relates to an inactive collection', async () => {
+		collectionInactive.value = true;
+
+		const wrapper = mount(FormField, {
+			props: { field: baseField },
+			global,
+		});
+
+		expect(wrapper.text()).toContain('This collection is inactive');
+
+		collectionInactive.value = false;
+	});
+
 	it('should show FormFieldLabel in batch mode if field.meta.special does not include "no-data"', () => {
 		const wrapper = mount(FormField, {
 			props: {

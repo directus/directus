@@ -81,6 +81,97 @@ describe('getSnapshotDiff', () => {
 			expect(result.collections[0]!.collection).toBe('posts');
 		});
 
+		test('should keep child changes when collection metadata is removed', () => {
+			const current = createMockSnapshot({
+				collections: [
+					{
+						collection: 'posts',
+						meta: { hidden: false, status: 'draft' },
+						schema: { name: 'posts' },
+					},
+				],
+				fields: [{ collection: 'posts', field: 'title', type: 'string', meta: null, schema: null }],
+				relations: [
+					{
+						collection: 'posts',
+						field: 'author_id',
+						related_collection: 'users',
+						meta: null,
+						schema: { on_delete: 'SET NULL' },
+					},
+				],
+			});
+
+			const after = createMockSnapshot({
+				collections: [
+					{
+						collection: 'posts',
+						meta: { hidden: false },
+						schema: { name: 'posts' },
+					},
+				],
+				fields: [{ collection: 'posts', field: 'title', type: 'text', meta: null, schema: null }],
+				relations: [
+					{
+						collection: 'posts',
+						field: 'author_id',
+						related_collection: 'users',
+						meta: null,
+						schema: { on_delete: 'CASCADE' },
+					},
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.collections[0]!.diff).toEqual([
+				{
+					kind: 'E',
+					path: ['meta'],
+					lhs: { hidden: false, status: 'draft' },
+					rhs: { hidden: false },
+				},
+			]);
+
+			expect(result.fields).toHaveLength(1);
+			expect(result.relations).toHaveLength(1);
+		});
+
+		test('should keep a grouped collection creation when its parent metadata is added', () => {
+			const current = createMockSnapshot({
+				collections: [
+					{
+						collection: 'parent',
+						meta: { hidden: false },
+						schema: { name: 'parent' },
+					},
+				],
+			});
+
+			const after = createMockSnapshot({
+				collections: [
+					{
+						collection: 'parent',
+						meta: { hidden: false, status: 'draft' },
+						schema: { name: 'parent' },
+					},
+					{
+						collection: 'child',
+						meta: { group: 'parent' },
+						schema: { name: 'child' },
+					},
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+			const parentDiff = result.collections.find(({ collection }) => collection === 'parent')!.diff[0]!;
+			const childDiff = result.collections.find(({ collection }) => collection === 'child')!.diff[0]!;
+
+			expect(parentDiff).toMatchObject({ kind: 'E', path: ['meta'] });
+			expect(childDiff).toMatchObject({ kind: 'N' });
+			expect(childDiff.path).toBeUndefined();
+		});
+
 		test('should filter out fields and relations when collection is deleted', () => {
 			const current = createMockSnapshot({
 				collections: [{ collection: 'posts', meta: null, schema: { name: 'posts' } }],
@@ -161,6 +252,43 @@ describe('getSnapshotDiff', () => {
 			expect(result.fields[0]!.collection).toBe('posts');
 			expect(result.fields[0]!.field).toBe('title');
 			expect(result.fields[0]!.diff).toBeDefined();
+		});
+
+		test('should represent added field metadata as an update', () => {
+			const current = createMockSnapshot({
+				fields: [
+					{
+						collection: 'posts',
+						field: 'title',
+						type: 'string',
+						meta: { hidden: false },
+						schema: null,
+					},
+				],
+			});
+
+			const after = createMockSnapshot({
+				fields: [
+					{
+						collection: 'posts',
+						field: 'title',
+						type: 'string',
+						meta: { hidden: false, required: true },
+						schema: null,
+					},
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.fields[0]!.diff).toEqual([
+				{
+					kind: 'E',
+					path: ['meta'],
+					lhs: { hidden: false },
+					rhs: { hidden: false, required: true },
+				},
+			]);
 		});
 
 		test('should detect field type change (non-alias)', () => {
@@ -411,6 +539,80 @@ describe('getSnapshotDiff', () => {
 			const result = getSnapshotDiff(current, after);
 
 			expect(result.relations).toBeDefined();
+		});
+
+		test('should represent added relation metadata as an update', () => {
+			const current = createMockSnapshot({
+				relations: [
+					{
+						collection: 'posts',
+						field: 'author_id',
+						related_collection: 'users',
+						meta: { junction_field: null },
+						schema: null,
+					},
+				],
+			});
+
+			const after = createMockSnapshot({
+				relations: [
+					{
+						collection: 'posts',
+						field: 'author_id',
+						related_collection: 'users',
+						meta: { junction_field: null, one_field: 'author_id' },
+						schema: null,
+					},
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.relations[0]!.diff).toEqual([
+				{
+					kind: 'E',
+					path: ['meta'],
+					lhs: { junction_field: null },
+					rhs: { junction_field: null, one_field: 'author_id' },
+				},
+			]);
+		});
+
+		test('should represent removed relation metadata as an update', () => {
+			const current = createMockSnapshot({
+				relations: [
+					{
+						collection: 'posts',
+						field: 'author_id',
+						related_collection: 'users',
+						meta: { junction_field: null, one_field: 'author_id' },
+						schema: null,
+					},
+				],
+			});
+
+			const after = createMockSnapshot({
+				relations: [
+					{
+						collection: 'posts',
+						field: 'author_id',
+						related_collection: 'users',
+						meta: { junction_field: null },
+						schema: null,
+					},
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.relations[0]!.diff).toEqual([
+				{
+					kind: 'E',
+					path: ['meta'],
+					lhs: { junction_field: null, one_field: 'author_id' },
+					rhs: { junction_field: null },
+				},
+			]);
 		});
 	});
 

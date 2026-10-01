@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { difference } from 'lodash';
+import { difference } from 'lodash-es';
 import { computed, toRefs } from 'vue';
 import { useVisibleChildren } from './use-visible-children';
 import VCheckbox from '@/components/v-checkbox.vue';
