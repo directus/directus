@@ -18,9 +18,10 @@ import {
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getHelpers } from '@utils/db-helpers/index.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { LICENSE_KEYS } from './__fixtures__/licenses.js';
-import { withDefaultSandboxOptions } from './__fixtures__/sandbox.js';
 
 const DAY_SEC = 24 * 60 * 60;
 const PUBLIC_POLICY_ID = 'abf8a154-5b1c-4a46-ac9c-7300570f4f17';
@@ -45,14 +46,12 @@ let directus: Sandbox;
 let api: DirectusClient<any> & RestClient<any>;
 
 beforeAll(async () => {
-	directus = await sandbox(
-		database,
-		withDefaultSandboxOptions({
-			env: { LICENSE_KEY: LICENSE_KEYS.TINY },
-			extras: { license: true },
-			knex: true,
-		}),
-	);
+	directus = await useSandbox(database, {
+		port: sandboxPort(0),
+		env: { LICENSE_KEY: LICENSE_KEYS.TINY },
+		extras: { license: true },
+		knex: true,
+	});
 
 	api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 });
