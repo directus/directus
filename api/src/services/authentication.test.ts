@@ -424,7 +424,6 @@ describe('Integration Tests', () => {
 				user_external_identifier: null,
 				user_auth_data: null,
 				user_role: mockUser.role,
-				user_tfa_secret: null,
 				share_id: null,
 				share_start: null,
 				share_end: null,
@@ -458,78 +457,6 @@ describe('Integration Tests', () => {
 					accessToken: 'test-access-token',
 					refreshToken: expect.any(String),
 					id: mockUser.id,
-				});
-			});
-
-			it('should recalculate enforce_tfa when refreshing a user session', async () => {
-				service.accountability = { ip: '127.0.0.1' } as Accountability;
-				vi.mocked(fetchRolesTree).mockResolvedValueOnce(['parent-role-id', mockUser.role]);
-
-				vi.mocked(fetchAccountabilityPolicyGlobals).mockResolvedValueOnce({
-					app_access: false,
-					admin_access: false,
-					enforce_tfa: true,
-				});
-
-				tracker.on.select('directus_sessions').responseOnce([{ ...mockSessionRecord, oauth_client: null }]);
-				tracker.on.update('directus_sessions').responseOnce([1]);
-				tracker.on.update('directus_users').responseOnce([1]);
-				tracker.on.delete('directus_sessions').responseOnce(1);
-
-				await service.refresh('regular-token');
-
-				expect(fetchAccountabilityPolicyGlobals).toHaveBeenCalledWith(
-					{
-						user: mockUser.id,
-						roles: ['parent-role-id', mockUser.role],
-						ip: '127.0.0.1',
-						app: false,
-						admin: false,
-					},
-					{ knex: db, schema },
-				);
-
-				expect(vi.mocked(jwt.sign).mock.calls[0]?.[0]).toMatchObject({ enforce_tfa: true });
-			});
-
-			it('should not include enforce_tfa when TFA is already configured during refresh', async () => {
-				tracker.on
-					.select('directus_sessions')
-					.responseOnce([{ ...mockSessionRecord, user_tfa_secret: 'some-secret', oauth_client: null }]);
-
-				tracker.on.update('directus_sessions').responseOnce([1]);
-				tracker.on.update('directus_users').responseOnce([1]);
-				tracker.on.delete('directus_sessions').responseOnce(1);
-
-				await service.refresh('regular-token');
-
-				expect(fetchAccountabilityPolicyGlobals).not.toHaveBeenCalled();
-				expect(vi.mocked(jwt.sign).mock.calls[0]?.[0]).not.toHaveProperty('enforce_tfa');
-			});
-
-			it('should not resolve TFA policies for share sessions', async () => {
-				tracker.on.select('directus_sessions').responseOnce([
-					{
-						...mockSessionRecord,
-						user_id: null,
-						user_role: null,
-						share_id: 'share-id',
-						oauth_client: null,
-					},
-				]);
-
-				tracker.on.update('directus_sessions').responseOnce([1]);
-				tracker.on.delete('directus_sessions').responseOnce(1);
-
-				await service.refresh('share-token');
-
-				expect(fetchAccountabilityPolicyGlobals).not.toHaveBeenCalled();
-
-				expect(vi.mocked(jwt.sign).mock.calls[0]?.[0]).toMatchObject({
-					share: 'share-id',
-					role: null,
-					app_access: false,
-					admin_access: false,
 				});
 			});
 

@@ -239,6 +239,7 @@ export class AuthenticationService {
 			admin_access: globalAccess.admin,
 		};
 
+		// Indicate enforcement in token payload for users who need to set up 2FA
 		if (!user.tfa_secret) {
 			const policyGlobals = await fetchAccountabilityPolicyGlobals(
 				{ ...userAccountability, ...globalAccess },
@@ -344,7 +345,6 @@ export class AuthenticationService {
 				user_external_identifier: 'u.external_identifier',
 				user_auth_data: 'u.auth_data',
 				user_role: 'u.role',
-				user_tfa_secret: 'u.tfa_secret',
 				share_id: 'd.id',
 				share_start: 'd.date_start',
 				share_end: 'd.date_end',
@@ -380,9 +380,11 @@ export class AuthenticationService {
 		}
 
 		const roles = await fetchRolesTree(record.user_role, { knex: this.knex });
-		const userAccountability = { user: record.user_id, roles, ip: this.accountability?.ip ?? null };
 
-		const globalAccess = await fetchGlobalAccess(userAccountability, { knex: this.knex });
+		const globalAccess = await fetchGlobalAccess(
+			{ user: record.user_id, roles, ip: this.accountability?.ip ?? null },
+			{ knex: this.knex },
+		);
 
 		if ((await getLicenseManager().isLocked()) && globalAccess.admin === false) {
 			throw new ResourceRestrictedError({
@@ -419,17 +421,6 @@ export class AuthenticationService {
 			app_access: globalAccess.app,
 			admin_access: globalAccess.admin,
 		};
-
-		if (record.user_id && !record.user_tfa_secret) {
-			const policyGlobals = await fetchAccountabilityPolicyGlobals(
-				{ ...userAccountability, ...globalAccess },
-				{ knex: this.knex, schema: this.schema },
-			);
-
-			if (policyGlobals.enforce_tfa) {
-				tokenPayload.enforce_tfa = true;
-			}
-		}
 
 		if (options?.session) {
 			newRefreshToken = await this.updateStatefulSession(record, refreshToken, newRefreshToken, refreshTokenExpiration);
