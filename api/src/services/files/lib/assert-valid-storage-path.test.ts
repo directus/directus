@@ -259,6 +259,51 @@ describe('assertValidStoragePath', () => {
 		])('$name', testStoragePath);
 	});
 
+	describe('non-string env values', () => {
+		// Values can be cast to other types, nothing can be loaded from those so they're skipped instead of blocking
+		beforeEach(() => {
+			setEnv({ STORAGE_LOCAL_ROOT: '.' });
+		});
+
+		test.each<TestCase>([
+			{
+				name: 'skips a null MIGRATIONS_PATH',
+				filepath: 'migrations/20260101A-evil.js',
+				storage: 'local',
+				env: { MIGRATIONS_PATH: null },
+				error: false,
+			},
+			{
+				name: 'skips an EMAIL_TEMPLATES_PATH cast to an array',
+				filepath: 'templates/password-reset.liquid',
+				storage: 'local',
+				env: { EMAIL_TEMPLATES_PATH: ['./templates', './more-templates'] },
+				error: false,
+			},
+			{
+				name: 'skips a SQLite DB_FILENAME cast to a number',
+				filepath: '1234',
+				storage: 'local',
+				env: { DB_CLIENT: 'sqlite3', DB_FILENAME: 1234 },
+				error: false,
+			},
+			{
+				name: 'skips the package.json of a null PACKAGE_FILE_LOCATION',
+				filepath: 'package.json',
+				storage: 'local',
+				env: { PACKAGE_FILE_LOCATION: null },
+				error: false,
+			},
+			{
+				name: 'still blocks the cwd node_modules with a null PACKAGE_FILE_LOCATION',
+				filepath: 'node_modules/lodash-es/lodash.js',
+				storage: 'local',
+				env: { PACKAGE_FILE_LOCATION: null },
+				error: ForbiddenError,
+			},
+		])('$name', testStoragePath);
+	});
+
 	describe('absolute and relative paths', () => {
 		// Relative paths resolve against the cwd (/directus), like the local driver does
 		test.each<TestCase>([

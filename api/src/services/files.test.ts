@@ -980,6 +980,30 @@ describe('Service / Files', () => {
 			expect(uploadOneSpy).toHaveBeenCalled();
 		});
 
+		test('rejects a filename_disk that points into the extensions directory', async () => {
+			// Let the real uploadOne validate the path, with the extensions directory inside the storage root
+			uploadOneSpy.mockRestore();
+
+			const previousEnv = { ...mockEnvOverrides };
+
+			Object.assign(mockEnvOverrides, {
+				STORAGE_LOCAL_DRIVER: 'local',
+				STORAGE_LOCAL_ROOT: '.',
+				EXTENSIONS_PATH: './extensions',
+			});
+
+			try {
+				await expect(
+					service.importOne('https://example.com/photo.jpg', { filename_disk: 'extensions/evil/index.js' }),
+				).rejects.toBeInstanceOf(ForbiddenError);
+			} finally {
+				for (const key of Object.keys(mockEnvOverrides)) delete mockEnvOverrides[key];
+				Object.assign(mockEnvOverrides, previousEnv);
+			}
+
+			expect(ItemsService.prototype.createOne).not.toHaveBeenCalled();
+		});
+
 		test('throws InvalidPayloadError when MIME type is not in filterMimeType', async () => {
 			mockAxiosGet.mockResolvedValue({
 				headers: { 'content-type': 'image/png' },

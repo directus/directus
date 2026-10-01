@@ -31,26 +31,27 @@ export function assertValidStorageLocation(storage: unknown): asserts storage is
  */
 export function assertValidStoragePath(filepath: string, storage?: string): void {
 	const env = useEnv();
-
 	const location = storage || toArray(env['STORAGE_LOCATIONS'] as string)[0]!.trim();
-
+	
 	assertValidStorageLocation(location);
-	const storageDriver = env[`STORAGE_${location.toUpperCase()}_DRIVER`] as string | undefined;
-	const storageRoot = (env[`STORAGE_${location.toUpperCase()}_ROOT`] as string | undefined) ?? '';
+
+	const getEnv = (name: string) => (env[name] as string | undefined) ?? '';
 
 	// Bucket-root-relative key for remote locations, relative to the storage root for local ones
 	const normalizedFilePath = sanitizeFilepath(filepath);
-
-	const extensionsLocation = (env['EXTENSIONS_LOCATION'] as string | undefined)?.trim();
+	const extensionsLocation = getEnv('EXTENSIONS_LOCATION').trim();
 
 	// Block setting path to the extension path on the extensions storage location.
 	if (extensionsLocation && extensionsLocation.toUpperCase() === location.toUpperCase()) {
-		const remoteExtensionPath = sanitizeFilepath((env['EXTENSIONS_PATH'] as string | undefined) ?? '');
+		const remoteExtensionPath = sanitizeFilepath(getEnv('EXTENSIONS_PATH'));
 
 		if (isWithinPath(normalizedFilePath, remoteExtensionPath)) {
 			throw new ForbiddenError();
 		}
 	}
+
+	const storageDriver = getEnv(`STORAGE_${location.toUpperCase()}_DRIVER`);
+	const storageRoot = getEnv(`STORAGE_${location.toUpperCase()}_ROOT`);
 
 	// Block local writes to any forbidden locations placed inside storage root
 	if (storageDriver === 'local') {
@@ -73,17 +74,20 @@ function getBlockedPaths(): string[] {
 	const packageFileLocation = env['PACKAGE_FILE_LOCATION'];
 
 	// Module extensions are resolved from the package.json dependencies, installed in node_modules
-	const packagePaths =
-		typeof packageFileLocation === 'string'
-			? [path.join(packageFileLocation, 'package.json'), path.join(packageFileLocation, 'node_modules')]
-			: [];
+	const packagePaths = [path.resolve('node_modules')];
 
-	packagePaths.push(path.resolve('node_modules'));
+	if (typeof packageFileLocation === 'string') {
+		packagePaths.push(path.join(packageFileLocation, 'package.json'));
+		packagePaths.push(path.join(packageFileLocation, 'node_modules'));
+	}
 
-	const dbFilename = env['DB_CLIENT'] === 'sqlite3' ? env['DB_FILENAME'] : undefined;
+	const sqlitePaths = [];
 
-	const dbFilePaths =
-		typeof dbFilename === 'string' ? ['', '-journal', '-wal', '-shm'].map((suffix) => dbFilename + suffix) : [];
+	if (env['DB_CLIENT'] === 'sqlite3' && typeof env['DB_FILENAME'] === 'string') {
+		for (const suffix of ['', '-journal', '-wal', '-shm']) {
+			sqlitePaths.push(env['DB_FILENAME'] + suffix);
+		}
+	}
 
 	return [
 		getExtensionsPath(),
@@ -92,6 +96,6 @@ function getBlockedPaths(): string[] {
 		env['EMAIL_TEMPLATES_PATH'],
 		env['CONFIG_PATH'],
 		...packagePaths,
-		...dbFilePaths,
+		...sqlitePaths,
 	].filter((blockedPath) => typeof blockedPath === 'string');
 }
