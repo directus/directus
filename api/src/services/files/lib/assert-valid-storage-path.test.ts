@@ -97,6 +97,12 @@ describe('assertValidStoragePath', () => {
 				error: ForbiddenError,
 			},
 			{
+				name: 'blocks writing into the migrations dir',
+				filepath: 'migrations/20260101A-evil.js',
+				storage: 'local',
+				error: ForbiddenError,
+			},
+			{
 				name: 'blocks writing a file at exactly the extensions path',
 				filepath: 'extensions',
 				storage: 'local',
@@ -257,6 +263,13 @@ describe('assertValidStoragePath', () => {
 				filepath: 'node_modules/.directus/evil.js',
 				storage: 'local',
 				env: { STORAGE_LOCAL_ROOT: '.', TEMP_PATH: '/directus/node_modules/.directus' },
+				error: ForbiddenError,
+			},
+			{
+				name: 'blocks an absolute MIGRATIONS_PATH inside a relative storage root',
+				filepath: 'db/migrations/20260101A-evil.js',
+				storage: 'local',
+				env: { STORAGE_LOCAL_ROOT: '.', MIGRATIONS_PATH: '/directus/db/migrations' },
 				error: ForbiddenError,
 			},
 			{

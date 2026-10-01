@@ -54,16 +54,21 @@ export function assertValidStoragePath(filepath: string, storage?: string): void
 
 	// Block local writes to any forbidden locations placed inside storage root
 	if (storageDriver === 'local') {
-		const forbiddenPaths = [getExtensionsPath() ?? '', (env['TEMP_PATH'] as string | undefined) ?? ''];
-
-		for (const forbiddenPath of forbiddenPaths) {
-			const relativePath = getOverlappingPath(storageRoot, forbiddenPath);
+		for (const blockedPath of getBlockedPaths(env)) {
+			const relativePath = getOverlappingPath(storageRoot, blockedPath);
 
 			if (relativePath !== null && isWithinPath(normalizedFilePath, relativePath)) {
 				throw new ForbiddenError();
 			}
 		}
 	}
+}
+
+/**
+ * Get the local file paths that Directus uploads should be prevented from uploading to
+ */
+function getBlockedPaths(env: Record<string, unknown>): string[] {
+	return [getExtensionsPath(), env['TEMP_PATH'], env['MIGRATIONS_PATH']].filter((path) => typeof path === 'string');
 }
 
 /**
