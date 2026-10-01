@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { toArray } from '@directus/utils';
+import { normalizePath, toArray } from '@directus/utils';
 import { getExtensionsPath } from '../../../extensions/lib/get-extensions-path.js';
 import { isWithinPath } from '../../../utils/is-within-path.js';
 import { sanitizeFilepath } from './sanitize-filepath.js';
@@ -38,14 +38,8 @@ export function assertValidStoragePath(filepath: string, storage?: string): void
 	const storageDriver = env[`STORAGE_${location.toUpperCase()}_DRIVER`] as string | undefined;
 	const storageRoot = (env[`STORAGE_${location.toUpperCase()}_ROOT`] as string | undefined) ?? '';
 
-	const storagePath = sanitizeFilepath(storageRoot);
+	// Bucket-root-relative key for remote locations, relative to the storage root for local ones
 	const normalizedFilePath = sanitizeFilepath(filepath);
-
-	// Resolve the file to its real location for comparison
-	// - storage root for the local
-	// - bucket-root-relative key for remote
-	const filePath =
-		storageDriver === 'local' ? sanitizeFilepath(path.join(storagePath, normalizedFilePath)) : normalizedFilePath;
 
 	const extensionsLocation = (env['EXTENSIONS_LOCATION'] as string | undefined)?.trim();
 
@@ -60,15 +54,35 @@ export function assertValidStoragePath(filepath: string, storage?: string): void
 
 	// Block local writes to any forbidden locations placed inside storage root
 	if (storageDriver === 'local') {
-		const tmpPath = sanitizeFilepath((env['TEMP_PATH'] as string | undefined) ?? '');
-		const extensionPath = sanitizeFilepath(getExtensionsPath() ?? '');
+		const forbiddenPaths = [getExtensionsPath() ?? '', (env['TEMP_PATH'] as string | undefined) ?? ''];
 
-		if (isWithinPath(filePath, extensionPath)) {
-			throw new ForbiddenError();
-		}
+		for (const forbiddenPath of forbiddenPaths) {
+			const relativePath = getOverlappingPath(storageRoot, forbiddenPath);
 
-		if (isWithinPath(filePath, tmpPath)) {
-			throw new ForbiddenError();
+			if (relativePath !== null && isWithinPath(normalizedFilePath, relativePath)) {
+				throw new ForbiddenError();
+			}
 		}
 	}
+}
+
+/**
+ * Get a forbidden directory relative to the storage root, to compare against filepaths within that root.
+ * Both are resolved against the cwd like the local driver does, so absolute and relative paths compare.
+ *
+ * @returns The relative directory, an empty string when the whole root is forbidden, or null when they don't overlap
+ */
+function getOverlappingPath(storageRoot: string, forbiddenPath: string): string | null {
+	const root = path.resolve(storageRoot);
+	const forbidden = path.resolve(forbiddenPath);
+
+	const isOutside = (relative: string) =>
+		relative === '..' || relative.startsWith('..' + path.sep) || path.isAbsolute(relative);
+
+	// The storage root is the forbidden directory or inside of it
+	if (isOutside(path.relative(forbidden, root)) === false) return '';
+
+	const relative = path.relative(root, forbidden);
+
+	return isOutside(relative) ? null : normalizePath(relative);
 }
