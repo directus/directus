@@ -109,6 +109,24 @@ describe('assertValidStoragePath', () => {
 				error: ForbiddenError,
 			},
 			{
+				name: 'blocks overwriting the package.json',
+				filepath: 'package.json',
+				storage: 'local',
+				error: ForbiddenError,
+			},
+			{
+				name: 'allows a file that shares the package.json prefix',
+				filepath: 'package.json.bak',
+				storage: 'local',
+				error: false,
+			},
+			{
+				name: 'allows a nested package.json',
+				filepath: 'uploads/package.json',
+				storage: 'local',
+				error: false,
+			},
+			{
 				name: 'blocks writing a file at exactly the extensions path',
 				filepath: 'extensions',
 				storage: 'local',
@@ -283,6 +301,13 @@ describe('assertValidStoragePath', () => {
 				filepath: 'mail/templates/password-reset.liquid',
 				storage: 'local',
 				env: { STORAGE_LOCAL_ROOT: '.', EMAIL_TEMPLATES_PATH: '/directus/mail/templates' },
+				error: ForbiddenError,
+			},
+			{
+				name: 'blocks the package.json in an absolute PACKAGE_FILE_LOCATION inside a relative storage root',
+				filepath: 'project/package.json',
+				storage: 'local',
+				env: { STORAGE_LOCAL_ROOT: '.', PACKAGE_FILE_LOCATION: '/directus/project' },
 				error: ForbiddenError,
 			},
 			{
