@@ -190,6 +190,7 @@ async function onClick(event: MouseEvent) {
 				<button
 					type="button"
 					class="split-menu-button"
+					data-no-tooltip
 					:class="[
 						sizeClass,
 						{
