@@ -92,7 +92,7 @@ export function getTypes(
 
 					const fieldIsInconsistent = inconsistentFields[action][collection.collection]?.includes(field.field);
 
-					const defaultAllowsOmit = action === 'create' && Boolean(field.defaultValue);
+					const defaultAllowsOmit = action === 'create' && field.defaultValue !== null;
 
 					// GraphQL doesn't differentiate between "required" and "non-null".
 					// Only mark a field as non-null when a value is guaranteed:
@@ -113,7 +113,7 @@ export function getTypes(
 						// permissions IDs need to be nullable https://github.com/directus/directus/issues/20509
 						if (collection.collection === 'directus_permissions') {
 							type = GraphQLID;
-						} else if (!field.defaultValue && !field.special.includes('uuid') && action === 'create') {
+						} else if (field.defaultValue === null && !field.special.includes('uuid') && action === 'create') {
 							type = new GraphQLNonNull(GraphQLID);
 						} else if (['create', 'update'].includes(action)) {
 							type = GraphQLID;

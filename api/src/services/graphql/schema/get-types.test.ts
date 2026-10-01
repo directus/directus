@@ -1,4 +1,3 @@
-import { GraphQLNonNull } from 'graphql';
 // eslint-disable-next-line import/order
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
@@ -211,63 +210,77 @@ describe('getTypes – json() inside {field}_func (Phase 3)', () => {
 	});
 });
 
-describe('getTypes – non-null marking with default values (directus/directus#25888)', () => {
-	let sc: ReturnType<typeof makeSchemaComposer>;
+describe('getTypes – non-null marking (directus/directus#25888)', () => {
+	type Action = 'read' | 'create' | 'update';
 
-	beforeEach(() => {
-		vi.clearAllMocks();
-		mockApplyFunctionToColumnName.mockImplementation((col: string) => col);
-		sc = makeSchemaComposer();
-	});
-
-	/** Returns the emitted GraphQL type for the `size` string field. */
-	function fieldType(action: 'read' | 'create' | 'update', nullable: boolean, defaultValue: unknown) {
+	function fieldType(
+		action: Action,
+		field: ReturnType<typeof makeField>,
+		{ collection = 'articles', inconsistent = [] as readonly string[] } = {},
+	) {
 		const schema = makeSchema(action, {
-			articles: makeCollection('articles', {
-				id: makeField('id', 'integer'),
-				size: makeField('size', 'string', { nullable, defaultValue }),
+			[collection]: makeCollection(collection, {
+				id: makeField('id', 'integer', { nullable: false }),
+				[field.field]: field,
 			}),
 		});
 
-		// Empty per-collection lists mark every field as consistent
 		const inconsistentFields = {
-			read: { articles: [] },
-			create: { articles: [] },
-			update: { articles: [] },
+			read: { [collection]: inconsistent },
+			create: { [collection]: inconsistent },
+			update: { [collection]: inconsistent },
 			delete: {},
 		} as any;
 
-		const { CollectionTypes } = getTypes(sc as any, 'items', schema as any, inconsistentFields, action);
+		const { CollectionTypes } = getTypes(
+			makeSchemaComposer() as any,
+			'items',
+			schema as any,
+			inconsistentFields,
+			action,
+		);
 
-		// CollectionTypes is keyed by collection name for every action
-		return CollectionTypes['articles']!.getFields()['size'].type;
+		return String(CollectionTypes[collection]!.getFields()[field.field]!.type);
 	}
 
-	test('read: NOT NULL field with a default value is non-null', () => {
-		expect(fieldType('read', false, 'small')).toBeInstanceOf(GraphQLNonNull);
-	});
-
-	test('read: NOT NULL field without a default value is non-null', () => {
-		expect(fieldType('read', false, null)).toBeInstanceOf(GraphQLNonNull);
-	});
-
-	test('read: nullable field with a default value stays nullable', () => {
-		expect(fieldType('read', true, 'small')).not.toBeInstanceOf(GraphQLNonNull);
-	});
-
-	test('create: NOT NULL field with a default value is nullable (omittable)', () => {
-		expect(fieldType('create', false, 'small')).not.toBeInstanceOf(GraphQLNonNull);
-	});
-
-	test('create: NOT NULL field without a default value is non-null', () => {
-		expect(fieldType('create', false, null)).toBeInstanceOf(GraphQLNonNull);
-	});
-
-	test('update: NOT NULL field with a default value is nullable', () => {
-		expect(fieldType('update', false, 'small')).not.toBeInstanceOf(GraphQLNonNull);
-	});
-
-	test('update: NOT NULL field without a default value is nullable', () => {
-		expect(fieldType('update', false, null)).not.toBeInstanceOf(GraphQLNonNull);
+	test.each([
+		['read', 'NOT NULL with default', 'String!', 'string', { nullable: false, defaultValue: 'small' }],
+		['read', 'NOT NULL without default', 'String!', 'string', { nullable: false }],
+		['read', 'nullable with default', 'String', 'string', { defaultValue: 'small' }],
+		['read', 'NOT NULL with false default', 'Boolean!', 'boolean', { nullable: false, defaultValue: false }],
+		['read', 'NOT NULL generated', 'Date', 'timestamp', { nullable: false, special: ['date-created'] }],
+		['read', 'NOT NULL inconsistent', 'String', 'string', { nullable: false }, { inconsistent: ['size'] }],
+		['read', 'primary key', 'ID!', 'integer', { field: 'id', nullable: false }],
+		[
+			'read',
+			'directus_permissions primary key',
+			'ID',
+			'integer',
+			{ field: 'id', nullable: false },
+			{ collection: 'directus_permissions' },
+		],
+		['create', 'NOT NULL with default', 'String', 'string', { nullable: false, defaultValue: 'small' }],
+		['create', 'NOT NULL with empty string default', 'String', 'string', { nullable: false, defaultValue: '' }],
+		['create', 'NOT NULL with false default', 'Boolean', 'boolean', { nullable: false, defaultValue: false }],
+		['create', 'NOT NULL with 0 default', 'Int', 'integer', { nullable: false, defaultValue: 0 }],
+		['create', 'NOT NULL without default', 'String!', 'string', { nullable: false }],
+		['create', 'NOT NULL generated', 'Date', 'timestamp', { nullable: false, special: ['date-created'] }],
+		['create', 'NOT NULL inconsistent', 'String', 'string', { nullable: false }, { inconsistent: ['size'] }],
+		['create', 'nullable without default', 'String', 'string', {}],
+		['create', 'primary key without default', 'ID!', 'integer', { field: 'id', nullable: false }],
+		[
+			'create',
+			'auto increment primary key',
+			'ID',
+			'integer',
+			{ field: 'id', nullable: false, defaultValue: 'AUTO_INCREMENT' },
+		],
+		['create', 'primary key with 0 default', 'ID', 'integer', { field: 'id', nullable: false, defaultValue: 0 }],
+		['create', 'uuid primary key', 'ID', 'uuid', { field: 'id', nullable: false, special: ['uuid'] }],
+		['update', 'NOT NULL with default', 'String', 'string', { nullable: false, defaultValue: 'small' }],
+		['update', 'NOT NULL without default', 'String', 'string', { nullable: false }],
+		['update', 'primary key', 'ID', 'integer', { field: 'id', nullable: false }],
+	] as const)('%s: %s is %s', (action, _label, expected, type, overrides, options?) => {
+		expect(fieldType(action, makeField('size', type, overrides), options)).toBe(expected);
 	});
 });
