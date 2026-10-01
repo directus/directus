@@ -285,6 +285,14 @@ describe('Integration Tests', () => {
 					);
 				});
 
+				test('rejects an unparseable time on create when the dialect stores times as dates', () => {
+					vi.spyOn(service.helpers.date, 'writeTime').mockReturnValueOnce(new Date(NaN));
+
+					expect(() => service.processDates(fieldEntries, [{ time_field: 'nope' }], 'create')).toThrow(
+						'Invalid Time format in field "time_field"',
+					);
+				});
+
 				test('with zero values', () => {
 					const result = service.processDates(
 						fieldEntries,
