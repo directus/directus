@@ -103,6 +103,12 @@ describe('assertValidStoragePath', () => {
 				error: ForbiddenError,
 			},
 			{
+				name: 'blocks writing into the email templates dir',
+				filepath: 'templates/password-reset.liquid',
+				storage: 'local',
+				error: ForbiddenError,
+			},
+			{
 				name: 'blocks writing a file at exactly the extensions path',
 				filepath: 'extensions',
 				storage: 'local',
@@ -270,6 +276,13 @@ describe('assertValidStoragePath', () => {
 				filepath: 'db/migrations/20260101A-evil.js',
 				storage: 'local',
 				env: { STORAGE_LOCAL_ROOT: '.', MIGRATIONS_PATH: '/directus/db/migrations' },
+				error: ForbiddenError,
+			},
+			{
+				name: 'blocks an absolute EMAIL_TEMPLATES_PATH inside a relative storage root',
+				filepath: 'mail/templates/password-reset.liquid',
+				storage: 'local',
+				env: { STORAGE_LOCAL_ROOT: '.', EMAIL_TEMPLATES_PATH: '/directus/mail/templates' },
 				error: ForbiddenError,
 			},
 			{

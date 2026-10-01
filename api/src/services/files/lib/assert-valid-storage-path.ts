@@ -68,7 +68,9 @@ export function assertValidStoragePath(filepath: string, storage?: string): void
  * Get the local file paths that Directus uploads should be prevented from uploading to
  */
 function getBlockedPaths(env: Record<string, unknown>): string[] {
-	return [getExtensionsPath(), env['TEMP_PATH'], env['MIGRATIONS_PATH']].filter((path) => typeof path === 'string');
+	return [getExtensionsPath(), env['TEMP_PATH'], env['MIGRATIONS_PATH'], env['EMAIL_TEMPLATES_PATH']].filter(
+		(path) => typeof path === 'string',
+	);
 }
 
 /**
