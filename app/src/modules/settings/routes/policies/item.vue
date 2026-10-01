@@ -148,6 +148,10 @@ function useSystemPermissionsGuard() {
 	return { confirmSystemPermissions, systemPermissionActions, hasUnfilteredRead, guardSave, confirmSave };
 
 	function guardSave(saveFn: () => Promise<void>) {
+		if (saving.value) {
+			return;
+		}
+
 		if (systemPermissionChanges.value.length === 0) {
 			saveFn();
 			return;
@@ -157,9 +161,12 @@ function useSystemPermissionsGuard() {
 	}
 
 	async function confirmSave() {
-		const saveFn = pendingSave.value;
+		if (saving.value) {
+			return;
+		}
+
+		await pendingSave.value?.();
 		pendingSave.value = null;
-		await saveFn?.();
 	}
 }
 </script>
