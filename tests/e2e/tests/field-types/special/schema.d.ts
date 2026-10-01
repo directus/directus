@@ -59,6 +59,6 @@ export interface ArticlesTagsJunction {
 export interface ArticlesBuilder {
 	id: number;
 	articles_id: number | Articles | null;
-	item: number | DateBlocks | TextBlocks | null;
+	item: string | DateBlocks | TextBlocks | null;
 	collection: string | null;
 }

@@ -63,7 +63,7 @@ describe('types', () => {
 			export interface ArticlesBuilder {
 				id: number;
 				articles_id: number | Articles | null;
-				item: number | Text | Image | null;
+				item: string | Text | Image | null;
 				collection: string | null;
 			}
 

@@ -60,13 +60,13 @@ export interface ArticlesTagsJunction {
 export interface ArticlesBuilder {
 	id: number;
 	articles_id: number | Articles | null;
-	item: number | DateBlocks | TextBlocks | null;
+	item: string | DateBlocks | TextBlocks | null;
 	collection: string | null;
 }
 
 export interface BlogsBuilder {
 	id: number;
 	blogs_id: number | Blogs | null;
-	item: number | TextBlocks | null;
+	item: string | TextBlocks | null;
 	collection: string | null;
 }

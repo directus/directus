@@ -66,6 +66,6 @@ export interface ProductsSuppliersJunction {
 export interface ShapesBuilder {
 	id: number;
 	shapes_id: number | Shapes | null;
-	item: number | Circles | Squares | null;
+	item: string | Circles | Squares | null;
 	collection: string | null;
 }

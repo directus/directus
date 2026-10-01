@@ -132,15 +132,8 @@ export class RelationBuilder {
 		const primary_of = (name: string) =>
 			schema.fields.find((field) => field.collection === name && field.schema?.is_primary_key);
 
+		// a2o keys are always stored as strings, the API casts the related primary keys to match when joining
 		if (this._data._type === 'a2o') {
-			const keys = (this._data.meta?.one_allowed_collections ?? []).map(primary_of);
-			const type = keys[0]?.type;
-
-			// An a2o field can only share the type of the related primary keys if they all match
-			if (type && keys.every((key) => key?.type === type)) {
-				return { type: type as ForeignKeyType, column: keys[0]!.schema };
-			}
-
 			return { type: 'string', column: null };
 		}
 

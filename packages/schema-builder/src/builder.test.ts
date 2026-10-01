@@ -637,7 +637,7 @@ test('Create m2a relation', () => {
 		        },
 		        "item": {
 		          "alias": false,
-		          "dbType": "integer",
+		          "dbType": "character varying",
 		          "defaultValue": null,
 		          "field": "item",
 		          "generated": false,
@@ -647,7 +647,7 @@ test('Create m2a relation', () => {
 		          "scale": null,
 		          "searchable": true,
 		          "special": [],
-		          "type": "integer",
+		          "type": "string",
 		          "validation": null,
 		        },
 		      },
