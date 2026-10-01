@@ -257,12 +257,20 @@ function useSystemPermissionsGuard() {
 				<VCardText class="system-permissions-confirm">
 					<p>{{ $t('public_policy_dialog.copy') }}</p>
 
-					<ul>
-						<li v-for="{ collection, actions } in systemPermissionActions" :key="collection">
-							<code>{{ collection }}</code>
-							{{ actions.map((action) => $t(action)).join(', ') }}
-						</li>
-					</ul>
+					<table class="system-permissions-table">
+						<thead>
+							<tr>
+								<th scope="col">{{ $t('collection') }}</th>
+								<th scope="col">{{ $t('actions') }}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="{ collection, actions } in systemPermissionActions" :key="collection">
+								<td class="collection">{{ collection }}</td>
+								<td class="actions">{{ actions.map((action) => $t(action)).join(', ') }}</td>
+							</tr>
+						</tbody>
+					</table>
 
 					<VNotice v-if="hasUnfilteredRead" type="danger">
 						{{ $t('public_policy_dialog.unfiltered_read_warning') }}
@@ -328,13 +336,50 @@ function useSystemPermissionsGuard() {
 	flex-direction: column;
 	gap: 0.75rem;
 
-	ul {
-		padding-inline-start: 1.25rem;
-	}
-
 	a {
 		text-decoration: underline;
 		color: var(--theme--primary);
+	}
+}
+
+.system-permissions-table {
+	inline-size: 100%;
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	border-spacing: 0;
+
+	th,
+	td {
+		padding: 0.5rem 0.6875rem;
+		text-align: start;
+		vertical-align: top;
+	}
+
+	th {
+		font-weight: 600;
+		background-color: var(--theme--form--field--input--background);
+		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
+
+		&:first-child {
+			border-start-start-radius: var(--theme--border-radius);
+		}
+
+		&:last-child {
+			border-start-end-radius: var(--theme--border-radius);
+		}
+	}
+
+	tr + tr td {
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	}
+
+	.collection {
+		font-family: var(--theme--fonts--monospace--font-family);
+		overflow-wrap: break-word;
+	}
+
+	.actions {
+		color: var(--theme--foreground-subdued);
 	}
 }
 
