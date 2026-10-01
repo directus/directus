@@ -30,7 +30,7 @@ post:
       application/json:
         schema:
           type: object
-          required: [collection, fields]
+          required: [collection]
           anyOf:
             - required: [schema]
             - required: [meta]
