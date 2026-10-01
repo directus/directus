@@ -34,7 +34,7 @@ export type DirectusField<Schema = any> = {
 	>;
 	schema: {
 		name: string;
-		table: CollectionName<Schema>;
+		table: string;
 		schema?: string;
 		data_type: string;
 		is_nullable: boolean;

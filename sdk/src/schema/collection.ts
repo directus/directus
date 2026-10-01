@@ -34,8 +34,7 @@ export type DirectusCollection<Schema = any> = {
 			versioning: boolean;
 			status: StringLiteralUnion<'active' | 'inactive'>;
 			autosave_revision_interval: number | null;
-			// Only true for injected system-collection rows; the GET /collections response never sets it to false.
-			// @directus/types' CollectionMeta.system is `boolean | null` because it also covers schema diff/apply, which does.
+			// Only true for injected system-collection rows, all others exclude the field
 			system?: true;
 		}
 	>;
