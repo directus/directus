@@ -32,7 +32,7 @@ export function assertValidStorageLocation(storage: unknown): asserts storage is
 export function assertValidStoragePath(filepath: string, storage?: string): void {
 	const env = useEnv();
 	const location = storage || toArray(env['STORAGE_LOCATIONS'] as string)[0]!.trim();
-	
+
 	assertValidStorageLocation(location);
 
 	const getEnv = (name: string) => (env[name] as string | undefined) ?? '';
