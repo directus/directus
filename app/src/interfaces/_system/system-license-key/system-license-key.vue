@@ -11,6 +11,7 @@ import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useServerStore } from '@/stores/server';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
+import { localizedFormat } from '@/utils/localized-format';
 
 const { t } = useI18n();
 const serverStore = useServerStore();
@@ -153,7 +154,12 @@ onMounted(() => {
 				<VIcon name="check_circle" />
 				<span>
 					{{ $t('expires_on') }}
-					{{ Intl.DateTimeFormat().format((licenseInfo.expires_at ?? licenseInfo.renews_at)! * 1000) }}
+					{{
+						localizedFormat(
+							(licenseInfo.expires_at ?? licenseInfo.renews_at)! * 1000,
+							String($t('date-fns_date_short')),
+						)
+					}}
 				</span>
 			</div>
 

@@ -41,7 +41,6 @@ describe('boot with a license', () => {
 
 	test('a restart retains license cross instance', async () => {
 		await directus.restartApi();
-
 		await expectLicenseOnEveryInstance(directus, { name: 'LIMITED', source: 'env', status: 'active' });
 	});
 });
@@ -53,6 +52,7 @@ describe('activation post boot', () => {
 		directus = await useSandbox(database, {
 			port: sandboxPort(1),
 			instances: '2',
+
 			extras: { license: true, redis: true },
 		});
 	});

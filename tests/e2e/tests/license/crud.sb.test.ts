@@ -18,11 +18,13 @@ import { type Sandbox } from '@directus/sandbox';
 import {
 	createCollection,
 	createDirectus,
+	createFlow,
 	createPermission,
 	createPolicy,
 	createRole,
 	createUser,
 	deleteCollection,
+	deleteFlow,
 	deletePolicy,
 	deleteRole,
 	deleteUser,
@@ -82,9 +84,10 @@ beforeAll(async () => {
 	directus = await useSandbox(database, {
 		port: sandboxPort(0),
 		extras: { license: true },
+		knex: true,
 	});
 
-	api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
+	api = adminClient();
 
 	for (const license of [baseLicense, upgradeLicense, addonLicense, ssoDisabledLicense]) {
 		await mockClient.registerLicense(directus.env.LICENSE_API_URL!, license);
@@ -94,6 +97,15 @@ beforeAll(async () => {
 afterAll(async () => {
 	await directus?.stop();
 });
+
+function adminClient() {
+	return createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
+}
+
+async function restartApi() {
+	await directus.restartApi();
+	api = adminClient();
+}
 
 afterEach(async () => {
 	await api.request(deactivateLicense()).catch(() => {});
@@ -123,6 +135,50 @@ describe('license lifecycle', () => {
 			status: 'active',
 			entitlements: DIRECTUS_CORE_LICENSE.entitlements,
 			usage: { seats: 1, collections: 0, flows: 0 },
+		});
+	});
+
+	test('a stored key the license server no longer knows boots CORE and reports why', async () => {
+		const license = createLicense({ meta: { name: 'lifecycle-forgotten' } });
+
+		await mockClient.registerLicense(directus.env.LICENSE_API_URL!, license);
+		await api.request(activateLicense({ license_key: license.key }));
+
+		await directus.knex!('directus_settings').update({ license_token: null });
+		await fetch(`${directus.env.LICENSE_API_URL}/admin/license/${license.key}`, { method: 'DELETE' });
+
+		await restartApi();
+
+		expect(await api.request(readLicense())).toMatchObject({
+			name: DIRECTUS_CORE_LICENSE.meta.name,
+			source: null,
+			invalid_reason: 'invalid_key',
+		});
+	});
+
+	test('a license canceled on the license server drops to CORE on the next boot, keeping the key', async () => {
+		const license = createLicense({ meta: { name: 'lifecycle-canceled' } });
+
+		await mockClient.registerLicense(directus.env.LICENSE_API_URL!, license);
+		await api.request(activateLicense({ license_key: license.key }));
+
+		await fetch(`${directus.env.LICENSE_API_URL}/admin/license/${license.key}`, {
+			method: 'PATCH',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ status: 'canceled' }),
+		});
+
+		await restartApi();
+
+		expect(await api.request(readLicense())).toMatchObject({
+			name: DIRECTUS_CORE_LICENSE.meta.name,
+			source: null,
+			invalid_reason: 'canceled',
+		});
+
+		expect(await directus.knex!('directus_settings').first('license_key', 'license_token')).toEqual({
+			license_key: license.key,
+			license_token: null,
 		});
 	});
 
@@ -260,17 +316,24 @@ describe('permissions on CORE', () => {
 });
 
 describe('resolution', () => {
-	test('pending-resolution reports collections over the new limit, and none before', async () => {
+	test('pending-resolution reports collections over a previewed or activated limit, and none before', async () => {
+		const overLimit = [expect.objectContaining({ key: 'collections', kind: 'limit', limit: 1, usage: 2 })];
+
 		expect(await api.request(generateLicensePendingResolution())).toEqual([]);
 
 		await api.request(createCollection({ collection: 'pr_A', meta: {}, schema: {} }));
 		await api.request(createCollection({ collection: 'pr_B', meta: {}, schema: {} }));
-		await api.request(activateLicense({ license_key: LICENSE_KEYS.TINY }));
 
 		try {
-			expect(await api.request(generateLicensePendingResolution())).toEqual([
-				expect.objectContaining({ key: 'collections', kind: 'limit', limit: 1, usage: 2 }),
-			]);
+			expect(await api.request(generateLicensePendingResolution())).toEqual([]);
+
+			expect(await api.request(generateLicensePendingResolution({ license_key: LICENSE_KEYS.TINY }))).toEqual(
+				overLimit,
+			);
+
+			await api.request(activateLicense({ license_key: LICENSE_KEYS.TINY }));
+
+			expect(await api.request(generateLicensePendingResolution())).toEqual(overLimit);
 		} finally {
 			await api.request(deleteCollection('pr_A'));
 			await api.request(deleteCollection('pr_B'));
@@ -298,17 +361,36 @@ describe('resolution', () => {
 		await api.request(activateLicense({ license_key: LICENSE_KEYS.UNLIMITED }));
 		await api.request(createCollection({ collection: 'res_A', meta: {}, schema: {} }));
 		await api.request(createCollection({ collection: 'res_B', meta: {}, schema: {} }));
+		const flows = [
+			await api.request(createFlow({ name: 'res_flow_A', trigger: 'manual', status: 'active' })),
+			await api.request(createFlow({ name: 'res_flow_B', trigger: 'manual', status: 'active' })),
+		];
+
+		const admin = await api.request(readMe());
+
+		const seatUser = await api.request(
+			createUser({ email: `res_seat_${randomUUID()}@test.com`, status: 'active', role: admin['role'] }),
+		);
+
 		await api.request(updateSettings({ ai_openai_compatible_name: 'set' }));
 		await api.request(updateLicense({ license_key: LICENSE_KEYS.TINY }));
 
 		try {
-			await api.request(applyLicenseResolution({ collections: ['res_B'] }));
+			await api.request(
+				applyLicenseResolution({
+					collections: ['res_B'],
+					flows: [flows[1]!['id']],
+					seats: [seatUser['id'], admin['id']],
+				}),
+			);
 
 			expect(await api.request(generateLicensePendingResolution())).toEqual([
 				expect.objectContaining({ key: 'custom_llms_enabled', kind: 'feature_gate' }),
 			]);
 		} finally {
 			await api.request(updateSettings({ ai_openai_compatible_name: null }));
+			for (const flow of flows) await api.request(deleteFlow(flow['id']));
+			await api.request(deleteUser(seatUser['id']));
 			await api.request(deleteCollection('res_A'));
 			await api.request(deleteCollection('res_B'));
 		}

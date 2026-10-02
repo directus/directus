@@ -2,18 +2,19 @@ import { randomUUID } from 'crypto';
 import { useBus } from '../../bus/index.js';
 import { useLogger } from '../../logger/index.js';
 
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+/** Keys of `T` that are methods */
+type MethodKeys<T> = { [K in keyof T]: T[K] extends (...args: any[]) => unknown ? K : never }[keyof T];
 
-type PickMatching<T, V> = { [K in keyof T as T[K] extends V ? K : never]: T[K] };
-
-export type ExtractMethods<T> = PickMatching<T, Function>;
+/** Pick methods `K` of `T`  */
+export type RPC<T, K extends MethodKeys<T> = MethodKeys<T>> = {
+	[M in K]: T[M] extends (...args: infer A) => unknown ? (...args: A) => Promise<void> : never;
+};
 
 /**
- * RPC means remote procedure call, allowing to call functions across multiple instances in a code native manner.
- *
- * Does not call the function on its OWN instance
+ * Call functions on other instances as if they were local (remote procedure call).
+ * The calling instance is skipped.
  */
-export async function useRPC<C>(self: C, channel: string): Promise<ExtractMethods<C>> {
+export async function useRPC<T, K extends MethodKeys<T> = MethodKeys<T>>(self: T, channel: string): Promise<RPC<T, K>> {
 	const uid = randomUUID();
 	const messenger = useBus();
 
@@ -32,7 +33,7 @@ export async function useRPC<C>(self: C, channel: string): Promise<ExtractMethod
 			try {
 				await fn.apply(self, args);
 			} catch (error) {
-				// An instance that cannot apply a call is left behind silently otherwise
+				// Otherwise an instance that fails a call falls behind silently
 				useLogger().warn(error, `RPC "${method}" on "${channel}" failed`);
 			}
 		},
@@ -40,7 +41,7 @@ export async function useRPC<C>(self: C, channel: string): Promise<ExtractMethod
 
 	return new Proxy({} as any, {
 		get(_, method) {
-			// Awaiting this proxy would triggers a publish call with `then` with nothing to respond leaving it to hang
+			// Not thenable, awaiting would publish a `then` call nobody answers and hang
 			if (typeof method !== 'string' || method === 'then') return undefined;
 
 			return (...args: any) => messenger.publish(channel, { uid, method, args });
