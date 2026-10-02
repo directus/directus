@@ -55,6 +55,7 @@ router.get(
 			entitlements: license.entitlements,
 			grace_period: gracePeriod,
 			offline: license.meta.offline,
+			token_expires_at: license.meta.token_expires_at,
 			usage: {
 				seats: seatUsage,
 				collections: collectionUsage,

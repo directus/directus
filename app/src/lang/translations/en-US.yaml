@@ -1776,22 +1776,21 @@ license:
   locked_status_notice: 'Your Directus instance is locked. Manage license or {contactSupport} to resolve.'
   warning_status_notice:
     generic:
-      Your license could not be renewed. Your current license keeps working until it expires, after which Core tier
-      limits will apply. Check your license key in Settings > License.
+      Your license could not be renewed. It remains active until {date}, then your project moves to the Core plan. Check
+      your license key in Settings > License.
     invalid_key:
-      Your license key is no longer being accepted. Your current license keeps working until it expires, after which
-      Core tier limits will apply. Check the key in Settings > License, or add a new one.
+      Your license key is no longer valid. It remains active until {date}, then your project moves to the Core plan.
+      Check your key in Settings > License or add a new one.
     activation_limit:
-      Your license key has no activations left, so it can no longer be renewed for this project. Your current license
-      keeps working until it expires, after which Core tier limits will apply. Deactivate the license on a project you
-      no longer use.
+      Your license has reached its activation limit and could not be renewed for this project. It remains active until
+      {date}, then your project moves to the Core plan. Deactivate it on a project you no longer use.
     binding_mismatch:
-      Your license key is registered to a different project or URL, so it can no longer be renewed for this project.
-      Your current license keeps working until it expires, after which Core tier limits will apply. Check that your
-      project URL matches the one the key was activated with.
+      Your license is linked to a different project or URL and could not be renewed here. It remains active until
+      {date}, then your project moves to the Core plan. Check that your project URL matches the URL where the key was
+      activated.
     unavailable:
-      The licensing service could not be reached to renew your license. Your current license keeps working and will be
-      checked again automatically.
+      We couldn't reach the licensing service to renew your license. We'll keep trying automatically. Your license
+      remains active until {date}, then your project moves to the Core plan if it cannot be renewed.
   pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
     grace_period_body: Manage your license key in Settings > License.

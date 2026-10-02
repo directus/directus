@@ -13,14 +13,12 @@ const { t } = useI18n();
 
 const serverStore = useServerStore();
 
-const { gracePeriodDaysRemaining, isLocked, isCoreGrace, isCore, graceDeadline, warningReason } =
+const { gracePeriodDaysRemaining, isLocked, isCoreGrace, isCore, graceDeadline, warningReason, tokenExpiresAt } =
 	storeToRefs(useLicenseStore());
 
-const formattedCoreGraceDate = computed(() =>
-	graceDeadline.value
-		? new Intl.DateTimeFormat(undefined, { month: 'long', day: 'numeric', year: 'numeric' }).format(graceDeadline.value)
-		: '',
-);
+const longDateFormat = new Intl.DateTimeFormat(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
+
+const formattedCoreGraceDate = computed(() => (graceDeadline.value ? longDateFormat.format(graceDeadline.value) : ''));
 
 const { isAdmin } = storeToRefs(useUserStore());
 
@@ -31,7 +29,7 @@ const show = computed(
 const showOig = computed(() => isAdmin.value && isCore.value && !isLocked.value);
 
 const warningMessage = computed(() => {
-	if (warningReason.value === null) return null;
+	if (warningReason.value === null || tokenExpiresAt.value === null) return null;
 
 	let reason = 'generic';
 
@@ -39,7 +37,7 @@ const warningMessage = computed(() => {
 		reason = warningReason.value;
 	}
 
-	return t(`license.warning_status_notice.${reason}`);
+	return t(`license.warning_status_notice.${reason}`, { date: longDateFormat.format(tokenExpiresAt.value) });
 });
 
 const showWarning = computed(() => isAdmin.value && warningMessage.value !== null);

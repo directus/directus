@@ -22,11 +22,13 @@ const entitlements: ReadLicenseOutput['entitlements'] = {
 function createLicenseInfo(overrides: Partial<ReadLicenseOutput> = {}): ReadLicenseOutput {
 	return {
 		status: 'active',
+		editable: true,
 		source: 'settings',
 		name: 'Team',
 		renews_at: 1_800_000_000,
 		offline: false,
 		grace_period: 0,
+		invalid_reason: null,
 		entitlements,
 		usage: {
 			seats: 8,
@@ -270,5 +272,19 @@ describe('invalid reason', () => {
 
 		expect(licenseStore.downgradeReason).toBeNull();
 		expect(licenseStore.warningReason).toBeNull();
+	});
+});
+
+describe('tokenExpiresAt', () => {
+	test('returns null without a token expiry', () => {
+		const licenseStore = useLicenseStore();
+		licenseStore.info = createLicenseInfo();
+		expect(licenseStore.tokenExpiresAt).toBeNull();
+	});
+
+	test('returns the date the token expires', () => {
+		const licenseStore = useLicenseStore();
+		licenseStore.info = createLicenseInfo({ token_expires_at: FIXED_NOW_SEC });
+		expect(licenseStore.tokenExpiresAt).toEqual(new Date(FIXED_NOW_SEC * 1000));
 	});
 });

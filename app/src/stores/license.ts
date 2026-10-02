@@ -107,6 +107,12 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return new Date((info.value.expires_at + info.value.grace_period) * 1000);
 	});
 
+	const tokenExpiresAt = computed<Date | null>(() => {
+		const expiresAt = info.value?.token_expires_at;
+		if (expiresAt == null) return null;
+		return new Date(expiresAt * 1000);
+	});
+
 	const formattedGraceDeadline = computed(() =>
 		graceDeadline.value ? Intl.DateTimeFormat().format(graceDeadline.value) : '',
 	);
@@ -249,6 +255,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		isCore,
 		downgradeReason,
 		warningReason,
+		tokenExpiresAt,
 		customPermissionRulesEnabled,
 		isLicensed,
 		customLLMEnabled,
