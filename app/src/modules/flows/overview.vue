@@ -633,7 +633,11 @@ function onFlowDrawerCompletion(id: string) {
 						</template>
 
 						<VList>
-							<VListItem clickable @click="setFlowsStatus([item.id], item.status === 'active' ? 'inactive' : 'active')">
+							<VListItem
+								:disabled="updateAllowed !== true || updatingStatus"
+								clickable
+								@click="setFlowsStatus([item.id], item.status === 'active' ? 'inactive' : 'active')"
+							>
 								<template v-if="item.status === 'active'">
 									<VListItemIcon><VIcon name="block" /></VListItemIcon>
 									<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>
