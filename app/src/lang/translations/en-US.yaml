@@ -1152,6 +1152,8 @@ change_trigger: Change Trigger
 flow_delete_confirm: Are you sure you want to delete Flow "{flow}"? This action can not be undone.
 set_flow_active: Set Flow to Active
 set_flow_inactive: Set Flow to Inactive
+set_flows_active: Set Flows to Active
+set_flows_inactive: Set Flows to Inactive
 edit_flow: Edit Flow
 delete_flow: Delete Flow
 no_other_flows_copy: You don't have any other Flows yet.
@@ -1461,6 +1463,20 @@ wysiwyg_options:
     This field includes formatting the new editor doesn't support, so it's read-only. Select the field to choose how to
     edit it.
   normalization_locked_learn_more: Learn what changed
+  paste_warning_notice:
+    We cleaned unsupported markup from what you pasted. Some apps wrap copied content in extra markup this editor
+    doesn't support.
+  paste_warning_see_removed: See what was removed
+  paste_warning_title: Unsupported markup was removed from your paste
+  paste_warning_body:
+    The cleaned paste keeps your text and formatting. Undo Paste takes it back out. Paste Raw keeps the HTML exactly as
+    copied and switches this field to the raw HTML editor.
+  paste_warning_body_kept:
+    The cleaned paste keeps your text and formatting. The content changed since the paste, so it can no longer be undone
+    from here.
+  paste_warning_undo: Undo Paste
+  paste_warning_paste_raw: Paste Raw
+  paste_warning_keep: Keep Cleaned
   normalization_comparison_notice:
     This version includes formatting the editor can't display, so the stored HTML is shown as is. Applying it restores
     the content unchanged.

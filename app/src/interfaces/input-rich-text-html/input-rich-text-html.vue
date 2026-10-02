@@ -9,11 +9,13 @@ import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
 import { useMedia } from './composables/use-media';
 import { useNormalizationWarning } from './composables/use-normalization-warning';
+import { usePasteWarning } from './composables/use-paste-warning';
 import { useSourceCode } from './composables/use-source-code';
 import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
 import MediaDrawer from './drawers/media-drawer.vue';
 import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
+import PasteWarningDialog from './drawers/paste-warning-dialog.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { editorExtensions } from './extensions';
 import { ComparisonDiff } from './extensions/comparison-diff';
@@ -167,13 +169,24 @@ const editor = useEditor({
 
 			return false;
 		},
-		// Cmd/Ctrl+click opens links in a new tab (parity with TinyMCE)
-		handleClick: (_view, _pos, event) => {
-			if (event.button !== 0 || !(event.metaKey || event.ctrlKey)) return false;
-			const link = (event.target as HTMLElement | null)?.closest('a');
-			if (!link?.href) return false;
-			window.open(link.href, '_blank', 'noopener,noreferrer');
-			return true;
+		handlePaste: (view, event) => handlePaste(view, event),
+		handleDOMEvents: {
+			// handleClick fires on mouseup, too late to preventDefault; the browser would follow a linked image's `<a>`
+			click: (view, event) => {
+				if (!view.editable || event.button !== 0) return false;
+				const link = (event.target as HTMLElement | null)?.closest('a');
+				if (!link?.href) return false;
+
+				event.preventDefault();
+
+				// Cmd/Ctrl+click opens links in a new tab (parity with TinyMCE)
+				if (event.metaKey || event.ctrlKey) {
+					window.open(link.href, '_blank', 'noopener,noreferrer');
+					return true;
+				}
+
+				return false;
+			},
 		},
 	},
 	onCreate: ({ editor }) => {
@@ -186,6 +199,19 @@ const editor = useEditor({
 		emit('input', editor.isEmpty ? null : encodePageBreaks(editor.getHTML()));
 	},
 });
+
+const {
+	pasteNoticeVisible,
+	pasteWarningOpen,
+	pasteWarningDiff,
+	pasteUndoable,
+	handlePaste,
+	openPasteWarning,
+	keepPaste,
+	undoPaste,
+	takeRawPaste,
+	dismissPasteWarning,
+} = usePasteWarning(editor, customFormatExtensions);
 
 function onEditorClick() {
 	if (props.disabled || props.nonEditable || props.comparisonMode) return;
@@ -206,6 +232,15 @@ function enterRawMode() {
 	}
 
 	rawMode.value = true;
+}
+
+// The clipboard HTML goes in verbatim, so raw mode has to be on before the emit: the value watcher
+// skips syncing while it's on, and would otherwise push the new value back through the schema.
+function onPasteRaw() {
+	const html = takeRawPaste();
+	if (html === null) return;
+	rawMode.value = true;
+	emit('input', html);
 }
 
 // the unlock flips `isEditable` on the next flush, so focus has to wait for it
@@ -253,6 +288,7 @@ const {
 	linkDrawerOpen,
 	linkSelection,
 	isEditingLink,
+	targetsImage,
 	isLinkSaveable,
 	openLinkDrawer,
 	closeLinkDrawer,
@@ -314,6 +350,8 @@ watch(
 		if (!editor.value) return;
 		// compare the encoded (stored) form so a re-emitted page-break marker doesn't look like a change
 		if (encodePageBreaks(editor.value.getHTML()) === props.value) return;
+		// the content the notice refers to is gone with the replaced value
+		dismissPasteWarning();
 		syncValue(editor.value, props.value);
 		if (!props.nonEditable || props.comparisonMode) checkValue();
 	},
@@ -333,6 +371,10 @@ onKeyStroke('Escape', () => {
 		<a v-if="!comparisonMode" :href="normalizationDocsUrl" target="_blank" rel="noopener noreferrer">
 			{{ t('wysiwyg_options.normalization_locked_learn_more') }}
 		</a>
+	</VNotice>
+	<VNotice v-if="pasteNoticeVisible && !rawMode" type="warning" multiline class="paste-notice">
+		{{ t('wysiwyg_options.paste_warning_notice') }}
+		<a href="#" @click.prevent="openPasteWarning">{{ t('wysiwyg_options.paste_warning_see_removed') }}</a>
 	</VNotice>
 	<div
 		class="wysiwyg"
@@ -401,6 +443,7 @@ onKeyStroke('Escape', () => {
 			v-model="linkDrawerOpen"
 			v-model:link-selection="linkSelection"
 			:editing="isEditingLink"
+			:targets-image="targetsImage"
 			:saveable="isLinkSaveable"
 			@save="saveLink"
 			@unlink="unlink"
@@ -438,6 +481,15 @@ onKeyStroke('Escape', () => {
 			@confirm="onWarningConfirm"
 			@cancel="cancelNormalizationWarning"
 			@raw="enterRawMode"
+		/>
+
+		<PasteWarningDialog
+			v-model="pasteWarningOpen"
+			:diff="pasteWarningDiff"
+			:undoable="pasteUndoable"
+			@keep="keepPaste"
+			@undo="undoPaste"
+			@raw="onPasteRaw"
 		/>
 	</div>
 </template>
@@ -489,7 +541,8 @@ onKeyStroke('Escape', () => {
 	}
 }
 
-.normalization-notice {
+.normalization-notice,
+.paste-notice {
 	margin-block-end: 0.5rem;
 }
 
@@ -646,8 +699,10 @@ onKeyStroke('Escape', () => {
 	}
 
 	// `.range-selected` (RangeSelectedAtoms) covers selections that merely span the leaf, which
-	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image
-	:is(img, hr, .page-break):is(.ProseMirror-selectednode, .range-selected) {
+	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image.
+	// A linked image renders as `<a><img></a>`, so the class lands on the anchor, not the img
+	:is(img, hr, .page-break):is(.ProseMirror-selectednode, .range-selected),
+	a:is(.ProseMirror-selectednode, .range-selected) > img {
 		outline: 2px solid var(--theme--primary);
 	}
 
