@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useShortcut } from '@directus/composables';
+import { DIRECTUS_SECURITY_BEST_PRACTICES_URL, PUBLIC_POLICY_ID } from '@directus/constants';
 import { Policy } from '@directus/types';
-import { ref, toRefs } from 'vue';
+import { computed, ref, toRefs } from 'vue';
+import { I18nT } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
@@ -12,6 +14,7 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useUserStore } from '@/stores/user';
@@ -36,6 +39,8 @@ const { edits, hasEdits, item, saving, loading, save, remove, deleting, validati
 	ref('directus_policies'),
 	primaryKey,
 );
+
+const isPublicPolicy = computed(() => primaryKey.value === PUBLIC_POLICY_ID);
 
 const confirmDelete = ref(false);
 
@@ -169,6 +174,16 @@ function discardAndStay() {
 		</template>
 
 		<div class="content">
+			<VNotice v-if="isPublicPolicy" class="public-policy-notice" type="warning">
+				<I18nT keypath="public_policy_warning" tag="span">
+					<template #docs>
+						<a :href="DIRECTUS_SECURITY_BEST_PRACTICES_URL" target="_blank" rel="noopener noreferrer">
+							{{ $t('public_policy_warning_docs_link') }}
+						</a>
+					</template>
+				</I18nT>
+			</VNotice>
+
 			<VForm
 				v-model="edits"
 				collection="directus_policies"
@@ -217,5 +232,14 @@ function discardAndStay() {
 	display: flex;
 	flex-direction: column;
 	row-gap: var(--theme--form--row-gap);
+}
+
+.public-policy-notice {
+	max-inline-size: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
+
+	a {
+		text-decoration: underline;
+		color: var(--theme--primary);
+	}
 }
 </style>
