@@ -32,8 +32,8 @@ get:
             properties:
               data:
                 type: array
-                items:
-                  type: object
+                # Intentionally empty; api/src/services/specifications.ts overwrites this per collection
+                items: {}
               meta:
                 $ref: '../../openapi.yaml#/components/schemas/x-metadata'
     '401':
@@ -48,8 +48,8 @@ post:
   requestBody:
     content:
       application/json:
-        # Intentionally empty, see https://github.com/directus/directus/pull/16294
-        schema:
+        # Intentionally empty; api/src/services/specifications.ts overwrites this per collection
+        schema: {}
   responses:
     '200':
       description: Successful request
@@ -86,8 +86,8 @@ patch:
             properties:
               data:
                 type: array
-                items:
-                  type: object
+                # Intentionally empty; api/src/services/specifications.ts overwrites this per collection
+                items: {}
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
 
