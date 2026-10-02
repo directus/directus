@@ -27,6 +27,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useLicenseStore } from '@/stores/license';
 import { useUserStore } from '@/stores/user';
+import { localizedFormat } from '@/utils/localized-format';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
@@ -68,7 +69,7 @@ const graceCountdown = computed<{ days: number; date: string } | null>(() => {
 	const deadlineSeconds = info.value.expires_at + (info.value.grace_period ?? 0);
 	const deadlineMs = deadlineSeconds * 1000;
 	const days = Math.max(0, Math.ceil((deadlineMs - Date.now()) / (1000 * 60 * 60 * 24)));
-	const date = new Date(deadlineMs).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+	const date = localizedFormat(deadlineMs, String(t('date-fns_date_short')));
 	return { days, date };
 });
 

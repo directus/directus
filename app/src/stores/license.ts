@@ -15,9 +15,11 @@ import {
 } from '@directus/license';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { i18n } from '@/lang';
 import sdk from '@/sdk';
 import { useUserStore } from '@/stores/user';
 import { formatTimeframe } from '@/utils/format-timeframe';
+import { localizedFormat } from '@/utils/localized-format';
 
 export const GRACE_DANGER_THRESHOLD_DAYS = 3;
 
@@ -114,7 +116,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	});
 
 	const formattedGraceDeadline = computed(() =>
-		graceDeadline.value ? Intl.DateTimeFormat().format(graceDeadline.value) : '',
+		graceDeadline.value ? localizedFormat(graceDeadline.value, String(i18n.global.t('date-fns_date_short'))) : '',
 	);
 
 	const gracePeriodDaysRemaining = computed<number | null>(() => {

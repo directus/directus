@@ -8,6 +8,7 @@ import { GRACE_DANGER_THRESHOLD_DAYS, useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
+import { localizedFormat } from '@/utils/localized-format';
 
 const { t } = useI18n();
 
@@ -16,9 +17,9 @@ const serverStore = useServerStore();
 const { gracePeriodDaysRemaining, isLocked, isCoreGrace, isCore, graceDeadline, warningReason, tokenExpiresAt } =
 	storeToRefs(useLicenseStore());
 
-const longDateFormat = new Intl.DateTimeFormat(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
+const formatLongDate = (date: Date) => localizedFormat(date, String(t('date-fns_date')));
 
-const formattedCoreGraceDate = computed(() => (graceDeadline.value ? longDateFormat.format(graceDeadline.value) : ''));
+const formattedCoreGraceDate = computed(() => (graceDeadline.value ? formatLongDate(graceDeadline.value) : ''));
 
 const { isAdmin } = storeToRefs(useUserStore());
 
@@ -37,7 +38,7 @@ const warningMessage = computed(() => {
 		reason = warningReason.value;
 	}
 
-	return t(`license.warning_status_notice.${reason}`, { date: longDateFormat.format(tokenExpiresAt.value) });
+	return t(`license.warning_status_notice.${reason}`, { date: formatLongDate(tokenExpiresAt.value) });
 });
 
 const showWarning = computed(() => isAdmin.value && warningMessage.value !== null);

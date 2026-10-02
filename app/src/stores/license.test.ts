@@ -2,6 +2,8 @@ import type { ReadLicenseOutput } from '@directus/license';
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLicenseStore } from './license';
+import { i18n } from '@/lang';
+import { localizedFormat } from '@/utils/localized-format';
 
 const entitlements: ReadLicenseOutput['entitlements'] = {
 	seats: { limit: 10 },
@@ -121,7 +123,9 @@ describe('formattedGraceDeadline', () => {
 			renews_at: undefined,
 		});
 
-		expect(licenseStore.formattedGraceDeadline).toBe(Intl.DateTimeFormat().format(deadline));
+		expect(licenseStore.formattedGraceDeadline).toBe(
+			localizedFormat(deadline, String(i18n.global.t('date-fns_date_short'))),
+		);
 	});
 });
 
