@@ -7,35 +7,31 @@ import type { Schema } from './schema.js';
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api);
 
-for (const date of ['2020-01-01', '2001-12-24']) {
-	test(`valid date ${date}`, async () => {
-		const result = await api.request(
-			createItem(collections.fields, {
-				date,
-			}),
-		);
+test(`valid json (object)`, async () => {
+	const result = await api.request(
+		createItem(collections.fields, {
+			json: { hello: 'world' },
+		}),
+	);
 
-		expect(result.date).toBe(date);
-	});
-}
-
-test(`invalid date`, async () => {
-	await expect(() =>
-		api.request(
-			createItem(collections.fields, {
-				date: 'test',
-			}),
-		),
-	).rejects.toMatchObject({
-		errors: [{ extensions: { code: 'INVALID_PAYLOAD' } }],
-	});
+	expect(result.json).toEqual({ hello: 'world' });
 });
 
-test(`invalid date (non-string)`, async () => {
+test(`valid json (string)`, async () => {
+	const result = await api.request(
+		createItem(collections.fields, {
+			json: JSON.stringify({ hello: 'world' }),
+		}),
+	);
+
+	expect(result.json).toEqual({ hello: 'world' });
+});
+
+test(`invalid json (unparseable string)`, async () => {
 	await expect(() =>
 		api.request(
 			createItem(collections.fields, {
-				date: 12345,
+				json: '{not valid json',
 			}),
 		),
 	).rejects.toMatchObject({

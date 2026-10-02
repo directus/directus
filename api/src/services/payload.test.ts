@@ -1,3 +1,4 @@
+import { InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Item, PayloadAction } from '@directus/types';
 import type { Knex } from 'knex';
@@ -139,6 +140,51 @@ describe('Integration Tests', () => {
 
 					expect(result).toBe('test,directus');
 				});
+
+				test.each<PayloadAction>(['create', 'update'])('Throws on an object value on %s', async (action) => {
+					await expect(
+						service.transformers['cast-csv']!({
+							value: { wrong: 'input' },
+							action,
+							payload: {},
+							accountability: { role: null } as Accountability,
+							specials: [],
+							helpers,
+							overwriteDefaults: undefined,
+							field: 'tags',
+						}),
+					).rejects.toThrow(InvalidPayloadError);
+				});
+
+				test.each<PayloadAction>(['create', 'update'])('Throws on a number value on %s', async (action) => {
+					await expect(
+						service.transformers['cast-csv']!({
+							value: 123,
+							action,
+							payload: {},
+							accountability: { role: null } as Accountability,
+							specials: [],
+							helpers,
+							overwriteDefaults: undefined,
+							field: 'tags',
+						}),
+					).rejects.toThrow(InvalidPayloadError);
+				});
+
+				test.each([null, undefined])('Allows %s values on write', async (value) => {
+					const result = await service.transformers['cast-csv']!({
+						value,
+						action: 'create',
+						payload: {},
+						accountability: { role: null } as Accountability,
+						specials: [],
+						helpers,
+						overwriteDefaults: undefined,
+						field: 'tags',
+					});
+
+					expect(result).toBe(value);
+				});
 			});
 
 			describe('encrypt', () => {
@@ -259,6 +305,7 @@ describe('Integration Tests', () => {
 					c.field('date_field').date();
 					c.field('datetime_field').dateTime();
 					c.field('timestamp_field').timestamp();
+					c.field('time_field').time();
 				})
 				.build();
 
@@ -454,6 +501,81 @@ describe('Integration Tests', () => {
 					]);
 				});
 			});
+
+			describe('rejects invalid types on write', () => {
+				test.each<PayloadAction>(['create', 'update'])(
+					'throws for an object value on a dateTime field on %s',
+					(action) => {
+						expect(() => service.processDates(fieldEntries, [{ datetime_field: { wrong: 'input' } }], action)).toThrow(
+							InvalidPayloadError,
+						);
+					},
+				);
+
+				test.each<PayloadAction>(['create', 'update'])(
+					'throws for a number value on a dateTime field on %s',
+					(action) => {
+						expect(() => service.processDates(fieldEntries, [{ datetime_field: 12345 }], action)).toThrow(
+							InvalidPayloadError,
+						);
+					},
+				);
+
+				test.each<PayloadAction>(['create', 'update'])('throws for a number value on a date field on %s', (action) => {
+					expect(() => service.processDates(fieldEntries, [{ date_field: 12345 }], action)).toThrow(
+						InvalidPayloadError,
+					);
+				});
+
+				test.each<PayloadAction>(['create', 'update'])('throws for an object value on a date field on %s', (action) => {
+					expect(() => service.processDates(fieldEntries, [{ date_field: { wrong: 'input' } }], action)).toThrow(
+						InvalidPayloadError,
+					);
+				});
+
+				test.each<PayloadAction>(['create', 'update'])(
+					'throws for an object value on a timestamp field on %s',
+					(action) => {
+						expect(() => service.processDates(fieldEntries, [{ timestamp_field: { wrong: 'input' } }], action)).toThrow(
+							InvalidPayloadError,
+						);
+					},
+				);
+
+				test.each<PayloadAction>(['create', 'update'])(
+					'throws for a number value on a timestamp field on %s',
+					(action) => {
+						expect(() => service.processDates(fieldEntries, [{ timestamp_field: 12345 }], action)).toThrow(
+							InvalidPayloadError,
+						);
+					},
+				);
+
+				test.each<PayloadAction>(['create', 'update'])('still allows null values on write on %s', (action) => {
+					const result = service.processDates(fieldEntries, [{ datetime_field: null }], action);
+					expect(result).toMatchObject([{ datetime_field: null }]);
+				});
+
+				test.each<PayloadAction>(['create', 'update'])('throws for an object value on a time field on %s', (action) => {
+					expect(() => service.processDates(fieldEntries, [{ time_field: { wrong: 'input' } }], action)).toThrow(
+						InvalidPayloadError,
+					);
+				});
+
+				test.each<PayloadAction>(['create', 'update'])('throws for a number value on a time field on %s', (action) => {
+					expect(() => service.processDates(fieldEntries, [{ time_field: 12345 }], action)).toThrow(
+						InvalidPayloadError,
+					);
+				});
+
+				test.each<PayloadAction>(['create', 'update'])(
+					'still allows a string value on a time field on %s',
+					(action) => {
+						const result = service.processDates(fieldEntries, [{ time_field: '12:34:56' }], action);
+						expect(result).toMatchObject([{ time_field: '12:34:56' }]);
+					},
+				);
+			});
 		});
 
 		describe('processAggregates', () => {
@@ -595,6 +717,54 @@ describe('Integration Tests', () => {
 				);
 
 				expect(result).toMatchObject({ other_string: 'not-redacted', other_hidden: REDACT_STR });
+			});
+		});
+
+		describe('processValues json fields', () => {
+			let service: PayloadService;
+
+			const schema = new SchemaBuilder()
+				.collection('test', (c) => {
+					c.field('id').id();
+					c.field('properties').json();
+				})
+				.build();
+
+			beforeEach(() => {
+				service = new PayloadService('test', {
+					knex: db,
+					schema,
+				});
+			});
+
+			test.each<PayloadAction>(['create', 'update'])(
+				'throws for a plain string value that is not valid JSON on %s',
+				async (action) => {
+					await expect(service.processValues(action, { properties: 'not valid json' })).rejects.toThrow(
+						InvalidPayloadError,
+					);
+				},
+			);
+
+			test.each<PayloadAction>(['create', 'update'])(
+				'allows a string value that is valid JSON text on %s',
+				async (action) => {
+					const result = await service.processValues(action, { properties: '"plain strings are valid json"' });
+					expect(result).toMatchObject({ properties: '"plain strings are valid json"' });
+				},
+			);
+
+			test.each<PayloadAction>(['create', 'update'])(
+				'allows object values (stringified for storage) on %s',
+				async (action) => {
+					const result = await service.processValues(action, { properties: { valid: true } });
+					expect(result).toMatchObject({ properties: JSON.stringify({ valid: true }) });
+				},
+			);
+
+			test.each<PayloadAction>(['create', 'update'])('allows null values on %s', async (action) => {
+				const result = await service.processValues(action, { properties: null });
+				expect(result).toMatchObject({ properties: null });
 			});
 		});
 

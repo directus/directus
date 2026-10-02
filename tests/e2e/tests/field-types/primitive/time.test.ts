@@ -7,23 +7,23 @@ import type { Schema } from './schema.js';
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api);
 
-for (const timestamp of ['2020-01-01', '2001-12-24']) {
-	test(`valid timestamp ${timestamp}`, async () => {
+for (const time of ['10:10:01', '23:59:59']) {
+	test(`valid time ${time}`, async () => {
 		const result = await api.request(
 			createItem(collections.fields, {
-				timestamp,
+				time,
 			}),
 		);
 
-		expect(result.timestamp).toBeOneOf([`${timestamp}T00:00:00.000Z`, `${timestamp}T00:00:00`]);
+		expect(result.time).toBe(time);
 	});
 }
 
-test(`invalid timestamp`, async () => {
+test(`invalid time`, async () => {
 	await expect(() =>
 		api.request(
 			createItem(collections.fields, {
-				timestamp: 'test',
+				time: 'test',
 			}),
 		),
 	).rejects.toMatchObject({
@@ -31,11 +31,11 @@ test(`invalid timestamp`, async () => {
 	});
 });
 
-test(`invalid timestamp (non-string)`, async () => {
+test(`invalid time (non-string)`, async () => {
 	await expect(() =>
 		api.request(
 			createItem(collections.fields, {
-				timestamp: 12345,
+				time: 12345,
 			}),
 		),
 	).rejects.toMatchObject({
