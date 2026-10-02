@@ -2,7 +2,7 @@ import path from 'node:path';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { resetEnv, setEnv } from '../../../test-utils/env.js';
-import { assertValidStorageLocation, assertValidStoragePath } from './assert-valid-storage-path.js';
+import { assertValidStoragePath } from './assert-valid-storage-path.js';
 
 // Fixed cwd for the test cases, resolved so it's a real absolute path on every platform (e.g. a drive on Windows)
 const cwd = path.resolve('/directus');
@@ -31,22 +31,6 @@ function testStoragePath({ filepath, storage, env, error }: TestCase) {
 		expect(() => assertValidStoragePath(filepath, storage)).toThrow(error);
 	}
 }
-
-describe('assertValidStorageLocation', () => {
-	beforeEach(() => {
-		resetEnv();
-		setEnv({ STORAGE_LOCATIONS: 'local, s3' });
-	});
-
-	test('allows a configured location', () => {
-		expect(() => assertValidStorageLocation('local')).not.toThrow();
-		expect(() => assertValidStorageLocation('s3')).not.toThrow();
-	});
-
-	test.each([['missing'], ['LOCAL'], [' s3'], [''], [null], [undefined], [1]])('rejects %j', (storage) => {
-		expect(() => assertValidStorageLocation(storage)).toThrow(InvalidPayloadError);
-	});
-});
 
 describe('assertValidStoragePath', () => {
 	beforeEach(() => {

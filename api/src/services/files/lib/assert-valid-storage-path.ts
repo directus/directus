@@ -1,26 +1,11 @@
 import path from 'node:path';
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError } from '@directus/errors';
 import { toArray } from '@directus/utils';
 import { getExtensionsPath } from '../../../extensions/lib/get-extensions-path.js';
 import { isWithinPath } from '../../../utils/is-within-path.js';
+import { assertValidStorageLocation } from './assert-valid-storage-location.js';
 import { sanitizeFilepath } from './sanitize-filepath.js';
-
-/**
- * Reject storage locations that aren't configured, as none of the path checks apply to them.
- * Location names are case-sensitive
- *
- * @throws InvalidPayloadError
- *
- */
-export function assertValidStorageLocation(storage: unknown): asserts storage is string {
-	const env = useEnv();
-	const locations = toArray(env['STORAGE_LOCATIONS'] as string).map((location) => location.trim());
-
-	if (typeof storage !== 'string' || locations.includes(storage) === false) {
-		throw new InvalidPayloadError({ reason: `Storage location "${storage}" doesn't exist` });
-	}
-}
 
 /**
  * Reject storage filepaths that write to "forbidden" locations
