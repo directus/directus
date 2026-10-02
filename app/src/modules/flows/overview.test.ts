@@ -352,9 +352,11 @@ describe('FlowsOverview - selection', () => {
 	});
 });
 
-describe('FlowsOverview - toggleFlowStatusById', () => {
+describe('FlowsOverview - setFlowsStatus', () => {
 	test('opens the limit modal when activating a Flow exceeds the license limit', async () => {
 		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+
+		api.patch.mockReset();
 
 		api.patch.mockRejectedValue({
 			response: { data: { errors: [{ extensions: { code: 'LIMIT_EXCEEDED' } }] } },
@@ -367,11 +369,43 @@ describe('FlowsOverview - toggleFlowStatusById', () => {
 		const wrapper = mount(FlowsOverview, { global });
 
 		const vm = wrapper.vm as any;
-		await vm.toggleFlowStatusById('flow-1', 'inactive');
+		await vm.setFlowsStatus(['flow-2'], 'active');
 
-		expect(api.patch).toHaveBeenCalledWith('/flows/flow-1', { status: 'active' });
+		expect(api.patch).toHaveBeenCalledWith('/flows', { keys: ['flow-2'], data: { status: 'active' } });
 		expect(vm.flowsLimitModalOpen).toBe(true);
 		expect(unexpectedError).not.toHaveBeenCalled();
+	});
+
+	test('only sends the selected Flows whose status changes', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+
+		api.patch.mockReset();
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		await (wrapper.vm as any).setFlowsStatus(['flow-1', 'flow-2'], 'inactive');
+
+		expect(api.patch).toHaveBeenCalledWith('/flows', { keys: ['flow-1'], data: { status: 'inactive' } });
+	});
+
+	test('offers only the status changes that apply to the selection', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		expect(wrapper.find('[data-icon="check"]').exists()).toBe(false);
+		expect(wrapper.find('[data-icon="block"]').exists()).toBe(false);
+
+		vm.selectedKeys = ['flow-1'];
+		await nextTick();
+
+		expect(wrapper.find('[data-icon="check"]').exists()).toBe(false);
+		expect(wrapper.find('[data-icon="block"]').exists()).toBe(true);
+
+		vm.selectedKeys = ['flow-1', 'flow-2'];
+		await nextTick();
+
+		expect(wrapper.find('[data-icon="check"]').exists()).toBe(true);
+		expect(wrapper.find('[data-icon="block"]').exists()).toBe(true);
 	});
 });
 
