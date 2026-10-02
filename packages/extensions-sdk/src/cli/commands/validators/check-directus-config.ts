@@ -67,7 +67,7 @@ const checkDirectusConfig = {
 			extensionPath = { app: extensionPath };
 		}
 
-		Object.keys(extensionPath).forEach(async (key) => {
+		for (const key of Object.keys(extensionPath)) {
 			if (!(await fse.pathExists(path.resolve(extensionPath[key])))) {
 				spinner.fail();
 				const message = `Extension path ${key}: ${extensionPath[key]} invalid`;
@@ -79,7 +79,7 @@ const checkDirectusConfig = {
 
 				throw new Error(message);
 			}
-		});
+		}
 
 		spinner.text = 'Checking for valid Directus host version';
 
