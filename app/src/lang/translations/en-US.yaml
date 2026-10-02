@@ -285,6 +285,8 @@ public_role_info: >-
   The public role controls what API data is available to unauthenticated users or users without a role. Requests with
   the public role can not have app or admin access. If app or admin access are given to a policy assigned to the public
   role they will be ignored.
+public_role_info_ineffective_permissions: >-
+  Permissions that only apply to authenticated requests are ignored the same way:
 admin_description: Initial administrative role with unrestricted App/API access.
 admin_policy_description: Initial administrative policy with unrestricted App/API access.
 no_description: No description...
@@ -303,6 +305,8 @@ reset_system_permissions_copy:
 the_following_are_minimum_permissions:
   The following minimum permissions are automatically applied when "App Access" is enabled. You can grant additional
   permissions if needed, but you cannot reduce permissions below this level.
+hardcoded_admin_only_action_note: >-
+  {action} on {collection} is enforced by an admin-only check in the API and can't be granted through a policy.
 app_access_minimum: App Access Minimum
 recommended_defaults: Recommended Defaults
 unarchive: Unarchive
