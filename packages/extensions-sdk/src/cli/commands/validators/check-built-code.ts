@@ -36,7 +36,7 @@ const checkBuiltCode = {
 			codePath = { app: codePath };
 		}
 
-		Object.keys(codePath).forEach(async (key) => {
+		for (const key of Object.keys(codePath)) {
 			if (!(await fse.pathExists(path.resolve(codePath[key])))) {
 				spinner.fail();
 				const message = `No ${codePath[key]} directory`;
@@ -48,7 +48,7 @@ const checkBuiltCode = {
 
 				throw new Error(message);
 			}
-		});
+		}
 
 		const message = 'Valid built code directory';
 

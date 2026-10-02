@@ -58,4 +58,15 @@ describe('check-directus-config', () => {
 
 		expect(reports.filter((report) => report.level === 'warn')).toEqual([]);
 	});
+
+	it('rejects when extension path does not exist', async () => {
+		vi.mocked(fse.pathExists).mockImplementation(async (p) => String(p).endsWith('package.json'));
+		mockConfig({ enabled: true });
+
+		const reports: Array<Report> = [];
+
+		await expect(checkDirectusConfig.handler(spinner, reports)).rejects.toThrow(
+			'Extension path app: dist/index.js invalid',
+		);
+	});
 });
