@@ -92,6 +92,21 @@ const MEASUREMENTS: LayoutMeasurements = {
 	keyWidths,
 };
 
+const failedButtons = ref(new Set<string>());
+
+function runOrDisable<T>(key: string, fallback: T, run: () => T): T {
+	if (failedButtons.value.has(key)) return fallback;
+
+	try {
+		return run();
+	} catch (error) {
+		failedButtons.value = new Set([...failedButtons.value, key]);
+		// eslint-disable-next-line no-console
+		console.error(`Richtext toolbar button "${key}" threw and was disabled:`, error);
+		return fallback;
+	}
+}
+
 const contributedMap = computed<Record<string, ToolbarButton>>(() =>
 	Object.fromEntries(
 		props.contributedButtons
@@ -101,8 +116,11 @@ const contributedMap = computed<Record<string, ToolbarButton>>(() =>
 				{
 					icon: button.icon,
 					label: button.label,
-					command: (editor) => button.command(editor),
-					...(button.isActive ? { isActive: (editor) => button.isActive!(editor) } : {}),
+					command: (editor) => runOrDisable(button.key, undefined, () => button.command(editor)),
+					disabled: () => failedButtons.value.has(button.key),
+					...(button.isActive
+						? { isActive: (editor) => runOrDisable(button.key, false, () => button.isActive!(editor)) }
+						: {}),
 				} satisfies ToolbarButton,
 			]),
 	),

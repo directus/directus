@@ -5,10 +5,11 @@ import {
 	flattenExtensions,
 	getAttributesFromExtensions,
 	getExtensionField,
+	getSchema,
 	type GlobalAttributes,
 	splitExtensions,
 } from '@tiptap/core';
-import { editorExtensions } from '@/interfaces/input-rich-text-html/extensions';
+import { editorExtensions, fieldEditorExtensions } from '@/interfaces/input-rich-text-html/extensions';
 import { ComparisonDiff } from '@/interfaces/input-rich-text-html/extensions/comparison-diff';
 import { CUSTOM_FORMAT_PREFIX } from '@/interfaces/input-rich-text-html/extensions/custom-formats';
 import { PRESERVED_ATTRIBUTE_KEYS } from '@/interfaces/input-rich-text-html/extensions/preserved-attributes';
@@ -184,9 +185,24 @@ function findRejection(config: unknown, ids: Set<string>, owners: Map<string, st
 		const richText = config as RichTextConfig;
 		if (ids.has(richText.id)) return 'another richtext extension already uses this id';
 
-		return validateConflicts(richText, owners);
+		const conflict = validateConflicts(richText, owners);
+		if (conflict) return conflict;
+
+		return validateSchemaBuild(richText);
 	} catch (error) {
-		return `extension threw while being validated: ${error instanceof Error ? error.message : String(error)}`;
+		return `extension threw while being validated: ${errorMessage(error)}`;
+	}
+}
+
+const errorMessage = (error: unknown) => (error instanceof Error ? error.message : String(error));
+
+// a schema-build throw would otherwise surface in every field that enabled the extension
+function validateSchemaBuild(config: RichTextConfig): string | null {
+	try {
+		getSchema(fieldEditorExtensions(config.extensions ?? []));
+		return null;
+	} catch (error) {
+		return `extension threw while building the editor schema: ${errorMessage(error)}`;
 	}
 }
 
