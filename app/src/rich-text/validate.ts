@@ -206,13 +206,30 @@ function validateSchemaBuild(config: RichTextConfig): string | null {
 	}
 }
 
+const sortKey = (config: unknown) => (isObject(config) && typeof config['id'] === 'string' ? config['id'] : null);
+
+// load order follows readdir, which differs between filesystems, so sort by id to make the
+// conflict winner, schema parse priority and toolbar order the same on every deployment
+function byId(a: unknown, b: unknown): number {
+	const keyA = sortKey(a);
+	const keyB = sortKey(b);
+	if (keyA === keyB) return 0;
+	if (keyA === null) return 1;
+	if (keyB === null) return -1;
+	// code-unit compare, localeCompare would change the order with the browser locale
+	return keyA < keyB ? -1 : 1;
+}
+
+/**
+ * Returns the valid configs sorted by id. On a name conflict the config whose id sorts first wins.
+ */
 export function validateRichTexts(configs: unknown[]): RichTextConfig[] {
 	const valid: RichTextConfig[] = [];
 	const ids = new Set<string>();
-	// Tiptap only warns on duplicate names and one definition silently wins, so the first to load keeps the name
+	// Tiptap only warns on duplicate names and one definition silently wins, so the first by id keeps the name
 	const owners = new Map<string, string>();
 
-	for (const config of configs) {
+	for (const config of [...configs].sort(byId)) {
 		const reason = findRejection(config, ids, owners);
 
 		if (reason) {

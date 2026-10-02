@@ -50,6 +50,7 @@ async function init() {
 	registerComponents(app);
 	registerViews(app);
 
+	// must finish before mount: a Tiptap schema is frozen at new Editor(), so a late richtext extension is ignored
 	await loadExtensions();
 	registerExtensions(app);
 

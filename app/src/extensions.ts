@@ -61,6 +61,14 @@ export async function loadExtensions(): Promise<void> {
 		console.warn(`Couldn't load richtext extensions`);
 		// eslint-disable-next-line no-console
 		console.warn(err);
+		return;
+	}
+
+	try {
+		const { warnAsymmetricRichTexts } = await import('./rich-text/symmetry');
+		warnAsymmetricRichTexts(validRichTexts);
+	} catch {
+		// advisory only, so a failed symmetry chunk must not disable the extensions that passed validation
 	}
 }
 

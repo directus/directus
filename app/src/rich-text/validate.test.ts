@@ -113,6 +113,22 @@ describe('validateRichTexts', () => {
 		expect(message).toContain('"ext-a"');
 	});
 
+	test('orders by id so the load order does not decide the conflict winner', () => {
+		const configs = [
+			{ id: 'ext-b', name: 'B', extensions: [Callout] },
+			{ id: 'ext-c', name: 'C' },
+			{ id: 'ext-a', name: 'A', extensions: [Callout] },
+		];
+
+		expect(ids(configs)).toEqual(['ext-a', 'ext-c']);
+		expect(ids([...configs].reverse())).toEqual(['ext-a', 'ext-c']);
+	});
+
+	test('orders a config without a string id last instead of throwing', () => {
+		expect(ids([{ name: 'No id' }, { id: 'callout', name: 'Callout' }])).toEqual(['callout']);
+		expect(error).toHaveBeenCalledOnce();
+	});
+
 	test('does not reserve the names of a rejected extension', () => {
 		const configs = [
 			{ id: 'ext-a', name: 'A', extensions: [Callout], buttons: [button, button] },
