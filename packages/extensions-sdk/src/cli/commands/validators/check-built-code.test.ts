@@ -20,6 +20,7 @@ beforeEach(() => {
 describe('check-built-code', () => {
 	it('rejects when built code directory does not exist', async () => {
 		vi.mocked(fse.pathExists).mockImplementation(async (p) => String(p).endsWith('package.json'));
+
 		vi.mocked(fse.readJson).mockResolvedValue({
 			'directus:extension': {
 				path: 'dist/index.js',

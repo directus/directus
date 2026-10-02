@@ -65,6 +65,8 @@ describe('check-directus-config', () => {
 
 		const reports: Array<Report> = [];
 
-		await expect(checkDirectusConfig.handler(spinner, reports)).rejects.toThrow('Extension path app: dist/index.js invalid');
+		await expect(checkDirectusConfig.handler(spinner, reports)).rejects.toThrow(
+			'Extension path app: dist/index.js invalid',
+		);
 	});
 });
