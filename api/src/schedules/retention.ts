@@ -54,11 +54,13 @@ export async function handleRetentionJob() {
 	const now = Date.now();
 	const helpers = getHelpers(database);
 
-	const inClauseChunkSize = helpers.schema.isOneOfClients(['oracle'])
-		? ORACLE_IN_CLAUSE_CHUNK_SIZE
-		: helpers.schema.isOneOfClients(['mssql'])
-			? MSSQL_IN_CLAUSE_CHUNK_SIZE
-			: DEFAULT_IN_CLAUSE_CHUNK_SIZE;
+	let inClauseChunkSize = DEFAULT_IN_CLAUSE_CHUNK_SIZE;
+
+	if (helpers.schema.isOneOfClients(['oracle'])) {
+		inClauseChunkSize = ORACLE_IN_CLAUSE_CHUNK_SIZE;
+	} else if (helpers.schema.isOneOfClients(['mssql'])) {
+		inClauseChunkSize = MSSQL_IN_CLAUSE_CHUNK_SIZE;
+	}
 
 	if (lockTime && Number(lockTime) > now - retentionLockTimeout) {
 		// ensure only one connected process
@@ -92,47 +94,39 @@ export async function handleRetentionJob() {
 			}
 
 			try {
-				let records = [];
-				const isMySQL = helpers.schema.isOneOfClients(['mysql']);
-				const deletesRevisions = task.collection === 'directus_activity' || task.collection === 'directus_revisions';
-
-				// mysql/maria does not allow limit within a subquery
+				// mysql/maria does not allow limit within a subquery, and the ids are needed to clear revision parents
 				// https://dev.mysql.com/doc/refman/8.4/en/subquery-restrictions.html
-				if (isMySQL || deletesRevisions) {
-					records = await subquery.then((r) => r.map((r) => r.id));
+				const records = await subquery.then((r) => r.map((r) => r.id));
 
-					if (records.length === 0) {
-						break;
-					}
+				if (records.length === 0) {
+					break;
 				}
 
-				if (deletesRevisions) {
+				count = await database.transaction(async (trx) => {
 					let revisionIds = records;
 
 					if (task.collection === 'directus_activity') {
-						revisionIds = await database('directus_revisions')
-							.select('id')
-							.whereIn('activity', records)
-							.then((revisions) => revisions.map((revision) => revision.id));
+						revisionIds = [];
+
+						for (const idsChunk of chunk(records, inClauseChunkSize)) {
+							const revisions = await trx('directus_revisions').select('id').whereIn('activity', idsChunk);
+							revisionIds.push(...revisions.map((revision) => revision.id));
+						}
 					}
 
 					// parent has no cascade, so references to deleted revisions must be cleared first
-					if (revisionIds.length > 0) {
-						for (const idsChunk of chunk(revisionIds, inClauseChunkSize)) {
-							await database('directus_revisions').update({ parent: null }).whereIn('parent', idsChunk);
-						}
+					for (const idsChunk of chunk(revisionIds, inClauseChunkSize)) {
+						await trx('directus_revisions').update({ parent: null }).whereIn('parent', idsChunk);
 					}
-				}
 
-				if (isMySQL || deletesRevisions) {
-					count = 0;
+					let deleted = 0;
 
 					for (const idsChunk of chunk(records, inClauseChunkSize)) {
-						count += await database(task.collection).whereIn('id', idsChunk).delete();
+						deleted += await trx(task.collection).whereIn('id', idsChunk).delete();
 					}
-				} else {
-					count = await database(task.collection).whereIn('id', subquery).delete();
-				}
+
+					return deleted;
+				});
 			} catch (error) {
 				logger.error(error, `Retention failed for Collection ${task.collection}`);
 

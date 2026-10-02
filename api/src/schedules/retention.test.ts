@@ -162,6 +162,22 @@ describe('retention', () => {
 		);
 	});
 
+	test('rolls back the parent-nulling update when the delete fails', async () => {
+		const { handleRetentionJob } = await import('./retention.js');
+
+		tracker.on.select('directus_activity').responseOnce([{ id: 10 }]);
+		tracker.on.select('directus_revisions').responseOnce([{ id: 20 }]);
+		tracker.on.update('directus_revisions').responseOnce(1);
+		tracker.on.delete('directus_activity').simulateErrorOnce('delete failed');
+
+		await handleRetentionJob();
+
+		expect(tracker.history.update).toHaveLength(1);
+		expect(tracker.history.transactions).toHaveLength(1);
+		expect(tracker.history.transactions[0]?.state).toBe('rolled back');
+		expect(mocks.logger.error).toHaveBeenCalled();
+	});
+
 	test('chunks the parent-nulling whereIn per the database in-clause limit', async () => {
 		mocks.isOneOfClients.mockImplementation((clients: string[]) => clients.includes('oracle'));
 		const { handleRetentionJob } = await import('./retention.js');
