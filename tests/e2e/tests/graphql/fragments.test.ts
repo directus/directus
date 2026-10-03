@@ -3,10 +3,11 @@ import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(graphql()).with(staticToken('admin')).with(rest());
 
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 /** Create an article and return its id, so each test reads back a row it owns */
 async function seed(data: Record<string, unknown>) {
@@ -18,7 +19,7 @@ test('fragment on an m2a union type', async () => {
 
 	const result = (
 		await api.query(`
-			fragment BlockItem on ${collections.articles_blocks}_item_union {
+			fragment BlockItem on ${collections.articles_builder}_item_union {
 				... on ${collections.text_blocks} { text }
 			}
 
@@ -42,7 +43,7 @@ test('inline fragment on an m2a union type', async () => {
 				${collections.articles} (filter: { id: { _eq: "${id}" }}) {
 					blocks {
 						item {
-							... on ${collections.articles_blocks}_item_union {
+							... on ${collections.articles_builder}_item_union {
 								... on ${collections.text_blocks} { text }
 							}
 						}
@@ -73,7 +74,7 @@ test('inline fragment from a different collection on an m2a union type', async (
 
 	const result = (
 		await api.query(`
-			fragment BlockItem on ${collections.articles_blocks}_item_union {
+			fragment BlockItem on ${collections.articles_builder}_item_union {
 				... on ${collections.text_blocks} { text }
 			}
 
@@ -206,7 +207,7 @@ test('fragment alongside an m2a filter', async () => {
 
 	const result = (
 		await api.query(`
-			fragment BlockItem on ${collections.articles_blocks}_item_union {
+			fragment BlockItem on ${collections.articles_builder}_item_union {
 				... on ${collections.text_blocks} { text }
 			}
 

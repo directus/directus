@@ -1,0 +1,204 @@
+import { describe, expect, test } from 'vitest';
+import { SchemaBuilder } from './builder.js';
+import { toTypeScript } from './typescript.js';
+
+describe('types', () => {
+	test('generates interfaces for collections and relations', () => {
+		const types = new SchemaBuilder()
+			.collection('articles', (c) => {
+				c.field('id').id();
+				c.field('title').string().options({ nullable: false });
+				c.field('published').dateTime();
+				c.field('author').m2o('users');
+				c.field('tags').m2m('tags');
+				c.field('blocks').m2a(['text', 'image']);
+			})
+			.collection('settings', (c) => {
+				c.field('id').uuid().primary();
+				c.field('site-name').string();
+			})
+			.options({ singleton: true })
+			.types();
+
+		expect(types).toMatchInlineSnapshot(`
+			"export interface Schema {
+				articles: Articles[];
+				settings: Settings;
+				users: Users[];
+				articles_tags_junction: ArticlesTagsJunction[];
+				tags: Tags[];
+				articles_builder: ArticlesBuilder[];
+				text: Text[];
+				image: Image[];
+			}
+
+			export interface Articles {
+				id: number;
+				title: string;
+				published: string | null;
+				author: number | Users | null;
+				tags: number[] | ArticlesTagsJunction[];
+				blocks: number[] | ArticlesBuilder[];
+			}
+
+			export interface Settings {
+				id: string;
+				'site-name': string | null;
+			}
+
+			export interface Users {
+				id: number;
+			}
+
+			export interface ArticlesTagsJunction {
+				id: number;
+				articles_id: number | Articles | null;
+				tags_id: number | Tags | null;
+			}
+
+			export interface Tags {
+				id: number;
+			}
+
+			export interface ArticlesBuilder {
+				id: number;
+				articles_id: number | Articles | null;
+				item: string | Text | Image | null;
+				collection: string | null;
+			}
+
+			export interface Text {
+				id: number;
+			}
+
+			export interface Image {
+				id: number;
+			}
+			"
+		`);
+	});
+
+	test('maps field types', () => {
+		const types = new SchemaBuilder()
+			.collection('all_types', (c) => {
+				c.field('id').id();
+				c.field('boolean').boolean();
+				c.field('big_integer').bigInteger();
+				c.field('decimal').decimal();
+				c.field('float').float();
+				c.field('json').json();
+				c.field('csv').csv();
+				c.field('hash').hash();
+				c.field('time').time();
+				c.field('timestamp').timestamp();
+				c.field('date').date();
+			})
+			.types();
+
+		expect(types).toContain(`export interface AllTypes {
+	id: number;
+	boolean: boolean | null;
+	big_integer: string | number | null;
+	decimal: string | number | null;
+	float: number | null;
+	json: unknown;
+	csv: string[] | null;
+	hash: string | null;
+	time: string | null;
+	timestamp: string | null;
+	date: string | null;
+}`);
+	});
+
+	test('uses the related primary key type for relations', () => {
+		const types = new SchemaBuilder()
+			.collection('articles', (c) => {
+				c.field('id').id();
+				c.field('translations').translations();
+			})
+			.types();
+
+		expect(types).toContain('translations: number[] | ArticlesTranslations[];');
+		expect(types).toContain('languages_code: string | Languages | null;');
+	});
+
+	test('supports a custom schema name', () => {
+		const types = new SchemaBuilder()
+			.collection('articles', (c) => {
+				c.field('id').id();
+			})
+			.types({ schemaName: 'MySchema' });
+
+		expect(types).toMatch(/^export interface MySchema \{/);
+	});
+
+	test('strips the test schema suffix', () => {
+		const types = new SchemaBuilder({ test_schema: true })
+			.collection('articles', (c) => {
+				c.field('id').id();
+				c.field('tags').m2m('tags');
+			})
+			.types();
+
+		expect(types).not.toContain('1234');
+		expect(types).toContain('articles_tags_junction: ArticlesTagsJunction[];');
+		expect(types).toContain('articles_id: number | Articles | null;');
+	});
+});
+
+describe('toTypeScript', () => {
+	test('generates the same types from a snapshot', () => {
+		const builder = new SchemaBuilder().collection('articles', (c) => {
+			c.field('id').id();
+			c.field('author').m2o('users');
+		});
+
+		expect(toTypeScript(builder.snapshot())).toBe(builder.types());
+	});
+
+	test('skips folders and falls back for unknown related collections', () => {
+		const types = toTypeScript({
+			collections: [
+				{ collection: 'folder', meta: null, schema: null },
+				{ collection: '1st-collection', meta: null, schema: { name: '1st-collection' } },
+			],
+			fields: [
+				{
+					collection: '1st-collection',
+					field: 'id',
+					name: 'id',
+					type: 'integer',
+					meta: null,
+					schema: { is_primary_key: true } as any,
+				},
+				{
+					collection: '1st-collection',
+					field: 'user',
+					name: 'user',
+					type: 'uuid',
+					meta: null,
+					schema: { is_nullable: true } as any,
+				},
+			],
+			relations: [
+				{
+					collection: '1st-collection',
+					field: 'user',
+					related_collection: 'directus_users',
+					meta: null,
+					schema: null,
+				},
+			],
+		});
+
+		expect(types).toBe(`export interface Schema {
+	'1st-collection': _1stCollection[];
+}
+
+export interface _1stCollection {
+	id: number;
+	user: string | number | null;
+}
+`);
+	});
+});

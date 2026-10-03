@@ -1,13 +1,15 @@
-export type Schema = {
+export interface Schema {
 	plants: Plants[];
 	sizes: Sizes[];
-};
-export type Plants = {
-	id?: string | number;
-	name?: string | number;
-	size?: string | number | Sizes;
-};
-export type Sizes = {
-	id?: string | number;
-	size?: string | number;
-};
+}
+
+export interface Plants {
+	id: number;
+	name: string | null;
+	size: number | Sizes | null;
+}
+
+export interface Sizes {
+	id: number;
+	size: string | null;
+}

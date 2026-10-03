@@ -1,82 +1,92 @@
-export type Schema = {
-	a2o: A2O[];
+export interface Schema {
+	a2o: A2o[];
 	deep: Deep[];
 	items: Items[];
-	m2m: M2M[];
-	m2o: M2O[];
-	o2m: O2M[];
+	m2m: M2m[];
+	m2o: M2o[];
+	o2m: O2m[];
 	private: Private[];
 	relational: Relational[];
-	relational_a2o: RelationalA2O[];
-	relational_m2m: RelationalM2M[];
 	singleton: Singleton;
-};
-export type A2O = {
-	id?: string | number;
-	name?: string | number;
-	field_a?: string | number;
-	field_b?: string | number;
-};
-export type Deep = {
-	id?: string | number;
-	name?: string | number;
-	field_a?: string | number;
-	field_b?: string | number;
-	parent_id?: string | number | O2M;
-};
-export type Items = {
-	id?: string | number;
-	title?: string | number;
-	content?: string | number;
-	notes?: string | number;
-};
-export type M2M = {
-	id?: string | number;
-	name?: string | number;
-	field_a?: string | number;
-	field_b?: string | number;
-	parents: (string | number | RelationalM2M)[];
-};
-export type M2O = {
-	id?: string | number;
-	name?: string | number;
-	field_a?: string | number;
-	field_b?: string | number;
-};
-export type O2M = {
-	id?: string | number;
-	name?: string | number;
-	field_a?: string | number;
-	field_b?: string | number;
-	parent_id?: string | number | Relational;
-	deep_o2m_related: (string | number | Deep)[];
-};
-export type Private = {
-	id?: string | number;
-	secret?: string | number;
-};
-export type Relational = {
-	id?: string | number;
-	name?: string | number;
-	m2o_related?: string | number | M2O;
-	o2m_related: (string | number | O2M)[];
-	m2m_related: (string | number | RelationalM2M)[];
-	a2o_items: (string | number | RelationalA2O)[];
-};
-export type RelationalA2O = {
-	id?: string | number;
-	relational_id?: string | number | Relational;
-	item?: string | number | A2O | M2O;
-	collection?: string | number;
-};
-export type RelationalM2M = {
-	id?: string | number;
-	relational_id?: string | number | Relational;
-	m2m_id?: string | number | M2M;
-};
-export type Singleton = {
-	id?: string | number;
-	title?: string | number;
-	confidential?: string | number;
-	is_published?: string | number;
-};
+	relational_m2m_junction: RelationalM2mJunction[];
+	relational_builder: RelationalBuilder[];
+}
+
+export interface A2o {
+	id: string;
+	name: string | null;
+	field_a: string | null;
+	field_b: string | null;
+}
+
+export interface Deep {
+	id: string;
+	name: string | null;
+	field_a: string | null;
+	field_b: string | null;
+	parent_id: string | O2m | null;
+}
+
+export interface Items {
+	id: string;
+	title: string | null;
+	content: string | null;
+	notes: string | null;
+}
+
+export interface M2m {
+	id: string;
+	name: string | null;
+	field_a: string | null;
+	field_b: string | null;
+}
+
+export interface M2o {
+	id: string;
+	name: string | null;
+	field_a: string | null;
+	field_b: string | null;
+}
+
+export interface O2m {
+	id: string;
+	name: string | null;
+	field_a: string | null;
+	field_b: string | null;
+	deep_o2m_related: string[] | Deep[];
+	parent_id: string | Relational | null;
+}
+
+export interface Private {
+	id: string;
+	secret: string | null;
+}
+
+export interface Relational {
+	id: string;
+	name: string | null;
+	m2o_related: string | M2o | null;
+	o2m_related: string[] | O2m[];
+	m2m_related: number[] | RelationalM2mJunction[];
+	a2o_items: number[] | RelationalBuilder[];
+}
+
+export interface Singleton {
+	id: number;
+	title: string | null;
+	confidential: string | null;
+	is_published: boolean | null;
+}
+
+export interface RelationalM2mJunction {
+	id: number;
+	relational_id: string | Relational | null;
+	m2m_id: string | M2m | null;
+}
+
+export interface RelationalBuilder {
+	id: number;
+	relational_id: string | Relational | null;
+	item: string | A2o | M2o | null;
+	collection: string | null;
+}

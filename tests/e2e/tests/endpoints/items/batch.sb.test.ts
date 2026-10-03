@@ -16,6 +16,7 @@ import { useSnapshot } from '@utils/use-snapshot.js';
 import { range } from 'lodash-es';
 import { afterAll, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 
 const LIMIT = 10;
 
@@ -36,7 +37,7 @@ const api = createDirectus<Schema>(`http://localhost:${directus.apis[0]!.port}`)
 	.with(rest())
 	.with(staticToken('admin'));
 
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 const MESSAGE = `Invalid payload. Exceeded max batch mutation limit of ${LIMIT}.`;
 

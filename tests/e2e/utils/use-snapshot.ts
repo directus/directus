@@ -32,7 +32,7 @@ const groups: string[] = [];
  */
 export async function useSnapshot<Schema>(
 	api: DirectusClient<unknown> & RestClient<unknown>,
-	file = 'snapshot.json',
+	file: string | Snapshot = 'snapshot.json',
 ): Promise<{ collections: Collections<Schema>; snapshot: Snapshot }> {
 	const collectionMap: Record<string, string> = {};
 	const collectionNameMap: Record<string, string> = {};
@@ -43,7 +43,9 @@ export async function useSnapshot<Schema>(
 	const folder = getCallerFolder(1);
 	const uid = getUID(1);
 
-	const snapshot: Snapshot = JSON.parse(await readFile(join(folder, file), { encoding: 'utf8' }));
+	const snapshot: Snapshot =
+		typeof file === 'string' ? JSON.parse(await readFile(join(folder, file), { encoding: 'utf8' })) : file;
+
 	const collectionIDs = snapshot.collections.map((collection) => collection.collection);
 	const fieldIDs = snapshot.fields.map((field) => field.field);
 

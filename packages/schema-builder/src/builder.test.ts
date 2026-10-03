@@ -153,7 +153,7 @@ test('Create o2m relation', () => {
 		      "collection": "countries",
 		      "fields": {
 		        "cities": {
-		          "alias": false,
+		          "alias": true,
 		          "dbType": null,
 		          "defaultValue": null,
 		          "field": "cities",
@@ -368,7 +368,7 @@ test('Create m2m relation', () => {
 		          "validation": null,
 		        },
 		        "tags": {
-		          "alias": false,
+		          "alias": true,
 		          "dbType": null,
 		          "defaultValue": null,
 		          "field": "tags",
@@ -548,7 +548,7 @@ test('Create m2a relation', () => {
 		      "collection": "blog",
 		      "fields": {
 		        "blocks": {
-		          "alias": false,
+		          "alias": true,
 		          "dbType": null,
 		          "defaultValue": null,
 		          "field": "blocks",
@@ -637,7 +637,7 @@ test('Create m2a relation', () => {
 		        },
 		        "item": {
 		          "alias": false,
-		          "dbType": "integer",
+		          "dbType": "character varying",
 		          "defaultValue": null,
 		          "field": "item",
 		          "generated": false,
@@ -647,7 +647,7 @@ test('Create m2a relation', () => {
 		          "scale": null,
 		          "searchable": true,
 		          "special": [],
-		          "type": "integer",
+		          "type": "string",
 		          "validation": null,
 		        },
 		      },
@@ -941,7 +941,7 @@ test('Create translations relation', () => {
 		          "validation": null,
 		        },
 		        "translations": {
-		          "alias": false,
+		          "alias": true,
 		          "dbType": null,
 		          "defaultValue": null,
 		          "field": "translations",
@@ -1000,7 +1000,7 @@ test('Create translations relation', () => {
 		        },
 		        "languages_code": {
 		          "alias": false,
-		          "dbType": "integer",
+		          "dbType": "character varying",
 		          "defaultValue": null,
 		          "field": "languages_code",
 		          "generated": false,
@@ -1010,7 +1010,7 @@ test('Create translations relation', () => {
 		          "scale": null,
 		          "searchable": true,
 		          "special": [],
-		          "type": "integer",
+		          "type": "string",
 		          "validation": null,
 		        },
 		      },
@@ -1273,4 +1273,38 @@ test('define singleton collection', () => {
 
 	expect(singletonSchema.collections?.['blog']?.singleton).toBe(true);
 	expect(nonSingletonSchema.collections?.['blog']?.singleton).toBe(false);
+});
+
+test('suffix all collections with test_schema', () => {
+	const schema = new SchemaBuilder({ test_schema: true })
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('author').m2o('users');
+			c.field('tags').m2m('tags');
+			c.field('links').o2m('links', 'article_id');
+			c.field('blocks').m2a(['text_blocks']);
+			c.field('translations').translations();
+		})
+		.collection('users_1234', (c) => {
+			c.field('id').id();
+		})
+		.build_schema();
+
+	expect(schema.collections.map(({ collection }) => collection).sort()).toEqual([
+		'articles_1234',
+		'articles_1234_builder',
+		'articles_1234_tags_1234_junction',
+		'articles_1234_translations',
+		'languages_1234',
+		'links_1234',
+		'tags_1234',
+		'text_blocks_1234',
+		'users_1234',
+	]);
+
+	expect(schema.relations.find(({ field }) => field === 'author')?.related_collection).toBe('users_1234');
+
+	expect(schema.relations.find(({ field }) => field === 'item')?.meta?.one_allowed_collections).toEqual([
+		'text_blocks_1234',
+	]);
 });

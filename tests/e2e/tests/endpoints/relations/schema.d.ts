@@ -1,19 +1,22 @@
 export interface Schema {
-	articles: Articles[];
 	authors: Authors[];
 	editors: Editors[];
+	articles: Articles[];
 }
-export type Articles = {
-	id: string | number;
-	title: string | number;
-	author: Authors;
-	editor: Editors;
-};
-export type Authors = {
-	id: string | number;
-	name: string | number;
-};
-export type Editors = {
-	id: string | number;
-	name: string | number;
-};
+
+export interface Authors {
+	id: number;
+	name: string | null;
+}
+
+export interface Editors {
+	id: number;
+	name: string | null;
+}
+
+export interface Articles {
+	id: number;
+	title: string | null;
+	author: number | Authors | null;
+	editor: number | Editors | null;
+}

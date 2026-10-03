@@ -16,6 +16,7 @@
 		"@directus/license": "catalog:",
 		"@directus/mock-license-server": "workspace:*",
 		"@directus/sandbox": "workspace:*",
+		"@directus/schema-builder": "workspace:*",
 		"@directus/sdk": "workspace:*",
 		"date-fns": "catalog:",
 		"knex": "catalog:",

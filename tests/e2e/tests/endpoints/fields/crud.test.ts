@@ -1,4 +1,7 @@
 import { randomUUID } from 'crypto';
+import { writeFileSync } from 'fs';
+import { join } from 'path';
+import { SchemaBuilder } from '@directus/schema-builder';
 import {
 	createDirectus,
 	createField,
@@ -11,12 +14,21 @@ import {
 	updateFields,
 } from '@directus/sdk';
 import { database, port } from '@utils/constants.js';
+import { getCallerFolder } from '@utils/getUID.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 
+const schema = new SchemaBuilder({ test_schema: true }).collection('fields', (c) => {
+	c.field('id').id();
+});
+
+const snapshot = schema.snapshot();
+
+writeFileSync(join(getCallerFolder(), 'schema.d.ts'), schema.types());
+
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 test('create field', { timeout: database === 'cockroachdb' ? 60_000 : 10_000 }, async () => {
 	const field = randomUUID().split('-')[0]!;

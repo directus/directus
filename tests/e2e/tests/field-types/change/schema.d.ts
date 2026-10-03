@@ -1,19 +1,22 @@
-export type Schema = {
+export interface Schema {
 	city: City[];
 	country: Country[];
 	state: State[];
-};
-export type City = {
-	id?: string | number;
-	name?: string | number;
-	state?: string | number | State;
-};
-export type Country = {
-	id?: string | number;
-	name?: string | number;
-};
-export type State = {
-	id?: string | number;
-	name?: string | number;
-	country?: string | number | Country;
-};
+}
+
+export interface City {
+	id: number;
+	name: string | null;
+	state: number | State | null;
+}
+
+export interface Country {
+	id: number;
+	name: string | null;
+}
+
+export interface State {
+	id: number;
+	name: string | null;
+	country: number | Country | null;
+}
