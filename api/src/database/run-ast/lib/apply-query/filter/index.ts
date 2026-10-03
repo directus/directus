@@ -1,6 +1,6 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Filter, Permission, Relation, SchemaOverview } from '@directus/types';
-import { getRelationInfo } from '@directus/utils';
+import { getRelationInfo, isObject } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getCases } from '../../../../../permissions/modules/process-ast/lib/get-cases.js';
 import type { AliasMap } from '../../../../../utils/get-column-path.js';
@@ -121,9 +121,21 @@ export function applyFilter(
 
 			const operation = getOperation(key, value);
 
-			if (!operation) continue;
+			// `_some`/`_none` on a relational field is applied through a subquery
+			// below and does not resolve to a single leaf operator (for example when
+			// it wraps an `_and`/`_or`), so it must not be skipped when
+			// `getOperation` returns null.
+			// https://github.com/directus/directus/issues/28288
+			const quantifierKey = isObject(value) ? Object.keys(value)[0] : undefined;
 
-			const { operator: filterOperator, value: filterValue } = operation;
+			if (!operation && quantifierKey !== '_some' && quantifierKey !== '_none') {
+				continue;
+			}
+
+			const { operator: filterOperator, value: filterValue } = operation ?? {
+				operator: '',
+				value: undefined,
+			};
 
 			if (
 				filterPath.length > 1 ||
