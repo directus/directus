@@ -1063,3 +1063,175 @@ describe('Save As Copy with M2M relation', () => {
 		expect(saveBody.children.update).toEqual([]);
 	});
 });
+
+describe('Save As Copy with nested relations in related collection', () => {
+	const mockArticleCollection = {
+		collection: 'articles',
+	} as AppCollection;
+
+	const defaultParentPkField = {
+		field: 'id',
+		schema: { has_auto_increment: true },
+	} as Field;
+
+	function setupNestedRelationalEnvironment(parentPkField: Field = defaultParentPkField) {
+		const sdkRequestSpy = vi.spyOn(sdk, 'request');
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockArticleCollection),
+			primaryKeyField: computed(() => parentPkField),
+			fields: computed(() => [parentPkField] as Field[]),
+		} as any);
+
+		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
+
+		const autoincrementField = { field: 'id', schema: { has_auto_increment: true } } as Field;
+		const stringCodeField = { field: 'code' } as Field;
+
+		vi.mocked(fieldsStore.getPrimaryKeyFieldForCollection).mockImplementation((collectionName: string) =>
+			collectionName === 'languages' ? stringCodeField : autoincrementField,
+		);
+
+		const articleTranslationsRel = {
+			collection: 'articles_translations',
+			field: 'articles_id',
+			related_collection: 'articles',
+			meta: { one_field: 'translations', junction_field: 'languages_code' },
+		} as unknown as Relation;
+
+		const translationTagsRel = {
+			collection: 'articles_translations_tags',
+			field: 'articles_translations_id',
+			related_collection: 'articles_translations',
+			meta: { one_field: 'tags', junction_field: 'tags_id' },
+		} as unknown as Relation;
+
+		vi.mocked(relationsStore.getRelationsForCollection).mockReturnValue([articleTranslationsRel]);
+
+		vi.mocked(relationsStore).relations = [
+			articleTranslationsRel,
+			{
+				collection: 'articles_translations',
+				field: 'languages_code',
+				related_collection: 'languages',
+				meta: { many_field: 'languages_code', junction_field: null },
+			} as unknown as Relation,
+			translationTagsRel,
+			{
+				collection: 'articles_translations_tags',
+				field: 'tags_id',
+				related_collection: 'tags',
+				meta: { many_field: 'tags_id', junction_field: null },
+			} as unknown as Relation,
+		];
+
+		return sdkRequestSpy;
+	}
+
+	test('expands nested relation fields with wildcard when querying related items', async () => {
+		const requestSpy = setupNestedRelationalEnvironment();
+
+		requestSpy
+			.mockResolvedValueOnce({})
+			.mockResolvedValueOnce({ item: { id: 1, translations: [{ id: 10 }] } })
+			.mockResolvedValueOnce([{ id: 10 }])
+			.mockResolvedValueOnce({ id: 2 });
+
+		const { saveAsCopy } = useItem(ref('articles'), ref(1));
+		await saveAsCopy();
+
+		const relatedFetchCall = requestSpy.mock.calls[2]?.[0]() as any;
+		expect(relatedFetchCall.params.fields).toEqual(['*', 'tags.*']);
+	});
+
+	test('strips junction primary keys so nested relational items are cloned instead of reassigned', async () => {
+		const requestSpy = setupNestedRelationalEnvironment();
+
+		requestSpy
+			.mockResolvedValueOnce({})
+			.mockResolvedValueOnce({ item: { id: 1, translations: [{ id: 10 }] } })
+			.mockResolvedValueOnce([
+				{
+					id: 10,
+					articles_id: 1,
+					languages_code: 'en-US',
+					tags: [{ id: 100, articles_translations_id: 10, tags_id: 5 }],
+				},
+			])
+			.mockResolvedValueOnce({ id: 2 });
+
+		const { saveAsCopy } = useItem(ref('articles'), ref(1));
+		await saveAsCopy();
+
+		const createPayload = (requestSpy.mock.lastCall?.[0]() as any).body;
+
+		expect(createPayload.translations).toEqual([
+			{
+				articles_id: 1,
+				languages_code: 'en-US',
+				tags: [{ articles_translations_id: 10, tags_id: 5 }],
+			},
+		]);
+	});
+
+	test('correctly clones nested relational items when draft edits are present on the parent relation', async () => {
+		const requestSpy = setupNestedRelationalEnvironment();
+
+		requestSpy
+			.mockResolvedValueOnce({})
+			.mockResolvedValueOnce({ item: { id: 1, translations: [{ id: 10 }] } })
+			.mockResolvedValueOnce([
+				{
+					id: 10,
+					articles_id: 1,
+					languages_code: 'en-US',
+					tags: [{ id: 100, articles_translations_id: 10, tags_id: 5 }],
+				},
+			])
+			.mockResolvedValueOnce({ id: 2 });
+
+		const { saveAsCopy, edits } = useItem(ref('articles'), ref(1));
+
+		edits.value = {
+			translations: {
+				create: [],
+				update: [{ id: 10, title: 'Updated Title' }],
+				delete: [],
+			},
+		};
+
+		await saveAsCopy();
+
+		const createPayload = (requestSpy.mock.lastCall?.[0]() as any).body;
+
+		expect(createPayload.translations.create).toEqual([
+			{
+				articles_id: 1,
+				languages_code: 'en-US',
+				title: 'Updated Title',
+				tags: [{ articles_translations_id: 10, tags_id: 5 }],
+			},
+		]);
+
+		expect(createPayload.translations.update).toEqual([]);
+	});
+
+	test('preserves custom non-autoincrement string primary key values on parent record', async () => {
+		const requestSpy = setupNestedRelationalEnvironment({ field: 'slug' } as Field);
+
+		requestSpy
+			.mockResolvedValueOnce({})
+			.mockResolvedValueOnce({ item: { slug: 'article-one', translations: [{ id: 10 }] } })
+			.mockResolvedValueOnce([{ id: 10, articles_id: 'article-one', languages_code: 'en-US' }])
+			.mockResolvedValueOnce({ slug: 'article-two' });
+
+		const { saveAsCopy } = useItem(ref('articles'), ref(1));
+		await saveAsCopy();
+
+		const createPayload = (requestSpy.mock.lastCall?.[0]() as any).body;
+
+		expect(createPayload.slug).toBe('article-one');
+		expect(createPayload.translations).toEqual([{ articles_id: 'article-one', languages_code: 'en-US' }]);
+	});
+});
