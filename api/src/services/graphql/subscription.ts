@@ -99,7 +99,8 @@ function createPubSub<P extends { [key: string]: unknown }>(emitter: EventEmitte
 }
 
 async function parseFields(gql: GraphQLService, request: GraphQLResolveInfo) {
-	const selections = request.fieldNodes[0]?.selectionSet?.selections ?? [];
+	// Every node counts here too: `data` requested from two fragments reaches the resolver as one call.
+	const selections = request.fieldNodes.flatMap((node) => node.selectionSet?.selections ?? []);
 
 	const dataSelections = selections.reduce((result: readonly SelectionNode[], selection: SelectionNode) => {
 		if (

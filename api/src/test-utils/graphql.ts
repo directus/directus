@@ -89,15 +89,22 @@ export function buildFilterArgument(filter: Record<string, any>): ArgumentNode {
 	return { kind: Kind.ARGUMENT, name: buildName('filter'), value: toValue(filter) };
 }
 
-/** Stand in for the resolve info a resolver receives for the field it is resolving */
+/** Stand in for the resolve info a resolver receives for the field it is resolving
+ *
+ * Pass `selectionSets` to stand in for a field that same-named fields from separate fragments were collected
+ * into, which reaches the resolver as one call carrying every node it was asked for.
+ */
 export function buildResolveInfo(options: {
-	selections: readonly SelectionNode[];
+	selections?: readonly SelectionNode[];
+	selectionSets?: readonly (readonly SelectionNode[])[];
 	fragments?: Record<string, FragmentDefinitionNode>;
 	schema: GraphQLSchema;
 	returnType: GraphQLOutputType;
 }): GraphQLResolveInfo {
+	const selectionSets = options.selectionSets ?? [options.selections ?? []];
+
 	return {
-		fieldNodes: [buildField('resolved', { children: options.selections })],
+		fieldNodes: selectionSets.map((selections) => buildField('resolved', { children: selections })),
 		fragments: options.fragments ?? {},
 		schema: options.schema,
 		returnType: options.returnType,
