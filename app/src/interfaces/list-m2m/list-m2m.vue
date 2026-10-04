@@ -762,7 +762,7 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 		<DrawerBatch
 			v-model:active="batchEditActive"
 			:primary-keys="selectedKeys"
-			:collection="relationInfo.relatedCollection.collection"
+			:collection="relationInfo.junctionCollection.collection"
 			stage-on-save
 			@input="stageBatchEdits"
 		/>
