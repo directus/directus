@@ -739,8 +739,8 @@ catalogs:
       specifier: 1.1.12
       version: 1.1.12
     nodemailer:
-      specifier: 10.0.1
-      version: 10.0.1
+      specifier: 10.0.15
+      version: 10.0.15
     nodemailer-mailgun-transport:
       specifier: 2.1.5
       version: 2.1.5
@@ -1349,7 +1349,7 @@ importers:
         version: 1.1.12
       nodemailer:
         specifier: 'catalog:'
-        version: 10.0.1
+        version: 10.0.15
       object-hash:
         specifier: 'catalog:'
         version: 3.0.0
@@ -1579,7 +1579,7 @@ importers:
         version: 3.27.0(@aws-sdk/credential-provider-web-identity@3.972.77)(zod@4.1.12)
       mailtrap:
         specifier: 'catalog:'
-        version: 4.9.0(@types/nodemailer@8.0.1)(nodemailer@10.0.1)
+        version: 4.9.0(@types/nodemailer@8.0.1)(nodemailer@10.0.15)
       mysql2:
         specifier: 'catalog:'
         version: 3.24.4(@types/node@22.13.14)
@@ -3068,7 +3068,7 @@ importers:
         version: 16.12.0
       nodemailer:
         specifier: 'catalog:'
-        version: 10.0.1
+        version: 10.0.15
       openapi3-ts:
         specifier: 'catalog:'
         version: 4.5.0
@@ -10828,8 +10828,8 @@ packages:
   nodemailer-mailgun-transport@2.1.5:
     resolution: {integrity: sha512-hF7POkaxFgMvYEd5aHLaQJI2511ld+aQlQi7JH6bGjhjlZ33cIbTB9PimlIrLu5XC3z76Kde6e65OIwL9lOdTA==}
 
-  nodemailer@10.0.1:
-    resolution: {integrity: sha512-c+gU9cL9HLDax3vjxL88kW+6NOgdtEUWaZ+AUtxdJR6LLhf0kGdCLExof7yiKW7zdO9EfXCSIgmhGyFmUM0mYQ==}
+  nodemailer@10.0.15:
+    resolution: {integrity: sha512-EUqp5PhtcsYXs9Fq/lS7s/8zlTrnBqmzZWzFFROrNikMiz+om/YRKMwqN907t+0A1KKyT8jd39CBUbFZmaZmcA==}
     engines: {node: '>=20.0.0'}
 
   nodemon@3.1.14:
@@ -21044,13 +21044,13 @@ snapshots:
       - supports-color
     optional: true
 
-  mailtrap@4.9.0(@types/nodemailer@8.0.1)(nodemailer@10.0.1):
+  mailtrap@4.9.0(@types/nodemailer@8.0.1)(nodemailer@10.0.15):
     dependencies:
       axios: 1.20.0
       qs: 6.16.0
     optionalDependencies:
       '@types/nodemailer': 8.0.1
-      nodemailer: 10.0.1
+      nodemailer: 10.0.15
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -21419,7 +21419,7 @@ snapshots:
       - whiskers
     optional: true
 
-  nodemailer@10.0.1: {}
+  nodemailer@10.0.15: {}
 
   nodemon@3.1.14:
     dependencies:
