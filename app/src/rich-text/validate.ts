@@ -1,4 +1,4 @@
-import type { RichTextConfig } from '@directus/extensions';
+import type { RichTextConfig, RichTextToolbarButton } from '@directus/extensions';
 import {
 	type AnyExtension,
 	type Attributes,
@@ -8,6 +8,7 @@ import {
 	type GlobalAttributes,
 	splitExtensions,
 } from '@tiptap/core';
+import { isKnownIcon } from '@/components/v-icon/known-icons';
 import { editorExtensions } from '@/interfaces/input-rich-text-html/extensions';
 import { ComparisonDiff } from '@/interfaces/input-rich-text-html/extensions/comparison-diff';
 import { CUSTOM_FORMAT_PREFIX } from '@/interfaces/input-rich-text-html/extensions/custom-formats';
@@ -54,12 +55,105 @@ const isTiptapExtension = (value: unknown): value is AnyExtension =>
 	typeof value['name'] === 'string' &&
 	['extension', 'node', 'mark'].includes(value['type'] as string);
 
+const PREDICATES = ['isActive', 'isDisabled'] as const;
+
+function findPredicateError(value: Record<string, unknown>): string | null {
+	const predicate = PREDICATES.find((name) => value[name] !== undefined && typeof value[name] !== 'function');
+	return predicate ? `has an "${predicate}" that is not a function` : null;
+}
+
+function validateItems(items: unknown): string | null {
+	if (!Array.isArray(items)) return 'has an "items" that is not an array';
+	if (items.length === 0) return 'has no items';
+
+	const keys = new Set<string>();
+
+	for (const item of items) {
+		if (!isObject(item)) return 'has an item that is not an object';
+
+		if (typeof item['key'] !== 'string' || !SLUG.test(item['key'])) {
+			return 'has an item "key" that does not match [a-z0-9-]+';
+		}
+
+		const key = item['key'];
+		const invalid = (problem: string) => `item "${key}" ${problem}`;
+
+		if (keys.has(key)) return `uses item key "${key}" twice`;
+		keys.add(key);
+		if (typeof item['label'] !== 'string') return invalid('needs a "label" string');
+
+		if (item['icon'] !== undefined && typeof item['icon'] !== 'string') {
+			return invalid('has an "icon" that is not a string');
+		}
+
+		if (typeof item['command'] !== 'function') return invalid('needs a "command" function');
+
+		const predicateError = findPredicateError(item);
+		if (predicateError) return invalid(predicateError);
+	}
+
+	return null;
+}
+
+function validateButtons(buttons: unknown, field: string, { allowItems }: { allowItems: boolean }): string | null {
+	if (!Array.isArray(buttons)) return `"${field}" must be an array`;
+
+	const keys = new Set<string>();
+
+	for (const button of buttons) {
+		if (!isObject(button)) return 'every button must be an object';
+		if (typeof button['key'] !== 'string' || !SLUG.test(button['key'])) return 'button "key" must match [a-z0-9-]+';
+		const key = button['key'];
+		const invalid = (problem: string) => `button "${key}" ${problem}`;
+
+		if (keys.has(key)) return `button key "${key}" is used twice`;
+		keys.add(key);
+		if (typeof button['icon'] !== 'string') return invalid('needs an "icon" string');
+		if (typeof button['label'] !== 'string') return invalid('needs a "label" string');
+
+		if (button['items'] !== undefined) {
+			if (!allowItems) return invalid('cannot have "items"');
+			if (button['command'] !== undefined) return invalid('needs a "command" or "items", not both');
+			const itemsError = validateItems(button['items']);
+			if (itemsError) return invalid(itemsError);
+		} else if (typeof button['command'] !== 'function') {
+			return invalid('needs a "command" function or an "items" array');
+		}
+
+		const predicateError = findPredicateError(button);
+		if (predicateError) return invalid(predicateError);
+	}
+
+	return null;
+}
+
+function validateBubbleMenus(menus: unknown): string | null {
+	if (!Array.isArray(menus)) return '"bubbleMenus" must be an array';
+
+	const keys = new Set<string>();
+
+	for (const menu of menus) {
+		if (!isObject(menu)) return 'every bubble menu must be an object';
+		if (typeof menu['key'] !== 'string' || !SLUG.test(menu['key'])) return 'bubble menu "key" must match [a-z0-9-]+';
+		const key = menu['key'];
+
+		if (keys.has(key)) return `bubble menu key "${key}" is used twice`;
+		keys.add(key);
+		if (typeof menu['shouldShow'] !== 'function') return `bubble menu "${key}" needs a "shouldShow" function`;
+
+		const buttonError = validateButtons(menu['buttons'], `bubble menu "${key}" buttons`, { allowItems: false });
+		if (buttonError) return `bubble menu "${key}": ${buttonError}`;
+	}
+
+	return null;
+}
+
 function validateShape(config: unknown): string | null {
 	if (!isObject(config)) return 'config is not an object';
 	if (typeof config['id'] !== 'string' || !SLUG.test(config['id'])) return '"id" must match [a-z0-9-]+';
 	if (typeof config['name'] !== 'string') return '"name" must be a string';
 
-	const { extensions, buttons } = config;
+	const { extensions, buttons, bubbleMenus } = config;
 
 	if (extensions !== undefined) {
 		if (!Array.isArray(extensions)) return '"extensions" must be an array';
@@ -67,27 +161,11 @@ function validateShape(config: unknown): string | null {
 	}
 
 	if (buttons !== undefined) {
-		if (!Array.isArray(buttons)) return '"buttons" must be an array';
-
-		const keys = new Set<string>();
-
-		for (const button of buttons) {
-			if (!isObject(button)) return 'every button must be an object';
-			if (typeof button['key'] !== 'string' || !SLUG.test(button['key'])) return 'button "key" must match [a-z0-9-]+';
-			const key = button['key'];
-			const invalid = (problem: string) => `button "${key}" ${problem}`;
-
-			if (keys.has(key)) return `button key "${key}" is used twice`;
-			keys.add(key);
-			if (typeof button['icon'] !== 'string') return invalid('needs an "icon" string');
-			if (typeof button['label'] !== 'string') return invalid('needs a "label" string');
-			if (typeof button['command'] !== 'function') return invalid('needs a "command" function');
-
-			if (button['isActive'] !== undefined && typeof button['isActive'] !== 'function') {
-				return invalid('has an "isActive" that is not a function');
-			}
-		}
+		const buttonError = validateButtons(buttons, 'buttons', { allowItems: true });
+		if (buttonError) return buttonError;
 	}
+
+	if (bubbleMenus !== undefined) return validateBubbleMenus(bubbleMenus);
 
 	return null;
 }
@@ -190,6 +268,54 @@ function findRejection(config: unknown, ids: Set<string>, owners: Map<string, st
 	}
 }
 
+const FALLBACK_ICON = 'extension';
+
+function knownIcon(config: RichTextConfig, owner: string, icon: string): string {
+	if (isKnownIcon(icon)) return icon;
+
+	// eslint-disable-next-line no-console
+	console.warn(
+		`Richtext extension "${config.id}": ${owner} uses the unknown icon "${icon}". ` +
+			`It shows the "${FALLBACK_ICON}" icon instead.`,
+	);
+
+	return FALLBACK_ICON;
+}
+
+function withKnownIcon<T extends RichTextToolbarButton>(config: RichTextConfig, button: T): T {
+	const owner = `button "${button.key}"`;
+
+	return {
+		...button,
+		icon: knownIcon(config, owner, button.icon),
+		...(button.items
+			? {
+					items: button.items.map((item) =>
+						item.icon ? { ...item, icon: knownIcon(config, `${owner} item "${item.key}"`, item.icon) } : item,
+					),
+				}
+			: {}),
+	};
+}
+
+// an unknown name renders as its raw ligature text, so the button gets a placeholder instead of a rejection
+function withKnownIcons(config: RichTextConfig): RichTextConfig {
+	const { buttons, bubbleMenus } = config;
+
+	return {
+		...config,
+		...(buttons ? { buttons: buttons.map((button) => withKnownIcon(config, button)) } : {}),
+		...(bubbleMenus
+			? {
+					bubbleMenus: bubbleMenus.map((menu) => ({
+						...menu,
+						buttons: menu.buttons.map((button) => withKnownIcon(config, button)),
+					})),
+				}
+			: {}),
+	};
+}
+
 const sortKey = (config: unknown) => (isObject(config) && typeof config['id'] === 'string' ? config['id'] : null);
 
 // load order follows readdir, which differs between filesystems, so sort by id to make the
@@ -230,7 +356,7 @@ export function validateRichTexts(configs: unknown[]): RichTextConfig[] {
 			owners.set(name, richText.id);
 		}
 
-		valid.push(richText);
+		valid.push(withKnownIcons(richText));
 	}
 
 	return valid;

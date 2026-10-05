@@ -1,4 +1,4 @@
-import type { RichTextToolbarButton } from '@directus/extensions';
+import type { RichTextBubbleMenu, RichTextToolbarButton } from '@directus/extensions';
 import type { AnyExtension } from '@tiptap/core';
 import { CharacterCount } from '@tiptap/extensions';
 import StarterKit from '@tiptap/starter-kit';
@@ -84,6 +84,7 @@ export interface FieldSchema {
 	key: string;
 	formats: CustomFormat[];
 	buttons: RichTextToolbarButton[];
+	bubbleMenus: RichTextBubbleMenu[];
 }
 
 /**
@@ -111,6 +112,9 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 		formats: customFormats.formats,
 		buttons: contributed.flatMap(
 			(config) => config.buttons?.map((button) => ({ ...button, key: contributedButtonKey(config, button) })) ?? [],
+		),
+		bubbleMenus: contributed.flatMap(
+			(config) => config.bubbleMenus?.map((menu) => ({ ...menu, key: `${config.id}:${menu.key}` })) ?? [],
 		),
 	};
 }

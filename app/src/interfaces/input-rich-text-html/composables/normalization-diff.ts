@@ -14,10 +14,28 @@ function roundTrip(html: string, extraExtensions: AnyExtension[]): string {
 	return out;
 }
 
+// Attribute order has no meaning, but the editor's order is not stable: a re-parse keeps unclaimed
+// attributes as preserved globals, and those render before a node's own attributes.
+function sortAttributes(html: string): string {
+	const root = document.createElement('div');
+	root.innerHTML = html;
+
+	for (const el of root.querySelectorAll('*')) {
+		const attributes = Array.from(el.attributes, ({ name, value }) => [name, value] as const);
+		for (const [name] of attributes) el.removeAttribute(name);
+
+		for (const [name, value] of attributes.sort(([a], [b]) => (a < b ? -1 : 1))) {
+			el.setAttribute(name, value);
+		}
+	}
+
+	return root.innerHTML;
+}
+
 // Both sides run through formatHtml so only semantic loss surfaces, never cosmetic reformatting.
 function diffFormatted(rawBefore: string, rawAfter: string): Change[] | null {
-	const before = formatHtml(rawBefore);
-	const after = formatHtml(rawAfter);
+	const before = formatHtml(sortAttributes(rawBefore));
+	const after = formatHtml(sortAttributes(rawAfter));
 	if (before === after) return null;
 
 	const changes = diffLines(before, after);

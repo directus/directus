@@ -175,6 +175,28 @@ describe('contributed toolbar buttons', () => {
 	});
 });
 
+describe('contributed bubble menus', () => {
+	const menu = { key: 'menu', shouldShow: () => true, buttons: [] };
+
+	test('namespaces each menu key by extension id', () => {
+		registerRichTexts([{ id: 'spike-a', name: 'A', bubbleMenus: [menu] }]);
+		const { bubbleMenus } = buildFieldSchema({ extensions: ['spike-a'] });
+
+		expect(bubbleMenus.map((m) => m.key)).toEqual(['spike-a:menu']);
+		expect(bubbleMenus[0]!.shouldShow).toBe(menu.shouldShow);
+	});
+
+	test('leaves out the menus of an extension the field did not enable', () => {
+		registerRichTexts([
+			{ id: 'spike-a', name: 'A', bubbleMenus: [menu] },
+			{ id: 'spike-b', name: 'B', bubbleMenus: [menu] },
+		]);
+
+		expect(buildFieldSchema({ extensions: ['spike-b'] }).bubbleMenus.map((m) => m.key)).toEqual(['spike-b:menu']);
+		expect(buildFieldSchema({}).bubbleMenus).toEqual([]);
+	});
+});
+
 // The save-time check and the comparison view re-parse the value through their own schema. Both
 // take the same buildFieldSchema slice as the live editor, so a contributed node must never read
 // as content loss there.

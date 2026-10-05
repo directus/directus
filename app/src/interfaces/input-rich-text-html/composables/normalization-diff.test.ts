@@ -1,3 +1,4 @@
+import { mergeAttributes, Node } from '@tiptap/core';
 import { describe, expect, test } from 'vitest';
 import { buildFieldSchema } from '../extensions';
 import { buildCustomFormats } from '../extensions/custom-formats';
@@ -27,6 +28,36 @@ describe('computeNormalizationDiff', () => {
 		expect(
 			computeNormalizationDiff('<p><span role="note" lang="fr" aria-label="Note" dir="rtl">text</span></p>'),
 		).toBeNull();
+	});
+
+	// attribute order has no meaning in HTML, so a reordered tag is not content loss
+	test('returns null when only the attribute order changes', () => {
+		expect(computeNormalizationDiff('<p><span dir="rtl" role="note" lang="fr">text</span></p>')).toBeNull();
+	});
+
+	test('still flags a dropped attribute in a reordered tag', () => {
+		expect(removedText('<p onclick="x()" dir="rtl">text</p>')).toContain('onclick');
+	});
+
+	// a node created in the editor writes its own attributes before the static marker, but a re-parse
+	// keeps the marker as a preserved data attribute, and preserved attributes render first
+	test('returns null for a contributed node written in the order a new node renders', () => {
+		const Card = Node.create({
+			name: 'card',
+			group: 'block',
+			content: 'inline*',
+			addAttributes: () => ({
+				tone: {
+					default: null,
+					parseHTML: (element) => element.getAttribute('data-tone'),
+					renderHTML: (attributes) => (attributes['tone'] ? { 'data-tone': attributes['tone'] } : {}),
+				},
+			}),
+			parseHTML: () => [{ tag: 'div[data-card]', priority: 60 }],
+			renderHTML: ({ HTMLAttributes }) => ['div', mergeAttributes(HTMLAttributes, { 'data-card': '' }), 0],
+		});
+
+		expect(computeNormalizationDiff('<div data-tone="warning" data-card="">Beta</div>', [Card])).toBeNull();
 	});
 
 	test('returns null for cosmetic-only reformatting', () => {
