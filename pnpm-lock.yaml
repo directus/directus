@@ -451,11 +451,11 @@ catalogs:
       specifier: 0.5.0
       version: 0.5.0
     axios:
-      specifier: 1.18.1
-      version: 1.18.1
+      specifier: 1.20.0
+      version: 1.20.0
     axios-cache-interceptor:
-      specifier: 1.11.1
-      version: 1.11.1
+      specifier: 1.12.3
+      version: 1.12.3
     base-64:
       specifier: 1.0.0
       version: 1.0.0
@@ -1199,7 +1199,7 @@ importers:
         version: 0.5.0
       axios:
         specifier: 'catalog:'
-        version: 1.18.1
+        version: 1.20.0
       busboy:
         specifier: 'catalog:'
         version: 1.6.0
@@ -1858,7 +1858,7 @@ importers:
         version: 14.0.0(vue@3.5.24(typescript@5.9.3))
       '@vueuse/integrations':
         specifier: 'catalog:'
-        version: 14.0.0(axios@1.18.1)(focus-trap@7.6.6)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.24(typescript@5.9.3))
+        version: 14.0.0(axios@1.20.0)(focus-trap@7.6.6)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.24(typescript@5.9.3))
       '@vueuse/router':
         specifier: 'catalog:'
         version: 14.0.0(vue-router@4.6.3(vue@3.5.24(typescript@5.9.3)))(vue@3.5.24(typescript@5.9.3))
@@ -1870,7 +1870,7 @@ importers:
         version: 4.7.0
       axios:
         specifier: 'catalog:'
-        version: 1.18.1
+        version: 1.20.0
       base-64:
         specifier: 'catalog:'
         version: 1.0.0
@@ -2120,7 +2120,7 @@ importers:
         version: 14.0.0(vue@3.5.24(typescript@5.9.3))
       axios:
         specifier: 'catalog:'
-        version: 1.18.1
+        version: 1.20.0
       lodash-es:
         specifier: 'catalog:'
         version: 4.18.1
@@ -3077,7 +3077,7 @@ importers:
         version: 9.7.0
       sharp:
         specifier: 'catalog:'
-        version: 0.35.4(@types/node@26.2.0)
+        version: 0.35.4(@types/node@26.6.4)
       vue-router:
         specifier: 'catalog:'
         version: 4.6.3(vue@3.5.24(typescript@5.9.3))
@@ -3111,10 +3111,10 @@ importers:
     dependencies:
       axios:
         specifier: 'catalog:'
-        version: 1.18.1
+        version: 1.20.0
       axios-cache-interceptor:
         specifier: 'catalog:'
-        version: 1.11.1(axios@1.18.1)
+        version: 1.12.3(axios@1.20.0)
       boxen:
         specifier: 'catalog:'
         version: 8.0.1
@@ -7721,14 +7721,14 @@ packages:
     resolution: {integrity: sha512-NZKeq9AfyQvEeNlN0zSYAaWrmBffJh3IELMZfRpJVWgrpEbtEpnjvzqBPf+mxoI287JohRDoa+/nsfqqiZmF6g==}
     engines: {node: '>= 6.0.0'}
 
-  axios-cache-interceptor@1.11.1:
-    resolution: {integrity: sha512-Ldacl7iSMMjKBn/IB5GWRfUIxbOCSmH/xInnZ4lX/+BF/Oa6HxpWqvgXY1WOmyUSa8AKI6AwLl7NTLKrJAV42g==}
+  axios-cache-interceptor@1.12.3:
+    resolution: {integrity: sha512-IK8+YGxH03wOImvVg1PlujxZ9CoBsUpqv2TdGlgENeo9wcL63N6usYW0glmK3mNrfu+CPA/lWeSuo0+9OmNJrw==}
     engines: {node: '>=12'}
     peerDependencies:
-      axios: ^1
+      axios: ^1.19.0
 
-  axios@1.18.1:
-    resolution: {integrity: sha512-3nTvFlvpn9Zu/RkHUqtc7/+al4UpRW5az71ap5zccp6e8RAYEzhMTecX8Dz1wWDYrPpUoB1HAQEGEAEvUr7S9g==}
+  axios@1.20.0:
+    resolution: {integrity: sha512-r8aOh8j9cGKpgQAqpzrUHnSIc6a59Y3Xf/cv8sy1DrHCkZHzQGEuoq1tARk6qSyDdtQGSDgpb9kFlruzPvrgwg==}
 
   b4a@1.8.1:
     resolution: {integrity: sha512-aiqre1Nr0B/6DgE2N5vwTc+2/oQZ4Wh1t4NznYY4E00y8LCt6NqdRv81so00oo27D8MVKTpUa/MwUUtBLXCoDw==}
@@ -17895,13 +17895,13 @@ snapshots:
       '@vueuse/shared': 14.4.0(vue@3.5.24(typescript@5.9.3))
       vue: 3.5.24(typescript@5.9.3)
 
-  '@vueuse/integrations@14.0.0(axios@1.18.1)(focus-trap@7.6.6)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.24(typescript@5.9.3))':
+  '@vueuse/integrations@14.0.0(axios@1.20.0)(focus-trap@7.6.6)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.24(typescript@5.9.3))':
     dependencies:
       '@vueuse/core': 14.0.0(vue@3.5.24(typescript@5.9.3))
       '@vueuse/shared': 14.0.0(vue@3.5.24(typescript@5.9.3))
       vue: 3.5.24(typescript@5.9.3)
     optionalDependencies:
-      axios: 1.18.1
+      axios: 1.20.0
       focus-trap: 7.6.6
       qrcode: 1.5.4
       sortablejs: 1.14.0
@@ -18198,16 +18198,16 @@ snapshots:
   aws-ssl-profiles@1.1.2:
     optional: true
 
-  axios-cache-interceptor@1.11.1(axios@1.18.1):
+  axios-cache-interceptor@1.12.3(axios@1.20.0):
     dependencies:
-      axios: 1.18.1
+      axios: 1.20.0
       cache-parser: 1.2.6
       fast-defer: 1.1.9
       http-vary: 1.0.3
       object-code: 2.0.0
       try: 1.0.3
 
-  axios@1.18.1:
+  axios@1.20.0:
     dependencies:
       follow-redirects: 1.16.0(debug@4.3.7)
       form-data: 4.0.6
@@ -21036,7 +21036,7 @@ snapshots:
 
   mailgun.js@8.2.2:
     dependencies:
-      axios: 1.18.1
+      axios: 1.20.0
       base-64: 1.0.0
       url-join: 4.0.1
     transitivePeerDependencies:
@@ -21046,7 +21046,7 @@ snapshots:
 
   mailtrap@4.9.0(@types/nodemailer@8.0.1)(nodemailer@10.0.1):
     dependencies:
-      axios: 1.18.1
+      axios: 1.20.0
       qs: 6.16.0
     optionalDependencies:
       '@types/nodemailer': 8.0.1
@@ -23150,7 +23150,7 @@ snapshots:
       '@img/sharp-win32-x64': 0.35.4
       '@types/node': 22.13.14
 
-  sharp@0.35.4(@types/node@26.2.0):
+  sharp@0.35.4(@types/node@26.6.4):
     dependencies:
       '@img/colour': 1.1.0
       detect-libc: 2.1.2
@@ -23181,7 +23181,7 @@ snapshots:
       '@img/sharp-win32-arm64': 0.35.4
       '@img/sharp-win32-ia32': 0.35.4
       '@img/sharp-win32-x64': 0.35.4
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   shebang-command@2.0.0:
     dependencies:
