@@ -1151,6 +1151,8 @@ change_trigger: Change Trigger
 flow_delete_confirm: Are you sure you want to delete Flow "{flow}"? This action can not be undone.
 set_flow_active: Set Flow to Active
 set_flow_inactive: Set Flow to Inactive
+set_flows_active: Set Flows to Active
+set_flows_inactive: Set Flows to Inactive
 edit_flow: Edit Flow
 delete_flow: Delete Flow
 no_other_flows_copy: You don't have any other Flows yet.
@@ -2368,6 +2370,17 @@ continue_as: >-
   {name} is currently authenticated. If you recognize this account, press continue.
 editing_role: '{role} Role'
 editing_policy: '{policy} Policy'
+public_policy_warning: >-
+  Changes here affect what unauthenticated users can access and the actions they can perform. Refer to the {docs} for
+  more information.
+public_policy_warning_docs_link: security best practices documentation
+public_policy_dialog:
+  title: Change Public Access to System Collections?
+  copy: >-
+    You're about to change Public policy permissions on the following system collections. These actions will be
+    available to unauthenticated users:
+  unfiltered_read_warning: Read access without a filter exposes every record in the collection.
+  best_practices: Refer to the {docs} for more information.
 no_permissions: No Permissions
 permission_add_collection: Add Collection
 default_label: Default
