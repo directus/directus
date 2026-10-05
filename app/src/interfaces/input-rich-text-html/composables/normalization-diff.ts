@@ -14,8 +14,7 @@ function roundTrip(html: string, extraExtensions: AnyExtension[]): string {
 	return out;
 }
 
-// Attribute order has no meaning, but the editor's order is not stable: a re-parse keeps unclaimed
-// attributes as preserved globals, and those render before a node's own attributes.
+// a re-parse renders preserved global attributes before a node's own, so attribute order is not stable
 function sortAttributes(html: string): string {
 	const root = document.createElement('div');
 	root.innerHTML = html;

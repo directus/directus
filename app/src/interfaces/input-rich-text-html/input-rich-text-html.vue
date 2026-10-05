@@ -119,8 +119,7 @@ const isEditable = computed(
 	() => !props.disabled && !props.nonEditable && !props.comparisonMode && !normalizationLocked.value,
 );
 
-// node views mount inside this component's provides (EditorContent forwards them), and
-// `editor.isEditable` is not reactive, so this is how a contributed view follows a later lock
+// `editor.isEditable` is not reactive, so node views inject this to follow a later lock
 provide(RICHTEXT_EDITABLE_INJECT, isEditable);
 
 const editorDir = computed(() => (props.direction === 'rtl' ? 'rtl' : 'ltr'));

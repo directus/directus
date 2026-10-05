@@ -39,8 +39,7 @@ describe('computeNormalizationDiff', () => {
 		expect(removedText('<p onclick="x()" dir="rtl">text</p>')).toContain('onclick');
 	});
 
-	// a node created in the editor writes its own attributes before the static marker, but a re-parse
-	// keeps the marker as a preserved data attribute, and preserved attributes render first
+	// a re-parse keeps the static marker as a preserved attribute, which renders first
 	test('returns null for a contributed node written in the order a new node renders', () => {
 		const Card = Node.create({
 			name: 'card',
