@@ -124,9 +124,19 @@ describe('contributed bubble menus in each editor mode', () => {
 	test.each([
 		['readonly', { nonEditable: true }],
 		['comparison', { comparisonMode: true }],
+		['disabled', { disabled: true }],
 	])('renders no bubble menu in %s mode', async (_, props) => {
 		registerRichTexts([config]);
 		const { wrapper } = await mountInterface(props);
+		expect(wrapper.findComponent(ContributedBubbleMenu).exists()).toBe(false);
+	});
+
+	// `setEditable` changes neither selection nor doc, so an open menu would never re-run `shouldShow`
+	test('removes the bubble menu when the field becomes disabled', async () => {
+		registerRichTexts([config]);
+		const { wrapper } = await mountInterface();
+
+		await wrapper.setProps({ disabled: true });
 		expect(wrapper.findComponent(ContributedBubbleMenu).exists()).toBe(false);
 	});
 

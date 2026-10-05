@@ -383,9 +383,10 @@ onKeyStroke('Escape', () => {
 			{{ softLength - count }}
 		</span>
 
-		<TableBubbleMenu v-if="!nonEditable && !comparisonMode && !normalizationLocked" :editor="editor" />
+		<!-- `isEditable`, not `shouldShow`: a lock flip changes no selection, so an open menu would stay usable -->
+		<TableBubbleMenu v-if="isEditable" :editor="editor" />
 		<ContributedBubbleMenu
-			v-if="fieldSchema.bubbleMenus.length > 0 && !nonEditable && !comparisonMode && !normalizationLocked"
+			v-if="fieldSchema.bubbleMenus.length > 0 && isEditable"
 			:editor="editor"
 			:menus="fieldSchema.bubbleMenus"
 		/>
