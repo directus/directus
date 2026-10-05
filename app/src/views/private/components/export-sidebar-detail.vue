@@ -29,6 +29,7 @@ import InterfaceSystemField from '@/interfaces/_system/system-field/system-field
 import InterfaceSystemFields from '@/interfaces/_system/system-fields/system-fields.vue';
 import InterfaceSystemFilter from '@/interfaces/_system/system-filter/system-filter.vue';
 import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
 import type { APIError } from '@/types/error';
 import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
@@ -76,6 +77,7 @@ const { primaryKeyField, fields, info: collectionInfo } = useCollection(collecti
 const { createAllowed } = useCollectionPermissions(collection);
 
 const { info } = useServerStore();
+const settingsStore = useSettingsStore();
 
 const queryLimitMax = info.queryLimit === undefined || info.queryLimit.max === -1 ? Infinity : info.queryLimit.max;
 const defaultLimit = info.queryLimit !== undefined ? Math.min(25, queryLimitMax) : 25;
@@ -147,7 +149,7 @@ watch(
 
 const format = ref('csv');
 const location = ref('download');
-const folder = ref<string | null>(null);
+const folder = ref<string | null>(settingsStore.settings?.default_exports_folder ?? null);
 
 const lockedToFiles = ref<{ previousLocation: string } | null>(null);
 

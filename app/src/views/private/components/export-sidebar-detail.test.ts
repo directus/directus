@@ -36,6 +36,16 @@ vi.mock('@/stores/server', () => ({
 	}),
 }));
 
+const settingsState = vi.hoisted(() => ({
+	default_exports_folder: null as string | null,
+}));
+
+vi.mock('@/stores/settings', () => ({
+	useSettingsStore: () => ({
+		settings: settingsState,
+	}),
+}));
+
 vi.mock('@/api', () => ({
 	default: {
 		get: vi.fn(),
@@ -166,5 +176,20 @@ describe('export-sidebar-detail file library warning', () => {
 		await wrapper.vm.$nextTick();
 
 		expect(wrapper.find('.files-access-notice').exists()).toBe(false);
+	});
+});
+
+describe('export-sidebar-detail default exports folder', () => {
+	beforeEach(() => {
+		collectionState.fields = [{ field: 'id', type: 'uuid' }];
+		settingsState.default_exports_folder = 'exports-folder';
+	});
+
+	test('pre-selects the default exports folder', async () => {
+		const wrapper = mountComponent({ layoutQuery: { limit: 3000 } });
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.findComponent({ name: 'FolderPicker' }).props('modelValue')).toBe('exports-folder');
 	});
 });
