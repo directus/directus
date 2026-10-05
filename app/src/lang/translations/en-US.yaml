@@ -1928,6 +1928,9 @@ fields:
     auth_login_attempts: Auth Login Attempts
     files_and_thumbnails: Files & Storage
     storage_default_folder: Default Folder
+    default_exports_folder: Default Exports Folder
+    default_exports_folder_note:
+      Default folder for exports saved to the File Library without a folder specified. Falls back to the Default Folder.
     storage_asset_presets: Transformation Presets
     storage_asset_transform: Allowed Transformations
     overrides: App Overrides

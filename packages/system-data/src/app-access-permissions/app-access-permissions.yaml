@@ -87,6 +87,7 @@
     - module_bar
     - storage_asset_transform
     - storage_asset_presets
+    - default_exports_folder
     - custom_aspect_ratios
     - basemaps
     - mapbox_key
