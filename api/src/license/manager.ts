@@ -134,8 +134,11 @@ export class LicenseManager {
 		// Seeded by project so instances share one job
 		const cron = interval === null ? null : durationToCron(interval, String(project_id));
 
-		// Already scheduled at this interval
+		// Every sync calls this, do not reset and unchanged cron
+		// Stopping a job resets its shared clock, letting another instance potentially rerun a job that already ran.
 		if (this.check && this.check.cron === cron) return;
+
+		logger.debug(cron === null ? 'License check stopped' : `License check scheduled (${cron})`);
 
 		const previous = this.check;
 
@@ -147,6 +150,8 @@ export class LicenseManager {
 	/** Start the check job */
 	private startCheck(cron: string): ScheduledJob {
 		return scheduleSynchronizedJob('license-check', cron, async () => {
+			logger.debug('Running license check');
+
 			try {
 				// Don't run alongside a boot reconcile
 				await runExclusive('license-reconcile', async () => {
@@ -182,6 +187,8 @@ export class LicenseManager {
 			logger.fatal(action.message);
 			throw new Error(action.message);
 		}
+
+		logger.debug(`License action: ${action.kind}`);
 
 		if (action.kind === 'clear-token') {
 			await this.syncLicense({ kind: 'clear-token', invalidReason: null });
@@ -332,6 +339,10 @@ export class LicenseManager {
 			project_id: new_project_id ?? project_id!,
 		});
 
+		if (new_project_id) {
+			logger.info(`License activated, project ID changed to "${new_project_id}"`);
+		}
+
 		await this.syncLicense({ invalidReason: null });
 	}
 
@@ -357,6 +368,8 @@ export class LicenseManager {
 
 			logger.warn(error, 'Deactivating the stored license key failed, removing it locally');
 		}
+
+		logger.info('License deactivated, running on core tier');
 
 		await this.syncLicense({ kind: 'downgrade', invalidReason: null });
 	}
@@ -423,7 +436,7 @@ export class LicenseManager {
 
 			return license;
 		} catch (error) {
-			logger.warn(error, 'License token could not be verified');
+			logger.debug(error, 'License token could not be verified');
 			return null;
 		}
 	}
@@ -489,6 +502,8 @@ export class LicenseManager {
 
 			if (renewedToken) {
 				await settingsService.upsertSingleton({ license_token: renewedToken });
+
+				logger.debug('License refreshed');
 
 				syncLicenseState = { invalidReason: null };
 			}

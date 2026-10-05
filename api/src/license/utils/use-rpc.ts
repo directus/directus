@@ -17,16 +17,19 @@ export type RPC<T, K extends MethodKeys<T> = MethodKeys<T>> = {
 export async function useRPC<T, K extends MethodKeys<T> = MethodKeys<T>>(self: T, channel: string): Promise<RPC<T, K>> {
 	const uid = randomUUID();
 	const messenger = useBus();
+	const logger = useLogger();
 
 	await messenger.subscribe<{ uid: string; method: string; args: any[] }>(
 		channel,
 		async ({ uid: id, method, args }) => {
 			if (uid == id) return;
 
+			logger.debug(`RPC "${method}" received on "${channel}"`);
+
 			const fn = (self as any)[method];
 
 			if (typeof fn !== 'function') {
-				useLogger().warn(`Ignoring unknown RPC method "${method}" on "${channel}"`);
+				logger.warn(`Ignoring unknown RPC method "${method}" on "${channel}"`);
 				return;
 			}
 
@@ -34,7 +37,7 @@ export async function useRPC<T, K extends MethodKeys<T> = MethodKeys<T>>(self: T
 				await fn.apply(self, args);
 			} catch (error) {
 				// Otherwise an instance that fails a call falls behind silently
-				useLogger().warn(error, `RPC "${method}" on "${channel}" failed`);
+				logger.warn(error, `RPC "${method}" on "${channel}" failed`);
 			}
 		},
 	);
