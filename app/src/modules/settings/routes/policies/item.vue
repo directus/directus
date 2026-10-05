@@ -60,11 +60,7 @@ watchEffect(async () => {
 		const response = await api.get<{ data: { id: string }[] }>('/access', {
 			params: {
 				filter: {
-					_and: [
-						{ policy: { _eq: primaryKey.value } },
-						{ role: { _null: true } },
-						{ user: { _null: true } },
-					],
+					_and: [{ policy: { _eq: primaryKey.value } }, { role: { _null: true } }, { user: { _null: true } }],
 				},
 				fields: ['id'],
 				limit: 1,
