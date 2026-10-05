@@ -215,6 +215,18 @@ describe('contributed markup in the normalization checks', () => {
 		expect(computeValueNormalizationDiff(callout, extensions, key)).not.toBeNull();
 	});
 
+	// the field option still lists the id, so the cached verdict from before the uninstall must not apply
+	test('the stored-value check flags the node once its extension is uninstalled', () => {
+		registerRichTexts(configs);
+		const installed = buildFieldSchema({ extensions: ['spike-callout'] });
+		expect(computeValueNormalizationDiff(callout, installed.extensions, installed.key)).toBeNull();
+
+		registerRichTexts([]);
+		const uninstalled = buildFieldSchema({ extensions: ['spike-callout'] });
+
+		expect(computeValueNormalizationDiff(callout, uninstalled.extensions, uninstalled.key)).not.toBeNull();
+	});
+
 	test('the comparison-mode check keeps both diff spans and contributed nodes', () => {
 		registerRichTexts(configs);
 		const { extensions, key } = buildFieldSchema({ extensions: ['spike-callout'], comparisonMode: true });

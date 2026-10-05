@@ -219,6 +219,33 @@ describe('validateRichTexts', () => {
 		expect(ids([{ id: 'variant', name: 'Variant', extensions: [Variant] }])).toEqual(['variant']);
 	});
 
+	describe('schema build', () => {
+		test('rejects a node whose parseHTML throws and keeps the others', () => {
+			const Broken = Callout.extend({
+				name: 'brokenCallout',
+				parseHTML: () => {
+					throw new Error('boom');
+				},
+			});
+
+			const configs = [
+				{ id: 'broken', name: 'Broken', extensions: [Broken] },
+				{ id: 'callout', name: 'Callout', extensions: [Callout] },
+			];
+
+			expect(ids(configs)).toEqual(['callout']);
+			expect(error).toHaveBeenCalledOnce();
+			expect(error.mock.calls[0]!.join(' ')).toContain('"broken"');
+			expect(error.mock.calls[0]!.join(' ')).toContain('boom');
+		});
+
+		test('rejects a node whose content expression names an unknown node', () => {
+			const Broken = Node.create({ name: 'brokenContent', group: 'block', content: 'nonexistent+' });
+			expect(ids([{ id: 'broken', name: 'Broken', extensions: [Broken] }])).toEqual([]);
+			expect(error.mock.calls[0]!.join(' ')).toContain('nonexistent');
+		});
+	});
+
 	test('rejects an extension whose addExtensions throws', () => {
 		const Broken = Extension.create({
 			name: 'broken',

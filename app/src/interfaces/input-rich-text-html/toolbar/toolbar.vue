@@ -75,6 +75,21 @@ const context: ToolbarContext = {
 	},
 };
 
+const failedButtons = ref(new Set<string>());
+
+function runOrDisable<T>(key: string, fallback: T, run: () => T): T {
+	if (failedButtons.value.has(key)) return fallback;
+
+	try {
+		return run();
+	} catch (error) {
+		failedButtons.value = new Set([...failedButtons.value, key]);
+		// eslint-disable-next-line no-console
+		console.error(`Richtext toolbar button "${key}" threw and was disabled:`, error);
+		return fallback;
+	}
+}
+
 const contributedMap = computed<Record<string, ToolbarButton>>(() =>
 	Object.fromEntries(
 		props.contributedButtons
@@ -94,14 +109,14 @@ function toToolbarButton(button: RichTextToolbarButton): ToolbarButton {
 		};
 	}
 
-	const { command, isActive, isDisabled } = button;
+	const { key, command, isActive, isDisabled } = button;
 
 	return {
 		icon: button.icon,
 		label: button.label,
-		command: (editor) => command(editor),
-		...(isActive ? { isActive: (editor) => isActive(editor) } : {}),
-		...(isDisabled ? { disabled: (editor) => isDisabled(editor) } : {}),
+		command: (editor) => runOrDisable(key, undefined, () => command(editor)),
+		disabled: (editor) => failedButtons.value.has(key) || runOrDisable(key, false, () => !!isDisabled?.(editor)),
+		...(isActive ? { isActive: (editor) => runOrDisable(key, false, () => isActive(editor)) } : {}),
 	};
 }
 

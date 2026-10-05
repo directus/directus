@@ -4,7 +4,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { Editor } from '@tiptap/vue-3';
 import { mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
 import { createI18n } from 'vue-i18n';
 import { createMemoryHistory, createRouter } from 'vue-router';
 import { buildFieldSchema } from '../extensions';
@@ -41,6 +41,7 @@ function mountToolbar(
 afterEach(() => {
 	editor?.destroy();
 	registerRichTexts([]);
+	vi.restoreAllMocks();
 });
 
 // the buttons exactly as the interface hands them to the toolbar, keys prefixed by extension id
@@ -189,5 +190,57 @@ describe('contributed buttons', () => {
 
 		const wrapper = mountToolbar(['ext-a:callout', 'ext-b:callout'], [], buttons);
 		expect(iconsOf(wrapper)).toEqual(['info', 'star']);
+	});
+});
+
+describe('contributed button isolation', () => {
+	let error: MockInstance<typeof console.error>;
+
+	beforeEach(() => {
+		error = vi.spyOn(console, 'error').mockImplementation(() => {});
+	});
+
+	const boom = () => {
+		throw new Error('boom');
+	};
+
+	const failing = (overrides: Partial<RichTextToolbarButton>) =>
+		fieldButtons([
+			{ id: 'ext', buttons: [{ key: 'callout', icon: 'info', label: 'Callout', command: () => {}, ...overrides }] },
+		]);
+
+	const buttonOf = (wrapper: ReturnType<typeof mountToolbar>, icon: string) =>
+		wrapper.findAll('.toolbar-button button').find((button) => button.find(`[data-icon="${icon}"]`).exists())!;
+
+	test('disables a button whose command throws and keeps the core buttons working', async () => {
+		const wrapper = mountToolbar(['bold', 'ext:callout'], [], failing({ command: boom }));
+
+		await buttonOf(wrapper, 'info').trigger('click');
+
+		expect(error).toHaveBeenCalledOnce();
+		expect(error.mock.calls[0]!.join(' ')).toContain('"ext:callout"');
+		expect(buttonOf(wrapper, 'info').attributes('disabled')).toBeDefined();
+
+		editor.commands.selectAll();
+		await buttonOf(wrapper, 'format_bold').trigger('click');
+		expect(editor.isActive('bold')).toBe(true);
+	});
+
+	test('renders a button whose isActive throws as inactive and disabled', () => {
+		const wrapper = mountToolbar(['ext:callout'], [], failing({ isActive: boom }));
+
+		expect(error).toHaveBeenCalledOnce();
+		expect(buttonOf(wrapper, 'info').classes()).not.toContain('active');
+		expect(buttonOf(wrapper, 'info').attributes('disabled')).toBeDefined();
+	});
+
+	test('logs a failing button once', async () => {
+		const wrapper = mountToolbar(['bold', 'ext:callout'], [], failing({ isActive: boom }));
+
+		editor.commands.selectAll();
+		await buttonOf(wrapper, 'format_bold').trigger('click');
+		await wrapper.vm.$nextTick();
+
+		expect(error).toHaveBeenCalledOnce();
 	});
 });

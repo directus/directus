@@ -30,6 +30,8 @@ const PASSTHROUGH_NAMES = ['class', 'id', 'title', 'role', 'lang', 'dir'] as con
 
 const WILDCARD_PREFIXES = ['data-', 'aria-'] as const;
 
+const CLIPBOARD_SLICE_ATTRIBUTE = 'data-pm-slice';
+
 /** The Tiptap attribute keys PreservedAttributes adds; other extensions must not redefine them. */
 export const PRESERVED_ATTRIBUTE_KEYS: ReadonlySet<string> = new Set([
 	...PASSTHROUGH_NAMES,
@@ -85,7 +87,10 @@ function wildcardAttribute(name: string, prefix: (typeof WILDCARD_PREFIXES)[numb
 	return {
 		default: null,
 		parseHTML: (element: HTMLElement) => {
-			const matches = Array.from(element.attributes).filter(({ name: attrName }) => attrName.startsWith(prefix));
+			const matches = Array.from(element.attributes).filter(
+				({ name: attrName }) => attrName.startsWith(prefix) && attrName !== CLIPBOARD_SLICE_ATTRIBUTE,
+			);
+
 			if (matches.length === 0) return null;
 
 			const owned = owners.length > 0 ? ownedNames(element, owners) : new Set<string>();
