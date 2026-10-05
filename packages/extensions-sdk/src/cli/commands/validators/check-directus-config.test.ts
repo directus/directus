@@ -70,6 +70,25 @@ describe('check-directus-config', () => {
 		);
 	});
 
+	it('rejects when any bundle path does not exist', async () => {
+		vi.mocked(fse.pathExists).mockImplementation(async (p) => !String(p).endsWith('api.js'));
+
+		vi.mocked(fse.readJson).mockResolvedValue({
+			'directus:extension': {
+				type: 'bundle',
+				path: { app: 'dist/app.js', api: 'dist/api.js' },
+				entries: [],
+				host: '^11.0.0',
+			},
+		});
+
+		const reports: Array<Report> = [];
+
+		await expect(checkDirectusConfig.handler(spinner, reports)).rejects.toThrow(
+			'Extension path api: dist/api.js invalid',
+		);
+	});
+
 	it('rejects when no extension path is configured', async () => {
 		vi.mocked(fse.readJson).mockResolvedValue({
 			'directus:extension': { type: 'endpoint', host: '^11.0.0' },
