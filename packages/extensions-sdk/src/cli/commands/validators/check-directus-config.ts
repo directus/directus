@@ -44,8 +44,7 @@ const checkDirectusConfig = {
 		}
 
 		const packageObject = packageFile[EXTENSION_PKG_KEY];
-		const { type, host, sandbox } = packageObject;
-		let extensionPath = packageObject.path;
+		const { type, host, sandbox, path: extensionPath } = packageObject;
 
 		spinner.text = `Checking extension type`;
 
@@ -63,14 +62,24 @@ const checkDirectusConfig = {
 
 		spinner.text = `Checking extension path(s)`;
 
-		if (typeof extensionPath === 'string') {
-			extensionPath = { app: extensionPath };
+		if (!extensionPath) {
+			spinner.fail();
+			const message = `No extension path in ${EXTENSION_PKG_KEY}`;
+
+			reports.push({
+				level: 'error',
+				message: `${checkDirectusConfig.name}: ${message}`,
+			});
+
+			throw new Error(message);
 		}
 
-		for (const key of Object.keys(extensionPath)) {
-			if (!(await fse.pathExists(path.resolve(extensionPath[key])))) {
+		const extensionPaths = typeof extensionPath === 'string' ? { app: extensionPath } : extensionPath;
+
+		for (const [key, value] of Object.entries<string>(extensionPaths)) {
+			if (!(await fse.pathExists(path.resolve(value)))) {
 				spinner.fail();
-				const message = `Extension path ${key}: ${extensionPath[key]} invalid`;
+				const message = `Extension path ${key}: ${value} invalid`;
 
 				reports.push({
 					level: 'error',

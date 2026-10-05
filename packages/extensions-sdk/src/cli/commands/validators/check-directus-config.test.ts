@@ -13,7 +13,7 @@ vi.mock('fs-extra', () => ({
 
 const spinner = { text: '', fail: vi.fn() } as unknown as Ora;
 
-const mockConfig = (sandbox: unknown) => {
+const mockConfig = (sandbox?: unknown) => {
 	vi.mocked(fse.readJson).mockResolvedValue({
 		'directus:extension': {
 			type: 'endpoint',
@@ -61,12 +61,24 @@ describe('check-directus-config', () => {
 
 	it('rejects when extension path does not exist', async () => {
 		vi.mocked(fse.pathExists).mockImplementation(async (p) => String(p).endsWith('package.json'));
-		mockConfig({ enabled: true });
+		mockConfig();
 
 		const reports: Array<Report> = [];
 
 		await expect(checkDirectusConfig.handler(spinner, reports)).rejects.toThrow(
 			'Extension path app: dist/index.js invalid',
+		);
+	});
+
+	it('rejects when no extension path is configured', async () => {
+		vi.mocked(fse.readJson).mockResolvedValue({
+			'directus:extension': { type: 'endpoint', host: '^11.0.0' },
+		});
+
+		const reports: Array<Report> = [];
+
+		await expect(checkDirectusConfig.handler(spinner, reports)).rejects.toThrow(
+			'No extension path in directus:extension',
 		);
 	});
 });
