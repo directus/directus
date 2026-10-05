@@ -2,4 +2,4 @@
 '@directus/extensions-sdk': patch
 ---
 
-Fixed `directus-extension validate` reporting extension as valid when build output directory or extension path does not exist
+Fixed `directus-extension validate` passing or crashing on missing extension paths
