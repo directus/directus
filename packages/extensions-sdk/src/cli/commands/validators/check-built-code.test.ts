@@ -1,7 +1,7 @@
 import path from 'path';
 import fse from 'fs-extra';
 import type { Ora } from 'ora';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Report } from '../../types.js';
 import checkBuiltCode from './check-built-code.js';
 
@@ -19,7 +19,7 @@ beforeEach(() => {
 });
 
 describe('check-built-code', () => {
-	it('rejects when built code directory does not exist', async () => {
+	test('rejects when built code directory does not exist', async () => {
 		vi.mocked(fse.pathExists).mockImplementation(async (p) => String(p).endsWith('package.json'));
 
 		vi.mocked(fse.readJson).mockResolvedValue({ 'directus:extension': { path: 'dist/index.js' } });
@@ -29,7 +29,7 @@ describe('check-built-code', () => {
 		await expect(checkBuiltCode.handler(spinner, reports)).rejects.toThrow('No dist/index.js directory');
 	});
 
-	it('rejects when any bundle path does not exist', async () => {
+	test('rejects when any bundle path does not exist', async () => {
 		vi.mocked(fse.pathExists).mockImplementation(async (p) => !String(p).endsWith('api.js'));
 
 		vi.mocked(fse.readJson).mockResolvedValue({
@@ -46,7 +46,7 @@ describe('check-built-code', () => {
 		});
 	});
 
-	it('resolves with dist relative to the project when no path is configured', async () => {
+	test('resolves with dist relative to the project when no path is configured', async () => {
 		vi.mocked(fse.pathExists).mockResolvedValue(true as never);
 		vi.mocked(fse.readJson).mockResolvedValue({});
 

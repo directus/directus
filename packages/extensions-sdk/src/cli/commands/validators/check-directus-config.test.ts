@@ -1,6 +1,6 @@
 import fse from 'fs-extra';
 import type { Ora } from 'ora';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Report } from '../../types.js';
 import checkDirectusConfig from './check-directus-config.js';
 
@@ -31,7 +31,7 @@ beforeEach(() => {
 });
 
 describe('check-directus-config', () => {
-	it.each([
+	test.each([
 		{ description: 'a disabled sandbox', sandbox: { enabled: false } },
 		{ description: 'an empty sandbox object', sandbox: {} },
 		{ description: 'requested scopes but no enabled flag', sandbox: { requestedScopes: { log: {} } } },
@@ -49,7 +49,7 @@ describe('check-directus-config', () => {
 		});
 	});
 
-	it('does not warn for an API extension with an enabled sandbox', async () => {
+	test('does not warn for an API extension with an enabled sandbox', async () => {
 		mockConfig({ enabled: true, requestedScopes: {} });
 
 		const reports: Array<Report> = [];
@@ -59,7 +59,7 @@ describe('check-directus-config', () => {
 		expect(reports.filter((report) => report.level === 'warn')).toEqual([]);
 	});
 
-	it('rejects when extension path does not exist', async () => {
+	test('rejects when extension path does not exist', async () => {
 		vi.mocked(fse.pathExists).mockImplementation(async (p) => String(p).endsWith('package.json'));
 		mockConfig();
 
@@ -70,7 +70,7 @@ describe('check-directus-config', () => {
 		);
 	});
 
-	it('rejects when any bundle path does not exist', async () => {
+	test('rejects when any bundle path does not exist', async () => {
 		vi.mocked(fse.pathExists).mockImplementation(async (p) => !String(p).endsWith('api.js'));
 
 		vi.mocked(fse.readJson).mockResolvedValue({
@@ -89,7 +89,7 @@ describe('check-directus-config', () => {
 		);
 	});
 
-	it('rejects when no extension path is configured', async () => {
+	test('rejects when no extension path is configured', async () => {
 		vi.mocked(fse.readJson).mockResolvedValue({
 			'directus:extension': { type: 'endpoint', host: '^11.0.0' },
 		});
