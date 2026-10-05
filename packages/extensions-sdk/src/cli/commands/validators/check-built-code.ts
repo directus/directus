@@ -9,37 +9,30 @@ const checkBuiltCode = {
 	handler: async (spinner: Ora, reports: Array<Report>): Promise<string> => {
 		spinner.text = 'Check for built code';
 
-		let codePath: any = '/dist';
+		let codePaths = ['dist'];
 		const packagePath = path.resolve('package.json');
 
 		if (await fse.pathExists(packagePath)) {
 			const packageFile = await fse.readJson(packagePath);
+			const extensionPath = packageFile[EXTENSION_PKG_KEY]?.path;
 
-			if (packageFile[EXTENSION_PKG_KEY]) {
-				const { path } = packageFile[EXTENSION_PKG_KEY];
+			if (extensionPath) {
+				codePaths = typeof extensionPath === 'string' ? [extensionPath] : Object.values(extensionPath);
 
-				if (path) {
-					const message = `Path ${path} found in ${EXTENSION_PKG_KEY}`;
-					spinner.text = message;
+				const message = `Path ${codePaths.join(', ')} found in ${EXTENSION_PKG_KEY}`;
+				spinner.text = message;
 
-					reports.push({
-						level: 'info',
-						message: `${checkBuiltCode.name}: ${message}`,
-					});
-
-					codePath = path;
-				}
+				reports.push({
+					level: 'info',
+					message: `${checkBuiltCode.name}: ${message}`,
+				});
 			}
 		}
 
-		if (typeof codePath === 'string') {
-			codePath = { app: codePath };
-		}
-
-		for (const key of Object.keys(codePath)) {
-			if (!(await fse.pathExists(path.resolve(codePath[key])))) {
+		for (const builtPath of codePaths) {
+			if (!(await fse.pathExists(path.resolve(builtPath)))) {
 				spinner.fail();
-				const message = `No ${codePath[key]} directory`;
+				const message = `No ${builtPath} directory`;
 
 				reports.push({
 					level: 'error',
