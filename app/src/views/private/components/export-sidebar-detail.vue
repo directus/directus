@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
+import { DIRECTUS_SECURITY_BEST_PRACTICES_URL } from '@directus/constants';
 import { Filter } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import type { AxiosProgressEvent } from 'axios';
 import { debounce, pick } from 'lodash-es';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { I18nT, useI18n } from 'vue-i18n';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import ImportErrorDialog from './import-error-dialog.vue';
 import SidebarDetail from './sidebar-detail.vue';
@@ -623,6 +624,16 @@ async function exportDataFiles() {
 					</div>
 				</VNotice>
 
+				<VNotice v-if="location === 'files'" class="full files-access-notice" type="warning">
+					<I18nT keypath="exporting_library_access_warning" tag="span">
+						<template #docs>
+							<a :href="DIRECTUS_SECURITY_BEST_PRACTICES_URL" target="_blank" rel="noopener noreferrer">
+								{{ $t('public_policy_warning_docs_link') }}
+							</a>
+						</template>
+					</I18nT>
+				</VNotice>
+
 				<VDivider />
 
 				<div class="field half-left">
@@ -718,6 +729,11 @@ async function exportDataFiles() {
 
 	margin-block-start: 1.375rem;
 	padding: var(--content-padding);
+}
+
+.files-access-notice a {
+	text-decoration: underline;
+	color: var(--theme--primary);
 }
 
 .v-checkbox {

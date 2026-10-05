@@ -146,3 +146,25 @@ describe('export-sidebar-detail default export fields', () => {
 		expect(fieldFilter?.({ field: 'id' })).toBe(true);
 	});
 });
+
+describe('export-sidebar-detail file library warning', () => {
+	beforeEach(() => {
+		collectionState.fields = [{ field: 'id', type: 'uuid' }];
+	});
+
+	test('shows the warning when the export is forced to the file library', async () => {
+		const wrapper = mountComponent({ layoutQuery: { limit: 3000 } });
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.find('.files-access-notice').exists()).toBe(true);
+	});
+
+	test('hides the warning for local downloads', async () => {
+		const wrapper = mountComponent();
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.find('.files-access-notice').exists()).toBe(false);
+	});
+});
