@@ -631,7 +631,7 @@ describe('hash layout enabled', () => {
 			await hashKv.usingLock(mockKey, callback);
 
 			expect(withNamespace).toHaveBeenCalledWith(mockKey, mockNamespace);
-			expect(hashKv['redlock'].using).toHaveBeenCalledWith([mockNamespacedKey], 5000, callback);
+			expect(hashKv['redlock'].using).toHaveBeenCalledWith([mockNamespacedKey], 5000, {}, callback);
 		});
 	});
 });
