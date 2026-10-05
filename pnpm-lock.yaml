@@ -922,8 +922,8 @@ catalogs:
       specifier: 8.66.0
       version: 8.66.0
     undici:
-      specifier: 7.29.0
-      version: 7.29.0
+      specifier: 7.30.0
+      version: 7.30.0
     universal-cookie:
       specifier: 8.0.1
       version: 8.0.1
@@ -2102,7 +2102,7 @@ importers:
         version: 5.9.3
       undici:
         specifier: 'catalog:'
-        version: 7.29.0
+        version: 7.30.0
       vitest:
         specifier: 'catalog:'
         version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@22.13.14)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(happy-dom@20.10.6)(jsdom@29.1.1(@noble/hashes@1.8.0))(vite@8.2.2(@types/node@22.13.14)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
@@ -2753,7 +2753,7 @@ importers:
         version: 8.1.0
       undici:
         specifier: 'catalog:'
-        version: 7.29.0
+        version: 7.30.0
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -2916,7 +2916,7 @@ importers:
         version: 4.3.1
       undici:
         specifier: 'catalog:'
-        version: 7.29.0
+        version: 7.30.0
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -13005,12 +13005,12 @@ packages:
     resolution: {integrity: sha512-zWpdTVD54H48CIybL0rWQ3ukpb9d23wM7eH5RtfdmeP70cWHNjtfo7P4vZX+5CoDcO53J4Pu5uXp7lNfjc6DRA==}
     engines: {node: '>=18.17'}
 
-  undici@7.29.0:
-    resolution: {integrity: sha512-IDxfleLmmbSskfWSUATiN1nfn2rDuvnMOqb5CWR92iIfojA0Ud+ulOAAEQ57LPr9rWmsreUyf5lwyao+7GNNVw==}
-    engines: {node: '>=20.18.1'}
-
   undici@7.29.1:
     resolution: {integrity: sha512-RYONW2MeafgYlkVOKYKkA/Ag7BmXqgIWCa8t1m0JcxrQg9pI9lEqRhAOruOBCbAohOa/gkCF+iPi9hrgvTzu6Q==}
+    engines: {node: '>=20.18.1'}
+
+  undici@7.30.0:
+    resolution: {integrity: sha512-dkrQXeHSaoamnItlYbmzG0wFYrM0ZwDxCIg0A7aKjTyyhh9svRzCNFEzV+Vm05/yehjCzjDZ31KXfGEjYSztDQ==}
     engines: {node: '>=20.18.1'}
 
   unhead@3.4.1:
@@ -17595,7 +17595,7 @@ snapshots:
       obug: 2.2.1
       std-env: 4.2.0
       tinyrainbow: 3.1.1
-      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@26.2.0)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(happy-dom@20.10.6)(jsdom@29.1.1(@noble/hashes@1.8.0))(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@22.13.14)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(happy-dom@20.10.6)(jsdom@29.1.1(@noble/hashes@1.8.0))(vite@8.2.2(@types/node@22.13.14)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
 
   '@vitest/expect@4.1.11':
     dependencies:
@@ -17665,7 +17665,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@26.2.0)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(happy-dom@20.10.6)(jsdom@29.1.1(@noble/hashes@1.8.0))(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@22.13.14)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(happy-dom@20.10.6)(jsdom@29.1.1(@noble/hashes@1.8.0))(vite@8.2.2(@types/node@22.13.14)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
 
   '@vitest/utils@4.1.11':
     dependencies:
@@ -24059,9 +24059,9 @@ snapshots:
 
   undici@6.28.1: {}
 
-  undici@7.29.0: {}
-
   undici@7.29.1: {}
+
+  undici@7.30.0: {}
 
   unhead@3.4.1(esbuild@0.28.2)(rolldown@1.2.8)(rollup@4.59.0)(vite@8.1.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0)):
     dependencies:
