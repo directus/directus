@@ -63,90 +63,60 @@ function findPredicateError(value: Record<string, unknown>): string | null {
 	return predicate ? `has an "${predicate}" that is not a function` : null;
 }
 
-function validateItems(items: unknown): string | null {
-	if (!Array.isArray(items)) return 'has an "items" that is not an array';
-	if (items.length === 0) return 'has no items';
+// `check` returns the problem of one entry; the walker prefixes it with the entry's noun and key
+function validateKeyed(
+	entries: unknown,
+	field: string,
+	noun: string,
+	check: (entry: Record<string, unknown>) => string | null,
+): string | null {
+	if (!Array.isArray(entries)) return `"${field}" must be an array`;
 
 	const keys = new Set<string>();
 
-	for (const item of items) {
-		if (!isObject(item)) return 'has an item that is not an object';
-
-		if (typeof item['key'] !== 'string' || !SLUG.test(item['key'])) {
-			return 'has an item "key" that does not match [a-z0-9-]+';
-		}
-
-		const key = item['key'];
-		const invalid = (problem: string) => `item "${key}" ${problem}`;
-
-		if (keys.has(key)) return `uses item key "${key}" twice`;
+	for (const entry of entries) {
+		if (!isObject(entry)) return `every ${noun} must be an object`;
+		const key = entry['key'];
+		if (typeof key !== 'string' || !SLUG.test(key)) return `${noun} "key" must match [a-z0-9-]+`;
+		if (keys.has(key)) return `${noun} key "${key}" is used twice`;
 		keys.add(key);
-		if (typeof item['label'] !== 'string') return invalid('needs a "label" string');
 
-		if (item['icon'] !== undefined && typeof item['icon'] !== 'string') {
-			return invalid('has an "icon" that is not a string');
-		}
-
-		if (typeof item['command'] !== 'function') return invalid('needs a "command" function');
-
-		const predicateError = findPredicateError(item);
-		if (predicateError) return invalid(predicateError);
+		const problem = check(entry);
+		if (problem) return `${noun} "${key}" ${problem}`;
 	}
 
 	return null;
 }
 
-function validateButtons(buttons: unknown, field: string, { allowItems }: { allowItems: boolean }): string | null {
-	if (!Array.isArray(buttons)) return `"${field}" must be an array`;
-
-	const keys = new Set<string>();
-
-	for (const button of buttons) {
-		if (!isObject(button)) return 'every button must be an object';
-		if (typeof button['key'] !== 'string' || !SLUG.test(button['key'])) return 'button "key" must match [a-z0-9-]+';
-		const key = button['key'];
-		const invalid = (problem: string) => `button "${key}" ${problem}`;
-
-		if (keys.has(key)) return `button key "${key}" is used twice`;
-		keys.add(key);
-		if (typeof button['icon'] !== 'string') return invalid('needs an "icon" string');
-		if (typeof button['label'] !== 'string') return invalid('needs a "label" string');
-
-		if (button['items'] !== undefined) {
-			if (!allowItems) return invalid('cannot have "items"');
-			if (button['command'] !== undefined) return invalid('needs a "command" or "items", not both');
-			const itemsError = validateItems(button['items']);
-			if (itemsError) return invalid(itemsError);
-		} else if (typeof button['command'] !== 'function') {
-			return invalid('needs a "command" function or an "items" array');
-		}
-
-		const predicateError = findPredicateError(button);
-		if (predicateError) return invalid(predicateError);
-	}
-
-	return null;
+function validateItem(item: Record<string, unknown>): string | null {
+	if (typeof item['label'] !== 'string') return 'needs a "label" string';
+	if (item['icon'] !== undefined && typeof item['icon'] !== 'string') return 'has an "icon" that is not a string';
+	if (typeof item['command'] !== 'function') return 'needs a "command" function';
+	return findPredicateError(item);
 }
 
-function validateBubbleMenus(menus: unknown): string | null {
-	if (!Array.isArray(menus)) return '"bubbleMenus" must be an array';
+function validateButton(button: Record<string, unknown>, { allowItems }: { allowItems: boolean }): string | null {
+	if (typeof button['icon'] !== 'string') return 'needs an "icon" string';
+	if (typeof button['label'] !== 'string') return 'needs a "label" string';
 
-	const keys = new Set<string>();
+	const items = button['items'];
 
-	for (const menu of menus) {
-		if (!isObject(menu)) return 'every bubble menu must be an object';
-		if (typeof menu['key'] !== 'string' || !SLUG.test(menu['key'])) return 'bubble menu "key" must match [a-z0-9-]+';
-		const key = menu['key'];
-
-		if (keys.has(key)) return `bubble menu key "${key}" is used twice`;
-		keys.add(key);
-		if (typeof menu['shouldShow'] !== 'function') return `bubble menu "${key}" needs a "shouldShow" function`;
-
-		const buttonError = validateButtons(menu['buttons'], `bubble menu "${key}" buttons`, { allowItems: false });
-		if (buttonError) return `bubble menu "${key}": ${buttonError}`;
+	if (items !== undefined) {
+		if (!allowItems) return 'cannot have "items"';
+		if (button['command'] !== undefined) return 'needs a "command" or "items", not both';
+		if (Array.isArray(items) && items.length === 0) return 'has no items';
+		const itemsError = validateKeyed(items, 'items', 'item', validateItem);
+		if (itemsError) return itemsError;
+	} else if (typeof button['command'] !== 'function') {
+		return 'needs a "command" function or an "items" array';
 	}
 
-	return null;
+	return findPredicateError(button);
+}
+
+function validateBubbleMenu(menu: Record<string, unknown>): string | null {
+	if (typeof menu['shouldShow'] !== 'function') return 'needs a "shouldShow" function';
+	return validateKeyed(menu['buttons'], 'buttons', 'button', (button) => validateButton(button, { allowItems: false }));
 }
 
 function validateShape(config: unknown): string | null {
@@ -162,11 +132,14 @@ function validateShape(config: unknown): string | null {
 	}
 
 	if (buttons !== undefined) {
-		const buttonError = validateButtons(buttons, 'buttons', { allowItems: true });
+		const buttonError = validateKeyed(buttons, 'buttons', 'button', (button) =>
+			validateButton(button, { allowItems: true }),
+		);
+
 		if (buttonError) return buttonError;
 	}
 
-	if (bubbleMenus !== undefined) return validateBubbleMenus(bubbleMenus);
+	if (bubbleMenus !== undefined) return validateKeyed(bubbleMenus, 'bubbleMenus', 'bubble menu', validateBubbleMenu);
 
 	return null;
 }
@@ -286,46 +259,44 @@ function validateSchemaBuild(config: RichTextConfig): string | null {
 
 const FALLBACK_ICON = 'extension';
 
-function knownIcon(config: RichTextConfig, owner: string, icon: string): string {
-	if (isKnownIcon(icon)) return icon;
-
-	// eslint-disable-next-line no-console
-	console.warn(
-		`Richtext extension "${config.id}": ${owner} uses the unknown icon "${icon}". ` +
-			`It shows the "${FALLBACK_ICON}" icon instead.`,
-	);
-
-	return FALLBACK_ICON;
-}
-
-function withKnownIcon<T extends RichTextToolbarButton>(config: RichTextConfig, button: T): T {
-	const owner = `button "${button.key}"`;
-
-	return {
-		...button,
-		icon: knownIcon(config, owner, button.icon),
-		...(button.items
-			? {
-					items: button.items.map((item) =>
-						item.icon ? { ...item, icon: knownIcon(config, `${owner} item "${item.key}"`, item.icon) } : item,
-					),
-				}
-			: {}),
-	};
-}
-
 // an unknown name renders as its raw ligature text, so the button gets a placeholder instead of a rejection
 function withKnownIcons(config: RichTextConfig): RichTextConfig {
 	const { buttons, bubbleMenus } = config;
 
+	const knownIcon = (icon: string, owner: string): string => {
+		if (isKnownIcon(icon)) return icon;
+
+		// eslint-disable-next-line no-console
+		console.warn(
+			`Richtext extension "${config.id}": ${owner} uses the unknown icon "${icon}". ` +
+				`It shows the "${FALLBACK_ICON}" icon instead.`,
+		);
+
+		return FALLBACK_ICON;
+	};
+
+	const withKnownIcon = <T extends RichTextToolbarButton>(button: T, owner: string): T => ({
+		...button,
+		icon: knownIcon(button.icon, owner),
+		...(button.items
+			? {
+					items: button.items.map((item) =>
+						item.icon ? { ...item, icon: knownIcon(item.icon, `${owner} item "${item.key}"`) } : item,
+					),
+				}
+			: {}),
+	});
+
 	return {
 		...config,
-		...(buttons ? { buttons: buttons.map((button) => withKnownIcon(config, button)) } : {}),
+		...(buttons ? { buttons: buttons.map((button) => withKnownIcon(button, `button "${button.key}"`)) } : {}),
 		...(bubbleMenus
 			? {
 					bubbleMenus: bubbleMenus.map((menu) => ({
 						...menu,
-						buttons: menu.buttons.map((button) => withKnownIcon(config, button)),
+						buttons: menu.buttons.map((button) =>
+							withKnownIcon(button, `bubble menu "${menu.key}" button "${button.key}"`),
+						),
 					})),
 				}
 			: {}),

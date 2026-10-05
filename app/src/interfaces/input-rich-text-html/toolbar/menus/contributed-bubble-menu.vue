@@ -2,7 +2,8 @@
 import type { RichTextBubbleMenu } from '@directus/extensions';
 import type { Editor } from '@tiptap/vue-3';
 import { BubbleMenu } from '@tiptap/vue-3/menus';
-import { shallowRef } from 'vue';
+import { computed, shallowRef } from 'vue';
+import { useContributedGuard } from '../use-contributed-guard';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
@@ -12,38 +13,30 @@ const props = defineProps<{
 	menus: RichTextBubbleMenu[];
 }>();
 
+const { guard, guardButton } = useContributedGuard();
+
+const guardedMenus = computed(() =>
+	props.menus.map((menu) => ({
+		...menu,
+		buttons: menu.buttons.map((button) => guardButton(`${menu.key}:${button.key}`, button)),
+	})),
+);
+
 const activeMenu = shallowRef<RichTextBubbleMenu | null>(null);
 
-// shouldShow runs on every transaction, so a broken menu logs once instead of flooding the console
-const reported = new Set<string>();
-
-function matches(menu: RichTextBubbleMenu, editor: Editor): boolean {
-	try {
-		return menu.shouldShow(editor);
-	} catch (error) {
-		if (!reported.has(menu.key)) {
-			reported.add(menu.key);
-			// eslint-disable-next-line no-console
-			console.error(`Richtext bubble menu "${menu.key}" threw in shouldShow, so it stays hidden:`, error);
-		}
-
-		return false;
-	}
-}
-
 // one BubbleMenu for all extensions, so two menus never stack on the same selection
-function shouldShow(): boolean {
+function updateActiveMenu(): boolean {
 	const editor = props.editor;
 
 	activeMenu.value =
 		editor && editor.isEditable && !editor.isActive('table')
-			? (props.menus.find((menu) => matches(menu, editor)) ?? null)
+			? (guardedMenus.value.find((menu) => guard(menu.key, false, () => menu.shouldShow(editor))) ?? null)
 			: null;
 
 	return activeMenu.value !== null;
 }
 
-defineExpose({ shouldShow });
+defineExpose({ updateActiveMenu });
 </script>
 
 <template>
@@ -53,7 +46,7 @@ defineExpose({ shouldShow });
 			v-if="editor"
 			:editor="editor"
 			plugin-key="contributedBubbleMenu"
-			:should-show="shouldShow"
+			:should-show="updateActiveMenu"
 			:options="{ placement: 'top', offset: 8 }"
 		>
 			<div v-if="activeMenu" class="contributed-bubble-menu">

@@ -13,6 +13,7 @@ import ContributedMenu from './menus/contributed-menu.vue';
 import ToolbarButtonComp from './toolbar-button.vue';
 import ToolbarPopover from './toolbar-popover.vue';
 import { useClipboardActions } from './use-clipboard-actions';
+import { useContributedGuard } from './use-contributed-guard';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
@@ -75,26 +76,26 @@ const context: ToolbarContext = {
 	},
 };
 
-const failedButtons = ref(new Set<string>());
+// small icon button = 2rem square; separator ~1px rule + side margins; keep in sync with CSS below
+const MEASUREMENTS: Omit<LayoutMeasurements, 'keyWidths'> = {
+	buttonWidth: 32,
+	gap: 2,
+	moreWidth: 32,
+	separatorWidth: 9,
+	minItems: 5,
+	popoverWidth: 40,
+};
 
-function runOrDisable<T>(key: string, fallback: T, run: () => T): T {
-	if (failedButtons.value.has(key)) return fallback;
+// same as the core table button: icon + caret
+const MENU_BUTTON_WIDTH = MEASUREMENTS.popoverWidth;
 
-	try {
-		return run();
-	} catch (error) {
-		failedButtons.value = new Set([...failedButtons.value, key]);
-		// eslint-disable-next-line no-console
-		console.error(`Richtext toolbar button "${key}" threw and was disabled:`, error);
-		return fallback;
-	}
-}
+const { guardButton } = useContributedGuard();
 
 const contributedMap = computed<Record<string, ToolbarButton>>(() =>
 	Object.fromEntries(
 		props.contributedButtons
 			.filter((button) => !(button.key in toolbarButtons))
-			.map((button) => [button.key, toToolbarButton(button)]),
+			.map((button) => [button.key, toToolbarButton(guardButton(button.key, button))]),
 	),
 );
 
@@ -109,14 +110,14 @@ function toToolbarButton(button: RichTextToolbarButton): ToolbarButton {
 		};
 	}
 
-	const { key, command, isActive, isDisabled } = button;
+	const { command, isActive, isDisabled } = button;
 
 	return {
 		icon: button.icon,
 		label: button.label,
-		command: (editor) => runOrDisable(key, undefined, () => command(editor)),
-		disabled: (editor) => failedButtons.value.has(key) || runOrDisable(key, false, () => !!isDisabled?.(editor)),
-		...(isActive ? { isActive: (editor) => runOrDisable(key, false, () => isActive(editor)) } : {}),
+		command,
+		disabled: isDisabled,
+		...(isActive ? { isActive } : {}),
 	};
 }
 
@@ -128,19 +129,6 @@ const keyWidths = computed(() =>
 			.map(([key, button]) => [key, button.width!]),
 	),
 );
-
-// small icon button = 2rem square; separator ~1px rule + side margins; keep in sync with CSS below
-const MEASUREMENTS: Omit<LayoutMeasurements, 'keyWidths'> = {
-	buttonWidth: 32,
-	gap: 2,
-	moreWidth: 32,
-	separatorWidth: 9,
-	minItems: 5,
-	popoverWidth: 40,
-};
-
-// same as the core table button: icon + caret
-const MENU_BUTTON_WIDTH = MEASUREMENTS.popoverWidth;
 
 const allButtons = computed<Record<string, ToolbarButton>>(() => ({
 	...toolbarButtons,
