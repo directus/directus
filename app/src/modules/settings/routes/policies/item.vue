@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useShortcut } from '@directus/composables';
+import { useApi, useShortcut } from '@directus/composables';
 import { DIRECTUS_SECURITY_BEST_PRACTICES_URL, PUBLIC_POLICY_ID } from '@directus/constants';
 import { Policy } from '@directus/types';
 import { groupBy } from 'lodash-es';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, watchEffect } from 'vue';
 import { I18nT } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
@@ -42,7 +42,40 @@ const { edits, hasEdits, item, saving, loading, save, remove, deleting, validati
 	primaryKey,
 );
 
-const isPublicPolicy = computed(() => primaryKey.value === PUBLIC_POLICY_ID);
+const api = useApi();
+const isPublicPolicy = ref(false);
+
+watchEffect(async () => {
+	if (primaryKey.value === PUBLIC_POLICY_ID) {
+		isPublicPolicy.value = true;
+		return;
+	}
+
+	if (!primaryKey.value) {
+		isPublicPolicy.value = false;
+		return;
+	}
+
+	try {
+		const response = await api.get<{ data: { id: string }[] }>('/access', {
+			params: {
+				filter: {
+					_and: [
+						{ policy: { _eq: primaryKey.value } },
+						{ role: { _null: true } },
+						{ user: { _null: true } },
+					],
+				},
+				fields: ['id'],
+				limit: 1,
+			},
+		});
+
+		isPublicPolicy.value = response.data.data.length > 0;
+	} catch {
+		isPublicPolicy.value = false;
+	}
+});
 
 const { confirmSystemPermissions, systemPermissionActions, hasUnfilteredRead, guardSave, confirmSave } =
 	useSystemPermissionsGuard();
