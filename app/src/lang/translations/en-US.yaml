@@ -1776,16 +1776,16 @@ license:
   locked_status_notice: 'Your Directus instance is locked. Manage license or {contactSupport} to resolve.'
   warning_status_notice:
     generic:
-      Your license could not be renewed. It remains active until {date}, then your project moves to the Core plan. Check
+      Your license could not be refreshed. It remains active until {date}, then your project moves to the Core plan. Check
       your license key in Settings > License.
     invalid_key:
       Your license key is no longer valid. It remains active until {date}, then your project moves to the Core plan.
       Check your key in Settings > License or add a new one.
     activation_limit:
-      Your license has reached its activation limit and could not be renewed for this project. It remains active until
-      {date}, then your project moves to the Core plan. Deactivate it on a project you no longer use.
+      Your license has reached its activation limit and could not be activated for this project. It remains active until
+      {date}, then your project moves to the Core plan. Deactivate this license on a project you no longer use before retrying to activate on this project.
     binding_mismatch:
-      Your license is linked to a different project or URL and could not be renewed here. It remains active until
+      Your license is linked to a different project or URL and could not be refreshed here. It remains active until
       {date}, then your project moves to the Core plan. Check that your project URL matches the URL where the key was
       activated.
     unavailable:
