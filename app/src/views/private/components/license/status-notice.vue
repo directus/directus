@@ -17,7 +17,8 @@ const serverStore = useServerStore();
 const { gracePeriodDaysRemaining, isLocked, isCoreGrace, isCore, graceDeadline, warningReason, tokenExpiresAt } =
 	storeToRefs(useLicenseStore());
 
-const formatLongDate = (date: Date) => localizedFormat(date, String(t('date-fns_date')));
+// Non-breaking spaces keep the date from wrapping across lines
+const formatLongDate = (date: Date) => localizedFormat(date, String(t('date-fns_date'))).replace(/ /g, ' ');
 
 const formattedCoreGraceDate = computed(() => (graceDeadline.value ? formatLongDate(graceDeadline.value) : ''));
 
