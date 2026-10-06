@@ -1,7 +1,7 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { getRelationInfo } from '@directus/utils';
 import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
-import { get, mapKeys, merge, uniq } from 'lodash-es';
+import { get, mapKeys, merge, toPath, uniq } from 'lodash-es';
 import { getRelatedCollection } from '../../../database/get-ast-from-query/utils/get-related-collection.js';
 import { getQueryLimits } from '../../../utils/query-limits.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
@@ -104,8 +104,8 @@ export async function getQuery(
 
 							setDeep(
 								query.deep as Record<string, any>,
-								path,
-								merge({}, get(query.deep, parent), { _alias: { [selection.alias!.value]: selection.name.value } }),
+								[...toPath(path), '_alias', selection.alias!.value],
+								selection.name.value,
 							);
 						}
 					}

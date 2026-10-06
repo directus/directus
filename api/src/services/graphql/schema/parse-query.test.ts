@@ -467,6 +467,44 @@ describe('parseFields', () => {
 		expect(query.fields).toContain('parent:child.id');
 		expect(query.fields).toContain('parentAlias:child.id');
 	});
+
+	test('should keep every alias nested under an M2A member', async () => {
+		const selections = [
+			buildField('parent', {
+				children: [
+					buildInlineFragment('child', [
+						buildField('rel', { alias: 'first', children: [buildField('id')] }),
+						buildField('rel', { alias: 'second', children: [buildField('id')] }),
+					]),
+				],
+			}),
+		];
+
+		const query = await getQuery({}, m2aSchema, selections, mockVariableValues, mockAccountability, 'test_collection');
+
+		// The deep node is keyed `parent__child`, so reading it back as `parent:child` found nothing and
+		// each alias replaced the one before it
+		expect(query.deep).toEqual({ parent__child: { _alias: { first: 'rel', second: 'rel' } } });
+	});
+
+	test('should record an alias without copying what its parent already holds', async () => {
+		// Every alias used to merge a fresh copy of everything collected under the parent, so this
+		// took ~12s. The work is linear now, so a regression fails on the test timeout rather than on
+		// a measured duration.
+		const COUNT = 4000;
+		const filter = buildFilterArgument({ status: { _eq: 'published' } });
+
+		const children = Array.from({ length: COUNT }, (_value, index) =>
+			buildField('role', { alias: `a${index}`, args: [filter], children: [buildField('id')] }),
+		);
+
+		const selections = [buildField('author', { children })];
+
+		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
+
+		// Counted rather than compared, so a regression does not diff thousands of nodes
+		expect(Object.keys((query.deep as any).author._alias)).toHaveLength(COUNT);
+	});
 });
 
 /**
