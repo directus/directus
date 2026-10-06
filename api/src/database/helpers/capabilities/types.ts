@@ -14,4 +14,12 @@ export class CapabilitiesHelper extends DatabaseHelper {
 	supportsDeduplicationOfParameters(): boolean {
 		return true;
 	}
+
+	/**
+	 * The maximum number of values that can be bound in a single `IN (...)` list.
+	 * MySQL has no such limit, as bindings are interpolated client side and only bound by `max_allowed_packet`.
+	 */
+	maxInListSize(): number {
+		return Infinity;
+	}
 }

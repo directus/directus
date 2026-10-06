@@ -12,8 +12,9 @@ const mocks = vi.hoisted(() => ({
 	},
 	logger: {
 		error: vi.fn(),
+		warn: vi.fn(),
 	},
-	isOneOfClients: vi.fn().mockReturnValue(false),
+	maxInListSize: vi.fn().mockReturnValue(Infinity),
 	scheduleSynchronizedJob: vi.fn(),
 	validateCron: vi.fn().mockReturnValue(true),
 }));
@@ -25,7 +26,7 @@ vi.mock('@directus/env', () => ({
 vi.mock('../database/helpers/index.js', () => ({
 	getHelpers: vi.fn(() => ({
 		date: { parse: vi.fn((date: Date) => date) },
-		schema: { isOneOfClients: mocks.isOneOfClients },
+		capabilities: { maxInListSize: mocks.maxInListSize },
 	})),
 }));
 
@@ -66,7 +67,7 @@ beforeEach(() => {
 	});
 
 	mocks.getDatabase.mockReturnValue(db);
-	mocks.isOneOfClients.mockReturnValue(false);
+	mocks.maxInListSize.mockReturnValue(Infinity);
 	mocks.validateCron.mockReturnValue(true);
 });
 
@@ -140,7 +141,6 @@ describe('retention', () => {
 	test('nulls revision parents before deleting revisions directly', async () => {
 		mocks.env['ACTIVITY_RETENTION'] = undefined;
 		mocks.env['REVISIONS_RETENTION'] = '1d';
-		mocks.isOneOfClients.mockReturnValue(true);
 		const { handleRetentionJob, default: retentionSchedule } = await import('./retention.js');
 
 		await retentionSchedule();
@@ -178,21 +178,36 @@ describe('retention', () => {
 		expect(mocks.logger.error).toHaveBeenCalled();
 	});
 
-	test('chunks the parent-nulling whereIn per the database in-clause limit', async () => {
-		mocks.isOneOfClients.mockImplementation((clients: string[]) => clients.includes('oracle'));
-		const { handleRetentionJob } = await import('./retention.js');
+	test('caps the batch size at the database in-list limit', async () => {
+		mocks.env['RETENTION_BATCH'] = 5000;
+		mocks.maxInListSize.mockReturnValue(1000);
+		const { handleRetentionJob, default: retentionSchedule } = await import('./retention.js');
 
-		const revisionIds = Array.from({ length: 1500 }, (_, index) => index + 1);
+		await retentionSchedule();
 
-		tracker.on.select('directus_activity').responseOnce([{ id: 10 }]);
-		tracker.on.select('directus_revisions').responseOnce(revisionIds.map((id) => ({ id })));
-		tracker.on.update('directus_revisions').response(1);
-		tracker.on.delete('directus_activity').response(1);
+		expect(mocks.logger.warn).toHaveBeenCalledWith(
+			'"RETENTION_BATCH" exceeds the maximum of 999 supported by the database, using 999 instead',
+		);
+
+		tracker.on.select('directus_activity').responseOnce([]);
 
 		await handleRetentionJob();
 
-		expect(tracker.history.update).toHaveLength(2);
-		expect(tracker.history.update[0]?.bindings).toEqual([null, ...revisionIds.slice(0, 1000)]);
-		expect(tracker.history.update[1]?.bindings).toEqual([null, ...revisionIds.slice(1000)]);
+		expect(tracker.history.select[0]?.bindings).toContain(999);
+	});
+
+	test('keeps the batch size when within the database in-list limit', async () => {
+		mocks.maxInListSize.mockReturnValue(1000);
+		const { handleRetentionJob, default: retentionSchedule } = await import('./retention.js');
+
+		await retentionSchedule();
+
+		expect(mocks.logger.warn).not.toHaveBeenCalled();
+
+		tracker.on.select('directus_activity').responseOnce([]);
+
+		await handleRetentionJob();
+
+		expect(tracker.history.select[0]?.bindings).toContain(100);
 	});
 });
