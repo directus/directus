@@ -825,7 +825,7 @@ export class PayloadService {
 				const updates = field || []; // treat falsey values as removing all children
 
 				for (let i = 0; i < updates.length; i++) {
-					const currentId = parent || payload[currentPrimaryKeyField];
+					const currentId = parent ?? payload[currentPrimaryKeyField];
 					const relatedRecord = updates[i];
 
 					const relatedId =
@@ -972,13 +972,13 @@ export class PayloadService {
 
 							return {
 								...record,
-								[relation.field]: parent || payload[currentPrimaryKeyField],
+								[relation.field]: parent ?? payload[currentPrimaryKeyField],
 							};
 						});
 					} else {
 						createPayload = alterations.create.map((item) => ({
 							...item,
-							[relation.field]: parent || payload[currentPrimaryKeyField],
+							[relation.field]: parent ?? payload[currentPrimaryKeyField],
 						}));
 					}
 
@@ -1008,7 +1008,7 @@ export class PayloadService {
 							.first();
 
 						if (!existingRecord || existingRecord[relation.field] != parent) {
-							record[relation.field] = parent || payload[currentPrimaryKeyField];
+							record[relation.field] = parent ?? payload[currentPrimaryKeyField];
 						}
 
 						await service.updateOne(key, record, {
