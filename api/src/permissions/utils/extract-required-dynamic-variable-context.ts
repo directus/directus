@@ -52,30 +52,24 @@ export function extractRequiredDynamicVariableContextForPermissions(permissions:
  */
 export function extractRequiredDynamicVariableContext(val: any): DynamicVariableContext {
 	const context = createDynamicVariableContext();
-	const stack: unknown[] = [val];
-	let first = true;
+	const stack: unknown[] = isContainer(val) ? [val] : [];
 
 	while (stack.length > 0) {
 		const value = stack.pop();
-		const isRoot = first;
-		first = false;
 
-		let children: unknown[];
-
-		if (Array.isArray(value)) {
-			children = value;
-		} else if (isPlainObject(value)) {
-			children = Object.values(value as Record<string, unknown>);
-		} else {
-			// The root is not a value of anything, so it holds no reference to collect
-			if (!isRoot) collectDynamicVariableContext(value, context);
+		if (isContainer(value)) {
+			for (const child of Object.values(value)) stack.push(child);
 			continue;
 		}
 
-		for (const child of children) stack.push(child);
+		collectDynamicVariableContext(value, context);
 	}
 
 	return context;
+}
+
+function isContainer(value: unknown): value is object {
+	return Array.isArray(value) || isPlainObject(value);
 }
 
 function mergeContexts(context1: DynamicVariableContext, context2: DynamicVariableContext) {
