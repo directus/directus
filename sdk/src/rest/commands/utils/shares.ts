@@ -1,5 +1,6 @@
 import type { AuthenticationData, AuthenticationMode } from '../../../index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 /**
  * Authenticate as a share user.
@@ -43,6 +44,7 @@ export const inviteShare =
  * @param id Primary key of the share you're viewing.
  *
  * @returns The share objects for the given UUID, if it's still valid.
+ * @throws Will throw if id is empty
  */
 export const readShareInfo =
 	<Schema>(
@@ -60,7 +62,11 @@ export const readShareInfo =
 		},
 		Schema
 	> =>
-	() => ({
-		path: `/shares/info/${id}`,
-		method: 'GET',
-	});
+	() => {
+		throwIfEmpty(id, 'ID cannot be empty');
+
+		return {
+			path: `/shares/info/${id}`,
+			method: 'GET',
+		};
+	};

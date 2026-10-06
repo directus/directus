@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/vue-3';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { editorExtensions } from './extensions';
 
 /**
@@ -11,6 +11,10 @@ let editor: Editor;
 beforeEach(() => {
 	editor = new Editor({ extensions: editorExtensions, content: '<p>text</p>' });
 	editor.commands.selectAll();
+});
+
+afterEach(() => {
+	editor.destroy();
 });
 
 describe('subscript / superscript commands', () => {

@@ -3,7 +3,7 @@ import type { Filter } from '@directus/types';
 import { abbreviateNumber, adjustDate } from '@directus/utils';
 import ApexCharts from 'apexcharts';
 import { addWeeks } from 'date-fns';
-import { isNil, orderBy, snakeCase } from 'lodash';
+import { isNil, orderBy, snakeCase } from 'lodash-es';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useFieldsStore } from '@/stores/fields';

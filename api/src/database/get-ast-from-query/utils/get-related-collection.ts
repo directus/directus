@@ -1,11 +1,7 @@
-import type { SchemaOverview } from '@directus/types';
+import type { Relation, SchemaOverview } from '@directus/types';
 import { getRelation } from '@directus/utils';
 
-export function getRelatedCollection(schema: SchemaOverview, collection: string, field: string): string | null {
-	const relation = getRelation(schema.relations, collection, field);
-
-	if (!relation) return null;
-
+export function getRelatedCollectionFromRelation(relation: Relation, collection: string, field: string): string | null {
 	if (relation.collection === collection && relation.field === field) {
 		return relation.related_collection || null;
 	}
@@ -15,4 +11,12 @@ export function getRelatedCollection(schema: SchemaOverview, collection: string,
 	}
 
 	return null;
+}
+
+export function getRelatedCollection(schema: SchemaOverview, collection: string, field: string): string | null {
+	const relation = getRelation(schema.relations, collection, field);
+
+	if (!relation) return null;
+
+	return getRelatedCollectionFromRelation(relation, collection, field);
 }

@@ -1,5 +1,5 @@
 import type { Field } from '@directus/types';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { markRaw } from 'vue';
 
 /**

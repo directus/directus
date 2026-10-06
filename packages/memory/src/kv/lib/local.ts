@@ -27,7 +27,7 @@ export class KvLocal implements Kv {
 		}
 	}
 
-	async get<T = unknown>(key: string): Promise<T | undefined> {
+	get<T = unknown>(key: string): T | undefined {
 		const value = this.store.get(key);
 
 		if (value !== undefined) {
@@ -37,21 +37,21 @@ export class KvLocal implements Kv {
 		return undefined;
 	}
 
-	async set(key: string, value: unknown): Promise<void> {
+	set(key: string, value: unknown): void {
 		const serialized = serialize(value);
 		this.store.set(key, serialized);
 	}
 
-	async delete(key: string): Promise<void> {
+	delete(key: string): void {
 		this.store.delete(key);
 	}
 
-	async has(key: string): Promise<boolean> {
+	has(key: string): boolean {
 		return this.store.has(key);
 	}
 
-	async increment(key: string, amount: number = 1): Promise<number> {
-		const currentVal = (await this.get(key)) ?? 0;
+	increment(key: string, amount: number = 1): number {
+		const currentVal = this.get(key) ?? 0;
 
 		if (typeof currentVal !== 'number') {
 			throw new Error(`The value for key "${key}" is not a number.`);
@@ -59,13 +59,13 @@ export class KvLocal implements Kv {
 
 		const newVal = currentVal + amount;
 
-		await this.set(key, newVal);
+		this.set(key, newVal);
 
 		return newVal;
 	}
 
-	async setMax(key: string, value: number): Promise<boolean> {
-		const currentVal = (await this.get(key)) ?? 0;
+	setMax(key: string, value: number): boolean {
+		const currentVal = this.get(key) ?? 0;
 
 		if (typeof currentVal !== 'number') {
 			throw new Error(`The value for key "${key}" is not a number.`);
@@ -75,26 +75,26 @@ export class KvLocal implements Kv {
 			return false;
 		}
 
-		await this.set(key, value);
+		this.set(key, value);
 
 		return true;
 	}
 
-	async acquireLock(_key: string): Promise<{
+	acquireLock(_key: string): {
 		release: () => Promise<void>;
 		extend: (_duration: number) => Promise<void>;
-	}> {
+	} {
 		return {
 			release: async () => {},
 			extend: async (_duration: number) => {},
 		};
 	}
 
-	async usingLock<T>(_key: string, callback: () => Promise<T>): Promise<T> {
+	usingLock<T>(_key: string, callback: () => Promise<T>): Promise<T> {
 		return callback();
 	}
 
-	async clear(): Promise<void> {
+	clear(): void {
 		this.store.clear();
 	}
 }

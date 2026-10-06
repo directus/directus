@@ -6,7 +6,7 @@
 
 # Type Alias: Env
 
-> **Env** = _typeof_ `baseConfig`\[[`Database`](Database.md)\] & `object` & `Partial`\<_typeof_ `minio`\> &
+> **Env** = _typeof_ `baseConfig`\[[`Database`](Database.md)\] & `object` & `Partial`\<_typeof_ `rustfs`\> &
 > `Partial`\<_typeof_ `saml`\> & `Partial`\<_typeof_ `maildev`\>
 
 Defined in:

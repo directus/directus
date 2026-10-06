@@ -2,7 +2,7 @@
 defineOptions({ inheritAttrs: false });
 
 import type { Field } from '@directus/types';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { AccordionContent, AccordionItem, AccordionRoot, AccordionTrigger } from 'reka-ui';
 import { computed, nextTick, ref, toRefs, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

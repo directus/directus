@@ -1,5 +1,5 @@
 import { Field, Item } from '@directus/types';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { applyConditions } from './apply-conditions';
 import { getFieldsInGroup } from './get-fields-in-group';
 import { mergeItemData } from './merge-item-data';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Field, PrimaryKey } from '@directus/types';
-import { cloneDeep, isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash-es';
 import { computed, nextTick, useTemplateRef, watch } from 'vue';
 import ValidationErrors from '@/components/v-form/components/validation-errors.vue';
 import VForm from '@/components/v-form/v-form.vue';

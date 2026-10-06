@@ -2,7 +2,7 @@
 import { useCollection, useLayout } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import type { Props as VDrawerProps } from '@/components/v-drawer.vue';
