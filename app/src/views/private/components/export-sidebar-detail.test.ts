@@ -22,14 +22,19 @@ vi.mock('@directus/composables', async () => {
 
 const permissionsState = vi.hoisted(() => ({
 	readFoldersAllowed: true,
+	createFilesAllowed: true,
 }));
 
-vi.mock('@/composables/use-permissions', () => ({
-	useCollectionPermissions: (collection: string) => ({
-		createAllowed: false,
-		readAllowed: collection === 'directus_folders' ? permissionsState.readFoldersAllowed : true,
-	}),
-}));
+vi.mock('@/composables/use-permissions', async () => {
+	const { computed } = await import('vue');
+
+	return {
+		useCollectionPermissions: (collection: string) => ({
+			createAllowed: computed(() => collection === 'directus_files' && permissionsState.createFilesAllowed),
+			readAllowed: computed(() => (collection === 'directus_folders' ? permissionsState.readFoldersAllowed : true)),
+		}),
+	};
+});
 
 vi.mock('@/stores/server', () => ({
 	useServerStore: () => ({
@@ -102,9 +107,17 @@ function mountComponent(props: Record<string, unknown> = {}) {
 					template: '<div><slot /></div>',
 				},
 				VDrawer: {
-					template: '<div><slot /><slot name="actions" /></div>',
+					template: '<div><slot /><slot name="actions" /><slot name="actions:primary" /></div>',
 				},
 				VInput: {
+					template: '<div />',
+				},
+				VNotice: {
+					template: '<div><slot /></div>',
+				},
+				VSelect: {
+					name: 'VSelect',
+					props: ['items', 'modelValue', 'disabled'],
 					template: '<div />',
 				},
 				InterfaceSystemFields: InterfaceSystemFieldsStub,
@@ -224,5 +237,38 @@ describe('export-sidebar-detail default exports folder', () => {
 
 		expect(wrapper.findComponent({ name: 'FolderPicker' }).exists()).toBe(false);
 		expect(wrapper.find('.folder-not-selectable-notice').exists()).toBe(true);
+	});
+});
+
+describe('export-sidebar-detail without file create permission', () => {
+	beforeEach(() => {
+		collectionState.fields = [{ field: 'id', type: 'uuid' }];
+		permissionsState.createFilesAllowed = false;
+	});
+
+	afterEach(() => {
+		permissionsState.createFilesAllowed = true;
+	});
+
+	test('does not offer the file library as an export location', async () => {
+		const wrapper = mountComponent();
+
+		await wrapper.vm.$nextTick();
+
+		const locationSelect = wrapper
+			.findAllComponents({ name: 'VSelect' })
+			.find((select) => (select.props('items') as { value: string }[]).some((item) => item.value === 'download'));
+
+		expect((locationSelect?.props('items') as { value: string }[]).map((item) => item.value)).toEqual(['download']);
+	});
+
+	test('blocks exports that are too large to download', async () => {
+		const wrapper = mountComponent({ layoutQuery: { limit: 3000 } });
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.find('.export-blocked-hint').exists()).toBe(true);
+		expect(wrapper.find('.files-access-notice').exists()).toBe(false);
+		expect(wrapper.findComponent({ name: 'PrivateViewHeaderBarActionButton' }).props('disabled')).toBe(true);
 	});
 });

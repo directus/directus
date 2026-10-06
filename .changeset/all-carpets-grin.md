@@ -8,4 +8,4 @@
 '@directus/cli': minor
 ---
 
-Added a Default Exports Folder project setting, pre-selected in the export drawer (falling back to the Default Folder) and used for exports saved to the File Library without a folder specified
+Added a Default Exports Folder project setting for exports saved to the File Library. The export drawer now warns about File Library visibility and only offers options the user has permission to use.

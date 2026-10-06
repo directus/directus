@@ -76,6 +76,7 @@ const { primaryKeyField, fields, info: collectionInfo } = useCollection(collecti
 
 const { createAllowed } = useCollectionPermissions(collection);
 const { readAllowed: readFoldersAllowed } = useCollectionPermissions('directus_folders');
+const { createAllowed: createFilesAllowed } = useCollectionPermissions('directus_files');
 
 const { info } = useServerStore();
 const settingsStore = useSettingsStore();
@@ -221,13 +222,18 @@ const exportCount = computed(() => {
 	return itemCount.value !== undefined ? Math.min(itemCount.value, limit) : limit;
 });
 
-watch(
-	exportCount,
-	() => {
-		const queryLimitThreshold = exportCount.value > queryLimitMax;
-		const batchThreshold = exportCount.value >= 2500;
+const tooLargeToDownload = computed(() => exportCount.value > queryLimitMax || exportCount.value >= 2500);
+const exportBlocked = computed(() => tooLargeToDownload.value && !createFilesAllowed.value);
 
-		if (queryLimitThreshold || batchThreshold) {
+const locationOptions = computed(() => [
+	{ value: 'download', text: t('download_file') },
+	...(createFilesAllowed.value ? [{ value: 'files', text: t('file_library') }] : []),
+]);
+
+watch(
+	tooLargeToDownload,
+	() => {
+		if (tooLargeToDownload.value && createFilesAllowed.value) {
 			lockedToFiles.value = {
 				previousLocation: lockedToFiles.value?.previousLocation ?? location.value,
 			};
@@ -364,6 +370,10 @@ function useUpload() {
 }
 
 function startExport() {
+	if (exportBlocked.value) {
+		return;
+	}
+
 	if (location.value === 'download') {
 		exportDataLocal();
 	} else {
@@ -529,6 +539,7 @@ async function exportDataFiles() {
 				<PrivateViewHeaderBarActionButton
 					:label="location === 'download' ? $t('download_file') : $t('start_export')"
 					:loading="exporting"
+					:disabled="exportBlocked"
 					:icon="location === 'download' ? 'download' : 'start'"
 					@click="startExport"
 				/>
@@ -571,14 +582,7 @@ async function exportDataFiles() {
 
 				<div class="field half-left">
 					<p class="type-label">{{ $t('export_location') }}</p>
-					<VSelect
-						v-model="location"
-						:disabled="lockedToFiles !== null"
-						:items="[
-							{ value: 'download', text: $t('download_file') },
-							{ value: 'files', text: $t('file_library') },
-						]"
-					/>
+					<VSelect v-model="location" :disabled="lockedToFiles !== null" :items="locationOptions" />
 				</div>
 
 				<div class="field half-right">
@@ -590,7 +594,7 @@ async function exportDataFiles() {
 					<VNotice v-else>{{ $t('not_available_for_local_downloads') }}</VNotice>
 				</div>
 
-				<VNotice class="full" :type="lockedToFiles ? 'warning' : undefined">
+				<VNotice class="full" :type="exportBlocked ? 'danger' : lockedToFiles ? 'warning' : undefined">
 					<div>
 						<p v-if="itemCountLoading">
 							{{ $t('loading') }}
@@ -619,7 +623,11 @@ async function exportDataFiles() {
 							}}
 						</p>
 
-						<p v-if="lockedToFiles">
+						<p v-if="exportBlocked" class="export-blocked-hint">
+							{{ $t('exporting_too_large_to_download') }}
+						</p>
+
+						<p v-else-if="lockedToFiles">
 							{{ $t('exporting_library_hint_forced', { format: $t(format) }) }}
 						</p>
 

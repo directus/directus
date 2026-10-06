@@ -756,6 +756,9 @@ exporting_download_hint: Once the {format} file is created, it will be downloade
 exporting_library_hint: Once the {format} file is created, it will be saved to the File Library.
 exporting_library_hint_forced:
   This export must be processed in batches. Once completed, the {format} file will be saved to the File Library.
+exporting_too_large_to_download: >-
+  This export is too large to download directly and must be saved to the File Library, which you don't have permission
+  to do. Lower the limit or adjust the filter, or contact an administrator.
 exporting_library_access_warning: >-
   Anyone with read access to files, including unauthenticated users if the Public policy allows it, will be able to view
   and download the exported file. Refer to the {docs} for more information.
