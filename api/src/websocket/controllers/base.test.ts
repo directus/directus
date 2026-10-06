@@ -2,6 +2,7 @@ import type { Server as httpServer } from 'http';
 import { useEnv } from '@directus/env';
 import type { Accountability } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { getLicenseManager } from '../../license/manager.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { authenticateConnection } from '../authenticate.js';
 import type { WebSocketAuthMessage } from '../messages.js';
@@ -57,6 +58,7 @@ function mockClient(accountability: Accountability | null): WebSocketClient {
 		close: vi.fn(),
 		on: vi.fn(),
 		off: vi.fn(),
+		emit: vi.fn(),
 	} as unknown as WebSocketClient;
 }
 
@@ -182,5 +184,42 @@ describe('WebSocket SocketController rate limiter configuration', () => {
 		setupController('public', { RATE_LIMITER_ENABLED: true, RATE_LIMITER_WEBSOCKETS_POINTS: 10 });
 
 		expect(createRateLimiter).toHaveBeenCalledWith('RATE_LIMITER', { keyPrefix: 'websocket', points: 10 });
+	});
+});
+
+describe('WebSocket SocketController message handling', () => {
+	afterEach(() => {
+		vi.clearAllMocks();
+	});
+
+	/** The listener `createClient` registers for incoming messages */
+	function onMessage(client: WebSocketClient) {
+		setupController('public').createClient(client, { accountability: PUBLIC_ACCOUNTABILITY, expires_at: null });
+
+		const registered = vi.mocked(client.on).mock.calls.find(([event]) => event === 'message');
+
+		return registered![1] as (data: Buffer) => Promise<void>;
+	}
+
+	test('passes a message on to the parsed-message listeners', async () => {
+		const client = mockClient(PUBLIC_ACCOUNTABILITY);
+
+		await onMessage(client)(Buffer.from('{"type":"ping"}'));
+
+		expect(client.emit).toHaveBeenCalledWith('parsed-message', { type: 'ping' });
+	});
+
+	test('reports an unexpected error rather than rejecting', async () => {
+		(getLicenseManager as ReturnType<typeof vi.fn>).mockReturnValue({
+			isLocked: vi.fn().mockRejectedValue(new RangeError('Maximum call stack size exceeded')),
+		});
+
+		const client = mockClient(PUBLIC_ACCOUNTABILITY);
+
+		// `ws` discards the promise this returns, so a rejection would end the process
+		await expect(onMessage(client)(Buffer.from('{"type":"ping"}'))).resolves.toBeUndefined();
+
+		expect(client.emit).not.toHaveBeenCalled();
+		expect(client.close).not.toHaveBeenCalled();
 	});
 });
