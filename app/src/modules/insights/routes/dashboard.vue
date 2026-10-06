@@ -127,7 +127,10 @@ const tiles = computed<AppTile[]>(() => {
 				showHeader: panel.show_header === true,
 				minWidth: panelType?.minWidth,
 				minHeight: panelType?.minHeight,
-				draggable: true,
+				draggable: updateAllowed.value,
+				createAllowed: createAllowed.value,
+				updateAllowed: updateAllowed.value,
+				deleteAllowed: deleteAllowed.value,
 				borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
 				data: {
 					options: applyOptionsData(panel.options ?? {}, unref(variables), panelType?.skipUndefinedKeys),
