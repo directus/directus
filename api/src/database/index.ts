@@ -2,7 +2,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { performance } from 'perf_hooks';
-import { useEnv } from '@directus/env';
+import { useEnv, validateDbEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { DatabaseClient } from '@directus/types';
@@ -35,6 +35,10 @@ export function getDatabase(): Knex {
 	if (database) {
 		return database;
 	}
+
+	const env = useEnv();
+
+	validateDbEnv(env);
 
 	const logger = useLogger();
 	const metrics = useMetrics();

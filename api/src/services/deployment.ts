@@ -26,7 +26,7 @@ import { DeploymentRunsService } from './deployment-runs.js';
 import { ItemsService } from './items.js';
 
 const env = useEnv();
-const DEPLOYMENT_CACHE_TTL = getMilliseconds(env.CACHE_DEPLOYMENT_TTL);
+const DEPLOYMENT_CACHE_TTL = getMilliseconds(env.CACHE_DEPLOYMENT_TTL) as number;
 const SYNC_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
 
 export class DeploymentService extends ItemsService<DeploymentConfig> {
