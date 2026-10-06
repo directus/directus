@@ -236,7 +236,18 @@ describe('export-sidebar-detail default exports folder', () => {
 		await wrapper.vm.$nextTick();
 
 		expect(wrapper.findComponent({ name: 'FolderPicker' }).exists()).toBe(false);
-		expect(wrapper.find('.folder-not-selectable-notice').exists()).toBe(true);
+		expect(wrapper.find('.folder-not-selectable-notice').text()).toBe('exporting_folder_not_selectable');
+	});
+
+	test('says the export goes to the root when no default folder is set', async () => {
+		permissionsState.readFoldersAllowed = false;
+		settingsState.storage_default_folder = null;
+
+		const wrapper = mountComponent({ layoutQuery: { limit: 3000 } });
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.find('.folder-not-selectable-notice').text()).toBe('exporting_folder_root');
 	});
 });
 

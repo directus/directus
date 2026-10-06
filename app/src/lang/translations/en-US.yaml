@@ -749,6 +749,7 @@ open_file_in_tab: Open File in New Tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
 exporting_folder_not_selectable: The file will be saved to the project's default folder
+exporting_folder_root: The file will be saved to the root of the File Library
 exporting_all_items_in_collection: Exporting all items ({total}) within {collection}.
 exporting_limited_items_in_collection: '{count} out of {total} items within {collection} will be exported.'
 exporting_no_items_to_export: No items to export. Adjust the exporting configuration and/or add items to the collection.

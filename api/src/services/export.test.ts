@@ -353,6 +353,14 @@ describe('exportToFile folder', () => {
 		expect(uploadOne).toHaveBeenCalledWith(undefined, expect.objectContaining({ folder: 'exports-folder' }));
 	});
 
+	test('leaves the folder unset when there is no default exports folder', async () => {
+		tracker.on.select('directus_settings').response([{ default_exports_folder: null }]);
+
+		await new ExportService({ knex: db, schema, accountability: null }).exportToFile('articles', {}, 'csv');
+
+		expect(uploadOne.mock.calls[0]![1]).not.toHaveProperty('folder');
+	});
+
 	test('keeps an explicitly specified folder, including the root', async () => {
 		tracker.on.select('directus_settings').response([{ default_exports_folder: 'exports-folder' }]);
 

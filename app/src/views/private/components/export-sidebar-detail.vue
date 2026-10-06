@@ -589,7 +589,7 @@ async function exportDataFiles() {
 					<p class="type-label">{{ $t('folder') }}</p>
 					<FolderPicker v-if="location === 'files' && readFoldersAllowed" v-model="folder" type="files" />
 					<VNotice v-else-if="location === 'files'" class="folder-not-selectable-notice">
-						{{ $t('exporting_folder_not_selectable') }}
+						{{ folder ? $t('exporting_folder_not_selectable') : $t('exporting_folder_root') }}
 					</VNotice>
 					<VNotice v-else>{{ $t('not_available_for_local_downloads') }}</VNotice>
 				</div>
