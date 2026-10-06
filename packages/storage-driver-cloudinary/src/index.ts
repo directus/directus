@@ -147,16 +147,16 @@ export class DriverCloudinary implements TusDriver {
 		const response = await fetch(url, requestInit);
 
 		if (response.status >= 400 || !response.body) {
+			// An unread body holds its connection open
+			await response.body?.cancel();
+
 			throw new Error(`No stream returned for file "${filepath}"`);
 		}
 
 		return Readable.fromWeb(response.body);
 	}
 
-	async stat(filepath: string): Promise<{
-		size: number;
-		modified: Date;
-	}> {
+	private async requestResource(filepath: string) {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
 		const publicId = this.getPublicId(fullPath);
@@ -178,15 +178,25 @@ export class DriverCloudinary implements TusDriver {
 
 		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/explicit`;
 
-		const response = await fetch(url, {
+		return await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			},
 			body,
 		});
+	}
+
+	async stat(filepath: string): Promise<{
+		size: number;
+		modified: Date;
+	}> {
+		const response = await this.requestResource(filepath);
 
 		if (response.status >= 400) {
+			// An unread body holds its connection open
+			await response.body?.cancel();
+
 			throw new Error(`No stat returned for file "${filepath}"`);
 		}
 
@@ -195,12 +205,18 @@ export class DriverCloudinary implements TusDriver {
 	}
 
 	async exists(filepath: string): Promise<boolean> {
-		try {
-			await this.stat(filepath);
-			return true;
-		} catch {
-			return false;
+		const response = await this.requestResource(filepath);
+
+		// Nothing here reads the body, and an unread body holds its connection open
+		await response.body?.cancel();
+
+		if (response.status === 404) return false;
+
+		if (response.status >= 400) {
+			throw new Error(`Couldn't check whether file "${filepath}" exists (${response.status})`);
 		}
+
+		return true;
 	}
 
 	async move(src: string, dest: string): Promise<void> {

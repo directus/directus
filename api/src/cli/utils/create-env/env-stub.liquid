@@ -316,7 +316,7 @@ EXTENSIONS_AUTO_RELOAD=false
 EMAIL_FROM="no-reply@example.com"
 
 # What to use to send emails. One of
-# sendmail, smtp, mailgun, ses.
+# sendmail, smtp, mailgun, ses, mailtrap.
 EMAIL_TRANSPORT="sendmail"
 EMAIL_SENDMAIL_NEW_LINE="unix"
 EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"
@@ -343,3 +343,15 @@ EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"
 ## Email (Mailgun Transport)
 # EMAIL_MAILGUN_API_KEY="key-1234123412341234"
 # EMAIL_MAILGUN_DOMAIN="a domain name from https://app.mailgun.com/app/sending/domains"
+
+## Email (Mailtrap Transport)
+# EMAIL_MAILTRAP_TOKEN="an API token from https://mailtrap.io/api-tokens"
+
+# Send to a testing inbox instead of real recipients [false]
+# EMAIL_MAILTRAP_SANDBOX=false
+
+# Which testing inbox to send to, required in sandbox mode
+# EMAIL_MAILTRAP_TEST_INBOX_ID=1234567
+
+# Send via the bulk stream, cannot be combined with sandbox mode [false]
+# EMAIL_MAILTRAP_BULK=false

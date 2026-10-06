@@ -67,6 +67,17 @@ export default function getMailer(): Transporter {
 				host: env['EMAIL_MAILGUN_HOST'] || 'api.mailgun.net',
 			}) as any,
 		);
+	} else if (transportName === 'mailtrap') {
+		const { MailtrapTransport } = require('mailtrap');
+
+		const mailtrapOptions: Record<string, unknown> = getConfigFromEnv('EMAIL_MAILTRAP_');
+
+		// mailtrap's transport has no verify(), so an absent token would only surface on the first send
+		if (!mailtrapOptions['token']) {
+			throw new Error('The EMAIL_MAILTRAP_TOKEN env var is required for the mailtrap transport');
+		}
+
+		transporter = nodemailer.createTransport(MailtrapTransport(mailtrapOptions));
 	} else {
 		logger.warn('Illegal transport given for email. Check the EMAIL_TRANSPORT env var.');
 	}

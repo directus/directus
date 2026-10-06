@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, test } from 'vitest';
 import type { JsonValue } from '../src/index.js';
-import { createDirectus, readItems, rest } from '../src/index.js';
+import { createDirectus, readItems, readUsers, rest } from '../src/index.js';
 import type {
 	CollectionA,
 	CollectionAB_Any,
@@ -9,6 +9,22 @@ import type {
 	CollectionC,
 	TestSchema,
 } from './schema.js';
+
+describe('Nested field selection on a core collection relation (issue #23313)', () => {
+	test('role relation narrows to the selected fields', async () => {
+		interface Collections {
+			a_collection: { id: string };
+		}
+
+		const client = createDirectus<Collections>('URL').with(rest());
+
+		const users = await client.request(readUsers({ fields: ['id', { role: ['id', 'name'] }] }));
+
+		// role is nullable on DirectusUser
+		const firstRoleName = users[0]?.role?.name;
+		firstRoleName satisfies string | null | undefined;
+	});
+});
 
 describe('Test relational return typing (issue #23545)', () => {
 	test('Flat relational field return type', () => {

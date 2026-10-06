@@ -12,7 +12,7 @@ import { port } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
-const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 
 const alpha = `${getUID()}_alpha`;
 const beta = `${getUID()}_beta`;
@@ -88,5 +88,91 @@ describe('POST /schema/diff', () => {
 		test('should not bypass a version mismatch for an explicit `?force=false`', async () => {
 			expect((await postMismatched('?force=false')).status).toBe(400);
 		});
+	});
+
+	test('meta diff should be marked as E', async () => {
+		const collection = await api.request(createCollection({ collection: `${getUID()}_delta`, schema: {}, meta: {} }));
+
+		const snapshot = await api.request(schemaSnapshot());
+
+		snapshot.collections = snapshot.collections.map((coll) => {
+			if (coll['collection'] === collection.collection) {
+				delete coll['meta']['status'];
+			}
+
+			return coll;
+		});
+
+		const { diff } = await api.request(schemaDiff(snapshot, { force: true }));
+
+		expect(diff).toMatchInlineSnapshot(`
+			{
+			  "collections": [
+			    {
+			      "collection": "schema_diff_delta",
+			      "diff": [
+			        {
+			          "kind": "E",
+			          "lhs": {
+			            "accountability": "all",
+			            "archive_app_filter": true,
+			            "archive_field": null,
+			            "archive_value": null,
+			            "autosave_revision_interval": null,
+			            "collapse": "open",
+			            "collection": "schema_diff_delta",
+			            "color": null,
+			            "display_template": null,
+			            "group": null,
+			            "hidden": false,
+			            "icon": null,
+			            "item_duplication_fields": null,
+			            "note": null,
+			            "preview_url": null,
+			            "singleton": false,
+			            "sort": null,
+			            "sort_field": null,
+			            "status": "active",
+			            "translations": null,
+			            "unarchive_value": null,
+			            "versioning": false,
+			          },
+			          "path": [
+			            "meta",
+			          ],
+			          "rhs": {
+			            "accountability": "all",
+			            "archive_app_filter": true,
+			            "archive_field": null,
+			            "archive_value": null,
+			            "autosave_revision_interval": null,
+			            "collapse": "open",
+			            "collection": "schema_diff_delta",
+			            "color": null,
+			            "display_template": null,
+			            "group": null,
+			            "hidden": false,
+			            "icon": null,
+			            "item_duplication_fields": null,
+			            "note": null,
+			            "preview_url": null,
+			            "singleton": false,
+			            "sort": null,
+			            "sort_field": null,
+			            "translations": null,
+			            "unarchive_value": null,
+			            "versioning": false,
+			          },
+			        },
+			      ],
+			    },
+			  ],
+			  "fields": [],
+			  "relations": [],
+			  "systemFields": [],
+			}
+		`);
+
+		await api.request(deleteCollection(collection.collection));
 	});
 });

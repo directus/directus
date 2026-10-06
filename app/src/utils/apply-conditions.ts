@@ -1,6 +1,6 @@
 import { Field } from '@directus/types';
 import { validatePayload } from '@directus/utils';
-import { isArray, mergeWith } from 'lodash';
+import { isArray, mergeWith } from 'lodash-es';
 import type { ContentVersionMaybeNew } from '@/types/versions';
 import { parseFilter } from '@/utils/parse-filter';
 

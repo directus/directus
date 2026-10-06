@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { DeepPartial, Field, Settings, SettingsModuleBarLink, SettingsModuleBarModule } from '@directus/types';
-import { assign } from 'lodash';
+import { assign } from 'lodash-es';
 import { nanoid } from 'nanoid';
 import { computed, ref } from 'vue';
 import Draggable from 'vuedraggable';

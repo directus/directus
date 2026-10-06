@@ -125,7 +125,9 @@ describe('#constructor', () => {
 			bucket: vi.fn().mockReturnValue(mockBucket),
 		} as unknown as Storage;
 
-		vi.mocked(Storage).mockReturnValue(mockStorage);
+		vi.mocked(Storage).mockImplementation(function () {
+			return mockStorage;
+		} as unknown as typeof Storage);
 
 		const driver = new DriverGCS({
 			bucket: sample.config.bucket,
@@ -335,6 +337,17 @@ describe('#exists', () => {
 	test('Returns boolean from response array', async () => {
 		const result = await driver.exists(sample.path.input);
 		expect(result).toBe(true);
+	});
+
+	/**
+	 * The SDK only answers false for a missing object, so a failed lookup has to keep travelling. Reporting
+	 * it as a missing file makes callers act on a wrong answer.
+	 */
+	test('Throws if the lookup failed', async () => {
+		const error = new Error('Service unavailable');
+		mockFile.exists.mockRejectedValue(error);
+
+		await expect(driver.exists(sample.path.input)).rejects.toThrowError(error);
 	});
 });
 

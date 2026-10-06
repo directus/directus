@@ -385,7 +385,10 @@ describe('#read', () => {
 		const mockGetObjectCommand = {} as GetObjectCommand;
 
 		vi.mocked(driver['client'].send).mockReturnValue({ Body: sample.stream } as unknown as void);
-		vi.mocked(GetObjectCommand).mockReturnValue(mockGetObjectCommand);
+
+		vi.mocked(GetObjectCommand).mockImplementation(function () {
+			return mockGetObjectCommand;
+		} as unknown as typeof GetObjectCommand);
 
 		const stream = await driver.read(sample.path.input, { range: sample.range });
 
@@ -415,7 +418,10 @@ describe('#stat', () => {
 
 	test('Calls #send with HeadObjectCommand', async () => {
 		const mockHeadObjectCommand = {} as HeadObjectCommand;
-		vi.mocked(HeadObjectCommand).mockReturnValue(mockHeadObjectCommand);
+
+		vi.mocked(HeadObjectCommand).mockImplementation(function () {
+			return mockHeadObjectCommand;
+		} as unknown as typeof HeadObjectCommand);
 
 		await driver.stat(sample.path.input);
 
@@ -445,12 +451,34 @@ describe('#exists', () => {
 		expect(exists).toBe(true);
 	});
 
-	test('Returns false if stat throws an error', async () => {
-		vi.mocked(driver.stat).mockRejectedValue(new Error());
+	test('Returns false if the object is not found', async () => {
+		vi.mocked(driver.stat).mockRejectedValue(Object.assign(new Error(), { $metadata: { httpStatusCode: 404 } }));
 
 		const exists = await driver.exists(sample.path.input);
 
 		expect(exists).toBe(false);
+	});
+
+	/**
+	 * Reporting a timed out or rejected request as "the file isn't there" makes callers act on a wrong
+	 * answer, for example by serving a permission error for a file that does exist. A 403 is not an
+	 * answer either: HEAD has no body, so it covers rejected credentials as much as a missing object.
+	 *
+	 * Error shapes as produced by @aws-sdk/client-s3 3.928.0. A timeout carries `$metadata` without a
+	 * `httpStatusCode`.
+	 */
+	test.each([
+		['a rejected request', { $metadata: { httpStatusCode: 403 } }],
+		['the wrong region', { $metadata: { httpStatusCode: 301 } }],
+		['a server error', { $metadata: { httpStatusCode: 500 } }],
+		['a socket timeout', { name: 'TimeoutError', $metadata: { attempts: 3 } }],
+		['a refused connection', { code: 'ECONNREFUSED' }],
+	])('Throws if the lookup failed with %s', async (_, shape) => {
+		const error = Object.assign(new Error(), shape);
+
+		vi.mocked(driver.stat).mockRejectedValue(error);
+
+		await expect(driver.exists(sample.path.input)).rejects.toThrow(error);
 	});
 });
 
@@ -546,7 +574,10 @@ describe('#copy', () => {
 
 	test('Executes CopyObjectCommand', async () => {
 		const mockCommand = {} as CopyObjectCommand;
-		vi.mocked(CopyObjectCommand).mockReturnValue(mockCommand);
+
+		vi.mocked(CopyObjectCommand).mockImplementation(function () {
+			return mockCommand;
+		} as unknown as typeof CopyObjectCommand);
 
 		await driver.copy(sample.path.src, sample.path.dest);
 
@@ -658,7 +689,10 @@ describe('#write', () => {
 
 	test('Waits for upload to be done', async () => {
 		const mockUpload = { done: vi.fn() };
-		vi.mocked(Upload).mockReturnValue(mockUpload as unknown as Upload);
+
+		vi.mocked(Upload).mockImplementation(function () {
+			return mockUpload;
+		} as unknown as typeof Upload);
 
 		await driver.write(sample.path.input, sample.stream);
 
@@ -678,7 +712,10 @@ describe('#delete', () => {
 
 	test('Executes DeleteObjectCommand', async () => {
 		const mockDeleteObjectCommand = {} as DeleteObjectCommand;
-		vi.mocked(DeleteObjectCommand).mockReturnValue(mockDeleteObjectCommand);
+
+		vi.mocked(DeleteObjectCommand).mockImplementation(function () {
+			return mockDeleteObjectCommand;
+		} as unknown as typeof DeleteObjectCommand);
 
 		await driver.delete(sample.path.input);
 
@@ -701,7 +738,11 @@ describe('#list', () => {
 
 	test('Calls send with the command', async () => {
 		const mockListObjectsV2Command = {} as ListObjectsV2Command;
-		vi.mocked(ListObjectsV2Command).mockReturnValue(mockListObjectsV2Command);
+
+		vi.mocked(ListObjectsV2Command).mockImplementation(function () {
+			return mockListObjectsV2Command;
+		} as unknown as typeof ListObjectsV2Command);
+
 		vi.mocked(driver['client'].send).mockResolvedValue({} as unknown as void);
 
 		await driver.list(sample.path.input).next();

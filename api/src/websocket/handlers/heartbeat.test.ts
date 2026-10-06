@@ -37,25 +37,30 @@ vi.mock('@directus/env', () => ({
 let controller: WebSocketController;
 let mockClient: WebSocketClient;
 
-beforeEach(() => {
-	vi.useFakeTimers();
-	controller = getWebSocketController()!;
-
-	mockClient = {
+function createMockClient() {
+	return {
 		on: vi.fn(),
 		off: vi.fn(),
 		send: vi.fn(),
 		close: vi.fn(),
 	} as unknown as WebSocketClient;
+}
+
+beforeEach(() => {
+	vi.useFakeTimers();
+	controller = getWebSocketController()!;
+
+	mockClient = createMockClient();
 });
 
 afterEach(() => {
-	vi.clearAllMocks();
 	vi.useRealTimers();
+	emitter.offAll();
+	vi.clearAllMocks();
 });
 
 describe('WebSocket heartbeat handler', () => {
-	test('client should ping', async () => {
+	test('should not close a client that responds to pings', async () => {
 		// initialize handler
 		new HeartbeatHandler(controller);
 
@@ -76,7 +81,7 @@ describe('WebSocket heartbeat handler', () => {
 		expect(mockClient.close).not.toBeCalled();
 	});
 
-	test('connection should be closed', async () => {
+	test('should close a client that does not respond to pings', async () => {
 		// initialize handler
 		new HeartbeatHandler(controller);
 
@@ -88,7 +93,59 @@ describe('WebSocket heartbeat handler', () => {
 		expect(mockClient.close).toBeCalled();
 	});
 
-	test('the server should pong if the client pings', async () => {
+	test('should unsubscribe the message watcher and close only the unresponsive client', async () => {
+		const handler = new HeartbeatHandler(controller);
+
+		const listenersBefore = emitter.countActionListeners('websocket.message');
+		const responsive = createMockClient();
+
+		// replying more than once per ping must not drag any other client out of the pending set
+		(responsive.send as Mock).mockImplementation(() => {
+			for (const type of ['pong', 'pong', 'ping']) {
+				emitter.emitAction('websocket.message', { client: responsive, message: { type } }, {} as EventContext);
+			}
+		});
+
+		controller.clients.add(responsive);
+		controller.clients.add(mockClient);
+		handler.pingClients();
+
+		// mockClient stays idle, so the watcher is still waiting on it
+		expect(emitter.countActionListeners('websocket.message')).toBe(listenersBefore + 1);
+
+		vi.advanceTimersByTime(1000);
+
+		expect(responsive.close).not.toBeCalled();
+		expect(mockClient.close).toBeCalled();
+		expect(emitter.countActionListeners('websocket.message')).toBe(listenersBefore);
+	});
+
+	test('should not accumulate message watchers over repeated pings', async () => {
+		new HeartbeatHandler(controller);
+
+		const listenersBefore = emitter.countActionListeners('websocket.message');
+
+		controller.clients.add(mockClient);
+		emitter.emitAction('websocket.connect', {}, {} as EventContext);
+
+		// the client stays idle, so every ping times out
+		vi.advanceTimersByTime(20 * 1000);
+
+		// only the ping that is currently in flight may hold a watcher
+		expect(emitter.countActionListeners('websocket.message')).toBeLessThanOrEqual(listenersBefore + 1);
+	});
+
+	test('should not subscribe a message watcher when there are no clients to ping', async () => {
+		const handler = new HeartbeatHandler(controller);
+
+		const listenersBefore = emitter.countActionListeners('websocket.message');
+
+		handler.pingClients();
+
+		expect(emitter.countActionListeners('websocket.message')).toBe(listenersBefore);
+	});
+
+	test('should send a pong when the client pings', async () => {
 		// initialize handler
 		new HeartbeatHandler(controller);
 

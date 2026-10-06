@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { Field, ValidationError } from '@directus/types';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VDetail from '@/components/v-detail.vue';

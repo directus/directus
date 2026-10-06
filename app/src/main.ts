@@ -4,7 +4,8 @@
 // eslint-disable-next-line import/order
 import { createApp } from 'vue';
 
-import { createHead } from '@unhead/vue';
+import { createHead } from '@unhead/vue/client';
+import { TemplateParamsPlugin } from '@unhead/vue/plugins';
 import { createPinia } from 'pinia';
 import App from './app.vue';
 import { registerComponents } from './components/register';
@@ -36,7 +37,7 @@ async function init() {
 
 	app.use(i18n);
 	app.use(createPinia());
-	app.use(createHead());
+	app.use(createHead({ plugins: [TemplateParamsPlugin] }));
 
 	app.config.errorHandler = (err, vm, info) => {
 		const source = getVueComponentName(vm);
