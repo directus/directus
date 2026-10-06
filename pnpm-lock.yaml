@@ -463,8 +463,8 @@ catalogs:
       specifier: 8.0.1
       version: 8.0.1
     braintrust:
-      specifier: 3.27.0
-      version: 3.27.0
+      specifier: 3.37.0
+      version: 3.37.0
     busboy:
       specifier: 1.6.0
       version: 1.6.0
@@ -1081,7 +1081,7 @@ importers:
         version: 3.1111.0
       '@braintrust/otel':
         specifier: 'catalog:'
-        version: 0.2.0(@opentelemetry/api@1.9.1)(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/exporter-trace-otlp-http@0.202.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(braintrust@3.27.0(@aws-sdk/credential-provider-web-identity@3.972.77)(zod@4.1.12))
+        version: 0.2.0(@opentelemetry/api@1.9.1)(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/exporter-trace-otlp-http@0.202.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(braintrust@3.37.0(@aws-sdk/credential-provider-web-identity@3.972.77)(zod@4.1.12))
       '@directus/ai':
         specifier: workspace:*
         version: link:../packages/ai
@@ -1575,7 +1575,7 @@ importers:
         version: 3.0.1
       braintrust:
         specifier: 'catalog:'
-        version: 3.27.0(@aws-sdk/credential-provider-web-identity@3.972.77)(zod@4.1.12)
+        version: 3.37.0(@aws-sdk/credential-provider-web-identity@3.972.77)(zod@4.1.12)
       mailtrap:
         specifier: 'catalog:'
         version: 4.9.0(@types/nodemailer@8.0.1)(nodemailer@10.0.15)
@@ -5097,12 +5097,6 @@ packages:
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
 
-  '@kwsites/file-exists@1.1.1':
-    resolution: {integrity: sha512-m9/5YGR18lIwxSFDwfE3oA7bWuq9kdau6ugN4H2rJeyhFQZcG9AgSHkQtSD15a8WvTgfz9aikZMrKPHvbpqFiw==}
-
-  '@kwsites/promise-deferred@1.1.1':
-    resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
-
   '@langfuse/core@4.6.1':
     resolution: {integrity: sha512-DtQoKWHQh0I0MsJxcKrBQVKAJ3fea6+raXlISVY3NDMFG/zSKkdkNouQvUXQtSCHBbOFupHMBw8imM30lbhq3g==}
     peerDependencies:
@@ -6410,12 +6404,6 @@ packages:
     engines: {node: '>=18.12.0'}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
-  '@simple-git/args-pathspec@1.0.3':
-    resolution: {integrity: sha512-ngJMaHlsWDTfjyq9F3VIQ8b7NXbBLq5j9i5bJ6XLYtD6qlDXT7fdKY2KscWWUF8t18xx052Y/PUO1K1TRc9yKA==}
-
-  '@simple-git/argv-parser@1.1.1':
-    resolution: {integrity: sha512-Q9lBcfQ+VQCpQqGJFHe5yooOS5hGdLFFbJ5R+R5aDsnkPCahtn1hSkMcORX65J2Z5lxSkD0lQorMsncuBQxYUw==}
-
   '@sindresorhus/is@4.6.0':
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
     engines: {node: '>=10'}
@@ -6901,6 +6889,9 @@ packages:
   '@types/papaparse@5.5.0':
     resolution: {integrity: sha512-GVs5iMQmUr54BAZYYkByv8zPofFxmyxUpISPb2oh8sayR3+1zbxasrOvoKiHJ/nnoq/uULuPsu1Lze1EkagVFg==}
 
+  '@types/prop-types@15.7.15':
+    resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
+
   '@types/proxy-addr@2.0.3':
     resolution: {integrity: sha512-TgAHHO4tNG3HgLTUhB+hM4iwW6JUNeQHCLnF1DjaDA9c69PN+IasoFu2MYDhubFc+ZIw5c5t9DMtjvrD6R3Egg==}
 
@@ -6912,6 +6903,9 @@ packages:
 
   '@types/range-parser@1.2.7':
     resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
+
+  '@types/react@18.3.31':
+    resolution: {integrity: sha512-vfEqpXTvwT91yhmwdfouStN2hSKwTvyRs8qpLfADyrq/kxDw0hZM7Wk9Ug1FELj8hIby+S/+kQCSRFF32nv2Qw==}
 
   '@types/readable-stream@4.0.24':
     resolution: {integrity: sha512-NRvUNC/JFGPJvqdAfEve8oginbM6V08u5NzLWpG8MwA2kTPOLnqk+wpwuPT+mp3aUsxyuT6m2gnrPuHYCruzEg==}
@@ -7857,8 +7851,8 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
-  braintrust@3.27.0:
-    resolution: {integrity: sha512-xtWgk4o8OACq6qPhIQSIBeJErj9POUUDcpTWIIjbPNSgpBPMktNLb1cMbk06YsF3goNnOlKaMcOBgwNhy1OSxQ==}
+  braintrust@3.37.0:
+    resolution: {integrity: sha512-c3U1p0vNQUYijmOqEw2s+TrVYhai/P9QQ8awvyRnfip/IHhHHhUe7aAixqTFZDtjDYHBuvsCtDp3GVbL9LVQ7A==}
     hasBin: true
     peerDependencies:
       zod: ^3.25.34 || ^4.0
@@ -12271,9 +12265,6 @@ packages:
   simple-get@4.0.1:
     resolution: {integrity: sha512-brv7p5WgH0jmQJr1ZDDfKDOSeWWg+OVypG99A/5vYGPqJ6pxiaHLy8nxtFjBA7oMa01ebA9gfh1uMCFqOuXxvA==}
 
-  simple-git@3.36.0:
-    resolution: {integrity: sha512-cGQjLjK8bxJw4QuYT7gxHw3/IouVESbhahSsHrX97MzCL1gu2u7oy38W6L2ZIGECEfIBG4BabsWDPjBxJENv9Q==}
-
   simple-update-notifier@2.0.0:
     resolution: {integrity: sha512-a2B9Y0KlNXl9u/vsW6sTIu9vGEpfKu2wRV6l1H3XEas/0gUIzGzBoP/IouTcUQbm9JWZLH3COxyn03TYlFax6w==}
     engines: {node: '>=10'}
@@ -14405,13 +14396,13 @@ snapshots:
   '@braintrust/bt-win32-x64@0.12.0':
     optional: true
 
-  '@braintrust/otel@0.2.0(@opentelemetry/api@1.9.1)(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/exporter-trace-otlp-http@0.202.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(braintrust@3.27.0(@aws-sdk/credential-provider-web-identity@3.972.77)(zod@4.1.12))':
+  '@braintrust/otel@0.2.0(@opentelemetry/api@1.9.1)(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/exporter-trace-otlp-http@0.202.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(braintrust@3.37.0(@aws-sdk/credential-provider-web-identity@3.972.77)(zod@4.1.12))':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/core': 2.11.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/exporter-trace-otlp-http': 0.202.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-trace-base': 2.11.0(@opentelemetry/api@1.9.1)
-      braintrust: 3.27.0(@aws-sdk/credential-provider-web-identity@3.972.77)(zod@4.1.12)
+      braintrust: 3.37.0(@aws-sdk/credential-provider-web-identity@3.972.77)(zod@4.1.12)
 
   '@bramus/specificity@2.4.2':
     dependencies:
@@ -15615,14 +15606,6 @@ snapshots:
 
   '@keyv/serialize@1.1.1': {}
 
-  '@kwsites/file-exists@1.1.1':
-    dependencies:
-      debug: 4.4.3(supports-color@5.5.0)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@kwsites/promise-deferred@1.1.1': {}
-
   '@langfuse/core@4.6.1(@opentelemetry/api@1.9.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
@@ -16692,12 +16675,6 @@ snapshots:
 
   '@shopify/semaphore@3.1.0': {}
 
-  '@simple-git/args-pathspec@1.0.3': {}
-
-  '@simple-git/argv-parser@1.1.1':
-    dependencies:
-      '@simple-git/args-pathspec': 1.0.3
-
   '@sindresorhus/is@4.6.0': {}
 
   '@sindresorhus/merge-streams@4.0.0': {}
@@ -17234,6 +17211,8 @@ snapshots:
     dependencies:
       '@types/node': 26.2.0
 
+  '@types/prop-types@15.7.15': {}
+
   '@types/proxy-addr@2.0.3':
     dependencies:
       '@types/node': 26.2.0
@@ -17245,6 +17224,11 @@ snapshots:
   '@types/qs@6.14.0': {}
 
   '@types/range-parser@1.2.7': {}
+
+  '@types/react@18.3.31':
+    dependencies:
+      '@types/prop-types': 15.7.15
+      csstype: 3.2.3
 
   '@types/readable-stream@4.0.24':
     dependencies:
@@ -18356,9 +18340,10 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  braintrust@3.27.0(@aws-sdk/credential-provider-web-identity@3.972.77)(zod@4.1.12):
+  braintrust@3.37.0(@aws-sdk/credential-provider-web-identity@3.972.77)(zod@4.1.12):
     dependencies:
       '@next/env': 14.2.35
+      '@types/react': 18.3.31
       '@vercel/functions': 1.6.0(@aws-sdk/credential-provider-web-identity@3.972.77)
       acorn: 8.18.0
       acorn-import-attributes: 1.9.5(acorn@8.18.0)
@@ -18381,7 +18366,6 @@ snapshots:
       mustache: 4.2.0
       pluralize: 8.0.0
       semifies: 1.0.0
-      simple-git: 3.36.0
       source-map: 0.7.6
       termi-link: 1.1.0
       unplugin: 2.3.11
@@ -23229,16 +23213,6 @@ snapshots:
       decompress-response: 6.0.0
       once: 1.4.0
       simple-concat: 1.0.1
-
-  simple-git@3.36.0:
-    dependencies:
-      '@kwsites/file-exists': 1.1.1
-      '@kwsites/promise-deferred': 1.1.1
-      '@simple-git/args-pathspec': 1.0.3
-      '@simple-git/argv-parser': 1.1.1
-      debug: 4.4.3(supports-color@5.5.0)
-    transitivePeerDependencies:
-      - supports-color
 
   simple-update-notifier@2.0.0:
     dependencies:
