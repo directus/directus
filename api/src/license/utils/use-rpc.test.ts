@@ -8,7 +8,7 @@ vi.mock('../../bus/index.js');
 const warn = vi.fn();
 
 vi.mock('../../logger/index.js', () => ({
-	useLogger: () => ({ warn }),
+	useLogger: () => ({ warn, debug: vi.fn() }),
 }));
 
 let testBus: ReturnType<typeof createMockBus>;
