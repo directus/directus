@@ -20,9 +20,14 @@ vi.mock('@directus/composables', async () => {
 	};
 });
 
+const permissionsState = vi.hoisted(() => ({
+	readFoldersAllowed: true,
+}));
+
 vi.mock('@/composables/use-permissions', () => ({
-	useCollectionPermissions: () => ({
+	useCollectionPermissions: (collection: string) => ({
 		createAllowed: false,
+		readAllowed: collection === 'directus_folders' ? permissionsState.readFoldersAllowed : true,
 	}),
 }));
 
@@ -192,6 +197,7 @@ describe('export-sidebar-detail default exports folder', () => {
 	afterEach(() => {
 		settingsState.default_exports_folder = null;
 		settingsState.storage_default_folder = null;
+		permissionsState.readFoldersAllowed = true;
 	});
 
 	test('pre-selects the default exports folder', async () => {
@@ -210,5 +216,16 @@ describe('export-sidebar-detail default exports folder', () => {
 		await wrapper.vm.$nextTick();
 
 		expect(wrapper.findComponent({ name: 'FolderPicker' }).props('modelValue')).toBe('storage-folder');
+	});
+
+	test('hides the folder picker when folders cannot be read', async () => {
+		permissionsState.readFoldersAllowed = false;
+
+		const wrapper = mountComponent({ layoutQuery: { limit: 3000 } });
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.findComponent({ name: 'FolderPicker' }).exists()).toBe(false);
+		expect(wrapper.find('.folder-not-selectable-notice').exists()).toBe(true);
 	});
 });

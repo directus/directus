@@ -75,6 +75,7 @@ const fileExtension = computed(() => {
 const { primaryKeyField, fields, info: collectionInfo } = useCollection(collection);
 
 const { createAllowed } = useCollectionPermissions(collection);
+const { readAllowed: readFoldersAllowed } = useCollectionPermissions('directus_folders');
 
 const { info } = useServerStore();
 const settingsStore = useSettingsStore();
@@ -582,7 +583,10 @@ async function exportDataFiles() {
 
 				<div class="field half-right">
 					<p class="type-label">{{ $t('folder') }}</p>
-					<FolderPicker v-if="location === 'files'" v-model="folder" type="files" />
+					<FolderPicker v-if="location === 'files' && readFoldersAllowed" v-model="folder" type="files" />
+					<VNotice v-else-if="location === 'files'" class="folder-not-selectable-notice">
+						{{ $t('exporting_folder_not_selectable') }}
+					</VNotice>
 					<VNotice v-else>{{ $t('not_available_for_local_downloads') }}</VNotice>
 				</div>
 
