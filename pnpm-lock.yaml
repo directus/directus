@@ -166,8 +166,8 @@ catalogs:
       specifier: 5.1.2
       version: 5.1.2
     '@modelcontextprotocol/sdk':
-      specifier: 1.30.0
-      version: 1.30.0
+      specifier: 1.32.1
+      version: 1.32.1
     '@netlify/api':
       specifier: 14.0.14
       version: 14.0.14
@@ -1159,7 +1159,7 @@ importers:
         version: 4.0.0(@opentelemetry/api@1.9.1)(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/exporter-trace-otlp-http@0.202.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))
       '@modelcontextprotocol/sdk':
         specifier: 'catalog:'
-        version: 1.30.0(zod@4.1.12)
+        version: 1.32.1(zod@4.1.12)
       '@netlify/api':
         specifier: 'catalog:'
         version: 14.0.14
@@ -5178,8 +5178,8 @@ packages:
   '@maplibre/vt-pbf@4.3.2':
     resolution: {integrity: sha512-j6p0AdjvAR19Z3XaCysle7A4ZSo08tYOzxD0Y9NQylwPAkwJJeYub5b2eVucdeDh7erhv69DahoLOevDRERRUw==}
 
-  '@modelcontextprotocol/sdk@1.30.0':
-    resolution: {integrity: sha512-xKd8OIzlqNzcqcNumGAa6g+PW2kjD5vrpcKOnfldAUPP3j7lnqMPwlTXQm8gF+UwH72z0lqaRbjr9hqGz0eITA==}
+  '@modelcontextprotocol/sdk@1.32.1':
+    resolution: {integrity: sha512-2DdE+SJDtzLEEWzY1ZjY7Q+VcPhcV1KisD3zI4u0XZyktsjHum1mwbMI+JaulUBi2OZk+KJAi2uPXzxichPkdw==}
     engines: {node: '>=18'}
     peerDependencies:
       '@cfworker/json-schema': ^4.1.1
@@ -15722,7 +15722,7 @@ snapshots:
       '@types/geojson': 7946.0.16
       pbf: 5.1.2
 
-  '@modelcontextprotocol/sdk@1.30.0(zod@4.1.12)':
+  '@modelcontextprotocol/sdk@1.32.1(zod@4.1.12)':
     dependencies:
       '@hono/node-server': 2.1.1(hono@4.13.7)
       ajv: 8.20.0
