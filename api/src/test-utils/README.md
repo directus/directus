@@ -359,8 +359,8 @@ for `vi.mocked(useEnv).mockReturnValue()`.
 
 #### `setEnv(overrides)`
 
-Overrides env values on top of the `mockUseEnv()` defaults, until the next `resetEnv()`. The object returned by `useEnv()`
-is updated in place, so modules holding a reference from a top level `useEnv()` call see the change too.
+Overrides env values on top of the `mockUseEnv()` defaults, until the next `resetEnv()`. The object returned by
+`useEnv()` is updated in place, so modules holding a reference from a top level `useEnv()` call see the change too.
 
 #### `resetEnv()`
 
