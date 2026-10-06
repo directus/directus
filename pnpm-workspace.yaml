@@ -326,7 +326,7 @@ catalog:
   vite-plugin-vue-devtools: 7.7.2
   vite-tsconfig-paths: 5.1.4
   vitest: 4.1.11
-  vue: 3.5.24
+  vue: 3.5.43
   vue-eslint-parser: 10.4.1
   vue-i18n: 11.1.12
   vue-router: 4.6.3
