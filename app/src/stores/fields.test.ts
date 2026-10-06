@@ -1,6 +1,6 @@
 import { Field } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useFieldsStore } from './fields';

@@ -1168,7 +1168,6 @@ licensing:
 settings_appearance: 외관
 settings_ai: AI
 model_context_protocol: 모델 컨텍스트 프로토콜
-settings_flows: 플로우
 settings_system_logs: 시스템 로그
 settings_presets: 북마크
 settings_translations: 번역

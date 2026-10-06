@@ -4,7 +4,7 @@ import type { ContentVersion } from '@directus/types';
 import { sameOrigin } from '@directus/utils/browser';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useElementHover, useLocalStorage } from '@vueuse/core';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { computed, type ComputedRef, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';

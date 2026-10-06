@@ -1,11 +1,12 @@
 import { activateLicense, readLicense } from '@directus/license';
 import { mockClient } from '@directus/mock-license-server';
-import { sandbox, type Sandbox } from '@directus/sandbox';
+import { type Sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeAll, expect, test } from 'vitest';
 import { createLicense } from './__fixtures__/licenses.js';
-import { withDefaultSandboxOptions } from './__fixtures__/sandbox.js';
 
 const license = createLicense({ meta: { name: 'horizontal-test' } });
 
@@ -14,21 +15,19 @@ let api1: DirectusClient<any> & RestClient<any>;
 let api2: DirectusClient<any> & RestClient<any>;
 
 beforeAll(async () => {
-	directus = await sandbox(
-		database,
-		withDefaultSandboxOptions({
-			instances: '2',
-			hooks: {
-				async beforeApi({ env }) {
-					await mockClient.registerLicense(env.LICENSE_API_URL!, license);
-				},
+	directus = await useSandbox(database, {
+		port: sandboxPort(0),
+		instances: '2',
+		hooks: {
+			async beforeApi({ env }) {
+				await mockClient.registerLicense(env.LICENSE_API_URL!, license);
 			},
-			extras: {
-				license: true,
-				redis: true,
-			},
-		}),
-	);
+		},
+		extras: {
+			license: true,
+			redis: true,
+		},
+	});
 
 	api1 = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 	api2 = createDirectus<any>(`http://localhost:${directus.apis[1]!.port}`).with(rest()).with(staticToken('admin'));

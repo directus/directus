@@ -20,13 +20,18 @@ export const readRelations =
  * List all Relations of a collection.
  * @param collection The collection
  * @returns Returns an array of Relation objects if a valid collection name was provided.
+ * @throws Will throw if collection is empty
  */
 export const readRelationByCollection =
 	<Schema>(collection: DirectusRelation<Schema>['collection']): RestCommand<ReadRelationOutput<Schema>[], Schema> =>
-	() => ({
-		path: `/relations/${collection}`,
-		method: 'GET',
-	});
+	() => {
+		throwIfEmpty(collection, 'Collection cannot be empty');
+
+		return {
+			path: `/relations/${collection}`,
+			method: 'GET',
+		};
+	};
 
 /**
  * List an existing Relation by collection and field name.

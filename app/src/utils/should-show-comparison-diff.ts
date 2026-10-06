@@ -1,4 +1,4 @@
-import { isArray, isNil, isPlainObject, isString } from 'lodash';
+import { isArray, isNil, isPlainObject, isString } from 'lodash-es';
 
 export function shouldShowComparisonDiff(
 	comparisonMode: boolean | undefined,

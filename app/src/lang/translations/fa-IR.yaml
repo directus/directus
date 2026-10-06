@@ -1424,7 +1424,6 @@ model_context_protocol: دستورالعمل زمینه مدل (MCP)
 ai_assistant: دستیار هوش مصنوعی
 ai_disabled_by_env: قابلیت‌های دستیار هوش مصنوعی از طریق متغیر محیطی غیر فعال شده است.
 mcp_disabled_by_env: قابلیت‌های MCP از طریق متغیر محیطی غیر فعال شده است.
-settings_flows: اتوماسیون
 settings_system_logs: لاگ‌های سیستم
 settings_presets: نشانک‌ها
 settings_translations: ترجمه‌ها

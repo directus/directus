@@ -12,7 +12,10 @@ let mockRedis: Redis;
 
 beforeEach(() => {
 	mockRedis = new Redis();
-	vi.mocked(Redis).mockReturnValue(mockRedis);
+
+	vi.mocked(Redis).mockImplementation(function () {
+		return mockRedis;
+	} as unknown as typeof Redis);
 });
 
 afterEach(() => {

@@ -19,6 +19,7 @@
 		"@directus/sdk": "workspace:*",
 		"date-fns": "catalog:",
 		"knex": "catalog:",
+		"ldapts": "catalog:",
 		"lodash-es": "catalog:",
 		"tus-js-client": "catalog:"
 	},

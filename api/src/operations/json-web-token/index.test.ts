@@ -1,11 +1,17 @@
 import jwt from 'jsonwebtoken';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import config from './index.js';
 
 beforeEach(() => {
 	vi.spyOn(jwt, 'sign');
 	vi.spyOn(jwt, 'verify');
 	vi.spyOn(jwt, 'decode');
+});
+
+// Vitest 4 hands back the existing spy when `spyOn` targets an already-spied method, so the
+// spies above have to be restored or they accumulate call history across tests.
+afterEach(() => {
+	vi.restoreAllMocks();
 });
 
 const secret = 'some-secret';

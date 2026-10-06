@@ -483,7 +483,10 @@ describe('AssetsService', () => {
 			};
 
 			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
-			vi.mocked(ZipArchive).mockReturnValue(mockArchiver as unknown as Archiver);
+
+			vi.mocked(ZipArchive).mockImplementation(function () {
+				return mockArchiver as unknown as Archiver;
+			} as unknown as typeof ZipArchive);
 		});
 
 		test('should throw error when no files provided', async () => {
@@ -710,7 +713,10 @@ describe('AssetsService', () => {
 		 */
 		test('should destroy streams a real archive never read once it is destroyed', async () => {
 			const { ZipArchive: ActualZipArchive } = await vi.importActual<typeof import('archiver')>('archiver');
-			vi.mocked(ZipArchive).mockImplementation((...args) => new ActualZipArchive(...args));
+
+			vi.mocked(ZipArchive).mockImplementation(function (...args) {
+				return new ActualZipArchive(...args);
+			});
 
 			const assetStream = new PassThrough();
 			// Left open, so the archive is still waiting on it when it gets destroyed
@@ -869,7 +875,10 @@ describe('AssetsService', () => {
 			};
 
 			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
-			vi.mocked(ZipArchive).mockReturnValue(mockArchiver as unknown as Archiver);
+
+			vi.mocked(ZipArchive).mockImplementation(function () {
+				return mockArchiver as unknown as Archiver;
+			} as unknown as typeof ZipArchive);
 		});
 
 		test('should zip multiple files', async () => {
@@ -955,7 +964,10 @@ describe('AssetsService', () => {
 			};
 
 			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
-			vi.mocked(ZipArchive).mockReturnValue(mockArchiver as unknown as Archiver);
+
+			vi.mocked(ZipArchive).mockImplementation(function () {
+				return mockArchiver as unknown as Archiver;
+			} as unknown as typeof ZipArchive);
 		});
 
 		test('should zip folder with files', async () => {

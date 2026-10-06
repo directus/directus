@@ -73,7 +73,10 @@ describe('GraphQL WebSocket onSubscribe', () => {
 		});
 
 		vi.mocked(getSchema).mockResolvedValue({} as any);
-		vi.mocked(GraphQLService).mockImplementation(() => ({ getSchema: vi.fn().mockResolvedValue(schema) }) as any);
+
+		vi.mocked(GraphQLService).mockImplementation(function () {
+			return { getSchema: vi.fn().mockResolvedValue(schema) } as any;
+		});
 	});
 
 	// The graphql-ws v6 signature is (ctx, id, payload) - the id and payload are separate arguments,

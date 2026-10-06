@@ -1,5 +1,5 @@
 import { Preset } from '@directus/types';
-import { cloneDeep, merge, orderBy } from 'lodash';
+import { cloneDeep, merge, orderBy } from 'lodash-es';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 import api from '@/api';

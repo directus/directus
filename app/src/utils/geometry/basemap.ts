@@ -1,4 +1,4 @@
-import { RasterSource, Style } from 'maplibre-gl';
+import type { RasterSourceSpecification, StyleSpecification } from 'maplibre-gl';
 import { useSettingsStore } from '@/stores/settings';
 import { getAppearance } from '@/utils/get-appearance';
 
@@ -18,7 +18,7 @@ export const defaultBasemap: BasemapSource = {
 	attribution: '© OpenStreetMap contributors',
 };
 
-const baseStyle: Style = {
+const baseStyle: Pick<StyleSpecification, 'version' | 'glyphs'> = {
 	version: 8,
 	glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
 };
@@ -33,12 +33,11 @@ export function getBasemapSources(): [BasemapSource] | BasemapSource[] {
 	return [defaultBasemap, ...(settingsStore.settings?.basemaps || [])];
 }
 
-export function getStyleFromBasemapSource(basemap: BasemapSource): Style | string {
+export function getStyleFromBasemapSource(basemap: BasemapSource): StyleSpecification | string {
 	if (basemap.type == 'style') {
 		return basemap.url;
 	} else {
-		const style: Style = { ...baseStyle };
-		const source: RasterSource = { type: 'raster' };
+		const source: RasterSourceSpecification = { type: 'raster' };
 		if (basemap.attribution) source.attribution = basemap.attribution;
 
 		if (basemap.type == 'raster') {
@@ -50,9 +49,11 @@ export function getStyleFromBasemapSource(basemap: BasemapSource): Style | strin
 			source.url = basemap.url;
 		}
 
-		style.layers = [{ id: basemap.name, source: basemap.name, type: 'raster' }];
-		style.sources = { [basemap.name]: source };
-		return style;
+		return {
+			...baseStyle,
+			layers: [{ id: basemap.name, source: basemap.name, type: 'raster' }],
+			sources: { [basemap.name]: source },
+		};
 	}
 }
 

@@ -158,7 +158,8 @@ export function deepMapFilter(
 				return callback([key, value], {
 					collection,
 					field: field ?? null,
-					...relationInfo,
+					relation: relationInfo.relation,
+					relationType: relationInfo.relationType,
 					function: functionName,
 					leaf,
 					quantity,

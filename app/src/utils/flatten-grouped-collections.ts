@@ -1,4 +1,4 @@
-import { groupBy, isNil, orderBy } from 'lodash';
+import { groupBy, isNil, orderBy } from 'lodash-es';
 import { Collection } from '@/types/collections';
 
 /**

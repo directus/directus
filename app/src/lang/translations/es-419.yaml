@@ -1269,7 +1269,6 @@ settings_ai: IA
 model_context_protocol: Model Context Protocol
 ai_assistant: Asistente de IA
 ai_disabled_by_env: Las funciones de Asistente de IA han sido deshabilitadas desde las variables de entorno.
-settings_flows: Flujos
 settings_system_logs: Registros del Sistema
 settings_presets: Marcadores
 settings_translations: Traducciónes

@@ -16,6 +16,7 @@ export const COLLECTION_DEFAULTS: CollectionDefaults = {
 	sortField: null,
 	note: null,
 	accountability: 'all',
+	status: 'active',
 };
 
 export const FIELD_DEFAULTS: Omit<FieldDefaults, 'type' | 'dbType'> = {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual } from 'lodash-es';
 import { computed, watch } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VSelect from '@/components/v-select/v-select.vue';

@@ -35,7 +35,9 @@ describe('files tool', () => {
 				deleteMany: vi.fn(),
 			};
 
-			vi.mocked(FilesService).mockImplementation(() => mockFilesService as unknown as FilesService);
+			vi.mocked(FilesService).mockImplementation(function () {
+				return mockFilesService as unknown as FilesService;
+			});
 		});
 
 		describe('READ action', () => {

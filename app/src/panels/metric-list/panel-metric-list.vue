@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cssVar } from '@directus/utils/browser';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { computed, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VListItem from '@/components/v-list-item.vue';

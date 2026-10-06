@@ -112,7 +112,10 @@ describe('syncExtensions', () => {
 		vi.mocked(getExtensionsPath).mockReturnValue('/local/extensions');
 		vi.mocked(isSynchronizing).mockResolvedValue(false);
 		vi.mocked(mid.machineId).mockResolvedValue('test-machine-id');
-		vi.mocked(SyncFileTracker).mockImplementation(() => mockFileTracker);
+
+		vi.mocked(SyncFileTracker).mockImplementation(function () {
+			return mockFileTracker;
+		});
 
 		vi.mocked(getSyncPaths).mockReturnValue({
 			localExtensionsPath: '/local/extensions',

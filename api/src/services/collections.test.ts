@@ -127,6 +127,7 @@ describe('Integration Tests', () => {
 				[{ collection: '   ' }, 'collection name only contains whitespace'],
 				[{ collection: ' new_collection' }, 'collection name starts with whitespace'],
 				[{ collection: 'new_collection ' }, 'collection name ends with whitespace'],
+				[{ collection: 'new_collection' }, 'neither "schema" nor "meta" is provided'],
 			];
 
 			test.each(invalidPayloads)('should throw InvalidPayloadError when %s', async (payload, _description) => {
@@ -316,6 +317,22 @@ describe('Integration Tests', () => {
 
 				expect(result).toEqual(['test', 'test']);
 				expect(createOneSpy).toHaveBeenCalledTimes(2);
+
+				createOneSpy.mockRestore();
+			});
+
+			test('should reject the batch when an entry has neither schema nor meta', async () => {
+				tracker.on.select('directus_collections').response([]);
+
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				await expect(
+					service.createMany([{ collection: 'collection1', schema: {} }, { collection: 'collection2' }]),
+				).rejects.toThrow(InvalidPayloadError);
 			});
 		});
 

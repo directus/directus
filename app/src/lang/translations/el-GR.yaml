@@ -337,7 +337,6 @@ licensing:
   entitlements:
     collections: Συλλογές
     flows: Ροές
-settings_flows: Ροές
 settings_presets: Σελιδοδείκτες
 layout: Διάταξη
 discard_changes: Ακύρωση αλλαγών

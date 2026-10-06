@@ -1,5 +1,5 @@
 import type { InterfaceConfig } from '@directus/extensions';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { App } from 'vue';
 
 export function getInternalInterfaces(): InterfaceConfig[] {

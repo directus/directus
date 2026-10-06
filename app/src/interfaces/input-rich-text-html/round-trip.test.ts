@@ -231,8 +231,32 @@ describe('round-trip: preserved attributes (class/id/title/role/lang/dir/data-*/
 		expect(roundTrip('<p><span>text</span></p>')).toBe('<p>text</p>');
 	});
 
+	test('a span styled only with properties the schema does not model is unwrapped in one pass', () => {
+		expect(roundTrip('<p><span style="white-space: pre-wrap;">text</span></p>')).toBe('<p>text</p>');
+	});
+
+	test('such a span still keeps its preserved attributes', () => {
+		expect(roundTrip('<p><span style="white-space: pre-wrap;" data-metadata="figma">text</span></p>')).toBe(
+			'<p><span data-metadata="figma">text</span></p>',
+		);
+	});
+
 	test('empty class/id are not preserved (no churn)', () => {
 		expect(roundTrip('<p class="" id="">text</p>')).toBe('<p>text</p>');
+	});
+
+	// ProseMirror stamps the first element of copied HTML with its slice context; it is transport
+	// metadata, never content
+	test('data-pm-slice is never preserved', () => {
+		expect(roundTrip('<p data-pm-slice="1 1 []">text</p>')).toBe('<p>text</p>');
+
+		expect(roundTrip('<p><strong data-pm-slice="1 1 []">bold</strong> text</p>')).toBe(
+			'<p><strong>bold</strong> text</p>',
+		);
+	});
+
+	test('a span carrying only data-pm-slice is unwrapped', () => {
+		expect(roundTrip('<p><span data-pm-slice="1 1 []">text</span></p>')).toBe('<p>text</p>');
 	});
 
 	test('page breaks still encode to the legacy comment', () => {
@@ -274,5 +298,33 @@ describe('round-trip: image', () => {
 
 		expect(out).toContain('width="100"');
 		expect(out).toContain('height="80"');
+	});
+
+	const LINKED: Record<string, string> = {
+		'linked image': '<a href="https://directus.io"><img src="/assets/abc" alt="a"></a>',
+		'linked image opening in a new tab':
+			'<a href="https://directus.io" target="_blank" rel="noopener noreferrer"><img src="/assets/abc" alt="a"></a>',
+		'linked image inside a figure with a caption':
+			'<figure><a href="https://directus.io"><img src="/assets/abc" alt="a"></a><figcaption>cap</figcaption></figure>',
+		'text link next to a linked image':
+			'<p><a href="https://directus.io/text">link</a></p><a href="https://directus.io/img"><img src="/assets/abc" alt="a"></a>',
+		'linked image with preserved attributes':
+			'<a href="https://directus.io"><img class="hero" id="cover" data-lightbox="gallery" src="/assets/abc" alt="a"></a>',
+	};
+
+	test.each(Object.entries(LINKED))('%s survives round-trip unchanged', (_name, html) => {
+		expect(roundTrip(html)).toBe(html);
+	});
+
+	test('an image link with a script href keeps the image and drops the link', () => {
+		expect(roundTrip('<a href="javascript:alert(1)"><img src="/assets/abc" alt="a"></a>')).toBe(
+			'<img src="/assets/abc" alt="a">',
+		);
+	});
+
+	test('an anchor wrapping text and an image is still a text link', () => {
+		const out = roundTrip('<p><a href="https://directus.io">before<img src="/assets/abc" alt="a"></a></p>');
+
+		expect(out).toContain('<a href="https://directus.io">before</a>');
 	});
 });

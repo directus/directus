@@ -9,9 +9,11 @@ vi.mock('../../../utils/get-schema.js');
 const mockReadSingleton = vi.fn();
 const mockGetSchema = vi.fn();
 
-vi.mocked(await import('../../../services/settings.js')).SettingsService = vi.fn().mockImplementation(() => ({
-	readSingleton: mockReadSingleton,
-}));
+vi.mocked(await import('../../../services/settings.js')).SettingsService = vi.fn().mockImplementation(function () {
+	return {
+		readSingleton: mockReadSingleton,
+	};
+});
 
 vi.mocked(await import('../../../utils/get-schema.js')).getSchema = mockGetSchema;
 

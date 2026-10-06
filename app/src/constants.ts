@@ -67,6 +67,11 @@ export const MODULE_BAR_DEFAULT: (SettingsModuleBarLink | SettingsModuleBarModul
 	},
 	{
 		type: 'module',
+		id: 'flows',
+		enabled: true,
+	},
+	{
+		type: 'module',
 		id: 'deployments',
 		enabled: false,
 	},

@@ -1196,7 +1196,6 @@ licensing:
 settings_appearance: Вигляд
 settings_ai: ШІ
 model_context_protocol: Протокол контексту моделі
-settings_flows: Автоматизація
 settings_system_logs: Системні журнали
 settings_presets: Закладки
 settings_translations: Переклади

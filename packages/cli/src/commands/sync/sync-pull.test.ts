@@ -659,6 +659,8 @@ describe('sync pull resources and data', () => {
 		interceptList('/flows', [{ id: 'f1', name: 'Nightly' }]);
 		interceptList('/operations', []);
 
+		interceptList('/folders', []);
+
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 
 		expect(pulledCollections()).toEqual([
@@ -689,6 +691,8 @@ describe('sync pull resources and data', () => {
 		]);
 
 		interceptList('/operations', []);
+
+		interceptList('/folders', []);
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 
@@ -1128,6 +1132,8 @@ describe('sync pull resources and data', () => {
 			},
 		]);
 
+		interceptList('/folders', []);
+
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 
 		// Operators locate the operation by the name the Data Studio shows; an unnamed one falls back to its key.
@@ -1157,6 +1163,8 @@ describe('sync pull resources and data', () => {
 			},
 		]);
 
+		interceptList('/folders', []);
+
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 
 		const err = stderr.join('');
@@ -1174,6 +1182,8 @@ describe('sync pull resources and data', () => {
 			{ id: 'o1', key: 'fetch_page', type: 'request', options: { url: 'https://example.com', headers: [] } },
 			{ id: 'o2', key: 'log_it', type: 'log', options: { headers: [{ header: 'X-Debug', value: '1' }] } },
 		]);
+
+		interceptList('/folders', []);
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 		expect(stderr.join('')).not.toMatch(/credential/i);
@@ -1611,6 +1621,8 @@ describe('sync pull resources and data', () => {
 		interceptSnapshot();
 		interceptList('/flows', []);
 		interceptList('/operations', []);
+
+		interceptList('/folders', []);
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 

@@ -52,9 +52,11 @@ vi.mock('../../permissions/modules/fetch-global-access/fetch-global-access.js', 
 const mockActivityCreateOne = vi.fn().mockResolvedValue('activity-id');
 
 vi.mock('../activity.js', () => ({
-	ActivityService: vi.fn().mockImplementation(() => ({
-		createOne: mockActivityCreateOne,
-	})),
+	ActivityService: vi.fn().mockImplementation(function () {
+		return {
+			createOne: mockActivityCreateOne,
+		};
+	}),
 }));
 
 vi.mock('../../logger/index.js', () => ({

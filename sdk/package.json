@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "25.0.1",
+	"version": "26.0.0",
 	"description": "Directus JavaScript SDK",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -31,6 +31,7 @@
 	"devDependencies": {
 		"@directus/system-data": "workspace:*",
 		"@directus/tsconfig": "catalog:",
+		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

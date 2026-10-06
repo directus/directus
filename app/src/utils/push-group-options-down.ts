@@ -1,5 +1,5 @@
 import { Field, FieldMeta } from '@directus/types';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 
 export function pushGroupOptionsDown(fields: Field[]) {
 	if (fields.length < 2) return fields;

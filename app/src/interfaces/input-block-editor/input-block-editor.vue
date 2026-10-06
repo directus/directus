@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import EditorJS from '@editorjs/editorjs';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useBus } from './bus';

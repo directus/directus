@@ -1075,7 +1075,6 @@ licensing:
   entitlements:
     collections: Gyűjtemények
     flows: Folyamatok
-settings_flows: Folyamatok
 settings_presets: Könyvjelzők
 settings_translations: Fordítások
 one_or_more_options_are_missing: Egy vagy több opció hiányzik
