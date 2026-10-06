@@ -1,7 +1,7 @@
 /**
  * `filter` is parsed and walked by `sanitizeQuery` before any checks run, so without these limits
- * the only bound on that work is the size of the request. Size and nodes are allowances spent
- * across the whole parse, including filters nested under `deep`, so nesting cannot multiply them.
+ * the only bound on that work is the size of the request. Nodes are an allowance spent across the
+ * whole parse, including filters nested under `deep`, so nesting cannot multiply it.
  */
 
 import { DEFAULTS, useEnv } from '@directus/env';
@@ -10,62 +10,38 @@ import { isPlainObject } from 'lodash-es';
 import { useLogger } from '../logger/index.js';
 
 export type QueryMaximums = {
-	maxSize: number;
 	maxNodes: number;
-	maxFilterDepth: number;
-	maxDeepDepth: number;
+	maxDepth: number;
 };
 
-type LimitKey = 'QUERY_FILTER_MAX_SIZE' | 'QUERY_FILTER_MAX_NODES' | 'QUERY_FILTER_MAX_DEPTH' | 'QUERY_DEEP_MAX_DEPTH';
+type LimitKey = 'QUERY_FILTER_MAX_NODES' | 'QUERY_FILTER_MAX_DEPTH';
 
 const warned = new Set<LimitKey>();
 
 /**
- * The allowances a single query parse may spend, and the cursor tracking how deep into `deep` it
+ * The allowance a single query parse may spend, and the cursor tracking how deep into `deep` it
  * currently is. One instance spans a whole parse: it is handed to `sanitizeQuery`, survives the
  * round trip a nested `_deep` makes back through it, and covers an entire GraphQL selection set.
  *
  * Pass the instance itself; a `{...limits}` copy would lose these methods.
  */
 export class QueryLimits {
-	/** Only string input is charged; already-parsed input is bounded by nodes and `MAX_PAYLOAD_SIZE` */
-	private size: number;
 	private nodes: number;
 	private deepDepth = 0;
 
 	/** Retained so a rejection can name the limit it hit */
-	readonly maxSize: number;
 	readonly maxNodes: number;
-	readonly maxFilterDepth: number;
-	readonly maxDeepDepth: number;
+	readonly maxDepth: number;
 
 	constructor(maximums: QueryMaximums) {
-		this.maxSize = maximums.maxSize;
 		this.maxNodes = maximums.maxNodes;
-		this.maxFilterDepth = maximums.maxFilterDepth;
-		this.maxDeepDepth = maximums.maxDeepDepth;
+		this.maxDepth = maximums.maxDepth;
 
-		this.size = maximums.maxSize;
 		this.nodes = maximums.maxNodes;
-	}
-
-	/** What is left of each allowance. The parse only spends; nothing branches on the remainder. */
-	get remainingSize(): number {
-		return this.size;
 	}
 
 	get remainingNodes(): number {
 		return this.nodes;
-	}
-
-	chargeSize(input: string, parameter: string): void {
-		this.size -= input.length;
-
-		if (this.size < 0) {
-			throw new InvalidQueryError({
-				reason: `"${parameter}" exceeds the maximum allowed size of ${this.maxSize} characters`,
-			});
-		}
 	}
 
 	chargeNode(parameter: string): void {
@@ -86,7 +62,7 @@ export class QueryLimits {
 		this.deepDepth++;
 
 		try {
-			this.checkDepth(this.deepDepth, this.maxDeepDepth, 'deep');
+			this.checkDepth(this.deepDepth, 'deep');
 
 			return await run();
 		} finally {
@@ -124,7 +100,7 @@ export class QueryLimits {
 				continue;
 			}
 
-			this.checkDepth(depth, this.maxFilterDepth, 'filter');
+			this.checkDepth(depth, 'filter');
 
 			// The array `_and`/`_or` wrap their operands in is a container, not a level of its own —
 			// counting it would make depth depend on how a filter is grouped
@@ -134,10 +110,10 @@ export class QueryLimits {
 		}
 	}
 
-	private checkDepth(depth: number, maxDepth: number, parameter: string): void {
-		if (depth > maxDepth) {
+	private checkDepth(depth: number, parameter: string): void {
+		if (depth > this.maxDepth) {
 			throw new InvalidQueryError({
-				reason: `"${parameter}" exceeds the maximum allowed nesting depth of ${maxDepth}`,
+				reason: `"${parameter}" exceeds the maximum allowed nesting depth of ${this.maxDepth}`,
 			});
 		}
 	}
@@ -164,9 +140,7 @@ function limitFromEnv(key: LimitKey): number {
 
 export function getQueryLimits(): QueryLimits {
 	return new QueryLimits({
-		maxSize: limitFromEnv('QUERY_FILTER_MAX_SIZE'),
 		maxNodes: limitFromEnv('QUERY_FILTER_MAX_NODES'),
-		maxFilterDepth: limitFromEnv('QUERY_FILTER_MAX_DEPTH'),
-		maxDeepDepth: limitFromEnv('QUERY_DEEP_MAX_DEPTH'),
+		maxDepth: limitFromEnv('QUERY_FILTER_MAX_DEPTH'),
 	});
 }

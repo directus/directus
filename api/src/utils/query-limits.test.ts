@@ -22,10 +22,8 @@ beforeEach(() => {
 /** Limits with everything set generously, so a test only has to state the one it cares about */
 function limits(overrides: Partial<QueryMaximums> = {}): QueryLimits {
 	return new QueryLimits({
-		maxSize: 1000,
 		maxNodes: 1000,
-		maxFilterDepth: 100,
-		maxDeepDepth: 100,
+		maxDepth: 100,
 		...overrides,
 	});
 }
@@ -33,27 +31,15 @@ function limits(overrides: Partial<QueryMaximums> = {}): QueryLimits {
 describe('fromEnv', () => {
 	test('should read the limits from the environment', () => {
 		vi.mocked(useEnv).mockReturnValue({
-			QUERY_FILTER_MAX_SIZE: 111,
 			QUERY_FILTER_MAX_NODES: 222,
 			QUERY_FILTER_MAX_DEPTH: 33,
-			QUERY_DEEP_MAX_DEPTH: 44,
 		});
 
-		expect(getQueryLimits()).toMatchObject({
-			maxSize: 111,
-			maxNodes: 222,
-			maxFilterDepth: 33,
-			maxDeepDepth: 44,
-		});
+		expect(getQueryLimits()).toMatchObject({ maxNodes: 222, maxDepth: 33 });
 	});
 
 	test('should use the shipped defaults', () => {
-		expect(getQueryLimits()).toMatchObject({
-			maxSize: 32_768,
-			maxNodes: 10_000,
-			maxFilterDepth: 50,
-			maxDeepDepth: 20,
-		});
+		expect(getQueryLimits()).toMatchObject({ maxNodes: 10_000, maxDepth: 50 });
 
 		expect(warn).not.toHaveBeenCalled();
 	});
@@ -61,7 +47,6 @@ describe('fromEnv', () => {
 	test('should start with the full allowance unspent', () => {
 		const current = getQueryLimits();
 
-		expect(current.remainingSize).toBe(current.maxSize);
 		expect(current.remainingNodes).toBe(current.maxNodes);
 	});
 
@@ -88,13 +73,13 @@ describe('fromEnv', () => {
 	// The memo of reported keys is module level and never cleared. No other test configures this
 	// key to an unusable value, so the assertion does not depend on ordering.
 	test('should warn once for a configured value that is unusable', () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_SIZE: 'not-a-number' });
+		vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_DEPTH: 'not-a-number' });
 
 		getQueryLimits();
 		getQueryLimits();
 
 		expect(warn).toHaveBeenCalledTimes(1);
-		expect(warn).toHaveBeenCalledWith('Invalid value for QUERY_FILTER_MAX_SIZE, falling back to 32768.');
+		expect(warn).toHaveBeenCalledWith('Invalid value for QUERY_FILTER_MAX_DEPTH, falling back to 50.');
 	});
 
 	test('should accept a numeric string', () => {
@@ -107,36 +92,6 @@ describe('fromEnv', () => {
 		vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: Infinity });
 
 		expect(getQueryLimits().maxNodes).toBe(Infinity);
-	});
-});
-
-describe('chargeSize', () => {
-	test('should deduct the input length from the remaining allowance', () => {
-		const current = limits({ maxSize: 10 });
-
-		current.chargeSize('abc', 'filter');
-
-		expect(current.remainingSize).toBe(7);
-	});
-
-	test('should accept input exactly at the allowance', () => {
-		expect(() => limits({ maxSize: 5 }).chargeSize('abcde', 'filter')).not.toThrow();
-	});
-
-	test('should reject input one character over the allowance', () => {
-		expect(() => limits({ maxSize: 5 }).chargeSize('abcdef', 'filter')).toThrowError(
-			'Invalid query. "filter" exceeds the maximum allowed size of 5 characters.',
-		);
-	});
-
-	test('should accumulate across calls sharing the same limits', () => {
-		const current = limits({ maxSize: 5 });
-
-		current.chargeSize('abc', 'filter');
-
-		expect(() => current.chargeSize('abc', 'deep')).toThrowError(
-			'Invalid query. "deep" exceeds the maximum allowed size of',
-		);
 	});
 });
 
@@ -176,13 +131,13 @@ describe('withDeepLevel', () => {
 	});
 
 	test('should accept nesting exactly at the depth limit', async () => {
-		const current = limits({ maxDeepDepth: 2 });
+		const current = limits({ maxDepth: 2 });
 
 		await expect(current.withDeepLevel(() => current.withDeepLevel(async () => 'result'))).resolves.toBe('result');
 	});
 
 	test('should reject nesting one level past the limit', async () => {
-		const current = limits({ maxDeepDepth: 1 });
+		const current = limits({ maxDepth: 1 });
 
 		await expect(current.withDeepLevel(() => current.withDeepLevel(async () => 'result'))).rejects.toThrowError(
 			'Invalid query. "deep" exceeds the maximum allowed nesting depth of 1.',
@@ -190,7 +145,7 @@ describe('withDeepLevel', () => {
 	});
 
 	test('should not run a level it rejects', async () => {
-		const current = limits({ maxDeepDepth: 0 });
+		const current = limits({ maxDepth: 0 });
 		const run = vi.fn();
 
 		await expect(current.withDeepLevel(run)).rejects.toThrowError(InvalidQueryError);
@@ -199,7 +154,7 @@ describe('withDeepLevel', () => {
 
 	test('should release the level on the way out', async () => {
 		// One instance spans a whole selection set, so siblings must not accumulate
-		const current = limits({ maxDeepDepth: 1 });
+		const current = limits({ maxDepth: 1 });
 
 		await current.withDeepLevel(async () => 'first');
 
@@ -207,7 +162,7 @@ describe('withDeepLevel', () => {
 	});
 
 	test('should release the level even when the level throws', async () => {
-		const current = limits({ maxDeepDepth: 1 });
+		const current = limits({ maxDepth: 1 });
 
 		await expect(
 			current.withDeepLevel(() => {
@@ -270,13 +225,13 @@ describe('chargeFilterNodes', () => {
 	test('should accept nesting exactly at the depth limit', () => {
 		const filter = { a: { b: { _eq: 'x' } } };
 
-		expect(() => limits({ maxFilterDepth: 3 }).chargeFilterNodes(filter)).not.toThrow();
+		expect(() => limits({ maxDepth: 3 }).chargeFilterNodes(filter)).not.toThrow();
 	});
 
 	test('should reject nesting one level past the depth limit', () => {
 		const filter = { a: { b: { _eq: 'x' } } };
 
-		expect(() => limits({ maxFilterDepth: 2 }).chargeFilterNodes(filter)).toThrowError(
+		expect(() => limits({ maxDepth: 2 }).chargeFilterNodes(filter)).toThrowError(
 			'Invalid query. "filter" exceeds the maximum allowed nesting depth of 2.',
 		);
 	});
@@ -284,16 +239,16 @@ describe('chargeFilterNodes', () => {
 	test('should not count the array wrapping an `_and` group as a level', () => {
 		const filter = { _and: [{ field: { _eq: 'x' } }] };
 
-		expect(() => limits({ maxFilterDepth: 3 }).chargeFilterNodes(filter)).not.toThrow();
-		expect(() => limits({ maxFilterDepth: 2 }).chargeFilterNodes(filter)).toThrowError(InvalidQueryError);
+		expect(() => limits({ maxDepth: 3 }).chargeFilterNodes(filter)).not.toThrow();
+		expect(() => limits({ maxDepth: 2 }).chargeFilterNodes(filter)).toThrowError(InvalidQueryError);
 	});
 
 	test('should charge the same depth however a filter is grouped', () => {
 		const ungrouped = { a: { b: { _eq: 'x' } } };
 		const grouped = { _and: [{ a: { _and: [{ b: { _and: [{ _eq: 'x' }] } }] } }] };
 
-		expect(() => limits({ maxFilterDepth: 3 }).chargeFilterNodes(ungrouped)).not.toThrow();
-		expect(() => limits({ maxFilterDepth: 6 }).chargeFilterNodes(grouped)).not.toThrow();
+		expect(() => limits({ maxDepth: 3 }).chargeFilterNodes(ungrouped)).not.toThrow();
+		expect(() => limits({ maxDepth: 6 }).chargeFilterNodes(grouped)).not.toThrow();
 	});
 
 	// The shape the app's filter builder emits. Counting the group's array as a level takes this
@@ -305,8 +260,8 @@ describe('chargeFilterNodes', () => {
 			filter = { _and: [{ [`rel_${level}`]: filter }] };
 		}
 
-		expect(() => limits({ maxFilterDepth: 22 }).chargeFilterNodes(filter)).not.toThrow();
-		expect(() => limits({ maxFilterDepth: 21 }).chargeFilterNodes(filter)).toThrowError(InvalidQueryError);
+		expect(() => limits({ maxDepth: 22 }).chargeFilterNodes(filter)).not.toThrow();
+		expect(() => limits({ maxDepth: 21 }).chargeFilterNodes(filter)).toThrowError(InvalidQueryError);
 	});
 
 	test('should report every value it does not walk into', () => {
@@ -341,7 +296,7 @@ describe('chargeFilterNodes', () => {
 		}
 
 		// Iterative, so this rejects rather than overflowing
-		expect(() => limits({ maxNodes: Infinity, maxFilterDepth: 25 }).chargeFilterNodes(filter)).toThrowError(
+		expect(() => limits({ maxNodes: Infinity, maxDepth: 25 }).chargeFilterNodes(filter)).toThrowError(
 			InvalidQueryError,
 		);
 	});

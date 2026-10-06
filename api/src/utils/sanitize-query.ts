@@ -176,8 +176,6 @@ async function sanitizeFilter(
 	let filters = rawFilter;
 
 	if (typeof filters === 'string') {
-		limits.chargeSize(filters, 'filter');
-
 		try {
 			filters = parseJSON(filters);
 		} catch {
@@ -263,8 +261,6 @@ async function sanitizeDeep(
 	const logger = useLogger();
 
 	if (typeof deep === 'string') {
-		limits.chargeSize(deep, 'deep');
-
 		try {
 			deep = parseJSON(deep);
 		} catch {
