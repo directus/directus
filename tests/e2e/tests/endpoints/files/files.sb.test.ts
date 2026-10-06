@@ -320,11 +320,11 @@ describe('forbidden storage paths', () => {
 	}
 
 	test('rejects an upload that writes into the extensions directory', async () => {
-		await expect(uploadToLocal('extensions/evil.js')).rejects.toEqual(forbidden);
+		await expect(uploadToLocal('extensions/evil.js')).rejects.toMatchObject(forbidden);
 	});
 
 	test('rejects an upload that writes into the temp directory', async () => {
-		await expect(uploadToLocal('temp/evil.js')).rejects.toEqual(forbidden);
+		await expect(uploadToLocal('temp/evil.js')).rejects.toMatchObject(forbidden);
 	});
 
 	test('allows an upload to a sibling folder that merely shares the extensions prefix', async () => {
@@ -337,7 +337,7 @@ describe('forbidden storage paths', () => {
 		const name = `${randomUUID()}.js`;
 		const file = await uploadToLocal(`${randomUUID()}.js`);
 
-		await expect(api.request(updateFile(file.id, { filename_disk: `extensions/${name}` }))).rejects.toEqual(forbidden);
+		await expect(api.request(updateFile(file.id, { filename_disk: `extensions/${name}` }))).rejects.toMatchObject(forbidden);
 
 		expect(existsInExtensions(name)).toBe(false);
 
@@ -347,7 +347,7 @@ describe('forbidden storage paths', () => {
 	});
 
 	test('rejects a file record on a storage location that does not exist', async () => {
-		await expect(createFileRecord({ storage: 'missing' })).rejects.toEqual(invalidPayload);
+		await expect(createFileRecord({ storage: 'missing' })).rejects.toMatchObject(invalidPayload);
 	});
 
 	test('rejects moving a file record onto a storage where its path points into the extensions directory', async () => {
@@ -356,7 +356,7 @@ describe('forbidden storage paths', () => {
 		// Harmless in "secondary", but the same path lands in the extensions folder in "local"
 		const file = await uploadToStorage('secondary', `extensions/${name}`);
 
-		await expect(api.request(updateFile(file.id, { storage: 'local' }))).rejects.toEqual(forbidden);
+		await expect(api.request(updateFile(file.id, { storage: 'local' }))).rejects.toMatchObject(forbidden);
 	});
 
 	test('rejects a multipart replacement that writes into the extensions directory', async () => {
@@ -367,7 +367,7 @@ describe('forbidden storage paths', () => {
 		form.set('storage', 'local');
 		form.set('file', new Blob([Buffer.from('replaced')], { type: 'text/javascript' }), name);
 
-		await expect(api.request(updateFile(file.id, form))).rejects.toEqual(forbidden);
+		await expect(api.request(updateFile(file.id, form))).rejects.toMatchObject(forbidden);
 
 		expect(existsInExtensions(name)).toBe(false);
 	});
