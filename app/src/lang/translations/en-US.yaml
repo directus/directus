@@ -758,7 +758,7 @@ exporting_library_hint_forced:
   This export must be processed in batches. Once completed, the {format} file will be saved to the File Library.
 exporting_library_access_warning: >-
   Anyone with read access to files, including unauthenticated users if the Public policy allows it, will be able to view
-  and download it. Refer to the {docs} for more information.
+  and download the exported file. Refer to the {docs} for more information.
 collection_key: Collection Key
 name: Name
 primary_key_field: Primary Key Field
