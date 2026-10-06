@@ -568,7 +568,7 @@ catalogs:
       specifier: 4.17.1
       version: 4.17.1
     eslint-plugin-regexp:
-      specifier: ^2.10.0
+      specifier: 2.10.0
       version: 2.10.0
     eslint-plugin-vue:
       specifier: 10.10.0
@@ -1871,7 +1871,7 @@ importers:
         version: 6.0.1(vite@8.1.2(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))(vue@3.5.24(typescript@5.9.3))
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       '@vitest/ui':
         specifier: 'catalog:'
         version: 3.2.6(vitest@3.2.7)
@@ -2155,7 +2155,7 @@ importers:
         version: 4.17.12
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       '@vue/test-utils':
         specifier: 'catalog:'
         version: 2.4.6
@@ -2182,7 +2182,7 @@ importers:
         version: 4.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2210,7 +2210,7 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest:
         specifier: 'catalog:'
         version: 3.2.7(@types/node@26.2.0)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
@@ -2241,7 +2241,7 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest:
         specifier: 'catalog:'
         version: 3.2.7(@types/node@26.2.0)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
@@ -2300,7 +2300,7 @@ importers:
         version: 2.1.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2392,7 +2392,7 @@ importers:
         version: link:../types
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2498,7 +2498,7 @@ importers:
         version: 7.7.1
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2513,7 +2513,7 @@ importers:
         version: 4.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2578,7 +2578,7 @@ importers:
         version: 4.17.21
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2671,7 +2671,7 @@ importers:
         version: 4.17.12
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2742,7 +2742,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2779,7 +2779,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2816,7 +2816,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2899,7 +2899,7 @@ importers:
         version: 2.1.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2942,7 +2942,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2978,7 +2978,7 @@ importers:
         version: 4.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -3271,7 +3271,7 @@ importers:
         version: link:../types
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -3320,7 +3320,7 @@ importers:
         version: 4.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7)
+        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -17528,7 +17528,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@3.2.6(vitest@3.2.7)':
+  '@vitest/coverage-v8@3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
