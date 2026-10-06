@@ -5,6 +5,7 @@ import { assign, isEmpty } from 'lodash-es';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { RouterView } from 'vue-router';
 import InsightsNavigation from '../components/navigation.vue';
+import { usePanelPermissions } from '../composables/use-panel-permissions';
 import InsightsNotFound from './not-found.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -55,6 +56,9 @@ const now = new Date();
 
 const editMode = ref(false);
 
+const panelIds = computed(() => insightsStore.getPanelsForDashboard(props.primaryKey).map(({ id }) => id));
+const panelPermissions = usePanelPermissions(panelIds, editMode);
+
 const inactivePanelIds = computed(
 	() =>
 		new Set(
@@ -80,6 +84,7 @@ const tiles = computed<AppTile[]>(() => {
 
 	const tiles: AppTile[] = panelsWithCoordinates
 		.map((panel) => {
+			const permissions = panelPermissions.value[panel.id]!;
 			let topLeftIntersects = false;
 			let topRightIntersects = false;
 			let bottomRightIntersects = false;
@@ -127,10 +132,10 @@ const tiles = computed<AppTile[]>(() => {
 				showHeader: panel.show_header === true,
 				minWidth: panelType?.minWidth,
 				minHeight: panelType?.minHeight,
-				draggable: updateAllowed.value,
+				draggable: permissions.update,
 				createAllowed: createAllowed.value,
-				updateAllowed: updateAllowed.value,
-				deleteAllowed: deleteAllowed.value,
+				updateAllowed: permissions.update,
+				deleteAllowed: permissions.delete,
 				borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
 				data: {
 					options: applyOptionsData(panel.options ?? {}, unref(variables), panelType?.skipUndefinedKeys),
