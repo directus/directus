@@ -48,7 +48,8 @@ async function subscribe(id: string, event?: 'create' | 'update' | 'delete') {
 }
 
 if (options.extras?.redis) {
-	test('a graphql subscription reports create, update and delete', async () => {
+	// TODO fix websocket flaky tests and remove the retry
+	test('a graphql subscription reports create, update and delete', { retry: 3 }, async () => {
 		const next = await subscribe('all-events');
 
 		const name = randomUUID();

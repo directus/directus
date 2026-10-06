@@ -133,9 +133,20 @@ const mockFlows = [
 			requireSelection: false,
 		},
 	},
+	{
+		id: 'flow-6',
+		name: 'Test Flow 6',
+		trigger: 'manual',
+		status: 'active',
+		options: {
+			collections: ['test_collection'],
+			location: 'hidden',
+			requireSelection: false,
+		},
+	},
 ];
 
-describe('manualFlows', () => {
+describe('sidebarManualFlows', () => {
 	test('returns empty array when no manual flows', () => {
 		const mockFlowsStore = {
 			getManualFlowsForCollection: vi.fn().mockReturnValue([]),
@@ -143,9 +154,9 @@ describe('manualFlows', () => {
 
 		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
 
-		const { manualFlows } = useFlows(useFlowsOptions);
+		const { sidebarManualFlows } = useFlows(useFlowsOptions);
 
-		expect(manualFlows.value.length).toEqual(0);
+		expect(sidebarManualFlows.value.length).toEqual(0);
 		expect(mockFlowsStore.getManualFlowsForCollection).toHaveBeenCalledWith('test_collection');
 	});
 
@@ -156,9 +167,9 @@ describe('manualFlows', () => {
 
 		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
 
-		const { manualFlows } = useFlows(useFlowsOptions);
+		const { sidebarManualFlows } = useFlows(useFlowsOptions);
 
-		expect(manualFlows.value.length).toEqual(3);
+		expect(sidebarManualFlows.value.map((flow) => flow.id)).toEqual(['flow-1', 'flow-4', 'flow-5']);
 		expect(mockFlowsStore.getManualFlowsForCollection).toHaveBeenCalledWith('test_collection');
 	});
 
@@ -175,9 +186,9 @@ describe('manualFlows', () => {
 
 		const testCollection = ref('test_collection');
 
-		const { manualFlows } = useFlows({ ...useFlowsOptions, collection: testCollection });
+		const { sidebarManualFlows } = useFlows({ ...useFlowsOptions, collection: testCollection });
 
-		expect(manualFlows.value.length).toEqual(3);
+		expect(sidebarManualFlows.value.map((flow) => flow.id)).toEqual(['flow-1', 'flow-4', 'flow-5']);
 		expect(mockGetManualFlows).toHaveBeenLastCalledWith('test_collection');
 
 		mockGetManualFlows.mockReturnValue([]);
@@ -186,9 +197,23 @@ describe('manualFlows', () => {
 
 		await nextTick();
 
-		expect(manualFlows.value.length).toEqual(0);
+		expect(sidebarManualFlows.value.length).toEqual(0);
 		expect(mockGetManualFlows).toHaveBeenLastCalledWith('test_collection_2');
 		expect(mockGetManualFlows).toHaveBeenCalledTimes(2);
+	});
+
+	test.each(['collection', 'item'] as const)('omits flows with location "hidden" on %s pages', (location) => {
+		const mockFlowsStore = {
+			getManualFlowsForCollection: vi.fn().mockReturnValue(mockFlows),
+		};
+
+		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
+
+		const { sidebarManualFlows } = useFlows({ ...useFlowsOptions, location });
+
+		expect(sidebarManualFlows.value.map((flow) => flow.id)).toEqual(
+			location === 'collection' ? ['flow-1', 'flow-4', 'flow-5'] : ['flow-2', 'flow-3'],
+		);
 	});
 });
 
@@ -206,9 +231,9 @@ describe('manualFlow.isFlowDisabled', () => {
 
 			vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
 
-			const { manualFlows } = useFlows(testUseFlowsOptions);
+			const { sidebarManualFlows } = useFlows(testUseFlowsOptions);
 
-			manualFlows.value.forEach((manualFlow) => {
+			sidebarManualFlows.value.forEach((manualFlow) => {
 				expect(manualFlow.isFlowDisabled).toEqual(false);
 			});
 		});
@@ -220,9 +245,9 @@ describe('manualFlow.isFlowDisabled', () => {
 
 			vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
 
-			const { manualFlows } = useFlows(useFlowsOptions);
+			const { sidebarManualFlows } = useFlows(useFlowsOptions);
 
-			manualFlows.value.forEach((manualFlow) => {
+			sidebarManualFlows.value.forEach((manualFlow) => {
 				expect(manualFlow.isFlowDisabled).toEqual(false);
 			});
 		});
@@ -236,9 +261,9 @@ describe('manualFlow.isFlowDisabled', () => {
 
 			vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
 
-			const { manualFlows } = useFlows(useFlowsOptions);
+			const { sidebarManualFlows } = useFlows(useFlowsOptions);
 
-			manualFlows.value.forEach((manualFlow) => {
+			sidebarManualFlows.value.forEach((manualFlow) => {
 				expect(manualFlow.isFlowDisabled).toEqual(false);
 			});
 		});
@@ -259,9 +284,9 @@ describe('manualFlow.isFlowDisabled', () => {
 
 			vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
 
-			const { manualFlows } = useFlows(testUseFlowsOptions);
+			const { sidebarManualFlows } = useFlows(testUseFlowsOptions);
 
-			manualFlows.value.forEach((manualFlow) => {
+			sidebarManualFlows.value.forEach((manualFlow) => {
 				expect(manualFlow.isFlowDisabled).toEqual(true);
 			});
 		});
@@ -285,20 +310,47 @@ describe('runManualFlow', () => {
 		expect(api.post).not.toHaveBeenCalled();
 	});
 
-	test('returns early when flow is not in manualFlows (filtered out)', async () => {
+	test('returns early when the flow is not runnable from this location', async () => {
 		const mockFlowsStore = {
-			getManualFlowsForCollection: vi.fn().mockReturnValue([mockFlows[1]]),
+			getManualFlowsForCollection: vi.fn().mockReturnValue(mockFlows),
 		};
 
 		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
 
 		vi.mocked(api.post).mockResolvedValue({});
 
-		const { runManualFlow } = useFlows(useFlowsOptions);
+		// flow-5 is collection-only, so an item page button must not be able to trigger it
+		const { runManualFlow } = useFlows({ ...useFlowsOptions, location: 'item', hasEdits: ref(false) });
 
-		await runManualFlow(mockFlows[1]!.id);
+		await runManualFlow('flow-5');
 
 		expect(api.post).not.toHaveBeenCalled();
+	});
+
+	test('runs flows that are omitted from the sidebar, such as hidden ones', async () => {
+		const mockFlowsStore = {
+			getManualFlowsForCollection: vi.fn().mockReturnValue(mockFlows),
+		};
+
+		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
+
+		vi.mocked(api.post).mockResolvedValue({});
+
+		// Hidden flows are only triggerable through a header or links button, which live in the item form
+		const { sidebarManualFlows, runManualFlow } = useFlows({
+			...useFlowsOptions,
+			location: 'item',
+			hasEdits: ref(false),
+		});
+
+		expect(sidebarManualFlows.value.map((flow) => flow.id)).toEqual(['flow-2', 'flow-3']);
+
+		await runManualFlow('flow-6');
+
+		expect(api.post).toHaveBeenCalledWith('/flows/trigger/flow-6', {
+			collection: 'test_collection',
+			keys: ['item_1'],
+		});
 	});
 
 	test('successfully runs flow for collection with requireSelection false', async () => {

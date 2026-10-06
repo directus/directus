@@ -14,15 +14,19 @@ vi.mock('@directus/env', () => ({
 }));
 
 vi.mock('../../services/settings.js', () => ({
-	SettingsService: vi.fn().mockImplementation(() => ({
-		readSingleton,
-	})),
+	SettingsService: vi.fn().mockImplementation(function () {
+		return {
+			readSingleton,
+		};
+	}),
 }));
 
 vi.mock('../../ai/mcp/index.js', () => ({
-	DirectusMCP: vi.fn().mockImplementation(() => ({
-		handleRequest,
-	})),
+	DirectusMCP: vi.fn().mockImplementation(function () {
+		return {
+			handleRequest,
+		};
+	}),
 }));
 
 vi.mock('../../middleware/is-locked.js', () => ({
