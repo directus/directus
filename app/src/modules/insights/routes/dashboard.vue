@@ -47,7 +47,9 @@ const { loading, errors, data, saving, hasEdits, refreshIntervals, variables } =
 
 const zoomToFit = ref(false);
 
-const { updateAllowed } = useCollectionPermissions('directus_panels');
+const { createAllowed, updateAllowed, deleteAllowed } = useCollectionPermissions('directus_panels');
+
+const editAllowed = computed(() => createAllowed.value || updateAllowed.value || deleteAllowed.value);
 
 const now = new Date();
 
@@ -244,6 +246,7 @@ const refreshInterval = computed({
 			<template v-if="editMode">
 				<PrivateViewHeaderBarActionButton
 					:label="$t('create_panel')"
+					:disabled="!createAllowed"
 					secondary
 					:to="{ name: 'panel-detail', params: { primaryKey: currentDashboard.id, panelKey: '+' } }"
 					icon="add"
@@ -262,7 +265,7 @@ const refreshInterval = computed({
 				v-else
 				:label="$t('edit_panels')"
 				class="edit"
-				:disabled="!updateAllowed"
+				:disabled="!editAllowed"
 				icon="edit"
 				@click="editMode = !editMode"
 			/>
