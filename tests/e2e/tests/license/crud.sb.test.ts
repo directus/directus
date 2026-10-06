@@ -361,6 +361,7 @@ describe('resolution', () => {
 		await api.request(activateLicense({ license_key: LICENSE_KEYS.UNLIMITED }));
 		await api.request(createCollection({ collection: 'res_A', meta: {}, schema: {} }));
 		await api.request(createCollection({ collection: 'res_B', meta: {}, schema: {} }));
+
 		const flows = [
 			await api.request(createFlow({ name: 'res_flow_A', trigger: 'manual', status: 'active' })),
 			await api.request(createFlow({ name: 'res_flow_B', trigger: 'manual', status: 'active' })),
