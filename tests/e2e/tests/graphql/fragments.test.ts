@@ -62,13 +62,13 @@ test('inline fragment from a different collection on an m2a union type', async (
 	await api.request(
 		createItem(collections.articles, {
 			title: 'Article A',
-			blocks: [{ collection: collections.text_blocks, item: textBlockId! }],
+			blocks: [{ collection: collections.text_blocks, item: String(textBlockId) }],
 		}),
 	);
 
 	const { id } = await api.request(
 		createItem(collections.blogs, {
-			blocks: [{ collection: collections.text_blocks, item: textBlockId! }],
+			blocks: [{ collection: collections.text_blocks, item: String(textBlockId) }],
 		}),
 	);
 

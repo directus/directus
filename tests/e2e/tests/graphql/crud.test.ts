@@ -1,5 +1,6 @@
 import { updateItem } from '@directus/sdk';
 import { createDirectus, graphql, rest, staticToken } from '@directus/sdk';
+import type { DeepPartial } from '@directus/types';
 import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
@@ -11,7 +12,7 @@ const api = createDirectus<Schema>(`http://localhost:${port}`).with(graphql()).w
 const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 test('graphql crud', async () => {
-	const item: Articles = {
+	const item: DeepPartial<Articles> = {
 		title: 'GraphQL Article',
 		author: {
 			name: 'GraphQL Author',
@@ -85,7 +86,7 @@ test('graphql crud', async () => {
 		}),
 	);
 
-	const read: Articles[] = (
+	const read = (
 		await api.query(`
 		query {
 			${collections.articles} (filter: { id: { _eq: "${create.id}" }}) {
