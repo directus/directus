@@ -101,3 +101,24 @@ test('trigger webhook with cacheEnabled set to false', async () => {
 
 	expect(result2.epoch).toBeGreaterThan(result1.epoch);
 });
+
+for (const cacheEnabled of [undefined, true, false]) {
+	test(`a POST webhook is never cached, with cacheEnabled ${cacheEnabled}`, async () => {
+		const flow = await api.request(
+			createFlow({
+				name: `POST webhook flow cacheEnabled ${cacheEnabled}`,
+				trigger: 'webhook',
+				options: { method: 'POST', ...(cacheEnabled === undefined ? {} : { cacheEnabled }) },
+			}),
+		);
+
+		const operation = await api.request(createOperation({ flow: flow!.id, ...baseOperation }));
+
+		await api.request(updateFlow(flow.id, { operation: operation.id }));
+
+		const result1 = (await api.request(triggerFlow('POST', flow.id, {}))) as { epoch: number };
+		const result2 = (await api.request(triggerFlow('POST', flow.id, {}))) as { epoch: number };
+
+		expect(result2.epoch).toBeGreaterThan(result1.epoch);
+	});
+}

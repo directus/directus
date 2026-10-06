@@ -2,6 +2,7 @@ export enum ErrorCode {
 	AddonNotAvailable = 'ADDON_NOT_AVAILABLE',
 	AddonNotFound = 'ADDON_NOT_FOUND',
 	AddonQuantityOutOfRange = 'ADDON_QUANTITY_OUT_OF_RANGE',
+	CollectionInactive = 'COLLECTION_INACTIVE',
 	ContainsNullValues = 'CONTAINS_NULL_VALUES',
 	ContentTooLarge = 'CONTENT_TOO_LARGE',
 	EmailLimitExceeded = 'EMAIL_LIMIT_EXCEEDED',

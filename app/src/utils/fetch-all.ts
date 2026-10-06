@@ -1,4 +1,4 @@
-import { cloneDeep, set } from 'lodash';
+import { cloneDeep, set } from 'lodash-es';
 import api from '@/api';
 import { useServerStore } from '@/stores/server';
 

@@ -1207,7 +1207,6 @@ model_context_protocol: Model Context Protocol
 ai_assistant: AI アシスタント
 ai_disabled_by_env: AI アシスタント機能は環境変数によって無効化されています。
 mcp_disabled_by_env: MCP 機能は環境変数によって無効化されています。
-settings_flows: フロー
 settings_system_logs: システムログ
 settings_presets: ブックマーク
 settings_translations: 翻訳

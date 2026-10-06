@@ -133,7 +133,7 @@ export class SharesService extends ItemsService {
 		}
 
 		await this.knex('directus_shares')
-			.update({ times_used: record.share_times_used + 1 })
+			.update({ times_used: (record.share_times_used ?? 0) + 1 })
 			.where('id', record.share_id);
 
 		const tokenPayload: DirectusTokenPayload = {

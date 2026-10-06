@@ -1,5 +1,5 @@
 # This compose file is meant to spin up a copy of supported database vendors,
-# Redis, S3 (Minio) and a fake SMTP server (MailDev).
+# Redis, S3 (RustFS) and a fake SMTP server (MailDev).
 #
 # ONLY FOR DEBUGGING. THIS IS NOT INTENDED FOR PRODUCTION USE.
 #
@@ -21,10 +21,10 @@
 #   MS SQL:          5103
 #   Oracle:          5104
 #   Redis:           5105
-#   Minio (S3):      5106
+#   RustFS (S3):     5106
 #   Azure            5107
 #   Keycloak:        5110
-#   Minio Admin:     5112
+#   RustFS Admin:    5112
 #   CockroachDB:     5113
 #
 # Credentials:
@@ -52,9 +52,9 @@
 #   Redis:
 #     n/a
 #
-#   Minio:
-#     Key:           minioadmin
-#     Secret:        minioadmin
+#   RustFS:
+#     Key:           rustfsadmin
+#     Secret:        rustfsadmin
 #     (Make sure to set S3_FORCE_PATH_STYLE to true)
 #
 #   Azure Blob Storage
@@ -127,9 +127,12 @@ services:
     ports:
       - 5105:6379
 
-  minio:
-    image: minio/minio
-    command: server /data/minio/ --console-address :9001
+  rustfs:
+    image: rustfs/rustfs:1.0.0-rc.6
+    environment:
+      RUSTFS_ACCESS_KEY: rustfsadmin
+      RUSTFS_SECRET_KEY: rustfsadmin
+      RUSTFS_CONSOLE_ENABLE: 'true'
     ports:
       - 5106:9000
       - 5112:9001

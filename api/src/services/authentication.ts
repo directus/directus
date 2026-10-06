@@ -20,6 +20,7 @@ import emitter from '../emitter.js';
 import { getEntitlementManager } from '../license/index.js';
 import { getLicenseManager } from '../license/manager.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { fetchAccountabilityPolicyGlobals } from '../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { createRateLimiter, RateLimiterRes } from '../rate-limiter.js';
 import type { DirectusTokenPayload, Session, User } from '../types/index.js';
@@ -221,11 +222,9 @@ export class AuthenticationService {
 		}
 
 		const roles = await fetchRolesTree(user.role, { knex: this.knex });
+		const userAccountability = { roles, user: user.id, ip: this.accountability?.ip ?? null };
 
-		const globalAccess = await fetchGlobalAccess(
-			{ roles, user: user.id, ip: this.accountability?.ip ?? null },
-			{ knex: this.knex },
-		);
+		const globalAccess = await fetchGlobalAccess(userAccountability, { knex: this.knex });
 
 		if ((await getLicenseManager().isLocked()) && globalAccess.admin === false) {
 			throw new ResourceRestrictedError({
@@ -240,20 +239,14 @@ export class AuthenticationService {
 			admin_access: globalAccess.admin,
 		};
 
-		// Add role-based enforcement to token payload for users who need to set up 2FA
+		// Indicate enforcement in token payload for users who need to set up 2FA
 		if (!user.tfa_secret) {
-			// Check if user has role-based enforcement
-			const roleEnforcement = await this.knex
-				.select('directus_policies.enforce_tfa')
-				.from('directus_users')
-				.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-				.leftJoin('directus_access', 'directus_roles.id', 'directus_access.role')
-				.leftJoin('directus_policies', 'directus_access.policy', 'directus_policies.id')
-				.where('directus_users.id', user.id)
-				.where('directus_policies.enforce_tfa', true)
-				.first();
+			const policyGlobals = await fetchAccountabilityPolicyGlobals(
+				{ ...userAccountability, ...globalAccess },
+				{ knex: this.knex, schema: this.schema },
+			);
 
-			if (roleEnforcement) {
+			if (policyGlobals.enforce_tfa) {
 				tokenPayload.enforce_tfa = true;
 			}
 		}

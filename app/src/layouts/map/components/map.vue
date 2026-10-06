@@ -3,7 +3,7 @@ import { useAppStore } from '@directus/stores';
 import type { ShowSelect } from '@directus/types';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { useResizeObserver } from '@vueuse/core';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import * as maplibre from 'maplibre-gl';
 import {
 	AttributionControl,

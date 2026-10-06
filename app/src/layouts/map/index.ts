@@ -3,7 +3,7 @@ import { isPublishedVersionKey } from '@directus/constants';
 import { defineLayout } from '@directus/extensions';
 import { Field, Filter, GeometryOptions } from '@directus/types';
 import { getFieldsFromTemplate, mergeFilters } from '@directus/utils';
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, merge } from 'lodash-es';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import MapActions from './actions.vue';
