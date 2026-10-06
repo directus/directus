@@ -13,7 +13,7 @@ describe('resolveResources', () => {
 
 		expect(closures).toEqual({
 			dashboards: ['panels', 'dashboards'],
-			flows: ['operations', 'flows'],
+			flows: ['folders', 'operations', 'flows'],
 			folders: ['folders'],
 			policies: ['access', 'permissions', 'policies'],
 			roles: ['access', 'permissions', 'policies', 'roles'],
@@ -47,6 +47,7 @@ describe('resolveResources', () => {
 
 		expect(names(['flows', 'users'])).toEqual([
 			'access',
+			'folders',
 			'operations',
 			'flows',
 			'permissions',
