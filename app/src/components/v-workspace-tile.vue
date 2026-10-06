@@ -499,6 +499,10 @@ function useDragDrop() {
 	--v-icon-color-hover: var(--theme--foreground-accent);
 }
 
+.edit-icon[disabled] {
+	--v-icon-color: var(--theme--foreground-subdued);
+}
+
 .delete-action {
 	--v-list-item-color: var(--theme--danger);
 	--v-list-item-color-hover: var(--theme--danger);
