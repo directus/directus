@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed dashboard detail page disabling edit mode for users with conditional panel permissions
+Fixed permission checks in the Insights module so dashboard and panel actions are only available to users with the matching permissions. `VWorkspaceTile` gained `createAllowed`, `updateAllowed` and `deleteAllowed` props and no longer renders resize handles when `draggable` is `false`.
