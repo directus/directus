@@ -102,6 +102,9 @@ function mountComponent(props: Record<string, unknown> = {}) {
 				VInput: {
 					template: '<div />',
 				},
+				VNotice: {
+					template: '<div><slot /></div>',
+				},
 				InterfaceSystemFields: InterfaceSystemFieldsStub,
 			},
 		},

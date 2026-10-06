@@ -586,7 +586,7 @@ async function exportDataFiles() {
 					<VNotice v-else>{{ $t('not_available_for_local_downloads') }}</VNotice>
 				</div>
 
-				<VNotice class="full" :type="lockedToFiles ? 'warning' : undefined">
+				<VNotice class="full" :type="location === 'files' ? 'warning' : undefined">
 					<div>
 						<p v-if="itemCountLoading">
 							{{ $t('loading') }}
@@ -626,17 +626,17 @@ async function exportDataFiles() {
 						<p v-else>
 							{{ $t('exporting_download_hint', { format: $t(format) }) }}
 						</p>
-					</div>
-				</VNotice>
 
-				<VNotice v-if="location === 'files'" class="full files-access-notice" type="warning">
-					<I18nT keypath="exporting_library_access_warning" tag="span">
-						<template #docs>
-							<a :href="DIRECTUS_SECURITY_BEST_PRACTICES_URL" target="_blank" rel="noopener noreferrer">
-								{{ $t('public_policy_warning_docs_link') }}
-							</a>
-						</template>
-					</I18nT>
+						<p v-if="location === 'files'" class="files-access-notice">
+							<I18nT keypath="exporting_library_access_warning" tag="span">
+								<template #docs>
+									<a :href="DIRECTUS_SECURITY_BEST_PRACTICES_URL" target="_blank" rel="noopener noreferrer">
+										{{ $t('public_policy_warning_docs_link') }}
+									</a>
+								</template>
+							</I18nT>
+						</p>
+					</div>
 				</VNotice>
 
 				<VDivider />
