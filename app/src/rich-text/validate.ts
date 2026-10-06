@@ -1,4 +1,4 @@
-import type { RichTextConfig } from '@directus/extensions';
+import type { RichTextConfig, RichTextToolbarButton } from '@directus/extensions';
 import {
 	type AnyExtension,
 	type Attributes,
@@ -9,6 +9,7 @@ import {
 	type GlobalAttributes,
 	splitExtensions,
 } from '@tiptap/core';
+import { isKnownIcon } from '@/components/v-icon/known-icons';
 import { editorExtensions, fieldEditorExtensions } from '@/interfaces/input-rich-text-html/extensions';
 import { ComparisonDiff } from '@/interfaces/input-rich-text-html/extensions/comparison-diff';
 import { CUSTOM_FORMAT_PREFIX } from '@/interfaces/input-rich-text-html/extensions/custom-formats';
@@ -55,12 +56,75 @@ const isTiptapExtension = (value: unknown): value is AnyExtension =>
 	typeof value['name'] === 'string' &&
 	['extension', 'node', 'mark'].includes(value['type'] as string);
 
+const PREDICATES = ['isActive', 'isDisabled'] as const;
+
+function findPredicateError(value: Record<string, unknown>): string | null {
+	const predicate = PREDICATES.find((name) => value[name] !== undefined && typeof value[name] !== 'function');
+	return predicate ? `has an "${predicate}" that is not a function` : null;
+}
+
+// `check` returns the problem of one entry; the walker prefixes it with the entry's noun and key
+function validateKeyed(
+	entries: unknown,
+	field: string,
+	noun: string,
+	check: (entry: Record<string, unknown>) => string | null,
+): string | null {
+	if (!Array.isArray(entries)) return `"${field}" must be an array`;
+
+	const keys = new Set<string>();
+
+	for (const entry of entries) {
+		if (!isObject(entry)) return `every ${noun} must be an object`;
+		const key = entry['key'];
+		if (typeof key !== 'string' || !SLUG.test(key)) return `${noun} "key" must match [a-z0-9-]+`;
+		if (keys.has(key)) return `${noun} key "${key}" is used twice`;
+		keys.add(key);
+
+		const problem = check(entry);
+		if (problem) return `${noun} "${key}" ${problem}`;
+	}
+
+	return null;
+}
+
+function validateItem(item: Record<string, unknown>): string | null {
+	if (typeof item['label'] !== 'string') return 'needs a "label" string';
+	if (item['icon'] !== undefined && typeof item['icon'] !== 'string') return 'has an "icon" that is not a string';
+	if (typeof item['command'] !== 'function') return 'needs a "command" function';
+	return findPredicateError(item);
+}
+
+function validateButton(button: Record<string, unknown>, { allowItems }: { allowItems: boolean }): string | null {
+	if (typeof button['icon'] !== 'string') return 'needs an "icon" string';
+	if (typeof button['label'] !== 'string') return 'needs a "label" string';
+
+	const items = button['items'];
+
+	if (items !== undefined) {
+		if (!allowItems) return 'cannot have "items"';
+		if (button['command'] !== undefined) return 'needs a "command" or "items", not both';
+		if (Array.isArray(items) && items.length === 0) return 'has no items';
+		const itemsError = validateKeyed(items, 'items', 'item', validateItem);
+		if (itemsError) return itemsError;
+	} else if (typeof button['command'] !== 'function') {
+		return 'needs a "command" function or an "items" array';
+	}
+
+	return findPredicateError(button);
+}
+
+function validateBubbleMenu(menu: Record<string, unknown>): string | null {
+	if (typeof menu['shouldShow'] !== 'function') return 'needs a "shouldShow" function';
+	return validateKeyed(menu['buttons'], 'buttons', 'button', (button) => validateButton(button, { allowItems: false }));
+}
+
 function validateShape(config: unknown): string | null {
 	if (!isObject(config)) return 'config is not an object';
 	if (typeof config['id'] !== 'string' || !SLUG.test(config['id'])) return '"id" must match [a-z0-9-]+';
 	if (typeof config['name'] !== 'string') return '"name" must be a string';
 
-	const { extensions, buttons } = config;
+	const { extensions, buttons, bubbleMenus } = config;
 
 	if (extensions !== undefined) {
 		if (!Array.isArray(extensions)) return '"extensions" must be an array';
@@ -68,27 +132,14 @@ function validateShape(config: unknown): string | null {
 	}
 
 	if (buttons !== undefined) {
-		if (!Array.isArray(buttons)) return '"buttons" must be an array';
+		const buttonError = validateKeyed(buttons, 'buttons', 'button', (button) =>
+			validateButton(button, { allowItems: true }),
+		);
 
-		const keys = new Set<string>();
-
-		for (const button of buttons) {
-			if (!isObject(button)) return 'every button must be an object';
-			if (typeof button['key'] !== 'string' || !SLUG.test(button['key'])) return 'button "key" must match [a-z0-9-]+';
-			const key = button['key'];
-			const invalid = (problem: string) => `button "${key}" ${problem}`;
-
-			if (keys.has(key)) return `button key "${key}" is used twice`;
-			keys.add(key);
-			if (typeof button['icon'] !== 'string') return invalid('needs an "icon" string');
-			if (typeof button['label'] !== 'string') return invalid('needs a "label" string');
-			if (typeof button['command'] !== 'function') return invalid('needs a "command" function');
-
-			if (button['isActive'] !== undefined && typeof button['isActive'] !== 'function') {
-				return invalid('has an "isActive" that is not a function');
-			}
-		}
+		if (buttonError) return buttonError;
 	}
+
+	if (bubbleMenus !== undefined) return validateKeyed(bubbleMenus, 'bubbleMenus', 'bubble menu', validateBubbleMenu);
 
 	return null;
 }
@@ -206,6 +257,52 @@ function validateSchemaBuild(config: RichTextConfig): string | null {
 	}
 }
 
+const FALLBACK_ICON = 'extension';
+
+// an unknown name renders as its raw ligature text, so the button gets a placeholder instead of a rejection
+function withKnownIcons(config: RichTextConfig): RichTextConfig {
+	const { buttons, bubbleMenus } = config;
+
+	const knownIcon = (icon: string, owner: string): string => {
+		if (isKnownIcon(icon)) return icon;
+
+		// eslint-disable-next-line no-console
+		console.warn(
+			`Richtext extension "${config.id}": ${owner} uses the unknown icon "${icon}". ` +
+				`It shows the "${FALLBACK_ICON}" icon instead.`,
+		);
+
+		return FALLBACK_ICON;
+	};
+
+	const withKnownIcon = <T extends RichTextToolbarButton>(button: T, owner: string): T => ({
+		...button,
+		icon: knownIcon(button.icon, owner),
+		...(button.items
+			? {
+					items: button.items.map((item) =>
+						item.icon ? { ...item, icon: knownIcon(item.icon, `${owner} item "${item.key}"`) } : item,
+					),
+				}
+			: {}),
+	});
+
+	return {
+		...config,
+		...(buttons ? { buttons: buttons.map((button) => withKnownIcon(button, `button "${button.key}"`)) } : {}),
+		...(bubbleMenus
+			? {
+					bubbleMenus: bubbleMenus.map((menu) => ({
+						...menu,
+						buttons: menu.buttons.map((button) =>
+							withKnownIcon(button, `bubble menu "${menu.key}" button "${button.key}"`),
+						),
+					})),
+				}
+			: {}),
+	};
+}
+
 const sortKey = (config: unknown) => (isObject(config) && typeof config['id'] === 'string' ? config['id'] : null);
 
 // load order follows readdir, which differs between filesystems, so sort by id to make the
@@ -246,7 +343,7 @@ export function validateRichTexts(configs: unknown[]): RichTextConfig[] {
 			owners.set(name, richText.id);
 		}
 
-		valid.push(richText);
+		valid.push(withKnownIcons(richText));
 	}
 
 	return valid;

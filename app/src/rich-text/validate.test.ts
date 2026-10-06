@@ -51,6 +51,10 @@ describe('validateRichTexts', () => {
 			'a button with a non-function isActive',
 			{ id: 'callout', name: 'Callout', buttons: [{ ...button, isActive: 1 }] },
 		],
+		[
+			'a button with a non-function isDisabled',
+			{ id: 'callout', name: 'Callout', buttons: [{ ...button, isDisabled: true }] },
+		],
 		['a button without an icon', { id: 'callout', name: 'Callout', buttons: [{ ...button, icon: undefined }] }],
 		['a button without a label', { id: 'callout', name: 'Callout', buttons: [{ ...button, label: undefined }] }],
 		['a colon in a button key', { id: 'callout', name: 'Callout', buttons: [{ ...button, key: 'a:b' }] }],
@@ -252,5 +256,136 @@ describe('validateRichTexts', () => {
 
 		expect(ids([{ id: 'broken', name: 'Broken', extensions: [Broken] }])).toEqual([]);
 		expect(error).toHaveBeenCalledOnce();
+	});
+});
+
+describe('button icons', () => {
+	let warn: ReturnType<typeof vi.spyOn>;
+
+	beforeEach(() => {
+		warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+	});
+
+	afterEach(() => warn.mockRestore());
+
+	const iconOf = (icon: string) =>
+		validateRichTexts([{ id: 'callout', name: 'Callout', buttons: [{ ...button, icon }] }])[0]!.buttons![0]!.icon;
+
+	test.each([
+		['a Material icon', 'info'],
+		['an app custom icon', 'format_align_justify_remove'],
+		['a social icon', '500px'],
+	])('keeps %s', (_, icon) => {
+		expect(iconOf(icon)).toBe(icon);
+		expect(warn).not.toHaveBeenCalled();
+	});
+
+	// an unknown name renders as its raw ligature text, so the extension loads with a placeholder icon
+	test('replaces an unknown icon with the fallback and names the button', () => {
+		expect(iconOf('not_an_icon')).toBe('extension');
+
+		const message = warn.mock.calls[0]!.join(' ');
+		expect(message).toContain('"callout"');
+		expect(message).toContain('"not_an_icon"');
+		expect(error).not.toHaveBeenCalled();
+	});
+
+	test('leaves the config the extension exported unchanged', () => {
+		const config = { id: 'callout', name: 'Callout', buttons: [{ ...button, icon: 'not_an_icon' }] };
+		validateRichTexts([config]);
+		expect(config.buttons[0]!.icon).toBe('not_an_icon');
+	});
+});
+
+describe('bubble menus', () => {
+	const menu = { key: 'callout-menu', shouldShow: () => true, buttons: [button] };
+	const withMenus = (bubbleMenus: unknown) => ({ id: 'callout', name: 'Callout', bubbleMenus });
+
+	test('keeps a valid bubble menu', () => {
+		expect(ids([withMenus([menu])])).toEqual(['callout']);
+		expect(error).not.toHaveBeenCalled();
+	});
+
+	test.each([
+		['a non-array bubbleMenus', menu],
+		['a non-object menu', ['nope']],
+		['a colon in a menu key', [{ ...menu, key: 'a:b' }]],
+		['a duplicate menu key', [menu, menu]],
+		['a menu without shouldShow', [{ ...menu, shouldShow: undefined }]],
+		['a menu with non-array buttons', [{ ...menu, buttons: button }]],
+		['a menu button without a command', [{ ...menu, buttons: [{ ...button, command: undefined }] }]],
+		['a duplicate menu button key', [{ ...menu, buttons: [button, button] }]],
+	])('rejects %s', (_, bubbleMenus) => {
+		expect(ids([withMenus(bubbleMenus)])).toEqual([]);
+		expect(error).toHaveBeenCalledOnce();
+	});
+
+	test('replaces an unknown menu button icon with the fallback', () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const [config] = validateRichTexts([withMenus([{ ...menu, buttons: [{ ...button, icon: 'not_an_icon' }] }])]);
+
+		expect(config!.bubbleMenus![0]!.buttons[0]!.icon).toBe('extension');
+		expect(warn).toHaveBeenCalledOnce();
+		warn.mockRestore();
+	});
+});
+
+describe('menu buttons', () => {
+	const item = { key: 'info', label: 'Info', command: () => {} };
+	const menuButton = { key: 'tone', icon: 'palette', label: 'Tone', items: [item] };
+	const withButton = (value: unknown) => ({ id: 'callout', name: 'Callout', buttons: [value] });
+
+	test('keeps a valid menu button', () => {
+		expect(ids([withButton({ ...menuButton, items: [{ ...item, icon: 'info', isActive: () => true }] })])).toEqual([
+			'callout',
+		]);
+
+		expect(error).not.toHaveBeenCalled();
+	});
+
+	test.each([
+		['a button with both command and items', { ...menuButton, command: () => {} }],
+		['a button with neither command nor items', { ...menuButton, items: undefined }],
+		['a non-array items', { ...menuButton, items: item }],
+		['an empty items', { ...menuButton, items: [] }],
+		['a non-object item', { ...menuButton, items: ['nope'] }],
+		['a colon in an item key', { ...menuButton, items: [{ ...item, key: 'a:b' }] }],
+		['a duplicate item key', { ...menuButton, items: [item, item] }],
+		['an item without a label', { ...menuButton, items: [{ ...item, label: undefined }] }],
+		['an item without a command', { ...menuButton, items: [{ ...item, command: undefined }] }],
+		['an item with a non-string icon', { ...menuButton, items: [{ ...item, icon: 1 }] }],
+		['an item with a non-function isActive', { ...menuButton, items: [{ ...item, isActive: true }] }],
+		['an item with a non-function isDisabled', { ...menuButton, items: [{ ...item, isDisabled: true }] }],
+	])('rejects %s', (_, value) => {
+		expect(ids([withButton(value)])).toEqual([]);
+		expect(error).toHaveBeenCalledOnce();
+	});
+
+	test('names the button and the item in the rejection', () => {
+		ids([withButton({ ...menuButton, items: [{ ...item, command: undefined }] })]);
+		const message = error.mock.calls[0]!.join(' ');
+		expect(message).toContain('"tone"');
+		expect(message).toContain('"info"');
+	});
+
+	test('rejects a menu button in a bubble menu', () => {
+		const config = {
+			id: 'callout',
+			name: 'Callout',
+			bubbleMenus: [{ key: 'menu', shouldShow: () => true, buttons: [menuButton] }],
+		};
+
+		expect(ids([config])).toEqual([]);
+		expect(error.mock.calls[0]!.join(' ')).toContain('"tone"');
+	});
+
+	test('replaces an unknown item icon with the fallback', () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const [config] = validateRichTexts([withButton({ ...menuButton, items: [{ ...item, icon: 'not_an_icon' }] })]);
+		const button = config!.buttons![0]!;
+
+		expect(button.items![0]!.icon).toBe('extension');
+		expect(warn.mock.calls[0]!.join(' ')).toContain('"info"');
+		warn.mockRestore();
 	});
 });

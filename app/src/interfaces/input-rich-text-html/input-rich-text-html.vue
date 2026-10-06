@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { RICHTEXT_EDITABLE_INJECT } from '@directus/constants';
 import type { SettingsStorageAssetPreset } from '@directus/types';
 import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
-import { computed, nextTick, ref, type Ref, toRefs, watch } from 'vue';
+import { computed, nextTick, provide, ref, type Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
@@ -17,6 +18,7 @@ import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { buildFieldSchema, fieldEditorExtensions } from './extensions';
 import { LinkShortcut } from './extensions/link-shortcut';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
+import ContributedBubbleMenu from './toolbar/menus/contributed-bubble-menu.vue';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
@@ -116,6 +118,9 @@ watch(normalizationLocked, (locked) => emit('readonly', locked), { immediate: tr
 const isEditable = computed(
 	() => !props.disabled && !props.nonEditable && !props.comparisonMode && !normalizationLocked.value,
 );
+
+// `editor.isEditable` is not reactive, so node views inject this to follow a later lock
+provide(RICHTEXT_EDITABLE_INJECT, isEditable);
 
 const editorDir = computed(() => (props.direction === 'rtl' ? 'rtl' : 'ltr'));
 
@@ -378,7 +383,13 @@ onKeyStroke('Escape', () => {
 			{{ softLength - count }}
 		</span>
 
-		<TableBubbleMenu v-if="!nonEditable && !comparisonMode && !normalizationLocked" :editor="editor" />
+		<!-- `isEditable`, not `shouldShow`: a lock flip changes no selection, so an open menu would stay usable -->
+		<TableBubbleMenu v-if="isEditable" :editor="editor" />
+		<ContributedBubbleMenu
+			v-if="fieldSchema.bubbleMenus.length > 0 && isEditable"
+			:editor="editor"
+			:menus="fieldSchema.bubbleMenus"
+		/>
 
 		<ImageDrawer
 			v-model="imageDrawerOpen"

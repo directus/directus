@@ -145,6 +145,43 @@ describe('contributed buttons', () => {
 		expect(iconsOf(wrapper)).toEqual(['format_bold']);
 	});
 
+	test('disables a contributed button when its isDisabled returns true', () => {
+		const wrapper = mountToolbar(['callout'], [], [{ ...callout, isDisabled: () => true }]);
+		expect(wrapper.find('.toolbar-button button').attributes('disabled')).toBeDefined();
+	});
+
+	test('passes the editor to isDisabled', () => {
+		const wrapper = mountToolbar(['callout'], [], [{ ...callout, isDisabled: (e) => !e.isActive('bold') }]);
+		expect(wrapper.find('.toolbar-button button').attributes('disabled')).toBeDefined();
+	});
+
+	// the locked and disabled field states reach the toolbar only through its `disabled` prop
+	test('disables a contributed button when the toolbar is disabled', async () => {
+		const wrapper = mountToolbar(['callout'], [], [callout]);
+		await wrapper.setProps({ disabled: true });
+		expect(wrapper.find('.toolbar-button button').attributes('disabled')).toBeDefined();
+	});
+
+	test('keeps a contributed button disabled in a disabled toolbar when isDisabled returns false', async () => {
+		const wrapper = mountToolbar(['callout'], [], [{ ...callout, isDisabled: () => false }]);
+		await wrapper.setProps({ disabled: true });
+		expect(wrapper.find('.toolbar-button button').attributes('disabled')).toBeDefined();
+	});
+
+	test('renders a menu button as a dropdown trigger', () => {
+		const tone: RichTextToolbarButton = {
+			key: 'tone',
+			icon: 'palette',
+			label: 'Tone',
+			items: [{ key: 'info', label: 'Info', command: () => {} }],
+		};
+
+		const wrapper = mountToolbar(['bold', 'tone'], [], [tone]);
+
+		expect(wrapper.findAll('.toolbar-popover')).toHaveLength(1);
+		expect(iconsOf(wrapper)).toEqual(['format_bold', 'palette', 'expand_more']);
+	});
+
 	test('renders one button per extension when two use the same key', () => {
 		const buttons = fieldButtons([
 			{ id: 'ext-a', buttons: [{ key: 'callout', icon: 'info', label: 'A', command: () => {} }] },

@@ -9,9 +9,11 @@ import type { CustomFormat } from '../extensions/custom-formats';
 import { type ToolbarButton, toolbarButtons, type ToolbarContext } from './buttons';
 import { computeToolbarLayout, type LayoutMeasurements, type RenderGroup } from './compute-toolbar-layout';
 import { ToolbarGroup, toolbarGroups } from './groups';
+import ContributedMenu from './menus/contributed-menu.vue';
 import ToolbarButtonComp from './toolbar-button.vue';
 import ToolbarPopover from './toolbar-popover.vue';
 import { useClipboardActions } from './use-clipboard-actions';
+import { useContributedGuard } from './use-contributed-guard';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
@@ -74,55 +76,57 @@ const context: ToolbarContext = {
 	},
 };
 
-// labeled dropdowns (font family/size) declare their own width; the rest are 2rem squares
-const keyWidths = Object.fromEntries(
-	Object.entries(toolbarButtons)
-		.filter(([, button]) => button.width !== undefined)
-		.map(([key, button]) => [key, button.width!]),
-);
-
 // small icon button = 2rem square; separator ~1px rule + side margins; keep in sync with CSS below
-const MEASUREMENTS: LayoutMeasurements = {
+const MEASUREMENTS: Omit<LayoutMeasurements, 'keyWidths'> = {
 	buttonWidth: 32,
 	gap: 2,
 	moreWidth: 32,
 	separatorWidth: 9,
 	minItems: 5,
 	popoverWidth: 40,
-	keyWidths,
 };
 
-const failedButtons = ref(new Set<string>());
+// same as the core table button: icon + caret
+const MENU_BUTTON_WIDTH = MEASUREMENTS.popoverWidth;
 
-function runOrDisable<T>(key: string, fallback: T, run: () => T): T {
-	if (failedButtons.value.has(key)) return fallback;
-
-	try {
-		return run();
-	} catch (error) {
-		failedButtons.value = new Set([...failedButtons.value, key]);
-		// eslint-disable-next-line no-console
-		console.error(`Richtext toolbar button "${key}" threw and was disabled:`, error);
-		return fallback;
-	}
-}
+const { guardButton } = useContributedGuard();
 
 const contributedMap = computed<Record<string, ToolbarButton>>(() =>
 	Object.fromEntries(
 		props.contributedButtons
 			.filter((button) => !(button.key in toolbarButtons))
-			.map((button) => [
-				button.key,
-				{
-					icon: button.icon,
-					label: button.label,
-					command: (editor) => runOrDisable(button.key, undefined, () => button.command(editor)),
-					disabled: () => failedButtons.value.has(button.key),
-					...(button.isActive
-						? { isActive: (editor) => runOrDisable(button.key, false, () => button.isActive!(editor)) }
-						: {}),
-				} satisfies ToolbarButton,
-			]),
+			.map((button) => [button.key, toToolbarButton(guardButton(button.key, button))]),
+	),
+);
+
+function toToolbarButton(button: RichTextToolbarButton): ToolbarButton {
+	if (button.items) {
+		return {
+			icon: button.icon,
+			label: button.label,
+			component: ContributedMenu,
+			componentProps: { button },
+			width: MENU_BUTTON_WIDTH,
+		};
+	}
+
+	const { command, isActive, isDisabled } = button;
+
+	return {
+		icon: button.icon,
+		label: button.label,
+		command,
+		disabled: isDisabled,
+		...(isActive ? { isActive } : {}),
+	};
+}
+
+// labeled dropdowns (font family/size) and icon+caret menus declare their own width; the rest are 2rem squares
+const keyWidths = computed(() =>
+	Object.fromEntries(
+		Object.entries({ ...toolbarButtons, ...contributedMap.value })
+			.filter(([, button]) => button.width !== undefined)
+			.map(([key, button]) => [key, button.width!]),
 	),
 );
 
@@ -180,7 +184,10 @@ useResizeObserver(container, ([entry]) => {
 });
 
 const layout = computed(() =>
-	computeToolbarLayout(selectedKeys.value, allGroups.value, availableWidth.value, MEASUREMENTS),
+	computeToolbarLayout(selectedKeys.value, allGroups.value, availableWidth.value, {
+		...MEASUREMENTS,
+		keyWidths: keyWidths.value,
+	}),
 );
 
 const visibleGroups = computed(() => layout.value.visible);

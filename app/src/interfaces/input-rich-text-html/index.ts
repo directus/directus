@@ -3,7 +3,7 @@ import type { AppField, DeepPartial } from '@directus/types';
 import { defineAsyncComponent } from 'vue';
 import PreviewSVG from './preview.svg?raw';
 import toolbarDefault from './toolbar-default';
-import { contributedButtonKey, enabledRichTexts, useRichTexts } from '@/rich-text/register';
+import { contributedKey, enabledRichTexts, useRichTexts } from '@/rich-text/register';
 
 const InterfaceWYSIWYG = defineAsyncComponent(() => import('./input-rich-text-html.vue'));
 
@@ -253,7 +253,7 @@ export default defineInterface({
 							...enabledRichTexts(field.meta?.options?.['extensions'] as string[] | undefined).flatMap(
 								(config) =>
 									config.buttons?.map((button) => ({
-										value: contributedButtonKey(config, button),
+										value: contributedKey(config, button),
 										text: button.label,
 									})) ?? [],
 							),
