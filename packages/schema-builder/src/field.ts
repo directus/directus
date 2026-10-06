@@ -360,7 +360,7 @@ export class FieldBuilder {
 	}
 
 	a2o(related_collections: string[], relation_callback?: (relation: RelationBuilder) => RelationBuilder | void): this {
-		this.set_type(INTEGER_FIELD);
+		this.set_type(STRING_FIELD);
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
 		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).a2o(related_collections);

@@ -780,7 +780,7 @@ test('Create a2o relation', () => {
 		      "fields": {
 		        "blocks": {
 		          "alias": false,
-		          "dbType": "integer",
+		          "dbType": "character varying",
 		          "defaultValue": null,
 		          "field": "blocks",
 		          "generated": false,
@@ -790,7 +790,7 @@ test('Create a2o relation', () => {
 		          "scale": null,
 		          "searchable": true,
 		          "special": [],
-		          "type": "integer",
+		          "type": "string",
 		          "validation": null,
 		        },
 		        "collection": {
