@@ -21,7 +21,7 @@ import VSelect from '@/components/v-select/v-select.vue';
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import VWorkspace from '@/components/v-workspace.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useItemPermissions } from '@/composables/use-permissions';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
 import { useInsightsStore } from '@/stores/insights';
@@ -47,11 +47,7 @@ const { loading, errors, data, saving, hasEdits, refreshIntervals, variables } =
 
 const zoomToFit = ref(false);
 
-const { updateAllowed } = useItemPermissions(
-	'directus_dashboards',
-	computed(() => props.primaryKey),
-	false,
-);
+const { updateAllowed } = useCollectionPermissions('directus_panels');
 
 const now = new Date();
 
