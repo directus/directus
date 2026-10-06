@@ -68,9 +68,9 @@ describe('setDeep', () => {
 			try {
 				expect(({} as any).grandchild).toBeUndefined();
 				expect(Object.hasOwn(Object.prototype, 'grandchild')).toBe(false);
-				// The segment stays own data on the intermediate node instead.
-				expect(r['relation']['grandchild']).toBeUndefined();
 				expect(Object.hasOwn(r['relation'], '__proto__')).toBe(true);
+				expect(r['relation']['__proto__']['grandchild']).toEqual({ _limit: 999999 });
+				expect(Object.getPrototypeOf(r['relation'])).toBe(Object.prototype);
 			} finally {
 				delete (Object.prototype as any).grandchild;
 			}
