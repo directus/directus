@@ -337,7 +337,9 @@ describe('forbidden storage paths', () => {
 		const name = `${randomUUID()}.js`;
 		const file = await uploadToLocal(`${randomUUID()}.js`);
 
-		await expect(api.request(updateFile(file.id, { filename_disk: `extensions/${name}` }))).rejects.toMatchObject(forbidden);
+		await expect(api.request(updateFile(file.id, { filename_disk: `extensions/${name}` }))).rejects.toMatchObject(
+			forbidden,
+		);
 
 		expect(existsInExtensions(name)).toBe(false);
 
