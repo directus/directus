@@ -15,6 +15,7 @@ import getDefaultValue from './get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from './get-field-system-rows.js';
 import getLocalType from './get-local-type.js';
 import { runExclusive } from './run-exclusive.js';
+import { TimeoutError } from './with-timeout.js';
 
 const logger = useLogger();
 
@@ -43,22 +44,37 @@ export async function getSchema(options?: {
 	}
 
 	// Followers waiting on a leader that went away take over once its lease ends, so no retry is needed here
-	const { result: schema } = await runExclusive(
-		'schema-cache',
-		async () => {
-			const database = options?.database || getDatabase();
-			const schemaInspector = createInspector(database);
+	try {
+		const { result: schema, leader } = await runExclusive(
+			'schema-cache',
+			async () => {
+				const database = options?.database || getDatabase();
+				const schemaInspector = createInspector(database);
 
-			return await getDatabaseSchema(database, schemaInspector);
-		},
-		{
-			timeout: env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number,
-		},
-	);
+				const schema = await getDatabaseSchema(database, schemaInspector);
 
-	setMemorySchemaCache(schema);
+				// Even set if this function outlives the timeout.
+				setMemorySchemaCache(schema);
 
-	return schema;
+				return schema;
+			},
+			{
+				timeout: env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number,
+			},
+		);
+
+		if (!leader) setMemorySchemaCache(schema);
+
+		return schema;
+	} catch (error) {
+		if (error instanceof TimeoutError) {
+			logger.warn(
+				`Schema retrieval exceeded the timeout. Increase CACHE_SCHEMA_SYNC_TIMEOUT in the env to prevent this from happening.`,
+			);
+		}
+
+		throw error;
+	}
 }
 
 async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspector): Promise<SchemaOverview> {

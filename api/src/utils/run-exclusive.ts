@@ -1,7 +1,7 @@
 import { useBus } from '../bus/index.js';
 import { useLock } from '../lock/index.js';
 import { useLogger } from '../logger/index.js';
-import { withTimeout } from './with-timeout.js';
+import { TimeoutError, withTimeout } from './with-timeout.js';
 
 type Outcome<T, E = string> = { ok: true; result: T } | { ok: false; error: E };
 
@@ -124,12 +124,15 @@ class ExclusiveRun<T> {
 				});
 
 				if (outcome) {
-					if (!outcome.ok) throw new Error(outcome.error);
+					if (!outcome.ok) {
+						// Outcomes cross the bus as plain messages, so restore the timeout type
+						throw outcome.error === this.expired ? new TimeoutError(outcome.error) : new Error(outcome.error);
+					}
 
 					return { result: outcome.result, leader: false };
 				}
 
-				if (this.remaining() <= 0) throw new Error(this.expired);
+				if (this.remaining() <= 0) throw new TimeoutError(this.expired);
 			}
 		} finally {
 			await this.bus.unsubscribe(this.channel, onMessage).catch((error) => {
