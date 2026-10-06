@@ -292,7 +292,7 @@ catalog:
   sanitize-html: 2.17.7
   sass-embedded: 1.93.3
   semver: 7.7.3
-  sharp: 0.35.4
+  sharp: 0.35.5
   snappy: 7.3.3
   sqlite3: 6.0.1
   stream-json: 3.6.0
