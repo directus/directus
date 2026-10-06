@@ -12,7 +12,7 @@ const fileName = fileURLToPath(import.meta.url);
 const folderName = dirname(fileName);
 
 export async function dockerUp(database: Database, opts: Options, env: Env, logger: Logger) {
-	const { license: _, ...extras } = opts.extras;
+	const extras = opts.extras;
 
 	const extrasList = Object.entries(extras)
 		.filter(([_, value]) => value)
