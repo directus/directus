@@ -39,3 +39,12 @@ test('Mount component', () => {
 
 	expect(wrapper.html()).toMatchSnapshot();
 });
+
+test('Hides resize handlers when not draggable', () => {
+	const wrapper = mount(VWorkspaceTile, {
+		props: { ...props, editMode: true, draggable: false },
+		global,
+	});
+
+	expect(wrapper.find('.resize-handlers').exists()).toBe(false);
+});

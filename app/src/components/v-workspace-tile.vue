@@ -332,7 +332,7 @@ function useDragDrop() {
 			<template v-if="resizable">{{ positioning.width }}×{{ positioning.height }}</template>
 		</div>
 
-		<div v-if="editMode && resizable" class="resize-handlers">
+		<div v-if="editMode && resizable && draggable" class="resize-handlers">
 			<div class="top" @pointerdown.stop="onPointerDown('resize-top', $event)" />
 			<div class="right" @pointerdown.stop="onPointerDown('resize-right', $event)" />
 			<div class="bottom" @pointerdown.stop="onPointerDown('resize-bottom', $event)" />
