@@ -86,6 +86,10 @@ export class CollectionsService {
 			throw new InvalidPayloadError({ reason: `"collection" can't contain "/"` });
 		}
 
+		if (!payload.schema && !payload.meta) {
+			throw new InvalidPayloadError({ reason: `"schema" or "meta" is required` });
+		}
+
 		if (payload.schema && payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
 			await getEntitlementManager().assert('collections', { adding: 1, knex: this.knex });
 		}

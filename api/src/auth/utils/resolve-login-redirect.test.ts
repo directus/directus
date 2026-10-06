@@ -109,7 +109,7 @@ describe('resolveLoginRedirect', () => {
 		});
 
 		test('throws when PUBLIC_URL is missing', () => {
-			vi.mocked(useEnv).mockReturnValue(mockEnv({}));
+			vi.mocked(useEnv).mockReturnValue(mockEnv({ PUBLIC_URL: undefined }));
 
 			expect(() => resolveLoginRedirect('/admin')).toThrow('"PUBLIC_URL" must be defined');
 		});

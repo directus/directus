@@ -341,65 +341,67 @@ expect(emitter.emitAction).toHaveBeenCalledWith(
 
 Provides environment variable mocking utilities for the `@directus/env` package.
 
-#### `mockEnv(overrides?)`
+#### `mockUseEnv(overrides?)`
 
-Creates a standard environment mock with sensible test defaults for commonly used environment variables.
+Creates an environment mock based on the actual `@directus/env` defaults.
 
 **Parameters:**
 
-- `overrides` (optional): Object containing environment variable overrides to merge with defaults
+- `overrides` (optional): Object containing environment variable overrides to merge with the defaults, for every test in
+  the file
 
 **Returns:** Mock module object with `useEnv` function
 
-**Default environment variables:**
+#### `mockEnv(overrides?)`
 
-```
-EXTENSIONS_PATH: './extensions',
-STORAGE_LOCATIONS: 'local',
-EMAIL_TEMPLATES_PATH: './templates'
-```
+Builds a plain env object from the actual `@directus/env` defaults and the overrides, typed as `Env`. Useful as a value
+for `vi.mocked(useEnv).mockReturnValue()`.
+
+#### `setEnv(overrides)`
+
+Overrides env values on top of the `mockUseEnv()` defaults, until the next `resetEnv()`. The object returned by `useEnv()`
+is updated in place, so modules holding a reference from a top level `useEnv()` call see the change too.
+
+#### `resetEnv()`
+
+Restores the env to the `mockUseEnv()` defaults, undoing any `setEnv()` calls.
 
 **Example:**
 
 ```typescript
-// Dynamically changing env values during tests
-import { useEnv } from '@directus/env';
-const { resetEnvMock } = await import('../test-utils/env.js');
+import { resetEnv, setEnv } from '../test-utils/env.js';
 
 // Standard usage with defaults
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv();
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
 });
 
 // With custom default values
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv({
-		STORAGE_LOCATIONS: 'custom-storage',
-		FILES_DELETE_ORIGINAL_ON_MOVE: 'true',
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({
+		STORAGE_LOCATIONS: ['custom-storage'],
+		FILES_DELETE_ORIGINAL_ON_MOVE: true,
 	});
 });
 
 beforeEach(() => {
-	resetEnvMock();
+	resetEnv();
 });
 
-it('should use custom env value', async () => {
-	// Override the mock return value
-	vi.mocked(useEnv).mockReturnValue({
-		FILES_DELETE_ORIGINAL_ON_MOVE: 'true',
-	});
+it('should use custom env value', () => {
+	setEnv({ FILES_DELETE_ORIGINAL_ON_MOVE: true });
 
-	// Re-import the module to pick up the new mock
-	// Required if useEnv is called top level
+	// ... rest of test
+});
+
+it('should use custom env value for values derived at import time', async () => {
+	setEnv({ FILES_DELETE_ORIGINAL_ON_MOVE: true });
+
+	// Clear the module cache and re-import, so the module is evaluated again with the current env
+	vi.resetModules();
 	const { FilesService } = await import('./files.js');
-
-	// Create new service instance
-	const service = new FilesService({
-		knex: db,
-		schema: { collections: {}, relations: [] },
-	});
 
 	// ... rest of test
 });
@@ -407,8 +409,9 @@ it('should use custom env value', async () => {
 
 **Important Notes:**
 
-- `vi.resetModules()` in `beforeEach` is essential for per-test overrides to work
-- Must re-import modules after changing mock values using dynamic `import()`
+- Use `setEnv()` / `resetEnv()` instead of replacing the whole env with `mockReturnValue()`
+- Modules that derive values from the env once at import time, like constants, don't see later `setEnv()` calls. Call
+  `setEnv()` first, then `vi.resetModules()` and re-import the module with a dynamic `import()`
 
 ---
 
@@ -1067,11 +1070,11 @@ describe('Service Tests', () => {
 ```typescript
 // Mock environment variables (using utility)
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv({
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({
 		CACHE_SCHEMA: true,
 		DB_CLIENT: 'postgres',
-		STORAGE_LOCATIONS: 'local',
+		STORAGE_LOCATIONS: ['local'],
 	});
 });
 

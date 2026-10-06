@@ -1,82 +1,103 @@
 /**
- * Environment mocking utilities for service tests
- * Provides simplified mocks for @directus/env module used in service testing
+ * Environment mocking utilities for tests
+ * Mocks the @directus/env module with the actual defaults, which tests can override per test
  */
 
 import type { Env } from '@directus/env';
 import { vi } from 'vitest';
 
-/**
- * Environment variables that are read at module load by widely imported modules (the logger, the
- * system field rows, the collections service), so practically every mocked env needs them even
- * when the test under it doesn't care about their values.
- */
-const DEFAULT_ENV = {
-	LOG_LEVEL: 'info',
-	AUTH_PROVIDERS: [],
-	DB_EXCLUDE_TABLES: [],
-	EXTENSIONS_PATH: './extensions',
-	STORAGE_LOCATIONS: ['local'],
-	EMAIL_TEMPLATES_PATH: './templates',
-};
+// Imported from the actual module, as this helper is used to mock it
+const { DEFAULTS } = await vi.importActual<typeof import('@directus/env')>('@directus/env');
 
 /**
- * Builds the env a mocked `useEnv` should return, with the shared test defaults applied.
+ * Builds an env based on the actual @directus/env defaults.
  *
- * The real env holds a value for every variable that has a default, which tests generally don't
- * care about. This applies the handful that are read as modules are imported, and casts the result
- * to `Env` so that individual tests can keep setting only the variables relevant to them.
+ * The result is cast to `Env` so that individual tests can keep setting only the variables relevant to them.
  *
- * @param overrides - Optional environment variable overrides
+ * @param overrides - Optional environment variable overrides on top of the defaults
  * @returns Environment variables to return from `useEnv`
  *
  * @example
  * ```typescript
- *
- * import { useEnv } from '@directus/env';
- * const { resetEnvMock } = await import('../test-utils/env.js');
- *
- * // Mocking the module. The factory is hoisted above the imports, so it has to pull the helper in
- * // itself rather than closing over a top level import.
- * vi.mock('@directus/env', async () => {
- *   const { mockEnv } = await import('../test-utils/env.js');
- *   return { useEnv: vi.fn().mockReturnValue(mockEnv({ STORAGE_LOCATIONS: ['custom-storage'] })) };
- * });
- *
- * // Varying the env within a test
  * vi.mocked(useEnv).mockReturnValue(mockEnv({ FILES_DELETE_ORIGINAL_ON_MOVE: true }));
+ * ```
+ */
+export function mockEnv(overrides?: Record<string, unknown>): Env {
+	return { ...DEFAULTS, ...overrides } as Env;
+}
+
+/**
+ * Creates an environment mock for vi.mock(), based on the actual @directus/env defaults
  *
- * // When useEnv is called top level to dynamically change env values during tests:
- * beforeEach(() => {
- *   resetEnvMock()
+ * @param overrides - Optional environment variable overrides on top of the defaults, for every test in the file
+ * @returns Mock module object for vi.mock()
+ *
+ * @example
+ * ```typescript
+ * import { resetEnv, setEnv } from '../test-utils/env.js';
+ *
+ * vi.mock('@directus/env', async () => {
+ *   const { mockUseEnv } = await import('../test-utils/env.js');
+ *   return mockUseEnv({ STORAGE_LOCATIONS: ['custom-storage'] });
  * });
  *
- * it('should use custom env value', async () => {
- *   vi.mocked(useEnv).mockReturnValue(mockEnv({ FILES_DELETE_ORIGINAL_ON_MOVE: true }));
+ * beforeEach(() => {
+ *   resetEnv();
+ * });
  *
- *   // Re-import the module to pick up the new mock
- *   const { FilesService } = await import('./files.js');
- *
- *   // ... rest of test
+ * test('should use custom env value', () => {
+ *   setEnv({ FILES_DELETE_ORIGINAL_ON_MOVE: true });
+ *   // ...
  * });
  * ```
  *
  * @remarks
- * Key Points for Per-Test Mocking:
- * - Must re-import modules after changing mock values using dynamic import() if useEnv is called at the top level
- * - Call resetEnvMock() in beforeEach to clear module cache and apply new mock values
- *
+ * - Use setEnv() / resetEnv() to change values per test, instead of replacing the whole env with mockReturnValue()
+ * - Modules that derive values from the env once at import time, like constants, don't see later setEnv() calls.
+ *   Call setEnv() first, then vi.resetModules() and re-import the module with a dynamic import()
  */
-export function mockEnv(overrides?: Record<string, unknown>): Env {
-	return { ...DEFAULT_ENV, ...overrides } as Env;
-}
-
 export function mockUseEnv(overrides?: Record<string, unknown>) {
+	defaultEnv = mockEnv(overrides);
+
+	resetEnv();
+
 	return {
-		useEnv: vi.fn().mockReturnValue(mockEnv(overrides)),
+		useEnv: vi.fn(() => currentEnv as Env),
 	};
 }
 
-export function resetEnvMock() {
-	vi.resetModules();
+let defaultEnv: Record<string, unknown> = {};
+const currentEnv: Record<string, unknown> = {};
+
+/**
+ * Override env values returned by a `mockUseEnv()` mock, on top of its defaults. Lasts until `resetEnv()`.
+ *
+ * The object returned by `useEnv()` is updated in place, so modules that keep a reference to it from a top level
+ * `useEnv()` call see the change too. Values derived from it at import time don't, see `mockUseEnv()`.
+ *
+ * @example
+ * ```typescript
+ * beforeEach(() => {
+ *   resetEnv();
+ * });
+ *
+ * test('should use custom env value', () => {
+ *   setEnv({ FILES_DELETE_ORIGINAL_ON_MOVE: true });
+ *   // ...
+ * });
+ * ```
+ */
+export function setEnv(overrides: Record<string, unknown> = {}) {
+	Object.assign(currentEnv, overrides);
+}
+
+/**
+ * Restore the env returned by a `mockUseEnv()` mock to its defaults, undoing any `setEnv()` calls.
+ */
+export function resetEnv() {
+	for (const key of Object.keys(currentEnv)) {
+		delete currentEnv[key];
+	}
+
+	Object.assign(currentEnv, defaultEnv);
 }
