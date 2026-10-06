@@ -7,6 +7,7 @@ import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors'
 import type { Accountability } from '@directus/types';
 import { WebSocketMessage } from '@directus/types';
 import { parseJSON, toBoolean } from '@directus/utils';
+import { parse as parseBytes } from 'bytes';
 import cookie from 'cookie';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
 import WebSocket, { type Server, WebSocketServer } from 'ws';
@@ -42,9 +43,12 @@ export default abstract class SocketController {
 	private authInterval: NodeJS.Timeout | null;
 
 	constructor(httpServer: httpServer, configPrefix: string) {
+		const maxPayload = parseBytes(useEnv()['MAX_PAYLOAD_SIZE'] as string) ?? undefined;
+
 		this.server = new WebSocketServer({
 			noServer: true,
 			autoPong: false,
+			maxPayload,
 		});
 
 		this.clients = new Set();
