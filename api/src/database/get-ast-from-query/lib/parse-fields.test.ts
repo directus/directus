@@ -864,3 +864,24 @@ test('parse fields skips an inactive collection that was only reached through an
 
 	expect(result).toEqual([expect.objectContaining({ type: 'a2o', names: [] })]);
 });
+
+test.each([
+	['o2m', '$FOLLOW(links,article_id)'],
+	['o2a', '$FOLLOW(links,article_id,collection)'],
+	['non-existent collection', '$FOLLOW(does_not_exist,article_id)'],
+	['oversized', `$FOLLOW(${'a'.repeat(500)})`],
+])('parse fields ignores an alias pointing to an implicit %s $FOLLOW relation', async (_, follow) => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const result = await parseFields(
+		{
+			accountability,
+			parentCollection: 'articles',
+			fields: ['id', 'x.*'],
+			query: { alias: { x: follow } },
+		},
+		{ knex: db, schema: schemaRelational },
+	);
+
+	expect(result).toEqual([expect.objectContaining({ type: 'field', name: 'id' })]);
+});

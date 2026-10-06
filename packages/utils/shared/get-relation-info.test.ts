@@ -25,6 +25,7 @@ describe('getRelationInfo', () => {
 				meta: null,
 			},
 			relationType: 'o2m',
+			oppositeCollection: 'test_collection',
 		});
 	});
 
@@ -46,6 +47,7 @@ describe('getRelationInfo', () => {
 				},
 			},
 			relationType: 'o2a',
+			oppositeCollection: 'test_collection',
 		});
 	});
 
@@ -63,6 +65,7 @@ describe('getRelationInfo', () => {
 
 		expect(o2mResult).toMatchInlineSnapshot(`
 			{
+			  "oppositeCollection": "related_o2m_collection",
 			  "relation": {
 			    "collection": "related_o2m_collection",
 			    "field": "related_o2m_field",
@@ -97,6 +100,7 @@ describe('getRelationInfo', () => {
 
 		expect(m2oResult).toMatchInlineSnapshot(`
 			{
+			  "oppositeCollection": "related_m2o_collection",
 			  "relation": {
 			    "collection": "collection",
 			    "field": "m2o",
@@ -131,6 +135,7 @@ describe('getRelationInfo', () => {
 
 		expect(a2oResult).toMatchInlineSnapshot(`
 			{
+			  "oppositeCollection": null,
 			  "relation": {
 			    "collection": "collection",
 			    "field": "a2o",
@@ -161,6 +166,7 @@ describe('getRelationInfo', () => {
 		expect(noResult).toEqual({
 			relation: null,
 			relationType: null,
+			oppositeCollection: null,
 		});
 	});
 });
