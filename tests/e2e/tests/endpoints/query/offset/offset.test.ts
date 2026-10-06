@@ -137,5 +137,5 @@ test('applies offset to nested o2m items', async () => {
 		}),
 	);
 
-	expect(result!.links.map((link: any) => link.link)).toEqual([`${marker}-2`, `${marker}-3`, `${marker}-4`]);
+	expect(result!.links!.map((link: any) => link.link)).toEqual([`${marker}-2`, `${marker}-3`, `${marker}-4`]);
 });

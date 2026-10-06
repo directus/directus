@@ -249,11 +249,14 @@ describe('/fields on a system collection', () => {
 
 	test('a user created field can be added to, updated on and removed from a system collection', async () => {
 		const created = await api.request(
-			createField('directus_users', {
-				field: userField,
-				type: 'string',
-				meta: { interface: 'input', special: null },
-			} as any),
+			createField(
+				'directus_users' as any,
+				{
+					field: userField,
+					type: 'string',
+					meta: { interface: 'input', special: null },
+				} as any,
+			),
 		);
 
 		expect(created).toMatchObject({ collection: 'directus_users', field: userField, type: 'string' });

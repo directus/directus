@@ -12,7 +12,7 @@ const { collections } = await useSnapshot<Schema>(api, snapshot);
 await seed(api, collections);
 const shapes = await seedShapes(api, collections);
 
-function read(collection: string, query: Record<string, unknown>) {
+function read(collection: keyof Schema, query: Record<string, unknown>) {
 	return api.request<any[]>(readItems(collection, { sort: ['name'], ...query } as any));
 }
 

@@ -26,7 +26,7 @@ if (database !== 'sqlite') {
 		await expect(() =>
 			api.request(
 				createItem(collections.fields, {
-					float: 'test',
+					float: 'test' as any,
 				}),
 			),
 		).rejects.toThrowError();

@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { sandbox, type Sandbox } from '@directus/sandbox';
+import { type Sandbox } from '@directus/sandbox';
 import {
 	createCollection,
 	createDirectus,

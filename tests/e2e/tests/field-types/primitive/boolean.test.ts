@@ -25,7 +25,7 @@ if (database !== 'sqlite') {
 		await expect(() =>
 			api.request(
 				createItem(collections.fields, {
-					boolean: 'test',
+					boolean: 'test' as any,
 				}),
 			),
 		).rejects.toThrowError();

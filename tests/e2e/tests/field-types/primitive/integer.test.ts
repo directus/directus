@@ -26,7 +26,7 @@ for (const n of [1, -1, 0, 499234]) {
 test(`valid min integer ${integer.min.toString()}`, async () => {
 	const result = await api.request(
 		createItem(collections.fields, {
-			integer: integer.min.toString(),
+			integer: integer.min.toString() as unknown as number,
 		}),
 	);
 
@@ -36,7 +36,7 @@ test(`valid min integer ${integer.min.toString()}`, async () => {
 test(`valid max integer ${integer.max.toString()}`, async () => {
 	const result = await api.request(
 		createItem(collections.fields, {
-			integer: integer.max.toString(),
+			integer: integer.max.toString() as unknown as number,
 		}),
 	);
 
@@ -50,7 +50,7 @@ for (const n of ['a', integer.min.toString() + '0', (integer.max + '0').toString
 		await expect(async () =>
 			api.request(
 				createItem(collections.fields, {
-					integer: n,
+					integer: n as unknown as number,
 				}),
 			),
 		).rejects.toThrowError();
@@ -61,7 +61,7 @@ for (const n of ['a', integer.min.toString() + '0', (integer.max + '0').toString
 // The field is only attributed when a single field was provided; for multi-field
 // inserts it is omitted to avoid mis-attribution
 if (database === 'postgres') {
-	const overflow = (integer.max + 1n).toString();
+	const overflow = (integer.max + 1n).toString() as unknown as number;
 
 	test('numeric overflow attributes the field for a single-field insert', async () => {
 		await expect(api.request(createItem(collections.fields, { integer: overflow }))).rejects.toMatchObject({
@@ -83,7 +83,7 @@ if (database === 'cockroachdb') {
 	test(`integer overflow on crdb`, async () => {
 		const result = await api.request(
 			createItem(collections.fields, {
-				integer: (integer.max + 1n).toString(),
+				integer: (integer.max + 1n).toString() as unknown as number,
 			}),
 		);
 
@@ -93,7 +93,7 @@ if (database === 'cockroachdb') {
 	test(`integer undeflow on crdb`, async () => {
 		const result = await api.request(
 			createItem(collections.fields, {
-				integer: (integer.min - 1n).toString(),
+				integer: (integer.min - 1n).toString() as unknown as number,
 			}),
 		);
 

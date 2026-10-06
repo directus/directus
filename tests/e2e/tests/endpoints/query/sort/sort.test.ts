@@ -187,6 +187,6 @@ test('sorts nested o2m items independently of the root sort', async () => {
 		}),
 	);
 
-	expect(asc!.links.map((link: any) => Number(link.link.slice(-1)))).toEqual([1, 2, 3, 4, 5]);
-	expect(desc!.links.map((link: any) => Number(link.link.slice(-1)))).toEqual([5, 4, 3, 2, 1]);
+	expect(asc!.links!.map((link: any) => Number(link.link.slice(-1)))).toEqual([1, 2, 3, 4, 5]);
+	expect(desc!.links!.map((link: any) => Number(link.link.slice(-1)))).toEqual([5, 4, 3, 2, 1]);
 });

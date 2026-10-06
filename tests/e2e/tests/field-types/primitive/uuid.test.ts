@@ -17,7 +17,7 @@ for (const uuid of [crypto.randomUUID()]) {
 			}),
 		);
 
-		expect(result.uuid.toLowerCase()).toBe(uuid);
+		expect(result.uuid!.toLowerCase()).toBe(uuid);
 	});
 }
 

@@ -9,7 +9,7 @@ const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with
 const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 test(`m2o relation `, async () => {
-	const created = await api.request(
+	const created = await api.request<any>(
 		createItem(
 			collections.articles,
 			{
@@ -52,7 +52,7 @@ test(`m2o relation `, async () => {
 });
 
 test(`o2m relation `, async () => {
-	const created = await api.request(
+	const created = await api.request<any>(
 		createItem(
 			collections.articles,
 			{
@@ -128,7 +128,7 @@ test(`o2m relation `, async () => {
 });
 
 test(`m2m relation `, async () => {
-	const created = await api.request(
+	const created = await api.request<any>(
 		createItem(
 			collections.articles,
 			{
@@ -225,7 +225,7 @@ test(`m2m relation `, async () => {
 });
 
 test(`m2a relation `, async () => {
-	const created = await api.request(
+	const created = await api.request<any>(
 		createItem(
 			collections.articles,
 			{

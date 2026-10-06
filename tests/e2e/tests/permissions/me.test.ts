@@ -45,7 +45,7 @@ test('get permissions for user', async () => {
 
 	await api.request(
 		createPermission({
-			policy: user.policies[0]!.policy,
+			policy: (user.policies[0] as any).policy,
 			action: 'update',
 			collection: collections.trains,
 			fields: ['*'],
@@ -70,7 +70,7 @@ test('get permissions for user on singleton', async () => {
 
 	await api.request(
 		createPermission({
-			policy: user.policies[0]!.policy,
+			policy: (user.policies[0] as any).policy,
 			action: 'update',
 			collection: collections.singleton,
 			fields: ['title'],
