@@ -306,7 +306,7 @@ function useDragDrop() {
 
 		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
 			<VIcon
-				v-tooltip="$t('edit')"
+				v-tooltip="updateAllowed ? $t('edit') : $t('not_allowed')"
 				class="edit-icon"
 				name="edit"
 				clickable

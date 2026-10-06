@@ -255,6 +255,7 @@ const refreshInterval = computed({
 				<PrivateViewHeaderBarActionButton
 					:label="$t('create_panel')"
 					:disabled="!createAllowed"
+					:tooltip="createAllowed ? undefined : $t('not_allowed')"
 					secondary
 					:to="{ name: 'panel-detail', params: { primaryKey: currentDashboard.id, panelKey: '+' } }"
 					icon="add"
@@ -274,6 +275,7 @@ const refreshInterval = computed({
 				:label="$t('edit_panels')"
 				class="edit"
 				:disabled="!editAllowed"
+				:tooltip="editAllowed ? undefined : $t('not_allowed')"
 				icon="edit"
 				@click="editMode = !editMode"
 			/>
