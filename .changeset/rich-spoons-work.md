@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-Unify relatedCollection access to use the getRelationInfo everywhere
+Unified related collection lookups to use `getRelationInfo`
