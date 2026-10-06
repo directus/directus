@@ -1,25 +1,21 @@
-import type { LicenseSource } from '@directus/license';
-
-export type LicenseBootState = {
+export type LicenseCredentials = {
 	envKey?: string | null | undefined;
 	envToken?: string | null | undefined;
 	dbKey?: string | null | undefined;
 	dbToken?: string | null | undefined;
 };
 
-type Source = Exclude<LicenseSource, null>;
-
-export type LicenseBootAction =
+export type LicenseAction =
 	| { kind: 'fatal'; message: string }
-	| { kind: 'activate'; source: Source; key: string }
-	| { kind: 'update'; source: Source; currentKey: string; key: string }
+	| { kind: 'activate'; key: string }
+	| { kind: 'update'; currentKey: string; key: string }
 	/** `key` is `null` for an offline token, which carries none to refresh with */
-	| { kind: 'refresh'; source: Source; key: string | null; token: string }
-	| { kind: 'downgrade' }
-	| { kind: 'sync'; source: LicenseSource };
+	| { kind: 'refresh'; key: string | null; token: string }
+	| { kind: 'clear-token' }
+	| { kind: 'sync' };
 
 /**
- * Determine required license action at boot
+ * Determine the license action to take
  *
  * | envKey | envToken |     dbKey     | dbToken | Outcome                                     | id |
  * | ------ | -------- | ------------- | ------- | ------------------------------------------- | -- |
@@ -30,10 +26,10 @@ export type LicenseBootAction =
  * |   n    |    y     |       *       |    *    | refresh - offline token, persisted ignored  | E  |
  * |   n    |    n     |       y       |    y    | refresh - revalidate the persisted token    | F  |
  * |   n    |    n     |       y       |    n    | activate - no token to revalidate           | G  |
- * |   n    |    n     |       n       |    y    | downgrade - orphaned token, drop to core    | H  |
+ * |   n    |    n     |       n       |    y    | clear-token - orphaned token, drop to core  | H  |
  * |   n    |    n     |       n       |    n    | sync - already core, just propagate         | I  |
  */
-export function computeBootAction({ envKey, envToken, dbKey, dbToken }: LicenseBootState): LicenseBootAction {
+export function computeLicenseAction({ envKey, envToken, dbKey, dbToken }: LicenseCredentials): LicenseAction {
 	// CASE A
 	if (envKey && envToken) {
 		return { kind: 'fatal', message: 'LICENSE_KEY and LICENSE_TOKEN cannot both be set' };
@@ -42,38 +38,38 @@ export function computeBootAction({ envKey, envToken, dbKey, dbToken }: LicenseB
 	if (envKey) {
 		// CASE B
 		if (dbKey && envKey !== dbKey) {
-			return { kind: 'update', source: 'env', currentKey: dbKey, key: envKey };
+			return { kind: 'update', currentKey: dbKey, key: envKey };
 		}
 
 		// CASE C
 		if (dbKey && dbToken) {
-			return { kind: 'refresh', source: 'env', key: envKey, token: dbToken };
+			return { kind: 'refresh', key: envKey, token: dbToken };
 		}
 
 		// CASE D
-		return { kind: 'activate', source: 'env', key: envKey };
+		return { kind: 'activate', key: envKey };
 	}
 
 	// CASE E
 	if (envToken) {
-		return { kind: 'refresh', source: 'env', key: null, token: envToken };
+		return { kind: 'refresh', key: null, token: envToken };
 	}
 
 	if (dbKey) {
 		// CASE F
 		if (dbToken) {
-			return { kind: 'refresh', source: 'settings', key: dbKey, token: dbToken };
+			return { kind: 'refresh', key: dbKey, token: dbToken };
 		}
 
 		// CASE G
-		return { kind: 'activate', source: 'settings', key: dbKey };
+		return { kind: 'activate', key: dbKey };
 	}
 
 	// CASE H
 	if (dbToken) {
-		return { kind: 'downgrade' };
+		return { kind: 'clear-token' };
 	}
 
 	// CASE I
-	return { kind: 'sync', source: null };
+	return { kind: 'sync' };
 }

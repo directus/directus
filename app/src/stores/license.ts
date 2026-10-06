@@ -15,9 +15,11 @@ import {
 } from '@directus/license';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { i18n } from '@/lang';
 import sdk from '@/sdk';
 import { useUserStore } from '@/stores/user';
 import { formatTimeframe } from '@/utils/format-timeframe';
+import { localizedFormat } from '@/utils/localized-format';
 
 export const GRACE_DANGER_THRESHOLD_DAYS = 3;
 
@@ -76,7 +78,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const isCore = computed(() => info.value?.source === null);
 
-	const wasDowngraded = computed(() => info.value?.downgrade_reason != null);
+	const downgradeReason = computed(() => (isCore.value ? (info.value?.invalid_reason ?? null) : null));
+	const warningReason = computed(() => (isCore.value ? null : (info.value?.invalid_reason ?? null)));
 
 	const customPermissionRulesEnabled = computed(() => isEntitlementEnabled('custom_permission_rules_enabled'));
 
@@ -106,8 +109,14 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return new Date((info.value.expires_at + info.value.grace_period) * 1000);
 	});
 
+	const tokenExpiresAt = computed<Date | null>(() => {
+		const expiresAt = info.value?.token_expires_at;
+		if (expiresAt == null) return null;
+		return new Date(expiresAt * 1000);
+	});
+
 	const formattedGraceDeadline = computed(() =>
-		graceDeadline.value ? Intl.DateTimeFormat().format(graceDeadline.value) : '',
+		graceDeadline.value ? localizedFormat(graceDeadline.value, String(i18n.global.t('date-fns_date_short'))) : '',
 	);
 
 	const gracePeriodDaysRemaining = computed<number | null>(() => {
@@ -246,7 +255,9 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		isLocked,
 		isCoreGrace,
 		isCore,
-		wasDowngraded,
+		downgradeReason,
+		warningReason,
+		tokenExpiresAt,
 		customPermissionRulesEnabled,
 		isLicensed,
 		customLLMEnabled,
