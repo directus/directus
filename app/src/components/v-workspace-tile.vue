@@ -25,6 +25,9 @@ export type AppTile = {
 	minWidth?: number;
 	minHeight?: number;
 	draggable?: boolean;
+	createAllowed?: boolean;
+	updateAllowed?: boolean;
+	deleteAllowed?: boolean;
 	borderRadius?: [boolean, boolean, boolean, boolean];
 	data?: Record<string, any>;
 };
@@ -51,6 +54,12 @@ type Props = {
 	minHeight?: number;
 	/** If enabled, makes the tile draggable */
 	draggable?: boolean;
+	/** Enables the duplicate and copy actions */
+	createAllowed?: boolean;
+	/** Enables the edit action */
+	updateAllowed?: boolean;
+	/** Enables the delete action */
+	deleteAllowed?: boolean;
 	/** Add or remove rounded corners from the panels */
 	borderRadius?: [boolean, boolean, boolean, boolean];
 	/** If enabled, allows for resizing of the tile */
@@ -76,6 +85,9 @@ const props = withDefaults(defineProps<Props>(), {
 	resizable: true,
 	editMode: false,
 	draggable: true,
+	createAllowed: true,
+	updateAllowed: true,
+	deleteAllowed: true,
 	borderRadius: () => [true, true, true, true],
 	showOptions: true,
 	alwaysUpdatePosition: false,
@@ -293,7 +305,14 @@ function useDragDrop() {
 		</div>
 
 		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
-			<VIcon v-tooltip="$t('edit')" class="edit-icon" name="edit" clickable @click="$emit('edit')" />
+			<VIcon
+				v-tooltip="$t('edit')"
+				class="edit-icon"
+				name="edit"
+				clickable
+				:disabled="!updateAllowed"
+				@click="$emit('edit')"
+			/>
 
 			<VMenu v-if="showOptions" placement="bottom-end" show-arrow>
 				<template #activator="{ toggle }">
@@ -301,7 +320,7 @@ function useDragDrop() {
 				</template>
 
 				<VList>
-					<VListItem clickable :disabled="id.startsWith('_')" @click="$emit('move')">
+					<VListItem clickable :disabled="!createAllowed || id.startsWith('_')" @click="$emit('move')">
 						<VListItemIcon>
 							<VIcon class="move-icon" name="input" />
 						</VListItemIcon>
@@ -310,14 +329,14 @@ function useDragDrop() {
 						</VListItemContent>
 					</VListItem>
 
-					<VListItem clickable @click="$emit('duplicate')">
+					<VListItem clickable :disabled="!createAllowed" @click="$emit('duplicate')">
 						<VListItemIcon>
 							<VIcon name="control_point_duplicate" />
 						</VListItemIcon>
 						<VListItemContent>{{ $t('duplicate') }}</VListItemContent>
 					</VListItem>
 
-					<VListItem class="delete-action" clickable @click="$emit('delete')">
+					<VListItem class="delete-action" clickable :disabled="!deleteAllowed" @click="$emit('delete')">
 						<VListItemIcon>
 							<VIcon name="delete" />
 						</VListItemIcon>
