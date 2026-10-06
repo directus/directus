@@ -1,7 +1,4 @@
-import { writeFileSync } from 'fs';
 import { randomUUID } from 'node:crypto';
-import { join } from 'path';
-import { SchemaBuilder } from '@directus/schema-builder';
 import {
 	createCollection,
 	createDirectus,
@@ -17,30 +14,10 @@ import {
 	updateField,
 } from '@directus/sdk';
 import { database, port } from '@utils/constants.js';
-import { getCallerFolder } from '@utils/getUID.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { afterAll, describe, expect, test } from 'vitest';
 import type { Schema } from './schema.js';
-
-const schema = new SchemaBuilder()
-	.collection('city', (c) => {
-		c.field('id').id();
-		c.field('name').string();
-		c.field('state').m2o('state');
-	})
-	.collection('country', (c) => {
-		c.field('id').id();
-		c.field('name').string();
-	})
-	.collection('state', (c) => {
-		c.field('id').id();
-		c.field('name').string();
-		c.field('country').m2o('country');
-	});
-
-const snapshot = schema.snapshot({ test_schema: true });
-
-writeFileSync(join(getCallerFolder(), 'schema.d.ts'), schema.types());
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api, snapshot);

@@ -1,14 +1,19 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 
 export const schema = new SchemaBuilder()
-	.collection('plants', (c) => {
+	.collection('city', (c) => {
 		c.field('id').id();
 		c.field('name').string();
-		c.field('size').m2o('sizes');
+		c.field('state').m2o('state');
 	})
-	.collection('sizes', (c) => {
+	.collection('country', (c) => {
 		c.field('id').id();
-		c.field('size').string();
+		c.field('name').string();
+	})
+	.collection('state', (c) => {
+		c.field('id').id();
+		c.field('name').string();
+		c.field('country').m2o('country');
 	});
 
 export const snapshot = schema.snapshot({ test_schema: true });

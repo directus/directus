@@ -8,11 +8,10 @@ export const schema = new SchemaBuilder()
 		c.field('tags').m2m('tags');
 		c.field('links').o2m('links', 'article_id');
 		c.field('blocks').m2a(['date_blocks', 'text_blocks']);
+		c.field('votes').integer();
+		c.field('release').dateTime();
 	})
-	.collection('blogs', (c) => {
-		c.field('id').id();
-		c.field('blocks').m2a(['text_blocks']);
-	})
+	.options({ versioning: true })
 	.collection('date_blocks', (c) => {
 		c.field('id').id();
 		c.field('date').date();

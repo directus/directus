@@ -1,9 +1,6 @@
-import { writeFileSync } from 'fs';
-import { join } from 'path';
 import { SchemaBuilder } from '@directus/schema-builder';
-import { getCallerFolder } from '@utils/getUID.js';
 
-const schema = new SchemaBuilder().collection('fields', (c) => {
+export const schema = new SchemaBuilder().collection('fields', (c) => {
 	c.field('id').id();
 	c.field('string').string();
 	c.field('uuid').uuid();
@@ -21,5 +18,3 @@ const schema = new SchemaBuilder().collection('fields', (c) => {
 });
 
 export const snapshot = schema.snapshot({ test_schema: true });
-
-writeFileSync(join(getCallerFolder(), 'schema.d.ts'), schema.types());

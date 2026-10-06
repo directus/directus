@@ -3,6 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
+		"build": "tsx scripts/build-types.ts",
 		"test": "vitest --project sqlite",
 		"test:dev": "FORCE_COLOR=true NODE_ENV=development vitest --project sqlite",
 		"test:all": "ALL=true vitest"
