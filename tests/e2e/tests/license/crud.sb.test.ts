@@ -112,7 +112,7 @@ afterEach(async () => {
 });
 
 describe('access', () => {
-	test('GET /licenses rejects anonymous and non-admin users', async () => {
+	test('GET /license rejects anonymous and non-admin users', async () => {
 		const token = `non-admin-${randomUUID()}`;
 		const user = await api.request(createUser({ email: `${token}@test.com`, status: 'active', token }));
 
@@ -138,7 +138,7 @@ describe('license lifecycle', () => {
 		});
 	});
 
-	test('a stored key the license server no longer knows boots CORE and reports why', async () => {
+	test('a stored key without a token that the license server no longer knows boots CORE and reports why', async () => {
 		const license = createLicense({ meta: { name: 'lifecycle-forgotten' } });
 
 		await mockClient.registerLicense(directus.env.LICENSE_API_URL!, license);
@@ -176,9 +176,20 @@ describe('license lifecycle', () => {
 			invalid_reason: 'canceled',
 		});
 
-		expect(await directus.knex!('directus_settings').first('license_key', 'license_token')).toEqual({
-			license_key: license.key,
-			license_token: null,
+		expect(await directus.knex!('directus_settings').first('license_token')).toEqual({ license_token: null });
+
+		await fetch(`${directus.env.LICENSE_API_URL}/admin/license/${license.key}`, {
+			method: 'PATCH',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ status: 'active' }),
+		});
+
+		await restartApi();
+
+		expect(await api.request(readLicense())).toMatchObject({
+			name: 'lifecycle-canceled',
+			source: 'settings',
+			invalid_reason: null,
 		});
 	});
 
@@ -472,7 +483,9 @@ describe('addons', () => {
 
 		expect(await quantities()).toEqual({ [SEATS_ADDON_ID]: 5, [COLLECTIONS_ADDON_ID]: 0 });
 
-		await expect(api.request(updateLicenseAddon(SEATS_ADDON_ID, { quantity: 99 }))).rejects.toThrow();
+		await expect(api.request(updateLicenseAddon(SEATS_ADDON_ID, { quantity: 99 }))).rejects.toMatchObject(
+			directusError('INVALID_PAYLOAD'),
+		);
 
 		await api.request(deleteLicenseAddon(SEATS_ADDON_ID));
 
