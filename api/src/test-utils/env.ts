@@ -7,10 +7,14 @@ import type { Env } from '@directus/env';
 import { vi } from 'vitest';
 
 // Imported from the actual module, as this helper is used to mock it
-const { DEFAULTS } = await vi.importActual<typeof import('@directus/env')>('@directus/env');
+const { DEFAULTS, cast } = await vi.importActual<typeof import('@directus/env')>('@directus/env');
+
+// Cast like the actual env does, so that eg durations are parsed into milliseconds
+const CAST_DEFAULTS = Object.fromEntries(Object.entries(DEFAULTS).map(([key, value]) => [key, cast(value, key)]));
 
 /**
- * Builds an env based on the actual @directus/env defaults.
+ * Builds an env based on the actual @directus/env defaults, cast to their runtime types. Overrides are used as-is, so
+ * they have to be passed in their runtime type (eg milliseconds instead of `'15m'`).
  *
  * The result is cast to `Env` so that individual tests can keep setting only the variables relevant to them.
  *
@@ -23,7 +27,7 @@ const { DEFAULTS } = await vi.importActual<typeof import('@directus/env')>('@dir
  * ```
  */
 export function mockEnv(overrides?: Record<string, unknown>): Env {
-	return { ...DEFAULTS, ...overrides } as Env;
+	return { ...CAST_DEFAULTS, ...overrides } as Env;
 }
 
 /**

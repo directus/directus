@@ -11,7 +11,6 @@ import type { EnvType } from '../types/env-type.js';
  * - `CORS_ORIGIN`: `true` to reflect the request origin, or the allowed origin(s)
  * - `IP_TRUST_PROXY`: a boolean, hop count, or comma separated list of trusted addresses
  * - `IP_CUSTOM_HEADER`: `false` to disable, or the name of the header to read the IP from
- * - `TUS_CHUNK_SIZE`: a number of bytes, or a human readable size like `10mb`
  */
 export const TYPE_MAP = {
 	LOG_LEVEL: 'string',
@@ -23,7 +22,7 @@ export const TYPE_MAP = {
 	HOST: 'string',
 	PORT: 'number',
 	PUBLIC_URL: 'string',
-	MAX_PAYLOAD_SIZE: 'string',
+	MAX_PAYLOAD_SIZE: 'bytes',
 	MAX_RELATIONAL_DEPTH: 'number',
 	MAX_JSON_QUERY_DEPTH: 'number',
 	QUERYSTRING_MAX_PARSE_DEPTH: 'number',
@@ -97,21 +96,21 @@ export const TYPE_MAP = {
 	PRESSURE_LIMITER_MAX_MEMORY_RSS: 'number',
 	PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED: 'number',
 
-	ACCESS_TOKEN_TTL: 'string',
-	EMAIL_VERIFICATION_TOKEN_TTL: 'string',
-	USER_INVITE_TOKEN_TTL: 'string',
+	ACCESS_TOKEN_TTL: 'milliseconds',
+	EMAIL_VERIFICATION_TOKEN_TTL: 'milliseconds',
+	USER_INVITE_TOKEN_TTL: 'milliseconds',
 
-	REFRESH_TOKEN_TTL: 'string',
+	REFRESH_TOKEN_TTL: 'milliseconds',
 	REFRESH_TOKEN_COOKIE_NAME: 'string',
 	REFRESH_TOKEN_COOKIE_SECURE: 'boolean',
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'string',
 	REFRESH_TOKEN_COOKIE_DOMAIN: 'string',
 
-	SESSION_COOKIE_TTL: 'string',
+	SESSION_COOKIE_TTL: 'milliseconds',
 	SESSION_COOKIE_NAME: 'string',
 	SESSION_COOKIE_SECURE: 'boolean',
 	SESSION_COOKIE_SAME_SITE: 'string',
-	SESSION_REFRESH_GRACE_PERIOD: 'string',
+	SESSION_REFRESH_GRACE_PERIOD: 'milliseconds',
 	SESSION_COOKIE_DOMAIN: 'string',
 
 	LOGIN_STALL_TIME: 'number',
@@ -139,7 +138,8 @@ export const TYPE_MAP = {
 
 	CACHE_ENABLED: 'boolean',
 	CACHE_STORE: 'string',
-	CACHE_TTL: 'string',
+	CACHE_TTL: 'milliseconds',
+	CACHE_SYSTEM_TTL: 'milliseconds',
 	CACHE_NAMESPACE: 'string',
 	CACHE_AUTO_PURGE: 'boolean',
 	CACHE_AUTO_PURGE_IGNORE_LIST: 'string-array',
@@ -149,8 +149,8 @@ export const TYPE_MAP = {
 	CACHE_SCHEMA_SYNC_TIMEOUT: 'number',
 	CACHE_SCHEMA_FREEZE_ENABLED: 'boolean',
 	CACHE_SKIP_ALLOWED: 'boolean',
-	CACHE_VALUE_MAX_SIZE: 'string',
-	CACHE_DEPLOYMENT_TTL: 'string',
+	CACHE_VALUE_MAX_SIZE: 'bytes',
+	CACHE_DEPLOYMENT_TTL: 'milliseconds',
 
 	EXTENSIONS_PATH: 'string',
 	EXTENSIONS_MUST_LOAD: 'boolean',
@@ -161,6 +161,7 @@ export const TYPE_MAP = {
 	EXTENSIONS_STORAGE_MAX_CONCURRENCY: 'number',
 	EXTENSIONS_LOCATION: 'string',
 	EXTENSIONS_LIMIT: 'number',
+	EXTENSIONS_CACHE_TTL: 'milliseconds',
 
 	MARKETPLACE_TRUST: 'string',
 	MARKETPLACE_REGISTRY: 'string',
@@ -185,28 +186,30 @@ export const TYPE_MAP = {
 	COMPLIANCE_URL: 'string',
 	TELEMETRY_AUTHORIZATION: 'string',
 
-	ASSETS_CACHE_TTL: 'string',
+	ASSETS_CACHE_TTL: 'milliseconds',
 	ASSETS_CACHE_REVALIDATE: 'boolean',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 'number',
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 'number',
 	ASSETS_TRANSFORM_IMAGE_MAX_OUTPUT_DIMENSION: 'number',
 	ASSETS_TRANSFORM_MAX_OPERATIONS: 'number',
-	ASSETS_TRANSFORM_TIMEOUT: 'string',
+	ASSETS_TRANSFORM_TIMEOUT: 'milliseconds',
 	ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL: 'string',
 
 	IMPORT_IP_DENY_LIST: 'string-array',
-	IMPORT_TIMEOUT: 'string',
+	IMPORT_TIMEOUT: 'milliseconds',
 	IMPORT_MAX_CONCURRENCY: 'number',
-	IMPORT_MAX_FILE_SIZE: 'string',
+	IMPORT_MAX_FILE_SIZE: 'bytes',
 	IMPORT_EXPORT_NAMESPACE: 'string',
 
 	FILE_METADATA_ALLOW_LIST: 'array',
 	FILES_MIME_TYPE_ALLOW_LIST: 'string-array',
 	FILES_DELETE_ORIGINAL_ON_MOVE: 'boolean',
 	FILES_MAX_UPLOAD_CONCURRENCY: 'number',
+	FILES_MAX_UPLOAD_SIZE: 'bytes',
 
 	TUS_ENABLED: 'boolean',
-	TUS_UPLOAD_EXPIRATION: 'string',
+	TUS_CHUNK_SIZE: 'bytes',
+	TUS_UPLOAD_EXPIRATION: 'milliseconds',
 	TUS_CLEANUP_SCHEDULE: 'string',
 
 	RELATIONAL_BATCH_SIZE: 'number',
@@ -222,9 +225,9 @@ export const TYPE_MAP = {
 	RETENTION_ENABLED: 'boolean',
 	RETENTION_BATCH: 'number',
 	RETENTION_SCHEDULE: 'string',
-	ACTIVITY_RETENTION: 'string',
-	REVISIONS_RETENTION: 'string',
-	FLOW_LOGS_RETENTION: 'string',
+	ACTIVITY_RETENTION: 'milliseconds',
+	REVISIONS_RETENTION: 'milliseconds',
+	FLOW_LOGS_RETENTION: 'milliseconds',
 	AUTOSAVE_REVISION_INTERVAL: 'number',
 
 	OPENAPI_ENABLED: 'boolean',
@@ -272,7 +275,7 @@ export const TYPE_MAP = {
 	HEALTHCHECK_ENABLED: 'boolean',
 	HEALTHCHECK_NAMESPACE: 'string',
 	HEALTHCHECK_SERVICES: 'string-array',
-	HEALTHCHECK_CACHE_TTL: 'string',
+	HEALTHCHECK_CACHE_TTL: 'milliseconds',
 
 	METRICS_ENABLED: 'boolean',
 	METRICS_TOKENS: 'string-array',
@@ -285,10 +288,10 @@ export const TYPE_MAP = {
 
 	MCP_ENABLED: 'boolean',
 	MCP_OAUTH_ENABLED: 'boolean',
-	MCP_OAUTH_AUTH_CODE_TTL: 'string',
+	MCP_OAUTH_AUTH_CODE_TTL: 'milliseconds',
 	MCP_OAUTH_MAX_CLIENTS: 'number',
-	MCP_OAUTH_CLIENT_UNUSED_TTL: 'string',
-	MCP_OAUTH_CLIENT_IDLE_TTL: 'string',
+	MCP_OAUTH_CLIENT_UNUSED_TTL: 'milliseconds',
+	MCP_OAUTH_CLIENT_IDLE_TTL: 'milliseconds',
 	MCP_OAUTH_REQUIRE_RESOURCE: 'boolean',
 	MCP_OAUTH_CLEANUP_SCHEDULE: 'string',
 	MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: 'string-array',

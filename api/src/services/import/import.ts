@@ -30,7 +30,6 @@ import { parseJSON, toArray } from '@directus/utils';
 import { createTmpFile, type TmpFile } from '@directus/utils/node';
 import { queue } from 'async';
 import type { Knex } from 'knex';
-import ms, { type StringValue } from 'ms';
 import Papa from 'papaparse';
 import streamArray from 'stream-json/streamers/stream-array.js';
 import { getCache } from '../../cache.js';
@@ -59,7 +58,7 @@ const env = useEnv();
 const logger = useLogger();
 
 const store = useStore<{ importCount: number | undefined }>(env.IMPORT_EXPORT_NAMESPACE, {
-	ttl: ms((env.IMPORT_TIMEOUT as StringValue) ?? '1h'),
+	ttl: env.IMPORT_TIMEOUT,
 });
 
 class DryRunRollback extends Error {}
@@ -154,7 +153,7 @@ export class ImportService {
 
 			// Share one IMPORT_TIMEOUT budget across both phases (receive + parse) so a background import
 			// can't run for up to 2x the timeout.
-			const deadline = Date.now() + ms(env.IMPORT_TIMEOUT as StringValue);
+			const deadline = Date.now() + env.IMPORT_TIMEOUT;
 
 			try {
 				tmpFile = await this.spoolToTmpFile(stream, deadline);
@@ -341,7 +340,7 @@ export class ImportService {
 						});
 					});
 
-					const duration = ms(env.IMPORT_TIMEOUT as StringValue);
+					const duration = env.IMPORT_TIMEOUT;
 					const delay = deadline !== undefined ? Math.max(0, deadline - Date.now()) : duration;
 
 					timeout = setTimeout(() => {
@@ -372,7 +371,7 @@ export class ImportService {
 		if (!tmpFile) throw new Error('Failed to create temporary file for import');
 
 		// Bound the receive phase so a stalled upload can't hang indefinitely.
-		const duration = ms(env.IMPORT_TIMEOUT as StringValue);
+		const duration = env.IMPORT_TIMEOUT;
 		const delay = deadline !== undefined ? Math.max(0, deadline - Date.now()) : duration;
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), delay);
@@ -403,7 +402,7 @@ export class ImportService {
 
 	async importCSV(collection: string, stream: Readable): Promise<void> {
 		// One IMPORT_TIMEOUT budget across receive + parse (see import()'s background branch), so sync CSV can't hit 2x either.
-		const deadline = Date.now() + ms(env.IMPORT_TIMEOUT as StringValue);
+		const deadline = Date.now() + env.IMPORT_TIMEOUT;
 		const tmpFile = await this.spoolToTmpFile(stream, deadline);
 		return this.parseCsvFromTmpFile(collection, tmpFile, deadline);
 	}
@@ -569,7 +568,7 @@ export class ImportService {
 							});
 						});
 
-					const duration = ms(env.IMPORT_TIMEOUT as StringValue);
+					const duration = env.IMPORT_TIMEOUT;
 					const delay = deadline !== undefined ? Math.max(0, deadline - Date.now()) : duration;
 
 					timeout = setTimeout(() => {

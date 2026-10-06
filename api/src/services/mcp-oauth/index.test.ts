@@ -15,11 +15,11 @@ vi.mock('../../database/index.js', () => ({
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		PUBLIC_URL: 'https://example.com',
-		ACCESS_TOKEN_TTL: '15m',
-		REFRESH_TOKEN_TTL: '7d',
+		ACCESS_TOKEN_TTL: 900_000,
+		REFRESH_TOKEN_TTL: 604_800_000,
 		MCP_OAUTH_MAX_CLIENTS: 10000,
-		MCP_OAUTH_CLIENT_UNUSED_TTL: '3d',
-		MCP_OAUTH_CLIENT_IDLE_TTL: '0',
+		MCP_OAUTH_CLIENT_UNUSED_TTL: 259_200_000,
+		MCP_OAUTH_CLIENT_IDLE_TTL: 0,
 		MCP_OAUTH_DCR_ENABLED: true,
 		MCP_OAUTH_CIMD_ENABLED: true,
 		MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
@@ -202,11 +202,11 @@ describe('McpOAuthService', () => {
 
 		useEnv.mockReturnValue({
 			PUBLIC_URL: TEST_PUBLIC_URL,
-			ACCESS_TOKEN_TTL: '15m',
-			REFRESH_TOKEN_TTL: '7d',
+			ACCESS_TOKEN_TTL: 900_000,
+			REFRESH_TOKEN_TTL: 604_800_000,
 			MCP_OAUTH_MAX_CLIENTS: 10000,
-			MCP_OAUTH_CLIENT_UNUSED_TTL: '3d',
-			MCP_OAUTH_CLIENT_IDLE_TTL: '0',
+			MCP_OAUTH_CLIENT_UNUSED_TTL: 259_200_000,
+			MCP_OAUTH_CLIENT_IDLE_TTL: 0,
 			MCP_OAUTH_DCR_ENABLED: true,
 			MCP_OAUTH_CIMD_ENABLED: true,
 			MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
@@ -716,8 +716,8 @@ describe('McpOAuthService', () => {
 					useEnv.mockReturnValue({
 						PUBLIC_URL: 'https://example.com',
 						MCP_OAUTH_MAX_CLIENTS: 10000,
-						MCP_OAUTH_CLIENT_UNUSED_TTL: '3d',
-						MCP_OAUTH_CLIENT_IDLE_TTL: '0',
+						MCP_OAUTH_CLIENT_UNUSED_TTL: 259_200_000,
+						MCP_OAUTH_CLIENT_IDLE_TTL: 0,
 						MCP_OAUTH_DCR_ENABLED: true,
 						MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: ['cursor.com', '*.anthropic.com'],
 						MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
@@ -3237,7 +3237,7 @@ describe('McpOAuthService', () => {
 			const { useEnv } = await import('@directus/env');
 			const env = useEnv() as Record<string, unknown>;
 			const originalIdleTtl = env['MCP_OAUTH_CLIENT_IDLE_TTL'];
-			env['MCP_OAUTH_CLIENT_IDLE_TTL'] = '30d';
+			env['MCP_OAUTH_CLIENT_IDLE_TTL'] = 2_592_000_000;
 
 			try {
 				const idleClientId = crypto.randomUUID();
@@ -3269,7 +3269,7 @@ describe('McpOAuthService', () => {
 			const { useEnv } = await import('@directus/env');
 			const env = useEnv() as Record<string, unknown>;
 			const originalIdleTtl = env['MCP_OAUTH_CLIENT_IDLE_TTL'];
-			env['MCP_OAUTH_CLIENT_IDLE_TTL'] = '30d';
+			env['MCP_OAUTH_CLIENT_IDLE_TTL'] = 2_592_000_000;
 
 			try {
 				// Steps 1-4

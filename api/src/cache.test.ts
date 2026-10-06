@@ -21,8 +21,8 @@ vi.mock('@directus/env', async () => {
 		CACHE_STORE: 'memory',
 		CACHE_AUTO_PURGE: true,
 		CACHE_NAMESPACE: 'directus-test',
-		CACHE_TTL: '10m',
-		CACHE_SYSTEM_TTL: '10m',
+		CACHE_TTL: 600_000,
+		CACHE_SYSTEM_TTL: 600_000,
 	});
 });
 

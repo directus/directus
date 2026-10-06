@@ -1,8 +1,6 @@
 import { useEnv } from '@directus/env';
 import type { Settings, TransformationParams } from '@directus/types';
-import bytes from 'bytes';
 import type { CookieOptions } from 'express';
-import { getMilliseconds } from './utils/get-milliseconds.js';
 
 const env = useEnv();
 
@@ -70,7 +68,7 @@ export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a
 export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
 	domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-	maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),
+	maxAge: env.REFRESH_TOKEN_TTL,
 	secure: env.REFRESH_TOKEN_COOKIE_SECURE,
 	sameSite: env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none',
 };
@@ -78,7 +76,7 @@ export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
 export const SESSION_COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
 	domain: env.SESSION_COOKIE_DOMAIN,
-	maxAge: getMilliseconds(env.SESSION_COOKIE_TTL),
+	maxAge: env.SESSION_COOKIE_TTL,
 	secure: env.SESSION_COOKIE_SECURE,
 	sameSite: env.SESSION_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none',
 };
@@ -100,7 +98,7 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 
 /** File uploads */
 export const FILE_UPLOADS = {
-	MAX_SIZE: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string | number),
+	MAX_SIZE: env.FILES_MAX_UPLOAD_SIZE,
 	MAX_CONCURRENCY: env.FILES_MAX_UPLOAD_CONCURRENCY,
 };
 
@@ -113,8 +111,8 @@ export const EXTENSIONS = {
 /** Resumable uploads (TUS) */
 export const RESUMABLE_UPLOADS = {
 	ENABLED: env.TUS_ENABLED,
-	CHUNK_SIZE: bytes.parse(env['TUS_CHUNK_SIZE'] as string | number),
-	EXPIRATION_TIME: getMilliseconds(env.TUS_UPLOAD_EXPIRATION, 600_000 /* 10min */),
+	CHUNK_SIZE: env.TUS_CHUNK_SIZE,
+	EXPIRATION_TIME: env.TUS_UPLOAD_EXPIRATION,
 	SCHEDULE: env.TUS_CLEANUP_SCHEDULE,
 };
 

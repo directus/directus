@@ -16,7 +16,6 @@ import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import { isEmpty } from 'lodash-es';
-import type { StringValue } from 'ms';
 import { clearSystemCache } from '../cache.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
@@ -157,7 +156,7 @@ export class UsersService extends ItemsService {
 		const payload = { email, scope: 'invite' };
 
 		const token = jwt.sign(payload, getSecret(), {
-			expiresIn: env.USER_INVITE_TOKEN_TTL as StringValue | number,
+			expiresIn: Math.floor(env.USER_INVITE_TOKEN_TTL / 1000),
 			issuer: 'directus',
 		});
 
@@ -553,7 +552,7 @@ export class UsersService extends ItemsService {
 			const payload = { email: verificationEmail, scope: 'pending-registration' };
 
 			const token = jwt.sign(payload, getSecret(), {
-				expiresIn: env.EMAIL_VERIFICATION_TOKEN_TTL as StringValue | number,
+				expiresIn: Math.floor(env.EMAIL_VERIFICATION_TOKEN_TTL / 1000),
 				issuer: 'directus',
 			});
 

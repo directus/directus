@@ -41,7 +41,7 @@ vi.mock('../cache.js', () => ({
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({
-		CACHE_DEPLOYMENT_TTL: '5s',
+		CACHE_DEPLOYMENT_TTL: 5000,
 	})),
 }));
 

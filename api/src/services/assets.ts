@@ -30,7 +30,6 @@ import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { assertTransformsAllowed, toDimension } from './assets/assert-transforms-allowed.js';
@@ -421,7 +420,7 @@ export class AssetsService {
 			const transformer = getSharpInstance();
 
 			transformer.timeout({
-				seconds: clamp(Math.round(getMilliseconds(env.ASSETS_TRANSFORM_TIMEOUT, 0) / 1000), 1, 3600),
+				seconds: clamp(Math.round(env.ASSETS_TRANSFORM_TIMEOUT / 1000), 1, 3600),
 			});
 
 			if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();

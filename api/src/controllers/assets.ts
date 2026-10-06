@@ -21,7 +21,6 @@ import asyncHandler from '../utils/async-handler.js';
 import { destroyOnDisconnect } from '../utils/destroy-on-disconnect.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 
 const router = Router();
@@ -399,7 +398,7 @@ router.get(
 		if (revalidate) {
 			res.setHeader('Cache-Control', 'max-age=0, must-revalidate');
 		} else {
-			res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env.ASSETS_CACHE_TTL), false, true));
+			res.setHeader('Cache-Control', getCacheControlHeader(req, env.ASSETS_CACHE_TTL, false, true));
 		}
 
 		res.setHeader('Vary', vary.join(', '));

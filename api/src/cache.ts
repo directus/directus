@@ -9,7 +9,6 @@ import { redisConfigAvailable } from './redis/index.js';
 import { compress, decompress } from './utils/compress.js';
 import { freezeSchema, unfreezeSchema } from './utils/freeze-schema.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import { getMilliseconds } from './utils/get-milliseconds.js';
 
 const logger = useLogger();
 const env = useEnv();
@@ -56,23 +55,23 @@ export function getCache(): {
 	const store = env.CACHE_STORE;
 
 	if (env.CACHE_ENABLED && cache === null) {
-		cache = getKeyvInstance(store, getMilliseconds(env.CACHE_TTL));
+		cache = getKeyvInstance(store, env.CACHE_TTL);
 		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
 	if (systemCache === null) {
-		systemCache = getKeyvInstance(store, getMilliseconds(env['CACHE_SYSTEM_TTL']), '_system');
+		systemCache = getKeyvInstance(store, env.CACHE_SYSTEM_TTL, '_system');
 		systemCache.on('error', (err) => logger.warn(err, `[system-cache] ${err}`));
 	}
 
 	if (deploymentCache === null) {
-		const ttl = getMilliseconds(env.CACHE_DEPLOYMENT_TTL);
+		const ttl = env.CACHE_DEPLOYMENT_TTL;
 		deploymentCache = getKeyvInstance(store, ttl, '_deployment');
 		deploymentCache.on('error', (err) => logger.warn(err, `[deployment-cache] ${err}`));
 	}
 
 	if (localSchemaCache === null) {
-		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema');
+		localSchemaCache = getKeyvInstance('memory', env.CACHE_SYSTEM_TTL, '_schema');
 		localSchemaCache.on('error', (err) => logger.warn(err, `[schema-cache] ${err}`));
 	}
 

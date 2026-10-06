@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
 import { cwd } from 'node:process';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
-import type { CastKey, Value } from '../types/env-type.js';
+import type { CastKey, InputValue } from '../types/env-type.js';
 
 export const DEFAULTS = {
 	CONFIG_PATH: resolve(cwd(), '.env') as string,
@@ -296,5 +296,5 @@ export const DEFAULTS = {
  * `isolatedDeclarations` can't derive the declaration type of an exported `satisfies` expression
  */
 DEFAULTS satisfies {
-	readonly [Key in CastKey]?: Value<Key> extends (infer Item)[] ? readonly Item[] : Value<Key>;
+	readonly [Key in CastKey]?: InputValue<Key> extends (infer Item)[] ? readonly Item[] : InputValue<Key>;
 };

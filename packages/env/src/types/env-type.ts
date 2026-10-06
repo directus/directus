@@ -5,6 +5,18 @@ import type { TYPE_MAP } from '../constants/type-map.js';
 export type EnvType = (typeof ENV_TYPES)[number];
 
 /**
+ * A duration in milliseconds, parsed from a number or a human readable value like `15m`. The intersection keeps the
+ * alias name visible in editors, while staying interchangeable with `number`
+ */
+export type Milliseconds = number & Record<never, never>;
+
+/**
+ * A size in bytes, parsed from a number or a human readable value like `10mb`. The intersection keeps the alias name
+ * visible in editors, while staying interchangeable with `number`
+ */
+export type Bytes = number & Record<never, never>;
+
+/**
  * Runtime type that's produced by `cast` for each of the supported env types
  */
 interface EnvTypeValue extends Record<EnvType, unknown> {
@@ -15,6 +27,16 @@ interface EnvTypeValue extends Record<EnvType, unknown> {
 	array: unknown[];
 	'string-array': string[];
 	json: unknown;
+	milliseconds: Milliseconds;
+	bytes: Bytes;
+}
+
+/**
+ * Raw value that's accepted as input by `cast` for each of the supported env types, eg for defaults
+ */
+interface EnvTypeInput extends Omit<EnvTypeValue, 'milliseconds' | 'bytes'> {
+	milliseconds: string | number;
+	bytes: string | number;
 }
 
 /**
@@ -30,3 +52,5 @@ export type CastKey = Exclude<keyof typeof TYPE_MAP, PatternKey<keyof typeof TYP
 export type DefaultKey = keyof typeof DEFAULTS;
 
 export type Value<Key extends CastKey> = EnvTypeValue[(typeof TYPE_MAP)[Key]];
+
+export type InputValue<Key extends CastKey> = EnvTypeInput[(typeof TYPE_MAP)[Key]];

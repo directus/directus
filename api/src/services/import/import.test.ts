@@ -42,7 +42,7 @@ vi.mock('@directus/env', async () => {
 		envConfig,
 		mockEnv({
 			MAX_IMPORT_ERRORS: 1000,
-			IMPORT_TIMEOUT: '1m',
+			IMPORT_TIMEOUT: 60_000,
 			IMPORT_MAX_CONCURRENCY: 10,
 			CACHE_AUTO_PURGE: false,
 		}),

@@ -4,7 +4,6 @@ import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/error
 import formatTitle from '@directus/format-title';
 import type { BusboyFileStream, PrimaryKey } from '@directus/types';
 import Busboy from 'busboy';
-import bytes from 'bytes';
 import type { RequestHandler } from 'express';
 import express from 'express';
 import Joi from 'joi';
@@ -42,7 +41,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		headers,
 		defParamCharset: 'utf8',
 		limits: {
-			fileSize: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string) ?? undefined,
+			fileSize: env.FILES_MAX_UPLOAD_SIZE,
 		},
 	});
 

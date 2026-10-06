@@ -3,13 +3,11 @@ import { ForbiddenError, InvalidCredentialsError, InvalidPayloadError } from '@d
 import type { AbstractServiceOptions, Item, LoginResult, MutationOptions, PrimaryKey } from '@directus/types';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import type { StringValue } from 'ms';
 import { nanoid } from 'nanoid';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { DirectusTokenPayload, ShareData } from '../types/index.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { getSecret } from '../utils/get-secret.js';
 import { md } from '../utils/md.js';
 import { Url } from '../utils/url.js';
@@ -144,16 +142,16 @@ export class SharesService extends ItemsService {
 		};
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL, 0));
+		const refreshTokenExpiration = new Date(Date.now() + env.REFRESH_TOKEN_TTL);
 
 		if (options?.session) {
 			tokenPayload.session = refreshToken;
 		}
 
-		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as StringValue | number;
+		const TTL = options?.session ? env.SESSION_COOKIE_TTL : env.ACCESS_TOKEN_TTL;
 
 		const accessToken = jwt.sign(tokenPayload, getSecret(), {
-			expiresIn: TTL,
+			expiresIn: Math.floor(TTL / 1000),
 			issuer: 'directus',
 		});
 
@@ -171,7 +169,7 @@ export class SharesService extends ItemsService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: getMilliseconds(TTL),
+			expires: TTL,
 		};
 	}
 

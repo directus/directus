@@ -23,14 +23,13 @@ import { redisConfigAvailable, useRedis } from '../redis/index.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import { getAllowedLogLevels } from '../utils/get-allowed-log-levels.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isUnauthenticated } from '../utils/is-unauthenticated.js';
 import { useStore } from '../utils/store.js';
 import { SettingsService } from './settings.js';
 
 const env = useEnv();
 const logger = useLogger();
-const HEALTHCHECK_CACHE_TTL = getMilliseconds(env.HEALTHCHECK_CACHE_TTL, 300_000); // default 5 minute
+const HEALTHCHECK_CACHE_TTL = env.HEALTHCHECK_CACHE_TTL;
 
 const store = useStore<{ health: ServerHealth }>(env.HEALTHCHECK_NAMESPACE, {
 	ttl: HEALTHCHECK_CACHE_TTL,

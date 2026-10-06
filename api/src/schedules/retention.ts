@@ -5,7 +5,6 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { useLock } from '../lock/index.js';
 import { useLogger } from '../logger/index.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 
 export interface RetentionTask {
@@ -20,9 +19,9 @@ const env = useEnv();
 const retentionLockKey = 'schedule--data-retention';
 const retentionLockTimeout = 10 * 60 * 1000; // 10 mins
 
-const ACTIVITY_RETENTION_TIMEFRAME = getMilliseconds(env.ACTIVITY_RETENTION);
-const FLOW_LOGS_RETENTION_TIMEFRAME = getMilliseconds(env.FLOW_LOGS_RETENTION);
-const REVISIONS_RETENTION_TIMEFRAME = getMilliseconds(env.REVISIONS_RETENTION);
+const ACTIVITY_RETENTION_TIMEFRAME = env.ACTIVITY_RETENTION;
+const FLOW_LOGS_RETENTION_TIMEFRAME = env.FLOW_LOGS_RETENTION;
+const REVISIONS_RETENTION_TIMEFRAME = env.REVISIONS_RETENTION;
 
 const retentionTasks: RetentionTask[] = [
 	{

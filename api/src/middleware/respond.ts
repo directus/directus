@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import { getDateTimeFormatted } from '@directus/utils';
-import { parse as parseBytesConfiguration } from 'bytes';
 import type { RequestHandler } from 'express';
 import { getCache, setCacheValue } from '../cache.js';
 import getDatabase from '../database/index.js';
@@ -9,7 +8,6 @@ import { ExportService } from '../services/export.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getCacheKey } from '../utils/get-cache-key.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stringByteSize } from '../utils/get-string-byte-size.js';
 import { permissionsCacheable } from '../utils/permissions-cacheable.js';
 
@@ -21,15 +19,14 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 
 	// Support custom cache instance and TTL via res.locals
 	const cacheInstance = res.locals['cacheInstance'] || cache;
-	const cacheTTL = res.locals['cacheTTL'] ?? getMilliseconds(env.CACHE_TTL);
+	const cacheTTL = res.locals['cacheTTL'] ?? env.CACHE_TTL;
 	const hasCustomCache = !!res.locals['cacheInstance'];
 
 	let exceedsMaxSize = false;
 
-	if (env.CACHE_VALUE_MAX_SIZE) {
+	if (env.CACHE_VALUE_MAX_SIZE !== undefined) {
 		const valueSize = res.locals['payload'] ? stringByteSize(JSON.stringify(res.locals['payload'])) : 0;
-		const maxSize = parseBytesConfiguration(env.CACHE_VALUE_MAX_SIZE);
-		if (maxSize !== null) exceedsMaxSize = valueSize > maxSize;
+		exceedsMaxSize = valueSize > env.CACHE_VALUE_MAX_SIZE;
 	}
 
 	// Custom cache bypasses global cache settings (CACHE_ENABLED, permissionsCacheable)

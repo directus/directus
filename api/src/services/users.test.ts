@@ -27,7 +27,7 @@ vi.mock('./mail', () => {
 vi.mock('@directus/env', async () => {
 	const { mockUseEnv } = await import('../test-utils/env.js');
 	return mockUseEnv({
-		EMAIL_VERIFICATION_TOKEN_TTL: '1d',
+		EMAIL_VERIFICATION_TOKEN_TTL: 86_400_000,
 		REGISTER_STALL_TIME: 0,
 		USER_REGISTER_URL_ALLOW_LIST: 'https://example.com/verify',
 		USERS_ADMIN_ACCESS_LIMIT: 3,
@@ -626,7 +626,7 @@ describe('Integration Tests', () => {
 					{ email: 'test@example.com', scope: 'pending-registration' },
 					expect.any(String),
 					{
-						expiresIn: '1d',
+						expiresIn: 86_400,
 						issuer: 'directus',
 					},
 				);

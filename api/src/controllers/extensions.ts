@@ -22,7 +22,6 @@ import { ExtensionReadError, ExtensionsService } from '../services/extensions.js
 import asyncHandler from '../utils/async-handler.js';
 import { destroyOnDisconnect } from '../utils/destroy-on-disconnect.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { handleRegistryError } from './utils/handle-registry-error.js';
 
 const router = express.Router();
@@ -331,10 +330,7 @@ router.get(
 
 		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
 
-		res.setHeader(
-			'Cache-Control',
-			getCacheControlHeader(req, getMilliseconds(env['EXTENSIONS_CACHE_TTL']), false, false),
-		);
+		res.setHeader('Cache-Control', getCacheControlHeader(req, env.EXTENSIONS_CACHE_TTL, false, false));
 
 		res.setHeader('Vary', 'Origin, Cache-Control');
 

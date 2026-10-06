@@ -12,7 +12,6 @@ import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger/index.js';
 import { fetchRolesTree } from '../../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../../permissions/modules/fetch-global-access/fetch-global-access.js';
-import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { getSecret } from '../../utils/get-secret.js';
 import { parseOAuthScope } from '../../utils/parse-oauth-scope.js';
 import { transaction } from '../../utils/transaction.js';
@@ -29,7 +28,6 @@ export { isDomainAllowed } from './utils/domain.js';
 export { isLoopbackHost } from './utils/loopback.js';
 export { validateRedirectUri } from './utils/redirect.js';
 
-const DEFAULT_UNUSED_CLIENT_TTL_MS = 3 * 24 * 60 * 60 * 1000; // 3d -- matches env default
 const DEFAULT_CIMD_TTL_MS = 3_600_000; // 1 hour
 const MAX_REDIRECT_URIS = 10;
 const MAX_CLIENT_NAME_LENGTH = 200;
@@ -756,7 +754,7 @@ export class McpOAuthService {
 		const codeHash = this.hashToken(rawCode);
 
 		// Store code (never store raw code)
-		const codeExpiry = new Date(Date.now() + getMilliseconds(env.MCP_OAUTH_AUTH_CODE_TTL, 0));
+		const codeExpiry = new Date(Date.now() + env.MCP_OAUTH_AUTH_CODE_TTL);
 
 		await transaction(this.knex, async (trx) => {
 			await trx('directus_oauth_codes').insert({
@@ -894,8 +892,8 @@ export class McpOAuthService {
 		// 4. Single transaction: burn-first, then validate, then create grant
 		const sessionToken = nanoid(64);
 		const sessionHash = this.hashToken(sessionToken);
-		const refreshTtl = getMilliseconds(env.REFRESH_TOKEN_TTL, 0);
-		const accessTtl = getMilliseconds(env.ACCESS_TOKEN_TTL, 0);
+		const refreshTtl = env.REFRESH_TOKEN_TTL;
+		const accessTtl = env.ACCESS_TOKEN_TTL;
 		const sessionExpiry = new Date(Date.now() + refreshTtl);
 		const grantId = crypto.randomUUID();
 
@@ -1168,8 +1166,8 @@ export class McpOAuthService {
 		// 9. Rotate session
 		const newSessionToken = nanoid(64);
 		const newSessionHash = this.hashToken(newSessionToken);
-		const refreshTtl = getMilliseconds(env.REFRESH_TOKEN_TTL, 0);
-		const accessTtl = getMilliseconds(env.ACCESS_TOKEN_TTL, 0);
+		const refreshTtl = env.REFRESH_TOKEN_TTL;
+		const accessTtl = env.ACCESS_TOKEN_TTL;
 		const newExpiry = new Date(Date.now() + refreshTtl);
 		const resource = grant['resource'] as string;
 		const scope = (grant['scope'] as string) || MCP_ACCESS_SCOPE;
@@ -1423,7 +1421,7 @@ export class McpOAuthService {
 		}
 
 		// 5a. Tier 1: Never-authorized clients (no consent records, no active sessions/grants)
-		const unusedTtl = getMilliseconds(env.MCP_OAUTH_CLIENT_UNUSED_TTL, DEFAULT_UNUSED_CLIENT_TTL_MS);
+		const unusedTtl = env.MCP_OAUTH_CLIENT_UNUSED_TTL;
 		const unusedCutoff = new Date(now.getTime() - unusedTtl);
 
 		const neverAuthorizedClients = await this.knex('directus_oauth_clients')
@@ -1446,7 +1444,7 @@ export class McpOAuthService {
 		}
 
 		// 5b. Tier 2: Idle authorized clients (have consents but no active sessions/grants)
-		const idleTtl = getMilliseconds(env.MCP_OAUTH_CLIENT_IDLE_TTL, 0);
+		const idleTtl = env.MCP_OAUTH_CLIENT_IDLE_TTL;
 
 		if (idleTtl > 0) {
 			const idleCutoff = new Date(now.getTime() - idleTtl);
