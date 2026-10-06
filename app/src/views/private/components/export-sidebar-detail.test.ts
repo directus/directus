@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { defineComponent } from 'vue';
 import { createI18n } from 'vue-i18n';
 import ExportSidebarDetail from './export-sidebar-detail.vue';
@@ -38,6 +38,7 @@ vi.mock('@/stores/server', () => ({
 
 const settingsState = vi.hoisted(() => ({
 	default_exports_folder: null as string | null,
+	storage_default_folder: null as string | null,
 }));
 
 vi.mock('@/stores/settings', () => ({
@@ -182,14 +183,29 @@ describe('export-sidebar-detail file library warning', () => {
 describe('export-sidebar-detail default exports folder', () => {
 	beforeEach(() => {
 		collectionState.fields = [{ field: 'id', type: 'uuid' }];
-		settingsState.default_exports_folder = 'exports-folder';
+		settingsState.storage_default_folder = 'storage-folder';
+	});
+
+	afterEach(() => {
+		settingsState.default_exports_folder = null;
+		settingsState.storage_default_folder = null;
 	});
 
 	test('pre-selects the default exports folder', async () => {
+		settingsState.default_exports_folder = 'exports-folder';
+
 		const wrapper = mountComponent({ layoutQuery: { limit: 3000 } });
 
 		await wrapper.vm.$nextTick();
 
 		expect(wrapper.findComponent({ name: 'FolderPicker' }).props('modelValue')).toBe('exports-folder');
+	});
+
+	test('falls back to the default storage folder', async () => {
+		const wrapper = mountComponent({ layoutQuery: { limit: 3000 } });
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.findComponent({ name: 'FolderPicker' }).props('modelValue')).toBe('storage-folder');
 	});
 });

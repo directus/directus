@@ -149,7 +149,10 @@ watch(
 
 const format = ref('csv');
 const location = ref('download');
-const folder = ref<string | null>(settingsStore.settings?.default_exports_folder ?? null);
+
+const folder = ref<string | null>(
+	settingsStore.settings?.default_exports_folder ?? settingsStore.settings?.storage_default_folder ?? null,
+);
 
 const lockedToFiles = ref<{ previousLocation: string } | null>(null);
 
