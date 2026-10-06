@@ -3,7 +3,7 @@ import { join } from 'path';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { getCallerFolder } from '@utils/getUID.js';
 
-const schema = new SchemaBuilder({ test_schema: true }).collection('fields', (c) => {
+const schema = new SchemaBuilder().collection('fields', (c) => {
 	c.field('id').id();
 	c.field('string').string();
 	c.field('uuid').uuid();
@@ -20,6 +20,6 @@ const schema = new SchemaBuilder({ test_schema: true }).collection('fields', (c)
 	c.field('hash').hash();
 });
 
-export const snapshot = schema.snapshot();
+export const snapshot = schema.snapshot({ test_schema: true });
 
 writeFileSync(join(getCallerFolder(), 'schema.d.ts'), schema.types());

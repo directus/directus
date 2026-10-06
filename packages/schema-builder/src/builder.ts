@@ -1,6 +1,6 @@
 import { ok as assert } from 'node:assert/strict';
 import type { Collection, DatabaseClient, Field, Relation, SchemaOverview, Snapshot } from '@directus/types';
-import { cloneDeepWith, omit } from 'lodash-es';
+import { omit } from 'lodash-es';
 import { CollectionBuilder, type CollectionOveriewBuilderOptions } from './collection.js';
 import { RelationBuilder } from './relation.js';
 import { toSchemaOverview } from './schema-overview.js';
@@ -16,9 +16,6 @@ export type SnapshotOptions = {
 	/** Directus version of the instance the snapshot is applied to, has to match unless the apply is forced */
 	directus?: string;
 	vendor?: DatabaseClient;
-};
-
-export type SchemaBuilderOptions = {
 	/** Suffixes all collection names with `_1234`, so the e2e tests can replace them with unique names */
 	test_schema?: boolean;
 };
@@ -26,26 +23,12 @@ export type SchemaBuilderOptions = {
 export const TEST_SCHEMA_SUFFIX = '_1234';
 
 export class SchemaBuilder {
-	_options: SchemaBuilderOptions;
 	_collections: CollectionBuilder[] = [];
 	_relations: RelationBuilder[] = [];
 	_last_collection_configured = true;
 	_relation_counter = 0;
 
-	constructor(options: SchemaBuilderOptions = {}) {
-		this._options = options;
-	}
-
-	/** Resolves the final name of a collection, applying the test schema suffix if enabled */
-	collection_name(name: string): string {
-		if (!this._options.test_schema || name.endsWith(TEST_SCHEMA_SUFFIX)) return name;
-
-		return name + TEST_SCHEMA_SUFFIX;
-	}
-
 	collection(name: string, callback: (collection: CollectionBuilder) => void): this {
-		name = this.collection_name(name);
-
 		const existing_index = this._collections.findIndex((collectionBuilder) => collectionBuilder.get_name() === name);
 
 		if (existing_index !== -1) {
@@ -117,7 +100,11 @@ export class SchemaBuilder {
 
 	/** Builds a schema snapshot that can be applied to a Directus instance */
 	snapshot(options: SnapshotOptions = {}): Snapshot {
-		const { collections, fields, relations } = this.build_schema();
+		let schema = this.build_schema();
+
+		if (options.test_schema) schema = suffix_collections(schema);
+
+		const { collections, fields, relations } = schema;
 
 		return {
 			version: 1,
@@ -132,15 +119,46 @@ export class SchemaBuilder {
 
 	/** Generates TypeScript interfaces for the schema, in the shape the Directus SDK expects */
 	types(options?: TypeScriptOptions): string {
-		let schema = this.build_schema();
-
-		// Match the names the e2e tests see after `useSnapshot` strips the suffix
-		if (this._options.test_schema) {
-			schema = cloneDeepWith(schema, (value) =>
-				typeof value === 'string' ? value.replaceAll(TEST_SCHEMA_SUFFIX, '') : undefined,
-			);
-		}
-
-		return toTypeScript(schema, options);
+		return toTypeScript(this.build_schema(), options);
 	}
+}
+
+/** Suffixes all collection names and the references to them with `TEST_SCHEMA_SUFFIX` */
+function suffix_collections({ collections, fields, relations }: BuiltSchema): BuiltSchema {
+	const suffix = <T extends string | null | undefined>(name: T): T =>
+		name ? ((name + TEST_SCHEMA_SUFFIX) as T) : name;
+
+	return {
+		collections: collections.map((collection) => ({
+			...collection,
+			collection: suffix(collection.collection),
+			meta: collection.meta && {
+				...collection.meta,
+				collection: suffix(collection.meta.collection),
+				group: suffix(collection.meta.group),
+			},
+			schema: collection.schema && { ...collection.schema, name: suffix(collection.schema.name) },
+		})),
+		fields: fields.map((field) => ({
+			...field,
+			collection: suffix(field.collection),
+			meta: field.meta && { ...field.meta, collection: suffix(field.meta.collection) },
+		})),
+		relations: relations.map((relation) => ({
+			...relation,
+			collection: suffix(relation.collection),
+			related_collection: suffix(relation.related_collection),
+			meta: relation.meta && {
+				...relation.meta,
+				many_collection: suffix(relation.meta.many_collection),
+				one_collection: suffix(relation.meta.one_collection),
+				one_allowed_collections: relation.meta.one_allowed_collections?.map(suffix) ?? null,
+			},
+			schema: relation.schema && {
+				...relation.schema,
+				table: suffix(relation.schema.table),
+				foreign_key_table: suffix(relation.schema.foreign_key_table),
+			},
+		})),
+	};
 }

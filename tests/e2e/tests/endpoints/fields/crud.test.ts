@@ -19,11 +19,11 @@ import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 
-const schema = new SchemaBuilder({ test_schema: true }).collection('fields', (c) => {
+const schema = new SchemaBuilder().collection('fields', (c) => {
 	c.field('id').id();
 });
 
-const snapshot = schema.snapshot();
+const snapshot = schema.snapshot({ test_schema: true });
 
 writeFileSync(join(getCallerFolder(), 'schema.d.ts'), schema.types());
 

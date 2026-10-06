@@ -88,14 +88,15 @@ Types can also be generated from any snapshot with `toTypeScript(snapshot, { sch
 
 ## Test schemas
 
-With `test_schema` enabled, all collection names, including related and generated junction collections, are suffixed
-with `_1234`. The e2e tests use this suffix to replace the collection names with unique ones per test run:
+With the `test_schema` snapshot option enabled, all collection names, including related and generated junction
+collections, are suffixed with `_1234`. The e2e tests use this suffix to replace the collection names with unique ones
+per test run:
 
 ```ts
-const snapshot = new SchemaBuilder({ test_schema: true })
+const snapshot = new SchemaBuilder()
 	.collection('articles', (c) => {
 		c.field('id').id();
 		c.field('author').m2o('users');
 	})
-	.snapshot(); // contains the collections articles_1234 and users_1234
+	.snapshot({ test_schema: true }); // contains the collections articles_1234 and users_1234
 ```

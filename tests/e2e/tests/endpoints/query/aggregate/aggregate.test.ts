@@ -10,7 +10,7 @@ import { range } from 'lodash-es';
 import { expect, test } from 'vitest';
 import type { Articles, Schema } from './schema.d.ts';
 
-const schema = new SchemaBuilder({ test_schema: true })
+const schema = new SchemaBuilder()
 	.collection('articles', (c) => {
 		c.field('id').id();
 		c.field('title').string();
@@ -43,7 +43,7 @@ const schema = new SchemaBuilder({ test_schema: true })
 		c.field('link').string();
 	});
 
-const snapshot = schema.snapshot();
+const snapshot = schema.snapshot({ test_schema: true });
 
 writeFileSync(join(getCallerFolder(), 'schema.d.ts'), schema.types());
 

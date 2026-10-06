@@ -1,4 +1,4 @@
-export { SchemaBuilder, type BuiltSchema, type SchemaBuilderOptions, type SnapshotOptions } from './builder.js';
+export { SchemaBuilder, type BuiltSchema, type SnapshotOptions } from './builder.js';
 export { CollectionBuilder } from './collection.js';
 export { FieldBuilder } from './field.js';
 export { RelationBuilder } from './relation.js';

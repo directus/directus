@@ -26,7 +26,7 @@ export type Articles = {
 	author: string;
 };
 
-const schema = new SchemaBuilder({ test_schema: true })
+const schema = new SchemaBuilder()
 	.collection('articles', (c) => {
 		c.field('id').id();
 		c.field('title').string().options({ nullable: false });
@@ -34,7 +34,7 @@ const schema = new SchemaBuilder({ test_schema: true })
 	})
 	.options({ versioning: true });
 
-const snapshot = schema.snapshot();
+const snapshot = schema.snapshot({ test_schema: true });
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api, snapshot);

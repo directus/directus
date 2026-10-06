@@ -22,7 +22,7 @@ import { useSnapshot } from '@utils/use-snapshot.js';
 import { afterAll, describe, expect, test } from 'vitest';
 import type { Schema } from './schema.js';
 
-const schema = new SchemaBuilder({ test_schema: true })
+const schema = new SchemaBuilder()
 	.collection('city', (c) => {
 		c.field('id').id();
 		c.field('name').string();
@@ -38,7 +38,7 @@ const schema = new SchemaBuilder({ test_schema: true })
 		c.field('country').m2o('country');
 	});
 
-const snapshot = schema.snapshot();
+const snapshot = schema.snapshot({ test_schema: true });
 
 writeFileSync(join(getCallerFolder(), 'schema.d.ts'), schema.types());
 

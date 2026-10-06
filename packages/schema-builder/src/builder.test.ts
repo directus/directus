@@ -1276,25 +1276,22 @@ test('define singleton collection', () => {
 });
 
 test('suffix all collections with test_schema', () => {
-	const schema = new SchemaBuilder({ test_schema: true })
-		.collection('articles', (c) => {
-			c.field('id').id();
-			c.field('author').m2o('users');
-			c.field('tags').m2m('tags');
-			c.field('links').o2m('links', 'article_id');
-			c.field('blocks').m2a(['text_blocks']);
-			c.field('translations').translations();
-		})
-		.collection('users_1234', (c) => {
-			c.field('id').id();
-		})
-		.build_schema();
+	const builder = new SchemaBuilder().collection('articles', (c) => {
+		c.field('id').id();
+		c.field('author').m2o('users');
+		c.field('tags').m2m('tags');
+		c.field('links').o2m('links', 'article_id');
+		c.field('blocks').m2a(['text_blocks']);
+		c.field('translations').translations();
+	});
 
-	expect(schema.collections.map(({ collection }) => collection).sort()).toEqual([
+	const snapshot = builder.snapshot({ test_schema: true });
+
+	expect(snapshot.collections.map(({ collection }) => collection).sort()).toEqual([
 		'articles_1234',
-		'articles_1234_builder',
-		'articles_1234_tags_1234_junction',
-		'articles_1234_translations',
+		'articles_builder_1234',
+		'articles_tags_junction_1234',
+		'articles_translations_1234',
 		'languages_1234',
 		'links_1234',
 		'tags_1234',
@@ -1302,9 +1299,21 @@ test('suffix all collections with test_schema', () => {
 		'users_1234',
 	]);
 
-	expect(schema.relations.find(({ field }) => field === 'author')?.related_collection).toBe('users_1234');
+	expect(snapshot.fields.every(({ collection }) => collection.endsWith('_1234'))).toBe(true);
 
-	expect(schema.relations.find(({ field }) => field === 'item')?.meta?.one_allowed_collections).toEqual([
+	const author = snapshot.relations.find(({ field }) => field === 'author');
+
+	expect(author).toMatchObject({
+		collection: 'articles_1234',
+		related_collection: 'users_1234',
+		meta: { many_collection: 'articles_1234', one_collection: 'users_1234' },
+		schema: { table: 'articles_1234', foreign_key_table: 'users_1234' },
+	});
+
+	expect(snapshot.relations.find(({ field }) => field === 'item')?.meta?.one_allowed_collections).toEqual([
 		'text_blocks_1234',
 	]);
+
+	// The builder itself stays unsuffixed
+	expect(builder.snapshot().collections.map(({ collection }) => collection)).toContain('articles');
 });

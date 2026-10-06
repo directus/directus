@@ -8,7 +8,7 @@ import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 
-const schema = new SchemaBuilder({ test_schema: true })
+const schema = new SchemaBuilder()
 	.collection('authors', (c) => {
 		c.field('id').id();
 		c.field('name').string();
@@ -24,7 +24,7 @@ const schema = new SchemaBuilder({ test_schema: true })
 		c.field('editor').m2o('editors', undefined, (r) => r.options({ schema: { on_delete: 'CASCADE' } }));
 	});
 
-const snapshot = schema.snapshot();
+const snapshot = schema.snapshot({ test_schema: true });
 
 writeFileSync(join(getCallerFolder(), 'schema.d.ts'), schema.types());
 

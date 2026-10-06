@@ -195,8 +195,6 @@ export class FieldBuilder {
 		this.set_type(alias_field(['m2a']));
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		related_collections = related_collections.map((name) => this._schema!.collection_name(name));
-
 		const junction_name = `${this._collection.get_name()}_builder`;
 
 		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name())
@@ -231,8 +229,6 @@ export class FieldBuilder {
 	m2m(related_collection: string, relation_callback?: (options: M2MOptions) => M2MOptions | void): this {
 		this.set_type(alias_field(['m2m']));
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
-
-		related_collection = this._schema.collection_name(related_collection);
 
 		const junction_name = `${this._collection.get_name()}_${related_collection}_junction`;
 
@@ -271,8 +267,6 @@ export class FieldBuilder {
 	): this {
 		this.set_type(alias_field(['translations']));
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
-
-		language_collection = this._schema.collection_name(language_collection);
 
 		this._schema.collection(language_collection, (c) => {
 			c.field('code').string().primary();
@@ -321,8 +315,6 @@ export class FieldBuilder {
 		this.set_type(alias_field(['o2m']));
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		related_collection = this._schema.collection_name(related_collection);
-
 		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).o2m(
 			related_collection,
 			related_field,
@@ -349,8 +341,6 @@ export class FieldBuilder {
 		this.set_type(M2O_FIELD);
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		related_collection = this._schema.collection_name(related_collection);
-
 		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).m2o(
 			related_collection,
 			related_field,
@@ -372,8 +362,6 @@ export class FieldBuilder {
 	a2o(related_collections: string[], relation_callback?: (relation: RelationBuilder) => RelationBuilder | void): this {
 		this.set_type(INTEGER_FIELD);
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
-
-		related_collections = related_collections.map((name) => this._schema!.collection_name(name));
 
 		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).a2o(related_collections);
 

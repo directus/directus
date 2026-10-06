@@ -131,19 +131,6 @@ describe('types', () => {
 
 		expect(types).toMatch(/^export interface MySchema \{/);
 	});
-
-	test('strips the test schema suffix', () => {
-		const types = new SchemaBuilder({ test_schema: true })
-			.collection('articles', (c) => {
-				c.field('id').id();
-				c.field('tags').m2m('tags');
-			})
-			.types();
-
-		expect(types).not.toContain('1234');
-		expect(types).toContain('articles_tags_junction: ArticlesTagsJunction[];');
-		expect(types).toContain('articles_id: number | Articles | null;');
-	});
 });
 
 describe('toTypeScript', () => {

@@ -3,7 +3,7 @@ import { join } from 'path';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { getCallerFolder } from '@utils/getUID.js';
 
-const schema = new SchemaBuilder({ test_schema: true })
+const schema = new SchemaBuilder()
 	.collection('categories', (c) => {
 		c.field('id').id();
 		c.field('name').string();
@@ -67,6 +67,6 @@ const schema = new SchemaBuilder({ test_schema: true })
 			.options({ special: ['cast-json'] });
 	});
 
-export const snapshot = schema.snapshot();
+export const snapshot = schema.snapshot({ test_schema: true });
 
 writeFileSync(join(getCallerFolder(), 'schema.d.ts'), schema.types());
