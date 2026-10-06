@@ -22,10 +22,6 @@ export const createEnv = (): Env => {
 
 	const output: Record<string, unknown> = {};
 
-	for (const [key, value] of Object.entries(DEFAULTS)) {
-		output[key] = getDefaultType(key) ? cast(value, key) : value;
-	}
-
 	for (let [key, value] of Object.entries(rawConfiguration)) {
 		if (isFileKey(key) && isDirectusVariable(key) && typeof value === 'string') {
 			try {
@@ -48,6 +44,10 @@ export const createEnv = (): Env => {
 		output[key] = cast(value, key);
 	}
 
-	// Every variable that has a default is guaranteed to be present, as the defaults are seeded first
+	for (const [key, value] of Object.entries(DEFAULTS)) {
+		if (output[key] !== undefined) continue;
+		output[key] = getDefaultType(key) ? cast(value, key) : value;
+	}
+
 	return output as Env;
 };
