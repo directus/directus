@@ -566,10 +566,10 @@ date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_time_24hour: 'H:mm:ss'
-date-fns_time_no_seconds_24hour: 'TT:mm'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'd MMM, u'
 date-fns_time_short: 'h:mma'
-date-fns_time_short_seconds: 'tt:mm:ssa'
+date-fns_time_short_seconds: 'h:mm:ssa'
 date-fns_date_short_no_year: d MMM
 minutes: Minutter
 hours: Timer
