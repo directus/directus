@@ -566,7 +566,6 @@ describe('parseFields with resolved fragments', () => {
 
 describe('prototype pollution containment', () => {
 	afterEach(() => {
-		vi.clearAllMocks();
 		delete (Object.prototype as any).grandchild;
 	});
 
