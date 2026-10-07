@@ -42,6 +42,7 @@
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@tiptap/core": "catalog:",
+		"@tiptap/pm": "catalog:",
 		"@types/fs-extra": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
