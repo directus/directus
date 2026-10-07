@@ -307,6 +307,24 @@ test('saveImage keeps the preserved attributes of the image it edits', () => {
 	expect(editor.value.getHTML()).toContain(`<img class="rounded" src="${TRANSFORMED_SRC}" alt="New alt">`);
 });
 
+test('saveImage keeps the link of the image it edits', () => {
+	const { editor, imageSelection, openImageDrawer, saveImage } = setup({
+		content: `<a href="https://directus.io" target="_blank" rel="noopener noreferrer"><img src="${SRC}" alt="My alt"></a>`,
+	});
+
+	editor.value.commands.setNodeSelection(0);
+
+	openImageDrawer();
+
+	imageSelection.value = captionedSelection({ alt: 'New alt', caption: '' });
+
+	saveImage();
+
+	expect(editor.value.getHTML()).toContain(
+		`<a href="https://directus.io" target="_blank" rel="noopener noreferrer"><img src="${TRANSFORMED_SRC}" alt="New alt"></a>`,
+	);
+});
+
 test('saveImage replaces a range selection that only partially covers an image', () => {
 	const { editor, imageSelection, openImageDrawer, saveImage } = setup({
 		content: `<p>hello</p><img src="/assets/old.jpg" alt="Old alt"><p>world</p>`,
