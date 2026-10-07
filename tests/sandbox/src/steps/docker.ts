@@ -11,14 +11,19 @@ import type { Database, Options } from '../sandbox.js';
 const fileName = fileURLToPath(import.meta.url);
 const folderName = dirname(fileName);
 
-export async function dockerUp(database: Database, opts: Options, env: Env, logger: Logger) {
+/**
+ * @param snapshotImage Start the database from this image, using the `<database>-snapshot.yml` override.
+ * Used both to start a committed snapshot and to create one from the base image.
+ */
+export async function dockerUp(database: Database, opts: Options, env: Env, logger: Logger, snapshotImage?: string) {
 	const extras = opts.extras;
 
 	const extrasList = Object.entries(extras)
 		.filter(([_, value]) => value)
 		.map(([key, _]) => key);
 
-	const files = database === 'sqlite' ? extrasList : [database, ...extrasList];
+	const databaseFiles = snapshotImage ? [database, `${database}-snapshot`] : [database];
+	const files = database === 'sqlite' ? extrasList : [...databaseFiles, ...extrasList];
 
 	let project: string | undefined = undefined;
 
@@ -61,6 +66,7 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 				env: {
 					...env,
 					COMPOSE_STATUS_STDOUT: '1', //Ref: https://github.com/docker/compose/issues/7346
+					...(snapshotImage ? { SNAPSHOT_IMAGE: snapshotImage } : {}),
 				},
 			},
 		);
@@ -108,7 +114,8 @@ export async function dockerDown(project: string, env: Env, logger: Logger) {
 	const start = performance.now();
 	logger.info('Stopping docker containers');
 
-	const docker = spawn('docker', ['compose', '-p', project, 'down'], {
+	// No grace period: the containers hold throwaway test data and most ignore SIGTERM, which would cost 10s each time
+	const docker = spawn('docker', ['compose', '-p', project, 'down', '-t', '0'], {
 		env: { ...env, COMPOSE_STATUS_STDOUT: '1' },
 	});
 

@@ -1,0 +1,6 @@
+services:
+  cockroachdb:
+    # Either the base image (while creating a snapshot) or a committed snapshot image
+    image: ${SNAPSHOT_IMAGE}
+    # The store must live in the container filesystem (not tmpfs or memory) so `docker commit` captures it
+    command: start-single-node --cluster-name=example-single-node --insecure --store=path=/snapshot-data

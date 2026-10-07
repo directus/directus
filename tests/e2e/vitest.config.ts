@@ -12,6 +12,7 @@ declare module 'vitest' {
 		envs: Record<Database, Env>;
 		port: Record<Database, number>;
 		options: Record<Database, DeepPartial<Options>>;
+		snapshotEnv: Record<string, string>;
 	}
 }
 
@@ -57,6 +58,7 @@ export default defineConfig({
 						plugins: [tsconfigPaths() as any],
 						test: {
 							setupFiles: './setup/setup-files.ts',
+							globalSetup: './setup/global-setup-snapshot.ts',
 							name: `${database}-sb`,
 							silent: false,
 							...(heavyDatabases.includes(database) && { maxWorkers: 2 }),

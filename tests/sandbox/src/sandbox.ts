@@ -14,11 +14,17 @@ import {
 	type Api,
 	bootstrap,
 	buildApi,
+	commitSnapshot,
 	createDatabase,
 	dockerDown,
 	dockerUp,
+	findSnapshot,
 	loadSchema,
+	removeSnapshot,
 	saveSchema,
+	snapshotBaseImage,
+	snapshotEnvKey,
+	snapshotImageName,
 	startApi,
 } from './steps/index.js';
 
@@ -214,10 +220,10 @@ export async function sandboxes(
 				let knex;
 
 				try {
-					const project = await dockerUp(database, opts, env, logger);
-					if (project) projects.push({ project, logger, env, keep: opts.docker.keep });
+					const project = await startDatabase(database, opts, env, logger, (project) =>
+						projects.push({ project, logger, env, keep: opts.docker.keep }),
+					);
 
-					await bootstrap(opts, env, logger);
 					if (opts.schema) await loadSchema(opts.schema, env, logger);
 					if (opts.knex) knex = createDatabase(env, logger);
 					await opts.hooks.beforeApi?.({ env, logger, knex });
@@ -259,6 +265,83 @@ export async function sandboxes(
 	return { sandboxes, stop, restartApis };
 }
 
+/**
+ * Starts the database containers and brings the database into a bootstrapped state,
+ * either by starting a matching snapshot image or by running `directus bootstrap`.
+ * `onProject` is called as soon as the docker project exists, so it can be torn down if bootstrapping fails.
+ */
+async function startDatabase(
+	database: Database,
+	opts: Options,
+	env: Env,
+	logger: Logger,
+	onProject?: (project: string) => void,
+) {
+	// Kept containers may be reused across runs, so they can't depend on a snapshot that gets removed
+	const snapshotImage = opts.docker.keep ? undefined : findSnapshot(database, env);
+
+	const project = await dockerUp(database, opts, env, logger, snapshotImage);
+	if (project) onProject?.(project);
+
+	if (snapshotImage) {
+		logger.info(`Using bootstrapped database snapshot ${snapshotImage}`);
+	} else {
+		await bootstrap(opts, env, logger);
+	}
+
+	return project;
+}
+
+export type Snapshot = {
+	/** The committed docker image */
+	image: string;
+	/** Env vars that make sandboxes in other processes pick up the snapshot */
+	env: Record<string, string>;
+	remove(): Promise<void>;
+};
+
+/**
+ * Bootstraps a database once and commits it into a docker image.
+ * Sandboxes started while `snapshot.env` is set on `process.env` skip bootstrapping and start from that image instead,
+ * as long as they were configured with the same bootstrap inputs (admin credentials, project owner, db version, ...).
+ * Returns undefined for databases that don't support snapshots.
+ */
+export async function snapshot(database: Database, options?: DeepPartial<Options>): Promise<Snapshot | undefined> {
+	const opts = await getOptions(merge({}, options, { docker: { keep: false, suffix: 'snapshot' } }));
+	const env = await getEnv(database, opts);
+	const baseImage = snapshotBaseImage(database, env);
+
+	if (!baseImage) return undefined;
+
+	const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);
+	const image = snapshotImageName(database, env);
+	const start = performance.now();
+
+	logger.info(`Creating database snapshot ${image}`);
+
+	// Snapshots only contain the database, extras are started by each sandbox
+	const project = await dockerUp(database, { ...opts, extras: {} as Options['extras'] }, env, logger, baseImage);
+
+	try {
+		const code = await bootstrap(opts, env, logger);
+		// A broken snapshot would fail every sandbox started from it, so don't commit one
+		if (code !== 0) throw new Error(`Bootstrapping the snapshot failed with exit code ${code}`);
+
+		await commitSnapshot(project!, database, image, env, logger);
+	} finally {
+		await dockerDown(project!, env, logger);
+	}
+
+	const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
+	logger.info(`Created database snapshot ${image} ${time}`);
+
+	return {
+		image,
+		env: { [snapshotEnvKey(database)]: image },
+		remove: () => removeSnapshot(image, env, logger),
+	};
+}
+
 export async function sandbox(database: Database, options?: DeepPartial<Options>): Promise<Sandbox> {
 	if (!databases.includes(database)) throw new Error('Invalid database provided');
 	const opts = await getOptions(options);
@@ -278,8 +361,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 			build = await buildApi(opts, logger, restartApi);
 		}
 
-		project = await dockerUp(database, opts, env, logger);
-		await bootstrap(opts, env, logger);
+		project = await startDatabase(database, opts, env, logger);
 		if (opts.schema) await loadSchema(opts.schema, env, logger);
 		if (opts.knex) knex = createDatabase(env, logger);
 		await opts.hooks.beforeApi?.({ env, logger, knex });
