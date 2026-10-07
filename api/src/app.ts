@@ -79,7 +79,6 @@ import rateLimiter from './middleware/rate-limiter-ip.js';
 import requestCounter from './middleware/request-counter.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
-import licenseSchedule from './schedules/license.js';
 import metricsSchedule from './schedules/metrics.js';
 import scheduleOAuthCleanup from './schedules/oauth-cleanup.js';
 import projectSchedule from './schedules/project.js';
@@ -134,7 +133,9 @@ export default async function createApp(): Promise<express.Application> {
 	await validateDatabaseExtensions();
 	await validateStorage();
 
-	await getLicenseManager().initialize();
+	const licenseManager = getLicenseManager();
+
+	await licenseManager.initialize();
 	getEntitlementManager().initialize();
 
 	await registerAuthProviders();
@@ -421,7 +422,7 @@ export default async function createApp(): Promise<express.Application> {
 	await tusSchedule();
 	await metricsSchedule();
 	await projectSchedule();
-	await licenseSchedule();
+	await licenseManager.scheduleCheck();
 
 	if (env['MCP_OAUTH_ENABLED'] === true) {
 		await scheduleOAuthCleanup();

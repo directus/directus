@@ -1,4 +1,4 @@
-import type { Lock } from './lock.js';
+import type { Lock, LockSettings } from './lock.js';
 
 export type MaybePromise<T> = Promise<T> | T;
 
@@ -53,7 +53,17 @@ export interface Kv {
 
 	acquireLock(key: string): MaybePromise<Lock>;
 
-	usingLock<T>(key: string, callback: () => Promise<T>): MaybePromise<T>;
+	/**
+	 * Run the callback while holding the lock, releasing it once the callback settles
+	 *
+	 * The callback is handed a signal that aborts if the lock is lost before it finishes, which
+	 * it is free to ignore, but until then nothing else can be holding the same lock.
+	 *
+	 * @param key Key to lock on
+	 * @param callback Function to run while the lock is held
+	 * @param settings Overrides for the lease and for how long to keep contending
+	 */
+	usingLock<T>(key: string, callback: (signal: AbortSignal) => Promise<T>, settings?: LockSettings): MaybePromise<T>;
 
 	/**
 	 * Remove all keys from the kv store

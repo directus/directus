@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { DIRECTUS_SUPPORT_URL } from '@directus/constants';
-import { LICENSE_KEY, normalizeLicenseKey } from '@directus/license';
+import { DIRECTUS_LICENSE_KEY, normalizeLicenseKey } from '@directus/license';
 import { throttle } from 'lodash-es';
 import { computed, onMounted, ref, watch } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
@@ -11,6 +11,7 @@ import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useServerStore } from '@/stores/server';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
+import { localizedFormat } from '@/utils/localized-format';
 
 const { t } = useI18n();
 const serverStore = useServerStore();
@@ -73,7 +74,7 @@ const validate = throttle(async (value: string | null) => {
 		return;
 	}
 
-	const parsed = LICENSE_KEY.safeParse(value);
+	const parsed = DIRECTUS_LICENSE_KEY.safeParse(value);
 
 	if (parsed.error) {
 		error.value = 'format';
@@ -153,7 +154,12 @@ onMounted(() => {
 				<VIcon name="check_circle" />
 				<span>
 					{{ $t('expires_on') }}
-					{{ Intl.DateTimeFormat().format((licenseInfo.expires_at ?? licenseInfo.renews_at)! * 1000) }}
+					{{
+						localizedFormat(
+							(licenseInfo.expires_at ?? licenseInfo.renews_at)! * 1000,
+							String($t('date-fns_date_short')),
+						)
+					}}
 				</span>
 			</div>
 

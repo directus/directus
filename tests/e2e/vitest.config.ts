@@ -18,6 +18,9 @@ declare module 'vitest' {
 // mark this file as a module so augmentation works correctly
 export {};
 
+// Each sandbox file boots its own database container, too many of these at once starve docker and time out
+const heavyDatabases: Database[] = ['oracle', 'cockroachdb', 'mssql'];
+
 export default defineConfig({
 	plugins: [tsconfigPaths() as any],
 	test: {
@@ -37,14 +40,7 @@ export default defineConfig({
 							globalSetup: './setup/global-setup-one.ts',
 							name: database,
 							passWithNoTests: true,
-							exclude: [
-								...configDefaults.exclude,
-								'**/*.sb.test.ts',
-								// Oracle extracts string JSON values with their quotes intact, so every string
-								// comparison in a _json filter or json() call silently matches nothing.
-								// TODO: remove once https://github.com/directus/directus/issues/28256 is fixed
-								...(database === 'oracle' ? ['**/tests/endpoints/query/json/**'] : []),
-							],
+							exclude: [...configDefaults.exclude, '**/*.sb.test.ts'],
 							testTimeout: 20_000,
 							reporters: ['verbose'],
 							env: {
@@ -63,6 +59,7 @@ export default defineConfig({
 							setupFiles: './setup/setup-files.ts',
 							name: `${database}-sb`,
 							silent: false,
+							...(heavyDatabases.includes(database) && { maxWorkers: 2 }),
 							passWithNoTests: true,
 							include: ['**/*.sb.test.ts'],
 							testTimeout: 100_000,
