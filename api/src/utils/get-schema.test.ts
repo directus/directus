@@ -1,4 +1,5 @@
 import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { getMemorySchemaCache, setMemorySchemaCache } from '../cache.js';
 import { getSchema } from './get-schema.js';
@@ -24,7 +25,19 @@ vi.mock('../logger/index.js', () => ({
 	useLogger: () => ({ trace: vi.fn(), warn: vi.fn() }),
 }));
 
-const SCHEMA = { collections: {}, relations: [] } as unknown as SchemaOverview;
+vi.mock('@directus/schema', () => ({
+	createInspector: () => ({ overview: async () => ({}) }),
+}));
+
+vi.mock('../services/relations.js', () => ({
+	RelationsService: class {
+		readAll = async () => [];
+	},
+}));
+
+const SCHEMA: SchemaOverview = { collections: {}, relations: [] };
+
+const database = { select: () => ({ from: async () => [] }) } as unknown as Knex;
 
 afterEach(() => {
 	vi.clearAllMocks();
@@ -41,12 +54,12 @@ describe('getSchema', () => {
 	});
 
 	test('builds the schema in an exclusive run and caches it', async () => {
-		vi.mocked(runExclusive).mockResolvedValue({ result: SCHEMA, leader: true });
+		vi.mocked(runExclusive).mockImplementation(async (_key, fn) => ({ result: await fn(), leader: true }));
 
-		await expect(getSchema()).resolves.toBe(SCHEMA);
+		await expect(getSchema({ database })).resolves.toEqual(SCHEMA);
 
 		expect(runExclusive).toHaveBeenCalledWith('schema-cache', expect.any(Function), { timeout: 10000 });
-		expect(setMemorySchemaCache).toHaveBeenCalledWith(SCHEMA);
+		expect(setMemorySchemaCache).toHaveBeenCalledExactlyOnceWith(SCHEMA);
 	});
 
 	test('caches the schema received from another leader', async () => {
@@ -54,7 +67,7 @@ describe('getSchema', () => {
 
 		await expect(getSchema()).resolves.toBe(SCHEMA);
 
-		expect(setMemorySchemaCache).toHaveBeenCalledWith(SCHEMA);
+		expect(setMemorySchemaCache).toHaveBeenCalledExactlyOnceWith(SCHEMA);
 	});
 
 	test('passes errors from the exclusive run through without retrying', async () => {
@@ -62,7 +75,7 @@ describe('getSchema', () => {
 
 		await expect(getSchema()).rejects.toThrow('connection refused');
 
-		expect(runExclusive).toHaveBeenCalledTimes(1);
+		expect(runExclusive).toHaveBeenCalledOnce();
 		expect(setMemorySchemaCache).not.toHaveBeenCalled();
 	});
 });
