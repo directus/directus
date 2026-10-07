@@ -18,13 +18,14 @@ export const rest = (config: Partial<RestConfig> = {}) => {
 			async request<Output = any>(getOptions: RestCommand<Output, Schema>): Promise<Output> {
 				const options = getOptions();
 
-				// all api requests require this content type
 				if (!options.headers) {
 					options.headers = {};
 				}
 
 				if ('Content-Type' in options.headers === false) {
-					options.headers['Content-Type'] = 'application/json';
+					if (typeof FormData === 'undefined' || options.body instanceof FormData === false) {
+						options.headers['Content-Type'] = 'application/json';
+					}
 				} else if (options.headers['Content-Type'] === 'multipart/form-data') {
 					// let the fetch function deal with multipart boundaries
 					delete options.headers['Content-Type'];
