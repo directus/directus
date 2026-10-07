@@ -43,7 +43,7 @@ export async function getSchema(options?: {
 		return cached;
 	}
 
-	// Followers waiting on a leader that went away take over once its lease ends, so no retry is needed here
+	// No retry needed: if the leader dies, a waiting instance takes over once lease ends
 	try {
 		const { result: schema, leader } = await runExclusive(
 			'schema-cache',
@@ -53,7 +53,8 @@ export async function getSchema(options?: {
 
 				const schema = await getDatabaseSchema(database, schemaInspector);
 
-				// Even set if this function outlives the timeout.
+				// Update the cache so an in-flight run that outlives the timeout
+				// can still serve the schema to the next request.
 				setMemorySchemaCache(schema);
 
 				return schema;
