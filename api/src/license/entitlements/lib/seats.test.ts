@@ -18,8 +18,7 @@ vi.mock('../../../utils/fetch-user-count/fetch-access-roles.js', () => ({
 
 vi.mock('../../../services/index.js', async () => {
 	const { mockItemsService } = await import('../../../test-utils/services/items-service.js');
-	const { mockUsersService } = await import('../../../test-utils/services/users-service.js');
-	return { AccessService: mockItemsService().ItemsService, ...mockUsersService() };
+	return { AccessService: mockItemsService().ItemsService, UsersService: mockItemsService().ItemsService };
 });
 
 afterEach(() => {
