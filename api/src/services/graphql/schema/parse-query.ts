@@ -2,7 +2,6 @@ import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { getRelationInfo } from '@directus/utils';
 import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
 import { get, mapKeys, merge, toPath, uniq } from 'lodash-es';
-import { getRelatedCollection } from '../../../database/get-ast-from-query/utils/get-related-collection.js';
 import { getQueryLimits } from '../../../utils/query-limits.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { setDeep } from '../../../utils/set-deep.js';
