@@ -14,8 +14,7 @@ export class CapabilitiesHelperPostgres extends CapabilitiesHelper {
 		return false;
 	}
 
-	override maxInListSize(): number {
-		// The wire protocol stores the parameter count as a 16-bit integer
+	override getMaxBindings(): number {
 		// https://www.postgresql.org/docs/current/protocol-message-formats.html#PROTOCOL-MESSAGE-FORMATS-BIND
 		return 65535;
 	}

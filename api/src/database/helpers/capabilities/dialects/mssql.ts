@@ -1,9 +1,9 @@
 import { CapabilitiesHelper } from '../types.js';
 
 export class CapabilitiesHelperMSSQL extends CapabilitiesHelper {
-	override maxInListSize(): number {
-		// SQL Server supports a maximum of 2100 parameters per request
+	override getMaxBindings(): number {
+		// 2100 minus the two parameters taken by sp_executesql (@stmt and @params)
 		// https://learn.microsoft.com/en-us/sql/sql-server/maximum-capacity-specifications-for-sql-server
-		return 2100;
+		return 2098;
 	}
 }

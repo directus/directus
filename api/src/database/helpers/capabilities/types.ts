@@ -16,10 +16,9 @@ export class CapabilitiesHelper extends DatabaseHelper {
 	}
 
 	/**
-	 * The maximum number of values that can be bound in a single `IN (...)` list.
-	 * MySQL has no such limit, as bindings are interpolated client side and only bound by `max_allowed_packet`.
+	 * The maximum number of values that can be bound in a single query, including within a single `IN` list.
 	 */
-	maxInListSize(): number {
+	getMaxBindings(): number {
 		return Infinity;
 	}
 }
