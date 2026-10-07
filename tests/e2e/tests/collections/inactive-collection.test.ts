@@ -39,6 +39,7 @@ import {
 	utilsExport,
 } from '@directus/sdk';
 import { port } from '@utils/constants.js';
+import { directusError } from '@utils/errors.js';
 import { generateScopedUser } from '@utils/user-scoped.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
@@ -57,13 +58,9 @@ const idField = {
  * Admins (and anyone else holding permissions on the collection) are told the collection is
  * inactive, everyone else gets a generic forbidden. See `collectionExists`.
  */
-const inactive = {
-	errors: [expect.objectContaining({ extensions: expect.objectContaining({ code: 'COLLECTION_INACTIVE' }) })],
-};
+const inactive = directusError('COLLECTION_INACTIVE');
 
-const forbidden = {
-	errors: [expect.objectContaining({ extensions: expect.objectContaining({ code: 'FORBIDDEN' }) })],
-};
+const forbidden = directusError('FORBIDDEN');
 
 const setStatus = (collection: string, status: 'active' | 'inactive') =>
 	api.request(updateCollection(collection, { meta: { status } }));
