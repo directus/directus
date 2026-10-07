@@ -1,3 +1,5 @@
+import { get } from '@directus/utils';
+
 /**
  * Resolve a template field path against an item, like `get` from `@directus/utils`, but with support
  * for array index access (`field[0]` or `field.0`).
@@ -33,7 +35,7 @@ export function getWithArrayIndex(object: Record<string, any> | any[], path: str
 	if (Array.isArray(object)) {
 		// A numeric segment indexes into the array (e.g. `value[0]`), while any other key is
 		// spread across every entry (e.g. `value.example` => all `example` values).
-		result = isArrayIndex(key) ? object[Number(key)] : getArrayResult(object, key);
+		result = isArrayIndex(key) ? object[Number(key)] : get(object, key);
 	} else {
 		result = object?.[key];
 	}
@@ -47,10 +49,4 @@ export function getWithArrayIndex(object: Record<string, any> | any[], path: str
 
 function isArrayIndex(key: string): boolean {
 	return /^\d+$/.test(key);
-}
-
-function getArrayResult(object: unknown[], key: string): unknown[] | undefined {
-	const result = object.map((entry) => entry?.[key as keyof unknown]).filter((entry) => entry);
-
-	return result.length > 0 ? result.flat() : undefined;
 }
