@@ -312,6 +312,10 @@ delete_folder_dialog:
   move_content: Move content one level up
   delete_content: Delete all content
   content_behavior: What should happen to the folder contents?
+delete_flow_folder_dialog:
+  content_behavior: What should happen to this folder's subfolders? Your Flows will not be deleted.
+  move_content: Delete this folder only
+  delete_content: Delete this folder and its subfolders
 validation_errors_notice: 'The following fields have invalid values:'
 validation_value_is_invalid: Value is invalid
 validationError:
@@ -626,6 +630,14 @@ import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
 import_data_validation_errors_notice: 'The following rows have invalid values:'
 import_data_error_row: 'Row {rows}{field}:'
+export_flow: Export Flow
+export_flows: Export Flows
+flow_import_input_placeholder: JSON...
+flow_import_success: Flow imported successfully.
+flow_import_failed: Couldn't import Flow
+flow_import_not_json: This file isn't valid JSON.
+flow_import_invalid_file: This file isn't a Flow export.
+flow_import_foreign_operation: This file contains an operation that belongs to a different Flow.
 snapshot:
   export: Export Schema
   download: Download Snapshot (JSON)
@@ -910,6 +922,7 @@ errors:
   INVALID_USER: Failed to authenticate user
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
+  LICENSE_INVALID: License key cannot be applied
   LIMIT_EXCEEDED: 'Limit exceeded'
   METHOD_NOT_ALLOWED: Method not allowed
   NOT_NULL_VIOLATION: Value can't be null
@@ -1077,6 +1090,7 @@ translations_display_template: Translations Display Template
 n_items_selected: 'No Items Selected | One Item Selected | {n} Items Selected'
 per_page: Per Page
 all_files: All Files
+all_flows: All Flows
 my_files: My Files
 recent_files: Recent Files
 create_folder: Create Folder
@@ -1129,6 +1143,7 @@ trigger_flow_success: Flow "{flow}" triggered successfully
 field_name_placeholder: Enter field name...
 field_key_placeholder: Enter field key...
 trigger: Trigger
+trigger_type: Trigger Type
 trigger_options: Trigger Options
 view_trigger: View Trigger
 create_trigger: Create Trigger
@@ -1137,6 +1152,8 @@ change_trigger: Change Trigger
 flow_delete_confirm: Are you sure you want to delete Flow "{flow}"? This action can not be undone.
 set_flow_active: Set Flow to Active
 set_flow_inactive: Set Flow to Inactive
+set_flows_active: Set Flows to Active
+set_flows_inactive: Set Flows to Inactive
 edit_flow: Edit Flow
 delete_flow: Delete Flow
 no_other_flows_copy: You don't have any other Flows yet.
@@ -1446,6 +1463,20 @@ wysiwyg_options:
     This field includes formatting the new editor doesn't support, so it's read-only. Select the field to choose how to
     edit it.
   normalization_locked_learn_more: Learn what changed
+  paste_warning_notice:
+    We cleaned unsupported markup from what you pasted. Some apps wrap copied content in extra markup this editor
+    doesn't support.
+  paste_warning_see_removed: See what was removed
+  paste_warning_title: Unsupported markup was removed from your paste
+  paste_warning_body:
+    The cleaned paste keeps your text and formatting. Undo Paste takes it back out. Paste Raw keeps the HTML exactly as
+    copied and switches this field to the raw HTML editor.
+  paste_warning_body_kept:
+    The cleaned paste keeps your text and formatting. The content changed since the paste, so it can no longer be undone
+    from here.
+  paste_warning_undo: Undo Paste
+  paste_warning_paste_raw: Paste Raw
+  paste_warning_keep: Keep Cleaned
   normalization_comparison_notice:
     This version includes formatting the editor can't display, so the stored HTML is shown as is. Applying it restores
     the content unchanged.
@@ -1523,6 +1554,11 @@ licensing:
   resolve_title_expired: License Expiration
   resolve_title_suspended: License Suspension
   resolve_title_canceled: License Canceled
+  resolve_title_invalid_key: Invalid License Key
+  resolve_title_activation_limit: Activation Limit Reached
+  resolve_title_binding_mismatch: License Registered Elsewhere
+  resolve_title_verification: License Could Not Be Verified
+  resolve_title_unavailable: License Could Not Be Checked
   resolve_title_env_removed: License Removed
   resolve_title_grace: Resolve License Limits
   resolve_title_no_resolution: License Inactive
@@ -1545,6 +1581,35 @@ licensing:
     Your license is no longer active and your project has been downgraded to the Core plan. Some features may no longer
     be available, and items beyond the Core plan limits remain stored but locked in Directus. To restore full access,
     add a new license key.
+  resolve_notice_expired:
+    Your license has expired and your project has been downgraded to the Core plan. Some features may no longer be
+    available, and items beyond the Core plan limits remain stored but locked in Directus. To restore full access, renew
+    your license or add a new license key.
+  resolve_notice_canceled:
+    Your subscription was canceled and your project has been downgraded to the Core plan. Some features may no longer be
+    available, and items beyond the Core plan limits remain stored but locked in Directus. To restore full access, add a
+    new license key.
+  resolve_notice_suspended:
+    Your license has been suspended and your project has been downgraded to the Core plan. Some features may no longer
+    be available, and items beyond the Core plan limits remain stored but locked in Directus. Contact support to restore
+    your license.
+  resolve_notice_invalid_key:
+    Your license key was not accepted and your project has been downgraded to the Core plan. Some features may no longer
+    be available, and items beyond the Core plan limits remain stored but locked in Directus. Check the key for typos,
+    or add a new license key.
+  resolve_notice_activation_limit:
+    Your license key has no activations left, so your project has been downgraded to the Core plan. Deactivate the
+    license on a project you no longer use, then add the key here again.
+  resolve_notice_binding_mismatch:
+    Your license key is registered to a different project or URL, so your project has been downgraded to the Core plan.
+    Check that your project URL matches the one the key was activated with, or add a new license key.
+  resolve_notice_verification:
+    Your stored license could not be verified, so your project has been downgraded to the Core plan. Your license key is
+    unchanged and will be checked again when the project restarts.
+  resolve_notice_unavailable:
+    Your license could not be checked because the licensing service could not be reached, so your project has been
+    downgraded to the Core plan. Your license itself may still be valid, and will be checked again when the project
+    restarts.
   resolve_continue: Continue
   resolve_acknowledge: Acknowledge
   resolve_submit: Deactivate Selected Items
@@ -1622,7 +1687,6 @@ no_oauth_clients: 'No OAuth clients have been registered yet.'
 revoke_client: 'Revoke Client'
 revoke_client_confirm:
   'Are you sure you want to revoke this client? All associated tokens and sessions will be deleted.'
-settings_flows: Flows
 settings_system_logs: System Logs
 settings_presets: Bookmarks
 settings_translations: Translations
@@ -1710,6 +1774,24 @@ license:
     upgrade: Upgrade
     oig_eligible: 'You might be eligible for our {oig}. Apply and get full access to Directus for free.'
   locked_status_notice: 'Your Directus instance is locked. Manage license or {contactSupport} to resolve.'
+  warning_status_notice:
+    generic:
+      Your license's active status could not be refreshed. It remains active until {date}, then your project moves to
+      the Core plan. Check your license key in Settings > License.
+    invalid_key:
+      Your license key is no longer valid. It remains active until {date}, then your project moves to the Core plan.
+      Check your key in Settings > License or add a new one.
+    activation_limit:
+      Your license has reached its activation limit and could not be activated for this project. It remains active until
+      {date}, then your project moves to the Core plan. Deactivate this license on a project you no longer use before
+      retrying to activate on this project.
+    binding_mismatch:
+      Your license is linked to a different project or URL and it's active status could not be refreshed. It remains
+      active until {date}, then your project moves to the Core plan. Check that your project URL matches the URL where
+      the key was activated.
+    unavailable:
+      We couldn't reach the licensing service to refreshe your license's status. We'll keep trying automatically. Your
+      license remains active until {date}, then your project moves to the Core plan if it's active cannot be refreshed.
   pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
     grace_period_body: Manage your license key in Settings > License.
@@ -1918,6 +2000,11 @@ fields:
     public_registration_verify_email: Verify Email
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
+    live_preview: Live Preview
+    preview_base_url: Preview Base URL
+    preview_base_url_note:
+      Selectable as a dynamic Preview Base URL variable in a collection's Preview URL, so the host can differ per
+      environment.
     visual_editor_urls: Visual Editor URLs
     report_feature_url: Report Feature URL
     report_bug_url: Report Bug URL
@@ -2336,6 +2423,17 @@ continue_as: >-
   {name} is currently authenticated. If you recognize this account, press continue.
 editing_role: '{role} Role'
 editing_policy: '{policy} Policy'
+public_policy_warning: >-
+  Changes here affect what unauthenticated users can access and the actions they can perform. Refer to the {docs} for
+  more information.
+public_policy_warning_docs_link: security best practices documentation
+public_policy_dialog:
+  title: Change Public Access to System Collections?
+  copy: >-
+    You're about to change Public policy permissions on the following system collections. These actions will be
+    available to unauthenticated users:
+  unfiltered_read_warning: Read access without a filter exposes every record in the collection.
+  best_practices: Refer to the {docs} for more information.
 no_permissions: No Permissions
 permission_add_collection: Add Collection
 default_label: Default
@@ -3194,6 +3292,7 @@ triggers:
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
+    hidden: None (Hidden)
     collection_page: Collection Page
     require_selection: Requires Selection
 a_flow_uuid: Select a Flow to trigger...
@@ -3257,6 +3356,8 @@ operations:
   mail:
     name: Send Email
     description: Send an email to one or more people
+    from_name: From Name
+    from_name_placeholder: Defaults to the project name
     to: To
     to_placeholder: Add email addresses and press enter...
     body: Body
@@ -3356,6 +3457,7 @@ date_precision: Date Precision
 export_dashboard: Export Dashboard
 duplicate_dashboard: Duplicate Dashboard
 duplicate_policy: Duplicate Policy
+duplicate_flow: Duplicate Flow
 search_dashboard: Search Dashboard...
 search_flow: Search Flow...
 percent: Percent
