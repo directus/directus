@@ -219,6 +219,7 @@ export function mockDefaultRecords(agent: MockAgent): void {
 		'/operations',
 		'/dashboards',
 		'/panels',
+		'/presets',
 		'/folders',
 		'/translations',
 	]) {

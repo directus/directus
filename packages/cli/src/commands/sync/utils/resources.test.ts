@@ -16,6 +16,7 @@ describe('resolveResources', () => {
 			flows: ['folders', 'operations', 'flows'],
 			folders: ['folders'],
 			policies: ['access', 'permissions', 'policies'],
+			presets: ['presets'],
 			roles: ['access', 'permissions', 'policies', 'roles'],
 			settings: ['settings'],
 			translations: ['translations'],
@@ -142,7 +143,7 @@ describe('resolveResources', () => {
 			.filter((resource) => resource.primaryKeyType === 'integer')
 			.map((resource) => resource.collection);
 
-		expect(autoIncrement).toEqual(['directus_permissions', 'directus_settings']);
+		expect(autoIncrement).toEqual(['directus_permissions', 'directus_presets', 'directus_settings']);
 	});
 
 	it('offers only the selectable names, sorted, never the dependent-only children', () => {
@@ -151,6 +152,7 @@ describe('resolveResources', () => {
 			'flows',
 			'folders',
 			'policies',
+			'presets',
 			'roles',
 			'settings',
 			'translations',

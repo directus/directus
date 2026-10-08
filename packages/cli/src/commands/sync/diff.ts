@@ -3,7 +3,7 @@ import { describeMode, MODES, type SyncMode } from '../../kernel/config/mode.js'
 import type { CliContext } from '../../kernel/run.js';
 import { maybePluralize } from '../../kernel/text.js';
 import type { ImportBatchResult } from './utils/contract.js';
-import { type DataPreviewPlan, previewData } from './utils/data-push.js';
+import { type DataPreviewPlan, heldPresetsMessage, previewData } from './utils/data-push.js';
 import {
 	claimedKeyLines,
 	claimedTemporaryKeys,
@@ -140,7 +140,9 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	if (preview === undefined) return;
 
-	const { ambiguousCount, dependentCount, unmatchedCount } = preview;
+	const { ambiguousCount, dependentCount, unmatchedCount, heldCount } = preview;
+
+	if (heldCount > 0) ctx.ui.warn(heldPresetsMessage(heldCount));
 
 	if (ambiguousCount > 0) {
 		const subject = maybePluralize(ambiguousCount, 'configuration record');
