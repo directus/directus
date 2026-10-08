@@ -2430,8 +2430,8 @@ public_policy_warning_docs_link: security best practices documentation
 public_policy_dialog:
   title: Change Public Access to System Collections?
   copy: >-
-    You're about to change Public policy permissions on the following system collections. These actions will be
-    available to unauthenticated users:
+    You're about to change public permissions on the following system collections. These actions will be available to
+    unauthenticated users:
   unfiltered_read_warning: Read access without a filter exposes every record in the collection.
   best_practices: Refer to the {docs} for more information.
 no_permissions: No Permissions

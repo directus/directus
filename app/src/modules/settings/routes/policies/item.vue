@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useShortcut } from '@directus/composables';
-import { DIRECTUS_SECURITY_BEST_PRACTICES_URL, PUBLIC_POLICY_ID } from '@directus/constants';
+import { DIRECTUS_SECURITY_BEST_PRACTICES_URL } from '@directus/constants';
 import { Policy } from '@directus/types';
 import { groupBy } from 'lodash-es';
 import { computed, ref, toRefs } from 'vue';
@@ -9,6 +9,7 @@ import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import { getSystemPermissionChanges } from './get-system-permission-changes';
 import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
+import { useIsAttachedToPublicRole } from './use-is-attached-to-public-role';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -42,7 +43,7 @@ const { edits, hasEdits, item, saving, loading, save, remove, deleting, validati
 	primaryKey,
 );
 
-const isPublicPolicy = computed(() => primaryKey.value === PUBLIC_POLICY_ID);
+const isAttachedToPublicRole = useIsAttachedToPublicRole(primaryKey);
 
 const { confirmSystemPermissions, systemPermissionActions, hasUnfilteredRead, guardSave, confirmSave } =
 	useSystemPermissionsGuard();
@@ -133,7 +134,7 @@ function useSystemPermissionsGuard() {
 	});
 
 	const systemPermissionChanges = computed(() =>
-		isPublicPolicy.value ? getSystemPermissionChanges(edits.value.permissions) : [],
+		isAttachedToPublicRole.value ? getSystemPermissionChanges(edits.value.permissions) : [],
 	);
 
 	const systemPermissionActions = computed(() =>
@@ -229,7 +230,7 @@ function useSystemPermissionsGuard() {
 		</template>
 
 		<div class="content">
-			<VNotice v-if="isPublicPolicy" class="public-policy-notice" type="warning">
+			<VNotice v-if="isAttachedToPublicRole" class="public-policy-notice" type="warning">
 				<I18nT keypath="public_policy_warning" tag="span">
 					<template #docs>
 						<a :href="DIRECTUS_SECURITY_BEST_PRACTICES_URL" target="_blank" rel="noopener noreferrer">
