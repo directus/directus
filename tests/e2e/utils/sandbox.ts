@@ -15,7 +15,7 @@ export function useSandbox(database: Database, options?: DeepPartial<Options>): 
 		{
 			dev: devMode,
 			watch: devMode,
-			docker: { keep: devMode, suffix: uid },
+			docker: { keep: devMode, suffix: uid, shared: true },
 			cache: false,
 			env: {
 				CACHE_SCHEMA: 'false',
