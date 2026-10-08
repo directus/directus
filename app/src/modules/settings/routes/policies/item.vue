@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useShortcut } from '@directus/composables';
 import { Policy } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
+import { ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import { getSystemPermissionChanges } from './get-system-permission-changes';
@@ -44,11 +44,15 @@ const { edits, hasEdits, item, saving, loading, save, remove, deleting, validati
 
 const isAttachedToPublicRole = useIsAttachedToPublicRole(primaryKey);
 
-const systemPermissionChanges = computed(() =>
-	isAttachedToPublicRole.value ? getSystemPermissionChanges(edits.value.permissions) : [],
+const {
+	confirmSystemPermissions,
+	changes: systemPermissionChanges,
+	guardSave,
+	confirmSave,
+} = useSystemPermissionsGuard(
+	() => (isAttachedToPublicRole.value ? getSystemPermissionChanges(edits.value.permissions) : []),
+	saving,
 );
-
-const { confirmSystemPermissions, guardSave, confirmSave } = useSystemPermissionsGuard(systemPermissionChanges, saving);
 
 const confirmDelete = ref(false);
 

@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { useApi } from '@directus/composables';
 import { useShortcut } from '@directus/composables';
-import { Alterations, Item, Policy } from '@directus/types';
+import { Alterations, Item, Permission, Policy } from '@directus/types';
 import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash-es';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
-import { getAccessSystemPermissionChanges } from '../policies/get-system-permission-changes';
+import {
+	getAccessSystemPermissionChanges,
+	getAttachedExistingPolicies,
+	type SystemPermissionChange,
+	toSystemPermissionChanges,
+} from '../policies/get-system-permission-changes';
 import PublicPolicyNotice from '../policies/public-policy-notice.vue';
 import SystemPermissionsDialog from '../policies/system-permissions-dialog.vue';
 import { useSystemPermissionsGuard } from '../policies/use-system-permissions-guard';
@@ -96,9 +101,13 @@ const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
-const systemPermissionChanges = computed(() => getAccessSystemPermissionChanges(edits.value.policies));
-
-const { confirmSystemPermissions, guardSave, confirmSave } = useSystemPermissionsGuard(systemPermissionChanges, saving);
+const {
+	confirmSystemPermissions,
+	changes: systemPermissionChanges,
+	checking,
+	guardSave,
+	confirmSave,
+} = useSystemPermissionsGuard(getSystemPermissionChangesToSave, saving);
 
 useShortcut('meta+s', () => {
 	if (hasEdits.value) guardSave(saveAndStay);
@@ -134,6 +143,30 @@ async function fetchPolicies() {
 	} finally {
 		loading.value = false;
 	}
+}
+
+/**
+ * Includes the saved permissions of existing policies being attached, as they become public once saved.
+ */
+async function getSystemPermissionChangesToSave(): Promise<SystemPermissionChange[]> {
+	const stagedChanges = getAccessSystemPermissionChanges(edits.value.policies);
+	const { policyIds, editedPermissionIds } = getAttachedExistingPolicies(edits.value.policies);
+
+	if (policyIds.length === 0) {
+		return stagedChanges;
+	}
+
+	const response = await api.get<{ data: Permission[] }>('/permissions', {
+		params: {
+			filter: { policy: { _in: policyIds } },
+			fields: ['id', 'collection', 'action', 'permissions'],
+			limit: -1,
+		},
+	});
+
+	const savedPermissions = response.data.data.filter(({ id }) => !editedPermissionIds.includes(id!));
+
+	return [...stagedChanges, ...toSystemPermissionChanges(savedPermissions)];
 }
 
 async function save() {
@@ -218,7 +251,7 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				:label="$t('save')"
-				:loading="saving"
+				:loading="saving || checking"
 				:disabled="!hasEdits"
 				icon="check"
 				@click="guardSave(saveAndQuit)"

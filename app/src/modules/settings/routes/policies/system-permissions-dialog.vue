@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { DIRECTUS_SECURITY_BEST_PRACTICES_URL } from '@directus/constants';
-import { groupBy } from 'lodash-es';
+import { groupBy, uniq } from 'lodash-es';
 import { computed } from 'vue';
 import { I18nT } from 'vue-i18n';
 import type { SystemPermissionChange } from './get-system-permission-changes';
@@ -26,7 +26,7 @@ const active = defineModel<boolean>({ required: true });
 const systemPermissionActions = computed(() =>
 	Object.entries(groupBy(props.changes, 'collection')).map(([collection, changes]) => ({
 		collection,
-		actions: changes.map(({ action }) => action),
+		actions: uniq(changes.map(({ action }) => action)),
 	})),
 );
 

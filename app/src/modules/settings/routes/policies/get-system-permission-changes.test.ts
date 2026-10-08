@@ -1,5 +1,9 @@
 import { expect, test } from 'vitest';
-import { getAccessSystemPermissionChanges, getSystemPermissionChanges } from './get-system-permission-changes';
+import {
+	getAccessSystemPermissionChanges,
+	getAttachedExistingPolicies,
+	getSystemPermissionChanges,
+} from './get-system-permission-changes';
 
 test('returns an empty list when there are no alterations', () => {
 	expect(getSystemPermissionChanges(undefined)).toEqual([]);
@@ -58,4 +62,23 @@ test('returns the system collection permission changes of policies edited throug
 		{ collection: 'directus_files', action: 'read', unfilteredRead: true },
 		{ collection: 'directus_users', action: 'create', unfilteredRead: false },
 	]);
+});
+
+test('returns the existing policies attached through access rows and their edited permissions', () => {
+	const result = getAttachedExistingPolicies({
+		create: [
+			{ policy: { id: 'policy-1' } },
+			{
+				policy: {
+					id: 'policy-2',
+					permissions: { create: [], update: [{ id: 3, permissions: { folder: { _eq: 'public' } } }], delete: [4] },
+				},
+			},
+			{ policy: { name: 'New' } },
+		],
+		update: [{ policy: { id: 'policy-3' } }],
+		delete: [],
+	});
+
+	expect(result).toEqual({ policyIds: ['policy-1', 'policy-2'], editedPermissionIds: [3, 4] });
 });
