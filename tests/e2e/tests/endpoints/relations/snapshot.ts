@@ -16,4 +16,4 @@ export const schema = new SchemaBuilder()
 		c.field('editor').m2o('editors', undefined, (r) => r.options({ schema: { on_delete: 'CASCADE' } }));
 	});
 
-export const snapshot = schema.snapshot({ test_schema: true });
+export const snapshot = schema.snapshot();

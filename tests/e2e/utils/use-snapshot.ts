@@ -10,6 +10,7 @@ import { startCase } from 'lodash-es';
 import { database } from './constants.js';
 import { deepMap } from './deep-map.js';
 import { getUID } from './getUID.js';
+import { renameCollections } from './rename-collections.js';
 
 export type Collections<Schema> = { [P in keyof Schema]: P };
 
@@ -32,48 +33,26 @@ export async function useSnapshot<Schema>(
 	api: DirectusClient<unknown> & RestClient<unknown>,
 	snapshot: Snapshot,
 ): Promise<{ collections: Collections<Schema>; snapshot: Snapshot }> {
-	const collectionMap: Record<string, string> = {};
-	const collectionNameMap: Record<string, string> = {};
-	const collectionReplace: Record<string, string> = {};
-
-	const fieldReplace: Record<string, string> = {};
-
 	const uid = getUID(1);
+	const collectionMap: Record<string, string> = {};
 
-	const collectionIDs = snapshot.collections.map((collection) => collection.collection);
-	const fieldIDs = snapshot.fields.map((field) => field.field);
-
-	for (const cid of collectionIDs) {
-		const name = cid.replaceAll('_1234', '');
-		collectionMap[name] = uid + '_' + name;
-		collectionReplace[cid] = collectionMap[name];
-		collectionNameMap[uid + '_' + name] = name;
+	for (const { collection } of snapshot.collections) {
+		collectionMap[collection] = `${uid}_${collection}`;
 	}
 
-	for (const fid of fieldIDs) {
-		if (!fid.includes('_1234')) continue;
-		const name = fid.replaceAll('_1234', '');
-		fieldReplace[fid] = name;
-	}
+	const renamed = renameCollections(snapshot, (collection) => collectionMap[collection]!);
 
-	const schemaSnapshot = deepMap(snapshot, (key, value) => {
-		if (typeof key === 'string' && key in fieldReplace) key = fieldReplace[key]!;
-		if (typeof value === 'string' && value in fieldReplace) value = fieldReplace[value];
-
-		if (typeof key === 'string' && key in collectionReplace) key = collectionReplace[key]!;
-		if (typeof value === 'string' && value in collectionReplace) value = collectionReplace[value];
-		return [key, value];
-	}) as SchemaSnapshotOutput;
-
-	schemaSnapshot.collections = schemaSnapshot.collections.map((collection) => {
-		collection.meta.group = uid;
-
-		collection.meta.translations = [
-			{ language: 'en-US', translation: startCase(collectionNameMap[collection.collection]) },
-		];
-
-		return collection;
-	});
+	const schemaSnapshot = {
+		...renamed,
+		collections: renamed.collections.map((collection, index) => ({
+			...collection,
+			meta: collection.meta && {
+				...collection.meta,
+				group: uid,
+				translations: [{ language: 'en-US', translation: startCase(snapshot.collections[index]!.collection) }],
+			},
+		})),
+	} as SchemaSnapshotOutput;
 
 	if (!groups.includes(uid)) {
 		schemaSnapshot.collections.push(getGroup(uid));

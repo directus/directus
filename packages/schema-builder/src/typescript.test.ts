@@ -27,7 +27,7 @@ describe('types', () => {
 				users: Users[];
 				articles_tags_junction: ArticlesTagsJunction[];
 				tags: Tags[];
-				articles_builder: ArticlesBuilder[];
+				articles_blocks: ArticlesBlocks[];
 				text: Text[];
 				image: Image[];
 			}
@@ -38,7 +38,7 @@ describe('types', () => {
 				published: string | null;
 				author: number | Users | null;
 				tags: number[] | ArticlesTagsJunction[];
-				blocks: number[] | ArticlesBuilder[];
+				blocks: number[] | ArticlesBlocks[];
 			}
 
 			export interface Settings {
@@ -60,7 +60,7 @@ describe('types', () => {
 				id: number;
 			}
 
-			export interface ArticlesBuilder {
+			export interface ArticlesBlocks {
 				id: number;
 				articles_id: number | Articles | null;
 				item: string | Text | Image | null;

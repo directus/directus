@@ -19,7 +19,7 @@ test('fragment on an m2a union type', async () => {
 
 	const result = (
 		await api.query(`
-			fragment BlockItem on ${collections.articles_builder}_item_union {
+			fragment BlockItem on ${collections.articles_blocks}_item_union {
 				... on ${collections.text_blocks} { text }
 			}
 
@@ -43,7 +43,7 @@ test('inline fragment on an m2a union type', async () => {
 				${collections.articles} (filter: { id: { _eq: "${id}" }}) {
 					blocks {
 						item {
-							... on ${collections.articles_builder}_item_union {
+							... on ${collections.articles_blocks}_item_union {
 								... on ${collections.text_blocks} { text }
 							}
 						}
@@ -74,7 +74,7 @@ test('inline fragment from a different collection on an m2a union type', async (
 
 	const result = (
 		await api.query(`
-			fragment BlockItem on ${collections.articles_builder}_item_union {
+			fragment BlockItem on ${collections.articles_blocks}_item_union {
 				... on ${collections.text_blocks} { text }
 			}
 
@@ -207,7 +207,7 @@ test('fragment alongside an m2a filter', async () => {
 
 	const result = (
 		await api.query(`
-			fragment BlockItem on ${collections.articles_builder}_item_union {
+			fragment BlockItem on ${collections.articles_blocks}_item_union {
 				... on ${collections.text_blocks} { text }
 			}
 

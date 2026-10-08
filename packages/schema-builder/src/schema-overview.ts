@@ -28,12 +28,21 @@ export function toSchemaOverview(snapshot: SchemaSnapshot): SchemaOverview {
 		relations: [],
 	};
 
+	// Index fields once, so collections don't rescan the whole snapshot
+	const fieldsByCollection = new Map<string, SchemaSnapshot['fields']>();
+
+	for (const field of snapshot.fields) {
+		const fields = fieldsByCollection.get(field.collection) ?? [];
+		fields.push(field);
+		fieldsByCollection.set(field.collection, fields);
+	}
+
 	for (const collection of snapshot.collections) {
 		// Folders have no table and therefore no place in the overview
 		if (!collection.schema) continue;
 
 		const meta = collection.meta as Partial<CollectionMeta> | null;
-		const fields = snapshot.fields.filter((field) => field.collection === collection.collection);
+		const fields = fieldsByCollection.get(collection.collection) ?? [];
 		const primary = fields.find((field) => field.schema?.is_primary_key)?.field;
 
 		if (!primary) continue;

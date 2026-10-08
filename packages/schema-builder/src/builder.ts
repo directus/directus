@@ -16,11 +16,7 @@ export type SnapshotOptions = {
 	/** Directus version of the instance the snapshot is applied to, has to match unless the apply is forced */
 	directus?: string;
 	vendor?: DatabaseClient;
-	/** Suffixes all collection names with `_1234`, so the e2e tests can replace them with unique names */
-	test_schema?: boolean;
 };
-
-export const TEST_SCHEMA_SUFFIX = '_1234';
 
 export class SchemaBuilder {
 	_collections: CollectionBuilder[] = [];
@@ -100,11 +96,7 @@ export class SchemaBuilder {
 
 	/** Builds a schema snapshot that can be applied to a Directus instance */
 	snapshot(options: SnapshotOptions = {}): Snapshot {
-		let schema = this.build_schema();
-
-		if (options.test_schema) schema = suffix_collections(schema);
-
-		const { collections, fields, relations } = schema;
+		const { collections, fields, relations } = this.build_schema();
 
 		return {
 			version: 1,
@@ -121,45 +113,4 @@ export class SchemaBuilder {
 	types(options?: TypeScriptOptions): string {
 		return toTypeScript(this.build_schema(), options);
 	}
-}
-
-/** Suffixes all collection names and the references to them with `TEST_SCHEMA_SUFFIX` */
-function suffix_collections({ collections, fields, relations }: BuiltSchema): BuiltSchema {
-	const suffix = <T extends string | null | undefined>(name: T): T =>
-		name ? ((name + TEST_SCHEMA_SUFFIX) as T) : name;
-
-	return {
-		collections: collections.map((collection) => ({
-			...collection,
-			collection: suffix(collection.collection),
-			meta: collection.meta && {
-				...collection.meta,
-				collection: suffix(collection.meta.collection),
-				group: suffix(collection.meta.group),
-			},
-			schema: collection.schema && { ...collection.schema, name: suffix(collection.schema.name) },
-		})),
-		fields: fields.map((field) => ({
-			...field,
-			collection: suffix(field.collection),
-			meta: field.meta && { ...field.meta, collection: suffix(field.meta.collection) },
-			schema: field.schema && { ...field.schema, table: suffix(field.schema.table) },
-		})),
-		relations: relations.map((relation) => ({
-			...relation,
-			collection: suffix(relation.collection),
-			related_collection: suffix(relation.related_collection),
-			meta: relation.meta && {
-				...relation.meta,
-				many_collection: suffix(relation.meta.many_collection),
-				one_collection: suffix(relation.meta.one_collection),
-				one_allowed_collections: relation.meta.one_allowed_collections?.map(suffix) ?? null,
-			},
-			schema: relation.schema && {
-				...relation.schema,
-				table: suffix(relation.schema.table),
-				foreign_key_table: suffix(relation.schema.foreign_key_table),
-			},
-		})),
-	};
 }

@@ -71,7 +71,7 @@ const RELATIONS = [
 		kind: 'm2a',
 		field: 'a2o_items',
 		related: () => collections.a2o,
-		junction: () => collections.relational_builder,
+		junction: () => collections.relational_a2o_items,
 		changes: (id: string) => ({
 			create: [{ collection: collections.a2o, item: { id, name: 'Related', field_a: 'New A', field_b: 'New B' } }],
 			update: [],
@@ -178,7 +178,7 @@ test('a nested o2m draft is trimmed at every level', async () => {
 test('an m2a draft keeps the members the recipient may read and drops the rest', async () => {
 	const { admin, viewer, room } = await shareRoom([
 		...PARENT_RULES,
-		{ collection: collections.relational_builder, action: 'read', fields: ['*'] },
+		{ collection: collections.relational_a2o_items, action: 'read', fields: ['*'] },
 		{ collection: collections.a2o, action: 'read', fields: ['id', 'name', 'field_a'] },
 	]);
 

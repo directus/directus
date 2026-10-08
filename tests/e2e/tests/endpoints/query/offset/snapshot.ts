@@ -32,4 +32,4 @@ export const schema = new SchemaBuilder()
 		c.field('link').string();
 	});
 
-export const snapshot = schema.snapshot({ test_schema: true });
+export const snapshot = schema.snapshot();

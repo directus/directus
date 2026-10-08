@@ -11,4 +11,4 @@ export const schema = new SchemaBuilder()
 		c.field('size').string();
 	});
 
-export const snapshot = schema.snapshot({ test_schema: true });
+export const snapshot = schema.snapshot();

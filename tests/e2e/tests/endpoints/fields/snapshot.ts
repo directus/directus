@@ -4,4 +4,4 @@ export const schema = new SchemaBuilder().collection('fields', (c) => {
 	c.field('id').id();
 });
 
-export const snapshot = schema.snapshot({ test_schema: true });
+export const snapshot = schema.snapshot();

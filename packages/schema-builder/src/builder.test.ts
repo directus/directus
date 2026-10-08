@@ -210,13 +210,14 @@ test('Create o2m relation', () => {
 		      },
 		      "related_collection": "countries",
 		      "schema": {
-		        "column": "cities",
-		        "constraint_name": "countries_cities_foreign",
+		        "column": "country_id",
+		        "constraint_name": "cities_country_id_foreign",
+		        "foreign_key_column": "id",
 		        "foreign_key_schema": "public",
-		        "foreign_key_table": "cities",
+		        "foreign_key_table": "countries",
 		        "on_delete": "SET NULL",
 		        "on_update": "NO ACTION",
-		        "table": "countries",
+		        "table": "cities",
 		      },
 		    },
 		  ],
@@ -325,6 +326,7 @@ test('Create m2o relation', () => {
 		      "schema": {
 		        "column": "country",
 		        "constraint_name": "cities_country_foreign",
+		        "foreign_key_column": "id",
 		        "foreign_key_schema": "public",
 		        "foreign_key_table": "countries",
 		        "on_delete": "SET NULL",
@@ -492,13 +494,14 @@ test('Create m2m relation', () => {
 		      },
 		      "related_collection": "articles",
 		      "schema": {
-		        "column": "tags",
-		        "constraint_name": "articles_tags_foreign",
+		        "column": "articles_id",
+		        "constraint_name": "articles_tags_junction_articles_id_foreign",
+		        "foreign_key_column": "id",
 		        "foreign_key_schema": "public",
-		        "foreign_key_table": "articles_tags_junction",
+		        "foreign_key_table": "articles",
 		        "on_delete": "SET NULL",
 		        "on_update": "NO ACTION",
-		        "table": "articles",
+		        "table": "articles_tags_junction",
 		      },
 		    },
 		    {
@@ -520,6 +523,7 @@ test('Create m2m relation', () => {
 		      "schema": {
 		        "column": "tags_id",
 		        "constraint_name": "articles_tags_junction_tags_id_foreign",
+		        "foreign_key_column": "id",
 		        "foreign_key_schema": "public",
 		        "foreign_key_table": "tags",
 		        "on_delete": "SET NULL",
@@ -586,9 +590,9 @@ test('Create m2a relation', () => {
 		      "sortField": null,
 		      "status": "active",
 		    },
-		    "blog_builder": {
+		    "blog_blocks": {
 		      "accountability": "all",
-		      "collection": "blog_builder",
+		      "collection": "blog_blocks",
 		      "fields": {
 		        "blog_id": {
 		          "alias": false,
@@ -712,12 +716,12 @@ test('Create m2a relation', () => {
 		  },
 		  "relations": [
 		    {
-		      "collection": "blog_builder",
+		      "collection": "blog_blocks",
 		      "field": "blog_id",
 		      "meta": {
 		        "id": 0,
 		        "junction_field": "item",
-		        "many_collection": "blog_builder",
+		        "many_collection": "blog_blocks",
 		        "many_field": "blog_id",
 		        "one_allowed_collections": null,
 		        "one_collection": "blog",
@@ -728,22 +732,23 @@ test('Create m2a relation', () => {
 		      },
 		      "related_collection": "blog",
 		      "schema": {
-		        "column": "blocks",
-		        "constraint_name": "blog_blocks_foreign",
+		        "column": "blog_id",
+		        "constraint_name": "blog_blocks_blog_id_foreign",
+		        "foreign_key_column": "id",
 		        "foreign_key_schema": "public",
-		        "foreign_key_table": "blog_builder",
+		        "foreign_key_table": "blog",
 		        "on_delete": "SET NULL",
 		        "on_update": "NO ACTION",
-		        "table": "blog",
+		        "table": "blog_blocks",
 		      },
 		    },
 		    {
-		      "collection": "blog_builder",
+		      "collection": "blog_blocks",
 		      "field": "item",
 		      "meta": {
 		        "id": 1,
 		        "junction_field": "blog_id",
-		        "many_collection": "blog_builder",
+		        "many_collection": "blog_blocks",
 		        "many_field": "item",
 		        "one_allowed_collections": [
 		          "text",
@@ -1031,7 +1036,7 @@ test('Create translations relation', () => {
 		          "field": "code",
 		          "generated": false,
 		          "note": null,
-		          "nullable": true,
+		          "nullable": false,
 		          "precision": null,
 		          "scale": null,
 		          "searchable": true,
@@ -1095,13 +1100,14 @@ test('Create translations relation', () => {
 		      },
 		      "related_collection": "blog",
 		      "schema": {
-		        "column": "translations",
-		        "constraint_name": "blog_translations_foreign",
+		        "column": "blog_id",
+		        "constraint_name": "blog_translations_blog_id_foreign",
+		        "foreign_key_column": "id",
 		        "foreign_key_schema": "public",
-		        "foreign_key_table": "blog_translations",
+		        "foreign_key_table": "blog",
 		        "on_delete": "SET NULL",
 		        "on_update": "NO ACTION",
-		        "table": "blog",
+		        "table": "blog_translations",
 		      },
 		    },
 		    {
@@ -1123,6 +1129,7 @@ test('Create translations relation', () => {
 		      "schema": {
 		        "column": "languages_code",
 		        "constraint_name": "blog_translations_languages_code_foreign",
+		        "foreign_key_column": "code",
 		        "foreign_key_schema": "public",
 		        "foreign_key_table": "languages",
 		        "on_delete": "SET NULL",
@@ -1282,51 +1289,6 @@ test('define singleton collection', () => {
 	expect(nonSingletonSchema.collections?.['blog']?.singleton).toBe(false);
 });
 
-test('suffix all collections with test_schema', () => {
-	const builder = new SchemaBuilder().collection('articles', (c) => {
-		c.field('id').id();
-		c.field('author').m2o('users');
-		c.field('tags').m2m('tags');
-		c.field('links').o2m('links', 'article_id');
-		c.field('blocks').m2a(['text_blocks']);
-		c.field('translations').translations();
-	});
-
-	const snapshot = builder.snapshot({ test_schema: true });
-
-	expect(snapshot.collections.map(({ collection }) => collection).sort()).toEqual([
-		'articles_1234',
-		'articles_builder_1234',
-		'articles_tags_junction_1234',
-		'articles_translations_1234',
-		'languages_1234',
-		'links_1234',
-		'tags_1234',
-		'text_blocks_1234',
-		'users_1234',
-	]);
-
-	expect(snapshot.fields.every(({ collection }) => collection.endsWith('_1234'))).toBe(true);
-
-	expect(snapshot.fields.every(({ collection, schema }) => !schema || schema.table === collection)).toBe(true);
-
-	const author = snapshot.relations.find(({ field }) => field === 'author');
-
-	expect(author).toMatchObject({
-		collection: 'articles_1234',
-		related_collection: 'users_1234',
-		meta: { many_collection: 'articles_1234', one_collection: 'users_1234' },
-		schema: { table: 'articles_1234', foreign_key_table: 'users_1234' },
-	});
-
-	expect(snapshot.relations.find(({ field }) => field === 'item')?.meta?.one_allowed_collections).toEqual([
-		'text_blocks_1234',
-	]);
-
-	// The builder itself stays unsuffixed
-	expect(builder.snapshot().collections.map(({ collection }) => collection)).toContain('articles');
-});
-
 test('assign unique relation ids', () => {
 	const schema = new SchemaBuilder()
 		.collection('articles', (c) => {
@@ -1340,4 +1302,90 @@ test('assign unique relation ids', () => {
 	const ids = schema.relations.map((relation) => relation.meta?.id);
 
 	expect(new Set(ids).size).toBe(ids.length);
+});
+
+test('create separate junctions for multiple m2a fields', () => {
+	const schema = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('header').m2a(['text']);
+			c.field('blocks').m2a(['text']);
+		})
+		.build_schema();
+
+	expect(schema.collections.map(({ collection }) => collection)).toEqual(
+		expect.arrayContaining(['articles_header', 'articles_blocks']),
+	);
+});
+
+test('reference primary key in relation schema', () => {
+	const { relations, fields } = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('author').m2o('users');
+			c.field('links').o2m('links', 'article_id');
+		})
+		.collection('users', (c) => {
+			c.field('id').uuid().primary();
+		})
+		.snapshot();
+
+	expect(relations.map(({ schema }) => schema)).toMatchObject([
+		{
+			table: 'articles',
+			column: 'author',
+			foreign_key_table: 'users',
+			foreign_key_column: 'id',
+			constraint_name: 'articles_author_foreign',
+		},
+		{
+			table: 'links',
+			column: 'article_id',
+			foreign_key_table: 'articles',
+			foreign_key_column: 'id',
+			constraint_name: 'links_article_id_foreign',
+		},
+	]);
+
+	expect(fields.find((field) => field.collection === 'articles' && field.field === 'author')?.schema).toMatchObject({
+		data_type: 'uuid',
+		foreign_key_table: 'users',
+		foreign_key_column: 'id',
+	});
+
+	expect(fields.find((field) => field.collection === 'users')?.schema?.is_nullable).toBe(false);
+});
+
+test('reject m2o to unsupported primary key type', () => {
+	const schema = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('author').m2o('users');
+		})
+		.collection('users', (c) => {
+			c.field('id').text().primary();
+		});
+
+	expect(() => schema.build()).toThrowError('Cannot reference primary key type text from m2o field');
+});
+
+test('create reverse m2m field', () => {
+	const { fields, relations } = new SchemaBuilder()
+		.collection('products', (c) => {
+			c.field('id').id();
+			c.field('suppliers').m2m('suppliers', 'products');
+		})
+		.build_schema();
+
+	expect(fields.find((field) => field.collection === 'suppliers' && field.field === 'products')).toMatchObject({
+		type: 'alias',
+		schema: null,
+		meta: { special: ['m2m'] },
+	});
+
+	expect(relations.find((relation) => relation.field === 'suppliers_id')?.meta).toMatchObject({
+		one_collection: 'suppliers',
+		one_field: 'products',
+		junction_field: 'products_id',
+	});
 });

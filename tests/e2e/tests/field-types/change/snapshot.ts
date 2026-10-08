@@ -16,4 +16,4 @@ export const schema = new SchemaBuilder()
 		c.field('country').m2o('country');
 	});
 
-export const snapshot = schema.snapshot({ test_schema: true });
+export const snapshot = schema.snapshot();

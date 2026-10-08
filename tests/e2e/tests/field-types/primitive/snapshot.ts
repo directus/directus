@@ -17,4 +17,4 @@ export const schema = new SchemaBuilder().collection('fields', (c) => {
 	c.field('hash').hash();
 });
 
-export const snapshot = schema.snapshot({ test_schema: true });
+export const snapshot = schema.snapshot();

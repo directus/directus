@@ -32,6 +32,7 @@ test('relation on m2o field', () => {
 		  "schema": {
 		    "column": "author",
 		    "constraint_name": "article_author_foreign",
+		    "foreign_key_column": "id",
 		    "foreign_key_schema": "public",
 		    "foreign_key_table": "users",
 		    "on_delete": "SET NULL",
@@ -72,13 +73,14 @@ test('relation on o2m field', () => {
 		  },
 		  "related_collection": "article",
 		  "schema": {
-		    "column": "tags",
-		    "constraint_name": "article_tags_foreign",
+		    "column": "article_id",
+		    "constraint_name": "tags_article_id_foreign",
+		    "foreign_key_column": "id",
 		    "foreign_key_schema": "public",
-		    "foreign_key_table": "tags",
+		    "foreign_key_table": "article",
 		    "on_delete": "SET NULL",
 		    "on_update": "NO ACTION",
-		    "table": "article",
+		    "table": "tags",
 		  },
 		}
 	`);

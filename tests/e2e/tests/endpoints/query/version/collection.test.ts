@@ -34,7 +34,7 @@ const schema = new SchemaBuilder()
 	})
 	.options({ versioning: true });
 
-const snapshot = schema.snapshot({ test_schema: true });
+const snapshot = schema.snapshot();
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api, snapshot);

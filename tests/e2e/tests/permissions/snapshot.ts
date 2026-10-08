@@ -27,4 +27,4 @@ export const schema = new SchemaBuilder()
 		c.field('category').m2o('categories');
 	});
 
-export const snapshot = schema.snapshot({ test_schema: true });
+export const snapshot = schema.snapshot();

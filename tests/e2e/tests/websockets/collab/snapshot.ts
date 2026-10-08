@@ -48,7 +48,7 @@ export const schema = new SchemaBuilder()
 		c.field('name').string();
 		c.field('m2o_related').m2o('m2o');
 		c.field('o2m_related').o2m('o2m', 'parent_id');
-		c.field('m2m_related').m2m('m2m');
+		c.field('m2m_related').m2m('m2m', 'parents');
 		c.field('a2o_items').m2a(['a2o', 'm2o']);
 	})
 	.collection('singleton', (c) => {
@@ -59,4 +59,4 @@ export const schema = new SchemaBuilder()
 	})
 	.options({ singleton: true });
 
-export const snapshot = schema.snapshot({ test_schema: true });
+export const snapshot = schema.snapshot();

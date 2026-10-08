@@ -191,7 +191,7 @@ export class FieldBuilder {
 		this.set_type(alias_field(['m2a']));
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		const junction_name = `${this._collection.get_name()}_builder`;
+		const junction_name = `${this._collection.get_name()}_${this.get_name()}`;
 
 		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema)
 			.o2m(junction_name, `${this._collection.get_name()}_id`)
@@ -222,9 +222,27 @@ export class FieldBuilder {
 		return this;
 	}
 
-	m2m(related_collection: string, relation_callback?: (options: M2MOptions) => M2MOptions | void): this {
+	/**
+	 * Creates a m2m relation through a generated junction collection
+	 * @param related_field Name of the m2m alias field on the related collection, pointing back to this collection
+	 */
+	m2m(related_collection: string, relation_callback?: (options: M2MOptions) => M2MOptions | void): this;
+	m2m(
+		related_collection: string,
+		related_field?: string,
+		relation_callback?: (options: M2MOptions) => M2MOptions | void,
+	): this;
+
+	m2m(
+		related_collection: string,
+		related_field_or_callback?: string | ((options: M2MOptions) => M2MOptions | void),
+		callback?: (options: M2MOptions) => M2MOptions | void,
+	): this {
 		this.set_type(alias_field(['m2m']));
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
+
+		const related_field = typeof related_field_or_callback === 'string' ? related_field_or_callback : undefined;
+		const relation_callback = typeof related_field_or_callback === 'function' ? related_field_or_callback : callback;
 
 		const junction_name = `${this._collection.get_name()}_${related_collection}_junction`;
 
@@ -237,7 +255,7 @@ export class FieldBuilder {
 			});
 
 		let m2o_relation = new RelationBuilder(junction_name, `${related_collection}_id`, this._schema)
-			.m2o(related_collection)
+			.m2o(related_collection, related_field)
 			.options({
 				meta: {
 					junction_field: `${this._collection.get_name()}_id`,
@@ -393,7 +411,9 @@ export class FieldBuilder {
 			field,
 			name: field,
 			type,
-			schema: schema ? { name: field, table: collection, ...schema, is_primary_key } : null,
+			schema: schema
+				? { name: field, table: collection, ...schema, is_primary_key, ...(is_primary_key && { is_nullable: false }) }
+				: null,
 			// The id is assigned once the whole schema is built
 			meta: { id: 0, collection, field, ...meta },
 		};

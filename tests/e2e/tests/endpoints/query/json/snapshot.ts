@@ -40,7 +40,7 @@ export const schema = new SchemaBuilder()
 			.json()
 			.options({ special: ['cast-json'] });
 
-		c.field('suppliers').m2m('suppliers');
+		c.field('suppliers').m2m('suppliers', 'products');
 	})
 	.collection('shapes', (c) => {
 		c.field('id').id();
@@ -64,4 +64,4 @@ export const schema = new SchemaBuilder()
 			.options({ special: ['cast-json'] });
 	});
 
-export const snapshot = schema.snapshot({ test_schema: true });
+export const snapshot = schema.snapshot();

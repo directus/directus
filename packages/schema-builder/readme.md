@@ -42,6 +42,12 @@ const schema = new SchemaBuilder()
 	.build();
 ```
 
+Pass a field name as the second argument to also create the reverse m2m field on the related collection:
+
+```ts
+c.field('tags').m2m('tags', 'articles'); // tags.articles lists the articles of a tag
+```
+
 ## Snapshots
 
 The builder describes the schema through collections, fields and relations, the same shape a Directus schema snapshot
@@ -85,18 +91,3 @@ const types = builder.types(); // export interface Schema { articles: Articles[]
 ```
 
 Types can also be generated from any snapshot with `toTypeScript(snapshot, { schemaName: 'Schema' })`.
-
-## Test schemas
-
-With the `test_schema` snapshot option enabled, all collection names, including related and generated junction
-collections, are suffixed with `_1234`. The e2e tests use this suffix to replace the collection names with unique ones
-per test run:
-
-```ts
-const snapshot = new SchemaBuilder()
-	.collection('articles', (c) => {
-		c.field('id').id();
-		c.field('author').m2o('users');
-	})
-	.snapshot({ test_schema: true }); // contains the collections articles_1234 and users_1234
-```

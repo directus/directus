@@ -1,9 +1,9 @@
 import { ok as assert } from 'node:assert/strict';
 import type { DeepPartial, Field, Relation } from '@directus/types';
-import { merge } from 'lodash-es';
+import { cloneDeep, merge } from 'lodash-es';
 import type { BuiltSchema, SchemaBuilder } from './builder.js';
 import { CollectionBuilder } from './collection.js';
-import { RELATION_DEFAULTS } from './defaults.js';
+import { alias_field, RELATION_DEFAULTS } from './defaults.js';
 import { FieldBuilder } from './field.js';
 
 const FOREIGN_KEY_TYPES = ['integer', 'bigInteger', 'string', 'uuid'] as const;
@@ -50,10 +50,10 @@ export class RelationBuilder {
 				junction_field: null,
 			},
 			schema: {
-				constraint_name: `${this._data.collection}_${this._data.field}_foreign`,
-				table: this._data.collection,
-				column: this._data.field,
-				foreign_key_table: related_collection,
+				constraint_name: `${related_collection}_${related_field}_foreign`,
+				table: related_collection,
+				column: related_field,
+				foreign_key_table: this._data.collection,
 			},
 			_kind: 'finished',
 			_type: 'o2m',
@@ -126,7 +126,7 @@ export class RelationBuilder {
 	}
 
 	/** Resolves the type of the primary key(s) the relation is referencing */
-	private foreign_key(schema: BuiltSchema): { type: ForeignKeyType; column: Field['schema'] } {
+	private foreign_key(schema: BuiltSchema): { type: ForeignKeyType; field: string | null; column: Field['schema'] } {
 		assert(this._data._kind === 'finished', 'Relation type is not configured');
 
 		const primary_of = (name: string) =>
@@ -134,12 +134,12 @@ export class RelationBuilder {
 
 		// a2o keys are always stored as strings, the API casts the related primary keys to match when joining
 		if (this._data._type === 'a2o') {
-			return { type: 'string', column: null };
+			return { type: 'string', field: null, column: null };
 		}
 
 		const primary = primary_of(this._data.related_collection!)!;
 
-		return { type: primary.type as ForeignKeyType, column: primary.schema };
+		return { type: primary.type as ForeignKeyType, field: primary.field, column: primary.schema };
 	}
 
 	build(schema: BuiltSchema): Relation {
@@ -196,15 +196,44 @@ export class RelationBuilder {
 			schema.fields.push(field);
 		}
 
-		// Match the type of m2o fields to the primary key they are referencing
 		if (key.column && this._data._type !== 'a2o') {
 			const field = schema.fields.find((field) => field.collection === collection && field.field === this._data.field);
 
+			// Match the type of m2o fields to the primary key they are referencing
 			if (field?.schema && field.meta?.special?.includes('m2o') && field.type !== key.type) {
+				assert(FOREIGN_KEY_TYPES.includes(key.type), `Cannot reference primary key type ${key.type} from m2o field`);
+
 				field.type = key.type;
 				field.schema.data_type = key.column.data_type;
 				field.schema.max_length = key.column.max_length;
 			}
+
+			if (field?.schema) {
+				field.schema.foreign_key_table = this._data.related_collection;
+				field.schema.foreign_key_column = key.field;
+			}
+		}
+
+		// Generate the reverse m2m alias field on the related collection of a junction, if not exists
+		const one_field = this._data.meta?.one_field;
+
+		if (
+			this._data._type === 'm2o' &&
+			this._data.meta?.junction_field &&
+			one_field &&
+			has_field(this._data.related_collection!, one_field) === false
+		) {
+			const related_collection = this._data.related_collection!;
+			const { type, meta } = alias_field(['m2m']);
+
+			schema.fields.push({
+				collection: related_collection,
+				field: one_field,
+				name: one_field,
+				type,
+				schema: null,
+				meta: { id: 0, collection: related_collection, field: one_field, ...meta },
+			});
 		}
 
 		// Generate collection field for a2o relations, if not exists
@@ -218,7 +247,10 @@ export class RelationBuilder {
 			}
 		}
 
-		const { _kind, _type, ...relation } = this._data;
+		const { _kind, _type, ...relation } = cloneDeep(this._data);
+
+		if (relation.schema && key.field) relation.schema.foreign_key_column = key.field;
+
 		return relation;
 	}
 }

@@ -67,13 +67,11 @@ enpoint belong into `/tests/endpoints/items`.
 ### Tests requiring a custom schema
 
 To make it simpler to write tests that require custom tables, the test suite provides a `useSnapshot` function. It
-applies a schema snapshot to the database when called and ensures uniqueness of collection names by replacing all
-`_1234` suffixes with a unique prefix. All collection names can then be accessed through the `collections` property of
-the returned object.
+applies a schema snapshot to the database when called and ensures uniqueness of collection names by prefixing them with
+a unique id. All collection names can then be accessed through the `collections` property of the returned object.
 
 Schemas are defined with the [SchemaBuilder](../../packages/schema-builder/readme.md) in a `snapshot.ts` next to the
-test. Export both the builder as `schema` and its snapshot as `snapshot`, using the `test_schema` option to suffix all
-collections with `_1234`:
+test. Export both the builder as `schema` and its snapshot as `snapshot`:
 
 ```ts
 import { SchemaBuilder } from '@directus/schema-builder';
@@ -83,7 +81,7 @@ export const schema = new SchemaBuilder().collection('articles', (c) => {
 	c.field('title').string();
 });
 
-export const snapshot = schema.snapshot({ test_schema: true });
+export const snapshot = schema.snapshot();
 ```
 
 To improve type safety, run `pnpm build` in `tests/e2e` to generate a `schema.d.ts` next to every `snapshot.ts`, which
