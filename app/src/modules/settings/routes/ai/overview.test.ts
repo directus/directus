@@ -184,4 +184,32 @@ describe('settings ai overview', () => {
 		expect(fields.find((field) => field.field === 'ai_openai_allowed_models')?.meta?.note).toBeTruthy();
 		expect(fields.find((field) => field.field === 'ai_anthropic_allowed_models')?.meta?.note).toBeUndefined();
 	});
+
+	test('shows defaults for a cleared allowed models field while keeping it null', async () => {
+		const wrapper = mountOverview();
+		const aiForm = wrapper.findAllComponents(VFormStub)[0]!;
+		const getNote = () =>
+			(aiForm.props('fields') as any[]).find((field) => field.field === 'ai_anthropic_allowed_models')?.meta?.note;
+
+		await aiForm.vm.$emit('update:modelValue', { ai_anthropic_allowed_models: null });
+		await wrapper.vm.$nextTick();
+
+		expect(aiForm.props('modelValue')).toEqual({ ai_anthropic_allowed_models: DEFAULT_ALLOWED_MODELS.anthropic });
+		expect(getNote()).toBeTruthy();
+
+		// VForm sends the displayed defaults back when another field changes
+		await aiForm.vm.$emit('update:modelValue', {
+			ai_anthropic_allowed_models: [...DEFAULT_ALLOWED_MODELS.anthropic],
+			ai_openai_allowed_models: ['gpt-5'],
+		});
+
+		await wrapper.vm.$nextTick();
+
+		expect(getNote()).toBeTruthy();
+
+		await aiForm.vm.$emit('update:modelValue', { ai_anthropic_allowed_models: ['claude-opus-5'] });
+		await wrapper.vm.$nextTick();
+
+		expect(getNote()).toBeUndefined();
+	});
 });

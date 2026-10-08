@@ -2,7 +2,7 @@
 import { DEFAULT_ALLOWED_MODELS, type StandardProviderType } from '@directus/ai';
 import { useCollection, useShortcut } from '@directus/composables';
 import type { Field } from '@directus/types';
-import { clone } from 'lodash-es';
+import { clone, isEqual } from 'lodash-es';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -51,12 +51,43 @@ const allowedModelsFields = {
 	ai_google_allowed_models: 'google',
 } as const satisfies Record<string, StandardProviderType>;
 
+const allowedModelsFieldKeys = Object.keys(allowedModelsFields) as (keyof typeof allowedModelsFields)[];
+
 const { fields: allFields } = useCollection('directus_settings');
 
 const initialValues = ref(getInitialValues());
 
 const aiEdits = ref<Record<string, any> | null>(null);
 const mcpEdits = ref<Record<string, any> | null>(null);
+
+// A cleared allowed models field is saved as null but displays the defaults it falls back to
+const aiFormEdits = computed({
+	get() {
+		if (!aiEdits.value) return aiEdits.value;
+
+		const edits = { ...aiEdits.value };
+
+		for (const field of allowedModelsFieldKeys) {
+			if (edits[field] === null) edits[field] = DEFAULT_ALLOWED_MODELS[allowedModelsFields[field]];
+		}
+
+		return edits;
+	},
+	set(edits) {
+		if (edits) {
+			for (const field of allowedModelsFieldKeys) {
+				if (
+					aiEdits.value?.[field] === null &&
+					isEqual(edits[field], DEFAULT_ALLOWED_MODELS[allowedModelsFields[field]])
+				) {
+					edits[field] = null;
+				}
+			}
+		}
+
+		aiEdits.value = edits;
+	},
+});
 
 const effectiveAiSettings = computed(() => ({ ...(settingsStore.settings ?? {}), ...(aiEdits.value ?? {}) }));
 
@@ -148,7 +179,7 @@ function getInitialValues() {
 	const values = clone(settingsStore.settings);
 	if (!values) return values;
 
-	for (const field of Object.keys(allowedModelsFields) as (keyof typeof allowedModelsFields)[]) {
+	for (const field of allowedModelsFieldKeys) {
 		values[field] ??= DEFAULT_ALLOWED_MODELS[allowedModelsFields[field]];
 	}
 
@@ -185,7 +216,7 @@ function discardAndLeave() {
 				{{ $t('ai_disabled_by_env') }}
 			</VNotice>
 			<VForm
-				v-model="aiEdits"
+				v-model="aiFormEdits"
 				:initial-values="initialValues"
 				:fields="aiFields"
 				:primary-key="1"
