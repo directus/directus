@@ -187,6 +187,11 @@ export class FieldBuilder {
 		return this.set_type(CSV_FIELD);
 	}
 
+	/** Creates an alias field without a database column */
+	alias(special: string[]): this {
+		return this.set_type(alias_field(special));
+	}
+
 	m2a(related_collections: string[], relation_callback?: (options: M2AOptions) => M2AOptions | void): this {
 		this.set_type(alias_field(['m2a']));
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
@@ -284,11 +289,14 @@ export class FieldBuilder {
 		this.set_type(alias_field(['translations']));
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		this._schema.collection(language_collection, (c) => {
-			c.field('code').string().primary();
-			c.field('name').string();
-			c.field('direction').string().options({ defaultValue: 'ltr' });
-		});
+		// The language collection is shared between all translations fields and can also be defined by the user
+		if (this._schema._collections.some((collection) => collection.get_name() === language_collection) === false) {
+			this._schema.collection(language_collection, (c) => {
+				c.field('code').string().primary();
+				c.field('name').string();
+				c.field('direction').string().options({ defaultValue: 'ltr' });
+			});
+		}
 
 		const junction_name = `${this._collection.get_name()}_translations`;
 

@@ -21,6 +21,7 @@ export type SnapshotOptions = {
 export class SchemaBuilder {
 	_collections: CollectionBuilder[] = [];
 	_relations: RelationBuilder[] = [];
+	_last_collection: CollectionBuilder | undefined;
 	_last_collection_configured = true;
 	_relation_counter = 0;
 
@@ -28,7 +29,9 @@ export class SchemaBuilder {
 		const existing_index = this._collections.findIndex((collectionBuilder) => collectionBuilder.get_name() === name);
 
 		if (existing_index !== -1) {
-			callback(this._collections[existing_index]!);
+			const existing = this._collections[existing_index]!;
+			callback(existing);
+			this._last_collection = existing;
 			this._last_collection_configured = false;
 			return this;
 		}
@@ -36,18 +39,17 @@ export class SchemaBuilder {
 		const collection = new CollectionBuilder(name, this);
 		callback(collection);
 		this._collections.push(collection);
+		this._last_collection = collection;
 		this._last_collection_configured = false;
 
 		return this;
 	}
 
 	options(options: CollectionOveriewBuilderOptions): this {
-		assert(this._collections.length > 0, "You need at least 1 collection to configure it's options");
+		assert(this._last_collection, "You need at least 1 collection to configure it's options");
 		assert(this._last_collection_configured === false, 'You can only configure a collection once');
 
-		const lastCollection = this._collections.at(-1)!;
-
-		Object.assign(lastCollection._data, options);
+		Object.assign(this._last_collection._data, options);
 
 		this._last_collection_configured = true;
 

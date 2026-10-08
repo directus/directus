@@ -1366,7 +1366,7 @@ test('reject m2o to unsupported primary key type', () => {
 			c.field('id').text().primary();
 		});
 
-	expect(() => schema.build()).toThrowError('Cannot reference primary key type text from m2o field');
+	expect(() => schema.build()).toThrowError('Cannot reference primary key type text from foreign key');
 });
 
 test('create reverse m2m field', () => {
@@ -1388,4 +1388,59 @@ test('create reverse m2m field', () => {
 		one_field: 'products',
 		junction_field: 'products_id',
 	});
+});
+
+test('share language collection between translations fields', () => {
+	const { collections, fields } = new SchemaBuilder()
+		.collection('languages', (c) => {
+			c.field('code').string().primary();
+		})
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('translations').translations();
+		})
+		.collection('pages', (c) => {
+			c.field('id').id();
+			c.field('translations').translations();
+		})
+		.build_schema();
+
+	expect(collections.filter((collection) => collection.collection === 'languages')).toHaveLength(1);
+	expect(fields.filter((field) => field.collection === 'languages').map((field) => field.field)).toEqual(['code']);
+});
+
+test('match explicit foreign key type to referenced primary key', () => {
+	const { fields } = new SchemaBuilder()
+		.collection('parents', (c) => {
+			c.field('id').uuid().primary();
+			c.field('children').o2m('children', 'parent_id');
+		})
+		.collection('children', (c) => {
+			c.field('id').id();
+			c.field('parent_id').integer();
+		})
+		.build_schema();
+
+	expect(fields.find((field) => field.collection === 'children' && field.field === 'parent_id')).toMatchObject({
+		type: 'uuid',
+		schema: { data_type: 'uuid', foreign_key_table: 'parents', foreign_key_column: 'id' },
+	});
+});
+
+test('configure options of a reopened collection', () => {
+	const { collections } = new SchemaBuilder()
+		.collection('a', (c) => {
+			c.field('id').id();
+		})
+		.collection('b', (c) => {
+			c.field('id').id();
+		})
+		.collection('a', (c) => {
+			c.field('name').string();
+		})
+		.options({ singleton: true })
+		.build_schema();
+
+	expect(collections.find((collection) => collection.collection === 'a')?.meta?.singleton).toBe(true);
+	expect(collections.find((collection) => collection.collection === 'b')?.meta?.singleton).toBe(false);
 });

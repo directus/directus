@@ -3,7 +3,7 @@ import type { DeepPartial, Field, Relation } from '@directus/types';
 import { cloneDeep, merge } from 'lodash-es';
 import type { BuiltSchema, SchemaBuilder } from './builder.js';
 import { CollectionBuilder } from './collection.js';
-import { alias_field, RELATION_DEFAULTS } from './defaults.js';
+import { RELATION_DEFAULTS } from './defaults.js';
 import { FieldBuilder } from './field.js';
 
 const FOREIGN_KEY_TYPES = ['integer', 'bigInteger', 'string', 'uuid'] as const;
@@ -196,12 +196,12 @@ export class RelationBuilder {
 			schema.fields.push(field);
 		}
 
-		if (key.column && this._data._type !== 'a2o') {
+		if (key.column) {
 			const field = schema.fields.find((field) => field.collection === collection && field.field === this._data.field);
 
-			// Match the type of m2o fields to the primary key they are referencing
-			if (field?.schema && field.meta?.special?.includes('m2o') && field.type !== key.type) {
-				assert(FOREIGN_KEY_TYPES.includes(key.type), `Cannot reference primary key type ${key.type} from m2o field`);
+			// Match the type of foreign keys to the primary key they are referencing
+			if (field?.schema && field.type !== key.type) {
+				assert(FOREIGN_KEY_TYPES.includes(key.type), `Cannot reference primary key type ${key.type} from foreign key`);
 
 				field.type = key.type;
 				field.schema.data_type = key.column.data_type;
@@ -223,17 +223,7 @@ export class RelationBuilder {
 			one_field &&
 			has_field(this._data.related_collection!, one_field) === false
 		) {
-			const related_collection = this._data.related_collection!;
-			const { type, meta } = alias_field(['m2m']);
-
-			schema.fields.push({
-				collection: related_collection,
-				field: one_field,
-				name: one_field,
-				type,
-				schema: null,
-				meta: { id: 0, collection: related_collection, field: one_field, ...meta },
-			});
+			schema.fields.push(new FieldBuilder(one_field).alias(['m2m']).build(this._data.related_collection!));
 		}
 
 		// Generate collection field for a2o relations, if not exists
