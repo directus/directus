@@ -1,30 +1,20 @@
 import type { SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-
-const bus = vi.hoisted(() => ({
-	publish: vi.fn(),
-	subscribe: vi.fn(),
-	unsubscribe: vi.fn(),
-}));
-
-const lock = vi.hoisted(() => ({
-	increment: vi.fn(),
-	delete: vi.fn(),
-}));
+import type { Knex } from 'knex';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { getMemorySchemaCache, setMemorySchemaCache } from '../cache.js';
+import { getSchema } from './get-schema.js';
+import { runExclusive } from './run-exclusive.js';
 
 vi.mock('@directus/env', async () => {
 	const { mockUseEnv } = await import('../test-utils/env.js');
 
 	return mockUseEnv({
 		CACHE_SCHEMA: true,
-		CACHE_SCHEMA_MAX_ITERATIONS: 100,
 		CACHE_SCHEMA_SYNC_TIMEOUT: 10000,
 	});
 });
 
-vi.mock('../bus/index.js', () => ({ useBus: () => bus }));
-
-vi.mock('../lock/index.js', () => ({ useLock: () => lock }));
+vi.mock('./run-exclusive.js', () => ({ runExclusive: vi.fn() }));
 
 vi.mock('../cache.js', () => ({
 	getMemorySchemaCache: vi.fn(),
@@ -35,41 +25,57 @@ vi.mock('../logger/index.js', () => ({
 	useLogger: () => ({ trace: vi.fn(), warn: vi.fn() }),
 }));
 
-const { getSchema } = await import('./get-schema.js');
+vi.mock('@directus/schema', () => ({
+	createInspector: () => ({ overview: async () => ({}) }),
+}));
 
-const SCHEMA = { collections: {}, relations: [] } as unknown as SchemaOverview;
+vi.mock('../services/relations.js', () => ({
+	RelationsService: class {
+		readAll = async () => [];
+	},
+}));
 
-beforeEach(() => {
-	vi.useFakeTimers();
-	vi.clearAllMocks();
-	lock.increment.mockResolvedValue(2);
-	bus.subscribe.mockResolvedValue(undefined);
-	bus.unsubscribe.mockResolvedValue(undefined);
-});
+const SCHEMA: SchemaOverview = { collections: {}, relations: [] };
+
+const database = { select: () => ({ from: async () => [] }) } as unknown as Knex;
 
 afterEach(() => {
-	vi.useRealTimers();
+	vi.clearAllMocks();
 });
 
 describe('getSchema', () => {
-	test('unsubscribes from the schema cache bus when waiting times out', async () => {
-		const assertion = expect(getSchema()).rejects.toThrow('hit infinite loop');
-
-		await vi.advanceTimersByTimeAsync(30000);
-		await assertion;
-
-		expect(bus.subscribe).toHaveBeenCalledTimes(3);
-		expect(bus.unsubscribe.mock.calls).toEqual(bus.subscribe.mock.calls);
-	});
-
-	test('clears the timeout when the schema cache bus responds', async () => {
-		bus.subscribe.mockImplementation(async (_channel: string, handler: (options: { schema: SchemaOverview }) => void) =>
-			handler({ schema: SCHEMA }),
-		);
+	test('returns the cached schema without an exclusive run', async () => {
+		vi.mocked(getMemorySchemaCache).mockReturnValueOnce(SCHEMA);
 
 		await expect(getSchema()).resolves.toBe(SCHEMA);
 
-		expect(bus.unsubscribe.mock.calls).toEqual(bus.subscribe.mock.calls);
-		expect(vi.getTimerCount()).toBe(0);
+		expect(runExclusive).not.toHaveBeenCalled();
+		expect(setMemorySchemaCache).not.toHaveBeenCalled();
+	});
+
+	test('builds the schema in an exclusive run and caches it', async () => {
+		vi.mocked(runExclusive).mockImplementation(async (_key, fn) => ({ result: await fn(), leader: true }));
+
+		await expect(getSchema({ database })).resolves.toEqual(SCHEMA);
+
+		expect(runExclusive).toHaveBeenCalledWith('schema-cache', expect.any(Function), { timeout: 10000 });
+		expect(setMemorySchemaCache).toHaveBeenCalledExactlyOnceWith(SCHEMA);
+	});
+
+	test('caches the schema received from another leader', async () => {
+		vi.mocked(runExclusive).mockResolvedValue({ result: SCHEMA, leader: false });
+
+		await expect(getSchema()).resolves.toBe(SCHEMA);
+
+		expect(setMemorySchemaCache).toHaveBeenCalledExactlyOnceWith(SCHEMA);
+	});
+
+	test('passes errors from the exclusive run through without retrying', async () => {
+		vi.mocked(runExclusive).mockRejectedValue(new Error('connection refused'));
+
+		await expect(getSchema()).rejects.toThrow('connection refused');
+
+		expect(runExclusive).toHaveBeenCalledOnce();
+		expect(setMemorySchemaCache).not.toHaveBeenCalled();
 	});
 });

@@ -145,7 +145,6 @@ export const TYPE_MAP = {
 	CACHE_AUTO_PURGE_IGNORE_LIST: 'string-array',
 	CACHE_CONTROL_S_MAXAGE: 'number',
 	CACHE_SCHEMA: 'boolean',
-	CACHE_SCHEMA_MAX_ITERATIONS: 'number',
 	CACHE_SCHEMA_SYNC_TIMEOUT: 'number',
 	CACHE_SCHEMA_FREEZE_ENABLED: 'boolean',
 	CACHE_SKIP_ALLOWED: 'boolean',
