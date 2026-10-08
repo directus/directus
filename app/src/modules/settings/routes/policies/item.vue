@@ -50,7 +50,7 @@ const {
 	guardSave,
 	confirmSave,
 } = useSystemPermissionsGuard(
-	() => (isAttachedToPublicRole.value ? getSystemPermissionChanges(edits.value.permissions) : []),
+	() => (isAttachedToPublicRole.value !== false ? getSystemPermissionChanges(edits.value.permissions) : []),
 	saving,
 );
 

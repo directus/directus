@@ -1,6 +1,6 @@
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, expect, test, vi } from 'vitest';
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { useIsAttachedToPublicRole } from './use-is-attached-to-public-role';
 import api from '@/api';
 
@@ -32,6 +32,39 @@ test('is false when the policy is not attached to the Public role', async () => 
 	vi.mocked(api.get).mockResolvedValue({ data: { data: [] } });
 
 	const isAttachedToPublicRole = useIsAttachedToPublicRole(ref('policy-1'));
+	await flushPromises();
+
+	expect(isAttachedToPublicRole.value).toBe(false);
+});
+
+test('stays unknown when the lookup fails', async () => {
+	vi.mocked(api.get).mockRejectedValue(new Error('Network Error'));
+
+	const isAttachedToPublicRole = useIsAttachedToPublicRole(ref('policy-1'));
+	await flushPromises();
+
+	expect(isAttachedToPublicRole.value).toBe(null);
+});
+
+test('resets on policy change and ignores the previous policy response', async () => {
+	let resolvePrevious!: (value: unknown) => void;
+	let resolveCurrent!: (value: unknown) => void;
+
+	vi.mocked(api.get)
+		.mockReturnValueOnce(new Promise((resolve) => (resolvePrevious = resolve)))
+		.mockReturnValueOnce(new Promise((resolve) => (resolveCurrent = resolve)));
+
+	const primaryKey = ref('policy-1');
+	const isAttachedToPublicRole = useIsAttachedToPublicRole(primaryKey);
+
+	primaryKey.value = 'policy-2';
+	await nextTick();
+
+	expect(isAttachedToPublicRole.value).toBe(null);
+
+	resolveCurrent({ data: { data: [] } });
+	await flushPromises();
+	resolvePrevious({ data: { data: [{ id: 'access-1' }] } });
 	await flushPromises();
 
 	expect(isAttachedToPublicRole.value).toBe(false);
