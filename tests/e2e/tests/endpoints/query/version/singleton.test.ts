@@ -1,3 +1,4 @@
+import { SchemaBuilder } from '@directus/schema-builder';
 import {
 	createContentVersion,
 	createDirectus,
@@ -24,8 +25,17 @@ export type SingletonArticle = {
 	title: string | null;
 };
 
+const schema = new SchemaBuilder()
+	.collection('singleton_articles', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+	})
+	.options({ singleton: true, versioning: true });
+
+const snapshot = schema.snapshot();
+
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api, 'snapshot-singleton.json');
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 const clearSingleton = async () => {
 	try {
