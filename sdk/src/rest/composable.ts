@@ -22,10 +22,11 @@ export const rest = (config: Partial<RestConfig> = {}) => {
 					options.headers = {};
 				}
 
-				if ('Content-Type' in options.headers === false) {
-					if (typeof FormData === 'undefined' || options.body instanceof FormData === false) {
-						options.headers['Content-Type'] = 'application/json';
-					}
+				if (
+					'Content-Type' in options.headers === false &&
+					(options.body === undefined || typeof options.body === 'string')
+				) {
+					options.headers['Content-Type'] = 'application/json';
 				} else if (options.headers['Content-Type'] === 'multipart/form-data') {
 					// let the fetch function deal with multipart boundaries
 					delete options.headers['Content-Type'];
