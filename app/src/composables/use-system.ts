@@ -1,3 +1,4 @@
+import { provideSystem } from '@directus/composables';
 import { API_INJECT, EXTENSIONS_INJECT, SDK_INJECT, STORES_INJECT } from '@directus/constants';
 import { useAppStore } from '@directus/stores';
 import type { App } from 'vue';
@@ -19,7 +20,7 @@ import { useTranslationsStore } from '@/stores/translations';
 import { useUserStore } from '@/stores/user';
 
 export function useSystem(app: App): void {
-	app.provide(STORES_INJECT, {
+	provideSystem(app, STORES_INJECT, {
 		useAppStore,
 		useCollectionsStore,
 		useFieldsStore,
@@ -36,9 +37,9 @@ export function useSystem(app: App): void {
 		useUserStore,
 	});
 
-	app.provide(API_INJECT, api);
+	provideSystem(app, API_INJECT, api);
 
-	app.provide(SDK_INJECT, sdk);
+	provideSystem(app, SDK_INJECT, sdk);
 
-	app.provide(EXTENSIONS_INJECT, useExtensions());
+	provideSystem(app, EXTENSIONS_INJECT, useExtensions());
 }
