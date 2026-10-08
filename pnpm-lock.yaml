@@ -3414,6 +3414,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
+      uuid:
+        specifier: 11.1.1
+        version: 11.1.1
     optionalDependencies:
       mysql2:
         specifier: 'catalog:'
