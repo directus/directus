@@ -1,6 +1,6 @@
 import type { Field } from '@directus/types';
 import { describe, expect, it } from 'vitest';
-import { getRevisionFields } from './get-revision-fields';
+import { getRevisionDeltaFields, getRevisionFields } from './get-revision-fields';
 
 describe('getRevisionFields', () => {
 	it('should filter out random fields', () => {
@@ -40,6 +40,35 @@ describe('getRevisionFields', () => {
 		const revisionFields = getRevisionFields(allFields, fields);
 
 		expect(revisionFields).toEqual(expect.arrayContaining(['created_by', 'created_at', 'updated_by', 'updated_at']));
+	});
+});
+
+describe('getRevisionDeltaFields', () => {
+	it('should contain relational fields that the delta stores on the item', () => {
+		const fields = getFieldData();
+
+		expect(getRevisionDeltaFields(['title', 'm2o'], fields)).toEqual(['title', 'm2o']);
+	});
+
+	it('should filter out fields which do not exist on the collection', () => {
+		const fields = getFieldData();
+
+		expect(getRevisionDeltaFields(['title', 'non_existing_field'], fields)).toEqual(['title']);
+	});
+
+	it('should filter out user-created/-updated and date-created/-updated fields if they are hidden', () => {
+		const fields = getFieldData();
+		const allFields = fields.map((field) => field.field);
+
+		expect(getRevisionDeltaFields(allFields, fields)).not.toEqual(
+			expect.arrayContaining(['created_by', 'created_at', 'updated_by', 'updated_at']),
+		);
+	});
+
+	it('should not contain fields which are absent from the delta', () => {
+		const fields = getFieldData({ hideUserFields: false, hideDateFields: false });
+
+		expect(getRevisionDeltaFields(['title'], fields)).toEqual(['title']);
 	});
 });
 

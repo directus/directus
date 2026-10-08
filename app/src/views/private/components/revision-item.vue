@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n';
 import UserPopover from './user-popover.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { Revision } from '@/types/revisions';
-import { getRevisionFields } from '@/utils/get-revision-fields';
+import { getRevisionDeltaFields } from '@/utils/get-revision-fields';
 import { userName } from '@/utils/user-name';
 
 const props = defineProps<{
@@ -24,8 +24,7 @@ const fields = fieldsStore.getFieldsForCollection(props.revision.collection);
 
 const revisionCount = computed(() => {
 	const revisionDelta = Object.keys(props.revision.delta ?? {});
-	const revisionFields = getRevisionFields(revisionDelta, fields);
-	return revisionFields.length;
+	return getRevisionDeltaFields(revisionDelta, fields).length;
 });
 
 const headerMessage = computed(() => {
