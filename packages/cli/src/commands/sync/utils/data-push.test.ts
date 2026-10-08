@@ -432,6 +432,22 @@ describe('prepareDataPush skip and precondition', () => {
 		expect(existsSync(join(dir, 'id_map.json'))).toBe(false);
 	});
 
+	it('add mode creates an unmatched permission whose source ID an unrelated target permission holds', async () => {
+		const permission = { id: 5, policy: 'sp1', collection: 'articles', action: 'read' };
+
+		writeDataFiles(
+			join(dir, 'data'),
+			[{ collection: 'directus_permissions', primaryKey: 'id', records: [permission] }],
+			'https://source.example.com',
+		);
+
+		vi.mocked(fetchRecords).mockResolvedValue([{ id: 5, policy: 'tp9', collection: 'pages', action: 'create' }]);
+
+		const plan = await prepareDataPush(target(), 'add', ctx());
+
+		expect(plan?.batch).toEqual([{ collection: 'directus_permissions', items: [{ ...permission, id: -1 }] }]);
+	});
+
 	describe('presets', () => {
 		const globalView = { id: 1, collection: 'articles', bookmark: null, role: null, user: null, layout: 'kanban' };
 		const roleBookmark = { id: 2, collection: 'articles', bookmark: 'Pending', role: 'r-src', user: null };
