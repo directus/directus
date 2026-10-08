@@ -29,6 +29,31 @@ describe('REST request content type', () => {
 		expect(await request.text()).toContain('filename="test.txt"');
 	});
 
+	test.each([false, true])(
+		'lets fetch set the multipart boundary with a different FormData constructor (global FormData unavailable: %s)',
+		async (withoutGlobalFormData) => {
+			const { client, fetch } = createClient();
+			const body = new FormData();
+			body.append('file', new Blob(['contents']), 'test.txt');
+			class OtherFormData extends FormData {}
+
+			expect(body).not.toBeInstanceOf(OtherFormData);
+
+			vi.stubGlobal('FormData', withoutGlobalFormData ? undefined : OtherFormData);
+
+			await client.request(customEndpoint({ path: '/custom', method: 'POST', body }));
+
+			const [url, options] = fetch.mock.calls[0]!;
+
+			const request = new Request(url, options);
+
+			expect(options?.body).toBe(body);
+			expect(options?.headers).not.toHaveProperty('Content-Type');
+			expect(request.headers.get('Content-Type')).toMatch(/^multipart\/form-data; boundary=/);
+			expect(await request.text()).toContain('filename="test.txt"');
+		},
+	);
+
 	test('defaults JSON requests to application/json', async () => {
 		const { client, fetch } = createClient();
 		const body = JSON.stringify({ name: 'test' });
