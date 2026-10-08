@@ -96,8 +96,12 @@ function validateFilter(filter: Filter) {
 					break;
 				case '_eq':
 				case '_neq':
+				case '_ieq':
+				case '_nieq':
 				case '_contains':
 				case '_ncontains':
+				case '_icontains':
+				case '_nicontains':
 				case '_starts_with':
 				case '_nstarts_with':
 				case '_istarts_with':

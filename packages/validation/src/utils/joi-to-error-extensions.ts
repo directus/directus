@@ -86,6 +86,21 @@ export const joiValidationErrorItemToErrorExtensions = (
 		extensions.substring = validationErrorItem.context?.['substring'];
 	}
 
+	if (joiType === 'string.nicontains') {
+		extensions.type = 'nicontains';
+		extensions.substring = validationErrorItem.context?.['substring'];
+	}
+
+	if (joiType === 'string.ieq') {
+		extensions.type = 'ieq';
+		extensions.valid = validationErrorItem.context?.['valid'];
+	}
+
+	if (joiType === 'string.nieq') {
+		extensions.type = 'nieq';
+		extensions.invalid = validationErrorItem.context?.['invalid'];
+	}
+
 	// required
 	if (joiType.endsWith('required') || joiType.endsWith('.base')) {
 		extensions.type = 'required';

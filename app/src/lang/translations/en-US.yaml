@@ -321,10 +321,14 @@ validation_value_is_invalid: Value is invalid
 validationError:
   eq: Value has to be {valid}
   neq: Value can't be {invalid}
+  ieq: Value has to be {valid}
+  nieq: Value can't be {invalid}
   in: Value has to be one of {valid}
   nin: Value can't be one of {invalid}
   contains: Value has to contain {substring}
   ncontains: Value can't contain {substring}
+  icontains: Value has to contain {substring}
+  nicontains: Value can't contain {substring}
   gt: Value has to be greater than {valid}
   gte: Value has to be greater than or equal to {valid}
   lt: Value has to be less than {valid}
@@ -1027,6 +1031,8 @@ advanced: Advanced
 operators:
   eq: Equals
   neq: Doesn't equal
+  ieq: Equals (insensitive)
+  nieq: Doesn't equal (insensitive)
   lt: Less than
   gt: Greater than
   lte: Less than or equal to
@@ -1038,6 +1044,7 @@ operators:
   contains: Contains
   ncontains: Doesn't contain
   icontains: Contains (insensitive)
+  nicontains: Doesn't contain (insensitive)
   starts_with: Starts with
   nstarts_with: Doesn't start with
   istarts_with: Starts with (insensitive)

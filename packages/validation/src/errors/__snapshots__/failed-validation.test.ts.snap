@@ -4,6 +4,8 @@ exports[`Invalid value (list) > Constructs message for "nin" 1`] = `"Validation 
 
 exports[`Invalid value (primitive) > Constructs message for "neq" 1`] = `"Validation failed for field "test_field". Value can't be "15"."`;
 
+exports[`Invalid value (primitive) > Constructs message for "nieq" 1`] = `"Validation failed for field "test_field". Value can't be "15"."`;
+
 exports[`No value > Constructs message for "empty" 1`] = `"Validation failed for field "test_field". Value has to be empty."`;
 
 exports[`No value > Constructs message for "nempty" 1`] = `"Validation failed for field "test_field". Value can't be empty."`;
@@ -22,6 +24,8 @@ exports[`Substring > Constructs message for "icontains" 1`] = `"Validation faile
 
 exports[`Substring > Constructs message for "ncontains" 1`] = `"Validation failed for field "test_field". Value can't contain "test_substring"."`;
 
+exports[`Substring > Constructs message for "nicontains" 1`] = `"Validation failed for field "test_field". Value can't contain "test_substring"."`;
+
 exports[`Unsafe number > Constructs message for "unsafe" 1`] = `"Validation failed for field "test_field". Value is not a safe number."`;
 
 exports[`Valid value (list) > Constructs message for "in" 1`] = `"Validation failed for field "test_field". Value has to be one of "valA", "valB", "valC"."`;
@@ -31,6 +35,8 @@ exports[`Valid value (primitive) > Constructs message for "eq" 1`] = `"Validatio
 exports[`Valid value (primitive) > Constructs message for "gt" 1`] = `"Validation failed for field "test_field". Value has to be greater than "15"."`;
 
 exports[`Valid value (primitive) > Constructs message for "gte" 1`] = `"Validation failed for field "test_field". Value has to be greater than or equal to "15"."`;
+
+exports[`Valid value (primitive) > Constructs message for "ieq" 1`] = `"Validation failed for field "test_field". Value has to be "15"."`;
 
 exports[`Valid value (primitive) > Constructs message for "lt" 1`] = `"Validation failed for field "test_field". Value has to be less than "15"."`;
 
