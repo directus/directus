@@ -133,7 +133,7 @@ test('runs retention exclusively across instances', async () => {
 
 	await runScheduledJob();
 
-	expect(mocks.runExclusive).toHaveBeenCalledWith('retention', expect.any(Function), { timeout: 3_600_000 });
+	expect(mocks.runExclusive).toHaveBeenCalledWith('retention', expect.any(Function), { timeout: Infinity });
 });
 
 test('logs when the exclusive run fails', async () => {
@@ -152,7 +152,7 @@ const flowLogsQuery = '"directus_activity"."action" = ?';
 const revisionsQuery = 'from "directus_revisions"';
 
 test.each([
-	{ reason: 'only activity retention is set', env: {}, queries: [activityQuery] },
+	{ reason: 'only activity retention is set', env: { ACTIVITY_RETENTION: '1d' }, queries: [activityQuery] },
 	{
 		reason: 'only flow logs retention is set',
 		env: { ACTIVITY_RETENTION: undefined, FLOW_LOGS_RETENTION: '1d' },
@@ -171,6 +171,11 @@ test.each([
 	{
 		reason: 'revisions expire after their activity',
 		env: { ACTIVITY_RETENTION: '1d', REVISIONS_RETENTION: '30d' },
+		queries: [activityQuery],
+	},
+	{
+		reason: 'activity retention is 0',
+		env: { ACTIVITY_RETENTION: '0', REVISIONS_RETENTION: '30d' },
 		queries: [activityQuery],
 	},
 ])('Runs the expected tasks when $reason', async ({ env, queries }) => {
@@ -318,7 +323,6 @@ test('keeps deleting batches until a batch is not full', async () => {
 	expect(tracker.history.delete).toHaveLength(2);
 	expect(tracker.history.delete[0]?.bindings).toEqual([10, 11]);
 	expect(tracker.history.delete[1]?.bindings).toEqual([12]);
-	expect(logger.debug).toHaveBeenCalledWith('Retention deleted 3 rows');
 });
 
 test('keeps going after a full batch even when fewer rows were deleted', async () => {

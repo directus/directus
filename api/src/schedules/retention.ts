@@ -19,13 +19,11 @@ export interface RetentionTask {
 	timeframe: number;
 }
 
-const retentionTimeout = 60 * 60 * 1000; // 1 hour
-
 export async function handleRetentionJob(tasks: RetentionTask[], batch: number) {
 	const database = getDatabase();
 	const logger = useLogger();
 	const helpers = getHelpers(database);
-	let deleted = 0;
+	const deleted = { activities: 0, revisions: 0 };
 
 	for (const task of tasks) {
 		let records: PrimaryKey[] = [];
@@ -59,7 +57,7 @@ export async function handleRetentionJob(tasks: RetentionTask[], batch: number) 
 					break;
 				}
 
-				deleted += await transaction(database, async (trx) => {
+				const removed = await transaction(database, async (trx) => {
 					let revisionIds = records;
 
 					// deleting an activity cascades to its revisions, look those up to clear any reference
@@ -76,8 +74,16 @@ export async function handleRetentionJob(tasks: RetentionTask[], batch: number) 
 						await trx('directus_revisions').update({ parent: null }).whereIn('parent', ids);
 					}
 
-					return trx(task.collection).whereIn('id', records).delete();
+					const count = await trx(task.collection).whereIn('id', records).delete();
+
+					// revisions removed by the activity cascade are not part of the delete count
+					return task.collection === 'directus_activity'
+						? { activities: count, revisions: revisionIds.length }
+						: { activities: 0, revisions: count };
 				});
+
+				deleted.activities += removed.activities;
+				deleted.revisions += removed.revisions;
 			} catch (error) {
 				logger.error(error, `Retention failed for collection ${task.collection}`);
 
@@ -86,7 +92,7 @@ export async function handleRetentionJob(tasks: RetentionTask[], batch: number) 
 		} while (records.length >= batch);
 	}
 
-	logger.debug(`Retention deleted ${deleted} rows`);
+	logger.debug(`Retention deleted ${deleted.activities} activities and ${deleted.revisions} revisions`);
 }
 
 /**
@@ -138,7 +144,7 @@ export default async function schedule(): Promise<boolean> {
 	}
 
 	// revisions are deleted along with their activity, only required if they expire sooner
-	if (!isNil(revisionsTimeframe) && (!activityTimeframe || activityTimeframe > revisionsTimeframe)) {
+	if (!isNil(revisionsTimeframe) && (isNil(activityTimeframe) || activityTimeframe > revisionsTimeframe)) {
 		tasks.push({
 			collection: 'directus_revisions',
 			join: ['directus_activity', 'directus_revisions.activity', 'directus_activity.id'],
@@ -164,7 +170,10 @@ export default async function schedule(): Promise<boolean> {
 
 	scheduleSynchronizedJob('retention', cron, async () => {
 		try {
-			await runExclusive('retention', () => handleRetentionJob(tasks, batch), { timeout: retentionTimeout });
+			await runExclusive('retention', () => handleRetentionJob(tasks, batch), {
+				// no timeout, the run is resumable and the lock lease prevents overlapping runs while it continues
+				timeout: Infinity,
+			});
 		} catch (error) {
 			logger.error(error, 'Retention run failed');
 		}
