@@ -2,7 +2,7 @@
 // MIT License
 // Copyright (c) 2025 models.dev
 
-import type { ModelDefinition, OpenAICompatibleModel, ProviderType } from './types.js';
+import type { ModelDefinition, OpenAICompatibleModel, ProviderType, StandardProviderType } from './types.js';
 
 export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 	// OpenAI GPT-4 series
@@ -701,6 +701,16 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 		reasoning: true,
 	},
 ];
+
+/**
+ * Used when a provider's `ai_*_allowed_models` setting is null (never customized). An empty array means the admin
+ * turned every model off, so it does not fall back.
+ */
+export const DEFAULT_ALLOWED_MODELS: Record<StandardProviderType, string[]> = {
+	openai: ['gpt-6-luna', 'gpt-6.1-sol'],
+	anthropic: ['claude-haiku-5-5', 'claude-sonnet-5-5'],
+	google: ['gemini-3.1-pro-preview', 'gemini-3.8-flash', 'gemini-3.5-flash-lite'],
+};
 
 export function buildCustomModels(customModels: OpenAICompatibleModel[] | null): ModelDefinition[] {
 	if (!customModels) return [];
