@@ -4,14 +4,15 @@ import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 import { seed, seedShapes } from './seed.js';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 await seed(api, collections);
 const shapes = await seedShapes(api, collections);
 
-function read(collection: string, query: Record<string, unknown>) {
+function read(collection: keyof Schema, query: Record<string, unknown>) {
 	return api.request<any[]>(readItems(collection, { sort: ['name'], ...query } as any));
 }
 

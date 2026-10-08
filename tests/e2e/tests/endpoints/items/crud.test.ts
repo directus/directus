@@ -17,9 +17,10 @@ import { useSnapshot } from '@utils/use-snapshot.js';
 import { range } from 'lodash-es';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 test('creates many items in one request', async () => {
 	const marker = 'create-many';
