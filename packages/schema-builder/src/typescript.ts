@@ -124,13 +124,7 @@ export function toTypeScript(snapshot: SchemaSnapshot, options: TypeScriptOption
 		return `\t${toPropertyName(collection)}: ${type};`;
 	});
 
-	return [
-		`export interface ${schemaName} {`,
-		...schema,
-		'}',
-		...interfaces.map((item) => `\n${item}`),
-		'',
-	].join('\n');
+	return [`export interface ${schemaName} {`, ...schema, '}', ...interfaces.map((item) => `\n${item}`), ''].join('\n');
 }
 
 function fieldKey(collection: string, field: string): string {
