@@ -137,9 +137,9 @@ export async function planSchema(target: Target, options: SchemaPlanOptions, ctx
 	return { result, enabled, ...summary, total: summary.added + summary.modified + summary.deleted };
 }
 
-const CONVERGED_COPY: Record<SyncCommand, { verdict: string; outcome: string }> = {
-	diff: { verdict: 'matches', outcome: 'nothing to do' },
-	push: { verdict: 'already matches', outcome: 'nothing to push' },
+const CONVERGED_COPY: Record<SyncCommand, { verdict: string; outcome: string; remainder: string }> = {
+	diff: { verdict: 'matches', outcome: 'nothing to do', remainder: 'nothing else to do' },
+	push: { verdict: 'already matches', outcome: 'nothing to push', remainder: 'nothing else to push' },
 };
 
 export function convergedMessage(
@@ -148,10 +148,15 @@ export function convergedMessage(
 	cwd: string,
 	plan: SchemaPlan,
 	dataChecked: boolean,
+	skippedPresets = 0,
 ): string {
-	const { verdict, outcome } = CONVERGED_COPY[command];
+	const { verdict, outcome, remainder } = CONVERGED_COPY[command];
 	const subject = `${target.profile} — ${target.url}`;
 	const projectPath = displayProjectPath(cwd, target.projectDir);
+
+	if (skippedPresets > 0) {
+		return `${subject} ${verdict} ${projectPath}, except ${maybePluralize(skippedPresets, 'skipped preset')} — ${remainder}.`;
+	}
 
 	if (!dataChecked) return `${subject} ${verdict} ${projectPath} — ${outcome}.`;
 

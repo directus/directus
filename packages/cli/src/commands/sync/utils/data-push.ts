@@ -30,6 +30,7 @@ export interface DataPushPlan {
 	readonly collections: number;
 	/** Collections the stored metadata marks as truncated at pull time; mirror must refuse them. */
 	readonly incomplete: readonly string[];
+	readonly skippedPresets: number;
 }
 
 // Parents first (hence the reverse), so child natural keys translate their FKs through earlier matches.
@@ -69,7 +70,7 @@ async function reconcileSystem(
 
 /**
  * A role preset whose role reaches the target neither through this push, a live ID-map entry, nor a shared
- * UUID would fail the whole import on its foreign key, so it is held back instead. Shared UUIDs come back as
+ * UUID would fail the whole import on its foreign key, so it is skipped instead. Shared UUIDs come back as
  * identity mappings: reconciliation can only key a preset by a role it has mapped.
  */
 async function resolvePresetRoles(
@@ -77,10 +78,10 @@ async function resolvePresetRoles(
 	target: Target,
 	mappedRoles: Readonly<Record<string, string>>,
 	queryMax: number | undefined,
-): Promise<{ system: readonly SystemCollection[]; held: number; identities: Record<string, string> }> {
+): Promise<{ system: readonly SystemCollection[]; skipped: number; identities: Record<string, string> }> {
 	const presets = system.find((entry) => entry.resource.collection === 'directus_presets');
 
-	if (presets === undefined) return { system, held: 0, identities: {} };
+	if (presets === undefined) return { system, skipped: 0, identities: {} };
 
 	const roles = system.find((entry) => entry.resource.collection === 'directus_roles');
 	const pushed = new Set((roles?.data.records ?? []).map((record) => String(record[roles!.resource.primaryKey])));
@@ -91,7 +92,7 @@ async function resolvePresetRoles(
 		if (role !== null && role !== undefined && !pushed.has(String(role))) outside.add(String(role));
 	}
 
-	if (outside.size === 0) return { system, held: 0, identities: {} };
+	if (outside.size === 0) return { system, skipped: 0, identities: {} };
 
 	// A mapped role may have been deleted on the target since, so the mapping alone is not proof.
 	const targetRoles = await fetchRecords(
@@ -121,13 +122,13 @@ async function resolvePresetRoles(
 
 	return {
 		system: system.map((entry) => (entry === presets ? { ...entry, data: { ...entry.data, records: kept } } : entry)),
-		held: presets.data.records.length - kept.length,
+		skipped: presets.data.records.length - kept.length,
 		identities,
 	};
 }
 
-export function heldPresetsMessage(held: number): string {
-	return `presets: held back ${maybePluralize(held, 'role preset')} whose role is not on the target. Create the role on the target, or pull with --roles (which also brings policies and permissions).`;
+export function skippedPresetsMessage(skipped: number): string {
+	return `presets: skipped ${maybePluralize(skipped, 'role preset')} because ${skipped === 1 ? 'its role does' : 'their roles do'} not exist on the target. Create the role there, or pull with --roles (this also brings policies and permissions).`;
 }
 
 const TARGET_PREFIX = 'target:';
@@ -312,7 +313,7 @@ interface Reconciled {
 	readonly map: IdMap;
 	readonly incomplete: readonly string[];
 	/** Role presets left out because their role is not on the target. */
-	readonly held: number;
+	readonly skippedPresets: number;
 	readonly inputs: readonly ReconcileInput[];
 	readonly results: readonly CollectionReconcile[];
 	readonly targets: ReadonlyMap<string, readonly Record<string, unknown>[]>;
@@ -354,11 +355,11 @@ async function readAndReconcile(target: Target): Promise<Reconciled | undefined>
 	const storedMap = readIdMap(target.idMapPath);
 	const queryMax = await fetchQueryLimitMax(target.credential);
 	const mappedRoles = mappingsFor(storedMap, pair)['directus_roles'] ?? {};
-	const { system, held, identities } = await resolvePresetRoles(pulled, target, mappedRoles, queryMax);
+	const { system, skipped, identities } = await resolvePresetRoles(pulled, target, mappedRoles, queryMax);
 	const map = withMappings(storedMap, pair, 'directus_roles', identities);
 	const { inputs, results, targets } = await reconcileSystem(system, target, mappingsFor(map, pair), queryMax);
 
-	return { source, targetUrl, system, map, incomplete, held, inputs, results, targets };
+	return { source, targetUrl, system, map, incomplete, skippedPresets: skipped, inputs, results, targets };
 }
 
 /** Settles the IDs only the server could supply; `prepareDataPush` already settled which record is which. */
@@ -442,7 +443,7 @@ export async function prepareDataPush(
 
 	const { source, targetUrl, system, inputs, targets } = reconciled;
 
-	if (reconciled.held > 0) ctx.ui.warn(heldPresetsMessage(reconciled.held));
+	if (reconciled.skippedPresets > 0) ctx.ui.warn(skippedPresetsMessage(reconciled.skippedPresets));
 
 	let map = reconciled.map;
 	let results = reconciled.results;
@@ -522,6 +523,7 @@ export async function prepareDataPush(
 		records,
 		collections: batch.length,
 		incomplete: reconciled.incomplete,
+		skippedPresets: reconciled.skippedPresets,
 	};
 }
 
@@ -536,7 +538,7 @@ export interface DataPreviewPlan {
 	readonly dependentCount: number;
 	readonly unmatchedCount: number;
 	readonly unchangedCount: number;
-	readonly heldCount: number;
+	readonly skippedPresets: number;
 	readonly incomplete: readonly string[];
 }
 
@@ -616,7 +618,7 @@ export async function previewData(target: Target, mode: SyncMode): Promise<DataP
 		dependentCount,
 		unmatchedCount,
 		unchangedCount,
-		heldCount: reconciled.held,
+		skippedPresets: reconciled.skippedPresets,
 		incomplete: reconciled.incomplete,
 	};
 }

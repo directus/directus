@@ -425,7 +425,7 @@ describe('prepareDataPush skip and precondition', () => {
 			dependentCount: 0,
 			unmatchedCount: 1,
 			unchangedCount: 0,
-			heldCount: 0,
+			skippedPresets: 0,
 			incomplete: [],
 		});
 
@@ -500,7 +500,7 @@ describe('prepareDataPush skip and precondition', () => {
 
 			const preview = await previewData(target(), 'merge');
 
-			expect(preview?.heldCount).toBe(1);
+			expect(preview?.skippedPresets).toBe(1);
 			expect(preview?.batch).toEqual([{ collection: 'directus_presets', items: [{ ...globalView, id: -1 }] }]);
 		});
 
@@ -521,7 +521,7 @@ describe('prepareDataPush skip and precondition', () => {
 
 			const preview = await previewData(target(), 'merge');
 
-			expect(preview?.heldCount).toBe(1);
+			expect(preview?.skippedPresets).toBe(1);
 		});
 
 		it('add mode creates a preset whose source ID collides with an unrelated target preset', async () => {
@@ -549,7 +549,7 @@ describe('prepareDataPush skip and precondition', () => {
 
 			const preview = await previewData(target(), 'merge');
 
-			expect(preview?.heldCount).toBe(0);
+			expect(preview?.skippedPresets).toBe(0);
 
 			// Roles are still read once for reconciliation; the hold-back adds no second read.
 			const roleReads = vi.mocked(fetchRecords).mock.calls.filter(([, source]) => source.endpoint === '/roles');
