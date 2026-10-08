@@ -1,6 +1,6 @@
 import { isSystemCollection } from '@directus/system-data';
 import type { Alterations, Permission, PermissionsAction } from '@directus/types';
-import { isEmpty } from 'lodash-es';
+import { isEmpty, isPlainObject } from 'lodash-es';
 
 export interface SystemPermissionChange {
 	collection: string;
@@ -29,4 +29,22 @@ export function getSystemPermissionChanges(
 			action,
 			unfilteredRead: action === 'read' && isEmpty(filter),
 		}));
+}
+
+/**
+ * Returns the system collection permission changes made to policies through edits of their `directus_access` rows,
+ * as staged by the policies field of a role.
+ */
+export function getAccessSystemPermissionChanges(
+	access: Alterations<{ policy: unknown }> | unknown[] | null | undefined,
+): SystemPermissionChange[] {
+	if (!access || Array.isArray(access)) {
+		return [];
+	}
+
+	return [...access.create, ...access.update].flatMap(({ policy }) =>
+		isPlainObject(policy)
+			? getSystemPermissionChanges((policy as { permissions?: Alterations<Permission> }).permissions)
+			: [],
+	);
 }

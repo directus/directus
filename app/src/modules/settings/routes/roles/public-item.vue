@@ -7,6 +7,10 @@ import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import { getAccessSystemPermissionChanges } from '../policies/get-system-permission-changes';
+import PublicPolicyNotice from '../policies/public-policy-notice.vue';
+import SystemPermissionsDialog from '../policies/system-permissions-dialog.vue';
+import { useSystemPermissionsGuard } from '../policies/use-system-permissions-guard';
 import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -92,12 +96,16 @@ const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
+const systemPermissionChanges = computed(() => getAccessSystemPermissionChanges(edits.value.policies));
+
+const { confirmSystemPermissions, guardSave, confirmSave } = useSystemPermissionsGuard(systemPermissionChanges, saving);
+
 useShortcut('meta+s', () => {
-	if (hasEdits.value) saveAndStay();
+	if (hasEdits.value) guardSave(saveAndStay);
 });
 
 useShortcut('meta+shift+s', () => {
-	if (hasEdits.value) saveAndAddNew();
+	if (hasEdits.value) guardSave(saveAndAddNew);
 });
 
 onMounted(() => {
@@ -213,13 +221,13 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 				:loading="saving"
 				:disabled="!hasEdits"
 				icon="check"
-				@click="saveAndQuit"
+				@click="guardSave(saveAndQuit)"
 			>
 				<template #split-menu>
 					<SaveOptions
 						:disabled-options="['save-and-quit', 'save-as-copy']"
-						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
+						@save-and-stay="guardSave(saveAndStay)"
+						@save-and-add-new="guardSave(saveAndAddNew)"
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
@@ -231,12 +239,20 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 		</template>
 
 		<div class="content">
+			<PublicPolicyNotice />
 			<VForm v-model="edits" :initial-values="initialValue" :fields="fields" :primary-key="null" :loading />
 		</div>
 
 		<template #sidebar>
 			<RoleInfoSidebarDetail :role="null" />
 		</template>
+
+		<SystemPermissionsDialog
+			v-model="confirmSystemPermissions"
+			:changes="systemPermissionChanges"
+			:saving
+			@confirm="confirmSave"
+		/>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<VCard>

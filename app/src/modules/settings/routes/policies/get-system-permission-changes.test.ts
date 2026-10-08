@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { getSystemPermissionChanges } from './get-system-permission-changes';
+import { getAccessSystemPermissionChanges, getSystemPermissionChanges } from './get-system-permission-changes';
 
 test('returns an empty list when there are no alterations', () => {
 	expect(getSystemPermissionChanges(undefined)).toEqual([]);
@@ -30,4 +30,32 @@ test('does not flag a read with a filter as unfiltered', () => {
 	});
 
 	expect(result[0]?.unfilteredRead).toBe(false);
+});
+
+test('returns the system collection permission changes of policies edited through access rows', () => {
+	const result = getAccessSystemPermissionChanges({
+		create: [
+			{
+				policy: {
+					name: 'New',
+					permissions: { create: [{ collection: 'directus_files', action: 'read' }], update: [], delete: [] },
+				},
+			},
+			{ policy: 'existing-policy' },
+		],
+		update: [
+			{
+				policy: {
+					id: 'policy-1',
+					permissions: { create: [{ collection: 'directus_users', action: 'create' }], update: [], delete: [] },
+				},
+			},
+		],
+		delete: [],
+	});
+
+	expect(result).toEqual([
+		{ collection: 'directus_files', action: 'read', unfilteredRead: true },
+		{ collection: 'directus_users', action: 'create', unfilteredRead: false },
+	]);
 });
