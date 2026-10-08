@@ -6,6 +6,7 @@ import { nextTick, reactive, ref } from 'vue';
 import { useAiStore } from './use-ai';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 let lastChatConfig: any;
 let lastTransportConfig: any;
@@ -103,6 +104,10 @@ vi.mock('ai', () => ({
 	lastAssistantMessageIsCompleteWithToolCalls: vi.fn(),
 }));
 
+vi.mock('@/utils/unexpected-error', () => ({
+	unexpectedError: vi.fn(),
+}));
+
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
@@ -117,6 +122,7 @@ beforeEach(() => {
 	lastChatConfig = undefined;
 	lastTransportConfig = undefined;
 	sessionMessagesRef = undefined;
+	vi.mocked(unexpectedError).mockClear();
 });
 
 describe('useAiStore', () => {
@@ -535,6 +541,273 @@ describe('useAiStore', () => {
 			expect(aiStore.input).toBe('');
 			expect(toolsStore.toolApprovals).toEqual({});
 			expect(aiStore.chatOpen).toBe(false);
+		});
+	});
+});
+
+describe('useAiStore chat callbacks', () => {
+	describe('onFinish', () => {
+		test('marks reasoning parts as done and strips provider metadata when the response was aborted', () => {
+			useAiStore();
+
+			const message = {
+				id: '1',
+				role: 'assistant',
+				parts: [
+					{ type: 'reasoning', text: 'thinking', state: 'streaming', providerMetadata: { openai: { id: 'r1' } } },
+					{ type: 'text', text: 'Hi' },
+				],
+			} as any;
+
+			lastChatConfig.onFinish({ isAbort: true, message });
+
+			expect(message.parts[0].state).toBe('done');
+			expect(message.parts[0]).not.toHaveProperty('providerMetadata');
+			expect(message.parts[1]).toEqual({ type: 'text', text: 'Hi' });
+		});
+
+		test('leaves reasoning parts untouched when the response was not aborted', () => {
+			useAiStore();
+
+			const message = {
+				id: '1',
+				role: 'assistant',
+				parts: [
+					{ type: 'reasoning', text: 'thinking', state: 'streaming', providerMetadata: { openai: { id: 'r1' } } },
+				],
+			} as any;
+
+			lastChatConfig.onFinish({ isAbort: false, message });
+
+			expect(message.parts[0].state).toBe('streaming');
+			expect(message.parts[0].providerMetadata).toEqual({ openai: { id: 'r1' } });
+		});
+	});
+
+	describe('submit failures', () => {
+		test('reports the error and resets the preparing state when loading context fails', async () => {
+			const aiStore = useAiStore();
+			const contextStore = useAiContextStore();
+			const error = new Error('context failed');
+
+			aiStore.input = 'Hello';
+
+			vi.spyOn(contextStore, 'fetchContextData').mockRejectedValue(error);
+			vi.spyOn(contextStore, 'uploadPendingFiles').mockResolvedValue([]);
+
+			await aiStore.submit();
+
+			expect(unexpectedError).toHaveBeenCalledWith(error);
+			expect(aiStore.isPreparingSubmission).toBe(false);
+			expect(aiStore.chat.sendMessage).not.toHaveBeenCalled();
+			expect(aiStore.input).toBe('Hello');
+		});
+
+		test('restores the input and reports the error when sending the message fails', async () => {
+			const aiStore = useAiStore();
+			const contextStore = useAiContextStore();
+			const error = new Error('send failed');
+
+			aiStore.input = 'Hello';
+
+			vi.spyOn(contextStore, 'fetchContextData').mockResolvedValue([]);
+			vi.spyOn(contextStore, 'uploadPendingFiles').mockResolvedValue([]);
+			vi.mocked(aiStore.chat.sendMessage).mockRejectedValueOnce(error);
+
+			await aiStore.submit();
+
+			await vi.waitFor(() => expect(unexpectedError).toHaveBeenCalledWith(error));
+
+			expect(aiStore.input).toBe('Hello');
+		});
+	});
+
+	describe('retry and stop', () => {
+		test('retry clears the error and regenerates the last response', () => {
+			const aiStore = useAiStore();
+
+			aiStore.retry();
+
+			expect(aiStore.chat.clearError).toHaveBeenCalledTimes(1);
+			expect(aiStore.chat.regenerate).toHaveBeenCalledTimes(1);
+		});
+
+		test('stop stops the in-flight chat request', () => {
+			const aiStore = useAiStore();
+
+			aiStore.stop();
+
+			expect(aiStore.chat.stop).toHaveBeenCalledTimes(1);
+		});
+	});
+});
+
+describe('useAiStore tool calls and token usage', () => {
+	describe('onToolCall', () => {
+		const toolCall = (overrides: Record<string, unknown> = {}) => ({
+			toolName: 'local-tool',
+			toolCallId: 'call-1',
+			input: { foo: 'bar' },
+			dynamic: false,
+			...overrides,
+		});
+
+		test('ignores dynamic tool calls', async () => {
+			const aiStore = useAiStore();
+
+			await lastChatConfig.onToolCall({ toolCall: toolCall({ dynamic: true }) });
+
+			expect(aiStore.chat.addToolResult).not.toHaveBeenCalled();
+		});
+
+		test('ignores server tools', async () => {
+			const aiStore = useAiStore();
+			const toolsStore = useAiToolsStore();
+
+			vi.spyOn(toolsStore, 'isServerTool').mockReturnValue(true);
+
+			await lastChatConfig.onToolCall({ toolCall: toolCall() });
+
+			expect(aiStore.chat.addToolResult).not.toHaveBeenCalled();
+		});
+
+		test('executes a local tool and reports its output', async () => {
+			const aiStore = useAiStore();
+			const toolsStore = useAiToolsStore();
+			const execute = vi.fn().mockResolvedValue({ ok: true });
+
+			toolsStore.localTools = [{ name: 'local-tool', execute }] as any;
+			vi.spyOn(toolsStore, 'isServerTool').mockReturnValue(false);
+
+			await lastChatConfig.onToolCall({ toolCall: toolCall() });
+
+			expect(execute).toHaveBeenCalledWith({ foo: 'bar' });
+
+			expect(aiStore.chat.addToolResult).toHaveBeenCalledWith({
+				tool: 'local-tool',
+				output: { ok: true },
+				toolCallId: 'call-1',
+			});
+		});
+
+		test('throws when the tool is not registered locally', async () => {
+			useAiStore();
+			const toolsStore = useAiToolsStore();
+
+			toolsStore.localTools = [] as any;
+			vi.spyOn(toolsStore, 'isServerTool').mockReturnValue(false);
+
+			await expect(lastChatConfig.onToolCall({ toolCall: toolCall({ toolName: 'missing' }) })).rejects.toThrow(
+				'Tool by name "missing" does not exist',
+			);
+		});
+
+		test('reports an output error when the tool throws an Error', async () => {
+			const aiStore = useAiStore();
+			const toolsStore = useAiToolsStore();
+			const execute = vi.fn().mockRejectedValue(new Error('boom'));
+
+			toolsStore.localTools = [{ name: 'local-tool', execute }] as any;
+			vi.spyOn(toolsStore, 'isServerTool').mockReturnValue(false);
+
+			await lastChatConfig.onToolCall({ toolCall: toolCall() });
+
+			expect(aiStore.chat.addToolResult).toHaveBeenCalledWith({
+				tool: 'local-tool',
+				state: 'output-error',
+				errorText: 'boom',
+				toolCallId: 'call-1',
+			});
+		});
+
+		test('stringifies non-Error rejections from the tool', async () => {
+			const aiStore = useAiStore();
+			const toolsStore = useAiToolsStore();
+			const execute = vi.fn().mockRejectedValue('plain failure');
+
+			toolsStore.localTools = [{ name: 'local-tool', execute }] as any;
+			vi.spyOn(toolsStore, 'isServerTool').mockReturnValue(false);
+
+			await lastChatConfig.onToolCall({ toolCall: toolCall() });
+
+			expect(aiStore.chat.addToolResult).toHaveBeenCalledWith({
+				tool: 'local-tool',
+				state: 'output-error',
+				errorText: 'plain failure',
+				toolCallId: 'call-1',
+			});
+		});
+	});
+
+	describe('onData usage', () => {
+		test('stores token usage from data-usage events', () => {
+			const aiStore = useAiStore();
+
+			lastChatConfig.onData({
+				type: 'data-usage',
+				data: { inputTokens: 10, outputTokens: 5, totalTokens: 15 },
+			});
+
+			expect(aiStore.tokenUsage).toEqual({ inputTokens: 10, outputTokens: 5, totalTokens: 15 });
+		});
+
+		test('ignores non-numeric usage values', () => {
+			const aiStore = useAiStore();
+
+			lastChatConfig.onData({
+				type: 'data-usage',
+				data: { inputTokens: '10', outputTokens: null, totalTokens: 15 },
+			});
+
+			expect(aiStore.tokenUsage).toEqual({ inputTokens: 0, outputTokens: 0, totalTokens: 15 });
+		});
+
+		test('ignores data events of other types', () => {
+			const aiStore = useAiStore();
+
+			lastChatConfig.onData({ type: 'data-other', data: { totalTokens: 99 } });
+
+			expect(aiStore.tokenUsage.totalTokens).toBe(0);
+		});
+
+		test('computes the context usage percentage against the selected model limit', () => {
+			const aiStore = useAiStore();
+
+			expect(aiStore.selectedModel).not.toBeNull();
+
+			const contextLimit = aiStore.selectedModel!.limit.context;
+
+			expect(contextLimit).toBeGreaterThan(0);
+
+			lastChatConfig.onData({ type: 'data-usage', data: { totalTokens: Math.floor(contextLimit / 4) } });
+
+			expect(aiStore.contextUsagePercentage).toBeCloseTo((Math.floor(contextLimit / 4) / contextLimit) * 100);
+		});
+
+		test('estimates the maximum number of messages once usage is reported', () => {
+			const aiStore = useAiStore();
+
+			aiStore.chat.messages.push(
+				{ id: '1', role: 'user', parts: [{ type: 'text', text: 'Hi' }] },
+				{ id: '2', role: 'assistant', parts: [{ type: 'text', text: 'Hello' }] },
+			);
+
+			const contextLimit = aiStore.selectedModel!.limit.context;
+			const totalTokens = Math.floor(contextLimit / 2);
+
+			lastChatConfig.onData({ type: 'data-usage', data: { totalTokens } });
+
+			const percentage = (totalTokens / contextLimit) * 100;
+
+			expect(aiStore.estimatedMaxMessages).toBe(Math.floor((2 / percentage) * 100));
+		});
+
+		test('keeps the maximum message estimate unbounded when no tokens are used', () => {
+			const aiStore = useAiStore();
+
+			lastChatConfig.onData({ type: 'data-usage', data: { totalTokens: 0 } });
+
+			expect(aiStore.estimatedMaxMessages).toBe(Infinity);
 		});
 	});
 });
