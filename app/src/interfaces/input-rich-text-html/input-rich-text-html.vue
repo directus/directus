@@ -156,6 +156,8 @@ const editor = useEditor({
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
+		// public styling hook: richtext extensions scope their CSS under it, so never rename it
+		attributes: { class: 'richtext-content' },
 		// media nodes handle dblclick themselves in their node view
 		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
 			if (node.type.name === 'image') {
