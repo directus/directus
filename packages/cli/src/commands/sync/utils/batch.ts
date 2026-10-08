@@ -103,23 +103,12 @@ export function assembleBatch(
 		}
 	}
 
-	// Target role IDs the source speaks for. Presets of any other role are left alone, as are personal ones,
-	// which pull never carries. An unmapped source role keeps its UUID on the target.
-	const sourceRoleIds = new Set<string>();
+	// Mirror keeps target presets of any role the source does not speak for: mapped roles, plus pushed ones,
+	// which keep their UUID. Personal presets are kept too, since pull never carries them.
+	const sourceRoleIds = new Set(Object.values(bucket['directus_roles'] ?? {}));
+	const roles = system.find((entry) => entry.resource.collection === 'directus_roles');
 
-	for (const { data, resource } of system) {
-		let field: string;
-
-		if (resource.collection === 'directus_roles') field = resource.primaryKey;
-		else if (resource.collection === 'directus_presets') field = 'role';
-		else continue;
-
-		for (const record of data.records) {
-			const role = record[field];
-			if (role === null || role === undefined) continue;
-			sourceRoleIds.add(bucket['directus_roles']?.[String(role)] ?? String(role));
-		}
-	}
+	for (const record of roles?.data.records ?? []) sourceRoleIds.add(String(record[roles!.resource.primaryKey]));
 
 	for (const { data, resource } of system) {
 		const collectionBucket = bucket[resource.collection] ?? {};

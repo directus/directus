@@ -447,6 +447,12 @@ describe('prepareDataPush skip and precondition', () => {
 			);
 		}
 
+		function seedIdMap(collection: string, entries: Record<string, string>): void {
+			const idMapPath = join(dir, 'id_map.json');
+			const pair = { sourceUrl: 'https://source.example.com', targetUrl: 'https://cms.example.com' };
+			writeIdMap(idMapPath, withMappings(readIdMap(idMapPath), pair, collection, entries));
+		}
+
 		function mockTarget(presets: Record<string, unknown>[], roles: Record<string, unknown>[]): void {
 			const byEndpoint: Record<string, Record<string, unknown>[]> = { '/roles': roles, '/presets': presets };
 
@@ -509,9 +515,7 @@ describe('prepareDataPush skip and precondition', () => {
 		});
 
 		it('holds back a role preset whose mapped role was deleted on the target', async () => {
-			const idMapPath = join(dir, 'id_map.json');
-			const pair = { sourceUrl: 'https://source.example.com', targetUrl: 'https://cms.example.com' };
-			writeIdMap(idMapPath, withMappings(readIdMap(idMapPath), pair, 'directus_roles', { 'r-src': 'r-gone' }));
+			seedIdMap('directus_roles', { 'r-src': 'r-gone' });
 			writePresets([roleBookmark]);
 			mockTarget([], [{ id: 'r-src' }]);
 
@@ -530,12 +534,9 @@ describe('prepareDataPush skip and precondition', () => {
 		});
 
 		it('mirror sends a mapped preset once even when the target row was re-scoped to a user', async () => {
+			seedIdMap('directus_presets', { '1': '10' });
 			writePresets([globalView]);
 			mockTarget([{ ...globalView, id: 10, user: 'u1' }], []);
-
-			const idMapPath = join(dir, 'id_map.json');
-			const pair = { sourceUrl: 'https://source.example.com', targetUrl: 'https://cms.example.com' };
-			writeIdMap(idMapPath, withMappings(readIdMap(idMapPath), pair, 'directus_presets', { '1': '10' }));
 
 			const plan = await prepareDataPush(target(), 'mirror', ctx());
 

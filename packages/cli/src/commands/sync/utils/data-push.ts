@@ -75,18 +75,23 @@ async function reconcileSystem(
 async function resolvePresetRoles(
 	system: readonly SystemCollection[],
 	target: Target,
-	existing: Readonly<Record<string, Readonly<Record<string, string>>>>,
+	mappedRoles: Readonly<Record<string, string>>,
 	queryMax: number | undefined,
 ): Promise<{ system: readonly SystemCollection[]; held: number; identities: Record<string, string> }> {
 	const presets = system.find((entry) => entry.resource.collection === 'directus_presets');
+
+	if (presets === undefined) return { system, held: 0, identities: {} };
+
 	const roles = system.find((entry) => entry.resource.collection === 'directus_roles');
 	const pushed = new Set((roles?.data.records ?? []).map((record) => String(record[roles!.resource.primaryKey])));
+	const outside = new Set<string>();
 
-	const outside = (presets?.data.records ?? [])
-		.map((record) => record['role'])
-		.filter((role) => role !== null && role !== undefined && !pushed.has(String(role)));
+	for (const record of presets.data.records) {
+		const role = record['role'];
+		if (role !== null && role !== undefined && !pushed.has(String(role))) outside.add(String(role));
+	}
 
-	if (presets === undefined || outside.length === 0) return { system, held: 0, identities: {} };
+	if (outside.size === 0) return { system, held: 0, identities: {} };
 
 	// A mapped role may have been deleted on the target since, so the mapping alone is not proof.
 	const targetRoles = await fetchRecords(
@@ -96,13 +101,12 @@ async function resolvePresetRoles(
 	);
 
 	const onTarget = new Set(targetRoles.map((role) => String(role['id'])));
-	const mapped = existing['directus_roles'] ?? {};
-	const claimed = new Set(Object.values(mapped));
+	const claimed = new Set(Object.values(mappedRoles));
 	const identities: Record<string, string> = {};
 	const missing = new Set<string>();
 
-	for (const role of new Set(outside.map(String))) {
-		const targetId = mapped[role];
+	for (const role of outside) {
+		const targetId = mappedRoles[role];
 
 		if (targetId !== undefined) {
 			if (!onTarget.has(targetId)) missing.add(role);
@@ -324,8 +328,7 @@ async function readAndReconcile(target: Target): Promise<Reconciled | undefined>
 	if (collections.length === 0) return undefined;
 
 	const targetUrl = normalizeInstanceUrl(target.url);
-	const partitioned = partitionCollections(collections);
-	const { content } = partitioned;
+	const { system: pulled, content } = partitionCollections(collections);
 
 	const unknownSystem = content.filter((data) => data.collection.startsWith('directus_'));
 
@@ -348,11 +351,11 @@ async function readAndReconcile(target: Target): Promise<Reconciled | undefined>
 	}
 
 	const pair = { sourceUrl: source, targetUrl };
-	const stored = readIdMap(target.idMapPath);
+	const storedMap = readIdMap(target.idMapPath);
 	const queryMax = await fetchQueryLimitMax(target.credential);
-	const resolved = await resolvePresetRoles(partitioned.system, target, mappingsFor(stored, pair), queryMax);
-	const { system, held } = resolved;
-	const map = withMappings(stored, pair, 'directus_roles', resolved.identities);
+	const mappedRoles = mappingsFor(storedMap, pair)['directus_roles'] ?? {};
+	const { system, held, identities } = await resolvePresetRoles(pulled, target, mappedRoles, queryMax);
+	const map = withMappings(storedMap, pair, 'directus_roles', identities);
 	const { inputs, results, targets } = await reconcileSystem(system, target, mappingsFor(map, pair), queryMax);
 
 	return { source, targetUrl, system, map, incomplete, held, inputs, results, targets };
