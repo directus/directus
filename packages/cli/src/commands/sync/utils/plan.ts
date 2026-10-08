@@ -148,14 +148,14 @@ export function convergedMessage(
 	cwd: string,
 	plan: SchemaPlan,
 	dataChecked: boolean,
-	skippedPresets = 0,
+	skipped = 0,
 ): string {
 	const { verdict, outcome, remainder } = CONVERGED_COPY[command];
 	const subject = `${target.profile} — ${target.url}`;
 	const projectPath = displayProjectPath(cwd, target.projectDir);
 
-	if (skippedPresets > 0) {
-		return `${subject} ${verdict} ${projectPath}, except ${maybePluralize(skippedPresets, 'skipped preset')} — ${remainder}.`;
+	if (skipped > 0) {
+		return `${subject} ${verdict} ${projectPath}, except ${maybePluralize(skipped, 'skipped configuration record')} — ${remainder}.`;
 	}
 
 	if (!dataChecked) return `${subject} ${verdict} ${projectPath} — ${outcome}.`;
@@ -229,6 +229,7 @@ export interface DataComparisonCounts {
 export interface ReportedPlan {
 	readonly source: string;
 	readonly incomplete: readonly string[];
+	readonly skipped: number;
 }
 
 /** A phase that never ran reports `data: null`, never zeros. `reconciliation` and `unchanged` are diff-only. */
@@ -239,6 +240,8 @@ export interface DataReport {
 	readonly reconciliation: ReconciliationCounts | null;
 	readonly unchanged: number | null;
 	readonly incomplete: string[];
+	/** Configuration records left out of the batch because the target cannot take them yet. */
+	readonly skipped: number;
 }
 
 /** Key order here is the emitted JSON's key order, and that JSON is a published contract. */
@@ -257,5 +260,6 @@ export function dataReport(
 		reconciliation: counts?.reconciliation ?? null,
 		unchanged: counts?.unchanged ?? null,
 		incomplete: [...plan.incomplete],
+		skipped: plan.skipped,
 	};
 }

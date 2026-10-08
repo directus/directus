@@ -126,7 +126,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	if (ctx.ui.json) return;
 
 	if (schema.result === null && !dataChanged && ambiguous === 0) {
-		ctx.ui.success(convergedMessage('diff', target, ctx.cwd, schema, preview !== undefined, preview?.skippedPresets));
+		ctx.ui.success(convergedMessage('diff', target, ctx.cwd, schema, preview !== undefined, preview?.skipped));
 		return;
 	}
 
@@ -140,9 +140,9 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	if (preview === undefined) return;
 
-	const { ambiguousCount, dependentCount, unmatchedCount, skippedPresets } = preview;
+	const { ambiguousCount, dependentCount, unmatchedCount, skipped } = preview;
 
-	if (skippedPresets > 0) ctx.ui.warn(skippedPresetsMessage(skippedPresets));
+	if (skipped > 0) ctx.ui.warn(skippedPresetsMessage(skipped));
 
 	if (ambiguousCount > 0) {
 		const subject = maybePluralize(ambiguousCount, 'configuration record');

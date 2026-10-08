@@ -1160,6 +1160,53 @@ describe('sync push with data', () => {
 		expect(stderr.join('')).toContain('schema and configuration match; nothing to push.');
 	});
 
+	it('names skipped role presets instead of reporting a plain match', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{
+				collection: 'directus_presets',
+				primaryKey: 'id',
+				records: [{ id: 1, collection: 'articles', bookmark: 'Queue', role: 'sr-gone', user: null }],
+			},
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/roles', []);
+		interceptTarget('/presets', []);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+
+		const err = stderr.join('');
+		expect(err).toContain('presets: skipped 1 role preset because its role does not exist on the target.');
+		expect(err).toContain('except 1 skipped configuration record — nothing else to push.');
+	});
+
+	it('reports skipped records in the --json data report', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{
+				collection: 'directus_presets',
+				primaryKey: 'id',
+				records: [{ id: 1, collection: 'articles', bookmark: 'Queue', role: 'sr-gone', user: null }],
+			},
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/roles', []);
+		interceptTarget('/presets', []);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
+		expect(JSON.parse(stdout.join('')).data).toMatchObject({ skipped: 1 });
+	});
+
 	it('reports schema-applied and a data-retry path when the import fails after a schema apply', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());

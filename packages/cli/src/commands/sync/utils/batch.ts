@@ -103,12 +103,16 @@ export function assembleBatch(
 		}
 	}
 
-	// Mirror keeps target presets of any role the source does not speak for: mapped roles, plus pushed ones,
-	// which keep their UUID. Personal presets are kept too, since pull never carries them.
-	const sourceRoleIds = new Set(Object.values(bucket['directus_roles'] ?? {}));
+	// Target IDs of the roles the source speaks for: every mapped role, plus pushed ones, which keep their UUID.
+	// Mirror leaves presets of any other role alone, and personal ones too, since pull never carries them.
+	const roleBucket = bucket['directus_roles'] ?? {};
+	const coveredRoleIds = new Set(Object.values(roleBucket));
 	const roles = system.find((entry) => entry.resource.collection === 'directus_roles');
 
-	for (const record of roles?.data.records ?? []) sourceRoleIds.add(String(record[roles!.resource.primaryKey]));
+	for (const record of roles?.data.records ?? []) {
+		const sourceId = String(record[roles!.resource.primaryKey]);
+		coveredRoleIds.add(roleBucket[sourceId] ?? sourceId);
+	}
 
 	for (const { data, resource } of system) {
 		const collectionBucket = bucket[resource.collection] ?? {};
@@ -178,7 +182,7 @@ export function assembleBatch(
 			const shouldEcho = (row: Record<string, unknown>): boolean => {
 				if (resource.collection === 'directus_presets') {
 					if (row['user'] !== null && row['user'] !== undefined) return true;
-					return row['role'] !== null && row['role'] !== undefined && !sourceRoleIds.has(String(row['role']));
+					return row['role'] !== null && row['role'] !== undefined && !coveredRoleIds.has(String(row['role']));
 				}
 
 				if (includesUsers) return false;
