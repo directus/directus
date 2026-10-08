@@ -143,6 +143,7 @@ function suffix_collections({ collections, fields, relations }: BuiltSchema): Bu
 			...field,
 			collection: suffix(field.collection),
 			meta: field.meta && { ...field.meta, collection: suffix(field.meta.collection) },
+			schema: field.schema && { ...field.schema, table: suffix(field.schema.table) },
 		})),
 		relations: relations.map((relation) => ({
 			...relation,

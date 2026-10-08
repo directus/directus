@@ -61,11 +61,7 @@ export class FieldBuilder {
 
 	/** Shorthand for creating an integer field and marking it as the primary field */
 	id(): this {
-		this._data = {
-			field: this._data.field,
-			...cloneDeep(ID_FIELD),
-			_kind: 'finished',
-		};
+		this.set_type(ID_FIELD);
 
 		if (this._collection) this.primary();
 
@@ -197,7 +193,7 @@ export class FieldBuilder {
 
 		const junction_name = `${this._collection.get_name()}_builder`;
 
-		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name())
+		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema)
 			.o2m(junction_name, `${this._collection.get_name()}_id`)
 			.options({
 				meta: {
@@ -205,7 +201,7 @@ export class FieldBuilder {
 				},
 			});
 
-		let a2o_relation = new RelationBuilder(junction_name, 'item').a2o(related_collections).options({
+		let a2o_relation = new RelationBuilder(junction_name, 'item', this._schema).a2o(related_collections).options({
 			meta: {
 				junction_field: `${this._collection.get_name()}_id`,
 			},
@@ -232,7 +228,7 @@ export class FieldBuilder {
 
 		const junction_name = `${this._collection.get_name()}_${related_collection}_junction`;
 
-		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name())
+		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema)
 			.o2m(junction_name, `${this._collection.get_name()}_id`)
 			.options({
 				meta: {
@@ -240,11 +236,13 @@ export class FieldBuilder {
 				},
 			});
 
-		let m2o_relation = new RelationBuilder(junction_name, `${related_collection}_id`).m2o(related_collection).options({
-			meta: {
-				junction_field: `${this._collection.get_name()}_id`,
-			},
-		});
+		let m2o_relation = new RelationBuilder(junction_name, `${related_collection}_id`, this._schema)
+			.m2o(related_collection)
+			.options({
+				meta: {
+					junction_field: `${this._collection.get_name()}_id`,
+				},
+			});
 
 		if (relation_callback) {
 			const new_relations = relation_callback({ o2m_relation, m2o_relation });
@@ -276,7 +274,7 @@ export class FieldBuilder {
 
 		const junction_name = `${this._collection.get_name()}_translations`;
 
-		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name())
+		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema)
 			.o2m(junction_name, `${this._collection.get_name()}_id`)
 			.options({
 				meta: {
@@ -284,7 +282,7 @@ export class FieldBuilder {
 				},
 			});
 
-		let m2o_relation = new RelationBuilder(junction_name, `${language_collection}_code`)
+		let m2o_relation = new RelationBuilder(junction_name, `${language_collection}_code`, this._schema)
 			.m2o(language_collection)
 			.options({
 				meta: {
@@ -315,7 +313,7 @@ export class FieldBuilder {
 		this.set_type(alias_field(['o2m']));
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).o2m(
+		let relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema).o2m(
 			related_collection,
 			related_field,
 		);
@@ -341,7 +339,7 @@ export class FieldBuilder {
 		this.set_type(M2O_FIELD);
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).m2o(
+		let relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema).m2o(
 			related_collection,
 			related_field,
 		);
@@ -363,7 +361,9 @@ export class FieldBuilder {
 		this.set_type(STRING_FIELD);
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).a2o(related_collections);
+		let relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema).a2o(
+			related_collections,
+		);
 
 		if (relation_callback) {
 			const new_relation = relation_callback(relation);

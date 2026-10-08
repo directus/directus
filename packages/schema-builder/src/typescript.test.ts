@@ -129,7 +129,7 @@ describe('types', () => {
 			})
 			.types({ schemaName: 'MySchema' });
 
-		expect(types).toMatch(/^export interface MySchema \{/);
+		expect(types).toContain('export interface MySchema {');
 	});
 });
 
@@ -187,5 +187,39 @@ export interface _1stCollection {
 	user: string | number | null;
 }
 `);
+	});
+
+	test('uses string | number for union primary keys', () => {
+		const types = new SchemaBuilder()
+			.collection('articles', (c) => {
+				c.field('id').bigInteger().primary();
+				c.field('links').o2m('links', 'article_id');
+			})
+			.collection('links', (c) => {
+				c.field('id').decimal().primary();
+			})
+			.types();
+
+		expect(types).toContain('id: string | number;');
+		expect(types).toContain('links: (string | number)[] | Links[];');
+	});
+
+	test('generates unique interface names', () => {
+		const types = new SchemaBuilder()
+			.collection('foo_bar', (c) => {
+				c.field('id').id();
+			})
+			.collection('fooBar', (c) => {
+				c.field('id').id();
+			})
+			.collection('schema', (c) => {
+				c.field('id').id();
+			})
+			.types();
+
+		expect(types).toContain('foo_bar: FooBar[];');
+		expect(types).toContain('fooBar: FooBar2[];');
+		expect(types).toContain('schema: Schema2[];');
+		expect(types.match(/export interface Schema /g)).toHaveLength(1);
 	});
 });

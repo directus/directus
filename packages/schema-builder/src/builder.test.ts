@@ -505,7 +505,7 @@ test('Create m2m relation', () => {
 		      "collection": "articles_tags_junction",
 		      "field": "tags_id",
 		      "meta": {
-		        "id": 0,
+		        "id": 1,
 		        "junction_field": "articles_id",
 		        "many_collection": "articles_tags_junction",
 		        "many_field": "tags_id",
@@ -741,7 +741,7 @@ test('Create m2a relation', () => {
 		      "collection": "blog_builder",
 		      "field": "item",
 		      "meta": {
-		        "id": 0,
+		        "id": 1,
 		        "junction_field": "blog_id",
 		        "many_collection": "blog_builder",
 		        "many_field": "item",
@@ -1108,7 +1108,7 @@ test('Create translations relation', () => {
 		      "collection": "blog_translations",
 		      "field": "languages_code",
 		      "meta": {
-		        "id": 0,
+		        "id": 1,
 		        "junction_field": "blog_id",
 		        "many_collection": "blog_translations",
 		        "many_field": "languages_code",
@@ -1222,6 +1222,13 @@ test('create duplicate id', () => {
 			c.field('id').id();
 			c.field('id').id();
 		});
+	}).toThrowError('Field type was already set');
+
+	expect(() => {
+		new SchemaBuilder().collection('blog', (c) => {
+			c.field('id').id();
+			c.field('other_id').id();
+		});
 	}).toThrowError('The primary key is already set on the collection blog');
 });
 
@@ -1301,6 +1308,8 @@ test('suffix all collections with test_schema', () => {
 
 	expect(snapshot.fields.every(({ collection }) => collection.endsWith('_1234'))).toBe(true);
 
+	expect(snapshot.fields.every(({ collection, schema }) => !schema || schema.table === collection)).toBe(true);
+
 	const author = snapshot.relations.find(({ field }) => field === 'author');
 
 	expect(author).toMatchObject({
@@ -1316,4 +1325,19 @@ test('suffix all collections with test_schema', () => {
 
 	// The builder itself stays unsuffixed
 	expect(builder.snapshot().collections.map(({ collection }) => collection)).toContain('articles');
+});
+
+test('assign unique relation ids', () => {
+	const schema = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('author').m2o('users');
+			c.field('tags').m2m('tags');
+			c.field('translations').translations();
+		})
+		.build();
+
+	const ids = schema.relations.map((relation) => relation.meta?.id);
+
+	expect(new Set(ids).size).toBe(ids.length);
 });

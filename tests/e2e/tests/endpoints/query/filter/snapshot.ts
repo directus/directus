@@ -17,7 +17,7 @@ export const schema = new SchemaBuilder()
 	})
 	.collection('text_blocks', (c) => {
 		c.field('id').id();
-		c.field('text').string();
+		c.field('text').text();
 	})
 	.collection('tags', (c) => {
 		c.field('id').id();

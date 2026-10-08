@@ -1,5 +1,3 @@
-import { readFile } from 'fs/promises';
-import { join } from 'path';
 import {
 	type DirectusClient,
 	type RestClient,
@@ -11,7 +9,7 @@ import type { Snapshot } from '@directus/types';
 import { startCase } from 'lodash-es';
 import { database } from './constants.js';
 import { deepMap } from './deep-map.js';
-import { getCallerFolder, getUID } from './getUID.js';
+import { getUID } from './getUID.js';
 
 export type Collections<Schema> = { [P in keyof Schema]: P };
 
@@ -27,12 +25,12 @@ const groups: string[] = [];
 
 /**
  * Applies a snapshot to the api while also ensuring unique names of collections.
- * @param file The file to import. @default 'snapshot.json'.
- * @returns the names of the created collections and the parsed snapshot file that was used.
+ * @param snapshot The snapshot to apply, usually built with the SchemaBuilder in the `snapshot.ts` next to the test.
+ * @returns the names of the created collections and the snapshot that was applied.
  */
 export async function useSnapshot<Schema>(
 	api: DirectusClient<unknown> & RestClient<unknown>,
-	file: string | Snapshot = 'snapshot.json',
+	snapshot: Snapshot,
 ): Promise<{ collections: Collections<Schema>; snapshot: Snapshot }> {
 	const collectionMap: Record<string, string> = {};
 	const collectionNameMap: Record<string, string> = {};
@@ -40,11 +38,7 @@ export async function useSnapshot<Schema>(
 
 	const fieldReplace: Record<string, string> = {};
 
-	const folder = getCallerFolder(1);
 	const uid = getUID(1);
-
-	const snapshot: Snapshot =
-		typeof file === 'string' ? JSON.parse(await readFile(join(folder, file), { encoding: 'utf8' })) : file;
 
 	const collectionIDs = snapshot.collections.map((collection) => collection.collection);
 	const fieldIDs = snapshot.fields.map((field) => field.field);

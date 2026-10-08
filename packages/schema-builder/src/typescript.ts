@@ -32,12 +32,49 @@ const PRIMITIVE_TYPES: Partial<Record<Type, string>> = {
  */
 export function toTypeScript(snapshot: SchemaSnapshot, options: TypeScriptOptions = {}): string {
 	const collections = snapshot.collections.filter((collection) => collection.schema);
-	const names = new Map(collections.map(({ collection }) => [collection, toTypeName(collection)]));
+	const schemaName = options.schemaName ?? 'Schema';
 
-	const fieldsOf = (collection: string) => snapshot.fields.filter((field) => field.collection === collection);
+	// Distinct collections can map to the same type name (e.g. `foo_bar` and `fooBar`), which TypeScript would silently merge
+	const usedNames = new Set([schemaName]);
+
+	const names = new Map(
+		collections.map(({ collection }) => {
+			const base = toTypeName(collection);
+			let name = base;
+
+			for (let index = 2; usedNames.has(name); index++) name = `${base}${index}`;
+
+			usedNames.add(name);
+			return [collection, name];
+		}),
+	);
+
+	// Index fields and relations once, so lookups don't rescan the whole snapshot
+	const fieldsByCollection = new Map<string, SnapshotField[]>();
+	const primaries = new Map<string, SnapshotField>();
+	const manyRelations = new Map<string, SchemaSnapshot['relations'][number]>();
+	const oneRelations = new Map<string, SchemaSnapshot['relations'][number]>();
+
+	for (const field of snapshot.fields) {
+		const fields = fieldsByCollection.get(field.collection) ?? [];
+		fields.push(field);
+		fieldsByCollection.set(field.collection, fields);
+
+		if (field.schema?.is_primary_key && !primaries.has(field.collection)) primaries.set(field.collection, field);
+	}
+
+	for (const relation of snapshot.relations) {
+		const manyKey = fieldKey(relation.collection, relation.field);
+		if (!manyRelations.has(manyKey)) manyRelations.set(manyKey, relation);
+
+		if (relation.meta?.one_collection && relation.meta.one_field) {
+			const oneKey = fieldKey(relation.meta.one_collection, relation.meta.one_field);
+			if (!oneRelations.has(oneKey)) oneRelations.set(oneKey, relation);
+		}
+	}
 
 	const primaryType = (collection: string) => {
-		const primary = fieldsOf(collection).find((field) => field.schema?.is_primary_key);
+		const primary = primaries.get(collection);
 		return primary ? primitiveType(primary) : 'string | number';
 	};
 
@@ -46,14 +83,15 @@ export function toTypeScript(snapshot: SchemaSnapshot, options: TypeScriptOption
 
 		if (!names.has(collection)) return list ? '(string | number)[]' : 'string | number';
 
+		const primary = primaryType(collection);
+		const key = list && primary.includes('|') ? `(${primary})` : primary;
+
 		// The SDK resolves nested fields only for a union of arrays, not an array of unions
-		return `${primaryType(collection)}${suffix} | ${names.get(collection)}${suffix}`;
+		return `${key}${suffix} | ${names.get(collection)}${suffix}`;
 	};
 
 	const fieldType = (field: SnapshotField): string => {
-		const many = snapshot.relations.find(
-			(relation) => relation.collection === field.collection && relation.field === field.field,
-		);
+		const many = manyRelations.get(fieldKey(field.collection, field.field));
 
 		if (many?.related_collection) {
 			return nullable(relatedType(many.related_collection), field);
@@ -64,17 +102,19 @@ export function toTypeScript(snapshot: SchemaSnapshot, options: TypeScriptOption
 			return nullable([primitiveType(field), ...allowed.map((collection) => names.get(collection))].join(' | '), field);
 		}
 
-		const one = snapshot.relations.find(
-			(relation) => relation.meta?.one_collection === field.collection && relation.meta.one_field === field.field,
-		);
+		const one = oneRelations.get(fieldKey(field.collection, field.field));
 
 		if (one) return relatedType(one.collection, true);
+
+		if (field.schema?.is_primary_key) return primaryType(field.collection);
 
 		return nullable(primitiveType(field), field);
 	};
 
 	const interfaces = collections.map(({ collection }) => {
-		const properties = fieldsOf(collection).map((field) => `\t${toPropertyName(field.field)}: ${fieldType(field)};`);
+		const properties = (fieldsByCollection.get(collection) ?? []).map(
+			(field) => `\t${toPropertyName(field.field)}: ${fieldType(field)};`,
+		);
 
 		return [`export interface ${names.get(collection)} {`, ...properties, '}'].join('\n');
 	});
@@ -85,12 +125,16 @@ export function toTypeScript(snapshot: SchemaSnapshot, options: TypeScriptOption
 	});
 
 	return [
-		`export interface ${options.schemaName ?? 'Schema'} {`,
+		`export interface ${schemaName} {`,
 		...schema,
 		'}',
 		...interfaces.map((item) => `\n${item}`),
 		'',
 	].join('\n');
+}
+
+function fieldKey(collection: string, field: string): string {
+	return `${collection}\0${field}`;
 }
 
 function primitiveType(field: SnapshotField): string {
@@ -113,6 +157,8 @@ function toTypeName(collection: string): string {
 		.filter(Boolean)
 		.map((part) => part[0]!.toUpperCase() + part.slice(1))
 		.join('');
+
+	if (!name) return 'Collection';
 
 	return /^[0-9]/.test(name) ? `_${name}` : name;
 }
