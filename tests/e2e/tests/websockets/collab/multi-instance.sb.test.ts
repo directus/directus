@@ -37,7 +37,9 @@ const directus = await useSandbox(database, {
 
 const ports = directus.apis.map((instance) => instance.port);
 
-const api = createDirectus<any>(`http://localhost:${ports[0]}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<Record<string, Record<string, any>>>(`http://localhost:${ports[0]}`)
+	.with(rest())
+	.with(staticToken('admin'));
 
 afterAll(async () => {
 	await directus.stop();
@@ -79,7 +81,7 @@ async function client(node: 0 | 1, token = 'admin') {
 
 async function item(values: Record<string, unknown> = {}) {
 	const created = await api.request(createItem(COLLECTION, { title: 'Item', ...values } as any));
-	return created.id as string;
+	return created['id'];
 }
 
 /** One client on each node, both in the same room. */
@@ -211,7 +213,7 @@ test('a version room spans both nodes and reports its save', async () => {
 		createContentVersion({ key: randomUUID().replaceAll('-', ''), collection: COLLECTION, item: id } as any),
 	);
 
-	const { first, second, room } = await acrossNodes(id, version.id);
+	const { first, second, room } = await acrossNodes(id, version['id']);
 
 	first.collab({ action: 'focus', room, field: 'title' });
 	await second.waitFor('focus', (message) => message.field === 'title');
@@ -220,7 +222,7 @@ test('a version room spans both nodes and reports its save', async () => {
 
 	expect(await second.waitFor('update', (message) => message.changes === 'Version Update')).toMatchObject({ room });
 
-	await api.request(saveToContentVersion(version.id, { title: 'Version Update' } as any));
+	await api.request(saveToContentVersion(version['id'], { title: 'Version Update' } as any));
 
 	expect(await second.waitFor('save')).toBeDefined();
 });

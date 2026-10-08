@@ -1,6 +1,5 @@
 import type { Relation, SchemaOverview } from '@directus/types';
-import { getRelation, isCollectionActive } from '@directus/utils';
-import { getRelatedCollectionFromRelation } from './get-related-collection.js';
+import { getRelationInfo, isCollectionActive } from '@directus/utils';
 
 /**
  * Whether a relational field can be followed into its related collection.
@@ -11,7 +10,8 @@ export function isRelationTraversable(
 	field: string,
 	knownRelation?: Relation,
 ): boolean {
-	const relation = knownRelation ?? getRelation(schema.relations, collection, field);
+	const relationInfo = getRelationInfo(knownRelation ? [knownRelation] : schema.relations, collection, field);
+	const relation = relationInfo.relation;
 
 	if (!relation) return false;
 
@@ -20,7 +20,7 @@ export function isRelationTraversable(
 		return relation.meta.one_allowed_collections.some((allowed) => isCollectionActive(schema.collections[allowed]));
 	}
 
-	const relatedCollection = getRelatedCollectionFromRelation(relation, collection, field);
+	const relatedCollection = relationInfo.oppositeCollection;
 
 	return relatedCollection !== null && isCollectionActive(schema.collections[relatedCollection]);
 }
