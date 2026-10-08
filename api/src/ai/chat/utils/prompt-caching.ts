@@ -7,13 +7,13 @@ export type PromptCachingUsage = Pick<LanguageModelUsage, 'inputTokens' | 'outpu
 };
 
 interface PromptCachingStepResult {
-	providerMetadata?: ProviderMetadata;
+	providerMetadata?: ProviderMetadata | undefined;
 }
 
 interface PromptCachingFinishResult {
 	usage: LanguageModelUsage;
 	totalUsage?: LanguageModelUsage;
-	providerMetadata?: ProviderMetadata;
+	providerMetadata?: ProviderMetadata | undefined;
 	steps?: PromptCachingStepResult[];
 }
 
