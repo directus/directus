@@ -192,8 +192,6 @@ logoutReason:
   SESSION_EXPIRED: Sessionen har upphört
 public_label: Publik
 public_description: Kontrollerar vilken data som är tillgängliga via APIet utan autentisering.
-public_role_info: >-
-  Den publika rollen kontrollerar vilken API-data som är tillgänglig för oautentiserade användare eller användare som saknar roller. Anrop med den publika rollen kan inte ha app- eller admin-behörighet. Om app- eller admin-behörighet finns i en policy som tilldelats den publika rollen så kommer de att ignoreras.
 admin_description: Initial administrativ roll med obegränsad app/API-åtkomst.
 admin_policy_description: Initial administrativ policy med obegränsad App/API-behörighet.
 no_description: Ingen beskrivning...

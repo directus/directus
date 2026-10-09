@@ -273,8 +273,6 @@ logoutReason:
   SESSION_EXPIRED: Sitzung abgelaufen
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
-public_role_info: >-
-  Die öffentliche Rolle kontrolliert, welche API-Daten unauthentifizierten Benutzern oder Benutzern ohne Rolle zur Verfügung stehen. Anfragen mit öffentlicher Rolle können keinen App- oder Administratorzugriff haben. Wenn App- oder Administratorzugriff auf Richtlinien gewährt wird, die der öffentlichen Rolle zugewiesen sind, werden sie ignoriert.
 admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
 admin_policy_description: Initiale Administrator-Richtlinie mit uneingeschränktem App-/API-Zugriff.
 no_description: Keine Beschreibung ...
@@ -296,6 +294,8 @@ delete_folder_dialog:
   move_content: Inhalt eine Ebene nach oben verschieben
   delete_content: Alle Inhalte löschen
   content_behavior: Was soll mit dem Inhalt des Ordners geschehen?
+delete_flow_folder_dialog:
+  move_content: Nur diesen Ordner löschen
 validation_errors_notice: 'Die folgenden Felder sind ungültig:'
 validation_value_is_invalid: Wert ist ungültig
 validationError:
@@ -1101,6 +1101,7 @@ trigger_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
 field_name_placeholder: Feldnamen eingeben ...
 field_key_placeholder: Feldschlüssel eingeben...
 trigger: Trigger
+trigger_type: Auslöse-Typ
 trigger_options: Auslöse-Optionen
 view_trigger: Auslöser anzeigen
 create_trigger: Einen Auslöser hinzufügen
@@ -1293,6 +1294,7 @@ right_align: Rechtsbündig
 fit_to_screen: An Bildschirmgröße anpassen
 image_url: Bild-Url
 alt_text: Alternativ-Text
+caption: Titel
 media: Medien
 quality: Qualität
 width: Breite
@@ -1314,6 +1316,7 @@ unlimited: Unlimitiert
 open_link_in: Link öffnen in
 new_tab: Neuer Tab
 save_image: Bild speichern
+save_link: Link speichern
 save_media: Medien speichern
 wysiwyg_options:
   aligncenter: Zentriert
@@ -1362,6 +1365,8 @@ wysiwyg_options:
   removeformat: Formatierung entfernen
   selectall: Alle auswählen
   table: Tabelle
+  table_insert: Tabelle einfügen
+  table_delete: Tabelle löschen
   visualaid: Unsichtbare Elemente anzeigen
   source_code: Quellcode bearbeiten
   fullscreen: Vollbild
@@ -2754,6 +2759,7 @@ displays:
     down: Runter
     nearest: Nächste
     up: Hoch
+    timezone: Zeitzone
   file:
     file: Datei
     description: Dateien anzeigen
@@ -3009,6 +3015,7 @@ triggers:
     collection_and_item: Sammlungen & Element Seiten
     collection_only: Nur Sammlungsseite
     item_only: Nur Elementseite
+    hidden: Keine (Ausgeblendet)
     collection_page: Sammlungsseite
     require_selection: Benötigt Auswahl
 a_flow_uuid: Auszulösenden Flow auswählen...
@@ -3069,6 +3076,7 @@ operations:
   mail:
     name: Email senden
     description: Sende eine E-Mail an eine oder mehrere Personen
+    from_name: Absender
     to: An
     to_placeholder: E-Mail-Adressen hinzufügen und Enter drücken...
     body: Inhalt

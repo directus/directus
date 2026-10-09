@@ -208,8 +208,6 @@ logoutReason:
   SESSION_EXPIRED: 会话过期
 public_label: 公开
 public_description: 设置哪些API无需身份验证。
-public_role_info: >-
-  公共角色控制未经身份验证的用户或没有角色的用户可以访问哪些API数据。具有公共角色的请求不能拥有应用程序或管理员访问权限。如果将应用程序或管理员访问权限分配给与公共角色相关的策略，这些权限将被忽略。
 admin_description: 不受限制的 App/ API 访问权限的初始管理角色
 admin_policy_description: 具有不受限制的应用/API访问权限的初始管理策略。
 no_description: 没有描述。

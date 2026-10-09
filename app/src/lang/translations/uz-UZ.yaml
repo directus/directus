@@ -132,8 +132,6 @@ logoutReason:
   SESSION_EXPIRED: Sessiya eskirgan
 public_label: Hammaga ochiq
 public_description: Autentifikatsiyasiz qanday API ma'lumotlari mavjudligini boshqaradi.
-public_role_info: >-
-  Ommaviy rol autentifikatsiyasiz foydalanuvchilar yoki roli bo'lmaganlar uchun qanday API ma'lumotlari mavjudligini boshqaradi. Ommaviy rol ilova yoki admin kirish huquqiga ega bo'la olmaydi. Agar ilova yoki admin kirish ruxsatlari ommaviy rolga berilgan bo'lsa, ular e'tiborga olinmaydi.
 admin_description: Cheklanmagan ilova/API kirishiga ega boshlang'ich administrator roli.
 admin_policy_description: Cheklanmagan ilova/API kirishiga ega boshlang'ich administrator siyosati.
 no_description: Tavsif yo'q...

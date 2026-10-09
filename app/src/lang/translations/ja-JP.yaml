@@ -210,8 +210,6 @@ logoutReason:
   SESSION_EXPIRED: セッションが期限切れです
 public_label: 公開
 public_description: 認証せずに利用できる API データを制御します。
-public_role_info: >-
-  公開権限グループは、未認証のユーザーや権限を持たないユーザーがアクセスできる API データを制御します。公開権限グループによるリクエストに、アプリへのアクセス権限や管理者権限を持たせることはできません。公開権限グループに割り当てられたポリシーにアプリ・管理者権限が付与されていても、これらは無視されます。
 admin_description: App/API への無制限なアクセス権を持つ、初期の管理者ロール。
 admin_policy_description: App/API への無制限なアクセス権を持つ、初期の管理者ポリシー。
 no_description: 説明なし…

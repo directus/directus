@@ -180,8 +180,6 @@ logoutReason:
   SESSION_EXPIRED: Istekla sesija
 public_label: Javno
 public_description: Određuje koji su API podaci dostupni bez provjere autentičnosti.
-public_role_info: >-
-  Javna uloga određuje koji su API podaci dostupni neautentificiranim korisnicima ili korisnicima bez uloge. Zahtjevi s javnom ulogom ne mogu imati pristup aplikaciji ili administratorskom sučelju. Ako su pristup aplikaciji ili administraciji dodijeljeni pravilu povezanom s javnom ulogom, bit će ignorirani.
 admin_description: Početna administrativna uloga s neograničenim pristupom aplikaciji/API-ju.
 admin_policy_description: Početno administrativno pravilo s neograničenim pristupom aplikaciji i API-ju.
 no_description: Nema opisa...
