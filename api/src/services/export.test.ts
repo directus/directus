@@ -1,6 +1,34 @@
-import { expect, test, vi } from 'vitest';
+import type { SchemaOverview } from '@directus/types';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/ast.js';
-import { getHeadingsForCsvExport } from './export.js';
+import { ExportService, getHeadingsForCsvExport } from './export.js';
+
+const uploadOne = vi.hoisted(() => vi.fn());
+
+vi.mock('./files.js', () => ({
+	FilesService: class {
+		uploadOne = uploadOne;
+	},
+}));
+
+vi.mock('../utils/get-service.js', () => ({
+	getService: () => ({ readByQuery: vi.fn().mockResolvedValue([{ count: 0 }]) }),
+}));
+
+vi.mock('../utils/transaction.js', () => ({
+	transaction: (_knex: unknown, callback: (trx: unknown) => unknown) => callback({}),
+}));
+
+vi.mock('@directus/utils/node', async (importOriginal) => ({
+	...(await importOriginal<typeof import('@directus/utils/node')>()),
+	createTmpFile: vi.fn().mockResolvedValue({ path: '/tmp/export', cleanup: vi.fn() }),
+}));
+
+vi.mock('node:fs', async (importOriginal) => ({
+	...(await importOriginal<typeof import('node:fs')>()),
+	createReadStream: vi.fn(),
+}));
 
 vi.mock('@directus/env', () => ({
 	useEnv: () => ({
@@ -305,4 +333,42 @@ test('Get the headings for CSV export from the field node tree', () => {
 	];
 
 	expect(res).toEqual(expectedHeadlinesForCsvExport);
+});
+
+describe('exportToFile folder', () => {
+	const { db, tracker, mockSchemaBuilder } = createMockKnex();
+
+	const schema = { collections: { articles: { primary: 'id' } } } as unknown as SchemaOverview;
+
+	beforeEach(() => {
+		resetKnexMocks(tracker, mockSchemaBuilder);
+		uploadOne.mockReset();
+	});
+
+	test('uses the default exports folder when no folder is specified', async () => {
+		tracker.on.select('directus_settings').response([{ default_exports_folder: 'exports-folder' }]);
+
+		await new ExportService({ knex: db, schema, accountability: null }).exportToFile('articles', {}, 'csv');
+
+		expect(uploadOne).toHaveBeenCalledWith(undefined, expect.objectContaining({ folder: 'exports-folder' }));
+	});
+
+	test('leaves the folder unset when there is no default exports folder', async () => {
+		tracker.on.select('directus_settings').response([{ default_exports_folder: null }]);
+
+		await new ExportService({ knex: db, schema, accountability: null }).exportToFile('articles', {}, 'csv');
+
+		expect(uploadOne.mock.calls[0]![1]).not.toHaveProperty('folder');
+	});
+
+	test('keeps an explicitly specified folder, including the root', async () => {
+		tracker.on.select('directus_settings').response([{ default_exports_folder: 'exports-folder' }]);
+
+		await new ExportService({ knex: db, schema, accountability: null }).exportToFile('articles', {}, 'csv', {
+			file: { folder: null },
+		});
+
+		expect(uploadOne).toHaveBeenCalledWith(undefined, expect.objectContaining({ folder: null }));
+		expect(tracker.history.select).toHaveLength(0);
+	});
 });

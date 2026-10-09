@@ -35,6 +35,7 @@ const mockSettings: Settings = {
 	storage_asset_presets: null,
 	custom_css: null,
 	storage_default_folder: null,
+	default_exports_folder: null,
 	basemaps: null,
 	mapbox_key: null,
 	module_bar: [],
