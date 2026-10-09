@@ -53,11 +53,30 @@ type Primitive = null | undefined | string | number | boolean | bigint | symbol;
 type Builtin = Primitive | Date | RegExp;
 
 /**
+ * A relation item's primary key type, falling back to `string | number` when it has none.
+ */
+export type RelationPrimaryKey<Item> = Item extends { id: infer PK } ? NonNullable<PK> : string | number;
+
+/**
+ * The API's "Detailed" object syntax for relation array fields: create/update/delete by key,
+ * alongside the plain nested-array shorthand NestedPartial already allows.
+ */
+export type NestedItemsInput<RawItem> = RawItem extends object
+	? {
+			create?: NestedPartial<RawItem>[];
+			update?: (RawItem extends { id: any }
+				? NestedPartial<RawItem> & { id: RelationPrimaryKey<RawItem> }
+				: NestedPartial<RawItem>)[];
+			delete?: RelationPrimaryKey<RawItem>[];
+		}
+	: never;
+
+/**
  * Recursively make properties optional
  */
 export type NestedPartial<Item> = Item extends any[]
 	? UnpackList<Item> extends infer RawItem
-		? NestedPartial<RawItem>[]
+		? NestedPartial<RawItem>[] | NestedItemsInput<RawItem>
 		: never
 	: Item extends Builtin
 		? Item
