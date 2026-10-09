@@ -12,7 +12,7 @@ import { port } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
-const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<any>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 
 const alpha = `${getUID()}_alpha`;
 const beta = `${getUID()}_beta`;
@@ -96,7 +96,7 @@ describe('POST /schema/diff', () => {
 		const snapshot = await api.request(schemaSnapshot());
 
 		snapshot.collections = snapshot.collections.map((coll) => {
-			if (coll['collection'] === collection.collection) {
+			if (coll['collection'] === collection['collection']) {
 				delete coll['meta']['status'];
 			}
 
@@ -173,6 +173,6 @@ describe('POST /schema/diff', () => {
 			}
 		`);
 
-		await api.request(deleteCollection(collection.collection));
+		await api.request(deleteCollection(collection['collection']));
 	});
 });

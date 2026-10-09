@@ -47,7 +47,7 @@ const directus = await useSandbox(database, {
 });
 
 const url = `http://localhost:${directus.apis[0]!.port}`;
-const api = createDirectus<any>(url).with(rest()).with(staticToken('admin'));
+const api = createDirectus<unknown>(url).with(rest()).with(staticToken('admin'));
 
 afterAll(async () => {
 	await directus.stop();
