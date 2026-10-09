@@ -204,6 +204,7 @@ rename_version: Renommer la version
 reserved_version_key: 'L''identifiant de version "{key}" est réservé et ne peut pas être utilisé.'
 compare_version: Comparer la version
 save_version: Enregistrer la version
+publish: Publier
 apply: Appliquer
 discard: Abandonner
 select_all_differences: Sélectionner toutes les différences
@@ -655,6 +656,9 @@ manual_string: Chaîne de caractère saisie manuellement
 save_and_create_new: Enregistrer et en créer un nouveau
 save_and_stay: Enregistrer et rester
 save_and_quit: Enregistrer et quitter
+publish_and_quit: Publier et quitter
+publish_without_review: Publier sans révision
+publish_anyway: Publier quand même
 save_as_copy: Enregistrer une copie
 save_as_new_file: Enregistrer comme nouveau fichier
 add_existing: Sélectionner
@@ -1214,7 +1218,7 @@ licensing:
   entitlements:
     collections: Collections
     flows: Flux
-settings_appearance: Personnalisation du Thème
+settings_appearance: Personnalisation du thème
 settings_ai: IA
 settings_system_logs: Journaux système
 settings_presets: Favoris
