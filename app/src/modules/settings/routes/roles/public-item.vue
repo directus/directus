@@ -4,7 +4,6 @@ import { useShortcut } from '@directus/composables';
 import { Alterations, Item, Permission, Policy } from '@directus/types';
 import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash-es';
 import { computed, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import {
@@ -36,8 +35,6 @@ type Access = {
 	id: string;
 	policy: Policy;
 };
-
-const { t } = useI18n();
 
 const api = useApi();
 const router = useRouter();
@@ -73,22 +70,7 @@ policiesField!.meta!.options = {
 	},
 };
 
-const fields = [
-	{
-		field: 'notice',
-		type: 'alias',
-		meta: {
-			system: true,
-			interface: 'presentation-notice',
-			options: {
-				text: t('public_role_info'),
-			},
-			width: 'full',
-			sort: 0,
-		},
-	},
-	policiesField,
-];
+const fields = [policiesField];
 
 const loading = ref(false);
 const saving = ref(false);
