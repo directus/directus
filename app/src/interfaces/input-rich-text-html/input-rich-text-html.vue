@@ -156,6 +156,8 @@ const editor = useEditor({
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
+		// public styling hook: richtext extensions scope their CSS under it, so never rename it
+		attributes: { class: 'richtext-content' },
 		// media nodes handle dblclick themselves in their node view
 		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
 			if (node.type.name === 'image') {
@@ -519,7 +521,8 @@ onKeyStroke('Escape', () => {
 }
 
 /* Content styles, scoped to the ProseMirror container so they neither leak into the app nor inherit app styles. */
-.wysiwyg :deep(.ProseMirror) {
+/* :where() keeps these at `.ProseMirror p` specificity, so extension rules scoped under .richtext-content can override them. */
+:where(.wysiwyg) :deep(.ProseMirror) {
 	min-block-size: var(--input-height-tall);
 	padding: 1.125rem;
 	outline: none;
@@ -755,8 +758,10 @@ onKeyStroke('Escape', () => {
 		margin-block-start: 0.1875rem;
 		text-align: center;
 	}
+}
 
-	// content versioning / revision diff highlights (comparison mode)
+/* Outside the :where() block so extension styles cannot hide the diff highlights. */
+.wysiwyg :deep(.ProseMirror) {
 	.comparison-diff--added {
 		color: var(--theme--success);
 		background-color: var(--theme--success-background);
