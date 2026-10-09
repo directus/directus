@@ -1,11 +1,7 @@
 get:
-  tags:
-    - Presets
-  operationId: getPresets
-  summary: List Presets
-  description: List the presets.
-  security:
-    - Auth: []
+  summary: List Policies
+  description: List the policies.
+  operationId: getPolicies
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Filter'
@@ -32,28 +28,27 @@ get:
               data:
                 type: array
                 items:
-                  $ref: '../../openapi.yaml#/components/schemas/Presets'
+                  $ref: '../../openapi.yaml#/components/schemas/Policies'
               meta:
                 $ref: '../../openapi.yaml#/components/schemas/x-metadata'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Policies
 
 post:
-  tags:
-    - Presets
-  operationId: createPreset
-  summary: Create a Preset
-  description: Create a new preset.
+  summary: Create a Policy
+  description: Create a new policy.
+  operationId: createPolicy
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
   requestBody:
     content:
       application/json:
         schema:
-          allOf:
-            - $ref: '../../openapi.yaml#/components/schemas/Presets'
-            - type: object
-              required: [collection]
+          $ref: '../../openapi.yaml#/components/schemas/Policies'
   responses:
     '200':
       description: Successful request
@@ -63,16 +58,20 @@ post:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Presets'
+                $ref: '../../openapi.yaml#/components/schemas/Policies'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Policies
 
 patch:
-  summary: Update Multiple Presets
-  description: Update multiple presets at the same time.
+  summary: Update Multiple Policies
+  description: Update multiple policies at the same time.
   tags:
-    - Presets
-  operationId: updatePresets
+    - Policies
+  operationId: updatePolicies
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Filter'
@@ -80,20 +79,18 @@ patch:
     - $ref: '../../openapi.yaml#/components/parameters/Sort'
     - $ref: '../../openapi.yaml#/components/parameters/Limit'
     - $ref: '../../openapi.yaml#/components/parameters/Offset'
-    - $ref: '../../openapi.yaml#/components/parameters/Page'
   requestBody:
     content:
       application/json:
         schema:
           type: object
           properties:
-            data:
-              anyOf:
-                - $ref: '../../openapi.yaml#/components/schemas/Presets'
             keys:
               type: array
               items:
                 type: string
+            data:
+              $ref: '../../openapi.yaml#/components/schemas/Policies'
   responses:
     '200':
       description: Successful request
@@ -105,16 +102,16 @@ patch:
               data:
                 type: array
                 items:
-                  $ref: '../../openapi.yaml#/components/schemas/Presets'
+                  $ref: '../../openapi.yaml#/components/schemas/Policies'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
 
 delete:
-  summary: Delete Multiple Presets
-  description: Delete multiple existing presets.
+  summary: Delete Multiple Policies
+  description: Delete multiple existing policies.
   tags:
-    - Presets
-  operationId: deletePresets
+    - Policies
+  operationId: deletePolicies
   responses:
     '200':
       description: Successful request

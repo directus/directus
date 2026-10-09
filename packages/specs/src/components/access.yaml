@@ -1,0 +1,34 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the access record.
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+    type: string
+    format: uuid
+  policy:
+    description: Policy this access record grants.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    oneOf:
+      - type: string
+        format: uuid
+      - $ref: '../openapi.yaml#/components/schemas/Policies'
+  role:
+    description: Role this policy is attached to, if any.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    oneOf:
+      - type: string
+        format: uuid
+        nullable: true
+      - $ref: '../openapi.yaml#/components/schemas/Roles'
+  user:
+    description: User this policy is attached to, if any.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    oneOf:
+      - type: string
+        format: uuid
+        nullable: true
+      - $ref: '../openapi.yaml#/components/schemas/Users'
+  sort:
+    description: Sort order of this access record among its role's or user's policies.
+    type: integer
+    nullable: true
