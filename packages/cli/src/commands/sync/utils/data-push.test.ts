@@ -10,6 +10,7 @@ import { createUi } from '../../../kernel/ui.js';
 import { fetchRecords } from './api.js';
 import { prepareDataPush, previewData } from './data-push.js';
 import { writeDataFiles } from './data-store.js';
+import { readIdMap, withMappings, writeIdMap } from './id-map.js';
 import type { Target } from './resolve-target.js';
 
 vi.mock('./api.js', () => ({
@@ -101,7 +102,7 @@ describe('prepareDataPush skip and precondition', () => {
 	it('refuses an unknown directus_* data file as an unsynced system collection, not as content', async () => {
 		writeDataFiles(
 			join(dir, 'data'),
-			[{ collection: 'directus_presets', primaryKey: 'id', records: [{ id: 1 }] }],
+			[{ collection: 'directus_comments', primaryKey: 'id', records: [{ id: 1 }] }],
 			'https://source.example.com',
 		);
 
@@ -112,7 +113,7 @@ describe('prepareDataPush skip and precondition', () => {
 		expect(error).toBeInstanceOf(CliError);
 		expect((error as CliError).code).toBe('STATE');
 		expect((error as CliError).message).toContain('system collections this CLI version does not sync');
-		expect((error as CliError).message).toContain('directus_presets');
+		expect((error as CliError).message).toContain('directus_comments');
 		expect((error as CliError).message).not.toMatch(/content collection/);
 		expect(fetchRecords).not.toHaveBeenCalled();
 	});
@@ -424,9 +425,151 @@ describe('prepareDataPush skip and precondition', () => {
 			dependentCount: 0,
 			unmatchedCount: 1,
 			unchangedCount: 0,
+			skipped: 0,
 			incomplete: [],
 		});
 
 		expect(existsSync(join(dir, 'id_map.json'))).toBe(false);
+	});
+
+	it('add mode creates an unmatched permission whose source ID an unrelated target permission holds', async () => {
+		const permission = { id: 5, policy: 'sp1', collection: 'articles', action: 'read' };
+
+		writeDataFiles(
+			join(dir, 'data'),
+			[{ collection: 'directus_permissions', primaryKey: 'id', records: [permission] }],
+			'https://source.example.com',
+		);
+
+		vi.mocked(fetchRecords).mockResolvedValue([{ id: 5, policy: 'tp9', collection: 'pages', action: 'create' }]);
+
+		const plan = await prepareDataPush(target(), 'add', ctx());
+
+		expect(plan?.batch).toEqual([{ collection: 'directus_permissions', items: [{ ...permission, id: -1 }] }]);
+	});
+
+	describe('presets', () => {
+		const globalView = { id: 1, collection: 'articles', bookmark: null, role: null, user: null, layout: 'kanban' };
+		const roleBookmark = { id: 2, collection: 'articles', bookmark: 'Pending', role: 'r-src', user: null };
+
+		function writePresets(records: Record<string, unknown>[], roles?: Record<string, unknown>[]): void {
+			writeDataFiles(
+				join(dir, 'data'),
+				[
+					...(roles === undefined ? [] : [{ collection: 'directus_roles', primaryKey: 'id', records: roles }]),
+					{ collection: 'directus_presets', primaryKey: 'id', records },
+				],
+				'https://source.example.com',
+			);
+		}
+
+		function seedIdMap(collection: string, entries: Record<string, string>): void {
+			const idMapPath = join(dir, 'id_map.json');
+			const pair = { sourceUrl: 'https://source.example.com', targetUrl: 'https://cms.example.com' };
+			writeIdMap(idMapPath, withMappings(readIdMap(idMapPath), pair, collection, entries));
+		}
+
+		function mockTarget(presets: Record<string, unknown>[], roles: Record<string, unknown>[]): void {
+			const byEndpoint: Record<string, Record<string, unknown>[]> = { '/roles': roles, '/presets': presets };
+
+			vi.mocked(fetchRecords).mockImplementation((_credential, source) =>
+				Promise.resolve(byEndpoint[source.endpoint] ?? []),
+			);
+		}
+
+		it('mirror matches a global view, keeps personal and other-role presets, and lets stale ones go', async () => {
+			writePresets([globalView, roleBookmark]);
+
+			mockTarget(
+				[
+					{ id: 10, collection: 'articles', bookmark: null, role: null, user: null, layout: 'tabular' },
+					{ id: 11, collection: 'articles', bookmark: null, role: null, user: 'u1', layout: 'cards' },
+					{ id: 12, collection: 'articles', bookmark: 'Theirs', role: 'r-other', user: null },
+					{ id: 13, collection: 'articles', bookmark: 'Stale', role: 'r-src', user: null },
+				],
+				[{ id: 'r-src' }, { id: 'r-other' }],
+			);
+
+			const plan = await prepareDataPush(target(), 'mirror', ctx());
+			const items = plan?.batch.find((entry) => entry.collection === 'directus_presets')?.items;
+
+			expect(items).toEqual([
+				{ ...globalView, id: '10' },
+				{ ...roleBookmark, id: -1 },
+				{ id: 11, collection: 'articles', bookmark: null, role: null, user: 'u1', layout: 'cards' },
+				{ id: 12, collection: 'articles', bookmark: 'Theirs', role: 'r-other', user: null },
+			]);
+		});
+
+		it('merge never sends personal presets back', async () => {
+			writePresets([globalView]);
+			mockTarget([{ id: 11, collection: 'articles', bookmark: null, role: null, user: 'u1' }], []);
+
+			const plan = await prepareDataPush(target(), 'merge', ctx());
+
+			expect(plan?.batch).toEqual([{ collection: 'directus_presets', items: [{ ...globalView, id: -1 }] }]);
+		});
+
+		it('holds back a role preset whose role is not on the target', async () => {
+			writePresets([globalView, roleBookmark]);
+			mockTarget([], [{ id: 'r-other' }]);
+
+			const preview = await previewData(target(), 'merge');
+
+			expect(preview?.skipped).toBe(1);
+			expect(preview?.batch).toEqual([{ collection: 'directus_presets', items: [{ ...globalView, id: -1 }] }]);
+		});
+
+		it('matches a role preset through a role UUID the target shares, instead of creating a copy', async () => {
+			writePresets([roleBookmark]);
+			mockTarget([{ ...roleBookmark, id: 20 }], [{ id: 'r-src' }]);
+
+			const preview = await previewData(target(), 'merge');
+
+			expect(preview?.matchedCount).toBe(1);
+			expect(preview?.batch).toEqual([{ collection: 'directus_presets', items: [] }]);
+		});
+
+		it('holds back a role preset whose mapped role was deleted on the target', async () => {
+			seedIdMap('directus_roles', { 'r-src': 'r-gone' });
+			writePresets([roleBookmark]);
+			mockTarget([], [{ id: 'r-src' }]);
+
+			const preview = await previewData(target(), 'merge');
+
+			expect(preview?.skipped).toBe(1);
+		});
+
+		it('add mode creates a preset whose source ID collides with an unrelated target preset', async () => {
+			writePresets([globalView]);
+			mockTarget([{ id: 1, collection: 'articles', bookmark: 'Mine', role: null, user: 'u1' }], []);
+
+			const plan = await prepareDataPush(target(), 'add', ctx());
+
+			expect(plan?.batch).toEqual([{ collection: 'directus_presets', items: [{ ...globalView, id: -1 }] }]);
+		});
+
+		it('mirror sends a mapped preset once even when the target row was re-scoped to a user', async () => {
+			seedIdMap('directus_presets', { '1': '10' });
+			writePresets([globalView]);
+			mockTarget([{ ...globalView, id: 10, user: 'u1' }], []);
+
+			const plan = await prepareDataPush(target(), 'mirror', ctx());
+
+			expect(plan?.batch).toEqual([{ collection: 'directus_presets', items: [{ ...globalView, id: '10' }] }]);
+		});
+
+		it('skips the target roles read when every role rides in the same push', async () => {
+			writePresets([roleBookmark], [{ id: 'r-src', name: 'Moderator' }]);
+			mockTarget([], []);
+
+			const preview = await previewData(target(), 'merge');
+
+			expect(preview?.skipped).toBe(0);
+
+			// Roles are still read once for reconciliation; the hold-back adds no second read.
+			const roleReads = vi.mocked(fetchRecords).mock.calls.filter(([, source]) => source.endpoint === '/roles');
+			expect(roleReads).toHaveLength(1);
+		});
 	});
 });
