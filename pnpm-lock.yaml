@@ -3317,6 +3317,9 @@ importers:
       '@directus/sandbox':
         specifier: workspace:*
         version: link:../sandbox
+      '@directus/schema-builder':
+        specifier: workspace:*
+        version: link:../../packages/schema-builder
       '@directus/sdk':
         specifier: workspace:*
         version: link:../../sdk
@@ -6873,9 +6876,6 @@ packages:
   '@types/node@22.13.14':
     resolution: {integrity: sha512-Zs/Ollc1SJ8nKUAgc7ivOEdIBM8JAKgrqqUYi2J997JuKO7/tpQC+WCetQ1sypiKCQWHdvdg9wBNpUPEWZae7w==}
 
-  '@types/node@26.2.0':
-    resolution: {integrity: sha512-5IviulTZeRNp2vAJ514cc/HUlY5nZ9fCbq9DMyC52BrhFZACo3nI0R7qBxhQmo/d27NFe96ur/b7Wwxklda+kg==}
-
   '@types/node@26.6.4':
     resolution: {integrity: sha512-ldVPDCzj7fsaGZrLB0NuHuTvJcsNasysBAqMolr/cgxrLd1xbqxIr3XJiPnHHJUCxj5sNF1vnRj9aWnrVh5Jcg==}
 
@@ -7322,9 +7322,6 @@ packages:
       typescript:
         optional: true
 
-  '@vue/reactivity@3.5.42':
-    resolution: {integrity: sha512-TzNNfKpb7hDxbQltwAut8VDQA5YP+BuRlxntHUuRjyKwlMvmAPbs3unhCvieijifY6vFfVBwsS7wG/C7uq+bEQ==}
-
   '@vue/reactivity@3.5.43':
     resolution: {integrity: sha512-G/c9GyOZNI2jVaaS6OX1EF1SSFSv7H0ERqNTl4+DTFMlZmB5eVAB53aLQNam/7NL2NPtaDD7RdVrzf8uJzMuOA==}
 
@@ -7336,9 +7333,6 @@ packages:
 
   '@vue/server-renderer@3.5.43':
     resolution: {integrity: sha512-l2Ygjv9NehV94PSBxNWsAHC0j/eIIKbn92mBuWXAPGLnn6HfJ6MH5ubsd+Nk0YoZ5FRuxWI1P2VSoh+dbPQhCQ==}
-
-  '@vue/shared@3.5.42':
-    resolution: {integrity: sha512-2rPxex1jQf4jvl9MOHl6YaXCPcrNqz/FstMOEh3QWY+/OME9nQTvl9WYeCwhW7AFjaR0SnngZGlp/wkR6rkI6g==}
 
   '@vue/shared@3.5.43':
     resolution: {integrity: sha512-uksS7YGMR5NZyr4JNq0Rp+QyLns0ueaz20KwzIPW9R0LH1Vnt4E+XUM29PNseEbf1www2gOuhuDi5AKOIXag9Q==}
@@ -8600,7 +8594,6 @@ packages:
 
   deep-diff@1.0.2:
     resolution: {integrity: sha512-aWS3UIVH+NPGCD1kki+DCU9Dua032iSsO43LqQpcs4R3+dVv7tX0qBGjiVHJHjplsoUM2XRO/KB92glqc68awg==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   deep-extend@0.6.0:
     resolution: {integrity: sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==}
@@ -9782,10 +9775,6 @@ packages:
 
   is-callable@1.2.7:
     resolution: {integrity: sha512-1BC0BVFhS/p0qtw6enp8e+8OD0UrK0oFLztSjNzhcKA3WDuJxxAPXzPuPtKkjEY9UUoEWlX/8fgKeu2S8i9JTA==}
-    engines: {node: '>= 0.4'}
-
-  is-core-module@2.16.2:
-    resolution: {integrity: sha512-evOr8xfXKxE6qSR0hSXL2r3sd7ALj8+7jQEUvPYcm5sgZFdJ+AYzT6yNmJenvIYQBgIGwfwz08sL8zoL7yq2BA==}
     engines: {node: '>= 0.4'}
 
   is-core-module@2.17.0:
@@ -12983,19 +12972,12 @@ packages:
   undici-types@6.20.0:
     resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
 
-  undici-types@8.3.0:
-    resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
-
   undici-types@8.9.0:
     resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
 
   undici@6.28.1:
     resolution: {integrity: sha512-zWpdTVD54H48CIybL0rWQ3ukpb9d23wM7eH5RtfdmeP70cWHNjtfo7P4vZX+5CoDcO53J4Pu5uXp7lNfjc6DRA==}
     engines: {node: '>=18.17'}
-
-  undici@7.29.1:
-    resolution: {integrity: sha512-RYONW2MeafgYlkVOKYKkA/Ag7BmXqgIWCa8t1m0JcxrQg9pI9lEqRhAOruOBCbAohOa/gkCF+iPi9hrgvTzu6Q==}
-    engines: {node: '>=20.18.1'}
 
   undici@7.30.0:
     resolution: {integrity: sha512-dkrQXeHSaoamnItlYbmzG0wFYrM0ZwDxCIg0A7aKjTyyhh9svRzCNFEzV+Vm05/yehjCzjDZ31KXfGEjYSztDQ==}
@@ -13374,7 +13356,6 @@ packages:
   vue-i18n@11.1.12:
     resolution: {integrity: sha512-BnstPj3KLHLrsqbVU2UOrPmr0+Mv11bsUZG0PyCOzsawCivk8W00GMXHeVUWIDOgNaScCuZah47CZFE+Wnl8mw==}
     engines: {node: '>= 16'}
-    deprecated: This version is NOT deprecated. Previous deprecation was a mistake.
     peerDependencies:
       vue: ^3.0.0
 
@@ -17117,7 +17098,7 @@ snapshots:
 
   '@types/archiver@8.0.0':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
       '@types/readdir-glob': 1.1.5
 
   '@types/async@3.2.25': {}
@@ -17127,11 +17108,11 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/busboy@1.5.4':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/bytes@3.1.5': {}
 
@@ -17139,7 +17120,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.2.0
       '@types/keyv': 3.1.4
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
       '@types/responselike': 1.0.3
 
   '@types/caseless@0.12.5': {}
@@ -17157,7 +17138,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/content-disposition@0.5.9': {}
 
@@ -17167,7 +17148,7 @@ snapshots:
 
   '@types/cors@2.8.19':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/deep-diff@1.0.5': {}
 
@@ -17185,7 +17166,7 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.6':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -17202,7 +17183,7 @@ snapshots:
   '@types/fs-extra@11.0.4':
     dependencies:
       '@types/jsonfile': 6.1.4
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/geojson@7946.0.16': {}
 
@@ -17227,20 +17208,20 @@ snapshots:
 
   '@types/json2csv@5.0.7':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/jsonfile@6.1.4':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/jsonwebtoken@9.0.10':
     dependencies:
       '@types/ms': 2.1.0
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/lodash-es@4.17.12':
     dependencies:
@@ -17276,10 +17257,6 @@ snapshots:
     dependencies:
       undici-types: 6.20.0
 
-  '@types/node@26.2.0':
-    dependencies:
-      undici-types: 8.3.0
-
   '@types/node@26.6.4':
     dependencies:
       undici-types: 8.9.0
@@ -17291,7 +17268,7 @@ snapshots:
 
   '@types/nodemailer@8.0.1':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/normalize-package-data@2.4.4': {}
 
@@ -17299,17 +17276,17 @@ snapshots:
 
   '@types/papaparse@5.5.0':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/prop-types@15.7.15': {}
 
   '@types/proxy-addr@2.0.3':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/qrcode@1.5.6':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/qs@6.14.0': {}
 
@@ -17322,17 +17299,17 @@ snapshots:
 
   '@types/readable-stream@4.0.24':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
     optional: true
 
   '@types/readdir-glob@1.1.5':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/request@2.48.13':
     dependencies:
       '@types/caseless': 0.12.5
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
       '@types/tough-cookie': 4.0.5
       form-data: 2.5.6
 
@@ -17340,7 +17317,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/sanitize-html@2.16.0':
     dependencies:
@@ -17350,12 +17327,12 @@ snapshots:
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/serve-static@2.2.0':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/stats.js@0.17.4': {}
 
@@ -17374,7 +17351,7 @@ snapshots:
 
   '@types/through@0.0.33':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@types/tmp@0.2.6': {}
 
@@ -17395,7 +17372,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   '@typescript-eslint/eslint-plugin@8.66.0(@typescript-eslint/parser@8.66.0(eslint@10.8.0(jiti@2.7.0))(typescript@5.9.3))(eslint@10.8.0(jiti@2.7.0))(typescript@5.9.3)':
     dependencies:
@@ -17875,10 +17852,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  '@vue/reactivity@3.5.42':
-    dependencies:
-      '@vue/shared': 3.5.42
-
   '@vue/reactivity@3.5.43':
     dependencies:
       '@vue/shared': 3.5.43
@@ -17900,8 +17873,6 @@ snapshots:
       '@vue/compiler-ssr': 3.5.43
       '@vue/runtime-dom': 3.5.43
       '@vue/shared': 3.5.43
-
-  '@vue/shared@3.5.42': {}
 
   '@vue/shared@3.5.43': {}
 
@@ -18462,7 +18433,7 @@ snapshots:
 
   buffer-image-size@0.6.4:
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
 
   buffer@5.6.0:
     dependencies:
@@ -20162,7 +20133,7 @@ snapshots:
 
   happy-dom@20.10.6:
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.1
       buffer-image-size: 0.6.4
@@ -20450,14 +20421,9 @@ snapshots:
   is-callable@1.2.7:
     optional: true
 
-  is-core-module@2.16.2:
-    dependencies:
-      hasown: 2.0.4
-
   is-core-module@2.17.0:
     dependencies:
       hasown: 2.0.4
-    optional: true
 
   is-data-view@1.0.2:
     dependencies:
@@ -20712,7 +20678,7 @@ snapshots:
       saxes: 6.0.0
       symbol-tree: 3.2.4
       tough-cookie: 6.0.2
-      undici: 7.29.1
+      undici: 7.30.0
       w3c-xmlserializer: 5.0.0
       webidl-conversions: 8.0.1
       whatwg-mimetype: 5.0.0
@@ -21494,7 +21460,7 @@ snapshots:
   normalize-package-data@3.0.3:
     dependencies:
       hosted-git-info: 4.1.0
-      is-core-module: 2.16.2
+      is-core-module: 2.17.0
       semver: 7.8.5
       validate-npm-package-license: 3.0.4
 
@@ -22624,7 +22590,7 @@ snapshots:
   resolve@1.22.12:
     dependencies:
       es-errors: 1.3.0
-      is-core-module: 2.16.2
+      is-core-module: 2.17.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
@@ -23790,7 +23756,7 @@ snapshots:
       '@azure/identity': 4.13.2
       '@azure/keyvault-keys': 4.10.2
       '@js-joda/core': 5.7.0
-      '@types/node': 26.2.0
+      '@types/node': 26.6.4
       bl: 6.1.6
       iconv-lite: 0.6.3
       js-md4: 0.3.2
@@ -24104,13 +24070,9 @@ snapshots:
 
   undici-types@6.20.0: {}
 
-  undici-types@8.3.0: {}
-
   undici-types@8.9.0: {}
 
   undici@6.28.1: {}
-
-  undici@7.29.1: {}
 
   undici@7.30.0: {}
 
@@ -24173,7 +24135,7 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
-      '@vue/reactivity': 3.5.42
+      '@vue/reactivity': 3.5.43
       obug: 2.2.1
       unplugin: 3.3.0(esbuild@0.28.2)(rolldown@1.2.8)(rollup@4.59.0)(vite@8.2.2(@types/node@26.6.4)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
       vite: 8.2.2(@types/node@26.6.4)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0)

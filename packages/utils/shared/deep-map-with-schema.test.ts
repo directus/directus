@@ -412,8 +412,8 @@ test('map m2a object', () => {
 					collection: {
 						value: 'sec_num',
 						context: {
-							collection: schema.collections['articles_builder'],
-							field: schema.collections['articles_builder']!.fields['collection'],
+							collection: schema.collections['articles_sections'],
+							field: schema.collections['articles_sections']!.fields['collection'],
 							relation: null,
 							leaf: true,
 							object: object.sections[0],
@@ -437,9 +437,9 @@ test('map m2a object', () => {
 							},
 						},
 						context: {
-							collection: schema.collections['articles_builder'],
-							field: schema.collections['articles_builder']!.fields['item'],
-							relation: getRelation(schema.relations, 'articles_builder', 'item'),
+							collection: schema.collections['articles_sections'],
+							field: schema.collections['articles_sections']!.fields['item'],
+							relation: getRelation(schema.relations, 'articles_sections', 'item'),
 							leaf: false,
 							object: object.sections[0],
 							relationType: 'a2o',
@@ -451,8 +451,8 @@ test('map m2a object', () => {
 					collection: {
 						value: 'sec_text',
 						context: {
-							collection: schema.collections['articles_builder'],
-							field: schema.collections['articles_builder']!.fields['collection'],
+							collection: schema.collections['articles_sections'],
+							field: schema.collections['articles_sections']!.fields['collection'],
 							relation: null,
 							leaf: true,
 							object: object.sections[1],
@@ -476,9 +476,9 @@ test('map m2a object', () => {
 							},
 						},
 						context: {
-							collection: schema.collections['articles_builder'],
-							field: schema.collections['articles_builder']!.fields['item'],
-							relation: getRelation(schema.relations, 'articles_builder', 'item'),
+							collection: schema.collections['articles_sections'],
+							field: schema.collections['articles_sections']!.fields['item'],
+							relation: getRelation(schema.relations, 'articles_sections', 'item'),
 							leaf: false,
 							object: object.sections[1],
 							relationType: 'a2o',
@@ -606,7 +606,7 @@ test('map m2a relation without collection field', () => {
 		);
 
 	expect(callback).toThrowError(
-		"When selecting 'articles_builder.item', the field 'articles_builder.collection' has to be selected when using versioning and m2a relations",
+		"When selecting 'articles_sections.item', the field 'articles_sections.collection' has to be selected when using versioning and m2a relations",
 	);
 });
 
