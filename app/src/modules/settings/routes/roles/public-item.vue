@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import { useApi } from '@directus/composables';
 import { useShortcut } from '@directus/composables';
-import { Alterations, Item, Policy } from '@directus/types';
+import { Alterations, Item, Permission, Policy } from '@directus/types';
 import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash-es';
 import { computed, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import {
+	getAccessSystemPermissionChanges,
+	getAttachedExistingPolicies,
+	type SystemPermissionChange,
+	toSystemPermissionChanges,
+} from '../policies/get-system-permission-changes';
+import PublicPolicyNotice from '../policies/public-policy-notice.vue';
+import SystemPermissionsDialog from '../policies/system-permissions-dialog.vue';
+import { useSystemPermissionsGuard } from '../policies/use-system-permissions-guard';
 import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -27,8 +35,6 @@ type Access = {
 	id: string;
 	policy: Policy;
 };
-
-const { t } = useI18n();
 
 const api = useApi();
 const router = useRouter();
@@ -64,22 +70,7 @@ policiesField!.meta!.options = {
 	},
 };
 
-const fields = [
-	{
-		field: 'notice',
-		type: 'alias',
-		meta: {
-			system: true,
-			interface: 'presentation-notice',
-			options: {
-				text: t('public_role_info'),
-			},
-			width: 'full',
-			sort: 0,
-		},
-	},
-	policiesField,
-];
+const fields = [policiesField];
 
 const loading = ref(false);
 const saving = ref(false);
@@ -92,12 +83,20 @@ const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
+const {
+	confirmSystemPermissions,
+	changes: systemPermissionChanges,
+	checking,
+	guardSave,
+	confirmSave,
+} = useSystemPermissionsGuard(getSystemPermissionChangesToSave, saving);
+
 useShortcut('meta+s', () => {
-	if (hasEdits.value) saveAndStay();
+	if (hasEdits.value) guardSave(saveAndStay);
 });
 
 useShortcut('meta+shift+s', () => {
-	if (hasEdits.value) saveAndAddNew();
+	if (hasEdits.value) guardSave(saveAndAddNew);
 });
 
 onMounted(() => {
@@ -126,6 +125,30 @@ async function fetchPolicies() {
 	} finally {
 		loading.value = false;
 	}
+}
+
+/**
+ * Includes the saved permissions of existing policies being attached, as they become public once saved.
+ */
+async function getSystemPermissionChangesToSave(): Promise<SystemPermissionChange[]> {
+	const stagedChanges = getAccessSystemPermissionChanges(edits.value.policies);
+	const { policyIds, editedPermissionIds } = getAttachedExistingPolicies(edits.value.policies);
+
+	if (policyIds.length === 0) {
+		return stagedChanges;
+	}
+
+	const response = await api.get<{ data: Permission[] }>('/permissions', {
+		params: {
+			filter: { policy: { _in: policyIds } },
+			fields: ['id', 'collection', 'action', 'permissions'],
+			limit: -1,
+		},
+	});
+
+	const savedPermissions = response.data.data.filter(({ id }) => !editedPermissionIds.includes(id!));
+
+	return [...stagedChanges, ...toSystemPermissionChanges(savedPermissions)];
 }
 
 async function save() {
@@ -210,16 +233,16 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				:label="$t('save')"
-				:loading="saving"
+				:loading="saving || checking"
 				:disabled="!hasEdits"
 				icon="check"
-				@click="saveAndQuit"
+				@click="guardSave(saveAndQuit)"
 			>
 				<template #split-menu>
 					<SaveOptions
 						:disabled-options="['save-and-quit', 'save-as-copy']"
-						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
+						@save-and-stay="guardSave(saveAndStay)"
+						@save-and-add-new="guardSave(saveAndAddNew)"
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
@@ -231,12 +254,20 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 		</template>
 
 		<div class="content">
+			<PublicPolicyNotice />
 			<VForm v-model="edits" :initial-values="initialValue" :fields="fields" :primary-key="null" :loading />
 		</div>
 
 		<template #sidebar>
 			<RoleInfoSidebarDetail :role="null" />
 		</template>
+
+		<SystemPermissionsDialog
+			v-model="confirmSystemPermissions"
+			:changes="systemPermissionChanges"
+			:saving
+			@confirm="confirmSave"
+		/>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<VCard>
