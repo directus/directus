@@ -2310,6 +2310,9 @@ importers:
       '@tiptap/core':
         specifier: 'catalog:'
         version: 3.31.3(@tiptap/pm@3.31.3)
+      '@tiptap/pm':
+        specifier: 'catalog:'
+        version: 3.31.3
       '@types/fs-extra':
         specifier: 'catalog:'
         version: 11.0.4
