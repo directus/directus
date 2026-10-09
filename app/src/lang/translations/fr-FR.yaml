@@ -22,11 +22,26 @@
 about: À propos
 directus_mscl: Directus MSCL-1.0-GPL
 data_processing_agreement: Contrat sur le traitement des données personnelles
+contact_support: contacter le support technique
 setup_welcome: Bienvenue sur Directus
+setup_license_invalid_format: Format de clé de licence invalide.
 setup_launch: Lancer Directus
+setup_license_title: Configurez votre licence
+license_onboarding_title: Vous avez une clé de licence ?
+project_usage: Pour quoi utilisez-vous Directus ?
+project_usage_personal:
 org_name: Nom de l’organisation
 license_key_option: J’ai une clé de licence
+core_option: J'utilise le plan de base
+core_option_desc: Gratuit, aucune clé requise
+remind_later: Rappeler plus tard
 setup_project: Configurer un projet
+enter_license_key: Entrez votre clé de licence
+license_valid: Licence valide
+plan_prefix: 'Forfait : {plan}'
+license_key: Clé de licence
+no_license_key: Vous n'avez pas de clé de licence ?
+get_license_key: Obtenir une clé de licence
 expires_on: Expire le
 environment: Environnement
 production: Production
@@ -34,6 +49,9 @@ skip: Ignorer
 continue: Continuer
 first_name: Prénom
 last_name: Nom
+admin_email: Courriel de l'administrateur
+owner_email: Adresse courriel du propriétaire
+email_address: Adresse courriel
 identifier: Identifiant
 avatar: Avatar
 application: Application
@@ -64,6 +82,8 @@ input: Texte simple
 invalid_input: Saisie invalide
 invalid_file_type: Type de fichier invalide
 not_a_number: Pas un nombre
+invalid_range_min: La valeur est inférieure au minimum de {value}
+invalid_range_max: La valeur dépasse le maximum de {value}
 maps: Cartes
 switch_user: Changer d'utilisateur
 item_deleted: L'élément que vous étiez en train de modifier a été supprimé.
@@ -212,6 +232,9 @@ show_differences_only: Afficher uniquement les différences
 delete_version: Supprimer la version
 delete_version_copy: >-
   Êtes-vous sûr de vouloir supprimer la version "{version}"? Cette action est irréversible.
+auto_save_failed: Échec de l’enregistrement automatique
+auto_save_enabled: Sauvegarde automatique activée
+content_edited: Contenu modifié
 reset_bookmark: Réinitialiser le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
@@ -659,6 +682,7 @@ save_and_quit: Enregistrer et quitter
 publish_and_quit: Publier et quitter
 publish_without_review: Publier sans révision
 publish_anyway: Publier quand même
+save_and_return_to_published: Enregistrer et revenir à Publié
 save_as_copy: Enregistrer une copie
 save_as_new_file: Enregistrer comme nouveau fichier
 add_existing: Sélectionner
@@ -1214,7 +1238,9 @@ licensing:
   resolve_continue: Continuer
   resolve_show_n_more: 'Afficher {count} de plus'
   resolve_section_flows: Flux
+  resolve_sso_admin_email: Adresse courriel
   resolve_sso_admin_password: Mot de passe
+  key: Clé de licence
   entitlements:
     collections: Collections
     flows: Flux
@@ -1245,6 +1271,8 @@ unsaved_changes_copy_collab: Vous éditez cet objet avec d'autres. Vos modificat
 discard_changes: Annuler les modifications
 discard_all_changes: Ignorer toutes les modifications
 discard_changes_copy: Êtes-vous sûr de vouloir annuler vos modifications ?
+published_item_has_changed: L'élément publié a été modifié
+published_item_has_changed_copy: L'élément publié a été mis à jour depuis que cette version a été créée. Publier maintenant écrasera ces modifications.
 discard_changes_copy_collab: Vous éditez cet élément avec d'autres. Annuler les modifications effacera toutes les modifications non enregistrées pour tous les participants à cette session collaborative.
 show_x_axis: Afficher l'axe X
 show_y_axis: Afficher l'axe Y
@@ -2575,4 +2603,6 @@ show_password: Afficher le mot de passe
 hide_password: Masquer le mot de passe
 license_grace_key_modal:
   optional: Facultatif
+license_banner:
+  remind_later: Rappeler plus tard
 set_to_now: Configurer à maintenant
