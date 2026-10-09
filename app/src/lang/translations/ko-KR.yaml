@@ -192,8 +192,6 @@ logoutReason:
   SESSION_EXPIRED: 세션 만료
 public_label: 공개
 public_description: 인증 없이 사용할 수 있는 API 데이터를 제어합니다.
-public_role_info: >-
-  public 역할은 인증되지 않은 사용자 또는 역할이 없는 사용자가 사용할 수 있는 API 데이터를 제어합니다. public 역할의 요청에는 앱 또는 관리자 액세스 권한이 없을 수 있습니다. public 역할에 할당된 정책에 앱 또는 관리자 액세스 권한이 부여되면 무시됩니다.
 admin_description: 제한 없는 앱/API 액세스 권한이 있는 초기 관리자 역할입니다.
 admin_policy_description: 무제한 앱/API 액세스를 사용하는 초기 관리 정책입니다.
 no_description: 설명 없음...
