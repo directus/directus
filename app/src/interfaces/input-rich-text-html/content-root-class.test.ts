@@ -50,4 +50,33 @@ describe('public content root class', () => {
 
 		wrapper.unmount();
 	});
+
+	test('a scoped extension rule outranks the core content styles', async () => {
+		const wrapper = await mountInterface({});
+		const root = wrapper.find('.ProseMirror').element;
+
+		const probe = document.createElement('div');
+		probe.setAttribute('data-rt-probe', '');
+		const paragraph = probe.appendChild(document.createElement('p'));
+		const link = paragraph.appendChild(document.createElement('a'));
+		root.appendChild(probe);
+
+		const plain = root.querySelector(':scope > p')!;
+		expect(getComputedStyle(plain).marginTop).toBe('21px');
+
+		const extensionStyle = document.createElement('style');
+
+		extensionStyle.textContent = `
+			.richtext-content [data-rt-probe] p { margin-top: 3px; }
+			.richtext-content [data-rt-probe] a { color: rgb(255, 0, 255); }
+		`;
+
+		document.head.prepend(extensionStyle);
+
+		expect(getComputedStyle(paragraph).marginTop).toBe('3px');
+		expect(getComputedStyle(link).color).toBe('rgb(255, 0, 255)');
+
+		extensionStyle.remove();
+		wrapper.unmount();
+	});
 });

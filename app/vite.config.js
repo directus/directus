@@ -93,6 +93,7 @@ export default defineConfig({
 		dir: path.resolve(__dirname, '..'),
 		include: ['app/**/*.test.ts'],
 		environment: 'happy-dom',
+		css: { include: [/input-rich-text-html\.vue/] },
 		deps: {
 			optimizer: {
 				web: {
