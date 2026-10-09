@@ -1,6 +1,6 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Filter, Permission, Relation, SchemaOverview } from '@directus/types';
-import { getRelationInfo } from '@directus/utils';
+import { getRelationInfo, isObject } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getCases } from '../../../../../permissions/modules/process-ast/lib/get-cases.js';
 import type { AliasMap } from '../../../../../utils/get-column-path.js';
@@ -121,7 +121,37 @@ export function applyFilter(
 
 			const operation = getOperation(key, value);
 
-			if (!operation) continue;
+			/**
+			 * A relational field wrapped in `_and`/`_or` (e.g. `{ links: { _and: [{ name: { _eq: 2 } }] } }`)
+			 * never resolves to a leaf operator, so `getOperation` returns null. The nested logical group
+			 * has to be applied on the relation, otherwise the whole filter would be dropped while the
+			 * join is still added, silently matching every row.
+			 */
+			const wrappedInLogical = isObject(value) && ('_and' in value || '_or' in value) && relationType === 'o2m';
+
+			if (!operation) {
+				if (wrappedInLogical) {
+					/**
+					 * The relational field's value is a logical group instead of an operator. Each
+					 * sub-filter is re-applied as a regular nested relation filter on the same field,
+					 * which reuses the existing join alias resolution for this field.
+					 */
+					const nestedLogical = { _and: value._and, _or: value._or };
+
+					/** @NOTE this callback function isn't called until Knex runs the query */
+					dbQuery[logical].where((subQuery) => {
+						for (const [logicalKey, subFilters] of Object.entries(nestedLogical)) {
+							if (!subFilters) continue;
+
+							for (const subFilter of subFilters as Record<string, any>[]) {
+								addWhereClauses(knex, subQuery, { [key]: subFilter }, collection, logicalKey === '_and' ? 'and' : 'or');
+							}
+						}
+					});
+				}
+
+				continue;
+			}
 
 			const { operator: filterOperator, value: filterValue } = operation;
 

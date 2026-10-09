@@ -653,3 +653,81 @@ test(`filter with partial field permissions`, async () => {
 	expect(rawQuery.sql).toEqual(`select * where "article"."title" = ?`);
 	expect(rawQuery.bindings).toEqual([1]);
 });
+
+test(`filtering o2m relation with _and`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applyFilter(
+		db,
+		o2m_schema,
+		queryBuilder,
+		{
+			links: {
+				_and: [
+					{
+						name: {
+							_eq: 2,
+						},
+					},
+					{
+						name: {
+							_eq: 3,
+						},
+					},
+				],
+			},
+		},
+		'article',
+		{},
+		[],
+		[],
+	);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(
+		`select * left join "links_list" as "zzuqv" on "article"."id" = "zzuqv"."article_id" where ("zzuqv"."name" = ? and "zzuqv"."name" = ?)`,
+	);
+
+	expect(rawQuery.bindings).toEqual([2, 3]);
+});
+
+test(`filtering o2m relation with _or`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applyFilter(
+		db,
+		o2m_schema,
+		queryBuilder,
+		{
+			links: {
+				_or: [
+					{
+						name: {
+							_eq: 2,
+						},
+					},
+					{
+						name: {
+							_eq: 3,
+						},
+					},
+				],
+			},
+		},
+		'article',
+		{},
+		[],
+		[],
+	);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(
+		`select * left join "links_list" as "zzuqv" on "article"."id" = "zzuqv"."article_id" where ("zzuqv"."name" = ? or "zzuqv"."name" = ?)`,
+	);
+
+	expect(rawQuery.bindings).toEqual([2, 3]);
+});
