@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TriggerType } from '@directus/types';
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { getTriggers } from './triggers';
 import api from '@/api';
 import VDivider from '@/components/v-divider.vue';
@@ -52,79 +52,80 @@ const currentTab = ref(['flow_setup']);
 
 const isNew = computed(() => props.primaryKey === '+');
 
-const values: Values = reactive({
-	name: null,
-	icon: 'bolt',
-	color: null,
-	description: null,
-	status: 'active',
-	accountability: 'all',
-	trigger: undefined,
-	options: {},
+const edits = ref<Partial<Values>>({});
+
+const initialValues = computed<Values>(() => {
+	const existing = isNew.value ? undefined : flowsStore.flows.find((flow) => flow.id === props.primaryKey);
+
+	if (!existing) {
+		return {
+			name: null,
+			icon: 'bolt',
+			color: null,
+			description: null,
+			status: 'active',
+			accountability: 'all',
+			trigger: undefined,
+			options: {},
+		};
+	}
+
+	return {
+		name: existing.name,
+		icon: existing.icon,
+		color: existing.color,
+		description: existing.description,
+		status: existing.status,
+		accountability: existing.accountability,
+		trigger: existing.trigger,
+		options: existing.options ?? {},
+	};
 });
+
+const values = computed<Values>(() => ({ ...initialValues.value, ...edits.value }));
 
 watch(
 	() => props.primaryKey,
-	(newKey) => {
+	() => {
 		currentTab.value = [props.startTab];
-
-		if (newKey === '+') {
-			values.name = null;
-			values.icon = 'bolt';
-			values.color = null;
-			values.description = null;
-			values.status = 'active';
-			values.accountability = 'all';
-			values.trigger = undefined;
-			values.options = {};
-		} else {
-			const existing = flowsStore.flows.find((existingFlow) => existingFlow.id === newKey)!;
-
-			values.name = existing.name;
-			values.icon = existing.icon;
-			values.color = existing.color;
-			values.description = existing.description;
-			values.status = existing.status;
-			values.accountability = existing.accountability;
-			values.trigger = existing.trigger;
-			values.options = existing.options ?? {};
-		}
+		edits.value = {};
 	},
 	{ immediate: true },
 );
 
-watch(
-	() => values.trigger,
-	(_, previousTrigger) => {
-		if (previousTrigger === undefined) return;
+function updateValue<K extends keyof Values>(field: K, value: Values[K]) {
+	const changes: Partial<Values> = { [field]: value };
 
-		values.options = {};
-	},
-);
+	// Changing the trigger resets its options
+	if (field === 'trigger' && values.value.trigger !== undefined) {
+		changes.options = {};
+	}
 
-watch(
-	() => values.options?.type,
-	(type, previousType) => {
-		if (previousType === undefined) return;
+	// Changing the options type resets the rest of the options
+	if (field === 'options') {
+		const type = (value as Values['options'])?.type;
+		const previousType = values.value.options?.type;
 
-		values.options = {
-			type,
-		};
-	},
-);
+		if (previousType !== undefined && type !== previousType) {
+			changes.options = { type };
+		}
+	}
+
+	edits.value = { ...edits.value, ...changes };
+}
 
 const { triggers } = getTriggers();
 
-const currentTrigger = computed(() => triggers.find((trigger) => trigger.id === values.trigger));
+const currentTrigger = computed(() => triggers.find((trigger) => trigger.id === values.value.trigger));
 
-const isFlowSetupDisabled = computed(() => !values.name || values.name.length === 0);
-const isFlowTriggerDisabled = computed(() => !values.trigger);
+const isFlowSetupDisabled = computed(() => !values.value.name || values.value.name.length === 0);
+const isFlowTriggerDisabled = computed(() => !values.value.trigger);
 
 const currentTriggerOptionFields = computed(() => {
 	if (!currentTrigger.value) return [];
 
 	if (typeof currentTrigger.value.options === 'function') {
-		return currentTrigger.value.options(values.options);
+		return currentTrigger.value.options(values.value.options);
 	}
 
 	return currentTrigger.value.options;
@@ -140,12 +141,14 @@ async function save() {
 
 		if (isNew.value) {
 			id = await api
-				.post('/flows', { ...values, folder: props.folder ?? null }, { params: { fields: ['id'] } })
+				.post('/flows', { ...values.value, folder: props.folder ?? null }, { params: { fields: ['id'] } })
 				.then((res) => res.data.data.id);
 		} else {
-			id = await api
-				.patch(`/flows/${props.primaryKey}`, values, { params: { fields: ['id'] } })
-				.then((res) => res.data.data.id);
+			if (Object.keys(edits.value).length > 0) {
+				await api.patch(`/flows/${props.primaryKey}`, edits.value, { params: { fields: ['id'] } });
+			}
+
+			id = props.primaryKey;
 		}
 
 		await flowsStore.hydrate();
@@ -215,13 +218,13 @@ function onApply() {
 							:value="values.name"
 							autofocus
 							:placeholder="$t('flow_name')"
-							@input="values.name = $event"
+							@input="updateValue('name', $event)"
 						/>
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('status') }}</div>
 						<VSelect
-							v-model="values.status"
+							:model-value="values.status"
 							:items="[
 								{
 									text: $t('active'),
@@ -232,25 +235,30 @@ function onApply() {
 									value: 'inactive',
 								},
 							]"
+							@update:model-value="updateValue('status', $event)"
 						/>
 					</div>
 					<div class="field full">
 						<div class="type-label">{{ $t('description') }}</div>
-						<VInput v-model="values.description" :placeholder="$t('description')" />
+						<VInput
+							:model-value="values.description"
+							:placeholder="$t('description')"
+							@update:model-value="updateValue('description', $event)"
+						/>
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('icon') }}</div>
-						<InterfaceSelectIcon :value="values.icon" @input="values.icon = $event" />
+						<InterfaceSelectIcon :value="values.icon" @input="updateValue('icon', $event)" />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('color') }}</div>
-						<InterfaceSelectColor width="half" :value="values.color" @input="values.color = $event" />
+						<InterfaceSelectColor width="half" :value="values.color" @input="updateValue('color', $event)" />
 					</div>
 					<VDivider class="full" />
 					<div class="field full">
 						<div class="type-label">{{ $t('flow_tracking') }}</div>
 						<VSelect
-							v-model="values.accountability"
+							:model-value="values.accountability"
 							:items="[
 								{
 									text: $t('flow_tracking_all'),
@@ -265,19 +273,28 @@ function onApply() {
 									value: null,
 								},
 							]"
+							@update:model-value="updateValue('accountability', $event)"
 						/>
 					</div>
 				</div>
 			</VTabItem>
 			<VTabItem value="trigger_setup">
-				<VFancySelect v-model="values.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
+				<VFancySelect
+					:model-value="values.trigger"
+					class="select"
+					:items="triggers"
+					item-text="name"
+					item-value="id"
+					@update:model-value="updateValue('trigger', $event)"
+				/>
 
 				<VForm
 					v-if="values.trigger"
-					v-model="values.options"
+					:model-value="values.options"
 					class="extension-options"
 					:fields="currentTriggerOptionFields"
 					primary-key="+"
+					@update:model-value="updateValue('options', $event)"
 				/>
 			</VTabItem>
 		</VTabsItems>
