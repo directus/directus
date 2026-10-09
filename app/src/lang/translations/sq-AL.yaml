@@ -180,8 +180,6 @@ logoutReason:
   SESSION_EXPIRED: Seanca ka skaduar
 public_label: Publik
 public_description: Kontrollon cilat të dhëna API janë në dispozicion pa autentifikim.
-public_role_info: >-
-  Roli publik kontrollon se cilat të dhëna API janë të disponueshme për përdoruesit e paautentikuar ose për ata pa rol. Kërkesat me rolin publik nuk mund të kenë akses në aplikacion ose administrim. Nëse një drejtimi të caktuar për rolin publik i jepet akses në aplikacion ose administrim, do të injorohet.
 admin_description: Roli administrativ fillestar me qasje të pakufizuar në Aplikacion/API.
 admin_policy_description: Drejtimi fillestar administrativ me akses të pakufizuar në Aplikacion/API.
 no_description: Pa përshkrim...
