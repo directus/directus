@@ -54,17 +54,20 @@ test('does not save when the changes cannot be resolved', async () => {
 test('ignores saves requested while the changes are being resolved', async () => {
 	const saveFn = vi.fn().mockResolvedValue(undefined);
 
-	let resolveChanges: (changes: never[]) => void = () => {};
+	const pendingChanges: ((changes: never[]) => void)[] = [];
+	const getChanges = vi.fn(() => new Promise<never[]>((resolve) => pendingChanges.push(resolve)));
 
-	const { guardSave } = useSystemPermissionsGuard(
-		() => new Promise((resolve) => (resolveChanges = resolve)),
-		ref(false),
-	);
+	const { guardSave } = useSystemPermissionsGuard(getChanges, ref(false));
 
 	guardSave(saveFn);
 	guardSave(saveFn);
-	resolveChanges([]);
+
+	for (const resolve of pendingChanges) {
+		resolve([]);
+	}
+
 	await flushPromises();
 
+	expect(getChanges).toHaveBeenCalledOnce();
 	expect(saveFn).toHaveBeenCalledOnce();
 });

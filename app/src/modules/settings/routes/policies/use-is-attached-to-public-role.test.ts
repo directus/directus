@@ -47,24 +47,34 @@ test('stays unknown when the lookup fails', async () => {
 });
 
 test('resets on policy change and ignores the previous policy response', async () => {
-	let resolvePrevious!: (value: unknown) => void;
+	let resolveInitial!: (value: unknown) => void;
+	let resolveStale!: (value: unknown) => void;
 	let resolveCurrent!: (value: unknown) => void;
 
 	vi.mocked(api.get)
-		.mockReturnValueOnce(new Promise((resolve) => (resolvePrevious = resolve)))
+		.mockReturnValueOnce(new Promise((resolve) => (resolveInitial = resolve)))
+		.mockReturnValueOnce(new Promise((resolve) => (resolveStale = resolve)))
 		.mockReturnValueOnce(new Promise((resolve) => (resolveCurrent = resolve)));
 
 	const primaryKey = ref('policy-1');
 	const isAttachedToPublicRole = useIsAttachedToPublicRole(primaryKey);
+
+	resolveInitial({ data: { data: [{ id: 'access-1' }] } });
+	await flushPromises();
+
+	expect(isAttachedToPublicRole.value).toBe(true);
 
 	primaryKey.value = 'policy-2';
 	await nextTick();
 
 	expect(isAttachedToPublicRole.value).toBe(null);
 
+	primaryKey.value = 'policy-3';
+	await nextTick();
+
 	resolveCurrent({ data: { data: [] } });
 	await flushPromises();
-	resolvePrevious({ data: { data: [{ id: 'access-1' }] } });
+	resolveStale({ data: { data: [{ id: 'access-2' }] } });
 	await flushPromises();
 
 	expect(isAttachedToPublicRole.value).toBe(false);
