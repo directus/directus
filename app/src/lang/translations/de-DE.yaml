@@ -273,8 +273,6 @@ logoutReason:
   SESSION_EXPIRED: Sitzung abgelaufen
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
-public_role_info: >-
-  Die öffentliche Rolle kontrolliert, welche API-Daten unauthentifizierten Benutzern oder Benutzern ohne Rolle zur Verfügung stehen. Anfragen mit öffentlicher Rolle können keinen App- oder Administratorzugriff haben. Wenn App- oder Administratorzugriff auf Richtlinien gewährt wird, die der öffentlichen Rolle zugewiesen sind, werden sie ignoriert.
 admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
 admin_policy_description: Initiale Administrator-Richtlinie mit uneingeschränktem App-/API-Zugriff.
 no_description: Keine Beschreibung ...
