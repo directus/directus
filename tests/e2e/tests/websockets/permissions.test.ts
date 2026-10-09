@@ -15,10 +15,11 @@ import { useSnapshot } from '@utils/use-snapshot.js';
 import { generateScopedUser } from '@utils/user-scoped.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot as schemaSnapshot } from './snapshot.js';
 
 const url = `http://localhost:${port}`;
 const api = createDirectus<Schema>(url).with(rest()).with(staticToken('admin'));
-const { collections, snapshot } = await useSnapshot<Schema>(api);
+const { collections, snapshot } = await useSnapshot<Schema>(api, schemaSnapshot);
 
 type Message = Record<string, any>;
 
