@@ -9,6 +9,8 @@ import PQueue from 'p-queue';
 import type { RequestInit } from 'undici';
 import { fetch, FormData } from 'undici';
 import { IMAGE_EXTENSIONS, MINIMUM_CHUNK_SIZE, VIDEO_EXTENSIONS } from './constants.js';
+import { toFormUrlEncoded } from './utils/to-form-url-encoded.js';
+import { toSignatureString } from './utils/to-signature-string.js';
 
 export type DriverCloudinaryConfig = {
 	root?: string;
@@ -46,16 +48,6 @@ export class DriverCloudinary implements TusDriver {
 		return normalizePath(join(this.root, filepath), { removeLeading: true });
 	}
 
-	private toFormUrlEncoded(obj: Record<string, string>, options?: { sort: boolean }) {
-		let entries = Object.entries(obj);
-
-		if (options?.sort) {
-			entries = entries.sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
-		}
-
-		return decodeURIComponent(new URLSearchParams(entries).toString());
-	}
-
 	/**
 	 * Generate the Cloudinary sha256 signature for the given payload
 	 * @see https://cloudinary.com/documentation/signatures
@@ -67,7 +59,7 @@ export class DriverCloudinary implements TusDriver {
 			Object.entries(payload).filter(([key]) => denylist.includes(key) === false),
 		);
 
-		const signaturePayloadString = this.toFormUrlEncoded(signaturePayload, { sort: true });
+		const signaturePayloadString = toSignatureString(signaturePayload);
 
 		return createHash('sha256')
 			.update(signaturePayloadString + this.apiSecret)
@@ -155,16 +147,16 @@ export class DriverCloudinary implements TusDriver {
 		const response = await fetch(url, requestInit);
 
 		if (response.status >= 400 || !response.body) {
+			// An unread body holds its connection open
+			await response.body?.cancel();
+
 			throw new Error(`No stream returned for file "${filepath}"`);
 		}
 
 		return Readable.fromWeb(response.body);
 	}
 
-	async stat(filepath: string): Promise<{
-		size: number;
-		modified: Date;
-	}> {
+	private async requestResource(filepath: string) {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
 		const publicId = this.getPublicId(fullPath);
@@ -179,22 +171,32 @@ export class DriverCloudinary implements TusDriver {
 
 		const signature = this.getFullSignature(parameters);
 
-		const body = this.toFormUrlEncoded({
+		const body = toFormUrlEncoded({
 			signature,
 			...parameters,
 		});
 
 		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/explicit`;
 
-		const response = await fetch(url, {
+		return await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			},
 			body,
 		});
+	}
+
+	async stat(filepath: string): Promise<{
+		size: number;
+		modified: Date;
+	}> {
+		const response = await this.requestResource(filepath);
 
 		if (response.status >= 400) {
+			// An unread body holds its connection open
+			await response.body?.cancel();
+
 			throw new Error(`No stat returned for file "${filepath}"`);
 		}
 
@@ -203,12 +205,18 @@ export class DriverCloudinary implements TusDriver {
 	}
 
 	async exists(filepath: string): Promise<boolean> {
-		try {
-			await this.stat(filepath);
-			return true;
-		} catch {
-			return false;
+		const response = await this.requestResource(filepath);
+
+		// Nothing here reads the body, and an unread body holds its connection open
+		await response.body?.cancel();
+
+		if (response.status === 404) return false;
+
+		if (response.status >= 400) {
+			throw new Error(`Couldn't check whether file "${filepath}" exists (${response.status})`);
 		}
+
+		return true;
 	}
 
 	async move(src: string, dest: string): Promise<void> {
@@ -232,7 +240,7 @@ export class DriverCloudinary implements TusDriver {
 
 		const signature = this.getFullSignature(parameters);
 
-		const body = this.toFormUrlEncoded({
+		const body = toFormUrlEncoded({
 			...parameters,
 			signature,
 		});
@@ -407,7 +415,7 @@ export class DriverCloudinary implements TusDriver {
 
 		await fetch(url, {
 			method: 'POST',
-			body: this.toFormUrlEncoded({
+			body: toFormUrlEncoded({
 				...parameters,
 				signature,
 			}),

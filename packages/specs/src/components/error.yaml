@@ -1,0 +1,15 @@
+type: object
+required:
+  - message
+  - extensions
+properties:
+  message:
+    type: string
+  extensions:
+    type: object
+    required:
+      - code
+    properties:
+      code:
+        type: string
+    additionalProperties: true

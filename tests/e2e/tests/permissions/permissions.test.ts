@@ -19,9 +19,10 @@ import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 const token = randomUUID();
 
 const user = await api.request(
@@ -261,7 +262,10 @@ test('read with fields with access to id, category', async () => {
 					} as any,
 				],
 			},
-			{ fields: '*.*' },
+			{
+				// @ts-ignore
+				fields: '*.*',
+			},
 		),
 	);
 
@@ -269,4 +273,22 @@ test('read with fields with access to id, category', async () => {
 		id: expect.anything(),
 		category: expect.anything(),
 	});
+});
+
+test('deduplicates primary keys when validating item access', async () => {
+	await api.request(
+		updatePolicy(policy.id, {
+			permissions: [
+				{
+					action: 'update',
+					collection: collections.trains,
+					fields: ['*'],
+				} as any,
+			],
+		}),
+	);
+
+	expect(
+		await userApi.request(updateItems(collections.trains, [String(train.id), String(train.id)], { name: 'Deduped' })),
+	).toBeDefined();
 });

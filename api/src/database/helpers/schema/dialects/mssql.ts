@@ -3,6 +3,10 @@ import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js
 import { type CreateIndexOptions, SchemaHelper, type SortRecord, type Sql } from '../types.js';
 import { prepQueryParams } from '../utils/prep-query-params.js';
 
+// Triggers rarely change at runtime and aren't managed by Directus, so cache the per-collection
+// lookup to avoid an extra round-trip on every insert
+const triggerCache = new Map<string, boolean>();
+
 export class SchemaHelperMSSQL extends SchemaHelper {
 	override generateIndexName(
 		type: 'unique' | 'foreign' | 'index',
@@ -10,6 +14,21 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		fields: string | string[],
 	): string {
 		return getDefaultIndexName(type, collection, fields, { maxLength: 128 });
+	}
+
+	override async hasTriggers(collection: string): Promise<boolean> {
+		const cached = triggerCache.get(collection);
+		if (cached !== undefined) return cached;
+
+		const result = await this.knex.raw<{ has_trigger: number }[]>(
+			`SELECT TOP 1 1 AS has_trigger FROM sys.triggers WHERE parent_id = OBJECT_ID(?)`,
+			[collection],
+		);
+
+		const hasTriggers = Array.isArray(result) && result.length > 0;
+		triggerCache.set(collection, hasTriggers);
+
+		return hasTriggers;
 	}
 
 	override applyLimit(rootQuery: Knex.QueryBuilder, limit: number): void {

@@ -1,11 +1,13 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { FlowRaw } from '@directus/types';
+import type { FlowRaw, OperationRaw } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { z } from 'zod';
 import { FlowsService } from '../../../services/flows.js';
+import { ItemsService } from '../../../services/items.js';
 import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
+import { relayoutFlow } from '../operations/position.js';
 import { FlowItemInputSchema, FlowItemValidateSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
 import { buildSanitizedQueryFromArgs } from '../utils.js';
 
@@ -42,12 +44,17 @@ export const FlowsInputSchema = z.object({
 export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 	name: 'flows',
 	admin: true,
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Reads and changes Directus automation flows. Use for event, schedule, webhook, operation, or manual flow definitions.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['automation', 'workflow', 'webhook', 'schedule', 'event hook', 'manual flow'],
 	annotations: {
 		title: 'Directus - Flows',
+		destructiveHint: true,
 	},
 	inputSchema: FlowsInputSchema,
 	validateSchema: FlowsValidateSchema,
+	readOnly: (input) => input.action === 'read',
 	endpoint({ data }) {
 		if (!isObject(data) || !('id' in data)) {
 			return;
@@ -61,8 +68,28 @@ export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 			accountability,
 		});
 
+		// New nested operations get placeholder coordinates for the NOT NULL
+		// columns; relayoutFlow assigns the real spots after the mutation.
+		// Entries with an id are updates to rows that already have coordinates
+		const prepareNestedOperations = (data: Partial<FlowRaw>) => {
+			if (!Array.isArray(data.operations)) return false;
+
+			data.operations = data.operations.map((operation) => {
+				const partial = operation as Partial<OperationRaw>;
+				return (partial.id ? partial : { position_x: 19, position_y: 1, ...partial }) as OperationRaw;
+			});
+
+			return true;
+		};
+
+		const layoutService = new ItemsService<OperationRaw>('directus_operations', { schema, accountability });
+
 		if (args.action === 'create') {
+			const hasNestedOperations = prepareNestedOperations(args.data as Partial<FlowRaw>);
 			const savedKey = await flowsService.createOne(args.data);
+
+			if (hasNestedOperations) await relayoutFlow(layoutService, flowsService, savedKey as string);
+
 			const result = await flowsService.readOne(savedKey);
 
 			return {
@@ -83,7 +110,11 @@ export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 
 		if (args.action === 'update') {
 			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+			const hasNestedOperations = prepareNestedOperations(args.data as Partial<FlowRaw>);
 			const updatedKey = await flowsService.updateOne(args.key, args.data as Partial<FlowRaw>);
+
+			if (hasNestedOperations) await relayoutFlow(layoutService, flowsService, args.key);
+
 			const result = await flowsService.readOne(updatedKey, sanitizedQuery);
 
 			return {

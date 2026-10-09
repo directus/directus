@@ -32,6 +32,20 @@ fields:
       placeholder: en-US
     width: half
 
+  - field: default_save_action
+    interface: select-dropdown
+    width: half
+    options:
+      placeholder: $t:save_and_quit
+      choices:
+        - value: save-and-quit
+          text: $t:save_and_quit
+        - value: save-and-stay
+          text: $t:save_and_stay
+        - value: save-and-create-new
+          text: $t:save_and_create_new
+    note: $t:default_save_action_note
+
   - field: project_owner
     interface: system-owner
     width: half
@@ -64,6 +78,24 @@ fields:
     interface: system-modules
     special:
       - cast-json
+
+  - field: live_preview_divider
+    interface: presentation-divider
+    options:
+      icon: preview
+      title: $t:fields.directus_settings.live_preview
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: preview_base_url
+    interface: input
+    options:
+      iconRight: link
+      placeholder: https://example.com
+    note: $t:fields.directus_settings.preview_base_url_note
+    width: full
 
   - field: visual_editor_divider
     interface: presentation-divider

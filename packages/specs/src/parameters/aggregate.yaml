@@ -1,0 +1,68 @@
+description: >
+  Perform calculations on a set of values. Each key is an aggregate function name, and each value is the field(s) to
+  apply it to. `count` also accepts `*` to count all items regardless of field.
+in: query
+name: aggregate
+required: false
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        count:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        countDistinct:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        sum:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        sumDistinct:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        avg:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        avgDistinct:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        min:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        max:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+    examples:
+      none:
+        summary: No aggregation specified (default)
+      countAll:
+        summary: Count all items
+        value: { 'count': ['*'] }
+      multiField:
+        summary: Multiple aggregate functions
+        value: { 'count': ['views', 'comments'], 'avg': ['rating'] }

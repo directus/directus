@@ -22,6 +22,7 @@ import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { getEntitlementManager } from '../license/index.js';
 import { useLogger } from '../logger/index.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { getSecret } from '../utils/get-secret.js';
@@ -368,6 +369,18 @@ export class UsersService extends ItemsService {
 	 * Delete multiple users by primary key
 	 */
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		if (this.accountability) {
+			await validateAccess(
+				{
+					collection: 'directus_users',
+					action: 'delete',
+					accountability: this.accountability,
+					primaryKeys: keys,
+				},
+				{ knex: this.knex, schema: this.schema },
+			);
+		}
+
 		if (opts?.onRequireUserIntegrityCheck) {
 			opts.onRequireUserIntegrityCheck(opts?.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None);
 		} else {
@@ -536,7 +549,11 @@ export class UsersService extends ItemsService {
 
 		if (hasEmailVerification) {
 			const mailService = new MailService(serviceOptions);
-			const payload = { email: input.email, scope: 'pending-registration' };
+
+			// Prefer stored email on existing, it can differ from the provided one depending on the database collation
+			const verificationEmail = user?.email ?? input.email;
+
+			const payload = { email: verificationEmail, scope: 'pending-registration' };
 
 			const token = jwt.sign(payload, getSecret(), {
 				expiresIn: env['EMAIL_VERIFICATION_TOKEN_TTL'] as StringValue | number,
@@ -553,13 +570,13 @@ export class UsersService extends ItemsService {
 
 			mailService
 				.send({
-					to: input.email,
+					to: verificationEmail,
 					subject: 'Verify your email address', // TODO: translate after theres support for internationalized emails
 					template: {
 						name: 'user-registration',
 						data: {
 							url: verificationUrl,
-							email: input.email,
+							email: verificationEmail,
 							first_name,
 							last_name,
 						},

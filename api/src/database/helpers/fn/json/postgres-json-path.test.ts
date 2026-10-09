@@ -89,6 +89,7 @@ const TEST_CASES = [
 		bindings: ['first_name', 'last_name'],
 		description: 'nested properties with underscores',
 	},
+	{ input: '.color.', template: '->?', bindings: ['color'], description: 'trailing dot drops empty segment' },
 ];
 
 describe('buildPostgresJsonPath', () => {

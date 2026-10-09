@@ -89,7 +89,7 @@ describe('useElementSize', () => {
 		// Mock ResizeObserver
 		mockResizeObserver = new MockResizeObserver(() => {});
 
-		global.ResizeObserver = vi.fn().mockImplementation((callback) => {
+		global.ResizeObserver = vi.fn().mockImplementation(function (callback: ResizeObserverCallback) {
 			mockResizeObserver = new MockResizeObserver(callback);
 			return mockResizeObserver;
 		});

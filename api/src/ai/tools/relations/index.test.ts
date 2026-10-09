@@ -5,10 +5,6 @@ import { relations } from './index.js';
 
 vi.mock('../../../services/relations.js');
 
-vi.mock('../../../utils/get-snapshot.js', () => ({
-	getSnapshot: vi.fn(),
-}));
-
 describe('relations tool ', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
 	const mockAccountability = { user: 'test-user', admin: true } as Accountability;
@@ -35,7 +31,9 @@ describe('relations tool ', () => {
 				deleteOne: vi.fn(),
 			};
 
-			vi.mocked(RelationsService).mockImplementation(() => mockRelationsService as unknown as RelationsService);
+			vi.mocked(RelationsService).mockImplementation(function () {
+				return mockRelationsService as unknown as RelationsService;
+			});
 		});
 
 		describe('CREATE action', () => {

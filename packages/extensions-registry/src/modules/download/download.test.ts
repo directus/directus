@@ -179,7 +179,7 @@ describe('download', () => {
 	test('Combines all parameters correctly', async () => {
 		const versionId = 'complex-extension-v2.1.0';
 		const requireSandbox = true;
-		const options = { registry: 'https://enterprise-registry.directus.io' };
+		const options = { registry: 'https://enterprise-registry.example.com' };
 		const mockBody = new ReadableStream();
 		const mockResponse = { body: mockBody };
 

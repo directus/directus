@@ -38,6 +38,44 @@ describe('IpBlocklist', () => {
 		});
 	});
 
+	describe('embedded IPv4 in IPv6 transition forms', () => {
+		test('blocks IPv4-mapped / IPv4-compatible / NAT64 / 6to4 forms of a denied IPv4', () => {
+			blocklist.parseAddress('169.254.169.254');
+
+			expect(blocklist.checkAddress('169.254.169.254')).toBe(true);
+			expect(blocklist.checkAddress('::ffff:169.254.169.254')).toBe(true); // IPv4-mapped
+			expect(blocklist.checkAddress('::a9fe:a9fe')).toBe(true); // IPv4-compatible
+			expect(blocklist.checkAddress('64:ff9b::a9fe:a9fe')).toBe(true); // NAT64
+			expect(blocklist.checkAddress('2002:a9fe:a9fe::')).toBe(true); // 6to4
+			expect(blocklist.checkAddress('2002:a9fe:a9fe:abcd:1:2:3:4')).toBe(true);
+		});
+
+		test('blocks transition forms of a denied IPv4 subnet', () => {
+			blocklist.parseSubnet('10.0.0.0/8');
+
+			expect(blocklist.checkAddress('::a00:5')).toBe(true); // ::10.0.0.5
+			expect(blocklist.checkAddress('64:ff9b::a00:5')).toBe(true); // NAT64 10.0.0.5
+			expect(blocklist.checkAddress('2002:a00:5::')).toBe(true); // 6to4 10.0.0.5
+		});
+
+		test('does not block transition forms of a public IPv4', () => {
+			blocklist.parseAddress('169.254.169.254');
+
+			expect(blocklist.checkAddress('::ffff:8.8.8.8')).toBe(false);
+			expect(blocklist.checkAddress('::808:808')).toBe(false); // ::8.8.8.8
+			expect(blocklist.checkAddress('2002:808:808::')).toBe(false); // 6to4 8.8.8.8
+			expect(blocklist.checkAddress('64:ff9b::808:808')).toBe(false); // NAT64 8.8.8.8
+		});
+
+		test('does not treat :: / ::1 as an embedded IPv4 of a denied 0.0.0.0/8', () => {
+			blocklist.parseSubnet('0.0.0.0/8');
+
+			// ::1 and :: must not be classified as ::0.0.0.1 / ::0.0.0.0 and matched against the IPv4 rule
+			expect(blocklist.checkAddress('::1')).toBe(false);
+			expect(blocklist.checkAddress('::')).toBe(false);
+		});
+	});
+
 	describe('parseSubnet', () => {
 		test('adds IPv4 subnet to blocklist', () => {
 			blocklist.parseSubnet('192.168.1.0/24');
@@ -229,6 +267,108 @@ describe('IpBlocklist', () => {
 			expect(blocklist.checkAddress('::1')).toBe(true);
 			expect(blocklist.checkAddress('192.168.1.50')).toBe(true);
 			expect(blocklist.checkAddress('192.168.1.51')).toBe(false);
+		});
+	});
+
+	describe('single IP addresses', () => {
+		test.each(['127.0.0.1', '10.0.0.1', '0.0.0.0', '255.255.255.255'])('accepts IPv4 %s', (ip) => {
+			expect(IpBlocklist.isAddress(ip)).toBe(true);
+			expect(IpBlocklist.isRange(ip)).toBe(false);
+			expect(IpBlocklist.isSubnet(ip)).toBe(false);
+		});
+
+		test.each(['::1', '::', '2001:db8::1', 'fe80::1', '2001:0db8:0000:0000:0000:0000:0000:0001'])(
+			'accepts IPv6 %s',
+			(ip) => {
+				expect(IpBlocklist.isAddress(ip)).toBe(true);
+				expect(IpBlocklist.isRange(ip)).toBe(false);
+				expect(IpBlocklist.isSubnet(ip)).toBe(false);
+			},
+		);
+
+		test.each(['10.0.0', '10.0.0.1.1', '256.0.0.1', '10.0.0.-1', 'not-an-ip', ''])('rejects malformed IP %s', (ip) => {
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
+			expect(IpBlocklist.isRange(ip)).toBe(false);
+			expect(IpBlocklist.isSubnet(ip)).toBe(false);
+		});
+	});
+
+	describe('CIDR blocks', () => {
+		test.each(['10.0.0.0/24', '10.0.0.1/24', '0.0.0.0/0', '192.168.1.0/32'])('accepts IPv4 CIDR %s', (ip) => {
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
+			expect(IpBlocklist.isRange(ip)).toBe(false);
+			expect(IpBlocklist.isSubnet(ip)).toBe(true);
+		});
+
+		test.each(['2001:db8::/32', '::/0', 'fe80::1/128'])('accepts IPv6 CIDR %s', (ip) => {
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
+			expect(IpBlocklist.isRange(ip)).toBe(false);
+			expect(IpBlocklist.isSubnet(ip)).toBe(true);
+		});
+
+		test.each([
+			'10.0.0.1/33',
+			'2001:db8::/129',
+			'10.0.0.1/abc',
+			'10.0.0.1/',
+			'10.0.0.1/24.5',
+			'10.0.0.1/-1',
+			'/24',
+			'10.0.0/24',
+		])('rejects malformed CIDR %s', (ip) => {
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
+			expect(IpBlocklist.isRange(ip)).toBe(false);
+			expect(IpBlocklist.isSubnet(ip)).toBe(false);
+		});
+
+		test('rejects more than one prefix', () => {
+			expect(IpBlocklist.isSubnet('10.0.0.1/24/8')).toBe(false);
+		});
+	});
+
+	describe('IP masks', () => {
+		test.each(['10.0.0.0/255.255.255.0', '192.168.0.0/255.255.0.0', 'fe80::/ffff::'])('rejects mask %s', (ip) => {
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
+			expect(IpBlocklist.isRange(ip)).toBe(false);
+			expect(IpBlocklist.isSubnet(ip)).toBe(false);
+		});
+	});
+
+	describe('IP ranges', () => {
+		test.each([
+			'10.0.0.1-10.0.0.5',
+			'0.0.0.0-255.255.255.255',
+			'fe80::1-fe80::5',
+			'::1-::2',
+			'10.0.0.1-10.0.0.1',
+			'10.0.255.255-10.1.0.0',
+		])('accepts range %s', (ip) => {
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
+			expect(IpBlocklist.isRange(ip)).toBe(true);
+			expect(IpBlocklist.isSubnet(ip)).toBe(false);
+		});
+
+		test.each([
+			'10.0.2.1-10.0.0.1',
+			'10.0.0.1-',
+			'-10.0.0.1',
+			'-',
+			'10.0.0.1-10.0.0.2-10.0.0.3',
+			'10.0.0.1-not-an-ip',
+			'10.0.0-10.0.0.5',
+			'10.0.0.1-::1',
+		])('rejects malformed range %s', (ip) => {
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
+			expect(IpBlocklist.isRange(ip)).toBe(false);
+			expect(IpBlocklist.isSubnet(ip)).toBe(false);
+		});
+	});
+
+	describe('wildcards', () => {
+		test.each(['10.0.0.*', '*', '*.*.*.*', '10.0.*.1'])('rejects wildcard %s', (ip) => {
+			expect(IpBlocklist.isAddress(ip)).toBe(false);
+			expect(IpBlocklist.isRange(ip)).toBe(false);
+			expect(IpBlocklist.isSubnet(ip)).toBe(false);
 		});
 	});
 });

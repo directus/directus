@@ -10,7 +10,7 @@ export class GeometryHelperPostgres extends GeometryHelper {
 	}
 
 	override createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
-		const type = field.type.split('.')[1] ?? 'geometry';
+		const type = this.geometrySubtype(field) ?? 'geometry';
 		return table.specificType(field.field, `geometry(${type}, 4326)`);
 	}
 

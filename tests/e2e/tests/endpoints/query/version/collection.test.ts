@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { SchemaBuilder } from '@directus/schema-builder';
 import {
 	createContentVersion,
 	createDirectus,
@@ -25,8 +26,18 @@ export type Articles = {
 	author: string;
 };
 
+const schema = new SchemaBuilder()
+	.collection('articles', (c) => {
+		c.field('id').id();
+		c.field('title').string().options({ nullable: false });
+		c.field('author').string();
+	})
+	.options({ versioning: true });
+
+const snapshot = schema.snapshot();
+
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api, 'snapshot-collection.json');
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 // TODO: fix later
 if (database !== 'mssql') {

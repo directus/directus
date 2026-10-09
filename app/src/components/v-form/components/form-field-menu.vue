@@ -26,11 +26,15 @@ const props = withDefaults(
 		modelValue?: string | number | boolean | Record<string, any> | Array<any> | null;
 		initialValue?: string | number | boolean | Record<string, any> | Array<any> | null;
 		restricted?: boolean;
+		// the interface locked itself read-only for a data-integrity reason (not permissions),
+		// e.g. WYSIWYG content with markup the editor can't represent, raw editing bypasses that guard
+		interfaceLocked?: boolean;
 		disabledOptions?: MenuOptions[];
 	}>(),
 	{
 		modelValue: null,
 		initialValue: null,
+		interfaceLocked: false,
 		disabledOptions: () => [],
 	},
 );
@@ -51,13 +55,17 @@ const isRequired = computed(() => {
 const localDisabledOptions = computed(() => {
 	const disabledOptions = new Set(props.disabledOptions);
 
-	if (props.restricted) disabledOptions.add('edit-raw');
+	// raw editing is view-only when restricted (permissions) OR the interface locked itself
+	const rawRestricted = props.restricted || props.interfaceLocked;
 
-	if (!props.restricted) disabledOptions.add('view-raw');
+	if (rawRestricted) disabledOptions.add('edit-raw');
+
+	if (!rawRestricted) disabledOptions.add('view-raw');
 
 	if (!isCopySupported.value) disabledOptions.add('copy-raw');
 
-	if (!isPasteSupported.value || props.restricted) disabledOptions.add('paste-raw');
+	// paste-raw also writes the value directly, bypassing the interface, so gate it on the lock too
+	if (!isPasteSupported.value || rawRestricted) disabledOptions.add('paste-raw');
 
 	if (defaultValue.value === null || props.restricted) disabledOptions.add('reset-to-default');
 

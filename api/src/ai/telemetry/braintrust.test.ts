@@ -17,10 +17,12 @@ describe('initBraintrust', () => {
 	const mockShutdown = vi.fn().mockResolvedValue(undefined);
 
 	beforeEach(() => {
-		mockNodeTracerProvider.mockImplementation(() => ({
-			getTracer: mockGetTracer,
-			shutdown: mockShutdown,
-		}));
+		mockNodeTracerProvider.mockImplementation(function () {
+			return {
+				getTracer: mockGetTracer,
+				shutdown: mockShutdown,
+			};
+		});
 	});
 
 	afterEach(() => {

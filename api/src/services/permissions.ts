@@ -29,7 +29,7 @@ export class PermissionsService extends ItemsService {
 	}
 
 	private async clearCaches(opts?: MutationOptions) {
-		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache, autoPurgeSchema: false });
 		await getEntitlementManager().clearCache('custom_permission_rules_enabled');
 
 		if (this.cache && opts?.autoPurgeCache !== false) {

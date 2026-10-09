@@ -1,6 +1,6 @@
 {
 	"name": "@directus/update-check",
-	"version": "14.0.0",
+	"version": "14.0.1",
 	"description": "Check if an update for Directus is available",
 	"homepage": "https://directus.com",
 	"repository": {

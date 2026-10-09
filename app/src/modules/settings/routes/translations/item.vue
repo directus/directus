@@ -98,8 +98,8 @@ const internalPrimaryKey = computed(() => {
 });
 
 const disabledOptions = computed(() => {
-	if (isNew.value) return ['save-as-copy'];
-	return [];
+	if (isNew.value) return ['save-and-quit', 'save-as-copy'];
+	return ['save-and-quit'];
 });
 
 async function saveAndQuit() {

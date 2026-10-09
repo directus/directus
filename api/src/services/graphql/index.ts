@@ -1,4 +1,3 @@
-import { useEnv } from '@directus/env';
 import type {
 	AbstractServiceOptions,
 	Accountability,
@@ -10,23 +9,16 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import type { ExecutionResult, FormattedExecutionResult, GraphQLSchema } from 'graphql';
-import { execute, NoSchemaIntrospectionCustomRule, specifiedRules, validate } from 'graphql';
+import { execute, validate } from 'graphql';
 import type { Knex } from 'knex';
 import getDatabase from '../../database/index.js';
 import { getService } from '../../utils/get-service.js';
 import { formatError } from './errors/format.js';
 import { GraphQLExecutionError, GraphQLValidationError } from './errors/index.js';
+import { getValidationRules } from './rules/index.js';
 import { generateSchema } from './schema/index.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
-
-const env = useEnv();
-
-const validationRules = Array.from(specifiedRules);
-
-if (env['GRAPHQL_INTROSPECTION'] === false) {
-	validationRules.push(NoSchemaIntrospectionCustomRule);
-}
 
 export class GraphQLService {
 	accountability: Accountability | null;
@@ -51,6 +43,8 @@ export class GraphQLService {
 		contextValue,
 	}: GraphQLParams): Promise<FormattedExecutionResult> {
 		const schema = await this.getSchema();
+
+		const validationRules = getValidationRules({ operationName });
 
 		const validationErrors = validate(schema, document, validationRules).map((validationError) =>
 			addPathToValidationError(validationError),

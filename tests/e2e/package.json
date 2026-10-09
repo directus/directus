@@ -3,6 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
+		"build": "tsx scripts/build-types.ts",
 		"test": "vitest --project sqlite",
 		"test:dev": "FORCE_COLOR=true NODE_ENV=development vitest --project sqlite",
 		"test:all": "ALL=true vitest"
@@ -14,19 +15,16 @@
 	"packageManager": "pnpm@10.14.0",
 	"dependencies": {
 		"@directus/license": "catalog:",
-		"@directus/mock-license-server": "workspace:*",
+		"@directus/mock-license-server": "catalog:",
 		"@directus/sandbox": "workspace:*",
+		"@directus/schema-builder": "workspace:*",
 		"@directus/sdk": "workspace:*",
-		"@directus/utils": "workspace:*",
-		"async-mutex": "catalog:",
-		"chalk": "catalog:",
-		"commander": "catalog:",
-		"get-port": "catalog:",
+		"@directus/system-data": "workspace:*",
 		"date-fns": "catalog:",
-		"jose": "catalog:",
-		"zod": "catalog:",
 		"knex": "catalog:",
-		"lodash-es": "catalog:"
+		"ldapts": "catalog:",
+		"lodash-es": "catalog:",
+		"tus-js-client": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",

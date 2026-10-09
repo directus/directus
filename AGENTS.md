@@ -47,9 +47,9 @@ pnpm --filter @directus/api test    # Test specific package
 cd api && pnpm test:watch           # Watch mode in package
 pnpm test:coverage                  # Coverage report
 
-# Blackbox/E2E tests (requires building first)
-pnpm test:blackbox
-TEST_DB=postgres pnpm test:blackbox  # Against specific database
+# End to end tests (requires building first, and Docker running)
+cd tests/e2e && pnpm test              # Against sqlite
+cd tests/e2e && pnpm vitest --project postgres   # Against a specific database
 ```
 
 ## Architecture
@@ -93,6 +93,9 @@ TEST_DB=postgres pnpm test:blackbox  # Against specific database
 - Prefer `const` over `let`, avoid `var`
 - Follow existing ESLint and Prettier configurations
 - Test files named `*.test.ts`, placed next to source files
+- Keep inline comments minimal and concise; add them only when strictly needed (non-obvious logic, gotchas, why not
+  what)
+- Don't comment what the code already says; delete redundant or narrating comments
 
 ## Testing Conventions
 

@@ -1,4 +1,4 @@
-import type { MergeCoreCollection } from '../index.js';
+import type { MergeCoreCollection, StringLiteralUnion } from '../index.js';
 
 export type DirectusFolder<Schema = any> = MergeCoreCollection<
 	Schema,
@@ -7,5 +7,6 @@ export type DirectusFolder<Schema = any> = MergeCoreCollection<
 		id: string;
 		name: string;
 		parent: DirectusFolder<Schema> | string | null;
+		type: StringLiteralUnion<'files' | 'flows'>;
 	}
 >;

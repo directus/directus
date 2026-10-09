@@ -48,3 +48,23 @@ test('Constructs the message without the key', () => {
 	const result = messageConstructor(sample);
 	expect(result).toBe(`Invalid foreign key for field "${sample.field}" in collection "${sample.collection}".`);
 });
+
+test('Constructs the message using the constraint name when field/collection are absent', () => {
+	sample.collection = null;
+	sample.field = null;
+	sample.value = null;
+	sample.constraint = 'articles_author_foreign';
+
+	const result = messageConstructor(sample);
+	expect(result).toBe(`Invalid foreign key for constraint "${sample.constraint}".`);
+});
+
+test('Omits the constraint name when field/collection are present', () => {
+	sample.constraint = 'articles_author_foreign';
+
+	const result = messageConstructor(sample);
+
+	expect(result).toBe(
+		`Invalid foreign key "${sample.value}" for field "${sample.field}" in collection "${sample.collection}".`,
+	);
+});

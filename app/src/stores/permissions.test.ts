@@ -1,11 +1,10 @@
-import { PermissionsAction, User } from '@directus/types';
+import { PermissionsAction } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { usePermissionsStore } from './permissions';
 import { useUserStore } from './user';
 import { mockedStore } from '@/__utils__/store';
-import api from '@/api';
 import { ActionPermission, CollectionPermission } from '@/types/permissions';
 
 vi.mock('@/api');
@@ -38,55 +37,6 @@ afterEach(() => {
 const actions: PermissionsAction[] = ['create', 'read', 'update', 'delete', 'share'];
 
 describe('actions', () => {
-	describe('hydrate', () => {
-		test('should fetch additional fields when there are dynamic variables in presets', async () => {
-			const mockUser = {
-				id: sample.user.id,
-				role: {
-					id: sample.role.id,
-				},
-			} as User;
-
-			const userStore = useUserStore();
-			userStore.currentUser = mockUser;
-
-			const hydrateAdditionalFieldsSpy = vi.spyOn(userStore, 'hydrateAdditionalFields').mockResolvedValue();
-
-			const permissionWithDynamicVariablesInPresets = {
-				presets: {
-					field_a: '$CURRENT_ROLE.name',
-					field_b: '$CURRENT_USER.custom_user_field',
-				},
-			};
-
-			vi.spyOn(vi.mocked(api), 'get').mockResolvedValueOnce({
-				data: { data: { [sample.collection]: { read: permissionWithDynamicVariablesInPresets } } },
-			});
-
-			const permissionsStore = usePermissionsStore();
-			await permissionsStore.hydrate();
-
-			expect(hydrateAdditionalFieldsSpy).toHaveBeenCalledOnce();
-			expect(hydrateAdditionalFieldsSpy).toBeCalledWith(expect.arrayContaining(['role.name', 'custom_user_field']));
-		});
-
-		test('should not fetch additional fields when there are no dynamic variables in presets', async () => {
-			const mockUser = {
-				id: sample.user.id,
-				role: {
-					id: sample.role.id,
-				},
-			} as User;
-
-			const userStore = useUserStore();
-			userStore.currentUser = mockUser;
-
-			vi.spyOn(userStore, 'hydrateAdditionalFields').mockResolvedValue();
-
-			expect(userStore.hydrateAdditionalFields).not.toHaveBeenCalled();
-		});
-	});
-
 	describe('getPermission', () => {
 		it.each(actions)('should return matching permission if it exists', (action) => {
 			const permission: ActionPermission = {

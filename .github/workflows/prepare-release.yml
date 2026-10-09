@@ -139,9 +139,20 @@ jobs:
 
           echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
 
-          # Capture the changeset version output
+          # Capture the changeset version output without letting `set -e`
+          # abort before we've printed it (default shell runs with -eo pipefail)
+          set +e
           OUTPUT=$(pnpm changeset version 2>&1)
+          STATUS=$?
+          set -e
+
+          # Always surface the output so failures are visible in the logs
           echo "$OUTPUT"
+
+          if [ "$STATUS" -ne 0 ]; then
+            echo "❌ 'pnpm changeset version' failed with exit code $STATUS"
+            exit 1
+          fi
 
           # Extract release notes from the output
           # The release notes generator outputs between the divider lines
@@ -200,7 +211,6 @@ jobs:
           - [x] Release notes generated
           ${{ steps.crowdin-check.outputs.crowdin_task }}
           - [ ] PR reviewed and approved
-          - [ ] Blackbox tests passed
           - [ ] E2E tests passed
 
           ### 🚀 Release Notes
@@ -238,7 +248,6 @@ jobs:
               --title "$PR_TITLE" \
               --body "$PR_BODY" \
               --label "Release" \
-              --label "Run Blackbox" \
               --label "Run E2E" \
               --label "No Changeset" \
               --head "$BRANCH_NAME" \

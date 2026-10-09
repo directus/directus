@@ -22,7 +22,7 @@ post:
               format: binary
   responses:
     '204':
-      description: Successful request
+      $ref: '../../openapi.yaml#/components/responses/NoContentResponse'
     '403':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
   tags:

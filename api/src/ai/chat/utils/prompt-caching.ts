@@ -38,6 +38,9 @@ export function buildCacheAwareSystemPrompt(provider: ProviderType, content: str
  * prefix (tools + system + history) caches as it grows, and append the per-request page
  * context as a new user message after the breakpoint so it stays out of the cached prefix.
  *
+ * The breakpoint lands on the last message even when it is a tool result — most tool-search
+ * steps end in one, and skipping those steps would leave the large history prefix uncached.
+ *
  * Context is only appended after a real user turn. On multi-step continuations the last
  * message is an assistant or tool result; appending a user message there would make the
  * model respond to the context instead of synthesizing the tool output. The model still

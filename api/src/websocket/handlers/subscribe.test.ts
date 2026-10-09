@@ -19,9 +19,11 @@ vi.mock('../../utils/get-schema', () => ({
 }));
 
 vi.mock('../../services', () => ({
-	ItemsService: vi.fn(() => ({
-		readByQuery: vi.fn(),
-	})),
+	ItemsService: vi.fn(function () {
+		return {
+			readByQuery: vi.fn(),
+		};
+	}),
 	MetaService: vi.fn(),
 }));
 
@@ -125,6 +127,69 @@ describe('WebSocket subscribe handler', () => {
 		// expect
 		expect(onMessage).toBeCalled();
 		expect(subscribe).not.toBeCalled();
+	});
+
+	test('should fail to subscribe to an inactive collection', async () => {
+		// an admin is told the collection is inactive without a permission lookup
+		const client = mockClient(mockAccountability({ admin: true }));
+
+		vi.mocked(getSchema).mockImplementation(async () => ({
+			collections: {
+				test_collection: {
+					collection: 'test_collection',
+					primary: 'id',
+					singleton: false,
+					sortField: null,
+					note: null,
+					accountability: null,
+					status: 'inactive',
+					fields: {},
+				},
+			} as CollectionsOverview,
+			relations: [] as Relation[],
+		}));
+
+		const subscribe = vi.spyOn(handler, 'subscribe');
+
+		emitter.emitAction('websocket.message', {
+			client,
+			message: {
+				type: 'subscribe',
+				collection: 'test_collection',
+				uid: '123',
+			},
+		});
+
+		await delay(10);
+
+		expect(subscribe).not.toBeCalled();
+		expect(handler.subscriptions['test_collection']).toBeUndefined();
+		expect(client.send).toBeCalledWith(expect.stringContaining('COLLECTION_INACTIVE'));
+		expect(client.send).toBeCalledWith(expect.stringContaining('"uid":"123"'));
+	});
+
+	test('should fail to subscribe to a collection that is not on the schema', async () => {
+		const client = mockClient(mockAccountability({ admin: true }));
+
+		mockSchema();
+
+		const subscribe = vi.spyOn(handler, 'subscribe');
+
+		emitter.emitAction('websocket.message', {
+			client,
+			message: {
+				type: 'subscribe',
+				collection: 'test_collection',
+				uid: '123',
+			},
+		});
+
+		await delay(10);
+
+		expect(subscribe).not.toBeCalled();
+		expect(handler.subscriptions['test_collection']).toBeUndefined();
+		expect(client.send).toBeCalledWith(expect.stringContaining('FORBIDDEN'));
+		expect(client.send).toBeCalledWith(expect.stringContaining('"uid":"123"'));
 	});
 
 	test('should subscribe/unsubscribe to collection', async () => {

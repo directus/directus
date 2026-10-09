@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
 import { Field, ValidationError } from '@directus/types';
-import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
+import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash-es';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import VDivider from '../v-divider.vue';
 import VInfo from '../v-info.vue';
@@ -18,6 +18,7 @@ import { CollabContext } from '@/composables/use-collab';
 import { useFieldsStore } from '@/stores/fields';
 import type { ContentVersionMaybeNew } from '@/types/versions';
 import { applyConditions } from '@/utils/apply-conditions';
+import { isFieldCollectionInactive } from '@/utils/collection-status';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
@@ -47,6 +48,8 @@ const props = withDefaults(
 		showDivider?: boolean;
 		inline?: boolean;
 		version?: ContentVersionMaybeNew | null;
+		// when true, an edit moves the item to a Draft version; interfaces use it to gate edit-on-open intents
+		canAutoSwitchToDraft?: boolean;
 		comparison?: ComparisonContext;
 		collabContext?: CollabContext;
 	}>(),
@@ -221,6 +224,10 @@ function useForm() {
 		return fieldNames.value.map((name) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null));
 	});
 
+	const fieldsWithInactiveRelation = computed(() => {
+		return new Set(fields.value.filter(isFieldCollectionInactive).map((field) => field.field));
+	});
+
 	return { fields, fieldNames, fieldsMap, fieldsForGroup, isDisabled, getFieldsForGroup, isFieldVisible };
 
 	function isDisabled(field: TFormField | undefined) {
@@ -231,6 +238,7 @@ function useForm() {
 			props.disabled === true ||
 			meta?.readonly === true ||
 			field.schema?.is_generated === true ||
+			fieldsWithInactiveRelation.value.has(field.field) ||
 			(props.batchMode && batchActiveFields.value.includes(field.field) === false)
 		);
 	}
@@ -539,6 +547,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:disabled-menu="disabledMenu"
 					:direction="direction"
 					:version
+					:can-auto-switch-to-draft="canAutoSwitchToDraft"
 					@update:model-value="setValue(fieldName, $event)"
 					@set-field-value="setValue($event.field, $event.value, { force: true })"
 					@unset="unsetValue(fieldsMap[fieldName]!)"

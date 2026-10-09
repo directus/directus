@@ -10,7 +10,7 @@ import popperOffsets from '@popperjs/core/lib/modifiers/popperOffsets';
 import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow';
 import { createPopper } from '@popperjs/core/lib/popper-lite';
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, onUnmounted, type Ref, ref, useTemplateRef, watch } from 'vue';
 import TransitionBounce from '@/components/transition/bounce.vue';
@@ -391,7 +391,7 @@ function usePopper(
 						padding,
 					});
 
-					if (state.placement.startsWith('top') && overflow.top < 0) {
+					if (state.placement.startsWith('top') && overflow.top > 0) {
 						forceMaxHeight.value = state.elements.popper.offsetHeight - Math.ceil(overflow.top);
 					} else if (state.placement.startsWith('bottom') && overflow.bottom > 0) {
 						forceMaxHeight.value = state.elements.popper.offsetHeight - Math.floor(overflow.bottom);

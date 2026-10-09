@@ -22,7 +22,7 @@
 
 about: About
 directus_mscl: Directus MSCL-1.0-GPL
-privacy_policy: Privacy Policy
+data_processing_agreement: Data Processing Agreement
 contact_support: contact support
 setup_welcome: Welcome to Directus
 setup_info: Let's create your admin account and get your project up and running.
@@ -312,6 +312,10 @@ delete_folder_dialog:
   move_content: Move content one level up
   delete_content: Delete all content
   content_behavior: What should happen to the folder contents?
+delete_flow_folder_dialog:
+  content_behavior: What should happen to this folder's subfolders? Your Flows will not be deleted.
+  move_content: Delete this folder only
+  delete_content: Delete this folder and its subfolders
 validation_errors_notice: 'The following fields have invalid values:'
 validation_value_is_invalid: Value is invalid
 validationError:
@@ -343,6 +347,7 @@ validationError:
   niends_with: Value can't end with {substring}
   confirm_password: Passwords do not match
   org_name: Please include an organization name
+  unsafe: Value is not a safe number
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -625,6 +630,14 @@ import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
 import_data_validation_errors_notice: 'The following rows have invalid values:'
 import_data_error_row: 'Row {rows}{field}:'
+export_flow: Export Flow
+export_flows: Export Flows
+flow_import_input_placeholder: JSON...
+flow_import_success: Flow imported successfully.
+flow_import_failed: Couldn't import Flow
+flow_import_not_json: This file isn't valid JSON.
+flow_import_invalid_file: This file isn't a Flow export.
+flow_import_foreign_operation: This file contains an operation that belongs to a different Flow.
 snapshot:
   export: Export Schema
   download: Download Snapshot (JSON)
@@ -661,6 +674,7 @@ functions:
   minute: Minute
   second: Second
   count: Count
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -757,6 +771,7 @@ manual_string: Manually entered string
 save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
 save_and_quit: Save and Quit
+default_save_action_note: The action the Save button performs by default when editing an item.
 publish_and_quit: Publish and Quit
 publish_without_review: Publish without Review
 publish_anyway: Publish Anyway
@@ -883,6 +898,7 @@ account_created_successfully: Account Created Successfully
 auto_fill: Auto Fill
 corresponding_field: Corresponding Field
 errors:
+  COLLECTION_INACTIVE: Collection is inactive
   COLLECTION_NOT_FOUND: "Collection doesn't exist"
   CONTAINS_NULL_VALUES: Field contains null values
   CONTENT_TOO_LARGE: Submitted item/file is too large
@@ -906,6 +922,7 @@ errors:
   INVALID_USER: Failed to authenticate user
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
+  LICENSE_INVALID: License key cannot be applied
   LIMIT_EXCEEDED: 'Limit exceeded'
   METHOD_NOT_ALLOWED: Method not allowed
   NOT_NULL_VIOLATION: Value can't be null
@@ -1039,6 +1056,7 @@ operators:
   nintersects: Doesn't intersect
   intersects_bbox: Intersects bounding box
   nintersects_bbox: Doesn't intersect bounding box
+  json: JSON
   regex: Matches RegExp
 custom_validation_message: Custom Validation Message
 loading: Loading...
@@ -1049,6 +1067,7 @@ items: Items
 upload_file: Upload File
 upload_file_indeterminate: Uploading File...
 upload_file_success: File Uploaded
+upload_files_empty: No Files to Upload
 upload_files_indeterminate: 'Uploading files {done}/{total}'
 upload_files_success: '{count} Files Uploaded'
 upload_pending: Upload Pending
@@ -1071,6 +1090,7 @@ translations_display_template: Translations Display Template
 n_items_selected: 'No Items Selected | One Item Selected | {n} Items Selected'
 per_page: Per Page
 all_files: All Files
+all_flows: All Flows
 my_files: My Files
 recent_files: Recent Files
 create_folder: Create Folder
@@ -1123,6 +1143,7 @@ trigger_flow_success: Flow "{flow}" triggered successfully
 field_name_placeholder: Enter field name...
 field_key_placeholder: Enter field key...
 trigger: Trigger
+trigger_type: Trigger Type
 trigger_options: Trigger Options
 view_trigger: View Trigger
 create_trigger: Create Trigger
@@ -1131,6 +1152,8 @@ change_trigger: Change Trigger
 flow_delete_confirm: Are you sure you want to delete Flow "{flow}"? This action can not be undone.
 set_flow_active: Set Flow to Active
 set_flow_inactive: Set Flow to Inactive
+set_flows_active: Set Flows to Active
+set_flows_inactive: Set Flows to Inactive
 edit_flow: Edit Flow
 delete_flow: Delete Flow
 no_other_flows_copy: You don't have any other Flows yet.
@@ -1328,6 +1351,7 @@ right_align: Right Align
 fit_to_screen: Fit to Screen
 image_url: Image Url
 alt_text: Alternative Text
+caption: Caption
 media: Media
 quality: Quality
 width: Width
@@ -1349,6 +1373,7 @@ unlimited: Unlimited
 open_link_in: Open link in
 new_tab: New Tab
 save_image: Save Image
+save_link: Save Link
 save_media: Save Media
 wysiwyg_options:
   aligncenter: Align Center
@@ -1369,12 +1394,19 @@ wysiwyg_options:
   bullist: Bullet List
   numlist: Numbered List
   hr: Horizontal Rule
+  pagebreak: Page Break
+  insertdatetime: Insert Date/Time
+  insertdatetime_date: Date
+  insertdatetime_time: Time
+  insertdatetime_datetime: Date & Time
+  insertdatetime_locale: Localized
   link: Add/Edit Link
   unlink: Remove Link
   media: Add/Edit Media
   image: Add/Edit Image
   copy: Copy
   cut: Cut
+  default: Default
   paste: Paste
   heading: Heading
   h1: Heading 1
@@ -1386,6 +1418,7 @@ wysiwyg_options:
   pre: Preformatted
   fontselect: Select Font
   fontsizeselect: Select Font Size
+  styles: Formats
   indent: Indent
   outdent: Outdent
   undo: Undo
@@ -1394,10 +1427,63 @@ wysiwyg_options:
   removeformat: Remove Format
   selectall: Select All
   table: Table
+  table_cell: Cell
+  table_row: Row
+  table_column: Column
+  table_insert: Insert Table
+  table_insert_size: '{cols} × {rows}'
+  table_add_row_before: Add Row Above
+  table_add_row_after: Add Row Below
+  table_add_column_before: Add Column Left
+  table_add_column_after: Add Column Right
+  table_delete_row: Delete Row
+  table_delete_column: Delete Column
+  table_toggle_header_row: Toggle Header Row
+  table_toggle_header_column: Toggle Header Column
+  table_merge_cells: Merge Cells
+  table_split_cell: Split Cell
+  table_delete: Delete Table
   visualaid: View invisible elements
   source_code: Edit Source Code
+  source_code_normalization_notice: Markup that the editor can't represent is normalized when you save.
+  source_code_normalize_title: Some markup will be removed
+  source_code_normalize_body: The editor can't represent the highlighted markup, so it will be removed when you save.
+  save_anyway: Save Anyway
+  normalization_warning_title: Some formatting here isn't supported
+  normalization_warning_body:
+    This content includes items the new editor doesn't support, so the field is read-only for now. If you edit anyway,
+    those items will be removed when you save. To keep the stored HTML exactly as is, edit the raw HTML instead. This
+    warning will go away once the unsupported items are gone. If you already saved without them, you can bring the
+    original content back from Revisions.
+  normalization_warning_view_changes: View changes
+  normalization_warning_keep_readonly: Keep Read-only
+  normalization_warning_edit_anyway: Edit Anyway
+  normalization_warning_edit_raw: Edit Raw HTML
+  normalization_locked_notice:
+    This field includes formatting the new editor doesn't support, so it's read-only. Select the field to choose how to
+    edit it.
+  normalization_locked_learn_more: Learn what changed
+  paste_warning_notice:
+    We cleaned unsupported markup from what you pasted. Some apps wrap copied content in extra markup this editor
+    doesn't support.
+  paste_warning_see_removed: See what was removed
+  paste_warning_title: Unsupported markup was removed from your paste
+  paste_warning_body:
+    The cleaned paste keeps your text and formatting. Undo Paste takes it back out. Paste Raw keeps the HTML exactly as
+    copied and switches this field to the raw HTML editor.
+  paste_warning_body_kept:
+    The cleaned paste keeps your text and formatting. The content changed since the paste, so it can no longer be undone
+    from here.
+  paste_warning_undo: Undo Paste
+  paste_warning_paste_raw: Paste Raw
+  paste_warning_keep: Keep Cleaned
+  normalization_comparison_notice:
+    This version includes formatting the editor can't display, so the stored HTML is shown as is. Applying it restores
+    the content unchanged.
   fullscreen: Full Screen
   directionality: Directionality
+  ltr: Left to Right
+  rtl: Right to Left
   lazy_loading: Lazy Load Image
   lazy_loading_label: Enable Lazy Loading
 dropdown: Dropdown
@@ -1468,6 +1554,11 @@ licensing:
   resolve_title_expired: License Expiration
   resolve_title_suspended: License Suspension
   resolve_title_canceled: License Canceled
+  resolve_title_invalid_key: Invalid License Key
+  resolve_title_activation_limit: Activation Limit Reached
+  resolve_title_binding_mismatch: License Registered Elsewhere
+  resolve_title_verification: License Could Not Be Verified
+  resolve_title_unavailable: License Could Not Be Checked
   resolve_title_env_removed: License Removed
   resolve_title_grace: Resolve License Limits
   resolve_title_no_resolution: License Inactive
@@ -1490,6 +1581,35 @@ licensing:
     Your license is no longer active and your project has been downgraded to the Core plan. Some features may no longer
     be available, and items beyond the Core plan limits remain stored but locked in Directus. To restore full access,
     add a new license key.
+  resolve_notice_expired:
+    Your license has expired and your project has been downgraded to the Core plan. Some features may no longer be
+    available, and items beyond the Core plan limits remain stored but locked in Directus. To restore full access, renew
+    your license or add a new license key.
+  resolve_notice_canceled:
+    Your subscription was canceled and your project has been downgraded to the Core plan. Some features may no longer be
+    available, and items beyond the Core plan limits remain stored but locked in Directus. To restore full access, add a
+    new license key.
+  resolve_notice_suspended:
+    Your license has been suspended and your project has been downgraded to the Core plan. Some features may no longer
+    be available, and items beyond the Core plan limits remain stored but locked in Directus. Contact support to restore
+    your license.
+  resolve_notice_invalid_key:
+    Your license key was not accepted and your project has been downgraded to the Core plan. Some features may no longer
+    be available, and items beyond the Core plan limits remain stored but locked in Directus. Check the key for typos,
+    or add a new license key.
+  resolve_notice_activation_limit:
+    Your license key has no activations left, so your project has been downgraded to the Core plan. Deactivate the
+    license on a project you no longer use, then add the key here again.
+  resolve_notice_binding_mismatch:
+    Your license key is registered to a different project or URL, so your project has been downgraded to the Core plan.
+    Check that your project URL matches the one the key was activated with, or add a new license key.
+  resolve_notice_verification:
+    Your stored license could not be verified, so your project has been downgraded to the Core plan. Your license key is
+    unchanged and will be checked again when the project restarts.
+  resolve_notice_unavailable:
+    Your license could not be checked because the licensing service could not be reached, so your project has been
+    downgraded to the Core plan. Your license itself may still be valid, and will be checked again when the project
+    restarts.
   resolve_continue: Continue
   resolve_acknowledge: Acknowledge
   resolve_submit: Deactivate Selected Items
@@ -1528,6 +1648,7 @@ licensing:
   resolve_ai_translations_confirm: Confirm AI Translations Deactivation
   resolve_ai_translations_caption: AI Translation will be disabled and your translation settings will no longer be used.
   env_managed: Your license key is managed via an environment variable and can't be updated here.
+  manage_license_disabled: Management of your license key is disabled by your environment settings.
   key_management: License Key Management
   key: License Key
   entitlements:
@@ -1566,7 +1687,6 @@ no_oauth_clients: 'No OAuth clients have been registered yet.'
 revoke_client: 'Revoke Client'
 revoke_client_confirm:
   'Are you sure you want to revoke this client? All associated tokens and sessions will be deleted.'
-settings_flows: Flows
 settings_system_logs: System Logs
 settings_presets: Bookmarks
 settings_translations: Translations
@@ -1654,6 +1774,24 @@ license:
     upgrade: Upgrade
     oig_eligible: 'You might be eligible for our {oig}. Apply and get full access to Directus for free.'
   locked_status_notice: 'Your Directus instance is locked. Manage license or {contactSupport} to resolve.'
+  warning_status_notice:
+    generic:
+      Your license's active status could not be refreshed. It remains active until {date}, then your project moves to
+      the Core plan. Check your license key in Settings > License.
+    invalid_key:
+      Your license key is no longer valid. It remains active until {date}, then your project moves to the Core plan.
+      Check your key in Settings > License or add a new one.
+    activation_limit:
+      Your license has reached its activation limit and could not be activated for this project. It remains active until
+      {date}, then your project moves to the Core plan. Deactivate this license on a project you no longer use before
+      retrying to activate on this project.
+    binding_mismatch:
+      Your license is linked to a different project or URL and it's active status could not be refreshed. It remains
+      active until {date}, then your project moves to the Core plan. Check that your project URL matches the URL where
+      the key was activated.
+    unavailable:
+      We couldn't reach the licensing service to refreshe your license's status. We'll keep trying automatically. Your
+      license remains active until {date}, then your project moves to the Core plan if it's active cannot be refreshed.
   pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
     grace_period_body: Manage your license key in Settings > License.
@@ -1673,6 +1811,8 @@ source_local: Local
 source_module: Node Module
 collection: Collection
 collections: Collections
+collection_inactive: This collection is inactive
+collection_inactive_copy: This view references {collection}, which is inactive.
 content: Content
 singleton: Singleton
 singleton_label: Treat as single object
@@ -1724,6 +1864,7 @@ fields:
     collection: Collection
     icon: Icon
     note: Note
+    status: Status
     color: Color
     display_template: Display Template
     hidden: Hidden
@@ -1859,6 +2000,11 @@ fields:
     public_registration_verify_email: Verify Email
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
+    live_preview: Live Preview
+    preview_base_url: Preview Base URL
+    preview_base_url_note:
+      Selectable as a dynamic Preview Base URL variable in a collection's Preview URL, so the host can differ per
+      environment.
     visual_editor_urls: Visual Editor URLs
     report_feature_url: Report Feature URL
     report_bug_url: Report Bug URL
@@ -1869,16 +2015,16 @@ fields:
     ai_notice:
       'AI Assistant provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the
       toolbar to ask questions, generate content, and get help working with your project. <a
-      href="https://directus.io/docs/guides/ai/assistant" target="_blank">Learn more about configuring and using AI
+      href="https://directus.com/docs/guides/ai/assistant" target="_blank">Learn more about configuring and using AI
       Assistant.</a>'
     mcp_enabled: MCP Server
     mcp_enabled_note:
-      'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp"
+      'Connect AI/LLM tools to your Directus project via <a href="https://directus.com/docs/guides/ai/mcp"
       target="_blank">Model Context Protocol (MCP)</a>. This enables AI assistants to read and interact with your
       Directus data securely.'
     mcp_notice:
       'Model Context Protocol is a standard for connecting LLMs to applications like Directus. Once enabled, the
-      Directus MCP server will be available at `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp"
+      Directus MCP server will be available at `/mcp`. <a href="https://directus.com/docs/guides/ai/mcp"
       target="_blank">Learn more about MCP and how to connect.</a>'
     mcp_allow_deletes: Allow Deletes
     mcp_allow_deletes_note:
@@ -1886,12 +2032,12 @@ fields:
       May cause data loss.</strong> Disabled by default for safety.'
     mcp_prompts_collection: AI Prompts Collection
     mcp_prompts_collection_note:
-      'Select collection for storing <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">reusable
+      'Select collection for storing <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">reusable
       prompt templates</a> for AI interactions.'
     mcp_system_prompt_divider: System Prompt Configuration
     mcp_system_prompt_enabled: Use System Prompt
     mcp_system_prompt_enabled_note:
-      "Use the <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>default system prompt</a>
+      "Use the <a href='https://directus.com/docs/guides/ai/mcp#system-prompt' target='_blank'>default system prompt</a>
       to guide LLM behavior. Disable to remove or override with your own prompt below."
     mcp_system_prompt: Custom System Prompt
     mcp_system_prompt_note:
@@ -2239,7 +2385,7 @@ mcp_prompts_collection_schema:
   messages_role_note: Who is speaking in this message.
   meta_prompts_notice:
     'Prompts are reusable templates that you can use with LLMs through the Directus MCP server, Flows, or other AI
-    applications. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Learn more about creating
+    applications. <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">Learn more about creating
     effective prompts.</a>'
 expired: Expired
 upcoming: Upcoming
@@ -2277,6 +2423,17 @@ continue_as: >-
   {name} is currently authenticated. If you recognize this account, press continue.
 editing_role: '{role} Role'
 editing_policy: '{policy} Policy'
+public_policy_warning: >-
+  Changes here affect what unauthenticated users can access and the actions they can perform. Refer to the {docs} for
+  more information.
+public_policy_warning_docs_link: security best practices documentation
+public_policy_dialog:
+  title: Change Public Access to System Collections?
+  copy: >-
+    You're about to change Public policy permissions on the following system collections. These actions will be
+    available to unauthenticated users:
+  unfiltered_read_warning: Read access without a filter exposes every record in the collection.
+  best_practices: Refer to the {docs} for more information.
 no_permissions: No Permissions
 permission_add_collection: Add Collection
 default_label: Default
@@ -2728,16 +2885,20 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Custom Formats
     custom_formats_note:
-      List of TinyMCE Content Formats. See the TinyMCE documentation about [Content
-      Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) for more information.
-    options_override: Options Override
+      A list of custom formats. Each entry needs a `title` plus either an `inline` tag, a `block` tag, a `selector` of
+      block tags, or `items` to group entries into a submenu. Optional `classes`, `styles`, and `attributes` can also be
+      added. When set, a Formats dropdown is added to the toolbar. Formatting with `block` converts between paragraphs
+      and headings only, and `wrapper` entries are not supported.
+    options_override: Options Override (Deprecated)
     options_override_note:
-      The TinyMCE User Formatting keys and their values. See the TinyMCE documentation about [User
-      Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) for more information.
+      Deprecated legacy TinyMCE overrides. This value is no longer applied by the editor and is kept for reference only.
+      Use the other interface options instead, such as the Custom Formats option.
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
     media_preview_iframe_title: Media Preview
+    embed_invalid: The embed markup could not be parsed as media (video, audio, or iframe)
+    auto_height: Auto height
   input-block-editor:
     input-block-editor: Block Editor
     description: Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js
@@ -2871,6 +3032,8 @@ displays:
     down: Down
     nearest: Nearest
     up: Up
+    timezone: Timezone
+    timezone_note: IANA timezone identifier (e.g., 'America/New_York', 'UTC'). Leave empty to use local timezone.
   file:
     file: File
     description: Display files
@@ -2992,6 +3155,7 @@ layouts:
     group_field_placeholder: Field to group by...
     group_title: Group Title
     group_title_placeholder: Field for group titles...
+    group_collection_inactive: The collection this board groups by is inactive
     title: Card Title
     title_placeholder: Optional title field...
     text: Card Text
@@ -3128,6 +3292,7 @@ triggers:
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
+    hidden: None (Hidden)
     collection_page: Collection Page
     require_selection: Requires Selection
 a_flow_uuid: Select a Flow to trigger...
@@ -3191,6 +3356,8 @@ operations:
   mail:
     name: Send Email
     description: Send an email to one or more people
+    from_name: From Name
+    from_name_placeholder: Defaults to the project name
     to: To
     to_placeholder: Add email addresses and press enter...
     body: Body
@@ -3290,6 +3457,7 @@ date_precision: Date Precision
 export_dashboard: Export Dashboard
 duplicate_dashboard: Duplicate Dashboard
 duplicate_policy: Duplicate Policy
+duplicate_flow: Duplicate Flow
 search_dashboard: Search Dashboard...
 search_flow: Search Flow...
 percent: Percent

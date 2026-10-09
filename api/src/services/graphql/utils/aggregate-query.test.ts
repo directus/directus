@@ -1,10 +1,18 @@
 import { RelationBuilder, SchemaBuilder } from '@directus/schema-builder';
 import type { Query } from '@directus/types';
-import type { FieldNode, SelectionNode } from 'graphql';
+import type { FragmentDefinitionNode } from 'graphql';
+import { buildSchema } from 'graphql';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import {
+	buildField,
+	buildFragmentDefinition,
+	buildFragmentSpread,
+	buildResolveInfo,
+} from '../../../test-utils/graphql.js';
 import * as sanitizeQueryMod from '../../../utils/sanitize-query.js';
 import * as validateQueryMod from '../../../utils/validate-query.js';
 import { getAggregateQuery } from './aggregate-query.js';
+import { buildSelections } from './build-selections.js';
 import * as filterReplaceM2AMod from './filter-replace-m2a.js';
 import * as replaceFuncsMod from './replace-funcs.js';
 
@@ -63,19 +71,7 @@ describe('getAggregateQuery', () => {
 
 	describe('selection processing', () => {
 		test('should skip non-Field selection nodes', async () => {
-			const selections: SelectionNode[] = [
-				{
-					kind: 'FragmentSpread',
-					name: { value: 'someFragment' },
-				} as unknown as FieldNode,
-				{
-					kind: 'Field',
-					name: { value: 'count' },
-					selectionSet: {
-						selections: [{ kind: 'Field', name: { value: 'id' } } as FieldNode],
-					},
-				} as unknown as FieldNode,
-			];
+			const selections = [buildFragmentSpread('someFragment'), buildField('count', { children: [buildField('id')] })];
 
 			const result = await getAggregateQuery({}, selections, schema);
 
@@ -85,21 +81,9 @@ describe('getAggregateQuery', () => {
 		});
 
 		test('should filter out __ fields (graphql pointers)', async () => {
-			const selections: SelectionNode[] = [
-				{
-					kind: 'Field',
-					name: { value: '__typename' },
-					selectionSet: {
-						selections: [],
-					},
-				} as unknown as FieldNode,
-				{
-					kind: 'Field',
-					name: { value: 'count' },
-					selectionSet: {
-						selections: [{ kind: 'Field', name: { value: 'id' } } as FieldNode],
-					},
-				} as unknown as FieldNode,
+			const selections = [
+				buildField('__typename', { children: [] }),
+				buildField('count', { children: [buildField('id')] }),
 			];
 
 			const result = await getAggregateQuery({}, selections, schema);
@@ -112,18 +96,7 @@ describe('getAggregateQuery', () => {
 		});
 
 		test('should group like field node selections into aggregate properties', async () => {
-			const selections: SelectionNode[] = [
-				{
-					kind: 'Field',
-					name: { value: 'count' },
-					selectionSet: {
-						selections: [
-							{ kind: 'Field', name: { value: 'id' } } as FieldNode,
-							{ kind: 'Field', name: { value: 'name' } } as FieldNode,
-						],
-					},
-				} as unknown as FieldNode,
-			];
+			const selections = [buildField('count', { children: [buildField('id'), buildField('name')] })];
 
 			const result = await getAggregateQuery({}, selections, schema);
 
@@ -133,21 +106,9 @@ describe('getAggregateQuery', () => {
 		});
 
 		test('should handle multiple aggregation groups', async () => {
-			const selections: SelectionNode[] = [
-				{
-					kind: 'Field',
-					name: { value: 'count' },
-					selectionSet: {
-						selections: [{ kind: 'Field', name: { value: 'id' } } as FieldNode],
-					},
-				} as unknown as FieldNode,
-				{
-					kind: 'Field',
-					name: { value: 'sum' },
-					selectionSet: {
-						selections: [{ kind: 'Field', name: { value: 'price' } } as FieldNode],
-					},
-				} as unknown as FieldNode,
+			const selections = [
+				buildField('count', { children: [buildField('id')] }),
+				buildField('sum', { children: [buildField('price')] }),
 			];
 
 			const result = await getAggregateQuery({}, selections, schema);
@@ -159,19 +120,10 @@ describe('getAggregateQuery', () => {
 		});
 
 		test('should filter out __ field selections', async () => {
-			const selections: SelectionNode[] = [
-				{
-					kind: 'Field',
-					name: { value: 'count' },
-					selectionSet: {
-						selections: [
-							{ kind: 'Field', name: { value: '__typename' } } as FieldNode,
-							{ kind: 'Field', name: { value: 'id' } } as FieldNode,
-							{ kind: 'Field', name: { value: '__schema' } } as FieldNode,
-							{ kind: 'Field', name: { value: 'name' } } as FieldNode,
-						],
-					},
-				} as unknown as FieldNode,
+			const selections = [
+				buildField('count', {
+					children: [buildField('__typename'), buildField('id'), buildField('__schema'), buildField('name')],
+				}),
 			];
 
 			const result = await getAggregateQuery({}, selections, schema);
@@ -182,12 +134,7 @@ describe('getAggregateQuery', () => {
 		});
 
 		test('should handle field nodes without a selectionSet', async () => {
-			const selections: SelectionNode[] = [
-				{
-					kind: 'Field',
-					name: { value: 'count' },
-				} as FieldNode,
-			];
+			const selections = [buildField('count')];
 
 			const result = await getAggregateQuery({}, selections, schema);
 
@@ -197,19 +144,7 @@ describe('getAggregateQuery', () => {
 		});
 
 		test('should skip the group field selection', async () => {
-			const selections: SelectionNode[] = [
-				{
-					kind: 'Field',
-					name: { value: 'count' },
-					selectionSet: {
-						selections: [{ kind: 'Field', name: { value: 'id' } } as FieldNode],
-					},
-				} as unknown as FieldNode,
-				{
-					kind: 'Field',
-					name: { value: 'group' },
-				} as FieldNode,
-			];
+			const selections = [buildField('count', { children: [buildField('id')] }), buildField('group')];
 
 			const result = await getAggregateQuery({}, selections, schema);
 
@@ -221,15 +156,7 @@ describe('getAggregateQuery', () => {
 		});
 
 		test('should handle field nodes with an empty selectionSet', async () => {
-			const selections: SelectionNode[] = [
-				{
-					kind: 'Field',
-					name: { value: 'count' },
-					selectionSet: {
-						selections: [],
-					},
-				} as unknown as FieldNode,
-			];
+			const selections = [buildField('count', { children: [] })];
 
 			const result = await getAggregateQuery({}, selections, schema);
 
@@ -300,5 +227,55 @@ describe('getAggregateQuery', () => {
 				aggregate: {},
 			});
 		});
+	});
+});
+
+/**
+ * A fragment is a way of writing a selection, not a thing the query knows about, so these cover what
+ * getAggregateQuery makes of the selections a resolver hands it once the fragments are resolved
+ */
+describe('getAggregateQuery with resolved fragments', () => {
+	// The GraphQL schema get-types.ts generates for an aggregated collection
+	const gqlSchema = buildSchema(`
+		type article_aggregated_count { id: Int }
+		type article_aggregated { group: String, count: article_aggregated_count }
+		type Query { article_aggregated: [article_aggregated] }
+	`);
+
+	/** The selections a resolver hands to getAggregateQuery, fragments resolved */
+	const resolvedSelections = (fragments: Record<string, FragmentDefinitionNode>) =>
+		buildSelections(
+			buildResolveInfo({
+				selections: [buildFragmentSpread('Totals')],
+				fragments,
+				schema: gqlSchema,
+				returnType: gqlSchema.getQueryType()!.getFields()['article_aggregated']!.type,
+			}),
+		) ?? [];
+
+	test('fragment on an aggregation keeps the aggregate', async () => {
+		const selections = resolvedSelections({
+			Totals: buildFragmentDefinition('Totals', 'article_aggregated', [
+				buildField('count', { children: [buildField('id')] }),
+			]),
+		});
+
+		const result = await getAggregateQuery({}, selections, schema);
+
+		expect(result.aggregate).toEqual({ count: ['id'] });
+	});
+
+	// Guards #26626: `group` holds grouped values and is not an aggregate function
+	test('fragment on an aggregation does not treat group as an aggregate', async () => {
+		const selections = resolvedSelections({
+			Totals: buildFragmentDefinition('Totals', 'article_aggregated', [
+				buildField('group'),
+				buildField('count', { children: [buildField('id')] }),
+			]),
+		});
+
+		const result = await getAggregateQuery({}, selections, schema);
+
+		expect(result.aggregate).toEqual({ count: ['id'] });
 	});
 });

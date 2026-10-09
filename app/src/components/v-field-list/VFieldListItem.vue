@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
+import { FieldFunction } from '@directus/types';
 import { getFunctionsForType } from '@directus/utils';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListGroup from '@/components/v-list-group.vue';
@@ -21,6 +23,7 @@ const props = withDefaults(
 		field: FieldInfo;
 		search?: string;
 		includeFunctions?: boolean;
+		excludedFunctions?: FieldFunction[];
 		relationalFieldSelectable?: boolean;
 		allowSelectAll?: boolean;
 		parent?: string | null;
@@ -30,6 +33,7 @@ const props = withDefaults(
 	{
 		search: undefined,
 		includeFunctions: false,
+		excludedFunctions: () => [],
 		relationalFieldSelectable: true,
 		allowSelectAll: false,
 		parent: null,
@@ -40,15 +44,19 @@ const props = withDefaults(
 
 const emit = defineEmits(['add']);
 
+const { t } = useI18n();
+
+const fieldLabel = computed(() =>
+	props.rawFieldNames ? props.field.field : props.field.name || formatTitle(props.field.field),
+);
+
+function functionLabel(fn: FieldFunction) {
+	return fn === 'json' ? t('functions.json') : `${t(`functions.${fn}`)} (${fieldLabel.value})`;
+}
+
 const supportedFunctions = computed(() => {
 	if (!props.includeFunctions || props.field.group) return [];
-	const funcs = getFunctionsForType(props.field.type);
-
-	if (props.field.type === 'json') {
-		return funcs.filter((f) => f !== 'json');
-	}
-
-	return funcs;
+	return getFunctionsForType(props.field.type).filter((fn) => !props.excludedFunctions.includes(fn));
 });
 
 const selectAllDisabled = computed(() => props.field.children?.every((field: FieldInfo) => field.disabled === true));
@@ -78,10 +86,7 @@ const openWhileSearching = computed(() => {
 	>
 		<template #activator>
 			<VListItemContent>
-				<VTextOverflow
-					:text="rawFieldNames ? field.field : field.name || formatTitle(field.field)"
-					:highlight="search"
-				/>
+				<VTextOverflow :text="fieldLabel" :highlight="search" />
 			</VListItemContent>
 		</template>
 
@@ -94,13 +99,10 @@ const openWhileSearching = computed(() => {
 				@click="$emit('add', [`${fn}(${field.key})`])"
 			>
 				<VListItemIcon>
-					<VIcon name="auto_awesome" small color="var(--theme--primary)" />
+					<VIcon :name="field.type === 'json' ? 'function_f' : 'function'" small color="var(--theme--primary)" />
 				</VListItemIcon>
 				<VListItemContent>
-					<VTextOverflow
-						:text="`${$t(`functions.${fn}`)} (${rawFieldNames ? field.field : field.name || formatTitle(field.field)})`"
-						:highlight="search"
-					/>
+					<VTextOverflow :text="functionLabel(fn)" :highlight="search" />
 				</VListItemContent>
 			</VListItem>
 
@@ -121,6 +123,7 @@ const openWhileSearching = computed(() => {
 			:field="childField"
 			:search="search"
 			:include-functions="includeFunctions"
+			:excluded-functions="excludedFunctions"
 			:relational-field-selectable="relationalFieldSelectable"
 			:parent="field.field"
 			:allow-select-all="allowSelectAll"
@@ -141,7 +144,7 @@ const openWhileSearching = computed(() => {
 			<VIcon name="auto_awesome" small color="var(--theme--primary)" />
 		</VListItemIcon>
 		<VListItemContent>
-			<VTextOverflow :text="rawFieldNames ? field.field : field.name || formatTitle(field.field)" :highlight="search" />
+			<VTextOverflow :text="fieldLabel" :highlight="search" />
 		</VListItemContent>
 	</VListItem>
 </template>

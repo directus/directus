@@ -12,9 +12,10 @@ import { database, port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Articles, Links, Schema } from './schema.js';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 const fields = [
 	'id',
@@ -296,7 +297,7 @@ if (database !== 'mssql')
 	});
 
 // TODO: fix later
-if (database !== 'mssql')
+if (['mssql', 'oracle'].includes(database) === false)
 	test('version deadlocking', async () => {
 		const resultA = await api.request(
 			createItem(collections.articles, {

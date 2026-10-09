@@ -1,0 +1,21 @@
+get:
+  summary: Verify Registration Email
+  description: Verifies the email address for a newly registered user via the token from the verification email.
+  operationId: registerUserVerifyEmail
+  security: []
+  parameters:
+    - name: token
+      in: query
+      required: true
+      description: Email verification token.
+      schema:
+        type: string
+  responses:
+    '302':
+      $ref: '../../openapi.yaml#/components/responses/RedirectResponse'
+    '400':
+      $ref: '../../openapi.yaml#/components/responses/BadRequestError'
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/ForbiddenError'
+  tags:
+    - Users

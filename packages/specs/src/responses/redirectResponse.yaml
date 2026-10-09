@@ -1,0 +1,7 @@
+description: Redirect to another location
+headers:
+  Location:
+    description: URL the client is redirected to.
+    schema:
+      type: string
+      format: uri

@@ -3,7 +3,7 @@ import { safeValidateUIMessages } from 'ai';
 import type { NextFunction, Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createUiStream } from '../lib/create-ui-stream.js';
-import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
+import { chatRequestToolsToAiSdkTools } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
 import { aiChatPostHandler } from './chat.post.js';
 
 // Mock dependencies
@@ -16,7 +16,7 @@ vi.mock('../lib/create-ui-stream.js', () => ({
 }));
 
 vi.mock('../utils/chat-request-tool-to-ai-sdk-tool.js', () => ({
-	chatRequestToolToAiSdkTool: vi.fn(),
+	chatRequestToolsToAiSdkTools: vi.fn(),
 }));
 
 describe('aiChatPostHandler', () => {
@@ -62,7 +62,7 @@ describe('aiChatPostHandler', () => {
 
 		vi.mocked(createUiStream).mockImplementation(() => mockStream as any);
 
-		vi.mocked(chatRequestToolToAiSdkTool).mockImplementation((tool: any) => ({ tool }) as any);
+		vi.mocked(chatRequestToolsToAiSdkTools).mockReturnValue({});
 
 		vi.mocked(safeValidateUIMessages).mockResolvedValue({
 			success: true,
@@ -298,12 +298,12 @@ describe('aiChatPostHandler', () => {
 				},
 			];
 
-			// Map tool name to a distinct mock tool value for easier assertions
-			vi.mocked(chatRequestToolToAiSdkTool).mockImplementation((opts: any) => {
-				const t = opts.chatRequestTool;
-				const name = typeof t === 'string' ? t : t.name;
-				return { name, mocked: true } as any;
-			});
+			const expectedTools = {
+				search: { name: 'search', mocked: true },
+				execute: { name: 'execute', mocked: true },
+			};
+
+			vi.mocked(chatRequestToolsToAiSdkTools).mockReturnValue(expectedTools as any);
 
 			mockReq.body = {
 				provider: 'openai',
@@ -313,11 +313,6 @@ describe('aiChatPostHandler', () => {
 			};
 
 			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
-
-			const expectedTools = {
-				search: { name: 'search', mocked: true },
-				custom: { name: 'custom', mocked: true },
-			};
 
 			expect(vi.mocked(safeValidateUIMessages)).toHaveBeenCalledWith({
 				messages: [{ role: 'user', content: 'Hello' }],
@@ -332,6 +327,13 @@ describe('aiChatPostHandler', () => {
 				role: 'test-role',
 				systemPrompt: undefined,
 				onUsage: expect.any(Function),
+			});
+
+			expect(vi.mocked(chatRequestToolsToAiSdkTools)).toHaveBeenCalledWith({
+				chatRequestTools: tools,
+				accountability: mockReq.accountability,
+				schema: mockReq.schema,
+				systemPrompt: undefined,
 			});
 		});
 	});

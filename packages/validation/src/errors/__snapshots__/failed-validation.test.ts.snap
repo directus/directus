@@ -22,6 +22,8 @@ exports[`Substring > Constructs message for "icontains" 1`] = `"Validation faile
 
 exports[`Substring > Constructs message for "ncontains" 1`] = `"Validation failed for field "test_field". Value can't contain "test_substring"."`;
 
+exports[`Unsafe number > Constructs message for "unsafe" 1`] = `"Validation failed for field "test_field". Value is not a safe number."`;
+
 exports[`Valid value (list) > Constructs message for "in" 1`] = `"Validation failed for field "test_field". Value has to be one of "valA", "valB", "valC"."`;
 
 exports[`Valid value (primitive) > Constructs message for "eq" 1`] = `"Validation failed for field "test_field". Value has to be "15"."`;

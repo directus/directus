@@ -6,8 +6,8 @@ get:
   operationId: getItem
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
     - $ref: '../../openapi.yaml#/components/parameters/Version'
+    - $ref: '../../openapi.yaml#/components/parameters/VersionRaw'
   responses:
     '200':
       description: Successful request
@@ -31,7 +31,6 @@ patch:
   operationId: updateItem
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   requestBody:
     content:
       application/json:

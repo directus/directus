@@ -11,6 +11,18 @@ post:
       required: false
       schema:
         type: boolean
+    - name: mode
+      description: >-
+        `mirror` (default) returns all operations. `merge` yields an additive diff, excluding deletions so existing
+        collections, fields, and relations are never removed.
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - merge
+          - mirror
+        default: mirror
   requestBody:
     required: true
     content:

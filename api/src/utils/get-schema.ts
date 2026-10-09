@@ -1,38 +1,33 @@
 import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
-import { systemCollectionRows } from '@directus/system-data';
-import type { Filter, SchemaOverview } from '@directus/types';
+import { isSystemCollection, systemCollectionRows } from '@directus/system-data';
+import type { BaseCollectionMeta, CollectionMeta, Filter, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray, toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
-import { mapValues, pick } from 'lodash-es';
-import { useBus } from '../bus/index.js';
+import { mapValues } from 'lodash-es';
 import { getMemorySchemaCache, setMemorySchemaCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { useLock } from '../lock/index.js';
 import { useLogger } from '../logger/index.js';
 import { RelationsService } from '../services/relations.js';
 import getDefaultValue from './get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from './get-field-system-rows.js';
 import getLocalType from './get-local-type.js';
+import { runExclusive } from './run-exclusive.js';
+import { TimeoutError } from './with-timeout.js';
 
 const logger = useLogger();
 
-export async function getSchema(
-	options?: {
-		database?: Knex;
+export async function getSchema(options?: {
+	database?: Knex;
 
-		/**
-		 * To bypass any cached schema if bypassCache is enabled.
-		 * Used to ensure schema snapshot/apply is not using outdated schema
-		 */
-		bypassCache?: boolean;
-	},
-	attempt = 0,
-): Promise<SchemaOverview> {
-	const MAX_ATTEMPTS = 3;
-
+	/**
+	 * To bypass any cached schema if bypassCache is enabled.
+	 * Used to ensure schema snapshot/apply is not using outdated schema
+	 */
+	bypassCache?: boolean;
+}): Promise<SchemaOverview> {
 	const env = useEnv();
 
 	if (options?.bypassCache || env['CACHE_SCHEMA'] === false) {
@@ -48,68 +43,38 @@ export async function getSchema(
 		return cached;
 	}
 
-	if (attempt >= MAX_ATTEMPTS) {
-		throw new Error(`Failed to get Schema information: hit infinite loop`);
-	}
+	// No retry needed: if the leader dies, a waiting instance takes over once lease ends
+	try {
+		const { result: schema, leader } = await runExclusive(
+			'schema-cache',
+			async () => {
+				const database = options?.database || getDatabase();
+				const schemaInspector = createInspector(database);
 
-	const lock = useLock();
-	const bus = useBus();
+				const schema = await getDatabaseSchema(database, schemaInspector);
 
-	const lockKey = 'schemaCache--preparing';
-	const messageKey = 'schemaCache--done';
-	const processId = await lock.increment(lockKey);
+				// Update the cache so an in-flight run that outlives the timeout
+				// can still serve the schema to the next request.
+				setMemorySchemaCache(schema);
 
-	if (processId >= (env['CACHE_SCHEMA_MAX_ITERATIONS'] as number)) {
-		await lock.delete(lockKey);
-	}
-
-	const currentProcessShouldHandleOperation = processId === 1;
-
-	if (currentProcessShouldHandleOperation === false) {
-		logger.trace('Schema cache is prepared in another process, waiting for result.');
-
-		const timeout: Promise<any> = new Promise((_, reject) =>
-			setTimeout(reject, env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number),
+				return schema;
+			},
+			{
+				timeout: env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number,
+			},
 		);
 
-		const subscription = new Promise<SchemaOverview>((resolve, reject) => {
-			bus.subscribe(messageKey, busListener).catch(reject);
+		if (!leader) setMemorySchemaCache(schema);
 
-			function busListener(options: { schema: SchemaOverview | null }) {
-				cleanup();
-
-				if (options.schema === null) {
-					return reject();
-				}
-
-				try {
-					setMemorySchemaCache(options.schema);
-					resolve(options.schema);
-				} catch (e) {
-					reject(e);
-				}
-			}
-
-			function cleanup() {
-				bus.unsubscribe(messageKey, busListener).catch(reject);
-			}
-		});
-
-		return Promise.race([timeout, subscription]).catch(() => getSchema(options, attempt + 1));
-	}
-
-	let schema: SchemaOverview | null = null;
-
-	try {
-		const database = options?.database || getDatabase();
-		const schemaInspector = createInspector(database);
-
-		schema = await getDatabaseSchema(database, schemaInspector);
-		setMemorySchemaCache(schema);
 		return schema;
-	} finally {
-		await bus.publish(messageKey, { schema });
-		await lock.delete(lockKey);
+	} catch (error) {
+		if (error instanceof TimeoutError) {
+			logger.warn(
+				`Schema retrieval exceeded the timeout. Increase CACHE_SCHEMA_SYNC_TIMEOUT in the env to prevent this from happening.`,
+			);
+		}
+
+		throw error;
 	}
 }
 
@@ -127,12 +92,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 	const allCollections = await database.select('*').from('directus_collections');
 
-	const collections = [
-		...allCollections
-			.filter((c) => !('status' in c) || c['status'] === 'active')
-			.map((c) => pick(c, 'collection', 'singleton', 'note', 'sort_field', 'accountability')),
-		...systemCollectionRows,
-	];
+	const collections: (BaseCollectionMeta & Partial<CollectionMeta>)[] = [...allCollections, ...systemCollectionRows];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
 		if (toArray(env['DB_EXCLUDE_TABLES']).includes(collection)) {
@@ -152,6 +112,11 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 		const collectionMeta = collections.find((collectionMeta) => collectionMeta.collection === collection);
 
+		const status =
+			!isSystemCollection(collection) && collectionMeta && 'status' in collectionMeta
+				? collectionMeta.status
+				: 'active';
+
 		result.collections[collection] = {
 			collection,
 			primary: info.primary,
@@ -159,6 +124,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
 			accountability: collectionMeta ? collectionMeta.accountability : 'all',
+			status,
 			fields: mapValues(schemaOverview[collection]?.columns, (column) => {
 				return {
 					field: column.column_name,

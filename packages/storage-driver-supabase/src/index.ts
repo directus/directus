@@ -99,16 +99,16 @@ export class DriverSupabase implements TusDriver {
 		const response = await fetch(this.getAuthenticatedUrl(filepath), requestInit);
 
 		if (response.status >= 400 || !response.body) {
+			// An unread body holds its connection open
+			await response.body?.cancel();
+
 			throw new Error(`No stream returned for file "${filepath}"`);
 		}
 
 		return Readable.fromWeb(response.body);
 	}
 
-	async stat(filepath: string): Promise<{
-		size: any;
-		modified: Date;
-	}> {
+	private async find(filepath: string) {
 		let rootPath = join(this.config.root, dirname(filepath));
 		// Supabase expects an empty string for current directory
 		if (rootPath === '.') rootPath = '';
@@ -120,23 +120,30 @@ export class DriverSupabase implements TusDriver {
 			limit: 1,
 		});
 
-		if (error || data.length === 0) {
+		if (error) throw error;
+
+		return data[0];
+	}
+
+	async stat(filepath: string): Promise<{
+		size: any;
+		modified: Date;
+	}> {
+		const file = await this.find(filepath);
+
+		if (!file) {
 			throw new Error('File not found');
 		}
 
+		// metadata is null for folders
 		return {
-			size: data[0]?.metadata['contentLength'] ?? 0,
-			modified: new Date(data[0]?.metadata['lastModified'] || null),
+			size: file.metadata?.['contentLength'] ?? 0,
+			modified: new Date(file.metadata?.['lastModified'] || 0),
 		};
 	}
 
 	async exists(filepath: string): Promise<boolean> {
-		try {
-			await this.stat(filepath);
-			return true;
-		} catch {
-			return false;
-		}
+		return (await this.find(filepath)) !== undefined;
 	}
 
 	async move(src: string, dest: string): Promise<void> {
@@ -172,7 +179,7 @@ export class DriverSupabase implements TusDriver {
 	async *listGenerator(prefix: string): AsyncIterable<string> {
 		const limit = 1000;
 		let offset = 0;
-		let itemCount = 0;
+		let itemCount;
 
 		/*
 		 *	The Supabase API only returns the directories and files directly within the queried location

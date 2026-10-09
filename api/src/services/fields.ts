@@ -554,7 +554,7 @@ export class FieldsService {
 					}
 				}
 
-				// Sanitize column only when applying snapshot diff as opts is only passed from /utils/apply-diff.ts
+				// Sanitize column only when applying snapshot diff as opts is only passed from /utils/schema/apply-diff.ts
 				const columnToCompare =
 					opts?.bypassLimits && opts.autoPurgeSystemCache === false ? sanitizeColumn(existingColumn) : existingColumn;
 

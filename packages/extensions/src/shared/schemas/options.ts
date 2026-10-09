@@ -23,8 +23,8 @@ export const ExtensionSandboxRequestedScopes = z.object({
 
 export const ExtensionSandboxOptions = z.optional(
 	z.object({
-		enabled: z.boolean(),
-		requestedScopes: ExtensionSandboxRequestedScopes,
+		enabled: z.optional(z.boolean()),
+		requestedScopes: z.optional(ExtensionSandboxRequestedScopes),
 	}),
 );
 

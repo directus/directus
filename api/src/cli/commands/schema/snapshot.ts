@@ -4,7 +4,7 @@ import inquirer from 'inquirer';
 import { dump as toYaml } from 'js-yaml';
 import getDatabase from '../../../database/index.js';
 import { useLogger } from '../../../logger/index.js';
-import { getSnapshot } from '../../../utils/get-snapshot.js';
+import { getSnapshot } from '../../../utils/schema/get-snapshot.js';
 
 export async function snapshot(
 	snapshotPath?: string,

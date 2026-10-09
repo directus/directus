@@ -1,6 +1,6 @@
 import { Collection, Item, PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { has, merge, pick } from 'lodash';
+import { has, merge, pick } from 'lodash-es';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 import sdk, { requestEndpoint } from '@/sdk';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -38,10 +38,11 @@ export function useTemplateData(
 
 		const injectData = options?.injectData?.value;
 
-		return adjustFieldsForDisplays(
-			injectData ? templateFields.value.filter((field) => !has(injectData, field)) : templateFields.value,
-			collection.value.collection,
-		);
+		const fieldsToFetch = injectData
+			? templateFields.value.filter((field) => !has(injectData, field))
+			: templateFields.value;
+
+		return adjustFieldsForDisplays(fieldsToFetch.map(stripFieldIndex), collection.value.collection);
 	});
 
 	const templateData = computed<Item | null>(() => {
@@ -97,4 +98,19 @@ export function useTemplateData(
 			loading.value = false;
 		}
 	}
+}
+
+/**
+ * Strip array index access (e.g. `locale[0]` or `locale.0`) from a template field path.
+ *
+ * The index is only meaningful when the template is rendered against the fetched data. The API
+ * `fields` query parameter cannot parse index segments, so they have to be removed to request the
+ * full relation; the renderer then indexes into the result.
+ */
+function stripFieldIndex(field: string): string {
+	return field
+		.replace(/\[\d+\]/g, '')
+		.split('.')
+		.filter((part) => part !== '' && !/^\d+$/.test(part))
+		.join('.');
 }

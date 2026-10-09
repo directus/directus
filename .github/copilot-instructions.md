@@ -60,14 +60,14 @@ pnpm format
 ### Testing
 
 ```bash
-# Run all tests (excluding blackbox tests)
+# Run all unit tests
 pnpm test
 
 # Run tests with coverage
 pnpm test:coverage
 
-# Run blackbox tests
-pnpm test:blackbox
+# Run end to end tests (requires Docker)
+cd tests/e2e && pnpm test
 
 # Run tests in watch mode (in specific package)
 cd packages/<package-name>
@@ -249,14 +249,14 @@ pnpm dev
 
 ## Documentation
 
-- Main documentation: https://docs.directus.io
-- Contributing guide: https://docs.directus.io/contributing/introduction
+- Main documentation: https://directus.com/docs
+- Contributing guide: https://directus.com/docs/community/overview/welcome
 - Update documentation for new features at https://github.com/directus/docs
 
 ## Support Channels
 
 - GitHub Issues: Bug reports and feature requests
-- Community: https://community.directus.io (Discussions)
+- Community: https://community.directus.com (Discussions)
 - Twitter: @directus (Updates)
 
 ## License

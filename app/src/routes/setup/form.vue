@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_MSCL_URL, DIRECTUS_PRIVACY_URL } from '@directus/constants';
+import { DIRECTUS_DPA_URL, DIRECTUS_MSCL_URL } from '@directus/constants';
 import { ValidationError as DirectusValidationError, SetupForm } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, toRef } from 'vue';
@@ -141,11 +141,8 @@ const mergedErrors = computed<DirectusValidationError[]>(() => {
 					</a>
 				</template>
 				<template #privacyPolicy>
-					<a
-						:href="getDirectusUrlWithUtm(DIRECTUS_PRIVACY_URL, info.version, `${utmLocation}_privacy_link`)"
-						target="_blank"
-					>
-						{{ $t('privacy_policy') }}
+					<a :href="getDirectusUrlWithUtm(DIRECTUS_DPA_URL, info.version, `${utmLocation}_dpa_link`)" target="_blank">
+						{{ $t('data_processing_agreement') }}
 					</a>
 				</template>
 			</I18nT>
@@ -160,8 +157,8 @@ const mergedErrors = computed<DirectusValidationError[]>(() => {
 						</a>
 					</template>
 					<template #privacyPolicy>
-						<a :href="getDirectusUrlWithUtm(DIRECTUS_PRIVACY_URL, info.version, 'privacy_link')" target="_blank">
-							{{ $t('privacy_policy') }}
+						<a :href="getDirectusUrlWithUtm(DIRECTUS_DPA_URL, info.version, 'dpa_link')" target="_blank">
+							{{ $t('data_processing_agreement') }}
 						</a>
 					</template>
 				</I18nT>

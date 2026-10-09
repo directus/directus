@@ -3,9 +3,10 @@ import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(graphql()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 test(`scalar alias (REST)`, async () => {
 	const id = (
@@ -346,6 +347,68 @@ test(`m2o original + alias inside a fragment`, async () => {
 	});
 });
 
+test(`m2o alias without the original inside a fragment`, async () => {
+	const id = (
+		await api.request(
+			createItem(collections.articles, {
+				title: `Article A`,
+				author: { name: 'Author A' },
+			}),
+		)
+	).id!;
+
+	const result = (
+		await api.query(`
+			fragment ArticleSummary on ${collections.articles} {
+				aliased: author {
+					name
+				}
+			}
+
+			query {
+				${collections.articles} (filter: { id: { _eq: "${id}" }}) {
+					...ArticleSummary
+				}
+			}
+		`)
+	)[collections.articles][0];
+
+	expect(result).toEqual({
+		aliased: { name: 'Author A' },
+	});
+});
+
+test(`o2m alias with arguments and without the original inside a fragment`, async () => {
+	const id = (
+		await api.request(
+			createItem(collections.articles, {
+				title: `Article A`,
+				links: [{ link: 'Link A' }, { link: 'Link B' }],
+			}),
+		)
+	).id!;
+
+	const result = (
+		await api.query(`
+			fragment ArticleSummary on ${collections.articles} {
+				aliased: links(limit: 1, sort: ["-link"]) {
+					link
+				}
+			}
+
+			query {
+				${collections.articles} (filter: { id: { _eq: "${id}" }}) {
+					...ArticleSummary
+				}
+			}
+		`)
+	)[collections.articles][0];
+
+	expect(result).toEqual({
+		aliased: [{ link: 'Link B' }],
+	});
+});
+
 test(`o2m original + alias inside a fragment`, async () => {
 	const id = (
 		await api.request(
@@ -417,6 +480,79 @@ test(`m2a alias on a scalar field inside the m2a result (GraphQL)`, async () => 
 		blocks: [
 			{
 				item: { text: 'Text Block A', aliasedText: 'Text Block A' },
+			},
+		],
+	});
+});
+
+test(`m2a alias on a relational field inside the m2a result (REST) (#27772)`, async () => {
+	const id = (
+		await api.request(
+			createItem(collections.articles, {
+				title: `Article A`,
+				blocks: [
+					{
+						collection: collections.text_blocks,
+						item: { text: 'Text Block A', author: { name: 'Author A' } },
+					},
+				],
+			}),
+		)
+	).id!;
+
+	const result = await api.request(
+		readItem(collections.articles, id, {
+			fields: [`blocks.item:${collections.text_blocks}.aliasedAuthor.name`],
+			deep: { blocks: { [`item:${collections.text_blocks}`]: { _alias: { aliasedAuthor: 'author' } } } },
+		} as any),
+	);
+
+	expect(result).toEqual({
+		blocks: [
+			{
+				item: { aliasedAuthor: { name: 'Author A' } },
+			},
+		],
+	});
+});
+
+test(`m2a alias on a relational field inside the m2a result (GraphQL) (#27772)`, async () => {
+	const id = (
+		await api.request(
+			createItem(collections.articles, {
+				title: `Article A`,
+				blocks: [
+					{
+						collection: collections.text_blocks,
+						item: { text: 'Text Block A', author: { name: 'Author A' } },
+					},
+				],
+			}),
+		)
+	).id!;
+
+	const result = (
+		await api.query(`
+			query {
+				${collections.articles} (filter: { id: { _eq: "${id}" }}) {
+					blocks {
+						item {
+							... on ${collections.text_blocks} {
+								aliasedAuthor: author {
+									name
+								}
+							}
+						}
+					}
+				}
+			}
+		`)
+	)[collections.articles][0];
+
+	expect(result).toEqual({
+		blocks: [
+			{
+				item: { aliasedAuthor: { name: 'Author A' } },
 			},
 		],
 	});

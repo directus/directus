@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/types';
 import { useResizeObserver } from '@vueuse/core';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { computed, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VNotice from '@/components/v-notice.vue';

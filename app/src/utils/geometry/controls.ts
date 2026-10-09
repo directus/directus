@@ -29,7 +29,7 @@ export class ButtonControl {
 
 	onAdd(): HTMLElement {
 		this.groupElement = document.createElement('div');
-		this.groupElement.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
+		this.groupElement.className = 'maplibregl-ctrl maplibregl-ctrl-group';
 		this.groupElement.appendChild(this.element);
 		return this.groupElement;
 	}
@@ -72,7 +72,7 @@ export class BoxSelectControl {
 		this.boxElement = document.createElement('div');
 		this.boxElement.className = options?.boxElementClass ?? 'selection-box';
 		this.groupElement = document.createElement('div');
-		this.groupElement.className = options?.groupElementClass ?? 'mapboxgl-ctrl mapboxgl-ctrl-group';
+		this.groupElement.className = options?.groupElementClass ?? 'maplibregl-ctrl maplibregl-ctrl-group';
 
 		this.selectButton = new ButtonControl(options?.selectButtonClass ?? 'ctrl-select', () => {
 			this.activate(!this.shiftPressed);
@@ -198,4 +198,13 @@ export class BoxSelectControl {
 		this.boxElement.style.inlineSize = style.width;
 		this.boxElement.style.blockSize = style.height;
 	}
+}
+
+/**
+ * Subscribe to an event outside maplibre's `MapEventType`, which `Map#on` is now narrowed to: the
+ * `select.*` events from `BoxSelectControl` above and MapboxDraw's `draw.*`. `MapEventType` is a
+ * type alias, so it cannot be augmented, and this keeps the cast in one place.
+ */
+export function onCustomEvent<T = unknown>(map: Map, type: string, listener: (event: T) => void): void {
+	(map.on as unknown as (type: string, listener: (event: T) => void) => void)(type, listener);
 }

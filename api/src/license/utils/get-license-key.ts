@@ -16,6 +16,14 @@ export async function getLicenseKey(options?: {
 		};
 	}
 
+	// An env token ignores any stored key
+	if (env['LICENSE_TOKEN']) {
+		return {
+			source: 'env',
+			key: null,
+		};
+	}
+
 	const schema = await getSchema(options);
 	const settingsService = new SettingsService({ schema, ...options });
 

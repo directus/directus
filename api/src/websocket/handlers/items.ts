@@ -1,8 +1,12 @@
 import { isSystemCollection } from '@directus/system-data';
+import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
+import { assertCollectionActive } from '../../permissions/modules/assert-collection-active/assert-collection-active.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { ItemsService, MetaService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import { validateQuery } from '../../utils/validate-query.js';
 import { handleWebSocketError, WebSocketError } from '../errors.js';
 import { WebSocketItemsMessage } from '../messages.js';
 import type { WebSocketClient } from '../types.js';
@@ -18,10 +22,10 @@ export class ItemsHandler {
 
 				this.onMessage(client, parsedMessage).catch((err) => {
 					// this catch is required because the async onMessage function is not awaited
-					handleWebSocketError(client, err, 'items');
+					handleWebSocketError(client, err, { type: 'items', uid: message.uid });
 				});
 			} catch (err) {
-				handleWebSocketError(client, err, 'items');
+				handleWebSocketError(client, err, { type: 'items', uid: message.uid });
 			}
 		});
 	}
@@ -31,14 +35,18 @@ export class ItemsHandler {
 		const accountability = client.accountability;
 		const schema = await getSchema();
 
-		if (!schema.collections[message.collection] || isSystemCollection(message.collection)) {
-			throw new WebSocketError(
-				'items',
-				'INVALID_COLLECTION',
-				'The provided collection does not exists or is not accessible.',
-				uid,
-			);
+		if (isSystemCollection(message.collection)) {
+			throw new WebSocketError('items', 'INVALID_COLLECTION', 'Cannot trigger an action on a system collection.', uid);
 		}
+
+		await assertCollectionActive(
+			{
+				accountability: accountability ?? createDefaultAccountability(),
+				collection: message.collection,
+				action: message.action,
+			},
+			{ schema, knex: getDatabase() },
+		);
 
 		const isSingleton = !!schema.collections[message.collection]?.singleton;
 		const service = new ItemsService(message.collection, { schema, accountability });
@@ -47,6 +55,7 @@ export class ItemsHandler {
 
 		if (message.action === 'create') {
 			const query = await sanitizeQuery(message?.query ?? {}, schema, accountability);
+			validateQuery(query);
 
 			if (Array.isArray(message.data)) {
 				const keys = await service.createMany(message.data);
@@ -59,6 +68,7 @@ export class ItemsHandler {
 
 		if (message.action === 'read') {
 			const query = await sanitizeQuery(message.query ?? {}, schema, accountability);
+			validateQuery(query);
 
 			if (message.id) {
 				result = await service.readOne(message.id, query);
@@ -75,6 +85,7 @@ export class ItemsHandler {
 
 		if (message.action === 'update') {
 			const query = await sanitizeQuery(message.query ?? {}, schema, accountability);
+			validateQuery(query);
 
 			if (message.id) {
 				const key = await service.updateOne(message.id, message.data);
@@ -106,6 +117,7 @@ export class ItemsHandler {
 				result = message.ids;
 			} else if (message.query) {
 				const query = await sanitizeQuery(message.query, schema, accountability);
+				validateQuery(query);
 				result = await service.deleteByQuery(query);
 			} else {
 				throw new WebSocketError(

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { translateShortcut } from '@directus/composables';
 import type { ContentVersion, Item, PrimaryKey } from '@directus/types';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
@@ -255,7 +255,7 @@ function usePublish() {
 								<VForm
 									:collection="collection"
 									:primary-key="primaryKey"
-									:initial-values="comparisonData?.base || {}"
+									:initial-values="comparisonData?.displayBase ?? comparisonData?.base ?? {}"
 									:collab-context="collabContext"
 									:comparison="{
 										side: 'base',
@@ -299,7 +299,7 @@ function usePublish() {
 								<VForm
 									:collection="collection"
 									:primary-key="primaryKey"
-									:initial-values="comparisonData?.incoming || {}"
+									:initial-values="comparisonData?.displayIncoming ?? comparisonData?.incoming ?? {}"
 									:comparison="{
 										side: 'incoming',
 										fields: comparisonFields,

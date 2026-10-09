@@ -82,7 +82,7 @@ async function getShareInformation(shareId: string) {
 		const { max_uses, times_used } = share.value;
 
 		if (max_uses) {
-			usesLeft.value = max_uses - times_used;
+			usesLeft.value = max_uses - (times_used ?? 0);
 		}
 
 		await handleAuth();

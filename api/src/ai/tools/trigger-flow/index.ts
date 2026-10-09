@@ -12,7 +12,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const triggerFlow = defineTool<z.infer<typeof TriggerFlowValidateSchema>>({
 	name: 'trigger-flow',
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Runs an active manual Directus flow. Use when the user asks to trigger, execute, or test an existing manual flow.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['run flow', 'execute flow', 'manual flow', 'trigger automation', 'webhook flow'],
 	annotations: {
 		title: 'Directus - Trigger Flow',
 	},

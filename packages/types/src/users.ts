@@ -3,7 +3,7 @@ import type { Policy } from './policies.js';
 export type Role = {
 	id: string;
 	name: string;
-	description: string;
+	description: string | null;
 	icon: string;
 	users: string[];
 	parent: string | null;
@@ -16,7 +16,7 @@ export type Avatar = {
 
 export type User = {
 	id: string;
-	status: 'draft' | 'invited' | 'unverified' | 'active' | 'suspended' | 'archived';
+	status: 'draft' | 'invited' | 'unverified' | 'active' | 'suspended' | 'archived' | 'inactive-license';
 	first_name: string | null;
 	last_name: string | null;
 	email: string | null;

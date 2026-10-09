@@ -1,7 +1,7 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import { getRelation } from '@directus/utils';
 import { expect, test } from 'vitest';
 import { deepMapFilter } from './deep-map-filter.js';
+import { getRelation } from './get-relation.js';
 
 const schema = new SchemaBuilder()
 	.collection('articles', (c) => {
@@ -236,9 +236,9 @@ test('map m2a filter', () => {
 						},
 					},
 					context: {
-						collection: schema.collections['articles_builder'],
-						field: schema.collections['articles_builder']!.fields['item'],
-						relation: getRelation(schema.relations, 'articles_builder', 'item'),
+						collection: schema.collections['articles_sections'],
+						field: schema.collections['articles_sections']!.fields['item'],
+						relation: getRelation(schema.relations, 'articles_sections', 'item'),
 						relationType: 'a2o',
 						leaf: false,
 						path: ['sections'],

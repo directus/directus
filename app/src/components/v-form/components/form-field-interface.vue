@@ -25,9 +25,10 @@ const props = defineProps<{
 	rawEditorActive?: boolean;
 	direction?: string;
 	version?: ContentVersionMaybeNew | null;
+	canAutoSwitchToDraft?: boolean;
 }>();
 
-defineEmits(['update:modelValue', 'setFieldValue']);
+defineEmits(['update:modelValue', 'setFieldValue', 'readonly']);
 
 const inter = useExtension(
 	'interface',
@@ -57,8 +58,11 @@ const value = computed(() =>
 		<VSkeletonLoader v-if="loading && field.hideLoader !== true" />
 
 		<VErrorBoundary v-if="interfaceExists && !rawEditorActive" :name="componentName">
+			<!-- Remount only when the comparison/diff view changes (rebuilds construction-time extensions);
+			keep the key stable during live editing so the main→draft auto-switch doesn't blur the field. -->
 			<component
 				:is="componentName"
+				:key="comparison ? `${componentName}-cmp-${version?.id ?? 'main'}` : componentName"
 				v-bind="(field.meta && field.meta.options) || {}"
 				:autofocus="disabled !== true && autofocus"
 				:disabled="disabled"
@@ -80,8 +84,10 @@ const value = computed(() =>
 				:direction="direction"
 				:raw-editor-enabled="rawEditorEnabled"
 				:version
+				:auto-switch-to-draft="canAutoSwitchToDraft"
 				@input="$emit('update:modelValue', $event)"
 				@set-field-value="$emit('setFieldValue', $event)"
+				@readonly="$emit('readonly', $event)"
 			/>
 
 			<template #fallback>

@@ -12,6 +12,7 @@ import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import getMailer from '../../mailer.js';
+import { isWithinPath } from '../../utils/is-within-path.js';
 import { Url } from '../../utils/url.js';
 import { useEmailRateLimiterQueue } from './rate-limiter.js';
 
@@ -110,12 +111,22 @@ export class MailService {
 	}
 
 	private async renderTemplate(template: string, variables: Record<string, any>) {
-		const customTemplatePath = path.resolve(env['EMAIL_TEMPLATES_PATH'] as string, template + '.liquid');
-		const systemTemplatePath = path.join(__dirname, 'templates', template + '.liquid');
+		const customTemplatesDir = path.resolve(env['EMAIL_TEMPLATES_PATH'] as string);
+		const systemTemplatesDir = path.resolve(__dirname, 'templates');
 
-		const templatePath = (await fse.pathExists(customTemplatePath)) ? customTemplatePath : systemTemplatePath;
+		const customTemplatePath = path.resolve(customTemplatesDir, template + '.liquid');
+		const systemTemplatePath = path.resolve(systemTemplatesDir, template + '.liquid');
 
-		if ((await fse.pathExists(templatePath)) === false) {
+		// Prevent path traversal: only resolve templates that stay within their own templates directory.
+		let templatePath: string | null = null;
+
+		if (isWithinPath(customTemplatePath, customTemplatesDir) && (await fse.pathExists(customTemplatePath))) {
+			templatePath = customTemplatePath;
+		} else if (isWithinPath(systemTemplatePath, systemTemplatesDir) && (await fse.pathExists(systemTemplatePath))) {
+			templatePath = systemTemplatePath;
+		}
+
+		if (templatePath === null) {
 			throw new InvalidPayloadError({ reason: `Template "${template}" doesn't exist` });
 		}
 

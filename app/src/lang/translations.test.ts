@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { createI18n } from 'vue-i18n';
 import availableLanguages from './available-languages.yaml';

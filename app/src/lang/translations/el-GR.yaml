@@ -337,7 +337,6 @@ licensing:
   entitlements:
     collections: Συλλογές
     flows: Ροές
-settings_flows: Ροές
 settings_presets: Σελιδοδείκτες
 layout: Διάταξη
 discard_changes: Ακύρωση αλλαγών
@@ -365,6 +364,7 @@ fields:
     collection: Συλλογή
     icon: Εικονίδιο
     note: Σημείωση
+    status: Κατάσταση
     hidden: Κρυφό
   directus_files:
     title: Τίτλος

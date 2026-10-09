@@ -9,8 +9,8 @@ import {
 	type UIMessage,
 	wrapLanguageModel,
 } from 'ai';
+import { useLogger } from '../../../logger/index.js';
 import { getDevToolsMiddleware } from '../../devtools/index.js';
-import { applyAnthropicToolSearch } from '../../providers/anthropic-tool-search.js';
 import {
 	type AISettings,
 	buildProviderConfigs,
@@ -28,6 +28,7 @@ import {
 	type PromptCachingUsage,
 	sortToolsByName,
 } from '../utils/prompt-caching.js';
+import { ipValidatedDownload } from './ip-validated-download.js';
 import { transformFilePartsForProvider } from './transform-file-parts.js';
 
 export interface CreateUiStreamOptions {
@@ -76,8 +77,9 @@ export const createUiStream = async (
 
 	const streamSystemPrompt = buildCacheAwareSystemPrompt(provider, systemPromptText);
 
-	const finalTools = sortToolsByName(applyAnthropicToolSearch(provider, model, tools));
+	const finalTools = sortToolsByName(tools);
 	const telemetryConfig = getAITelemetryConfig({ provider, model, userId, role });
+	const logger = useLogger();
 
 	const modelMessages = await convertToModelMessages(transformFilePartsForProvider(messages));
 	const streamMessages = applyAnthropicConversationCaching(provider, modelMessages, contextBlock);
@@ -87,9 +89,13 @@ export const createUiStream = async (
 		model: languageModel,
 		messages: streamMessages,
 		stopWhen: [stepCountIs(10)],
+		experimental_download: ipValidatedDownload,
 		providerOptions,
 		tools: finalTools,
 		...(telemetryConfig ? { experimental_telemetry: telemetryConfig } : {}),
+		onError(error) {
+			logger.error({ error }, 'AI chat stream failed');
+		},
 		onFinish(result) {
 			if (onUsage) {
 				onUsage(formatUsageWithCacheTokens(result));

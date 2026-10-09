@@ -32,10 +32,7 @@ const messenger = useBus();
 
 interface CacheMessage {
 	autoPurgeCache: boolean | undefined;
-}
-
-interface CacheMessage {
-	autoPurgeCache: boolean | undefined;
+	autoPurgeSchema?: boolean | undefined;
 }
 
 if (redisConfigAvailable() && !messengerSubscribed) {
@@ -46,8 +43,10 @@ if (redisConfigAvailable() && !messengerSubscribed) {
 			await cache.clear();
 		}
 
-		await localSchemaCache?.clear();
-		memorySchemaCache = null;
+		if (opts?.autoPurgeSchema !== false) {
+			await localSchemaCache?.clear();
+			memorySchemaCache = null;
+		}
 	});
 }
 
@@ -97,6 +96,7 @@ export async function flushCaches(forced?: boolean): Promise<void> {
 export async function clearSystemCache(opts?: {
 	forced?: boolean | undefined;
 	autoPurgeCache?: false | undefined;
+	autoPurgeSchema?: false | undefined;
 }): Promise<void> {
 	const { systemCache, localSchemaCache, lockCache } = getCache();
 
@@ -107,13 +107,19 @@ export async function clearSystemCache(opts?: {
 		await lockCache.delete('system-cache-lock');
 	}
 
-	await localSchemaCache.clear();
-	memorySchemaCache = null;
+	// Allow skipping schema purge when necessary (e.g. permission/policy/access writes)
+	if (opts?.autoPurgeSchema !== false) {
+		await localSchemaCache.clear();
+		memorySchemaCache = null;
+	}
 
 	// Since a lot of cached permission function rely on the schema it needs to be cleared as well
 	await clearPermissionCache();
 
-	messenger.publish<CacheMessage>('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
+	messenger.publish<CacheMessage>('schemaChanged', {
+		autoPurgeCache: opts?.autoPurgeCache,
+		autoPurgeSchema: opts?.autoPurgeSchema,
+	});
 }
 
 export async function setSystemCache(key: string, value: any, ttl?: number): Promise<void> {

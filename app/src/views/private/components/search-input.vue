@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Filter } from '@directus/types';
-import { isObject } from 'lodash';
+import { Field, Filter } from '@directus/types';
+import { isObject } from 'lodash-es';
 import { computed, onMounted, ref } from 'vue';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VBadge from '@/components/v-badge.vue';
@@ -17,10 +17,16 @@ const props = withDefaults(
 		filter?: Filter | null;
 		autofocus?: boolean;
 		placeholder?: string;
+		includeJsonFunction?: boolean;
+		relationalFieldSelectable?: boolean;
+		/** Hide fields that can't be filtered on. Applies at every level of the field tree. */
+		fieldFilter?: (field: Field) => boolean;
 	}>(),
 	{
 		showFilter: true,
 		expanded: false,
+		includeJsonFunction: true,
+		relationalFieldSelectable: true,
 	},
 );
 
@@ -52,6 +58,10 @@ const activeFilterCount = computed(() => {
 		for (const [key, value] of Object.entries(level)) {
 			if (key === '_and' || key === '_or') {
 				value.forEach(parseLevel);
+			} else if (key === '_json') {
+				if (isObject(value) && Object.keys(value).some((path) => path.length > 0)) {
+					filterOperators.push(key);
+				}
 			} else if (key.startsWith('_')) {
 				filterOperators.push(key);
 			} else {
@@ -134,7 +144,14 @@ function emitValue() {
 			@click="activate"
 			@focusout="onFocusOut"
 		>
-			<VIcon name="search" class="icon-search" :disabled :clickable="!active" @click="input?.focus()" />
+			<VIcon
+				v-tooltip.bottom="!active && !disabled && $t('search')"
+				name="search"
+				class="icon-search"
+				:disabled
+				:clickable="!active"
+				@click="input?.focus()"
+			/>
 
 			<input
 				ref="input"
@@ -191,6 +208,9 @@ function emitValue() {
 							inline
 							:value="filter"
 							:collection-name="collection"
+							:include-json-function="includeJsonFunction"
+							:relational-field-selectable="relationalFieldSelectable"
+							:field-filter="fieldFilter"
 							@input="$emit('update:filter', $event)"
 						/>
 					</div>
@@ -215,6 +235,7 @@ function emitValue() {
 	--search-input-border-width: var(--theme--border-width);
 	--search-input-size: calc(var(--button-size) - var(--search-input-border-width) * 2);
 	--search-input-radius: var(--theme--border-radius);
+	--search-input-filter-active-width: 25rem;
 	--icon-size: var(--icon-size-default);
 	--icon-search-padding-left: 0.375rem; // visually center in closed filter
 	--icon-search-padding-right: 0.25rem;
@@ -360,6 +381,11 @@ function emitValue() {
 	&.filter-active {
 		min-inline-size: var(--form-column-min-width);
 		z-index: 10;
+
+		&:not(.expanded) {
+			inline-size: var(--search-input-filter-active-width);
+			max-inline-size: 100%;
+		}
 
 		.icon-filter {
 			--v-icon-color: var(--theme--primary);

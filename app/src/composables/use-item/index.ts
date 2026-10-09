@@ -3,7 +3,7 @@ import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
 import { getEndpoint, isObject } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { cloneDeep, isEqual, mergeWith } from 'lodash';
+import { cloneDeep, isEqual, mergeWith } from 'lodash-es';
 import { computed, ComputedRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
@@ -37,6 +37,7 @@ type UsableItem<T extends Item> = {
 	loading: ComputedRef<boolean>;
 	saving: Ref<boolean>;
 	refresh: () => void;
+	refreshSignal: Ref<number>;
 	save: () => Promise<T | undefined>;
 	isNew: ComputedRef<boolean>;
 	remove: () => Promise<void>;
@@ -73,6 +74,7 @@ export function useItem<T extends Item>(
 	const archiving = ref(false);
 	const edits = ref<Item>({});
 	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
+	const refreshSignal = ref(0);
 	const isNew = computed(() => primaryKey.value === '+');
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
 
@@ -133,6 +135,7 @@ export function useItem<T extends Item>(
 		loading,
 		saving,
 		refresh,
+		refreshSignal,
 		save,
 		isNew,
 		remove,
@@ -443,7 +446,14 @@ export function useItem<T extends Item>(
 
 			const relatedItem = item[relation.meta.junction_field];
 
-			if (isObject(relatedItem)) clearPrimaryKey(junctionRelatedPrimaryKeyField, relatedItem);
+			// Only deep-duplicate the related item when it carries edited content. If it's just a PK
+			// reference (e.g. a link-only reorder update), keep the key so the copy re-links to it.
+			const relatedPkField = junctionRelatedPrimaryKeyField?.field;
+			const carriesEditedContent = Object.keys(relatedItem).some((key) => key !== relatedPkField);
+
+			if (!carriesEditedContent) return;
+
+			clearPrimaryKey(junctionRelatedPrimaryKeyField, relatedItem);
 		}
 	}
 
@@ -539,6 +549,8 @@ export function useItem<T extends Item>(
 		archiving.value = false;
 
 		item.value = null;
+
+		refreshSignal.value++;
 
 		refreshItem();
 		permissions.itemPermissions.refresh();

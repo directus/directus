@@ -29,6 +29,13 @@ export type SnapshotSystemField = {
 
 export type SnapshotWithHash = Snapshot & { hash: string };
 
+export type SnapshotScope = {
+	includeCollections?: string[] | undefined;
+	excludeCollections?: string[] | undefined;
+};
+
+export type SnapshotDiffMode = 'merge' | 'mirror';
+
 export type SnapshotDiff = {
 	collections: {
 		collection: string;

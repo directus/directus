@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { ComparisonContext, FormField } from '../types';
@@ -14,6 +14,7 @@ import VMenu from '@/components/v-menu.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { CollabFieldContext } from '@/composables/use-collab';
 import type { ContentVersionMaybeNew } from '@/types/versions';
+import { isFieldCollectionInactive } from '@/utils/collection-status';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import CollabIndicatorField from '@/views/private/components/collab/CollabIndicatorField.vue';
 
@@ -39,6 +40,7 @@ const props = withDefaults(
 		disabledMenu?: boolean;
 		direction?: string;
 		version?: ContentVersionMaybeNew | null;
+		canAutoSwitchToDraft?: boolean;
 		collabFieldContext?: CollabFieldContext;
 	}>(),
 	{
@@ -62,6 +64,8 @@ const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelVa
 
 const { t } = useI18n();
 
+const collectionInactive = computed(() => isFieldCollectionInactive(props.field));
+
 const { focusedBy, onFieldUnset, onFieldUpdate, onBlur, onFocus } = props.collabFieldContext;
 
 const isDisabled = computed(() => {
@@ -82,6 +86,10 @@ const isLabelHidden = computed(() => {
 	if ((props.batchMode || !!props.comparison) && !props.field.meta?.special?.includes('no-data')) return false;
 	return props.field.hideLabel;
 });
+
+// set by interfaces that lock themselves read-only for a data-integrity reason (not permissions),
+// e.g. WYSIWYG content the editor can't represent; gates the field menu's raw-value editing
+const interfaceLocked = ref(false);
 
 const { internalValue, isEdited, defaultValue } = useComputedValues();
 
@@ -239,6 +247,7 @@ function useComputedValues() {
 				:model-value="internalValue"
 				:initial-value="initialValue"
 				:restricted="isDisabled"
+				:interface-locked="interfaceLocked"
 				:disabled-options="disabledMenuOptions"
 				@update:model-value="emitValue($event)"
 				@unset="unsetValue"
@@ -266,8 +275,10 @@ function useComputedValues() {
 			:comparison="comparison"
 			:comparison-active="comparisonActive"
 			:version
+			:can-auto-switch-to-draft="canAutoSwitchToDraft"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
+			@readonly="interfaceLocked = $event"
 			@focusin="onFocus"
 			@focusout="onBlur"
 		/>
@@ -276,10 +287,12 @@ function useComputedValues() {
 			:show-modal="showRaw"
 			:field="field"
 			:current-value="internalValue"
-			:disabled="isDisabled"
+			:disabled="isDisabled || interfaceLocked"
 			@cancel="showRaw = false"
 			@set-raw-value="onRawValueSubmit"
 		/>
+
+		<small v-if="collectionInactive" class="type-note">{{ $t('collection_inactive') }}</small>
 
 		<small v-if="field.meta && field.meta.note" v-md="{ value: field.meta.note, target: '_blank' }" class="type-note" />
 

@@ -160,18 +160,8 @@ function mountTranslations() {
 					serverStore: {
 						info: {
 							ai_enabled: true,
-						},
-					},
-					settingsStore: {
-						settings: {
-							ai_anthropic_api_key: 'key',
-						},
-					},
-					licenseStore: {
-						info: {
-							entitlements: {
-								ai_translations_enabled: { default: true },
-							},
+							ai_providers: ['anthropic'],
+							license: { entitlements: { ai_translations_enabled: true } },
 						},
 					},
 				},
