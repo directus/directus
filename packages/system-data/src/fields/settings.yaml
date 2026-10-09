@@ -810,8 +810,6 @@ fields:
       choices:
         - text: GPT-4o Mini
           value: gpt-4o-mini
-        - text: GPT-4.1 Nano
-          value: gpt-4.1-nano
         - text: GPT-4.1 Mini
           value: gpt-4.1-mini
         - text: GPT-4.1
@@ -824,12 +822,8 @@ fields:
           value: gpt-5
         - text: GPT-5.1
           value: gpt-5.1
-        - text: GPT-5.1 Chat
-          value: gpt-5.1-chat-latest
         - text: GPT-5.2
           value: gpt-5.2
-        - text: GPT-5.2 Chat
-          value: gpt-5.2-chat-latest
         - text: GPT-5.2 Pro
           value: gpt-5.2-pro
         - text: GPT-5.4 Nano
@@ -844,6 +838,22 @@ fields:
           value: gpt-5.5
         - text: GPT-5.5 Pro
           value: gpt-5.5-pro
+        - text: GPT-5.6 Luna
+          value: gpt-5.6-luna
+        - text: GPT-5.6 Terra
+          value: gpt-5.6-terra
+        - text: GPT-5.6 Sol
+          value: gpt-5.6-sol
+        - text: GPT-5.6
+          value: gpt-5.6
+        - text: GPT-6 Luna
+          value: gpt-6-luna
+        - text: GPT-6 Sol
+          value: gpt-6-sol
+        - text: GPT-6 Astra
+          value: gpt-6-astra
+        - text: GPT-6.1 Sol
+          value: gpt-6.1-sol
     width: half
     group: ai_group
 
@@ -865,6 +875,22 @@ fields:
     options:
       allowOther: true
       choices:
+        - text: Claude Haiku 5.5
+          value: claude-haiku-5-5
+        - text: Claude Sonnet 5.5
+          value: claude-sonnet-5-5
+        - text: Claude Opus 5.5
+          value: claude-opus-5-5
+        - text: Claude Fable 5.1
+          value: claude-fable-5-1
+        - text: Claude Sonnet 5
+          value: claude-sonnet-5
+        - text: Claude Opus 5
+          value: claude-opus-5
+        - text: Claude Fable 5
+          value: claude-fable-5
+        - text: Claude Opus 4.8
+          value: claude-opus-4-8
         - text: Claude Haiku 4.5
           value: claude-haiku-4-5
         - text: Claude Sonnet 4.6
@@ -894,18 +920,26 @@ fields:
     options:
       allowOther: true
       choices:
-        - text: Gemini 3 Pro Preview
-          value: gemini-3-pro-preview
         - text: Gemini 3 Flash Preview
           value: gemini-3-flash-preview
         - text: Gemini 2.5 Pro
           value: gemini-2.5-pro
         - text: Gemini 2.5 Flash
           value: gemini-2.5-flash
+        - text: Gemini 3.8 Flash
+          value: gemini-3.8-flash
+        - text: Gemini 3.7 Flash
+          value: gemini-3.7-flash
+        - text: Gemini 3.6 Flash
+          value: gemini-3.6-flash
+        - text: Gemini 3.5 Flash
+          value: gemini-3.5-flash
+        - text: Gemini 3.5 Flash Lite
+          value: gemini-3.5-flash-lite
+        - text: Gemini 3.1 Flash Lite
+          value: gemini-3.1-flash-lite
         - text: Gemini 3.1 Pro Preview
           value: gemini-3.1-pro-preview
-        - text: Gemini 3.1 Flash Lite Preview
-          value: gemini-3.1-flash-lite-preview
         - text: Gemini 2.5 Flash Lite
           value: gemini-2.5-flash-lite
     width: half

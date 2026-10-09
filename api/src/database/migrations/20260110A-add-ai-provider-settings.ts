@@ -1,8 +1,8 @@
 import type { Knex } from 'knex';
 
-const DEFAULT_OPENAI_MODELS = ['gpt-5.4-nano', 'gpt-5.4-mini', 'gpt-5.4'];
-const DEFAULT_ANTHROPIC_MODELS = ['claude-haiku-4-5', 'claude-sonnet-4-6'];
-const DEFAULT_GOOGLE_MODELS = ['gemini-3-pro-preview', 'gemini-3-flash-preview', 'gemini-2.5-pro', 'gemini-2.5-flash'];
+const DEFAULT_OPENAI_MODELS = ['gpt-6-luna', 'gpt-6.1-sol'];
+const DEFAULT_ANTHROPIC_MODELS = ['claude-haiku-5-5', 'claude-sonnet-5-5'];
+const DEFAULT_GOOGLE_MODELS = ['gemini-3.1-pro-preview', 'gemini-3.8-flash', 'gemini-3.5-flash-lite'];
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_settings', (table) => {
