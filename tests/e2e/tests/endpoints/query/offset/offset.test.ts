@@ -4,9 +4,10 @@ import { useSnapshot } from '@utils/use-snapshot.js';
 import { range } from 'lodash-es';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(graphql()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 async function seedArticles(marker: string, count: number) {
 	for (const i of range(count)) {
@@ -136,5 +137,5 @@ test('applies offset to nested o2m items', async () => {
 		}),
 	);
 
-	expect(result!.links.map((link: any) => link.link)).toEqual([`${marker}-2`, `${marker}-3`, `${marker}-4`]);
+	expect(result!.links!.map((link: any) => link.link)).toEqual([`${marker}-2`, `${marker}-3`, `${marker}-4`]);
 });
