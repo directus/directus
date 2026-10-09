@@ -235,8 +235,6 @@ logoutReason:
   SESSION_EXPIRED: Sessão expirada
 public_label: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
-public_role_info: >-
-  A função pública controla quais dados de API estão disponíveis para usuários não autenticados ou usuários sem uma função. Requisições com cargo público não podem ter acesso a aplicativo ou administrador. Se o app ou o acesso de administrador forem dados a uma política atribuída ao cargo público eles serão ignorados.
 admin_description: Cargo administrativo inicial com acesso irrestrito ao App/API.
 admin_policy_description: Política administrativa inicial com acesso irrestrito ao App/API.
 no_description: Sem descrição...
