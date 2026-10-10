@@ -269,6 +269,29 @@ describe(`generateJoi`, () => {
 		}).toThrowError(`\"value\" must contain [field`);
 	});
 
+	it.each([
+		['_ieq', 'Field', 'FIELD', 'field-x'],
+		['_nieq', 'Field', 'other', 'FIELD'],
+		['_nicontains', 'Field', 'other', 'my-FIELD'],
+	])(`validates a %s match case insensitively`, (operator, compareValue, valid, invalid) => {
+		const schema = generateJoi({ field: { [operator]: compareValue } } as FieldFilter);
+
+		expect(schema.validate({ field: valid }).error).toBeUndefined();
+		expect(schema.validate({ field: invalid }).error).toBeDefined();
+	});
+
+	it.each(['_ieq', '_nieq', '_nicontains'])(`returns the correct schema for a %s with null value`, (operator) => {
+		const mockFieldFilter = { field: { [operator]: null } } as FieldFilter;
+
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(true),
+		})
+			.unknown()
+			.describe();
+
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
 	it(`returns the correct schema for a _starts_with match`, () => {
 		const mockFieldFilter = { field: { _starts_with: 'field' } } as FieldFilter;
 

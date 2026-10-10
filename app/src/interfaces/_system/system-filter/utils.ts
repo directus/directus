@@ -7,6 +7,8 @@ export const JSON_VALUE_KEY = '$jsonValue';
 export const JSON_FILTER_OPERATORS: ClientFilterOperator[] = [
 	'eq',
 	'neq',
+	'ieq',
+	'nieq',
 	'lt',
 	'lte',
 	'gt',
@@ -18,6 +20,7 @@ export const JSON_FILTER_OPERATORS: ClientFilterOperator[] = [
 	'contains',
 	'ncontains',
 	'icontains',
+	'nicontains',
 	'starts_with',
 	'nstarts_with',
 	'istarts_with',
@@ -144,9 +147,12 @@ export function isJsonFilter(node: Filter): boolean {
 }
 
 const stringComparators: (keyof FieldFilterOperator)[] = [
+	'_ieq',
+	'_nieq',
 	'_contains',
 	'_ncontains',
 	'_icontains',
+	'_nicontains',
 	'_starts_with',
 	'_nstarts_with',
 	'_istarts_with',

@@ -30,6 +30,7 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 	if ('valid' in extensions) {
 		switch (extensions.type) {
 			case 'eq':
+			case 'ieq':
 				message += ` Value has to be "${extensions.valid}".`;
 				break;
 			case 'lt':
@@ -56,6 +57,7 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 	if ('invalid' in extensions) {
 		switch (extensions.type) {
 			case 'neq':
+			case 'nieq':
 				message += ` Value can't be "${extensions.invalid}".`;
 				break;
 			case 'nin':
@@ -74,6 +76,7 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 				message += ` Value has to contain "${extensions.substring}".`;
 				break;
 			case 'ncontains':
+			case 'nicontains':
 				message += ` Value can't contain "${extensions.substring}".`;
 				break;
 		}
