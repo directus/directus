@@ -267,6 +267,47 @@ for (const quantifier of ['_some', '_none']) {
 	});
 }
 
+// https://github.com/directus/directus/issues/28288
+// A `_some`/`_none` filter that wraps `_and`/`_or` must still constrain the
+// subquery. It used to be dropped entirely, silently matching every row.
+for (const quantifier of ['_some', '_none']) {
+	test(`filtering o2m relation with ${quantifier} wrapping _and`, async () => {
+		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+		const queryBuilder = db.queryBuilder();
+
+		applyFilter(
+			db,
+			o2m_schema,
+			queryBuilder,
+			{
+				links: {
+					[quantifier]: {
+						_and: [{ name: { _eq: 2 } }],
+					},
+				},
+			},
+			'article',
+			{},
+			[],
+			[],
+		);
+
+		const rawQuery = queryBuilder.toSQL();
+
+		if (quantifier === '_none') {
+			expect(rawQuery.sql).toEqual(
+				`select * left join "links_list" as "ysohv" on "article"."id" = "ysohv"."article_id" where "article"."id" not in (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and ("links_list"."name" = ?))`,
+			);
+		} else {
+			expect(rawQuery.sql).toEqual(
+				`select * left join "links_list" as "ywjsu" on "article"."id" = "ywjsu"."article_id" where "article"."id" in (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and ("links_list"."name" = ?))`,
+			);
+		}
+
+		expect(rawQuery.bindings).toEqual([2]);
+	});
+}
+
 test(`filtering a2o relation`, async () => {
 	const schema = new SchemaBuilder()
 		.collection('article', (c) => {
