@@ -48,7 +48,9 @@ describe('items tool', () => {
 				deleteMany: vi.fn(),
 			};
 
-			vi.mocked(ItemsService).mockImplementation(() => mockItemsService as unknown as ItemsService);
+			vi.mocked(ItemsService).mockImplementation(function () {
+				return mockItemsService as unknown as ItemsService;
+			});
 		});
 
 		describe('CREATE action', () => {
@@ -390,7 +392,9 @@ describe('items tool', () => {
 				deleteMany: vi.fn(),
 			};
 
-			vi.mocked(ItemsService).mockImplementation(() => mockItemsService as unknown as ItemsService);
+			vi.mocked(ItemsService).mockImplementation(function () {
+				return mockItemsService as unknown as ItemsService;
+			});
 		});
 
 		test('should throw InvalidPayloadError for system collections', async () => {
@@ -463,7 +467,9 @@ describe('items tool', () => {
 				deleteMany: vi.fn(),
 			};
 
-			vi.mocked(ItemsService).mockImplementation(() => mockItemsService as unknown as ItemsService);
+			vi.mocked(ItemsService).mockImplementation(function () {
+				return mockItemsService as unknown as ItemsService;
+			});
 		});
 
 		describe('construction', () => {

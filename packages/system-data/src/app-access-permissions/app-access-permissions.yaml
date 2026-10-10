@@ -90,6 +90,7 @@
     - custom_aspect_ratios
     - basemaps
     - mapbox_key
+    - preview_base_url
     - visual_editor_urls
     - collaborative_editing_enabled
     - report_error_url

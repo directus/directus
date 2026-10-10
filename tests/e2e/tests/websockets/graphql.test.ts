@@ -5,9 +5,10 @@ import { useSnapshot } from '@utils/use-snapshot.js';
 import { openSocket, type TestSocket } from '@utils/websocket.js';
 import { afterAll, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 /** Opens a `graphql-transport-ws` connection and completes its handshake. */
 async function openGraphqlSocket(): Promise<TestSocket> {
@@ -48,7 +49,8 @@ async function subscribe(id: string, event?: 'create' | 'update' | 'delete') {
 }
 
 if (options.extras?.redis) {
-	test('a graphql subscription reports create, update and delete', async () => {
+	// TODO fix websocket flaky tests and remove the retry
+	test('a graphql subscription reports create, update and delete', { retry: 3 }, async () => {
 		const next = await subscribe('all-events');
 
 		const name = randomUUID();

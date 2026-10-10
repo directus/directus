@@ -95,7 +95,7 @@ export default defineConfig({
 		environment: 'happy-dom',
 		deps: {
 			optimizer: {
-				web: {
+				client: {
 					exclude: ['pinia', 'url'],
 				},
 			},

@@ -3,10 +3,11 @@ import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(graphql()).with(staticToken('admin')).with(rest());
 
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 /** Create an article and return its id, so each test reads back a row it owns */
 async function seed(data: Record<string, unknown>) {
@@ -51,6 +52,39 @@ test('inline fragment on an m2a union type', async () => {
 			}
 		`)
 	)[collections.articles][0];
+
+	expect(result).toEqual({ blocks: [{ item: { text: 'Text Block A' } }] });
+});
+
+test('inline fragment from a different collection on an m2a union type', async () => {
+	const { id: textBlockId } = await api.request(createItem(collections.text_blocks, { text: 'Text Block A' }));
+
+	await api.request(
+		createItem(collections.articles, {
+			title: 'Article A',
+			blocks: [{ collection: collections.text_blocks, item: String(textBlockId) }],
+		}),
+	);
+
+	const { id } = await api.request(
+		createItem(collections.blogs, {
+			blocks: [{ collection: collections.text_blocks, item: String(textBlockId) }],
+		}),
+	);
+
+	const result = (
+		await api.query(`
+			fragment BlockItem on ${collections.articles_blocks}_item_union {
+				... on ${collections.text_blocks} { text }
+			}
+
+			query {
+				${collections.blogs} (filter: { id: { _eq: "${id}" }}) {
+					blocks { item { ...BlockItem } }
+				}
+			}
+		`)
+	)[collections.blogs][0];
 
 	expect(result).toEqual({ blocks: [{ item: { text: 'Text Block A' } }] });
 });

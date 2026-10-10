@@ -1,5 +1,5 @@
 import { type sandbox as Sandbox } from '@directus/sandbox';
-import { createCollection, createDirectus, createItems, readItem, readItems, rest, staticToken, updateField, updateItem } from '@directus/sdk'; // prettier-ignore
+import { createCollection, createDirectus, createItems, type DirectusClient, readItem, readItems, rest, type RestClient, staticToken, updateField, updateItem } from '@directus/sdk'; // prettier-ignore
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
@@ -12,6 +12,20 @@ const COLLECTION = 'timezone_items';
 const TIMEZONES = ['UTC', 'America/Sao_Paulo', 'Asia/Seoul'];
 
 type Sample = { date: string; time: string; datetime: string; timestamp: string };
+
+type TimezoneItem = {
+	id: number;
+	date: string;
+	time: string | null;
+	datetime: string;
+	timestamp: string;
+	date_created: string;
+	date_updated: string | null;
+};
+
+type Schema = {
+	timezone_items: TimezoneItem[];
+};
 
 /** Every hour of the day, in three shapes, with three different timestamp offsets. */
 const SAMPLES: Sample[] = Array.from({ length: 24 }).flatMap((_, hour) => {
@@ -66,7 +80,7 @@ function instantOf(stamp: string, timeZone: string) {
 for (const timezone of TIMEZONES) {
 	describe(`a server running in ${timezone}`, () => {
 		let directus: Awaited<ReturnType<typeof Sandbox>>;
-		let api: ReturnType<typeof createDirectus<any>> & any;
+		let api: DirectusClient<Schema> & RestClient<Schema>;
 
 		beforeAll(async () => {
 			directus = await useSandbox(database, {
@@ -80,7 +94,9 @@ for (const timezone of TIMEZONES) {
 				docker: { suffix: `${getUID()}${timezone.replaceAll('/', '')}` },
 			});
 
-			api = createDirectus<any>(`http://localhost:${directus.apis[0]!.port}`).with(rest()).with(staticToken('admin'));
+			api = createDirectus<Schema>(`http://localhost:${directus.apis[0]!.port}`)
+				.with(rest())
+				.with(staticToken('admin'));
 
 			await api.request(
 				createCollection({
@@ -114,10 +130,10 @@ for (const timezone of TIMEZONES) {
 
 		test('stores and returns every value in the timezone it was given in', async () => {
 			const before = Date.now();
-			await api.request(createItems(COLLECTION, SAMPLES as any));
+			await api.request(createItems(COLLECTION, SAMPLES));
 			const after = Date.now();
 
-			const items = await api.request(readItems(COLLECTION, { fields: ['*'], limit: -1, sort: ['id'] } as any));
+			const items = await api.request(readItems(COLLECTION, { fields: ['*'], limit: -1, sort: ['id'] }));
 
 			expect(items).toHaveLength(SAMPLES.length);
 
@@ -152,23 +168,23 @@ for (const timezone of TIMEZONES) {
 		});
 
 		test('stamps date_updated in the same timezone on update', async () => {
-			const [item] = await api.request(readItems(COLLECTION, { fields: ['id'], limit: 1, sort: ['id'] } as any));
+			const [item] = await api.request(readItems(COLLECTION, { fields: ['id'], limit: 1, sort: ['id'] }));
 
 			// A second apart, so the update stamp is distinguishable from the create stamp
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 
 			const before = Date.now();
-			await api.request(updateItem(COLLECTION, item.id, { date: SAMPLES[0]!.date } as any));
+			await api.request(updateItem(COLLECTION, item!.id, { date: SAMPLES[0]!.date }));
 			const after = Date.now();
 
-			const updated = await api.request(readItem(COLLECTION, item.id, { fields: ['*'] } as any));
+			const updated = await api.request(readItem(COLLECTION, item!.id, { fields: ['*'] }));
 
 			expect(updated.date).toBe(SAMPLES[0]!.date);
 			expect(updated.date_created).not.toBeNull();
 			expect(updated.date_updated).not.toBeNull();
 			expect(updated.date_updated).not.toBe(updated.date_created);
 
-			const stamp = instantOf(updated.date_updated, timezone);
+			const stamp = instantOf(updated.date_updated!, timezone);
 
 			expect(stamp).toBeGreaterThanOrEqual(before - 1000);
 			expect(stamp).toBeLessThanOrEqual(after + 1000);

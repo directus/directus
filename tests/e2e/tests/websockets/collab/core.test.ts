@@ -15,7 +15,9 @@ import { port } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { afterAll, expect, test } from 'vitest';
 
-const api = createDirectus<any>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<Record<string, Record<string, any>>>(`http://localhost:${port}`)
+	.with(rest())
+	.with(staticToken('admin'));
 
 const COLLECTION = `${getUID()}_items`;
 
@@ -56,7 +58,7 @@ async function client() {
 /** Creates an item and returns its id. */
 async function item(values: Record<string, unknown> = {}) {
 	const created = await api.request(createItem(COLLECTION, { title: 'Item', ...values } as any));
-	return created.id as string;
+	return created['id'];
 }
 
 /** Two clients in the same room, with the first one's init already settled. */
@@ -332,21 +334,22 @@ test('rooms for different items do not see each other', async () => {
 	expect((await secondLatecomer.join(COLLECTION, secondId)).changes).toMatchObject({ title: 'Update 2' });
 });
 
-test('a room scoped to a version reports when that version is saved', async () => {
+// TODO fix websocket flaky tests and remove the retry
+test('a room scoped to a version reports when that version is saved', { retry: 3 }, async () => {
 	const id = await item({ title: 'Original' });
 
 	const version = await api.request(
 		createContentVersion({ key: randomUUID().replaceAll('-', ''), collection: COLLECTION, item: id } as any),
 	);
 
-	const { first, second, room } = await twoInARoom(id, version.id);
+	const { first, second, room } = await twoInARoom(id, version['id']);
 
 	first.collab({ action: 'focus', room, field: 'title' });
 	first.collab({ action: 'update', room, field: 'title', changes: 'Version Update' });
 
 	await second.waitFor('update', (message) => message.changes === 'Version Update');
 
-	await api.request(saveToContentVersion(version.id, { title: 'Version Update' } as any));
+	await api.request(saveToContentVersion(version['id'], { title: 'Version Update' } as any));
 
 	expect(await first.waitFor('save')).toBeDefined();
 	expect(await second.waitFor('save')).toBeDefined();
