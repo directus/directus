@@ -25,6 +25,7 @@ const props = withDefaults(
 	defineProps<{
 		showHeader?: boolean;
 		groupByField?: string;
+		groupByDisplayField?: string;
 		aggregateField?: string;
 		aggregateFunction?: string;
 		sortDirection?: string;
@@ -39,11 +40,12 @@ const props = withDefaults(
 		conditionalFormatting?: Record<string, any>[];
 		collection: string;
 		dashboard: string;
-		data?: Array<DataPoint>;
+		data?: Array<DataPoint> | [Array<DataPoint>, Record<string, any>[]];
 	}>(),
 	{
 		showHeader: false,
 		groupByField: '',
+		groupByDisplayField: '',
 		aggregateField: '',
 		aggregateFunction: '',
 		sortDirection: 'desc',
@@ -62,8 +64,56 @@ const props = withDefaults(
 
 const { locale } = useI18n();
 
+const isTwoQueryResult = computed(() => {
+	return (
+		Array.isArray(props.data) && props.data.length === 2 && Array.isArray(props.data[0]) && Array.isArray(props.data[1])
+	);
+});
+
+const aggregatedData = computed(() => {
+	if (isTwoQueryResult.value) {
+		return (props.data as [Array<DataPoint>, Record<string, any>[]])[0];
+	}
+
+	return props.data as Array<DataPoint>;
+});
+
+const displayValueMap = computed(() => {
+	if (!isTwoQueryResult.value || !props.groupByDisplayField) return null;
+
+	const displayData = (props.data as [Array<DataPoint>, Record<string, any>[]])[1];
+	const map = new Map<string, string>();
+
+	if (!displayData || displayData.length === 0) return null;
+
+	// Infer the primary key field - it's the field that isn't the display field
+	const firstItem = displayData[0];
+	const fields = Object.keys(firstItem ?? {});
+	const pkField = fields.find((f) => f !== props.groupByDisplayField);
+	if (!pkField) return null;
+
+	for (const item of displayData) {
+		const pk = item[pkField];
+		const displayValue = item[props.groupByDisplayField];
+
+		if (pk !== null && pk !== undefined && displayValue !== null && displayValue !== undefined) {
+			map.set(String(pk), String(displayValue));
+		}
+	}
+
+	return map;
+});
+
+function getDisplayValue(rawValue: any) {
+	if (!displayValueMap.value || rawValue === null || rawValue === undefined) {
+		return null;
+	}
+
+	return displayValueMap.value.get(String(rawValue)) ?? null;
+}
+
 const sortedData = computed(() => {
-	const dataArray = unref(props.data);
+	const dataArray = unref(aggregatedData.value);
 
 	if (!dataArray || dataArray.length === 0) return [];
 
@@ -82,7 +132,7 @@ const sortedData = computed(() => {
 function widthOfRow(row: any) {
 	const aggFunc = props.aggregateFunction;
 	const aggField = props.aggregateField;
-	const data = props.data;
+	const data = aggregatedData.value;
 	return `${(row[aggFunc][aggField] / Math.max(...data.map((o) => o[aggFunc]?.[aggField] ?? 0))) * 100 + 0}%`;
 }
 
@@ -158,7 +208,11 @@ function getColor(input?: number) {
 					<div class="metric-row">
 						<div class="metric-labels" :style="{ minInlineSize: widthOfRow(row) }">
 							<div class="metric-bar-text">
+								<span v-if="getDisplayValue(row['group'][groupByField]) !== null">
+									{{ getDisplayValue(row['group'][groupByField]) }}
+								</span>
 								<RenderTemplate
+									v-else
 									:item="{ [groupByField]: row['group'][groupByField] }"
 									:collection="collection"
 									:template="`{{${groupByField}}}`"
