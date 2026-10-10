@@ -111,7 +111,7 @@ export class DirectusMCP {
 			}
 		}
 
-		if( req.method !== 'POST' ) {
+		if (req.method !== 'POST') {
 			res.set('Allow', 'POST').status(405).send();
 			return;
 		}
