@@ -18,7 +18,8 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 		.filter(([_, value]) => value)
 		.map(([key, _]) => key);
 
-	const files = database === 'sqlite' ? extrasList : [database, ...extrasList];
+	// Shared databases run in their own long lived compose project, see `createSharedDatabase`
+	const files = database === 'sqlite' || opts.docker.shared ? extrasList : [database, ...extrasList];
 
 	let project: string | undefined = undefined;
 
@@ -46,51 +47,17 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 			await dockerDown(project, env, logger);
 		}
 
-		const docker = spawn(
-			'docker',
-			[
-				'compose',
-				'-p',
-				project,
-				...files.flatMap((file) => ['-f', join(folderName, '..', 'docker', `${file}.yml`)]),
-				'up',
-				'-d',
-				'--wait',
-			],
-			{
-				env: {
-					...env,
-					COMPOSE_STATUS_STDOUT: '1', //Ref: https://github.com/docker/compose/issues/7346
-				},
-			},
-		);
-
-		docker.on('error', (err) => {
-			docker.kill();
-			throw err;
-		});
-
-		let output = '';
-		docker.stdout.on('data', (data: unknown) => (output += String(data)));
-		docker.stderr.on('data', (data: unknown) => (output += String(data)));
-
-		logger.pipe(docker.stdout, 'debug');
-		logger.pipe(docker.stderr, 'debug');
-
-		const code = await new Promise<number | null>((resolve) => docker.on('close', resolve));
-
-		if (code !== 0) {
-			const details = output.trim();
-			logger.error(`Docker compose failed with exit code ${code}`);
-			throw new Error(`Docker compose failed with exit code ${code}${details ? `:\n${details}` : ''}`);
-		}
+		await composeUp(project, files, env, logger);
 	}
 
 	const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 
 	if ('DB_PORT' in env) {
-		logger.info(`Database started at ${env.DB_HOST}:${env.DB_PORT}/${env.DB_DATABASE} ${time}`);
-		logger.info(`User: ${chalk.cyan(env.DB_USER)} Password: ${chalk.cyan(env.DB_PASSWORD)}`);
+		// Shared databases are reported once their user and database are provisioned
+		if (!opts.docker.shared) {
+			logger.info(`Database started at ${env.DB_HOST}:${env.DB_PORT}/${env.DB_DATABASE} ${time}`);
+			logger.info(`User: ${chalk.cyan(env.DB_USER)} Password: ${chalk.cyan(env.DB_PASSWORD)}`);
+		}
 	} else if ('DB_FILENAME' in env) {
 		if (!opts.docker.keep && existsSync(join(process.cwd(), env.DB_FILENAME))) {
 			await unlink(join(process.cwd(), env.DB_FILENAME));
@@ -102,6 +69,53 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 
 	// Nothing to tear down when no compose file applied (sqlite without extras)
 	return project;
+}
+
+/** Run `docker compose up` for the given compose files and wait for all containers to be healthy */
+export async function composeUp(
+	project: string,
+	files: string[],
+	env: Record<string, string | undefined>,
+	logger: Logger,
+) {
+	const docker = spawn(
+		'docker',
+		[
+			'compose',
+			'-p',
+			project,
+			...files.flatMap((file) => ['-f', join(folderName, '..', 'docker', `${file}.yml`)]),
+			'up',
+			'-d',
+			'--wait',
+		],
+		{
+			env: {
+				...env,
+				COMPOSE_STATUS_STDOUT: '1', //Ref: https://github.com/docker/compose/issues/7346
+			},
+		},
+	);
+
+	docker.on('error', (err) => {
+		docker.kill();
+		throw err;
+	});
+
+	let output = '';
+	docker.stdout.on('data', (data: unknown) => (output += String(data)));
+	docker.stderr.on('data', (data: unknown) => (output += String(data)));
+
+	logger.pipe(docker.stdout, 'debug');
+	logger.pipe(docker.stderr, 'debug');
+
+	const code = await new Promise<number | null>((resolve) => docker.on('close', resolve));
+
+	if (code !== 0) {
+		const details = output.trim();
+		logger.error(`Docker compose failed with exit code ${code}`);
+		throw new Error(`Docker compose failed with exit code ${code}${details ? `:\n${details}` : ''}`);
+	}
 }
 
 export async function dockerDown(project: string, env: Env, logger: Logger) {

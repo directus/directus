@@ -15,10 +15,13 @@ import {
 	bootstrap,
 	buildApi,
 	createDatabase,
+	createSharedDatabase,
 	dockerDown,
 	dockerUp,
+	dropSharedDatabase,
 	loadSchema,
 	saveSchema,
+	type SharedDatabase,
 	startApi,
 } from './steps/index.js';
 
@@ -48,6 +51,11 @@ export type Options = {
 		name: string | undefined;
 		/** Adds a suffix to the docker project. Can be used to ensure uniqueness */
 		suffix: string;
+		/**
+		 * Reuse a long lived database container instead of starting a new one, creating a fresh user and database inside of it.
+		 * The user and database are dropped on stop, the container is kept running. Defaults to the `SANDBOX_SHARED` env var.
+		 */
+		shared: boolean;
 	};
 	/** Horizontally scale the api to a given number of instances */
 	instances: string;
@@ -134,6 +142,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 				port: undefined,
 				name: undefined,
 				suffix: '',
+				shared: false,
 			},
 			instances: '1',
 			inspect: true,
@@ -199,6 +208,7 @@ export async function sandboxes(
 
 	let build: ChildProcessWithoutNullStreams | undefined;
 	const projects: { project: string; logger: Logger; env: Env; keep: boolean }[] = [];
+	const sharedDatabases: { shared: SharedDatabase; logger: Logger }[] = [];
 
 	try {
 		// Rebuild directus
@@ -217,7 +227,11 @@ export async function sandboxes(
 					const project = await dockerUp(database, opts, env, logger);
 					if (project) projects.push({ project, logger, env, keep: opts.docker.keep });
 
-					await bootstrap(opts, env, logger);
+					// Shared databases are cloned from an already bootstrapped template
+					const shared = opts.docker.shared ? await createSharedDatabase(database, opts, env, logger) : undefined;
+
+					if (shared) sharedDatabases.push({ shared, logger });
+					else await bootstrap(opts, env, logger);
 					if (opts.schema) await loadSchema(opts.schema, env, logger);
 					if (opts.knex) knex = createDatabase(env, logger);
 					await opts.hooks.beforeApi?.({ env, logger, knex });
@@ -251,9 +265,15 @@ export async function sandboxes(
 			}
 		}
 
-		await Promise.all(
-			projects.filter(({ keep }) => !keep).map(({ project, logger, env }) => dockerDown(project, env, logger)),
-		);
+		// The apis have to let go of their connections before their database can be dropped
+		if (sharedDatabases.length > 0) {
+			await Promise.all(sandboxes.flatMap((sandbox) => sandbox.apis.map((api) => killAndWait(api.process))));
+		}
+
+		await Promise.all([
+			...projects.filter(({ keep }) => !keep).map(({ project, logger, env }) => dockerDown(project, env, logger)),
+			...sharedDatabases.map(({ shared, logger }) => dropSharedDatabase(shared, logger)),
+		]);
 	}
 
 	return { sandboxes, stop, restartApis };
@@ -271,6 +291,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	let interval: NodeJS.Timeout;
 	let knex: Knex | undefined;
 	let project: string | undefined;
+	let shared: SharedDatabase | undefined;
 
 	try {
 		// Rebuild directus
@@ -279,7 +300,9 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		}
 
 		project = await dockerUp(database, opts, env, logger);
-		await bootstrap(opts, env, logger);
+		// Shared databases are cloned from an already bootstrapped template
+		if (opts.docker.shared) shared = await createSharedDatabase(database, opts, env, logger);
+		if (!shared) await bootstrap(opts, env, logger);
 		if (opts.schema) await loadSchema(opts.schema, env, logger);
 		if (opts.knex) knex = createDatabase(env, logger);
 		await opts.hooks.beforeApi?.({ env, logger, knex });
@@ -312,6 +335,12 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		}
 
 		kill(app);
+
+		if (shared) {
+			// The apis have to let go of their connections before the database can be dropped
+			await Promise.all(apis?.map((api) => killAndWait(api.process)) ?? []);
+			await dropSharedDatabase(shared, logger);
+		}
 
 		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
 
