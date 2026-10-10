@@ -111,6 +111,11 @@ export class DirectusMCP {
 			}
 		}
 
+		if (req.method !== 'POST') {
+			res.set('Allow', 'POST').status(405).send();
+			return;
+		}
+
 		if (!req.accepts('application/json')) {
 			// we currently dont support "text/event-stream" requests
 			res.status(405).send();
