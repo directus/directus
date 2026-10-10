@@ -16,8 +16,8 @@ get:
           schema:
             type: object
             properties:
-              data:
-                type: object
+              # Intentionally empty; api/src/services/specifications.ts overwrites this per collection
+              data: {}
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':
@@ -34,8 +34,8 @@ patch:
   requestBody:
     content:
       application/json:
-        schema:
-          type: object
+        # Intentionally empty; api/src/services/specifications.ts overwrites this per collection
+        schema: {}
   responses:
     '200':
       description: Successful request
@@ -44,8 +44,8 @@ patch:
           schema:
             type: object
             properties:
-              data:
-                type: object
+              # Intentionally empty; api/src/services/specifications.ts overwrites this per collection
+              data: {}
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':
