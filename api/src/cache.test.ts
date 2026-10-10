@@ -14,15 +14,15 @@ const bus = vi.hoisted(() => {
 });
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('./test-utils/env.js');
+	const { mockUseEnv } = await import('./test-utils/env.js');
 
-	return mockEnv({
+	return mockUseEnv({
 		CACHE_ENABLED: true,
 		CACHE_STORE: 'memory',
 		CACHE_AUTO_PURGE: true,
 		CACHE_NAMESPACE: 'directus-test',
-		CACHE_TTL: '10m',
-		CACHE_SYSTEM_TTL: '10m',
+		CACHE_TTL: 600_000,
+		CACHE_SYSTEM_TTL: 600_000,
 	});
 });
 

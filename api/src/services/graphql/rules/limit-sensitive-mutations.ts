@@ -70,8 +70,8 @@ export function assertSensitiveMutationLimit(
  * creation) and are reachable anonymously.
  */
 export function limitSensitiveMutations(operationName?: string | null): ValidationRule {
-	const env = useEnv();
-	const sensitiveMutations = new Set(env['GRAPHQL_SINGLE_USE_MUTATIONS'] as string[]);
+	const { GRAPHQL_SINGLE_USE_MUTATIONS } = useEnv();
+	const sensitiveMutations = new Set(GRAPHQL_SINGLE_USE_MUTATIONS);
 
 	return (context) => {
 		const mutationType = context.getSchema().getMutationType();

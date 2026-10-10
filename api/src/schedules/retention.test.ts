@@ -7,6 +7,8 @@ import { createMockKnex } from '../test-utils/knex.js';
 import { createMockLogger } from '../test-utils/logger.js';
 import retentionSchedule, { handleRetentionJob, type RetentionTask } from './retention.js';
 
+const DAY = vi.hoisted(() => 86_400_000);
+
 const mocks = vi.hoisted(() => ({
 	getMaxBindings: vi.fn(),
 	runExclusive: vi.fn(async (_key: string, fn: () => unknown) => ({ result: await fn(), leader: true })),
@@ -15,10 +17,10 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
+	const { mockUseEnv } = await import('../test-utils/env.js');
 
-	return mockEnv({
-		ACTIVITY_RETENTION: '1d',
+	return mockUseEnv({
+		ACTIVITY_RETENTION: DAY,
 		FLOW_LOGS_RETENTION: undefined,
 		RETENTION_BATCH: 100,
 		RETENTION_ENABLED: true,
@@ -56,13 +58,13 @@ let logger: ReturnType<typeof createMockLogger>;
 const activityTask: RetentionTask = {
 	collection: 'directus_activity',
 	where: ['directus_activity.action', '!=', Action.RUN],
-	timeframe: 86_400_000,
+	timeframe: DAY,
 };
 
 const revisionsTask: RetentionTask = {
 	collection: 'directus_revisions',
 	join: ['directus_activity', 'directus_revisions.activity', 'directus_activity.id'],
-	timeframe: 86_400_000,
+	timeframe: DAY,
 };
 
 /** Run the job registered by the last `schedule()` call */
@@ -95,7 +97,7 @@ test.each([
 		validCron: false,
 		log: ['error', 'Invalid RETENTION_SCHEDULE: "#". Retention disabled.'],
 	},
-	...['abc', 0, -5, 1.5].map((value) => ({
+	...[NaN, 0, -5, 1.5].map((value) => ({
 		reason: `the batch is ${value}`,
 		env: { RETENTION_BATCH: value },
 		log: ['error', `Invalid RETENTION_BATCH: "${value}". Retention disabled.`],
@@ -152,30 +154,30 @@ const flowLogsQuery = '"directus_activity"."action" = ?';
 const revisionsQuery = 'from "directus_revisions"';
 
 test.each([
-	{ reason: 'only activity retention is set', env: { ACTIVITY_RETENTION: '1d' }, queries: [activityQuery] },
+	{ reason: 'only activity retention is set', env: { ACTIVITY_RETENTION: DAY }, queries: [activityQuery] },
 	{
 		reason: 'only flow logs retention is set',
-		env: { ACTIVITY_RETENTION: undefined, FLOW_LOGS_RETENTION: '1d' },
+		env: { ACTIVITY_RETENTION: undefined, FLOW_LOGS_RETENTION: DAY },
 		queries: [flowLogsQuery],
 	},
 	{
 		reason: 'activity retention is disabled',
-		env: { ACTIVITY_RETENTION: undefined, REVISIONS_RETENTION: '30d' },
+		env: { ACTIVITY_RETENTION: undefined, REVISIONS_RETENTION: 30 * DAY },
 		queries: [revisionsQuery],
 	},
 	{
 		reason: 'revisions expire before their activity',
-		env: { ACTIVITY_RETENTION: '30d', REVISIONS_RETENTION: '1d' },
+		env: { ACTIVITY_RETENTION: 30 * DAY, REVISIONS_RETENTION: DAY },
 		queries: [activityQuery, revisionsQuery],
 	},
 	{
 		reason: 'revisions expire after their activity',
-		env: { ACTIVITY_RETENTION: '1d', REVISIONS_RETENTION: '30d' },
+		env: { ACTIVITY_RETENTION: DAY, REVISIONS_RETENTION: 30 * DAY },
 		queries: [activityQuery],
 	},
 	{
 		reason: 'activity retention is 0',
-		env: { ACTIVITY_RETENTION: '0', REVISIONS_RETENTION: '30d' },
+		env: { ACTIVITY_RETENTION: 0, REVISIONS_RETENTION: 30 * DAY },
 		queries: [activityQuery],
 	},
 ])('Runs the expected tasks when $reason', async ({ env, queries }) => {

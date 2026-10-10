@@ -90,7 +90,7 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>, z.infer<typ
 
 		if (args.action === 'read') {
 			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
-			let result = null;
+			let result;
 
 			if (args.keys) {
 				result = await service.readMany(args.keys, sanitizedQuery);
@@ -106,7 +106,7 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>, z.infer<typ
 
 		if (args.action === 'update') {
 			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
-			let updatedKeys: PrimaryKey[] = [];
+			let updatedKeys: PrimaryKey[];
 
 			if (Array.isArray(args.data)) {
 				updatedKeys = await service.updateBatch(args.data);

@@ -11,7 +11,7 @@ export function mergeWithParentItems(
 	nestedNode: NestedCollectionNode,
 	fieldAllowed: boolean | boolean[],
 ) {
-	const env = useEnv();
+	const { QUERY_LIMIT_DEFAULT } = useEnv();
 	const nestedItems = toArray(nestedItem);
 	const parentItems = clone(toArray(parentItem));
 
@@ -121,7 +121,7 @@ export function mergeWithParentItems(
 
 			parentItem[parentRelationField].push(...toAddToAllParents);
 
-			const limit = nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']);
+			const limit = nestedNode.query.limit ?? QUERY_LIMIT_DEFAULT;
 
 			if (nestedNode.query.page && nestedNode.query.page > 1) {
 				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(limit * (nestedNode.query.page - 1));

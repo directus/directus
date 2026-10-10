@@ -6,7 +6,7 @@ import { type Knex } from 'knex';
 import type { CreateIndexOptions, Options, SortRecord } from '../types.js';
 import { SchemaHelper } from '../types.js';
 
-const env = useEnv();
+const { DB_DATABASE } = useEnv();
 
 export class SchemaHelperCockroachDb extends SchemaHelper {
 	override async changeToType(
@@ -59,7 +59,7 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		try {
 			const result = await this.knex
 				.select(this.knex.raw('round(SUM(range_size_mb) * 1024 * 1024, 0) AS size'))
-				.from(this.knex.raw('[SHOW RANGES FROM database ??]', [env['DB_DATABASE']]));
+				.from(this.knex.raw('[SHOW RANGES FROM database ??]', [DB_DATABASE]));
 
 			return result[0]?.['size'] ? Number(result[0]?.['size']) : null;
 		} catch {

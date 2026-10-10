@@ -16,8 +16,8 @@ export function shouldClearCache(
 ): cache is Keyv<any> {
 	const env = useEnv();
 
-	if (env['CACHE_AUTO_PURGE']) {
-		if (collection && (env['CACHE_AUTO_PURGE_IGNORE_LIST'] as string[]).includes(collection)) {
+	if (env.CACHE_AUTO_PURGE) {
+		if (collection && (env.CACHE_AUTO_PURGE_IGNORE_LIST as string[]).includes(collection)) {
 			return false;
 		}
 

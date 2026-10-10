@@ -26,10 +26,10 @@ vi.mock('../database/index');
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({
 		SECRET: 'test',
-		EXTENSIONS_PATH: './extensions',
 		SESSION_COOKIE_NAME: 'directus_session',
 		// needed for constants.ts top level mocking
 		REFRESH_TOKEN_COOKIE_DOMAIN: '',
@@ -39,8 +39,8 @@ vi.mock('@directus/env', () => ({
 		SESSION_COOKIE_TTL: 0,
 		SESSION_COOKIE_SECURE: false,
 		IP_TRUST_PROXY: true,
-	}),
-}));
+	});
+});
 
 vi.mock('../permissions/lib/fetch-roles-tree.js');
 vi.mock('../permissions/modules/fetch-global-access/fetch-global-access.js');

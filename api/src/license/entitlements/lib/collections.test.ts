@@ -3,12 +3,13 @@ import type { DeepPartial } from '@directus/types';
 import { merge } from 'lodash-es';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { CollectionsService } from '../../../services/index.js';
+import { mockEnv } from '../../../test-utils/env.js';
 import type { Collection } from '../../../types/collection.js';
 import { getActiveCollections } from './collections.js';
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../../../test-utils/env.js');
-	return mockEnv({ DB_EXCLUDE_TABLES: [] });
+	const { mockUseEnv } = await import('../../../test-utils/env.js');
+	return mockUseEnv({ DB_EXCLUDE_TABLES: [] });
 });
 
 vi.mock('../../../utils/get-schema.js', () => ({
@@ -88,7 +89,7 @@ describe('getActiveCollections', () => {
 	});
 
 	test('exclude collections listed in DB_EXCLUDE_TABLES', async () => {
-		vi.mocked(useEnv).mockReturnValue({ DB_EXCLUDE_TABLES: ['secrets'] });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ DB_EXCLUDE_TABLES: ['secrets'] }));
 
 		vi.mocked(CollectionsService.prototype.readByQuery).mockResolvedValue([
 			makeCollection('articles'),
@@ -101,7 +102,7 @@ describe('getActiveCollections', () => {
 	});
 
 	test('returns only valid collections from a mixed payload', async () => {
-		vi.mocked(useEnv).mockReturnValue({ DB_EXCLUDE_TABLES: ['secrets'] });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ DB_EXCLUDE_TABLES: ['secrets'] }));
 
 		vi.mocked(CollectionsService.prototype.readByQuery).mockResolvedValue([
 			makeCollection('articles'),

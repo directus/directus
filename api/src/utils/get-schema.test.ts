@@ -6,9 +6,9 @@ import { getSchema } from './get-schema.js';
 import { runExclusive } from './run-exclusive.js';
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
+	const { mockUseEnv } = await import('../test-utils/env.js');
 
-	return mockEnv({
+	return mockUseEnv({
 		CACHE_SCHEMA: true,
 		CACHE_SCHEMA_SYNC_TIMEOUT: 10000,
 	});

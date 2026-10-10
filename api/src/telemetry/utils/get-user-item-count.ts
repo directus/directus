@@ -11,6 +11,7 @@ export interface UserItemCount {
 /**
  * Sum all passed values together. Meant to be used with .reduce()
  */
+// eslint-disable-next-line no-useless-assignment
 export const sum = (acc: number, val: number) => (acc += val);
 
 /**

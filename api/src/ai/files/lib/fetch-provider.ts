@@ -7,7 +7,7 @@ export async function fetchProvider(url: string, options: RequestInit, providerN
 		response = await fetch(url, { ...options, signal: AbortSignal.timeout(UPLOAD_TIMEOUT) });
 	} catch (error) {
 		if (error instanceof Error && (error.name === 'AbortError' || error.name === 'TimeoutError')) {
-			throw new Error(`${providerName} upload timed out after ${UPLOAD_TIMEOUT / 1000}s`);
+			throw new Error(`${providerName} upload timed out after ${UPLOAD_TIMEOUT / 1000}s`, { cause: error });
 		}
 
 		throw error;

@@ -32,8 +32,8 @@ const entitlements = vi.hoisted(() => ({
 }));
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv({ LICENSE_KEY_MANAGEMENT_ENABLED: true });
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({ LICENSE_KEY_MANAGEMENT_ENABLED: true });
 });
 
 vi.mock('@directus/license', async (importOriginal) => ({

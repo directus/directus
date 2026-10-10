@@ -7,7 +7,7 @@ import { CollectionsService } from '../../../services/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
 export async function getActiveCollections(opts?: { knex?: Knex | undefined }) {
-	const env = useEnv();
+	const { DB_EXCLUDE_TABLES } = useEnv();
 
 	const knex = opts?.knex ?? getDatabase();
 	const schema = await getSchema({ database: knex });
@@ -24,7 +24,7 @@ export async function getActiveCollections(opts?: { knex?: Knex | undefined }) {
 			const isFolder = collection.schema === null;
 			const isDBOnly = collection.meta === null;
 			const isDisabled = collection.meta?.status !== 'active';
-			const isEnvExcluded = (env['DB_EXCLUDE_TABLES'] as string[]).includes(collection.collection);
+			const isEnvExcluded = (DB_EXCLUDE_TABLES as string[]).includes(collection.collection);
 
 			return !isFolder && !isSystemCollection(collection.collection) && !isDBOnly && !isDisabled && !isEnvExcluded;
 		})

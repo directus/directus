@@ -11,17 +11,16 @@ import { removeFileSuffix } from '../utils/remove-file-suffix.js';
 import { cast } from './cast.js';
 import { readConfigurationFromFile } from './read-configuration-from-file.js';
 
+/**
+ * Loads the environment variables from the process and the env file.
+ */
 export const createEnv = (): Env => {
 	const baseConfiguration = readConfigurationFromProcess();
 	const fileConfiguration = readConfigurationFromFile(getConfigPath());
 
 	const rawConfiguration = { ...baseConfiguration, ...fileConfiguration };
 
-	const output: Env = {};
-
-	for (const [key, value] of Object.entries(DEFAULTS)) {
-		output[key] = getDefaultType(key) ? cast(value, key) : value;
-	}
+	const output: Record<string, unknown> = {};
 
 	for (let [key, value] of Object.entries(rawConfiguration)) {
 		if (isFileKey(key) && isDirectusVariable(key) && typeof value === 'string') {
@@ -45,5 +44,10 @@ export const createEnv = (): Env => {
 		output[key] = cast(value, key);
 	}
 
-	return output;
+	for (const [key, value] of Object.entries(DEFAULTS)) {
+		if (output[key] !== undefined) continue;
+		output[key] = getDefaultType(key) ? cast(value, key) : value;
+	}
+
+	return output as Env;
 };

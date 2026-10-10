@@ -1,7 +1,6 @@
 import path from 'node:path';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
-import { toArray } from '@directus/utils';
 import { getExtensionsPath } from '../../../extensions/lib/get-extensions-path.js';
 import { isWithinPath } from '../../../utils/is-within-path.js';
 import { assertValidStorageLocation } from './assert-valid-storage-location.js';
@@ -16,7 +15,7 @@ import { sanitizeFilepath } from './sanitize-filepath.js';
  */
 export function assertValidStoragePath(filepath: string, storage?: string): void {
 	const env = useEnv();
-	const location = storage || toArray(env['STORAGE_LOCATIONS'] as string)[0]!.trim();
+	const location = storage || env.STORAGE_LOCATIONS[0]!;
 
 	assertValidStorageLocation(location);
 

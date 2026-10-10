@@ -13,9 +13,9 @@ vi.mock('../../database/index.js', () => ({ default: vi.fn() }));
 vi.mock('../../logger/index.js', () => ({ useLogger: () => ({ warn: vi.fn() }) }));
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../../test-utils/env.js');
+	const { mockUseEnv } = await import('../../test-utils/env.js');
 
-	return mockEnv({ STORAGE_LOCAL_ROOT: '.' });
+	return mockUseEnv({ STORAGE_LOCAL_ROOT: '.' });
 });
 
 vi.mock('../items.js', async () => {
@@ -146,7 +146,7 @@ describe('TusDataStore.create', () => {
 	});
 
 	test('rejects an upload whose type is not in FILES_MIME_TYPE_ALLOW_LIST', async () => {
-		setEnv({ FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' });
+		setEnv({ FILES_MIME_TYPE_ALLOW_LIST: ['image/jpeg', 'image/png'] });
 
 		const store = makeStore();
 
@@ -158,7 +158,7 @@ describe('TusDataStore.create', () => {
 	});
 
 	test('accepts an upload whose type matches FILES_MIME_TYPE_ALLOW_LIST', async () => {
-		setEnv({ FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' });
+		setEnv({ FILES_MIME_TYPE_ALLOW_LIST: ['image/jpeg', 'image/png'] });
 
 		const store = makeStore();
 

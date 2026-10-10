@@ -4,7 +4,6 @@ import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/error
 import formatTitle from '@directus/format-title';
 import type { BusboyFileStream, PrimaryKey } from '@directus/types';
 import Busboy from 'busboy';
-import bytes from 'bytes';
 import type { RequestHandler } from 'express';
 import express from 'express';
 import Joi from 'joi';
@@ -42,7 +41,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		headers,
 		defParamCharset: 'utf8',
 		limits: {
-			fileSize: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string) ?? undefined,
+			fileSize: env.FILES_MAX_UPLOAD_SIZE,
 		},
 	});
 
@@ -75,7 +74,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 			return busboy.emit('error', new InvalidPayloadError({ reason: `File is missing filename` }));
 		}
 
-		if (isMimeTypeAllowed(mimeType, env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]) === false) {
+		if (isMimeTypeAllowed(mimeType, env.FILES_MIME_TYPE_ALLOW_LIST as string[]) === false) {
 			return busboy.emit('error', new InvalidPayloadError({ reason: `File is of invalid content type` }));
 		}
 
@@ -139,7 +138,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		let keys: PrimaryKey | PrimaryKey[] = [];
+		let keys: PrimaryKey | PrimaryKey[];
 
 		if (req.is('multipart/form-data')) {
 			keys = res.locals['savedFiles'];
@@ -267,7 +266,7 @@ router.patch(
 			schema: req.schema,
 		});
 
-		let keys: PrimaryKey[] = [];
+		let keys: PrimaryKey[];
 
 		if (Array.isArray(req.body)) {
 			keys = await service.updateBatch(req.body);

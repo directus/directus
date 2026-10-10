@@ -3,6 +3,8 @@ import { toNumber, toString } from 'lodash-es';
 import { getDefaultType } from '../utils/get-default-type.js';
 import { guessType } from '../utils/guess-type.js';
 import { getCastFlag } from '../utils/has-cast-prefix.js';
+import { toBytes } from '../utils/to-bytes.js';
+import { toMilliseconds } from '../utils/to-milliseconds.js';
 import { tryJson } from '../utils/try-json.js';
 
 export const cast = (value: unknown, key?: string): unknown => {
@@ -27,7 +29,15 @@ export const cast = (value: unknown, key?: string): unknown => {
 			return toArray(value)
 				.map((v) => cast(v))
 				.filter((v) => v !== '');
+		case 'string-array':
+			return toArray(value)
+				.map((v) => toString(v))
+				.filter((v) => v !== '');
 		case 'json':
 			return tryJson(value);
+		case 'milliseconds':
+			return toMilliseconds(value);
+		case 'bytes':
+			return toBytes(value);
 	}
 };

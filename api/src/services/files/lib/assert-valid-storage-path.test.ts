@@ -8,10 +8,10 @@ import { assertValidStoragePath } from './assert-valid-storage-path.js';
 const cwd = path.resolve('/directus');
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../../../test-utils/env.js');
+	const { mockUseEnv } = await import('../../../test-utils/env.js');
 
 	// The default CONFIG_PATH is resolved against the real cwd on import, keep it relative to the mocked cwd instead
-	return mockEnv({ CONFIG_PATH: '.env' });
+	return mockUseEnv({ CONFIG_PATH: '.env' });
 });
 
 type TestCase = {
@@ -402,7 +402,7 @@ describe('assertValidStoragePath', () => {
 	describe('remote extension sync source', () => {
 		beforeEach(() => {
 			setEnv({
-				STORAGE_LOCATIONS: 'local,s3',
+				STORAGE_LOCATIONS: ['local', 's3'],
 				STORAGE_S3_DRIVER: 's3',
 				EXTENSIONS_LOCATION: 's3',
 			});
@@ -442,7 +442,7 @@ describe('assertValidStoragePath', () => {
 	describe('local extension sync source', () => {
 		beforeEach(() => {
 			setEnv({
-				STORAGE_LOCATIONS: 'local,extstore',
+				STORAGE_LOCATIONS: ['local', 'extstore'],
 				STORAGE_EXTSTORE_DRIVER: 'local',
 				STORAGE_EXTSTORE_ROOT: './extstore',
 				EXTENSIONS_LOCATION: 'extstore',

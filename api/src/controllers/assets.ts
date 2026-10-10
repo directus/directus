@@ -21,7 +21,6 @@ import asyncHandler from '../utils/async-handler.js';
 import { destroyOnDisconnect } from '../utils/destroy-on-disconnect.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 
 const router = Router();
@@ -197,9 +196,9 @@ router.get(
 			}
 
 			// Check against ASSETS_TRANSFORM_MAX_OPERATIONS
-			if (transforms.length > Number(env['ASSETS_TRANSFORM_MAX_OPERATIONS'])) {
+			if (transforms.length > env.ASSETS_TRANSFORM_MAX_OPERATIONS) {
 				throw new InvalidQueryError({
-					reason: `"transforms" Parameter is only allowed ${env['ASSETS_TRANSFORM_MAX_OPERATIONS']} transformations`,
+					reason: `"transforms" Parameter is only allowed ${env.ASSETS_TRANSFORM_MAX_OPERATIONS} transformations`,
 				});
 			}
 
@@ -333,7 +332,7 @@ router.get(
 			}
 		}
 
-		const revalidate = env['ASSETS_CACHE_REVALIDATE'] === true;
+		const revalidate = env.ASSETS_CACHE_REVALIDATE;
 
 		// Check conditional headers before loading the full asset from storage
 		if (revalidate) {
@@ -399,7 +398,7 @@ router.get(
 		if (revalidate) {
 			res.setHeader('Cache-Control', 'max-age=0, must-revalidate');
 		} else {
-			res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env['ASSETS_CACHE_TTL']), false, true));
+			res.setHeader('Cache-Control', getCacheControlHeader(req, env.ASSETS_CACHE_TTL, false, true));
 		}
 
 		res.setHeader('Vary', vary.join(', '));

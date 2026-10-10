@@ -1,13 +1,11 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import type { PrimaryKey } from '@directus/types';
-import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { chunk, isNil } from 'lodash-es';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { runExclusive } from '../utils/run-exclusive.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import { transaction } from '../utils/transaction.js';
@@ -103,9 +101,9 @@ export async function handleRetentionJob(tasks: RetentionTask[], batch: number) 
 export default async function schedule(): Promise<boolean> {
 	const env = useEnv();
 	const logger = useLogger();
-	const cron = String(env['RETENTION_SCHEDULE']);
+	const cron = env.RETENTION_SCHEDULE;
 
-	if (!toBoolean(env['RETENTION_ENABLED'])) {
+	if (!env.RETENTION_ENABLED) {
 		return false;
 	}
 
@@ -114,16 +112,16 @@ export default async function schedule(): Promise<boolean> {
 		return false;
 	}
 
-	let batch = Number(env['RETENTION_BATCH']);
+	let batch = env.RETENTION_BATCH;
 
 	if (!Number.isInteger(batch) || batch < 1) {
-		logger.error(`Invalid RETENTION_BATCH: "${env['RETENTION_BATCH']}". Retention disabled.`);
+		logger.error(`Invalid RETENTION_BATCH: "${env.RETENTION_BATCH}". Retention disabled.`);
 		return false;
 	}
 
-	const activityTimeframe = getMilliseconds(env['ACTIVITY_RETENTION']);
-	const flowLogsTimeframe = getMilliseconds(env['FLOW_LOGS_RETENTION']);
-	const revisionsTimeframe = getMilliseconds(env['REVISIONS_RETENTION']);
+	const activityTimeframe = env.ACTIVITY_RETENTION;
+	const flowLogsTimeframe = env.FLOW_LOGS_RETENTION;
+	const revisionsTimeframe = env.REVISIONS_RETENTION;
 
 	const tasks: RetentionTask[] = [];
 

@@ -14,14 +14,13 @@ const toolMocks = vi.hoisted(() => ({
 	testHandler: vi.fn(),
 }));
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../../test-utils/env.js');
+	return mockUseEnv({
 		PUBLIC_URL: 'https://directus.example.com',
 		MCP_OAUTH_ENABLED: true,
 		SECRET: 'test-secret',
 		// Required by transitive module-level useEnv() calls:
-		EMAIL_TEMPLATES_PATH: './templates',
-		EXTENSIONS_PATH: './extensions',
 		SESSION_COOKIE_NAME: 'directus_session',
 		REFRESH_TOKEN_COOKIE_DOMAIN: '',
 		REFRESH_TOKEN_TTL: '15m',
@@ -35,8 +34,8 @@ vi.mock('@directus/env', () => ({
 		ACCESS_TOKEN_TTL: '15m',
 		EMAIL_FROM: 'no-reply@example.com',
 		EMAIL_TRANSPORT: 'sendmail',
-	}),
-}));
+	});
+});
 
 vi.mock('../../services/items.js');
 

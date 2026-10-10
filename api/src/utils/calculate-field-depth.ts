@@ -61,7 +61,7 @@ export function calculateFieldDepth(obj?: Record<string, any> | null, dotNotatio
 		} else {
 			if (!isPlainObject(nestedValue) && !isArray(nestedValue)) continue;
 
-			let nestedDepth = 0;
+			let nestedDepth: number;
 
 			if (Array.isArray(nestedValue)) {
 				nestedDepth = Math.max(...nestedValue.map((val) => calculateFieldDepth(val, dotNotationKeys)));

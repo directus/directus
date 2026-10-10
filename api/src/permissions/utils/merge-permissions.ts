@@ -57,7 +57,7 @@ export function mergePermission(
 ): Omit<Permission, 'id' | 'system'> {
 	const logicalKey = `_${strategy}` as keyof LogicalFilterOR | keyof LogicalFilterAND;
 
-	let { permissions, validation, fields, presets } = currentPerm;
+	let { permissions, validation, presets } = currentPerm;
 
 	if (newPerm.permissions) {
 		if (currentPerm.permissions && Object.keys(currentPerm.permissions)[0] === logicalKey) {
@@ -107,7 +107,7 @@ export function mergePermission(
 		}
 	}
 
-	fields = mergeFields(currentPerm.fields, newPerm.fields, strategy);
+	const fields = mergeFields(currentPerm.fields, newPerm.fields, strategy);
 
 	if (newPerm.presets) {
 		presets = merge({}, presets, newPerm.presets);

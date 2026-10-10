@@ -3,7 +3,6 @@ import * as https from 'https';
 import type { ListenOptions } from 'net';
 import url from 'url';
 import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
 import type { TerminusOptions } from '@godaddy/terminus';
 import { createTerminus } from '@godaddy/terminus';
@@ -101,7 +100,7 @@ export async function createServer(): Promise<http.Server> {
 		res.once('close', complete.bind(null, false));
 	});
 
-	if (toBoolean(env['WEBSOCKETS_ENABLED']) === true) {
+	if (env.WEBSOCKETS_ENABLED) {
 		createSubscriptionController(server);
 		createWebSocketController(server);
 		createLogsController(server);
@@ -111,9 +110,7 @@ export async function createServer(): Promise<http.Server> {
 
 	const terminusOptions: TerminusOptions = {
 		timeout:
-			(env['SERVER_SHUTDOWN_TIMEOUT'] as number) >= 0 && (env['SERVER_SHUTDOWN_TIMEOUT'] as number) < Infinity
-				? (env['SERVER_SHUTDOWN_TIMEOUT'] as number)
-				: 1000,
+			env.SERVER_SHUTDOWN_TIMEOUT >= 0 && env.SERVER_SHUTDOWN_TIMEOUT < Infinity ? env.SERVER_SHUTDOWN_TIMEOUT : 1000,
 		signals: ['SIGINT', 'SIGTERM', 'SIGHUP'],
 		beforeShutdown,
 		onSignal,
@@ -166,18 +163,14 @@ export async function createServer(): Promise<http.Server> {
 export async function startServer(): Promise<void> {
 	const server = await createServer();
 
-	const host = env['HOST'] as string;
-	const path = env['UNIX_SOCKET_PATH'] as string | undefined;
-	const port = env['PORT'] as string;
-
 	let listenOptions: ListenOptions;
 
-	if (path) {
-		listenOptions = { path };
+	if (env.UNIX_SOCKET_PATH) {
+		listenOptions = { path: env.UNIX_SOCKET_PATH };
 	} else {
 		listenOptions = {
-			host,
-			port: parseInt(port),
+			host: env.HOST,
+			port: env.PORT,
 		};
 	}
 

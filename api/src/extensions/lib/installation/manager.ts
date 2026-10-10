@@ -22,7 +22,7 @@ export class InstallationManager {
 
 	async install(versionId: string) {
 		const logger = useLogger();
-		const tempDir = join(env['TEMP_PATH'] as string, 'marketplace', versionId);
+		const tempDir = join(env.TEMP_PATH, 'marketplace', versionId);
 		const tmpStorage = new DriverLocal({ root: tempDir });
 
 		try {
@@ -30,14 +30,14 @@ export class InstallationManager {
 
 			const options: DownloadOptions = {};
 
-			if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
-				options.registry = env['MARKETPLACE_REGISTRY'];
+			if (env.MARKETPLACE_REGISTRY) {
+				options.registry = env.MARKETPLACE_REGISTRY;
 			}
 
 			let tarReadableStream;
 
 			try {
-				tarReadableStream = await download(versionId, env['MARKETPLACE_TRUST'] === 'sandbox', options);
+				tarReadableStream = await download(versionId, env.MARKETPLACE_TRUST === 'sandbox', options);
 			} catch (error) {
 				throw new ServiceUnavailableError(
 					{ service: 'marketplace', reason: 'Could not download the extension' },
@@ -73,10 +73,10 @@ export class InstallationManager {
 				throw new Error(`Extension type not found in package.json`);
 			}
 
-			if (env['EXTENSIONS_LOCATION']) {
+			if (env.EXTENSIONS_LOCATION) {
 				// Upload the extension into the configured extensions location
 				const storage = await getStorage();
-				const remoteDisk = storage.location(env['EXTENSIONS_LOCATION'] as string);
+				const remoteDisk = storage.location(env.EXTENSIONS_LOCATION);
 
 				const queue = new Queue({ concurrency: EXTENSIONS.STORAGE_MAX_CONCURRENCY });
 
@@ -84,7 +84,7 @@ export class InstallationManager {
 					const readStream = await tmpStorage.read(filepath);
 
 					const remotePath = join(
-						env['EXTENSIONS_PATH'] as string,
+						env.EXTENSIONS_PATH,
 						'.registry',
 						versionId,
 						filepath.substring(extractedPath.length),
@@ -117,13 +117,13 @@ export class InstallationManager {
 	}
 
 	async uninstall(folder: string) {
-		if (env['EXTENSIONS_LOCATION']) {
+		if (env.EXTENSIONS_LOCATION) {
 			const storage = await getStorage();
-			const remoteDisk = storage.location(env['EXTENSIONS_LOCATION'] as string);
+			const remoteDisk = storage.location(env.EXTENSIONS_LOCATION);
 
 			const queue = new Queue({ concurrency: EXTENSIONS.STORAGE_MAX_CONCURRENCY });
 
-			const prefix = join(env['EXTENSIONS_PATH'] as string, '.registry', folder);
+			const prefix = join(env.EXTENSIONS_PATH, '.registry', folder);
 
 			for await (const filepath of remoteDisk.list(prefix)) {
 				queue.add(() => remoteDisk.delete(filepath));
