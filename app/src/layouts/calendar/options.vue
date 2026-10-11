@@ -16,9 +16,11 @@ const props = withDefaults(
 	defineProps<{
 		collection: string;
 		dateFields: Field[];
+		colorFields?: Field[];
 		template?: string;
 		startDateField?: string;
 		endDateField?: string;
+		colorField?: string;
 		firstDay?: number;
 	}>(),
 	{
@@ -26,11 +28,18 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['update:template', 'update:startDateField', 'update:endDateField', 'update:firstDay']);
+const emit = defineEmits([
+	'update:template',
+	'update:startDateField',
+	'update:endDateField',
+	'update:colorField',
+	'update:firstDay',
+]);
 
 const templateWritable = useSync(props, 'template', emit);
 const startDateFieldWritable = useSync(props, 'startDateField', emit);
 const endDateFieldWritable = useSync(props, 'endDateField', emit);
+const colorFieldWritable = useSync(props, 'colorField', emit);
 const firstDayWritable = useSync(props, 'firstDay', emit);
 
 const firstDayOfWeekForDate = startOfWeek(new Date());
@@ -59,6 +68,18 @@ const firstDayOptions: { text: string; value: number }[] = [...Array(7).keys()].
 			show-deselect
 			:placeholder="$t('layouts.calendar.optional')"
 			:items="dateFields"
+			item-text="name"
+			item-value="field"
+		/>
+	</div>
+
+	<div class="field">
+		<div class="type-label">{{ $t('layouts.calendar.color_field') }}</div>
+		<VSelect
+			v-model="colorFieldWritable"
+			show-deselect
+			:placeholder="$t('layouts.calendar.optional')"
+			:items="colorFields"
 			item-text="name"
 			item-value="field"
 		/>
