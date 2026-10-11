@@ -1,3 +1,4 @@
+import type { RequestCredentials } from '../types/globals.js';
 import type { RequestOptions, RequestTransformer, ResponseTransformer } from '../types/request.js';
 
 export interface RestCommand<_Output extends object | unknown, _Schema> {
