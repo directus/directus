@@ -1,4 +1,5 @@
 type: object
+# No exported TS type for Revision; shape follows the directus_revisions table directly.
 properties:
   id:
     description: Unique identifier for the revision.
@@ -35,14 +36,15 @@ properties:
     example:
       title: Hello, World!
     type: object
+    nullable: true
   parent:
-    description: If the current item was updated relationally, this is the id of the parent revision record
-    example: null
+    description: If the current item was updated relationally, this is the id of the parent revision record.
     type: integer
     nullable: true
   version:
     description: Associated version of this revision.
-    example: draft
     oneOf:
       - type: string
+        format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Versions'

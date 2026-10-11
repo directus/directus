@@ -4,12 +4,16 @@ required:
   - extensions
 properties:
   message:
+    description: Human-readable error message.
     type: string
   extensions:
+    description:
+      Error metadata. Always includes `code`; may include per-error context like `collection`, `field`, `value`.
     type: object
     required:
       - code
     properties:
       code:
+        description: Machine-readable error code from `ErrorCode` enum.
         type: string
     additionalProperties: true
