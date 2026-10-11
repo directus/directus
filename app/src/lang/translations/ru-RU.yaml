@@ -20,15 +20,44 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: О программе
+data_processing_agreement: Соглашение об обработке данных
 contact_support: свяжитесь со службой поддержки
 setup_welcome: Добро пожаловать в Directus
 setup_info: Давайте создадим учетную запись администратора и запустим ваш проект.
+setup_license_key_notice: >
+  Если у вас есть лицензионный ключ, введите его ниже, чтобы разблокировать полный план. Компаниям, соответствующим критериям, с годовой выручкой до 5 млн долларов может предоставляться {oig}.
 setup_save_accept_license: >
   Нажав сохранить, вы принимаете условия [{directusMscl} и {privacyPolicy}.
+setup_license_invalid: >
+  Лицензия недействительна. Пожалуйста, {contactSupport}, чтобы решить эту проблему.
+setup_license_invalid_format: Неверный формат лицензионного ключа.
+setup_accept_license: Я принимаю условия {directusMscl} и {privacyPolicy}
 setup_marketing_emails: Присылать мне обновления и заметки к выпуску
 setup_launch: Запустить Directus
+setup_license_title: Настройте лицензию
+license_onboarding_title: Есть лицензионный ключ?
+license_onboarding_desc: >
+  Введите его ниже, чтобы разблокировать полный план. Компаниям, соответствующим критериям, с годовой выручкой до 5 млн долларов может предоставляться {oig}.
+project_usage: Для чего вы используете Directus?
+project_usage_personal: Собственные / сторонние проекты
+project_usage_commercial: Бизнес / Коммерческое
+project_usage_community: Исходный код / Сообщество
+org_name: Название организации
+org_name_placeholder: Acme Inc.
+license_key_option: У меня есть лицензионный ключ
+license_key_option_desc: 'OIG, Team, or Enterprise plan'
+core_option: Я использую основной план
+core_option_desc: Бесплатно, ключ не требуется
+remind_later: Напомнить позже
 remind_next_login: Мы напомним вам при следующем входе
+open_innovation_grant: Грант на открытые инновации
 setup_project: Организовать проект
+enter_license_key: Введите ваш лицензионный ключ
+license_valid: Лицензия действительна
+plan_prefix: 'План: {plan}'
+license_key: Лицензионный ключ
+no_license_key: Нет лицензионного ключа?
+get_license_key: Получить лиц. ключ
 skip: Пропустить
 continue: Продолжить
 first_name: Имя
@@ -1234,9 +1263,12 @@ licensing:
   resolve_sso_admin_email: Адрес электронной почты
   resolve_sso_admin_password: Пароль
   resolve_sso_admin_password_placeholder: Задайте пароль...
+  key: Лицензионный ключ
   entitlements:
     collections: Коллекции
     flows: Процессы
+  badge:
+    oig: Грант на открытые инновации
 settings_appearance: Внешний вид
 settings_ai: ИИ
 model_context_protocol: Model Context Protocol
@@ -2605,5 +2637,7 @@ show_password: Показать пароль
 hide_password: Скрыть пароль
 license_grace_key_modal:
   optional: Необязательно
+license_banner:
+  remind_later: Напомнить позже
 accepted: Принято
 set_to_now: Установить Сейчас
