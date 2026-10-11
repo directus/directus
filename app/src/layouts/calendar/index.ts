@@ -70,6 +70,12 @@ export default defineLayout<LayoutOptions>({
 			}),
 		);
 
+		const colorFields = computed(() =>
+			fieldsInCollection.value.filter((field: Field) => {
+				return field.type === 'string' || field.meta?.interface === 'select-color';
+			}),
+		);
+
 		const calendarFilter = computed(() => {
 			if (!calendar.value || !startDateField.value) {
 				return null;
@@ -110,6 +116,8 @@ export default defineLayout<LayoutOptions>({
 			return fieldsInCollection.value.find((field: Field) => field.field === endDateField.value);
 		});
 
+		const colorField = syncRefProperty(layoutOptions, 'colorField', undefined);
+
 		const firstDay = syncRefProperty(layoutOptions, 'firstDay', undefined);
 
 		const queryFields = computed(() => {
@@ -119,10 +127,7 @@ export default defineLayout<LayoutOptions>({
 			if (template.value) fields.push(...getFieldsFromTemplate(template.value));
 			if (startDateField.value) fields.push(startDateField.value);
 			if (endDateField.value) fields.push(endDateField.value);
-
-			if (fieldsInCollection.value?.some((f: Field) => f.field === 'highlight_color')) {
-				fields.push('highlight_color');
-			}
+			if (colorField.value) fields.push(colorField.value);
 
 			return [...fields, ...adjustFieldsForDisplays(fields, collection.value!)];
 		});
@@ -290,8 +295,10 @@ export default defineLayout<LayoutOptions>({
 			filterWithCalendarView,
 			template,
 			dateFields,
+			colorFields,
 			startDateField,
 			endDateField,
+			colorField,
 			firstDay,
 			showingCount,
 			createCalendar,
@@ -369,10 +376,14 @@ export default defineLayout<LayoutOptions>({
 			const primaryKey = item[primaryKeyField.value.field];
 			const eventId = isVersion.value ? item.$meta?.version_id : primaryKey;
 
-			const highlightColor =
-				typeof item.highlight_color === 'string' && item.highlight_color.trim().length > 0
-					? item.highlight_color.trim()
+			const eventColor =
+				colorField.value &&
+				typeof item[colorField.value] === 'string' &&
+				item[colorField.value].trim().length > 0
+					? item[colorField.value].trim()
 					: undefined;
+
+			const textColor = eventColor ? getContrastColor(eventColor) : undefined;
 
 			return {
 				id: eventId,
@@ -385,7 +396,8 @@ export default defineLayout<LayoutOptions>({
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,
-				color: highlightColor,
+				color: eventColor,
+				textColor,
 				className: selection.value.includes(eventId) ? 'selected' : undefined,
 			};
 		}
@@ -408,3 +420,37 @@ export default defineLayout<LayoutOptions>({
 		}
 	},
 });
+
+export function getContrastColor(color: string): string {
+	const trimmed = color.trim();
+
+	let hex = trimmed.startsWith('#') ? trimmed.slice(1) : trimmed;
+
+	if (/^[0-9a-fA-F]{3}$/.test(hex)) {
+		hex = hex
+			.split('')
+			.map((char) => char + char)
+			.join('');
+	}
+
+	if (/^[0-9a-fA-F]{6}/.test(hex)) {
+		const r = parseInt(hex.substring(0, 2), 16);
+		const g = parseInt(hex.substring(2, 4), 16);
+		const b = parseInt(hex.substring(4, 6), 16);
+
+		const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+		return yiq >= 128 ? '#000000' : '#ffffff';
+	}
+
+	const rgbMatch = trimmed.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+
+	if (rgbMatch) {
+		const r = parseInt(rgbMatch[1]!, 10);
+		const g = parseInt(rgbMatch[2]!, 10);
+		const b = parseInt(rgbMatch[3]!, 10);
+		const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+		return yiq >= 128 ? '#000000' : '#ffffff';
+	}
+
+	return '#ffffff';
+}
