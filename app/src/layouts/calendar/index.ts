@@ -368,9 +368,11 @@ export default defineLayout<LayoutOptions>({
 
 			const primaryKey = item[primaryKeyField.value.field];
 			const eventId = isVersion.value ? item.$meta?.version_id : primaryKey;
-			const highlightColor = typeof item.highlight_color === 'string' && item.highlight_color.trim().length > 0
-				? item.highlight_color.trim()
-				: undefined;
+
+			const highlightColor =
+				typeof item.highlight_color === 'string' && item.highlight_color.trim().length > 0
+					? item.highlight_color.trim()
+					: undefined;
 
 			return {
 				id: eventId,
