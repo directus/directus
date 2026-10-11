@@ -44,3 +44,16 @@ test('should have days array in firstDayOptions variable', async () => {
 
 	expect(wrapper.vm.firstDayOptions.map((option: { text: string; value: number }) => option.text)).toEqual(expected);
 });
+
+test('should extract highlight_color when valid string or fallback to undefined', () => {
+	const parseHighlightColor = (item: Record<string, unknown>) =>
+		typeof item.highlight_color === 'string' && item.highlight_color.trim().length > 0
+			? item.highlight_color.trim()
+			: undefined;
+
+	expect(parseHighlightColor({ highlight_color: '#3b82f6' })).toBe('#3b82f6');
+	expect(parseHighlightColor({ highlight_color: '  #ff0000  ' })).toBe('#ff0000');
+	expect(parseHighlightColor({ highlight_color: '   ' })).toBeUndefined();
+	expect(parseHighlightColor({ highlight_color: null })).toBeUndefined();
+	expect(parseHighlightColor({})).toBeUndefined();
+});
