@@ -211,14 +211,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				revisions: revisionsM2O,
 				nestedActionEvents: nestedActionEventsM2O,
 				userIntegrityCheckFlags: userIntegrityCheckFlagsM2O,
-			} = await payloadService.processM2O(payloadWithPresets, opts);
+			} = await payloadService.processM2O(payloadWithPresets, opts, 'create');
 
 			const {
 				payload: payloadWithA2O,
 				revisions: revisionsA2O,
 				nestedActionEvents: nestedActionEventsA2O,
 				userIntegrityCheckFlags: userIntegrityCheckFlagsA2O,
-			} = await payloadService.processA2O(payloadWithM2O, opts);
+			} = await payloadService.processA2O(payloadWithM2O, opts, 'create');
 
 			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
 			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
@@ -830,14 +830,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				revisions: revisionsM2O,
 				nestedActionEvents: nestedActionEventsM2O,
 				userIntegrityCheckFlags: userIntegrityCheckFlagsM2O,
-			} = await payloadService.processM2O(payloadWithPresets, opts);
+			} = await payloadService.processM2O(payloadWithPresets, opts, 'update');
 
 			const {
 				payload: payloadWithA2O,
 				revisions: revisionsA2O,
 				nestedActionEvents: nestedActionEventsA2O,
 				userIntegrityCheckFlags: userIntegrityCheckFlagsA2O,
-			} = await payloadService.processA2O(payloadWithM2O, opts);
+			} = await payloadService.processA2O(payloadWithM2O, opts, 'update');
 
 			const payloadWithoutAliasAndPK = pick(payloadWithA2O, without(fields, primaryKeyField, ...aliases));
 			const payloadWithTypeCasting = await payloadService.processValues('update', payloadWithoutAliasAndPK);

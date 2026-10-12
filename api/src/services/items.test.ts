@@ -36,6 +36,22 @@ const schema = new SchemaBuilder()
 		c.field('collection').string();
 		c.field('key').string();
 	})
+	.collection('products', (c) => {
+		c.field('id').id();
+		c.field('name').string();
+		c.field('accessories').o2m('products_accessories', 'products_id', (r) =>
+			r.options({ meta: { junction_field: 'accessories_id' } }),
+		);
+	})
+	.collection('accessories', (c) => {
+		c.field('id').integer().primary();
+		c.field('name').string();
+	})
+	.collection('products_accessories', (c) => {
+		c.field('id').id();
+		c.field('products_id').m2o('products');
+		c.field('accessories_id').m2o('accessories');
+	})
 	.build();
 
 describe('Integration Tests', () => {
@@ -387,6 +403,132 @@ describe('Integration Tests', () => {
 				expect((readByQuery.mock.contexts[0] as ItemsService).accountability).toBe(accountability);
 
 				readByQuery.mockRestore();
+			});
+		});
+
+		describe('M2M Create New with manual primary key (#25222)', () => {
+			let productsService: ItemsService;
+
+			beforeEach(() => {
+				vi.mocked(assertCollectionActive).mockResolvedValue(undefined as any);
+
+				productsService = new ItemsService('products', {
+					knex: db,
+					schema,
+				});
+
+				tracker.on.select('products').response([{ id: 1, name: 'Product 1' }]);
+				tracker.on.select('accessories').response((query) => {
+					if (query.bindings.includes(10) || query.sql.includes('10')) {
+						return [{ id: 10, name: 'Original Accessory' }];
+					}
+					return [];
+				});
+				tracker.on.select('products_accessories').response([{ id: 1, products_id: 1, accessories_id: 10 }]);
+				tracker.on.update('products').response(1);
+				tracker.on.update('accessories').response(1);
+				tracker.on.update('products_accessories').response(1);
+				tracker.on.insert('products_accessories').response([{ id: 1 }]);
+
+				const duplicateError = Object.assign(new Error('duplicate key value violates unique constraint'), {
+					code: '23505',
+					table: 'accessories',
+					detail: 'Key (id)=(10) already exists.',
+				});
+
+				tracker.on
+					.insert((query) => query.sql.includes('accessories') && query.bindings.includes(10))
+					.simulateError(duplicateError);
+
+				tracker.on.insert('accessories').response([{ id: 11 }]);
+			});
+
+			it('rejects duplicate primary key during explicit M2M Create New and leaves existing record unchanged', async () => {
+				await expect(
+					productsService.updateOne(1, {
+						accessories: {
+							create: [
+								{
+									accessories_id: {
+										id: 10,
+										name: 'Overwritten Name',
+									},
+								},
+							],
+							update: [],
+							delete: [],
+						},
+					}),
+				).rejects.toThrow();
+
+				const updateQueries = tracker.history.update || [];
+				const accessoriesUpdates = updateQueries.filter((q) => q.sql.includes('update "accessories"'));
+				expect(accessoriesUpdates).toHaveLength(0);
+			});
+
+			it('succeeds when creating an M2M item with a new manual primary key', async () => {
+				await expect(
+					productsService.updateOne(1, {
+						accessories: {
+							create: [
+								{
+									accessories_id: {
+										id: 11,
+										name: 'New Accessory',
+									},
+								},
+							],
+							update: [],
+							delete: [],
+						},
+					}),
+				).resolves.toBe(1);
+			});
+
+			it('allows editing an existing related record via update array', async () => {
+				await expect(
+					productsService.updateOne(1, {
+						accessories: {
+							create: [],
+							update: [
+								{
+									id: 1,
+									accessories_id: {
+										id: 10,
+										name: 'Legitimately Updated Name',
+									},
+								},
+							],
+							delete: [],
+						},
+					}),
+				).resolves.toBe(1);
+
+				const updateQueries = tracker.history.update || [];
+				const accessoriesUpdates = updateQueries.filter((q) => q.sql.includes('update "accessories"'));
+				expect(accessoriesUpdates.length).toBeGreaterThan(0);
+			});
+
+			it('allows linking an existing related record via create with only primary key', async () => {
+				await expect(
+					productsService.updateOne(1, {
+						accessories: {
+							create: [
+								{
+									accessories_id: {
+										id: 10,
+									},
+								},
+							],
+							update: [],
+							delete: [],
+						},
+					}),
+				).resolves.toBe(1);
+
+				const updateQueries = tracker.history.update || [];
+				const accessoriesUpdates = updateQueries.filter((q) => q.sql.includes('update "accessories"'));
+				expect(accessoriesUpdates).toHaveLength(0);
 			});
 		});
 	});

@@ -336,6 +336,7 @@ interface PayloadService {
 	processA2O(
 		data: Partial<Item>,
 		opts?: MutationOptions,
+		action?: 'create' | 'update',
 	): Promise<
 		PayloadServiceProcessRelationResult & {
 			payload: Partial<Item>;
@@ -344,6 +345,7 @@ interface PayloadService {
 	processM2O(
 		data: Partial<Item>,
 		opts?: MutationOptions,
+		action?: 'create' | 'update',
 	): Promise<
 		PayloadServiceProcessRelationResult & {
 			payload: Partial<Item>;

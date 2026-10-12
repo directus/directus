@@ -552,6 +552,7 @@ export class PayloadService {
 	async processA2O(
 		data: Partial<Item>,
 		opts?: MutationOptions,
+		action: 'create' | 'update' = 'update',
 	): Promise<
 		PayloadServiceProcessRelationResult & {
 			payload: Partial<Item>;
@@ -626,19 +627,35 @@ export class PayloadService {
 				const { [relatedPrimaryKeyField]: _, ...record } = relatedRecord;
 
 				if (Object.keys(record).length > 0) {
-					await service.updateOne(relatedPrimaryKey, record, {
-						onRevisionCreate: (pk) => revisions.push(pk),
-						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
-						autoPurgeCache: opts?.autoPurgeCache,
-						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-						skipTracking: opts?.skipTracking,
-						overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
-						onItemCreate: opts?.onItemCreate,
-						mutationTracker: opts?.mutationTracker,
-					});
+					if (action === 'create') {
+						relatedPrimaryKey = await service.createOne(relatedRecord, {
+							onRevisionCreate: (pk) => revisions.push(pk),
+							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
+							onItemCreate: opts?.onItemCreate,
+							mutationTracker: opts?.mutationTracker,
+						});
+					} else {
+						await service.updateOne(relatedPrimaryKey, record, {
+							onRevisionCreate: (pk) => revisions.push(pk),
+							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
+							onItemCreate: opts?.onItemCreate,
+							mutationTracker: opts?.mutationTracker,
+						});
+					}
 				}
 			} else {
 				relatedPrimaryKey = await service.createOne(relatedRecord, {
@@ -669,6 +686,7 @@ export class PayloadService {
 	async processM2O(
 		data: Partial<Item>,
 		opts?: MutationOptions,
+		action: 'create' | 'update' = 'update',
 	): Promise<
 		PayloadServiceProcessRelationResult & {
 			payload: Partial<Item>;
@@ -729,19 +747,35 @@ export class PayloadService {
 				const { [relatedPrimaryKeyField]: _, ...record } = relatedRecord;
 
 				if (Object.keys(record).length > 0) {
-					await service.updateOne(relatedPrimaryKey, record, {
-						onRevisionCreate: (pk) => revisions.push(pk),
-						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
-						autoPurgeCache: opts?.autoPurgeCache,
-						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-						skipTracking: opts?.skipTracking,
-						overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
-						onItemCreate: opts?.onItemCreate,
-						mutationTracker: opts?.mutationTracker,
-					});
+					if (action === 'create') {
+						relatedPrimaryKey = await service.createOne(relatedRecord, {
+							onRevisionCreate: (pk) => revisions.push(pk),
+							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
+							onItemCreate: opts?.onItemCreate,
+							mutationTracker: opts?.mutationTracker,
+						});
+					} else {
+						await service.updateOne(relatedPrimaryKey, record, {
+							onRevisionCreate: (pk) => revisions.push(pk),
+							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
+							onItemCreate: opts?.onItemCreate,
+							mutationTracker: opts?.mutationTracker,
+						});
+					}
 				}
 			} else {
 				relatedPrimaryKey = await service.createOne(relatedRecord, {
