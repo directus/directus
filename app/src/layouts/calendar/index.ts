@@ -376,11 +376,7 @@ export default defineLayout<LayoutOptions>({
 			const primaryKey = item[primaryKeyField.value.field];
 			const eventId = isVersion.value ? item.$meta?.version_id : primaryKey;
 
-			const eventColor =
-				colorField.value && typeof item[colorField.value] === 'string' && item[colorField.value].trim().length > 0
-					? item[colorField.value].trim()
-					: undefined;
-
+			const eventColor = getEventColor(item, colorField.value);
 			const textColor = eventColor ? getContrastColor(eventColor) : undefined;
 
 			return {
@@ -418,6 +414,12 @@ export default defineLayout<LayoutOptions>({
 		}
 	},
 });
+
+export function getEventColor(item: Record<string, any>, colorField?: string | null): string | undefined {
+	if (!colorField || typeof item[colorField] !== 'string') return undefined;
+	const trimmed = item[colorField].trim();
+	return trimmed.length > 0 ? trimmed : undefined;
+}
 
 export function getContrastColor(color: string): string {
 	const trimmed = color.trim();

@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { beforeAll, expect, test, vi } from 'vitest';
 import { createI18n, I18n } from 'vue-i18n';
 import Options from './options.vue';
-import { getContrastColor } from './index';
+import { getContrastColor, getEventColor } from './index';
 import { GlobalMountOptions } from '@/__utils__/types';
 
 let i18n: I18n;
@@ -85,73 +85,45 @@ test('should compute contrast textColor using YIQ formula', () => {
 	expect(getContrastColor('invalid')).toBe('#ffffff');
 });
 
-test('should extract event color and textColor when colorField is configured', () => {
-	const parseEventColor = (item: Record<string, unknown>, colorField?: string) => {
-		const eventColor =
-			colorField && typeof item[colorField] === 'string' && (item[colorField] as string).trim().length > 0
-				? (item[colorField] as string).trim()
-				: undefined;
+test('should extract event color and compute contrast textColor when colorField is configured', () => {
+	const item1 = { color: '#3b82f6' };
+	const color1 = getEventColor(item1, 'color');
+	expect(color1).toBe('#3b82f6');
+	expect(getContrastColor(color1!)).toBe('#ffffff');
 
-		const textColor = eventColor ? getContrastColor(eventColor) : undefined;
+	const item2 = { color: '  #ffff00  ' };
+	const color2 = getEventColor(item2, 'color');
+	expect(color2).toBe('#ffff00');
+	expect(getContrastColor(color2!)).toBe('#000000');
 
-		return { color: eventColor, textColor };
-	};
+	const item3 = { color: '#000000' };
+	const color3 = getEventColor(item3, 'color');
+	expect(color3).toBe('#000000');
+	expect(getContrastColor(color3!)).toBe('#ffffff');
 
-	expect(parseEventColor({ color: '#3b82f6' }, 'color')).toEqual({
-		color: '#3b82f6',
-		textColor: '#ffffff',
-	});
-
-	expect(parseEventColor({ color: '  #ffff00  ' }, 'color')).toEqual({
-		color: '#ffff00',
-		textColor: '#000000',
-	});
-
-	expect(parseEventColor({ color: '#000000' }, 'color')).toEqual({
-		color: '#000000',
-		textColor: '#ffffff',
-	});
-
-	expect(parseEventColor({ color: '#ffffff' }, 'color')).toEqual({
-		color: '#ffffff',
-		textColor: '#000000',
-	});
+	const item4 = { color: '#ffffff' };
+	const color4 = getEventColor(item4, 'color');
+	expect(color4).toBe('#ffffff');
+	expect(getContrastColor(color4!)).toBe('#000000');
 });
 
-test('should return undefined when colorField is undefined or item field is missing/empty', () => {
-	const parseEventColor = (item: Record<string, unknown>, colorField?: string) => {
-		const eventColor =
-			colorField && typeof item[colorField] === 'string' && (item[colorField] as string).trim().length > 0
-				? (item[colorField] as string).trim()
-				: undefined;
+test('should return undefined when colorField is undefined or null', () => {
+	expect(getEventColor({ color: '#3b82f6' }, undefined)).toBeUndefined();
+	expect(getEventColor({ color: '#3b82f6' }, null)).toBeUndefined();
+});
 
-		const textColor = eventColor ? getContrastColor(eventColor) : undefined;
+test('should return undefined when item field is missing', () => {
+	expect(getEventColor({}, 'color')).toBeUndefined();
+});
 
-		return { color: eventColor, textColor };
-	};
+test('should return undefined when item field has non-string values', () => {
+	expect(getEventColor({ color: 123 }, 'color')).toBeUndefined();
+	expect(getEventColor({ color: null }, 'color')).toBeUndefined();
+	expect(getEventColor({ color: true }, 'color')).toBeUndefined();
+	expect(getEventColor({ color: {} }, 'color')).toBeUndefined();
+});
 
-	expect(parseEventColor({ color: '#3b82f6' }, undefined)).toEqual({
-		color: undefined,
-		textColor: undefined,
-	});
-
-	expect(parseEventColor({}, 'color')).toEqual({
-		color: undefined,
-		textColor: undefined,
-	});
-
-	expect(parseEventColor({ color: '   ' }, 'color')).toEqual({
-		color: undefined,
-		textColor: undefined,
-	});
-
-	expect(parseEventColor({ color: null }, 'color')).toEqual({
-		color: undefined,
-		textColor: undefined,
-	});
-
-	expect(parseEventColor({ color: 123 }, 'color')).toEqual({
-		color: undefined,
-		textColor: undefined,
-	});
+test('should return undefined when item field is empty string or only whitespace', () => {
+	expect(getEventColor({ color: '' }, 'color')).toBeUndefined();
+	expect(getEventColor({ color: '   ' }, 'color')).toBeUndefined();
 });
