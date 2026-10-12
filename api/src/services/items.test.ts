@@ -39,6 +39,7 @@ const schema = new SchemaBuilder()
 	.collection('products', (c) => {
 		c.field('id').id();
 		c.field('name').string();
+
 		c.field('accessories').o2m('products_accessories', 'products_id', (r) =>
 			r.options({ meta: { junction_field: 'accessories_id' } }),
 		);
@@ -418,12 +419,15 @@ describe('Integration Tests', () => {
 				});
 
 				tracker.on.select('products').response([{ id: 1, name: 'Product 1' }]);
+
 				tracker.on.select('accessories').response((query) => {
 					if (query.bindings.includes(10) || query.sql.includes('10')) {
 						return [{ id: 10, name: 'Original Accessory' }];
 					}
+
 					return [];
 				});
+
 				tracker.on.select('products_accessories').response([{ id: 1, products_id: 1, accessories_id: 10 }]);
 				tracker.on.update('products').response(1);
 				tracker.on.update('accessories').response(1);
