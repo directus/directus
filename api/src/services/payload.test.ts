@@ -1,5 +1,6 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Item, PayloadAction } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
@@ -11,6 +12,26 @@ import { useLogger } from '../logger/index.js';
 import { decrypt, encrypt } from '../utils/encrypt.js';
 import { getSecret } from '../utils/get-secret.js';
 import { PayloadService } from './index.js';
+
+const mockNestedService = {
+	createOne: vi.fn(),
+	updateOne: vi.fn(),
+};
+
+vi.mock('../utils/get-service.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('../utils/get-service.js')>();
+
+	return {
+		...actual,
+		getService: vi.fn((collection: string, opts: any) => {
+			if (collection === 'authors') {
+				return mockNestedService as any;
+			}
+
+			return actual.getService(collection, opts);
+		}),
+	};
+});
 
 vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('sqlite'),
@@ -912,6 +933,202 @@ describe('Integration Tests', () => {
 				await service.processAggregates(payload, { min: ['secret', 'name'] });
 
 				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR, name: 'Alice' });
+			});
+		});
+
+		describe('processA2O', () => {
+			let service: PayloadService;
+
+			const a2oSchema = new SchemaBuilder()
+				.collection('articles', (c) => {
+					c.field('id').id();
+					c.field('item').a2o(['authors']);
+				})
+				.collection('authors', (c) => {
+					c.field('id').id();
+					c.field('name').string();
+				})
+				.build();
+
+			beforeEach(() => {
+				service = new PayloadService('articles', {
+					knex: db,
+					schema: a2oSchema,
+				});
+
+				tracker.on.select('authors').response([{ id: 10 }]);
+
+				mockNestedService.createOne.mockImplementation(async (record: any, opts: any) => {
+					opts?.onRevisionCreate?.(record.id);
+					opts?.onRequireUserIntegrityCheck?.(UserIntegrityCheckFlag.RemainingAdmins);
+					opts?.bypassEmitAction?.({ action: 'create' });
+					return record.id;
+				});
+
+				mockNestedService.updateOne.mockImplementation(async (pk: any, _record: any, opts: any) => {
+					opts?.onRevisionCreate?.(pk);
+					opts?.onRequireUserIntegrityCheck?.(UserIntegrityCheckFlag.RemainingAdmins);
+					opts?.bypassEmitAction?.({ action: 'update' });
+					return pk;
+				});
+			});
+
+			test('creates nested related record when action is create and related item exists', async () => {
+				const bypassEmitAction = vi.fn();
+
+				const result = await service.processA2O(
+					{
+						collection: 'authors',
+						item: {
+							id: 10,
+							name: 'New Name',
+						},
+					},
+					{ bypassEmitAction },
+					'create',
+				);
+
+				expect(mockNestedService.createOne).toHaveBeenCalledWith(
+					{ id: 10, name: 'New Name' },
+					expect.objectContaining({
+						onRevisionCreate: expect.any(Function),
+						onRequireUserIntegrityCheck: expect.any(Function),
+						bypassEmitAction: expect.any(Function),
+					}),
+				);
+
+				expect(mockNestedService.updateOne).not.toHaveBeenCalled();
+				expect(bypassEmitAction).toHaveBeenCalledWith({ action: 'create' });
+				expect(result.payload['item']).toBe(10);
+				expect(result.revisions).toEqual([10]);
+				expect(result.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.RemainingAdmins);
+			});
+
+			test('updates nested related record when action is update and related item exists', async () => {
+				const result = await service.processA2O(
+					{
+						collection: 'authors',
+						item: {
+							id: 10,
+							name: 'Updated Name',
+						},
+					},
+					undefined,
+					'update',
+				);
+
+				expect(mockNestedService.updateOne).toHaveBeenCalledWith(
+					10,
+					{ name: 'Updated Name' },
+					expect.objectContaining({
+						onRevisionCreate: expect.any(Function),
+						onRequireUserIntegrityCheck: expect.any(Function),
+						bypassEmitAction: expect.any(Function),
+					}),
+				);
+
+				expect(mockNestedService.createOne).not.toHaveBeenCalled();
+				expect(result.payload['item']).toBe(10);
+				expect(result.revisions).toEqual([10]);
+				expect(result.nestedActionEvents).toEqual([{ action: 'update' }]);
+				expect(result.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.RemainingAdmins);
+			});
+		});
+
+		describe('processM2O', () => {
+			let service: PayloadService;
+
+			const m2oSchema = new SchemaBuilder()
+				.collection('articles', (c) => {
+					c.field('id').id();
+					c.field('author_id').m2o('authors');
+				})
+				.collection('authors', (c) => {
+					c.field('id').id();
+					c.field('name').string();
+				})
+				.build();
+
+			beforeEach(() => {
+				service = new PayloadService('articles', {
+					knex: db,
+					schema: m2oSchema,
+				});
+
+				tracker.on.select('authors').response([{ id: 10 }]);
+
+				mockNestedService.createOne.mockImplementation(async (record: any, opts: any) => {
+					opts?.onRevisionCreate?.(record.id);
+					opts?.onRequireUserIntegrityCheck?.(UserIntegrityCheckFlag.RemainingAdmins);
+					opts?.bypassEmitAction?.({ action: 'create' });
+					return record.id;
+				});
+
+				mockNestedService.updateOne.mockImplementation(async (pk: any, _record: any, opts: any) => {
+					opts?.onRevisionCreate?.(pk);
+					opts?.onRequireUserIntegrityCheck?.(UserIntegrityCheckFlag.RemainingAdmins);
+					opts?.bypassEmitAction?.({ action: 'update' });
+					return pk;
+				});
+			});
+
+			test('creates nested related record when action is create and related item exists', async () => {
+				const bypassEmitAction = vi.fn();
+
+				const result = await service.processM2O(
+					{
+						author_id: {
+							id: 10,
+							name: 'New Name',
+						},
+					},
+					{ bypassEmitAction },
+					'create',
+				);
+
+				expect(mockNestedService.createOne).toHaveBeenCalledWith(
+					{ id: 10, name: 'New Name' },
+					expect.objectContaining({
+						onRevisionCreate: expect.any(Function),
+						onRequireUserIntegrityCheck: expect.any(Function),
+						bypassEmitAction: expect.any(Function),
+					}),
+				);
+
+				expect(mockNestedService.updateOne).not.toHaveBeenCalled();
+				expect(bypassEmitAction).toHaveBeenCalledWith({ action: 'create' });
+				expect(result.payload['author_id']).toBe(10);
+				expect(result.revisions).toEqual([10]);
+				expect(result.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.RemainingAdmins);
+			});
+
+			test('updates nested related record when action is update and related item exists', async () => {
+				const result = await service.processM2O(
+					{
+						author_id: {
+							id: 10,
+							name: 'Updated Name',
+						},
+					},
+					undefined,
+					'update',
+				);
+
+				expect(mockNestedService.updateOne).toHaveBeenCalledWith(
+					10,
+					{ name: 'Updated Name' },
+					expect.objectContaining({
+						onRevisionCreate: expect.any(Function),
+						onRequireUserIntegrityCheck: expect.any(Function),
+						bypassEmitAction: expect.any(Function),
+					}),
+				);
+
+				expect(mockNestedService.createOne).not.toHaveBeenCalled();
+				expect(result.payload['author_id']).toBe(10);
+				expect(result.revisions).toEqual([10]);
+				expect(result.nestedActionEvents).toEqual([{ action: 'update' }]);
+				expect(result.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.RemainingAdmins);
 			});
 		});
 	});
