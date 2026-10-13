@@ -73,6 +73,35 @@ describe('create and build', () => {
 		// Bump up timeout duration as the build process can take slightly longer to complete
 		30_000,
 	);
+
+	test('richtext extension keeps Tiptap external', async () => {
+		const currentTime = Date.now();
+
+		for (const language of EXTENSION_LANGUAGES) {
+			const testExtensionPath = `${TEST_PREFIX}-init-richtext-${language}-${currentTime}`;
+
+			await create('richtext', testExtensionPath, { language });
+
+			const source = await fse.readFile(
+				resolve(testExtensionPath, 'src', `index.${languageToShort(language)}`),
+				'utf8',
+			);
+
+			expect(source).toContain(`id: '${testExtensionPath}'`);
+			expect(source).toContain(`key: '${testExtensionPath}'`);
+			expect(source).not.toContain('__EXTENSION_');
+
+			const { devDependencies } = await fse.readJson(resolve(testExtensionPath, 'package.json'));
+
+			expect(devDependencies).toHaveProperty('@tiptap/core');
+
+			await execa('node', ['../cli.js', 'build'], { cwd: testExtensionPath });
+
+			const output = await fse.readFile(resolve(testExtensionPath, 'dist', 'index.js'), 'utf8');
+
+			expect(output).toMatch(/from\s*["']@tiptap\/core["']/);
+		}
+	}, 60_000);
 });
 
 describe('validate extension', async () => {

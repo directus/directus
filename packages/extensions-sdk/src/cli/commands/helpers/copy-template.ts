@@ -3,10 +3,16 @@ import type { ExtensionType } from '@directus/types';
 import fse from 'fs-extra';
 import type { Language } from '../../types.js';
 import getTemplatePath from '../../utils/get-template-path.js';
+import { fillTemplate, type TemplateVariables } from './get-template-variables.js';
 
 type TemplateFile = { type: 'config' | 'source'; path: string };
 
-async function copyTemplateFile(templateFile: TemplateFile, extensionPath: string, sourcePath?: string) {
+async function copyTemplateFile(
+	templateFile: TemplateFile,
+	extensionPath: string,
+	sourcePath?: string,
+	variables: TemplateVariables = {},
+) {
 	if (sourcePath !== undefined) {
 		const oldName = path.basename(templateFile.path);
 		const newName = oldName.startsWith('_') ? `.${oldName.substring(1)}` : oldName;
@@ -16,7 +22,16 @@ async function copyTemplateFile(templateFile: TemplateFile, extensionPath: strin
 				? path.join(extensionPath, newName)
 				: path.resolve(extensionPath, sourcePath, newName);
 
-		await fse.copy(templateFile.path, targetPath, { overwrite: false });
+		if (templateFile.type === 'config') {
+			await fse.copy(templateFile.path, targetPath, { overwrite: false });
+			return;
+		}
+
+		if (await fse.pathExists(targetPath)) return;
+
+		const content = await fse.readFile(templateFile.path, 'utf8');
+
+		await fse.outputFile(targetPath, fillTemplate(content, variables));
 	}
 }
 
@@ -65,8 +80,11 @@ export default async function copyTemplate(
 	extensionPath: string,
 	sourcePath?: string,
 	language?: Language,
+	variables?: TemplateVariables,
 ): Promise<void> {
 	const templateFiles = await getTemplateFiles(type, language);
 
-	await Promise.all(templateFiles.map((templateFile) => copyTemplateFile(templateFile, extensionPath, sourcePath)));
+	await Promise.all(
+		templateFiles.map((templateFile) => copyTemplateFile(templateFile, extensionPath, sourcePath, variables)),
+	);
 }

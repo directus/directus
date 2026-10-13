@@ -14,30 +14,28 @@ import chalk from 'chalk';
 import { execa } from 'execa';
 import fse from 'fs-extra';
 import ora from 'ora';
-import { LAST_BREAKING_RELEASE } from '../../constants/last-breaking.js';
 import getPackageManager from '../utils/get-package-manager.js';
 import { isLanguage, languageToShort } from '../utils/languages.js';
 import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
+import getDefaultHost from './helpers/get-default-host.js';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
+import getTemplateVariables from './helpers/get-template-variables.js';
 
 type CreateOptions = {
 	language?: string;
 	install?: boolean;
 };
 
-// richtext has no template yet, so the CLI must not offer a type it cannot scaffold
-const CREATABLE_EXTENSION_TYPES = EXTENSION_TYPES.filter((type) => type !== 'richtext');
-
 export default async function create(type: string, name: string, options: CreateOptions): Promise<void> {
 	const install = options.install ?? true;
 	const targetDir = name.substring(name.lastIndexOf('/') + 1);
 	const targetPath = path.resolve(targetDir);
 
-	if (!isIn(type, CREATABLE_EXTENSION_TYPES)) {
+	if (!isIn(type, EXTENSION_TYPES)) {
 		log(
-			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${CREATABLE_EXTENSION_TYPES.map(
-				(t) => chalk.bold.magenta(t),
+			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
+				chalk.bold.magenta(t),
 			).join(', ')}.`,
 			'error',
 		);
@@ -93,7 +91,7 @@ async function createBundleExtension({
 	await fse.ensureDir(targetPath);
 	await copyTemplate(type, targetPath);
 
-	const host = `^${LAST_BREAKING_RELEASE}`;
+	const host = getDefaultHost(type);
 	const options = { type, path: { app: 'dist/app.js', api: 'dist/api.js' }, entries: [], host };
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type));
 
@@ -139,9 +137,9 @@ async function createExtension({
 	const spinner = ora(chalk.bold('Scaffolding Directus extension...')).start();
 
 	await fse.ensureDir(targetPath);
-	await copyTemplate(type, targetPath, 'src', language);
+	await copyTemplate(type, targetPath, 'src', language, getTemplateVariables(name));
 
-	const host = `^${LAST_BREAKING_RELEASE}`;
+	const host = getDefaultHost(type);
 
 	const options: ExtensionOptions = isIn(type, HYBRID_EXTENSION_TYPES)
 		? {
