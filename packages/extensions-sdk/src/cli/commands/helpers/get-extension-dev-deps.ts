@@ -30,7 +30,6 @@ export default async function getExtensionDevDeps(
 
 	if (types.includes('richtext')) {
 		deps['@tiptap/core'] = `^${await getPackageVersion('@tiptap/core')}`;
-		deps['@tiptap/pm'] = `^${await getPackageVersion('@tiptap/pm')}`;
 	}
 
 	return deps;

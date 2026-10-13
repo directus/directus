@@ -21,7 +21,6 @@ import { getLanguageFromPath, isLanguage, languageToShort } from '../utils/langu
 import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
-import getTemplateVariables from './helpers/get-template-variables.js';
 
 type AddOptions = { install?: boolean };
 
@@ -110,7 +109,7 @@ export default async function add(options: AddOptions): Promise<void> {
 		const sourcePath = path.resolve(source, name);
 
 		await fse.ensureDir(sourcePath);
-		await copyTemplate(type, extensionPath, sourcePath, language, getTemplateVariables(name));
+		await copyTemplate(type, extensionPath, sourcePath, language);
 
 		const newEntries: ExtensionOptionsBundleEntry[] = [
 			...extensionOptions.entries,
@@ -236,7 +235,7 @@ export default async function add(options: AddOptions): Promise<void> {
 		);
 
 		await fse.ensureDir(entrySourcePath);
-		await copyTemplate(type, extensionPath, entrySourcePath, language, getTemplateVariables(name));
+		await copyTemplate(type, extensionPath, entrySourcePath, language);
 
 		const toConvertSourceUrl = (entrypoint: string) =>
 			path.posix.join(pathToRelativeUrl(source), convertName, path.posix.relative(source, entrypoint));

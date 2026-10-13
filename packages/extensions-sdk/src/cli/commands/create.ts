@@ -14,13 +14,12 @@ import chalk from 'chalk';
 import { execa } from 'execa';
 import fse from 'fs-extra';
 import ora from 'ora';
+import { LAST_BREAKING_RELEASE } from '../../constants/last-breaking.js';
 import getPackageManager from '../utils/get-package-manager.js';
 import { isLanguage, languageToShort } from '../utils/languages.js';
 import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
-import getDefaultHost from './helpers/get-default-host.js';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
-import getTemplateVariables from './helpers/get-template-variables.js';
 
 type CreateOptions = {
 	language?: string;
@@ -91,7 +90,7 @@ async function createBundleExtension({
 	await fse.ensureDir(targetPath);
 	await copyTemplate(type, targetPath);
 
-	const host = getDefaultHost(type);
+	const host = `^${LAST_BREAKING_RELEASE}`;
 	const options = { type, path: { app: 'dist/app.js', api: 'dist/api.js' }, entries: [], host };
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type));
 
@@ -137,9 +136,9 @@ async function createExtension({
 	const spinner = ora(chalk.bold('Scaffolding Directus extension...')).start();
 
 	await fse.ensureDir(targetPath);
-	await copyTemplate(type, targetPath, 'src', language, getTemplateVariables(name));
+	await copyTemplate(type, targetPath, 'src', language);
 
-	const host = getDefaultHost(type);
+	const host = `^${LAST_BREAKING_RELEASE}`;
 
 	const options: ExtensionOptions = isIn(type, HYBRID_EXTENSION_TYPES)
 		? {

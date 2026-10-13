@@ -1,22 +1,24 @@
 import { Mark, mergeAttributes } from '@tiptap/core';
 
-const __EXTENSION_PASCAL_NAME__ = Mark.create({
-	name: '__EXTENSION_CAMEL_NAME__',
-	parseHTML: () => [{ tag: 'span[data-__EXTENSION_ID__]' }],
-	renderHTML: ({ HTMLAttributes }) => ['span', mergeAttributes(HTMLAttributes, { 'data-__EXTENSION_ID__': '' }), 0],
+const Custom = Mark.create({
+	name: 'custom',
+	// outranks the editor's TextStyle mark, which otherwise claims any span with a data-* attribute
+	priority: 200,
+	parseHTML: () => [{ tag: 'span[data-custom]' }],
+	renderHTML: ({ HTMLAttributes }) => ['span', mergeAttributes(HTMLAttributes, { 'data-custom': '' }), 0],
 });
 
 export default {
-	id: '__EXTENSION_ID__',
-	name: '__EXTENSION_NAME__',
-	extensions: [__EXTENSION_PASCAL_NAME__],
+	id: 'custom',
+	name: 'Custom',
+	extensions: [Custom],
 	buttons: [
 		{
-			key: '__EXTENSION_ID__',
+			key: 'custom',
 			icon: 'extension',
-			label: '__EXTENSION_NAME__',
-			command: (editor) => editor.chain().focus().toggleMark('__EXTENSION_CAMEL_NAME__').run(),
-			isActive: (editor) => editor.isActive('__EXTENSION_CAMEL_NAME__'),
+			label: 'Custom',
+			command: (editor) => editor.chain().focus().toggleMark('custom').run(),
+			isActive: (editor) => editor.isActive('custom'),
 		},
 	],
 };
