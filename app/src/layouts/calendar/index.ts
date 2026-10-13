@@ -458,12 +458,7 @@ export function getContrastColor(color: string, isDark = false): string | undefi
 
 	let hex = trimmed.startsWith('#') ? trimmed.slice(1) : trimmed;
 
-	if (/^[0-9a-fA-F]{3}$/.test(hex)) {
-		hex = hex
-			.split('')
-			.map((char) => char + char)
-			.join('');
-	} else if (/^[0-9a-fA-F]{4}$/.test(hex)) {
+	if (/^[0-9a-fA-F]{3,4}$/.test(hex)) {
 		hex = hex
 			.split('')
 			.map((char) => char + char)
