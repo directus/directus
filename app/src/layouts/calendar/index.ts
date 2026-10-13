@@ -19,6 +19,7 @@ import { LayoutOptions } from './types';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
+import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 import { useVersionQuery } from '@/composables/use-version-query';
 import { useServerStore } from '@/stores/server';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -42,6 +43,7 @@ export default defineLayout<LayoutOptions>({
 	setup(props, { emit }) {
 		const toolsStore = useAiToolsStore();
 		const { info } = useServerStore();
+		const { darkMode } = useThemeConfiguration();
 
 		toolsStore.onSystemToolResult((tool, input) => {
 			if (tool === 'items' && input.collection === collection.value) {
@@ -379,7 +381,7 @@ export default defineLayout<LayoutOptions>({
 			const eventId = isVersion.value ? item.$meta?.version_id : primaryKey;
 
 			const eventColor = getEventColor(item, colorField.value);
-			const textColor = eventColor ? getContrastColor(eventColor) : undefined;
+			const textColor = eventColor ? getContrastColor(eventColor, darkMode.value) : undefined;
 
 			return {
 				id: eventId,
@@ -424,12 +426,22 @@ export function getEventColor(item: Record<string, any>, colorField?: string | n
 	return trimmed.length > 0 ? trimmed : undefined;
 }
 
-export function getContrastColor(color: string): string | undefined {
+export function getContrastColor(color: string, isDark = false): string {
 	const trimmed = color.trim();
 
 	if (trimmed.toLowerCase() === 'transparent') {
-		return undefined;
+		return isDark ? '#ffffff' : '#000000';
 	}
+
+	const bg = isDark ? 0 : 255;
+
+	const blend = (r: number, g: number, b: number, alpha: number) => {
+		const blendedR = r * alpha + bg * (1 - alpha);
+		const blendedG = g * alpha + bg * (1 - alpha);
+		const blendedB = b * alpha + bg * (1 - alpha);
+		const yiq = (blendedR * 299 + blendedG * 587 + blendedB * 114) / 1000;
+		return yiq >= 128 ? '#000000' : '#ffffff';
+	};
 
 	let hex = trimmed.startsWith('#') ? trimmed.slice(1) : trimmed;
 
@@ -446,22 +458,18 @@ export function getContrastColor(color: string): string | undefined {
 	}
 
 	if (/^[0-9a-fA-F]{8}$/.test(hex)) {
-		const alpha = parseInt(hex.substring(6, 8), 16) / 255;
-		if (alpha <= 0.5) return undefined;
-
 		const r = parseInt(hex.substring(0, 2), 16);
 		const g = parseInt(hex.substring(2, 4), 16);
 		const b = parseInt(hex.substring(4, 6), 16);
-		const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-		return yiq >= 128 ? '#000000' : '#ffffff';
+		const alpha = parseInt(hex.substring(6, 8), 16) / 255;
+		return blend(r, g, b, alpha);
 	}
 
 	if (/^[0-9a-fA-F]{6}$/.test(hex)) {
 		const r = parseInt(hex.substring(0, 2), 16);
 		const g = parseInt(hex.substring(2, 4), 16);
 		const b = parseInt(hex.substring(4, 6), 16);
-		const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-		return yiq >= 128 ? '#000000' : '#ffffff';
+		return blend(r, g, b, 1);
 	}
 
 	const rgbMatch = trimmed.match(
@@ -472,16 +480,12 @@ export function getContrastColor(color: string): string | undefined {
 		const parseChannel = (val: string) => (val.endsWith('%') ? (parseFloat(val) / 100) * 255 : parseFloat(val));
 		const parseAlpha = (val: string) => (val.endsWith('%') ? parseFloat(val) / 100 : parseFloat(val));
 
-		if (rgbMatch[4] !== undefined) {
-			const alpha = parseAlpha(rgbMatch[4]);
-			if (alpha <= 0.5) return undefined;
-		}
-
 		const r = parseChannel(rgbMatch[1]!);
 		const g = parseChannel(rgbMatch[2]!);
 		const b = parseChannel(rgbMatch[3]!);
-		const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-		return yiq >= 128 ? '#000000' : '#ffffff';
+		const alpha = rgbMatch[4] !== undefined ? parseAlpha(rgbMatch[4]) : 1;
+
+		return blend(r, g, b, alpha);
 	}
 
 	return '#ffffff';
