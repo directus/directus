@@ -82,7 +82,7 @@ test('should compute contrast textColor using YIQ formula', () => {
 	expect(getContrastColor('#3b82f6')).toBe('#ffffff');
 	expect(getContrastColor('rgb(255, 255, 255)')).toBe('#000000');
 	expect(getContrastColor('rgb(0, 0, 0)')).toBe('#ffffff');
-	expect(getContrastColor('invalid')).toBe('#ffffff');
+	expect(getContrastColor('invalid')).toBeUndefined();
 });
 
 test('should handle transparent and semi-transparent colors', () => {

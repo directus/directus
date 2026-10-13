@@ -438,7 +438,7 @@ export function getEventColor(item: Record<string, any>, colorField?: string | n
 	return trimmed.length > 0 ? trimmed : undefined;
 }
 
-export function getContrastColor(color: string, isDark = false): string {
+export function getContrastColor(color: string, isDark = false): string | undefined {
 	const trimmed = color.trim();
 
 	if (trimmed.toLowerCase() === 'transparent') {
@@ -500,5 +500,5 @@ export function getContrastColor(color: string, isDark = false): string {
 		return blend(r, g, b, alpha);
 	}
 
-	return '#ffffff';
+	return undefined;
 }
