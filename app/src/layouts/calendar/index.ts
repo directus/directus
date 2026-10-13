@@ -72,11 +72,25 @@ export default defineLayout<LayoutOptions>({
 			}),
 		);
 
-		const colorFields = computed(() =>
-			fieldsInCollection.value.filter((field: Field) => {
-				return field.type === 'string' || field.meta?.interface === 'select-color';
-			}),
-		);
+		const colorFields = computed(() => {
+			const colorPickerFields = fieldsInCollection.value.filter(
+				(field: Field) => field.meta?.interface === 'select-color',
+			);
+
+			const stringFields = fieldsInCollection.value.filter(
+				(field: Field) => field.type === 'string' && field.meta?.interface !== 'select-color',
+			);
+
+			if (colorPickerFields.length === 0) {
+				return stringFields;
+			}
+
+			if (stringFields.length === 0) {
+				return colorPickerFields;
+			}
+
+			return [...colorPickerFields, { divider: true }, { header: t('other') }, ...stringFields];
+		});
 
 		const calendarFilter = computed(() => {
 			if (!calendar.value || !startDateField.value) {
