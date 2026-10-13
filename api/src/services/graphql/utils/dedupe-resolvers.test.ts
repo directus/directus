@@ -11,6 +11,16 @@ function makeInfo(fieldName: string, selectionSetSource?: string): GraphQLResolv
 	return { fieldName, fieldNodes: [fieldNode] } as unknown as GraphQLResolveInfo;
 }
 
+/** Builds a resolve info whose field was collected from several same-named fields, one per selection set. */
+function makeMergedInfo(fieldName: string, selectionSetSources: string[]): GraphQLResolveInfo {
+	const fieldNodes = selectionSetSources.map((source) => {
+		const parsed = parse(`{ ${fieldName} ${source} }`).definitions[0] as any;
+		return parsed.selectionSet.selections[0];
+	});
+
+	return { fieldName, fieldNodes } as unknown as GraphQLResolveInfo;
+}
+
 /** Creates a fresh request-scoped context with an empty cache. */
 function makeContext(): GraphQLParams['contextValue'] {
 	return { cache: new Map() } as unknown as GraphQLParams['contextValue'];
@@ -48,6 +58,26 @@ describe('resolverCacheKey', () => {
 		const keyA = resolverCacheKey({}, makeInfo('fieldA'));
 		const keyB = resolverCacheKey({}, makeInfo('fieldB'));
 		expect(keyA).not.toBe(keyB);
+	});
+
+	// A field requested through several fragments reaches the resolver as one call with a node per fragment, so
+	// the key has to cover all of them or one fragment's selections get served from another's cached result
+	test('produces different keys when the field nodes differ', () => {
+		const keyA = resolverCacheKey({}, makeMergedInfo('pages', ['{ id }']));
+		const keyB = resolverCacheKey({}, makeMergedInfo('pages', ['{ id title }']));
+		expect(keyA).not.toBe(keyB);
+	});
+
+	test('produces the same key for field nodes that are identical', () => {
+		const keyA = resolverCacheKey({}, makeMergedInfo('pages', ['{ id }', '{ title }']));
+		const keyB = resolverCacheKey({}, makeMergedInfo('pages', ['{ id }', '{ title }']));
+		expect(keyA).toBe(keyB);
+	});
+
+	test('includes the selections of every field node in the key', () => {
+		const key = resolverCacheKey({}, makeMergedInfo('pages', ['{ id }', '{ title }']));
+		expect(key).toContain('id');
+		expect(key).toContain('title');
 	});
 });
 

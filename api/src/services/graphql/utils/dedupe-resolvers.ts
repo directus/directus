@@ -9,7 +9,8 @@ import hash from 'object-hash';
  * Used to identify structurally identical resolver invocations within a request.
  */
 export function resolverCacheKey(args: Record<string, unknown>, info: GraphQLResolveInfo): string {
-	const selectionKey = info.fieldNodes[0]?.selectionSet ? print(info.fieldNodes[0].selectionSet) : '';
+	const selectionKey = info.fieldNodes.map((node) => (node.selectionSet ? print(node.selectionSet) : '')).join('');
+
 	const cacheKey = `${info.fieldName}:${hash(args ?? {})}:${selectionKey}`;
 	return cacheKey;
 }
