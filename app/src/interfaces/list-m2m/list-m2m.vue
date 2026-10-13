@@ -387,6 +387,20 @@ const selectedKeys = computed(() => {
 		.filter((key) => !isNil(key));
 });
 
+const batchFields = computed(() => {
+	if (!relationInfo.value) return undefined;
+
+	const excluded = new Set([
+		relationInfo.value.junctionPrimaryKeyField.field,
+		relationInfo.value.junctionField.field,
+		relationInfo.value.reverseJunctionField.field,
+	]);
+
+	return useFieldsStore()
+		.getFieldsForCollection(relationInfo.value.junctionCollection.collection)
+		.filter((field) => !excluded.has(field.field));
+});
+
 function stageBatchEdits(edits: Record<string, any>) {
 	if (!relationInfo.value) return;
 
@@ -402,11 +416,7 @@ function stageBatchEdits(edits: Record<string, any>) {
 			$index: item.$index,
 			$type: item.$type,
 			$edits: item.$edits,
-			...merge(getItemEdits(item), {
-				[junctionField]: {
-					...edits,
-				},
-			}),
+			...merge(getItemEdits(item), edits),
 		};
 
 		if (junctionId !== null) {
@@ -762,7 +772,8 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 		<DrawerBatch
 			v-model:active="batchEditActive"
 			:primary-keys="selectedKeys"
-			:collection="relationInfo.relatedCollection.collection"
+			:collection="relationInfo.junctionCollection.collection"
+			:fields="batchFields"
 			stage-on-save
 			@input="stageBatchEdits"
 		/>

@@ -8,6 +8,7 @@ import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 import { Collection } from '@/types/collections';
 import { LAYOUTS } from '@/types/interfaces';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 
 vi.mock('@/composables/use-relation-m2m', () => ({
 	useRelationM2M: () => ({
@@ -51,6 +52,7 @@ vi.mock('@/composables/use-relation-permissions', () => ({
 }));
 
 const mockGetField = vi.hoisted(() => vi.fn(() => null as any));
+const mockGetFieldsForCollection = vi.hoisted(() => vi.fn(() => [] as any[]));
 const mockGetWidth = vi.hoisted(() => vi.fn((_key: string, defaultWidth: number) => defaultWidth));
 const mockUpdateWidths = vi.hoisted(() => vi.fn());
 
@@ -60,7 +62,7 @@ vi.mock('@/composables/use-column-widths', () => ({
 
 vi.mock('@/stores/fields', () => ({
 	useFieldsStore: () => ({
-		getFieldsForCollection: vi.fn(() => []),
+		getFieldsForCollection: mockGetFieldsForCollection,
 		getField: mockGetField,
 		getPrimaryKeyFieldForCollection: vi.fn(() => ({ field: 'id' })),
 	}),
@@ -186,6 +188,31 @@ describe('list-m2m', () => {
 		});
 
 		expect(wrapper.exists()).toBe(true);
+	});
+
+	describe('batch edit', () => {
+		afterEach(() => {
+			mockGetFieldsForCollection.mockReturnValue([]);
+		});
+
+		it('should batch edit the junction collection without its relational fields', () => {
+			mockGetFieldsForCollection.mockReturnValue([
+				{ field: 'id' },
+				{ field: 'related_id' },
+				{ field: 'item_id' },
+				{ field: 'note' },
+			]);
+
+			const wrapper = mount(ListM2M, {
+				props: listProps,
+				global,
+			});
+
+			const drawer = wrapper.findComponent(DrawerBatch);
+
+			expect(drawer.props('collection')).toBe('junction-collection');
+			expect(drawer.props('fields')).toEqual([{ field: 'note' }]);
+		});
 	});
 
 	describe('list layout', () => {
