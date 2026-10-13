@@ -128,30 +128,3 @@ test('should return undefined when item field is empty string or only whitespace
 	expect(getEventColor({ color: '   ' }, 'color')).toBeUndefined();
 });
 
-test('should configure dayGridMonth view and event with display block to render solid event cards', () => {
-	const dayGridMonthOptions = {
-		displayEventTime: true,
-		eventTimeFormat: {
-			hour: 'numeric',
-			minute: '2-digit',
-			meridiem: 'narrow',
-		},
-		eventDisplay: 'block',
-	};
-
-	expect(dayGridMonthOptions.eventDisplay).toBe('block');
-
-	const parsedEvent = {
-		id: 1,
-		title: 'Meeting',
-		start: '2026-10-16 09:00:00',
-		end: '2026-10-16 18:00:00',
-		allDay: false,
-		color: '#E35169',
-		textColor: '#ffffff',
-		display: 'block',
-	};
-
-	expect(parsedEvent.display).toBe('block');
-});
-
