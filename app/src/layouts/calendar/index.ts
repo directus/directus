@@ -174,9 +174,10 @@ export default defineLayout<LayoutOptions>({
 
 		const isVersion = computed(() => !!versionKey.value && !isPublishedVersionKey(versionKey.value));
 
-		const events = computed<EventInput>(
-			() => items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || [],
-		);
+		const events = computed<EventInput>(() => {
+			void darkMode.value;
+			return items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || [];
+		});
 
 		const fullFullCalendarOptions = computed<FullCalendarOptions>(() => {
 			const displayEventTime = startDateFieldInfo.value?.type !== 'date';
