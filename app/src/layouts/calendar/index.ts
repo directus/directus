@@ -181,6 +181,7 @@ export default defineLayout<LayoutOptions>({
 					center: 'title',
 					right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek',
 				},
+				eventDisplay: 'block',
 				views: {
 					dayGridMonth: {
 						displayEventTime,
@@ -393,6 +394,7 @@ export default defineLayout<LayoutOptions>({
 				allDay,
 				color: eventColor,
 				textColor,
+				display: 'block',
 				className: selection.value.includes(eventId) ? 'selected' : undefined,
 			};
 		}
