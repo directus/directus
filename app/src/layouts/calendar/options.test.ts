@@ -127,4 +127,3 @@ test('should return undefined when item field is empty string or only whitespace
 	expect(getEventColor({ color: '' }, 'color')).toBeUndefined();
 	expect(getEventColor({ color: '   ' }, 'color')).toBeUndefined();
 });
-
