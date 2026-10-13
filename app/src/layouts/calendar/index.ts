@@ -424,8 +424,12 @@ export function getEventColor(item: Record<string, any>, colorField?: string | n
 	return trimmed.length > 0 ? trimmed : undefined;
 }
 
-export function getContrastColor(color: string): string {
+export function getContrastColor(color: string): string | undefined {
 	const trimmed = color.trim();
+
+	if (trimmed.toLowerCase() === 'transparent') {
+		return undefined;
+	}
 
 	let hex = trimmed.startsWith('#') ? trimmed.slice(1) : trimmed;
 
@@ -434,23 +438,48 @@ export function getContrastColor(color: string): string {
 			.split('')
 			.map((char) => char + char)
 			.join('');
+	} else if (/^[0-9a-fA-F]{4}$/.test(hex)) {
+		hex = hex
+			.split('')
+			.map((char) => char + char)
+			.join('');
 	}
 
-	if (/^[0-9a-fA-F]{6}/.test(hex)) {
+	if (/^[0-9a-fA-F]{8}$/.test(hex)) {
+		const alpha = parseInt(hex.substring(6, 8), 16) / 255;
+		if (alpha <= 0.5) return undefined;
+
 		const r = parseInt(hex.substring(0, 2), 16);
 		const g = parseInt(hex.substring(2, 4), 16);
 		const b = parseInt(hex.substring(4, 6), 16);
-
 		const yiq = (r * 299 + g * 587 + b * 114) / 1000;
 		return yiq >= 128 ? '#000000' : '#ffffff';
 	}
 
-	const rgbMatch = trimmed.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+	if (/^[0-9a-fA-F]{6}$/.test(hex)) {
+		const r = parseInt(hex.substring(0, 2), 16);
+		const g = parseInt(hex.substring(2, 4), 16);
+		const b = parseInt(hex.substring(4, 6), 16);
+		const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+		return yiq >= 128 ? '#000000' : '#ffffff';
+	}
+
+	const rgbMatch = trimmed.match(
+		/^rgba?\(\s*([\d.]+%?)(?:\s*,\s*|\s+)([\d.]+%?)(?:\s*,\s*|\s+)([\d.]+%?)(?:\s*(?:,|\/)\s*([\d.]+%?))?\s*\)$/i,
+	);
 
 	if (rgbMatch) {
-		const r = parseInt(rgbMatch[1]!, 10);
-		const g = parseInt(rgbMatch[2]!, 10);
-		const b = parseInt(rgbMatch[3]!, 10);
+		const parseChannel = (val: string) => (val.endsWith('%') ? (parseFloat(val) / 100) * 255 : parseFloat(val));
+		const parseAlpha = (val: string) => (val.endsWith('%') ? parseFloat(val) / 100 : parseFloat(val));
+
+		if (rgbMatch[4] !== undefined) {
+			const alpha = parseAlpha(rgbMatch[4]);
+			if (alpha <= 0.5) return undefined;
+		}
+
+		const r = parseChannel(rgbMatch[1]!);
+		const g = parseChannel(rgbMatch[2]!);
+		const b = parseChannel(rgbMatch[3]!);
 		const yiq = (r * 299 + g * 587 + b * 114) / 1000;
 		return yiq >= 128 ? '#000000' : '#ffffff';
 	}

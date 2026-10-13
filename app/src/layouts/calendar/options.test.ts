@@ -85,6 +85,25 @@ test('should compute contrast textColor using YIQ formula', () => {
 	expect(getContrastColor('invalid')).toBe('#ffffff');
 });
 
+test('should handle transparent and semi-transparent colors', () => {
+	expect(getContrastColor('#00000000')).toBeUndefined();
+	expect(getContrastColor('#ffffff00')).toBeUndefined();
+	expect(getContrastColor('#0000')).toBeUndefined();
+	expect(getContrastColor('rgba(0, 0, 0, 0)')).toBeUndefined();
+	expect(getContrastColor('rgba(255, 255, 255, 0)')).toBeUndefined();
+	expect(getContrastColor('rgba(0, 0, 0, 0.4)')).toBeUndefined();
+	expect(getContrastColor('rgba(255, 255, 255, 0.4)')).toBeUndefined();
+	expect(getContrastColor('transparent')).toBeUndefined();
+	expect(getContrastColor('#000000ff')).toBe('#ffffff');
+	expect(getContrastColor('#ffffffff')).toBe('#000000');
+	expect(getContrastColor('#000f')).toBe('#ffffff');
+	expect(getContrastColor('#ffff')).toBe('#000000');
+	expect(getContrastColor('rgba(0, 0, 0, 0.8)')).toBe('#ffffff');
+	expect(getContrastColor('rgba(255, 255, 255, 0.8)')).toBe('#000000');
+	expect(getContrastColor('rgba(0, 0, 0, 1)')).toBe('#ffffff');
+	expect(getContrastColor('rgba(255, 255, 255, 1)')).toBe('#000000');
+});
+
 test('should extract event color and compute contrast textColor when colorField is configured', () => {
 	const item1 = { color: '#3b82f6' };
 	const color1 = getEventColor(item1, 'color');
