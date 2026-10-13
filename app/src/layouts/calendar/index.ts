@@ -189,6 +189,7 @@ export default defineLayout<LayoutOptions>({
 							minute: '2-digit',
 							meridiem: 'narrow',
 						},
+						eventDisplay: 'block',
 					},
 					week: { displayEventTime },
 					day: { displayEventTime },
