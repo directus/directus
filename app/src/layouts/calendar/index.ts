@@ -19,6 +19,7 @@ import { LayoutOptions } from './types';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
+import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 import { useVersionQuery } from '@/composables/use-version-query';
 import { useServerStore } from '@/stores/server';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -42,6 +43,7 @@ export default defineLayout<LayoutOptions>({
 	setup(props, { emit }) {
 		const toolsStore = useAiToolsStore();
 		const { info } = useServerStore();
+		const { darkMode } = useThemeConfiguration();
 
 		toolsStore.onSystemToolResult((tool, input) => {
 			if (tool === 'items' && input.collection === collection.value) {
@@ -69,6 +71,8 @@ export default defineLayout<LayoutOptions>({
 				return ['timestamp', 'dateTime', 'date'].includes(field.type);
 			}),
 		);
+
+		const colorFields = computed(() => getColorFields(fieldsInCollection.value, t));
 
 		const calendarFilter = computed(() => {
 			if (!calendar.value || !startDateField.value) {
@@ -110,6 +114,8 @@ export default defineLayout<LayoutOptions>({
 			return fieldsInCollection.value.find((field: Field) => field.field === endDateField.value);
 		});
 
+		const colorField = syncRefProperty(layoutOptions, 'colorField', undefined);
+
 		const firstDay = syncRefProperty(layoutOptions, 'firstDay', undefined);
 
 		const queryFields = computed(() => {
@@ -119,6 +125,7 @@ export default defineLayout<LayoutOptions>({
 			if (template.value) fields.push(...getFieldsFromTemplate(template.value));
 			if (startDateField.value) fields.push(startDateField.value);
 			if (endDateField.value) fields.push(endDateField.value);
+			if (colorField.value) fields.push(colorField.value);
 
 			return [...fields, ...adjustFieldsForDisplays(fields, collection.value!)];
 		});
@@ -149,9 +156,10 @@ export default defineLayout<LayoutOptions>({
 
 		const isVersion = computed(() => !!versionKey.value && !isPublishedVersionKey(versionKey.value));
 
-		const events = computed<EventInput>(
-			() => items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || [],
-		);
+		const events = computed<EventInput>(() => {
+			void darkMode.value;
+			return items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || [];
+		});
 
 		const fullFullCalendarOptions = computed<FullCalendarOptions>(() => {
 			const displayEventTime = startDateFieldInfo.value?.type !== 'date';
@@ -172,6 +180,7 @@ export default defineLayout<LayoutOptions>({
 					center: 'title',
 					right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek',
 				},
+				eventDisplay: 'block',
 				views: {
 					dayGridMonth: {
 						displayEventTime,
@@ -180,6 +189,7 @@ export default defineLayout<LayoutOptions>({
 							minute: '2-digit',
 							meridiem: 'narrow',
 						},
+						eventDisplay: 'block',
 					},
 					week: { displayEventTime },
 					day: { displayEventTime },
@@ -286,8 +296,10 @@ export default defineLayout<LayoutOptions>({
 			filterWithCalendarView,
 			template,
 			dateFields,
+			colorFields,
 			startDateField,
 			endDateField,
+			colorField,
 			firstDay,
 			showingCount,
 			createCalendar,
@@ -365,6 +377,8 @@ export default defineLayout<LayoutOptions>({
 			const primaryKey = item[primaryKeyField.value.field];
 			const eventId = isVersion.value ? item.$meta?.version_id : primaryKey;
 
+			const styling = getEventStyling(item, colorField.value, darkMode.value);
+
 			return {
 				id: eventId,
 				title:
@@ -376,6 +390,7 @@ export default defineLayout<LayoutOptions>({
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,
+				...styling,
 				className: selection.value.includes(eventId) ? 'selected' : undefined,
 			};
 		}
@@ -398,3 +413,96 @@ export default defineLayout<LayoutOptions>({
 		}
 	},
 });
+
+export function getColorFields(
+	fields: Field[],
+	t: (key: string) => string = (key) => key,
+): (Field | { divider: true } | { header: string })[] {
+	const colorPickerFields = fields.filter((field: Field) => field.meta?.interface === 'select-color');
+
+	const stringFields = fields.filter(
+		(field: Field) => field.type === 'string' && field.meta?.interface !== 'select-color',
+	);
+
+	if (colorPickerFields.length === 0) {
+		return stringFields;
+	}
+
+	if (stringFields.length === 0) {
+		return colorPickerFields;
+	}
+
+	return [...colorPickerFields, { divider: true }, { header: t('other') }, ...stringFields];
+}
+
+export function getEventStyling(item: Record<string, any>, colorField?: string | null, isDark = false) {
+	const color = getEventColor(item, colorField);
+	const textColor = color ? getContrastColor(color, isDark) : undefined;
+	return { color, textColor, display: 'block' as const };
+}
+
+export function getEventColor(item: Record<string, any>, colorField?: string | null): string | undefined {
+	if (!colorField || typeof item[colorField] !== 'string') return undefined;
+	const trimmed = item[colorField].trim();
+	return trimmed.length > 0 ? trimmed : undefined;
+}
+
+export function getContrastColor(color: string, isDark = false): string | undefined {
+	const trimmed = color.trim();
+
+	if (trimmed.toLowerCase() === 'transparent') {
+		return isDark ? '#ffffff' : '#000000';
+	}
+
+	const bg = isDark ? 0 : 255;
+
+	const blend = (r: number, g: number, b: number, alpha: number) => {
+		const blendedR = r * alpha + bg * (1 - alpha);
+		const blendedG = g * alpha + bg * (1 - alpha);
+		const blendedB = b * alpha + bg * (1 - alpha);
+		const yiq = (blendedR * 299 + blendedG * 587 + blendedB * 114) / 1000;
+		return yiq >= 128 ? '#000000' : '#ffffff';
+	};
+
+	let hex = trimmed.startsWith('#') ? trimmed.slice(1) : trimmed;
+
+	if (/^[0-9a-fA-F]{3,4}$/.test(hex)) {
+		hex = hex
+			.split('')
+			.map((char) => char + char)
+			.join('');
+	}
+
+	if (/^[0-9a-fA-F]{8}$/.test(hex)) {
+		const r = parseInt(hex.substring(0, 2), 16);
+		const g = parseInt(hex.substring(2, 4), 16);
+		const b = parseInt(hex.substring(4, 6), 16);
+		const alpha = parseInt(hex.substring(6, 8), 16) / 255;
+		return blend(r, g, b, alpha);
+	}
+
+	if (/^[0-9a-fA-F]{6}$/.test(hex)) {
+		const r = parseInt(hex.substring(0, 2), 16);
+		const g = parseInt(hex.substring(2, 4), 16);
+		const b = parseInt(hex.substring(4, 6), 16);
+		return blend(r, g, b, 1);
+	}
+
+	const rgbMatch = trimmed.match(
+		/^rgba?\(\s*([\d.]+%?)(?:\s*,\s*|\s+)([\d.]+%?)(?:\s*,\s*|\s+)([\d.]+%?)(?:\s*(?:,|\/)\s*([\d.]+%?))?\s*\)$/i,
+	);
+
+	if (rgbMatch) {
+		const parseChannel = (val: string) => (val.endsWith('%') ? (parseFloat(val) / 100) * 255 : parseFloat(val));
+		const parseAlpha = (val: string) => (val.endsWith('%') ? parseFloat(val) / 100 : parseFloat(val));
+
+		const r = parseChannel(rgbMatch[1]!);
+		const g = parseChannel(rgbMatch[2]!);
+		const b = parseChannel(rgbMatch[3]!);
+		const alpha = rgbMatch[4] !== undefined ? parseAlpha(rgbMatch[4]) : 1;
+
+		return blend(r, g, b, alpha);
+	}
+
+	return undefined;
+}
