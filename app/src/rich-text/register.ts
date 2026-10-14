@@ -22,15 +22,23 @@ export const registerRichTexts = (configs: unknown[]) => {
 
 export const useRichTexts = (): ShallowRef<RichTextConfig[]> => richTexts;
 
-export interface ResolvedRichText {
-	id: string;
-	name: string;
-	/** Differs between two fields whose option values differ, so they never share a schema verdict. */
-	key: string;
+/** A field's `extensionOptions`: each extension's option values, keyed by extension id. */
+export type StoredExtensionOptions = Record<string, RichTextOptionValues>;
+
+export interface RichTextEntries {
 	extensions: AnyExtension[];
 	buttons: RichTextToolbarButton[];
 	bubbleMenus: RichTextBubbleMenu[];
 }
+
+export interface ResolvedRichText extends RichTextEntries {
+	id: string;
+	name: string;
+	/** Differs between two fields whose option values differ, so they never share a schema verdict. */
+	key: string;
+}
+
+export const errorMessage = (error: unknown) => (error instanceof Error ? error.message : String(error));
 
 const sortedEntries = (value: object) => Object.entries(value).sort(([a], [b]) => (a < b ? -1 : Number(a > b)));
 
@@ -51,8 +59,14 @@ export function optionValues(config: RichTextConfig, stored?: unknown): RichText
 	return { ...defaults, ...(isPlainObject(stored) ? (stored as RichTextOptionValues) : {}) };
 }
 
-const perField = <T>(entries: RichTextPerField<T, RichTextOptionValues> | undefined, values: RichTextOptionValues) =>
+const entriesFor = <T>(entries: RichTextPerField<T, RichTextOptionValues> | undefined, values: RichTextOptionValues) =>
 	typeof entries === 'function' ? entries(values) : (entries ?? []);
+
+export const resolveEntries = (config: RichTextConfig, values: RichTextOptionValues): RichTextEntries => ({
+	extensions: entriesFor(config.extensions, values),
+	buttons: entriesFor(config.buttons, values),
+	bubbleMenus: entriesFor(config.bubbleMenus, values),
+});
 
 const reported = new Set<string>();
 
@@ -62,14 +76,7 @@ export function resolveRichText(config: RichTextConfig, stored?: unknown): Resol
 	const key = `${config.id}\u0001${stableStringify(values)}`;
 
 	try {
-		return {
-			id: config.id,
-			name: config.name,
-			key,
-			extensions: perField(config.extensions, values),
-			buttons: perField(config.buttons, values),
-			bubbleMenus: perField(config.bubbleMenus, values),
-		};
+		return { id: config.id, name: config.name, key, ...resolveEntries(config, values) };
 	} catch (error) {
 		if (!reported.has(key)) {
 			reported.add(key);
@@ -77,7 +84,7 @@ export function resolveRichText(config: RichTextConfig, stored?: unknown): Resol
 			// eslint-disable-next-line no-console
 			console.error(
 				`Richtext extension "${config.id}" was left out of a field with the options ${stableStringify(values)}: ` +
-					(error instanceof Error ? error.message : String(error)),
+					errorMessage(error),
 			);
 		}
 
@@ -99,6 +106,10 @@ export const enabledRichTexts = (ids: string[] | null | undefined, extensionOpti
 		.filter((config) => ids.includes(config.id))
 		.flatMap((config) => resolveRichText(config, stored[config.id]) ?? []);
 };
+
+/** The extensions a field switched on that declare `options`, so the field settings show their form. */
+export const configurableRichTexts = (ids: string[] | null | undefined): RichTextConfig[] =>
+	ids?.length ? richTexts.value.filter((config) => ids.includes(config.id) && config.options?.length) : [];
 
 // prefixed with the extension id so a bare key like `bold` cannot replace the core button
 export const contributedKey = (config: { id: string }, entry: { key: string }): string => `${config.id}:${entry.key}`;

@@ -112,7 +112,14 @@ describe('per-extension field options', () => {
 	});
 
 	test('gives the same key whatever order the values were saved in', () => {
-		register(callout({ options: [{ field: 'a' }, { field: 'b' }] }));
+		register(
+			callout({
+				options: [
+					{ field: 'a', type: 'integer' },
+					{ field: 'b', type: 'integer' },
+				],
+			}),
+		);
 
 		expect(schema({ callout: { a: 1, b: 2 } }).key).toBe(schema({ callout: { b: 2, a: 1 } }).key);
 	});
@@ -243,6 +250,8 @@ describe('validation at load', () => {
 		['a non-array options', { options: { field: 'tones' } }],
 		['an option without a field', { options: [{ type: 'string' }] }],
 		['an option defined twice', { options: [{ field: 'tones' }, { field: 'tones' }] }],
+		['an option without a type', { options: [{ field: 'tones' }] }],
+		['an option whose meta is not an object', { options: [{ field: 'tones', type: 'json', meta: 'half' }] }],
 		['a non-function non-array buttons', { buttons: 'nope' }],
 	])('rejects %s', (_, overrides) => {
 		register(callout(overrides as Partial<RichTextConfig<{ tones: string[] }>>));

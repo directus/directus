@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from 'vitest';
 import { createI18n } from 'vue-i18n';
 import SystemRichtextExtensionOptions from './system-richtext-extension-options.vue';
 import VForm from '@/components/v-form/v-form.vue';
@@ -25,30 +25,32 @@ function mountOptions(props: { value: Record<string, Record<string, unknown>> | 
 	return mount(SystemRichtextExtensionOptions, { props, global: { plugins: [i18n], stubs: { VForm: true } } });
 }
 
-test('renders a form for each enabled extension that declares options', () => {
-	const wrapper = mountOptions({ value: null, extensions: ['kbd', 'callout'] });
+describe('system-richtext-extension-options', () => {
+	test('renders a form for each enabled extension that declares options', () => {
+		const wrapper = mountOptions({ value: null, extensions: ['kbd', 'callout'] });
 
-	expect(wrapper.findAll('.label').map((label) => label.text())).toEqual(['Callout Options']);
-	expect(wrapper.findComponent(VForm).props('fields')).toEqual([tones]);
-});
-
-test("edits one extension's values and keeps the others", async () => {
-	const wrapper = mountOptions({
-		value: { badge: { variant: 'pill' }, removed: { kept: true } },
-		extensions: ['callout', 'badge'],
+		expect(wrapper.findAll('.label').map((label) => label.text())).toEqual(['Callout Options']);
+		expect(wrapper.findComponent(VForm).props('fields')).toEqual([tones]);
 	});
 
-	await wrapper.findAllComponents(VForm)[0]!.vm.$emit('update:modelValue', { tones: ['danger'] });
+	test("edits one extension's values and keeps the others", async () => {
+		const wrapper = mountOptions({
+			value: { badge: { variant: 'pill' }, removed: { kept: true } },
+			extensions: ['callout', 'badge'],
+		});
 
-	expect(wrapper.emitted('input')![0]).toEqual([
-		{ badge: { variant: 'pill' }, removed: { kept: true }, callout: { tones: ['danger'] } },
-	]);
-});
+		await wrapper.findAllComponents(VForm)[0]!.vm.$emit('update:modelValue', { tones: ['danger'] });
 
-test("passes each form only its extension's stored values", () => {
-	const wrapper = mountOptions({ value: { badge: { variant: 'pill' } }, extensions: ['callout', 'badge'] });
-	const [calloutForm, badgeForm] = wrapper.findAllComponents(VForm);
+		expect(wrapper.emitted('input')![0]).toEqual([
+			{ badge: { variant: 'pill' }, removed: { kept: true }, callout: { tones: ['danger'] } },
+		]);
+	});
 
-	expect(calloutForm!.props('modelValue')).toEqual({});
-	expect(badgeForm!.props('modelValue')).toEqual({ variant: 'pill' });
+	test("passes each form only its extension's stored values", () => {
+		const wrapper = mountOptions({ value: { badge: { variant: 'pill' } }, extensions: ['callout', 'badge'] });
+		const [calloutForm, badgeForm] = wrapper.findAllComponents(VForm);
+
+		expect(calloutForm!.props('modelValue')).toEqual({});
+		expect(badgeForm!.props('modelValue')).toEqual({ variant: 'pill' });
+	});
 });

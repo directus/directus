@@ -20,7 +20,13 @@ import { editorExtensions, fieldEditorExtensions } from '@/interfaces/input-rich
 import { ComparisonDiff } from '@/interfaces/input-rich-text-html/extensions/comparison-diff';
 import { CUSTOM_FORMAT_PREFIX } from '@/interfaces/input-rich-text-html/extensions/custom-formats';
 import { PRESERVED_ATTRIBUTE_KEYS } from '@/interfaces/input-rich-text-html/extensions/preserved-attributes';
-import { optionValues, type ResolvedRichText, stableStringify } from '@/rich-text/register';
+import {
+	errorMessage,
+	optionValues,
+	resolveEntries,
+	type RichTextEntries,
+	stableStringify,
+} from '@/rich-text/register';
 
 const SLUG = /^[a-z0-9-]+$/;
 
@@ -134,8 +140,14 @@ function validateOptions(options: unknown): string | null {
 
 	for (const option of options) {
 		if (!isObject(option) || typeof option['field'] !== 'string') return 'every option needs a "field" string';
-		if (fields.has(option['field'])) return `option "${option['field']}" is defined twice`;
-		fields.add(option['field']);
+		const field = option['field'];
+		if (fields.has(field)) return `option "${field}" is defined twice`;
+		fields.add(field);
+
+		if (typeof option['type'] !== 'string') return `option "${field}" needs a "type" string`;
+		if (option['meta'] !== undefined && !isObject(option['meta'])) return `option "${field}" "meta" must be an object`;
+		if (option['schema'] !== undefined && !isObject(option['schema']))
+			return `option "${field}" "schema" must be an object`;
 	}
 
 	return null;
@@ -267,9 +279,9 @@ const validateExtensions = (extensions: unknown, owners: Map<string, string>): s
 	validateAttributes(extensions as AnyExtension[]) ??
 	validateSchemaBuild(extensions as AnyExtension[]);
 
-type Checked = { reason: string } | { config: RichTextConfig; defaults: ResolvedRichText };
+type ConfigCheck = { reason: string } | { config: RichTextConfig; defaults: RichTextEntries };
 
-function check(config: unknown, ids: Set<string>, owners: Map<string, string>): Checked {
+function checkConfig(config: unknown, ids: Set<string>, owners: Map<string, string>): ConfigCheck {
 	try {
 		const shapeError = validateShape(config);
 		if (shapeError) return { reason: shapeError };
@@ -277,16 +289,7 @@ function check(config: unknown, ids: Set<string>, owners: Map<string, string>): 
 		const richText = config as RichTextConfig;
 		if (ids.has(richText.id)) return { reason: 'another richtext extension already uses this id' };
 
-		const values = optionValues(richText);
-
-		const run = <T>(entries: RichTextPerField<T, RichTextOptionValues> | undefined) =>
-			typeof entries === 'function' ? entries(values) : (entries ?? []);
-
-		const defaults = {
-			extensions: run(richText.extensions),
-			buttons: run(richText.buttons),
-			bubbleMenus: run(richText.bubbleMenus),
-		};
+		const defaults = resolveEntries(richText, optionValues(richText));
 
 		const reason =
 			validateExtensions(defaults.extensions, owners) ??
@@ -295,13 +298,11 @@ function check(config: unknown, ids: Set<string>, owners: Map<string, string>): 
 
 		if (reason) return { reason };
 
-		return { config: richText, defaults: { id: richText.id, name: richText.name, key: '', ...defaults } };
+		return { config: richText, defaults };
 	} catch (error) {
 		return { reason: `extension threw while being validated: ${errorMessage(error)}` };
 	}
 }
-
-const errorMessage = (error: unknown) => (error instanceof Error ? error.message : String(error));
 
 // a schema-build throw would otherwise surface in every field that enabled the extension
 function validateSchemaBuild(extensions: AnyExtension[]): string | null {
@@ -367,7 +368,7 @@ const nameList = (extensions: AnyExtension[]) =>
 function guardFactory<T>(
 	factory: (values: RichTextOptionValues) => T[],
 	validate: (entries: unknown) => string | null,
-	finish: (entries: T[]) => T[],
+	finish: (entries: T[]) => T[] = (entries) => entries,
 ): (values: RichTextOptionValues) => T[] {
 	const cache = new Map<string, { entries: T[] } | { error: Error }>();
 
@@ -392,9 +393,18 @@ function guardFactory<T>(
 	};
 }
 
-function guarded(config: RichTextConfig, defaults: ResolvedRichText): RichTextConfig {
+// a fixed list was already checked by checkConfig, so it only gets `finish`
+function guardEntries<T>(
+	entries: RichTextPerField<T, RichTextOptionValues> | undefined,
+	validate: (entries: unknown) => string | null,
+	finish?: (entries: T[]) => T[],
+): RichTextPerField<T, RichTextOptionValues> | undefined {
+	if (typeof entries === 'function') return guardFactory(entries, validate, finish);
+	return entries && finish ? finish(entries) : entries;
+}
+
+function withPerFieldChecks(config: RichTextConfig, defaults: RichTextEntries): RichTextConfig {
 	const icons = knownIcons(config.id);
-	const { extensions, buttons, bubbleMenus } = config;
 	const defaultNames = nameList(defaults.extensions);
 
 	const sameNames = (entries: AnyExtension[]) => {
@@ -404,26 +414,16 @@ function guarded(config: RichTextConfig, defaults: ResolvedRichText): RichTextCo
 
 	return {
 		...config,
-		extensions:
-			typeof extensions === 'function'
-				? guardFactory(
-						extensions,
-						(entries) =>
-							validateExtensionList(entries) ??
-							sameNames(entries as AnyExtension[]) ??
-							validateAttributes(entries as AnyExtension[]) ??
-							validateSchemaBuild(entries as AnyExtension[]),
-						(entries) => entries,
-					)
-				: extensions,
-		buttons:
-			typeof buttons === 'function'
-				? guardFactory(buttons, validateButtons, icons.buttons)
-				: buttons && icons.buttons(buttons),
-		bubbleMenus:
-			typeof bubbleMenus === 'function'
-				? guardFactory(bubbleMenus, validateBubbleMenus, icons.bubbleMenus)
-				: bubbleMenus && icons.bubbleMenus(bubbleMenus),
+		extensions: guardEntries(
+			config.extensions,
+			(entries) =>
+				validateExtensionList(entries) ??
+				sameNames(entries as AnyExtension[]) ??
+				validateAttributes(entries as AnyExtension[]) ??
+				validateSchemaBuild(entries as AnyExtension[]),
+		),
+		buttons: guardEntries(config.buttons, validateButtons, icons.buttons),
+		bubbleMenus: guardEntries(config.bubbleMenus, validateBubbleMenus, icons.bubbleMenus),
 	};
 }
 
@@ -451,7 +451,7 @@ export function validateRichTexts(configs: unknown[]): RichTextConfig[] {
 	const owners = new Map<string, string>();
 
 	for (const config of [...configs].sort(byId)) {
-		const checked = check(config, ids, owners);
+		const checked = checkConfig(config, ids, owners);
 
 		if ('reason' in checked) {
 			const label = isObject(config) && typeof config['id'] === 'string' ? `"${config['id']}"` : '(unknown id)';
@@ -467,7 +467,7 @@ export function validateRichTexts(configs: unknown[]): RichTextConfig[] {
 			owners.set(name, richText.id);
 		}
 
-		valid.push(guarded(richText, defaults));
+		valid.push(withPerFieldChecks(richText, defaults));
 	}
 
 	return valid;

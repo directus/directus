@@ -3,26 +3,21 @@ import type { RichTextOptionValues } from '@directus/extensions';
 import type { Field } from '@directus/types';
 import { computed } from 'vue';
 import VForm from '@/components/v-form/v-form.vue';
-import { useRichTexts } from '@/rich-text/register';
+import { configurableRichTexts, type StoredExtensionOptions } from '@/rich-text/register';
 
 const props = defineProps<{
-	value: Record<string, RichTextOptionValues> | null;
+	value: StoredExtensionOptions | null;
 	extensions?: string[];
 	disabled?: boolean;
 }>();
 
 const emit = defineEmits<{
-	input: [value: Record<string, RichTextOptionValues> | null];
+	input: [value: StoredExtensionOptions | null];
 }>();
 
-const richTexts = useRichTexts();
-
+// validateRichTexts checked each option's field, type, meta and schema shape
 const configurable = computed(() =>
-	richTexts.value.flatMap((config) =>
-		props.extensions?.includes(config.id) && config.options?.length
-			? [{ id: config.id, name: config.name, fields: config.options as Field[] }]
-			: [],
-	),
+	configurableRichTexts(props.extensions).map(({ id, name, options }) => ({ id, name, fields: options as Field[] })),
 );
 
 // values of an extension the field switched off stay, so switching it back on restores them

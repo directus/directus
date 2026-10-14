@@ -26,6 +26,7 @@ import VNotice from '@/components/v-notice.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
 import { parseGlobalMimeTypeAllowList, useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
+import type { StoredExtensionOptions } from '@/rich-text/register';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
@@ -45,7 +46,7 @@ const props = withDefaults(
 		/** Field `extensions` option: ids of the registered richtext extensions this field opted into. */
 		extensions?: string[];
 		/** Field `extensionOptions` option: per-extension values, keyed by extension id. */
-		extensionOptions?: Record<string, Record<string, unknown>>;
+		extensionOptions?: StoredExtensionOptions;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -81,8 +82,7 @@ if (
 	);
 }
 
-// built once at init: `customFormats`, `extensions` and `extensionOptions` are design-time config, not
-// reactive, and the schema is frozen when the editor is constructed, so changing one takes a remount.
+// built once: the schema is frozen when the editor is constructed, so a field options change needs a remount
 // In comparison mode ComparisonDiff joins the schema, so precomputed diff spans don't read as loss.
 const fieldSchema = buildFieldSchema({
 	customFormats: props.customFormats,
