@@ -91,6 +91,22 @@ describe('warnAsymmetricRichTexts', () => {
 		expect(warnings()[0]).toContain('<aside class="callout">');
 	});
 
+	test('checks a factory with the default option values', () => {
+		const factory = vi.fn(() => [AsideCallout]);
+
+		warnAsymmetricRichTexts([
+			{
+				id: 'aside',
+				name: 'Aside',
+				options: [{ field: 'tone', type: 'string', schema: { default_value: 'info' } }],
+				extensions: factory,
+			},
+		]);
+
+		expect(factory).toHaveBeenCalledWith({ tone: 'info' });
+		expect(warnings()).toEqual([expect.stringContaining('node "asideCallout"')]);
+	});
+
 	// the HTML survives because core `heading` claims the <h6>, but the contributed node is gone
 	test('warns when a core rule claims the markup a node writes', () => {
 		warnAsymmetricRichTexts([{ id: 'h7', name: 'H7', extensions: [Heading7] }]);

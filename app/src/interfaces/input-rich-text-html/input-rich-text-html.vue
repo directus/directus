@@ -44,6 +44,8 @@ const props = withDefaults(
 		customFormats?: unknown;
 		/** Field `extensions` option: ids of the registered richtext extensions this field opted into. */
 		extensions?: string[];
+		/** Field `extensionOptions` option: per-extension values, keyed by extension id. */
+		extensionOptions?: Record<string, Record<string, unknown>>;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -79,12 +81,13 @@ if (
 	);
 }
 
-// built once at init: `customFormats` and `extensions` are design-time config, not reactive, and the
-// schema is frozen when the editor is constructed, so changing either takes a remount either way.
+// built once at init: `customFormats`, `extensions` and `extensionOptions` are design-time config, not
+// reactive, and the schema is frozen when the editor is constructed, so changing one takes a remount.
 // In comparison mode ComparisonDiff joins the schema, so precomputed diff spans don't read as loss.
 const fieldSchema = buildFieldSchema({
 	customFormats: props.customFormats,
 	extensions: props.extensions,
+	extensionOptions: props.extensionOptions,
 	comparisonMode: props.comparisonMode,
 });
 
