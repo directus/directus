@@ -1,3 +1,4 @@
+import type { AppField, DeepPartial } from '@directus/types';
 import type { AnyExtension, Editor } from '@tiptap/core';
 
 interface RichTextButtonBase {
@@ -47,17 +48,28 @@ export interface RichTextBubbleMenu {
 	buttons: RichTextCommandButton[];
 }
 
-export interface RichTextConfig {
+/** A field's values for the extension's `options`, over each option's `schema.default_value`. */
+export type RichTextOptionValues = Record<string, any>;
+
+/** A fixed list, or one built from the option values of the field the editor is for. */
+export type RichTextPerField<T, Options extends RichTextOptionValues> = T[] | ((options: Options) => T[]);
+
+export interface RichTextConfig<Options extends RichTextOptionValues = RichTextOptionValues> {
 	id: string;
 	name: string;
+	/** Per-field settings, stored under the field's `extensionOptions.<id>` and passed to the factories. */
+	options?: DeepPartial<AppField>[];
 	/**
 	 * Every node and mark must be symmetric: `parseHTML` must read back exactly the markup
 	 * `renderHTML` writes, with a high enough `priority` that no core rule claims it first. If not,
 	 * every save of a field that enables the extension warns the user that saving alters the content.
-	 * The app checks each node and mark once at load and logs a console warning on a mismatch.
+	 * The app checks each node and mark once at load, with the default option values.
+	 *
+	 * A factory must return the same names for every option value, or content saved under one value
+	 * stops parsing under another. A field whose values break this loads without the extension.
 	 */
-	extensions?: AnyExtension[];
-	buttons?: RichTextToolbarButton[];
+	extensions?: RichTextPerField<AnyExtension, Options>;
+	buttons?: RichTextPerField<RichTextToolbarButton, Options>;
 	/** On for every field that enables the extension. It needs no `toolbar` key. */
-	bubbleMenus?: RichTextBubbleMenu[];
+	bubbleMenus?: RichTextPerField<RichTextBubbleMenu, Options>;
 }

@@ -1,11 +1,13 @@
 import { defineInterface } from '@directus/extensions';
-import type { AppField, DeepPartial } from '@directus/types';
+import type { AppField, DeepPartial, Field } from '@directus/types';
 import { defineAsyncComponent } from 'vue';
 import PreviewSVG from './preview.svg?raw';
 import toolbarDefault from './toolbar-default';
-import { contributedKey, enabledRichTexts, useRichTexts } from '@/rich-text/register';
+import { configurableRichTexts, contributedKey, enabledRichTexts, useRichTexts } from '@/rich-text/register';
 
 const InterfaceWYSIWYG = defineAsyncComponent(() => import('./input-rich-text-html.vue'));
+
+const enabledIds = (field: DeepPartial<Field>) => field.meta?.options?.['extensions'] as string[] | undefined;
 
 export default defineInterface({
 	id: 'input-rich-text-html',
@@ -250,17 +252,30 @@ export default defineInterface({
 							// Only the extensions this field switched on: a button whose node is not in
 							// the field's schema would do nothing. `options` is a function the app
 							// re-runs as the admin edits, so this list follows the picker above.
-							...enabledRichTexts(field.meta?.options?.['extensions'] as string[] | undefined).flatMap(
-								(config) =>
-									config.buttons?.map((button) => ({
-										value: contributedKey(config, button),
-										text: button.label,
-									})) ?? [],
+							...enabledRichTexts(enabledIds(field), field.meta?.options?.['extensionOptions']).flatMap((config) =>
+								config.buttons.map((button) => ({
+									value: contributedKey(config, button),
+									text: button.label,
+								})),
 							),
 						],
 					},
 				},
 			},
+			...(configurableRichTexts(enabledIds(field)).length > 0
+				? [
+						{
+							field: 'extensionOptions',
+							name: '$t:interfaces.input-rich-text-html.extension_options',
+							type: 'json',
+							meta: {
+								width: 'full',
+								interface: 'system-richtext-extension-options',
+								options: { extensions: enabledIds(field) },
+							},
+						} satisfies DeepPartial<AppField>,
+					]
+				: []),
 			{
 				field: 'font',
 				name: '$t:font',

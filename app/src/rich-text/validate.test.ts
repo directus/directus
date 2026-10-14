@@ -1,5 +1,6 @@
 import { Extension, Mark, mergeAttributes, Node } from '@tiptap/core';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { resolveRichText } from './register';
 import { validateRichTexts } from './validate';
 
 const Callout = Node.create({
@@ -269,7 +270,8 @@ describe('button icons', () => {
 	afterEach(() => warn.mockRestore());
 
 	const iconOf = (icon: string) =>
-		validateRichTexts([{ id: 'callout', name: 'Callout', buttons: [{ ...button, icon }] }])[0]!.buttons![0]!.icon;
+		resolveRichText(validateRichTexts([{ id: 'callout', name: 'Callout', buttons: [{ ...button, icon }] }])[0]!)!
+			.buttons[0]!.icon;
 
 	test.each([
 		['a Material icon', 'info'],
@@ -324,7 +326,7 @@ describe('bubble menus', () => {
 		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 		const [config] = validateRichTexts([withMenus([{ ...menu, buttons: [{ ...button, icon: 'not_an_icon' }] }])]);
 
-		expect(config!.bubbleMenus![0]!.buttons[0]!.icon).toBe('extension');
+		expect(resolveRichText(config!)!.bubbleMenus[0]!.buttons[0]!.icon).toBe('extension');
 		expect(warn).toHaveBeenCalledOnce();
 		warn.mockRestore();
 	});
@@ -382,7 +384,7 @@ describe('menu buttons', () => {
 	test('replaces an unknown item icon with the fallback', () => {
 		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 		const [config] = validateRichTexts([withButton({ ...menuButton, items: [{ ...item, icon: 'not_an_icon' }] })]);
-		const button = config!.buttons![0]!;
+		const button = resolveRichText(config!)!.buttons[0]!;
 
 		expect(button.items![0]!.icon).toBe('extension');
 		expect(warn.mock.calls[0]!.join(' ')).toContain('"info"');

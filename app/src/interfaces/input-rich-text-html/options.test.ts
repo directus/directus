@@ -168,6 +168,42 @@ describe('richtext extensions', () => {
 		expect(values).toContain('spike-bold:bold');
 	});
 
+	const toned = {
+		id: 'spike-toned',
+		name: 'Toned',
+		options: [{ field: 'tones', type: 'json', schema: { default_value: ['info'] } }],
+		buttons: ({ tones }: { tones: string[] }) =>
+			tones.map((tone) => ({ key: tone, icon: 'info', label: tone, command: () => {} })),
+	};
+
+	test("offers the buttons a factory builds from the field's option values", () => {
+		registerRichTexts([toned]);
+
+		expect(choices('toolbar', { extensions: ['spike-toned'] }).map((choice) => choice.value)).toContain(
+			'spike-toned:info',
+		);
+
+		const values = choices('toolbar', {
+			extensions: ['spike-toned'],
+			extensionOptions: { 'spike-toned': { tones: ['danger'] } },
+		}).map((choice) => choice.value);
+
+		expect(values).toContain('spike-toned:danger');
+		expect(values).not.toContain('spike-toned:info');
+	});
+
+	test('shows extension options only when an enabled extension declares some', () => {
+		registerRichTexts([callout, toned]);
+
+		expect(optionField('extensionOptions')).toBeUndefined();
+		expect(optionField('extensionOptions', { extensions: ['spike-callout'] })).toBeUndefined();
+
+		expect(optionField('extensionOptions', { extensions: ['spike-callout', 'spike-toned'] })?.meta).toMatchObject({
+			interface: 'system-richtext-extension-options',
+			options: { extensions: ['spike-callout', 'spike-toned'] },
+		});
+	});
+
 	// installing an extension must not change the toolbar of existing fields
 	test('leaves the default toolbar untouched', async () => {
 		registerRichTexts([callout]);
