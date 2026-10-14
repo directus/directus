@@ -72,25 +72,7 @@ export default defineLayout<LayoutOptions>({
 			}),
 		);
 
-		const colorFields = computed(() => {
-			const colorPickerFields = fieldsInCollection.value.filter(
-				(field: Field) => field.meta?.interface === 'select-color',
-			);
-
-			const stringFields = fieldsInCollection.value.filter(
-				(field: Field) => field.type === 'string' && field.meta?.interface !== 'select-color',
-			);
-
-			if (colorPickerFields.length === 0) {
-				return stringFields;
-			}
-
-			if (stringFields.length === 0) {
-				return colorPickerFields;
-			}
-
-			return [...colorPickerFields, { divider: true }, { header: t('other') }, ...stringFields];
-		});
+		const colorFields = computed(() => getColorFields(fieldsInCollection.value, t));
 
 		const calendarFilter = computed(() => {
 			if (!calendar.value || !startDateField.value) {
@@ -395,8 +377,7 @@ export default defineLayout<LayoutOptions>({
 			const primaryKey = item[primaryKeyField.value.field];
 			const eventId = isVersion.value ? item.$meta?.version_id : primaryKey;
 
-			const eventColor = getEventColor(item, colorField.value);
-			const textColor = eventColor ? getContrastColor(eventColor, darkMode.value) : undefined;
+			const styling = getEventStyling(item, colorField.value, darkMode.value);
 
 			return {
 				id: eventId,
@@ -409,9 +390,7 @@ export default defineLayout<LayoutOptions>({
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,
-				color: eventColor,
-				textColor,
-				display: 'block',
+				...styling,
 				className: selection.value.includes(eventId) ? 'selected' : undefined,
 			};
 		}
@@ -434,6 +413,33 @@ export default defineLayout<LayoutOptions>({
 		}
 	},
 });
+
+export function getColorFields(
+	fields: Field[],
+	t: (key: string) => string = (key) => key,
+): (Field | { divider: true } | { header: string })[] {
+	const colorPickerFields = fields.filter((field: Field) => field.meta?.interface === 'select-color');
+
+	const stringFields = fields.filter(
+		(field: Field) => field.type === 'string' && field.meta?.interface !== 'select-color',
+	);
+
+	if (colorPickerFields.length === 0) {
+		return stringFields;
+	}
+
+	if (stringFields.length === 0) {
+		return colorPickerFields;
+	}
+
+	return [...colorPickerFields, { divider: true }, { header: t('other') }, ...stringFields];
+}
+
+export function getEventStyling(item: Record<string, any>, colorField?: string | null, isDark = false) {
+	const color = getEventColor(item, colorField);
+	const textColor = color ? getContrastColor(color, isDark) : undefined;
+	return { color, textColor, display: 'block' as const };
+}
 
 export function getEventColor(item: Record<string, any>, colorField?: string | null): string | undefined {
 	if (!colorField || typeof item[colorField] !== 'string') return undefined;
