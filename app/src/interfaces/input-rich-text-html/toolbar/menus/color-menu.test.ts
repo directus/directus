@@ -1,6 +1,7 @@
 import { Editor } from '@tiptap/vue-3';
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { defineComponent, h } from 'vue';
 import { createI18n } from 'vue-i18n';
 import { editorExtensions } from '../../extensions';
 import ColorMenu from './color-menu.vue';
@@ -10,6 +11,14 @@ const global = {
 	plugins: [createI18n({ legacy: false })],
 	directives: { tooltip: {} },
 	stubs: { VMenu: true, VButton: true, VIcon: true, SelectColor: true },
+};
+
+const menuStubs = {
+	VMenu: {
+		data: () => ({ open: false }),
+		template: '<div><slot name="activator" :toggle="() => (open = !open)" :active="open" /><slot v-if="open" /></div>',
+	},
+	VButton: { emits: ['click'], template: '<button @click="$emit(\'click\', $event)"><slot /></button>' },
 };
 
 let editor: Editor;
@@ -47,5 +56,24 @@ describe('color-menu', () => {
 		vm.apply('#ff0000');
 		vm.apply(null);
 		expect(readStyle(editor, 'color')).toBeNull();
+	});
+
+	// Inside the toolbar's "Show More" menu, a click that bubbles out closes that menu before this one opens.
+	test('opens without letting the activator click reach a parent menu', async () => {
+		const onParentClick = vi.fn();
+
+		const Parent = defineComponent(
+			() => () =>
+				h('div', { onClick: onParentClick }, [
+					h(ColorMenu, { editor, mode: 'text', icon: 'format_color_text', label: 'wysiwyg_options.forecolor' }),
+				]),
+		);
+
+		const wrapper = mount(Parent, { global: { ...global, stubs: { ...global.stubs, ...menuStubs } } });
+
+		await wrapper.find('button').trigger('click');
+
+		expect(wrapper.find('.color-menu').exists()).toBe(true);
+		expect(onParentClick).not.toHaveBeenCalled();
 	});
 });

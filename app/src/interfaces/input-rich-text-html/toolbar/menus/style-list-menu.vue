@@ -100,7 +100,7 @@ defineExpose({ select, currentLabel, isActive, displayLabel });
 				:style="{ '--style-list-width': `${width}px` }"
 				:disabled="disabled || !editor"
 				small
-				@click="toggle"
+				@click.stop="toggle"
 			>
 				<span class="style-list-label" :style="currentFont ? { fontFamily: currentFont } : undefined">
 					{{ currentLabel }}

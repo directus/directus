@@ -44,7 +44,7 @@ defineExpose({ apply });
 				:disabled="disabled || !editor"
 				small
 				icon
-				@click="toggle"
+				@click.stop="toggle"
 			>
 				<VIcon :name="icon" :style="current() ? { color: current()! } : undefined" />
 				<ToolbarCaret class="color-menu-caret" />
