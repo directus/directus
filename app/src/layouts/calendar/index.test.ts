@@ -4,6 +4,7 @@ import { nextTick, reactive, ref } from 'vue';
 import calendarLayout, { getColorFields, getContrastColor, getEventColor, getEventStyling } from './index';
 
 const mockDarkMode = ref(false);
+
 const mockPrimaryKeyField = ref<Field | null>({
 	collection: 'events',
 	field: 'id',
@@ -12,6 +13,7 @@ const mockPrimaryKeyField = ref<Field | null>({
 	schema: null,
 	meta: null,
 });
+
 const mockFieldsInCollection = ref<Field[]>([]);
 const mockItems = ref<Item[]>([]);
 let capturedItemsOptions: any = null;
@@ -121,19 +123,23 @@ vi.mock('@fullcalendar/core', async () => {
 			this.render = vi.fn();
 			this.on = vi.fn();
 			this.pauseRendering = vi.fn();
+
 			this.resetOptions = vi.fn((newOpts: any) => {
 				this.options = newOpts;
 			});
+
 			this.resumeRendering = vi.fn();
 			this.setOption = vi.fn();
 			this.updateSize = vi.fn();
 			this.destroy = vi.fn();
+
 			this.view = {
 				activeStart: new Date('2026-06-01T00:00:00Z'),
 				activeEnd: new Date('2026-06-30T23:59:59Z'),
 				currentStart: new Date('2026-06-01T00:00:00Z'),
 				type: 'dayGridMonth',
 			};
+
 			mockCalendarInstances.push(this);
 		}),
 	};
@@ -241,11 +247,13 @@ describe('calendar layout helpers', () => {
 	describe('getEventStyling', () => {
 		it('returns display block and undefined color/textColor when colorField is not provided', () => {
 			const item = { id: 1, title: 'Test', color: '#ff0000' };
+
 			expect(getEventStyling(item, undefined)).toEqual({
 				color: undefined,
 				textColor: undefined,
 				display: 'block',
 			});
+
 			expect(getEventStyling(item, null)).toEqual({
 				color: undefined,
 				textColor: undefined,
@@ -259,6 +267,7 @@ describe('calendar layout helpers', () => {
 				textColor: undefined,
 				display: 'block',
 			});
+
 			expect(getEventStyling({ id: 1, color: '   ' }, 'color')).toEqual({
 				color: undefined,
 				textColor: undefined,
@@ -272,6 +281,7 @@ describe('calendar layout helpers', () => {
 				textColor: '#000000',
 				display: 'block',
 			});
+
 			expect(getEventStyling({ id: 1, color: '#000000' }, 'color', false)).toEqual({
 				color: '#000000',
 				textColor: '#ffffff',
@@ -285,6 +295,7 @@ describe('calendar layout helpers', () => {
 				textColor: '#000000',
 				display: 'block',
 			});
+
 			expect(getEventStyling({ id: 1, color: '#000000' }, 'color', true)).toEqual({
 				color: '#000000',
 				textColor: '#ffffff',
@@ -298,6 +309,7 @@ describe('calendar layout helpers', () => {
 				textColor: '#000000',
 				display: 'block',
 			});
+
 			expect(getEventStyling({ id: 1, color: 'transparent' }, 'color', true)).toEqual({
 				color: 'transparent',
 				textColor: '#ffffff',
@@ -377,6 +389,7 @@ describe('calendarLayout.setup', () => {
 
 	it('synchronizes colorField reactively and updates queryFields', () => {
 		const props = createMockProps();
+
 		const emit = vi.fn((event: string, value: any) => {
 			if (event === 'update:layoutOptions') {
 				props.layoutOptions = value;
@@ -404,6 +417,7 @@ describe('calendarLayout.setup', () => {
 				template: '{{ title }}',
 			},
 		});
+
 		const emit = vi.fn((event: string, value: any) => {
 			if (event === 'update:layoutOptions') {
 				props.layoutOptions = value;
@@ -452,6 +466,7 @@ describe('calendarLayout.setup', () => {
 				template: '{{ title }}',
 			},
 		});
+
 		const emit = vi.fn();
 
 		const setupResult = calendarLayout.setup(props, { emit });
@@ -468,6 +483,7 @@ describe('calendarLayout.setup', () => {
 		expect(resetOptionsCall).toBeDefined();
 
 		const updatedEvents = resetOptionsCall[0].events;
+
 		expect(updatedEvents[1]).toMatchObject({
 			id: 2,
 			color: 'transparent',
