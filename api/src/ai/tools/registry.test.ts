@@ -1,4 +1,5 @@
 import { ForbiddenError } from '@directus/errors';
+import { FailedValidationError } from '@directus/validation';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { z } from 'zod';
 import { defineTool } from './define-tool.js';
@@ -202,6 +203,32 @@ describe('ToolRegistry', () => {
 		await expect(registry.mount({ schema }).execute('failing', {})).resolves.toMatchObject({
 			ok: false,
 			error: { code, message, recoverable: false },
+		});
+	});
+
+	test('unwraps arrays of errors thrown by payload validation', async () => {
+		const registry = new ToolRegistry([
+			createTool({
+				name: 'failing',
+				description: 'Failing',
+				handler: async () => {
+					throw [
+						new FailedValidationError({ field: 'title', path: [], type: 'required' }),
+						new FailedValidationError({ field: 'slug', path: [], type: 'required' }),
+					];
+				},
+				readOnly: true,
+			}),
+		]);
+
+		await expect(registry.mount({ schema }).execute('failing', {})).resolves.toMatchObject({
+			ok: false,
+			error: {
+				code: 'FAILED_VALIDATION',
+				message:
+					'Validation failed for field "title". Value is required. Validation failed for field "slug". Value is required.',
+				recoverable: false,
+			},
 		});
 	});
 
