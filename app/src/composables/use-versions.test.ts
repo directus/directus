@@ -406,7 +406,11 @@ describe('useVersions', () => {
 
 			await saveVersion(edits, item);
 
-			expect(api.post).toHaveBeenCalledWith('/versions/version-123/save', { title: 'new value' });
+			expect(api.post).toHaveBeenCalledWith(
+				'/versions/version-123/save',
+				{ title: 'new value' },
+				{ params: { baseDate: '' } },
+			);
 		});
 
 		it('should append ?patchRevision when opts.patchRevision is true', async () => {
@@ -438,7 +442,11 @@ describe('useVersions', () => {
 
 			await saveVersion(edits, item, { patchRevision: true });
 
-			expect(api.post).toHaveBeenCalledWith('/versions/version-123/save?patchRevision', { title: 'new value' });
+			expect(api.post).toHaveBeenCalledWith(
+				'/versions/version-123/save?patchRevision',
+				{ title: 'new value' },
+				{ params: { baseDate: '' } },
+			);
 		});
 
 		it('should omit ?patchRevision for brand-new versions even if opts.patchRevision is true', async () => {
@@ -470,7 +478,11 @@ describe('useVersions', () => {
 
 			await saveVersion(edits, item, { patchRevision: true });
 
-			expect(api.post).toHaveBeenCalledWith('/versions/version-new/save', { title: 'new value' });
+			expect(api.post).toHaveBeenCalledWith(
+				'/versions/version-new/save',
+				{ title: 'new value' },
+				{ params: { baseDate: '' } },
+			);
 		});
 	});
 
@@ -720,6 +732,216 @@ describe('useVersions', () => {
 			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
 			expect(currentVersion.value?.id).toBe('+');
 			expect(isItemlessVersion.value).toBe(false);
+		});
+	});
+
+	describe('save conflicts', () => {
+		const loadedDate = '2026-10-15T06:19:12.000Z';
+
+		const version: ContentVersion = {
+			id: 'version-123',
+			key: 'draft',
+			name: null,
+			collection: 'test_collection',
+			item: '1',
+			hash: 'abc123',
+			date_created: '2026-10-15',
+			date_updated: '2026-10-15',
+			user_created: 'user-1',
+			user_updated: 'user-1',
+			delta: { content: 'Original', _date: loadedDate },
+		};
+
+		const conflictError = () =>
+			Object.assign(new Error('Conflict'), {
+				response: { status: 409, data: { errors: [{ extensions: { code: 'VERSION_CONFLICT' } }] } },
+			});
+
+		function mockVersionReads(listed: ContentVersion, latestDelta: Record<string, any> | null = listed.delta) {
+			vi.mocked(api.get).mockImplementation((async (_url: string, config?: { params?: { fields?: string[] } }) => {
+				if (config?.params?.fields?.[0] === 'delta') return { data: { data: [{ delta: latestDelta }] } };
+				return { data: { data: [listed] } };
+			}) as any);
+		}
+
+		async function selectVersion() {
+			const composable = useVersions(ref('test_collection'), ref(false), ref('1'));
+			await vi.waitFor(() => expect(composable.versions.value.some((v) => v.id === version.id)).toBe(true));
+			composable.currentVersion.value = composable.versions.value.find((v) => v.id === version.id) ?? null;
+			return composable;
+		}
+
+		const saveCalls = () => vi.mocked(api.post).mock.calls.filter(([url]) => String(url).includes('/save'));
+
+		it('should send the last save date of the loaded version as baseDate', async () => {
+			mockVersionReads(version);
+			vi.mocked(api.post).mockResolvedValueOnce({ data: { data: { content: 'Edited', _date: 'saved-1' } } });
+
+			const { saveVersion } = await selectVersion();
+
+			await saveVersion(ref({ content: 'Edited' }), ref({ id: '1', content: 'Original' }));
+
+			expect(saveCalls()[0]).toEqual([
+				'/versions/version-123/save',
+				{ content: 'Edited' },
+				{ params: { baseDate: loadedDate } },
+			]);
+		});
+
+		it('should base the next save on the date returned by the previous one', async () => {
+			mockVersionReads(version);
+
+			vi.mocked(api.post)
+				.mockResolvedValueOnce({ data: { data: { content: 'First', _date: 'saved-1' } } })
+				.mockResolvedValueOnce({ data: { data: { content: 'Second', _date: 'saved-2' } } });
+
+			const { saveVersion } = await selectVersion();
+			const item = ref<Record<string, any>>({ id: '1', content: 'Original' });
+
+			await saveVersion(ref({ content: 'First' }), item);
+			await saveVersion(ref({ content: 'Second' }), item);
+
+			expect(saveCalls()[1]?.[2]).toEqual({ params: { baseDate: 'saved-1' } });
+		});
+
+		it('should keep the base it loaded when the versions list is refetched later', async () => {
+			mockVersionReads(version);
+
+			const { saveVersion, getVersions } = await selectVersion();
+
+			mockVersionReads({ ...version, delta: { content: 'Saved elsewhere', _date: 'saved-elsewhere' } });
+			await getVersions();
+
+			vi.mocked(api.post).mockResolvedValueOnce({ data: { data: { content: 'Edited', _date: 'saved-1' } } });
+
+			await saveVersion(ref({ content: 'Edited' }), ref({ id: '1', content: 'Original' }));
+
+			expect(saveCalls()[0]?.[2]).toEqual({ params: { baseDate: loadedDate } });
+		});
+
+		it('should send an empty baseDate for a version without saves', async () => {
+			mockVersionReads({ ...version, delta: null });
+			vi.mocked(api.post).mockResolvedValueOnce({ data: { data: { content: 'Edited', _date: 'saved-1' } } });
+
+			const { saveVersion } = await selectVersion();
+
+			await saveVersion(ref({ content: 'Edited' }), ref({ id: '1', content: 'Original' }));
+
+			expect(saveCalls()[0]?.[2]).toEqual({ params: { baseDate: '' } });
+		});
+
+		it('should rebase and retry when another session only saved other fields', async () => {
+			mockVersionReads(version, { content: 'Original', title: 'Saved elsewhere', _date: 'saved-elsewhere' });
+
+			vi.mocked(api.post)
+				.mockRejectedValueOnce(conflictError())
+				.mockResolvedValueOnce({
+					data: { data: { content: 'Edited', title: 'Saved elsewhere', _date: 'saved-1' } },
+				});
+
+			const { saveVersion } = await selectVersion();
+			const edits = ref<Record<string, any>>({ content: 'Edited' });
+			const item = ref<Record<string, any>>({ id: '1', content: 'Original', title: 'Original title' });
+
+			await saveVersion(edits, item);
+
+			expect(saveCalls()).toHaveLength(2);
+			expect(saveCalls()[1]?.[2]).toEqual({ params: { baseDate: 'saved-elsewhere' } });
+			expect(item.value).toMatchObject({ content: 'Edited', title: 'Saved elsewhere' });
+			expect(edits.value).toEqual({});
+		});
+
+		it('should flag the conflicting fields when another session saved the same field', async () => {
+			mockVersionReads(version, { content: 'Saved elsewhere', _date: 'saved-elsewhere' });
+			vi.mocked(api.post).mockRejectedValueOnce(conflictError());
+
+			const { saveVersion } = await selectVersion();
+			const edits = ref<Record<string, any>>({ content: 'Edited from a stale copy' });
+			const item = ref<Record<string, any>>({ id: '1', content: 'Original' });
+
+			await expect(saveVersion(edits, item)).rejects.toMatchObject({ versionConflict: { fields: ['content'] } });
+
+			expect(saveCalls()).toHaveLength(1);
+			expect(item.value['content']).toBe('Saved elsewhere');
+			expect(edits.value).toEqual({ content: 'Edited from a stale copy' });
+		});
+
+		it('should save on the latest base once a conflict has been seen', async () => {
+			mockVersionReads(version, { content: 'Saved elsewhere', _date: 'saved-elsewhere' });
+			vi.mocked(api.post).mockRejectedValueOnce(conflictError());
+
+			const { saveVersion } = await selectVersion();
+			const item = ref<Record<string, any>>({ id: '1', content: 'Original' });
+
+			await expect(saveVersion(ref({ content: 'Mine' }), item)).rejects.toMatchObject({ versionConflict: {} });
+
+			vi.mocked(api.post).mockResolvedValueOnce({ data: { data: { content: 'Mine', _date: 'saved-1' } } });
+
+			await saveVersion(ref({ content: 'Mine' }), item);
+
+			expect(saveCalls()[1]?.[2]).toEqual({ params: { baseDate: 'saved-elsewhere' } });
+		});
+
+		it('should start a new revision when retrying on top of another session save', async () => {
+			mockVersionReads(version, { content: 'Original', title: 'Saved elsewhere', _date: 'saved-elsewhere' });
+
+			vi.mocked(api.post)
+				.mockRejectedValueOnce(conflictError())
+				.mockResolvedValueOnce({ data: { data: { content: 'Edited', _date: 'saved-1' } } });
+
+			const { saveVersion } = await selectVersion();
+
+			await saveVersion(ref({ content: 'Edited' }), ref({ id: '1' }), { patchRevision: true });
+
+			expect(saveCalls().map(([url]) => url)).toEqual([
+				'/versions/version-123/save?patchRevision',
+				'/versions/version-123/save',
+			]);
+		});
+
+		it('should not patch the revision of another session after a conflict', async () => {
+			mockVersionReads(version, { content: 'Saved elsewhere', _date: 'saved-elsewhere' });
+
+			vi.mocked(api.post)
+				.mockRejectedValueOnce(conflictError())
+				.mockResolvedValueOnce({ data: { data: { content: 'Mine', _date: 'saved-1' } } })
+				.mockResolvedValueOnce({ data: { data: { content: 'Mine again', _date: 'saved-2' } } });
+
+			const { saveVersion } = await selectVersion();
+			const item = ref<Record<string, any>>({ id: '1' });
+
+			await expect(saveVersion(ref({ content: 'Mine' }), item, { patchRevision: true })).rejects.toMatchObject({
+				versionConflict: {},
+			});
+
+			await saveVersion(ref({ content: 'Mine' }), item, { patchRevision: true });
+			await saveVersion(ref({ content: 'Mine again' }), item, { patchRevision: true });
+
+			expect(saveCalls().map(([url]) => url)).toEqual([
+				'/versions/version-123/save?patchRevision',
+				'/versions/version-123/save',
+				'/versions/version-123/save?patchRevision',
+			]);
+		});
+
+		it('should not treat its own previous save as a conflict', async () => {
+			mockVersionReads(version, { content: 'First', title: 'Saved elsewhere', _date: 'saved-elsewhere' });
+
+			vi.mocked(api.post)
+				.mockResolvedValueOnce({ data: { data: { content: 'First', _date: 'saved-1' } } })
+				.mockRejectedValueOnce(conflictError())
+				.mockResolvedValueOnce({
+					data: { data: { content: 'Second', title: 'Saved elsewhere', _date: 'saved-2' } },
+				});
+
+			const { saveVersion } = await selectVersion();
+			const item = ref<Record<string, any>>({ id: '1', content: 'Original' });
+
+			await saveVersion(ref({ content: 'First' }), item);
+			await saveVersion(ref({ content: 'Second' }), item);
+
+			expect(saveCalls()).toHaveLength(3);
+			expect(saveCalls()[2]?.[2]).toEqual({ params: { baseDate: 'saved-elsewhere' } });
 		});
 	});
 

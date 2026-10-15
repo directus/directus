@@ -40,5 +40,6 @@ export enum ErrorCode {
 	UserSuspended = 'USER_SUSPENDED',
 	ValueOutOfRange = 'VALUE_OUT_OF_RANGE',
 	ValueTooLong = 'VALUE_TOO_LONG',
+	VersionConflict = 'VERSION_CONFLICT',
 	VersionHashMismatch = 'VERSION_HASH_MISMATCH',
 }

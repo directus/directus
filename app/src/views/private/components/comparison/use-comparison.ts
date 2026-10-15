@@ -112,6 +112,7 @@ export function useComparison(options: UseComparisonOptions) {
 	});
 
 	const baseDisplayName = computed(() => {
+		if (mode.value === 'collab' && currentVersion.value) return getVersionDisplayName(currentVersion.value);
 		return normalizedData.value?.base?.displayName || '';
 	});
 

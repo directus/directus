@@ -974,6 +974,44 @@ describe('useComparison', () => {
 		});
 	});
 
+	describe('collab mode base name', () => {
+		const currentCollab = { from: { id: 1, title: 'Latest' }, to: { id: 1, title: 'Mine' } };
+
+		it('should name the base after the version being edited', async () => {
+			const { baseDisplayName, fetchComparisonData } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('collab'),
+				currentVersion: ref({ id: 'version-1', key: 'review', name: 'Review' } as any),
+				currentRevision: ref(null),
+				revisions: ref([]),
+				compareToOption: ref('Latest'),
+				currentCollab: ref(currentCollab),
+			});
+
+			await fetchComparisonData();
+
+			expect(baseDisplayName.value).toBe('Review');
+		});
+
+		it('should keep the published name when no version is given', async () => {
+			const { baseDisplayName, fetchComparisonData } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('collab'),
+				currentVersion: ref(null),
+				currentRevision: ref(null),
+				revisions: ref([]),
+				compareToOption: ref('Latest'),
+				currentCollab: ref(currentCollab),
+			});
+
+			await fetchComparisonData();
+
+			expect(baseDisplayName.value).toBe('Published');
+		});
+	});
+
 	describe('normalizeVersionItem date and user selection', () => {
 		it('should use date_updated and user_updated when user_updated exists', async () => {
 			const testCase = getTestData('version', {

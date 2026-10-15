@@ -4,6 +4,14 @@ post:
   operationId: saveContentVersion
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/UUId'
+    - name: baseDate
+      in: query
+      required: false
+      description:
+        The top level `_date` of the version delta the changes are based on. Pass an empty value if the version had no
+        saves yet. When set, the save is rejected with a `VERSION_CONFLICT` error if the version has been saved since.
+      schema:
+        type: string
   requestBody:
     content:
       application/json:
@@ -21,5 +29,16 @@ post:
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':
       $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    '409':
+      description: 'Error: The version has been saved since `baseDate`.'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Error'
   tags:
     - Versions

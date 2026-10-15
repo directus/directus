@@ -1,7 +1,7 @@
 import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { ContentVersion, Filter, Item, PrimaryKey } from '@directus/types';
 import { useRouteQuery } from '@vueuse/router';
-import { isEqual } from 'lodash-es';
+import { isEqual, pick } from 'lodash-es';
 import { computed, ref, type Ref, watch } from 'vue';
 import { useCollectionPermissions } from './use-permissions';
 import api from '@/api';
@@ -15,12 +15,20 @@ export interface PublishVersionOptions {
 	fields?: string[];
 }
 
+interface SaveBase {
+	versionId: PrimaryKey;
+	date: string | null;
+	delta: Record<string, any>;
+	external: boolean;
+}
+
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<PrimaryKey | null>) {
 	const currentVersion = ref<ContentVersionMaybeNew | null>(null);
 	const rawVersions = ref<ContentVersion[] | null>(null);
 	const deleteVersionLoading = ref(false);
 	const publishVersionLoading = ref(false);
 	const validationErrors = ref<any[]>([]);
+	let saveBase: SaveBase | null = null;
 
 	const { createAllowed: createVersionsAllowed, readAllowed: readVersionsAllowed } =
 		useCollectionPermissions('directus_versions');
@@ -91,6 +99,15 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			}
 		},
 		{ immediate: true },
+	);
+
+	watch(
+		() => currentVersion.value?.id,
+		(id) => {
+			if (saveBase?.versionId === id) return;
+			saveBase = id && id !== '+' ? toSaveBase(id, (currentVersion.value as ContentVersion).delta) : null;
+		},
+		{ immediate: true, flush: 'sync' },
 	);
 
 	watch(currentVersion, (newCurrentVersion) => {
@@ -250,6 +267,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				});
 
 				versionId = version.id;
+				saveBase = toSaveBase(versionId, null);
 			} else {
 				versionId = currentVersion.value.id;
 			}
@@ -257,15 +275,9 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			// New versions have no prior revision to coalesce into
 			const shouldPatchRevision = opts?.patchRevision === true && currentVersion.value.id !== '+';
 
-			const endpoint = shouldPatchRevision
-				? `/versions/${versionId}/save?patchRevision`
-				: `/versions/${versionId}/save`;
-
 			const editsToSave = { ...edits.value };
 
-			const {
-				data: { data: savedData },
-			} = await api.post(endpoint, editsToSave);
+			const savedData = await saveOnLatestBase(versionId, editsToSave, item, shouldPatchRevision);
 
 			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
 			clearSavedEditKeys(edits, editsToSave);
@@ -278,6 +290,86 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		} catch (error) {
 			versionErrorHandler(error, { silent: true });
 		}
+	}
+
+	async function saveOnLatestBase(
+		versionId: PrimaryKey,
+		editsToSave: Record<string, any>,
+		item: Ref<Item | null>,
+		patchRevision: boolean,
+	) {
+		const base =
+			saveBase?.versionId === versionId
+				? saveBase
+				: toSaveBase(versionId, (currentVersion.value as ContentVersion | null)?.delta);
+
+		try {
+			return await postSave(editsToSave, base, patchRevision);
+		} catch (error) {
+			if (!isVersionConflict(error)) throw error;
+
+			const latest = await fetchSaveBase(versionId);
+
+			const conflictingFields = Object.keys(editsToSave).filter(
+				(field) => !isEqual(base.delta[field], latest.delta[field]),
+			);
+
+			saveBase = latest;
+			item.value = item.value ? Object.assign(item.value, latest.delta) : { ...latest.delta };
+
+			if (conflictingFields.length > 0) {
+				throw Object.assign(error as object, { versionConflict: { fields: conflictingFields } });
+			}
+
+			return await postSave(editsToSave, latest, patchRevision);
+		}
+	}
+
+	async function postSave(editsToSave: Record<string, any>, base: SaveBase, patchRevision: boolean) {
+		const endpoint =
+			patchRevision && !base.external
+				? `/versions/${base.versionId}/save?patchRevision`
+				: `/versions/${base.versionId}/save`;
+
+		const {
+			data: { data: savedData },
+		} = await api.post(endpoint, editsToSave, { params: { baseDate: base.date ?? '' } });
+
+		saveBase = {
+			versionId: base.versionId,
+			date: savedData?._date ?? null,
+			delta: pick(savedData, [...Object.keys(base.delta), ...Object.keys(editsToSave), '_user', '_date']),
+			external: false,
+		};
+
+		return savedData;
+	}
+
+	async function fetchSaveBase(versionId: PrimaryKey): Promise<SaveBase> {
+		const {
+			data: { data },
+		} = await api.get(`/versions`, {
+			params: {
+				filter: { id: { _eq: versionId } },
+				fields: ['delta'],
+			},
+		});
+
+		return toSaveBase(versionId, data[0]?.delta, true);
+	}
+
+	function toSaveBase(
+		versionId: PrimaryKey,
+		delta: Record<string, any> | null | undefined,
+		external = false,
+	): SaveBase {
+		return { versionId, date: delta?.['_date'] ?? null, delta: delta ?? {}, external };
+	}
+
+	function isVersionConflict(error: any): boolean {
+		return (
+			error?.response?.data?.errors?.some((err: APIError) => err?.extensions?.code === 'VERSION_CONFLICT') ?? false
+		);
 	}
 
 	function clearSavedEditKeys(edits: Ref<Record<string, any>>, savedEdits: Record<string, any>) {

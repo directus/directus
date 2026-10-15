@@ -407,6 +407,98 @@ describe('Integration Tests', () => {
 			});
 		});
 
+		describe('save with baseDate', () => {
+			const lastSave = '2026-10-15T06:19:27.123Z';
+
+			test('should save when baseDate matches the last save of the version', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_all',
+					item: 2,
+					delta: { title: 'Saved by A', _date: lastSave },
+				});
+
+				const result = await service.save(1, { title: 'Saved by B' }, { baseDate: lastSave });
+
+				expect(result['title']).toBe('Saved by B');
+				expect(ItemsService.prototype.updateOne).toHaveBeenCalledTimes(1);
+			});
+
+			test('should reject a save based on an older copy without writing anything', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_all',
+					item: 2,
+					delta: { title: 'Saved by A', _date: lastSave },
+				});
+
+				await expect(
+					service.save(1, { title: 'Stale copy from B' }, { baseDate: '2026-10-15T06:19:12.000Z' }),
+				).rejects.toMatchObject({ code: 'VERSION_CONFLICT', status: 409 });
+
+				expect(ActivityService.prototype.createOne).not.toHaveBeenCalled();
+				expect(RevisionsService.prototype.createOne).not.toHaveBeenCalled();
+				expect(RevisionsService.prototype.updateOne).not.toHaveBeenCalled();
+				expect(ItemsService.prototype.updateOne).not.toHaveBeenCalled();
+			});
+
+			test('should reject a save based on an empty version once it has been saved', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_all',
+					item: 2,
+					delta: { title: 'Saved by A', _date: lastSave },
+				});
+
+				await expect(service.save(1, { title: 'Stale copy from B' }, { baseDate: null })).rejects.toMatchObject({
+					code: 'VERSION_CONFLICT',
+				});
+
+				expect(ItemsService.prototype.updateOne).not.toHaveBeenCalled();
+			});
+
+			test('should save when baseDate is null and the version has no saves yet', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_all',
+					item: 2,
+					delta: null,
+				});
+
+				await service.save(1, { title: 'First save' }, { baseDate: null });
+
+				expect(ItemsService.prototype.updateOne).toHaveBeenCalledWith(
+					1,
+					expect.objectContaining({ delta: expect.objectContaining({ title: 'First save' }) }),
+				);
+			});
+
+			test('should skip the check when no baseDate is passed', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_all',
+					item: 2,
+					delta: { title: 'Saved by A', _date: lastSave },
+				});
+
+				await service.save(1, { title: 'Saved without a base' });
+
+				expect(ItemsService.prototype.updateOne).toHaveBeenCalledTimes(1);
+			});
+
+			test('should persist a fresh top level date for the next save to use as baseDate', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_all',
+					item: 2,
+					delta: { title: 'Saved by A', _date: lastSave },
+				});
+
+				const result = await service.save(1, { title: 'Saved by A again' }, { baseDate: lastSave });
+
+				expect(result['_date']).toBeInstanceOf(Date);
+				expect(result['_date'].toISOString()).not.toBe(lastSave);
+
+				expect(ItemsService.prototype.updateOne).toHaveBeenCalledWith(1, {
+					delta: expect.objectContaining({ _date: result['_date'] }),
+				});
+			});
+		});
+
 		describe('createOne item-less on singleton', () => {
 			test('throws when the singleton already contains a published item', async () => {
 				tracker.on.select('singleton_collection').response([{ id: 1 }]);

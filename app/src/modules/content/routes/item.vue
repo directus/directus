@@ -51,6 +51,7 @@ import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { useAutoSave } from '@/modules/content/composables/use-auto-save';
+import { useVersionConflict } from '@/modules/content/composables/use-version-conflict';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
@@ -231,6 +232,8 @@ const {
 	connectionId,
 } = useCollab(collection, primaryKeyParam, currentVersion, item, edits, getItem);
 
+const { versionConflict, handleVersionConflict, clearVersionConflict } = useVersionConflict(edits, item);
+
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;
 	return versionValidationErrors.value;
@@ -388,6 +391,7 @@ const isPublishAllowed = computed(() => {
 	if (currentVersion.value === null) return false;
 	if (isCurrentVersionNew.value) return false;
 	if (autoSaveError.value !== null) return false;
+	if (versionConflict.value) return false;
 	return isItemlessVersion.value ? createAllowed.value : updateAllowed.value;
 });
 
@@ -597,6 +601,11 @@ async function autoSave(forceNewRevision: boolean) {
 
 		await refreshLivePreview();
 	} catch (error) {
+		if (handleVersionConflict(error)) {
+			await refreshLivePreview();
+			return;
+		}
+
 		// Throw anyway if not a `versionGone` error
 		if (!handleVersionGone(error)) throw error;
 	}
@@ -829,7 +838,7 @@ function usePublishActions() {
 	});
 
 	async function onVersionPublishCompare(quit = false) {
-		if (!(await flushAutoSave())) return;
+		if (!(await flushAutoSave()) || versionConflict.value) return;
 
 		quitAfterPublish.value = quit;
 
@@ -889,7 +898,7 @@ function usePublishActions() {
 	async function onVersionPublishWithoutReview() {
 		if (publishVersionLoading.value) return;
 		if (!currentVersion.value || currentVersion.value.id === '+') return;
-		if (!(await flushAutoSave())) return;
+		if (!(await flushAutoSave()) || versionConflict.value) return;
 		if (!runClientValidation()) return;
 
 		const version = currentVersion.value as ContentVersionWithType;
@@ -1324,6 +1333,17 @@ function useAutoSwitchToDraft() {
 			mode="collab"
 			@confirm="updateCollab"
 			@cancel="clearCollidingChanges"
+		/>
+
+		<ComparisonModal
+			:model-value="versionConflict !== undefined"
+			:collection="collection"
+			:primary-key="resolvedPrimaryKey ?? '+'"
+			:current-collab="versionConflict"
+			:current-version="comparableVersion"
+			mode="collab"
+			@confirm="updateCollab"
+			@cancel="clearVersionConflict"
 		/>
 
 		<ComparisonModal

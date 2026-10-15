@@ -244,8 +244,9 @@ router.post(
 		}
 
 		const patchRevision = req.query['patchRevision'] !== undefined && req.query['patchRevision'] !== 'false';
+		const baseDate = typeof req.query['baseDate'] === 'string' ? req.query['baseDate'] || null : undefined;
 
-		const updatedVersion = await service.save(req.params['pk']!, req.body, { patchRevision });
+		const updatedVersion = await service.save(req.params['pk']!, req.body, { patchRevision, baseDate });
 
 		const result = assign(mainItem, updatedVersion);
 

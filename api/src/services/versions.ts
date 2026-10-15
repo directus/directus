@@ -3,6 +3,7 @@ import {
 	ForbiddenError,
 	InvalidPayloadError,
 	UnprocessableContentError,
+	VersionConflictError,
 	VersionHashMismatchError,
 } from '@directus/errors';
 import {
@@ -316,7 +317,11 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		return super.updateMany(keys, data, opts);
 	}
 
-	async save(key: PrimaryKey, delta: Partial<Item>, opts?: { patchRevision?: boolean }): Promise<Partial<Item>> {
+	async save(
+		key: PrimaryKey,
+		delta: Partial<Item>,
+		opts?: { patchRevision?: boolean; baseDate?: string | null | undefined },
+	): Promise<Partial<Item>> {
 		const version = await super.readOne(key);
 
 		const payloadService = new PayloadService(this.collection, {
@@ -326,6 +331,10 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		});
 
 		const { item, collection, delta: existingDelta } = version;
+
+		if (opts?.baseDate !== undefined && (existingDelta?.['_date'] ?? null) !== opts.baseDate) {
+			throw new VersionConflictError();
+		}
 
 		const collectionInfo = getCollectionFromSchema(this.schema, collection);
 
