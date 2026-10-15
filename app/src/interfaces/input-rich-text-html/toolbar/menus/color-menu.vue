@@ -50,7 +50,7 @@ defineExpose({ apply });
 				<ToolbarCaret class="color-menu-caret" />
 			</VButton>
 		</template>
-		<div class="color-menu">
+		<div class="color-menu" @click.stop>
 			<SelectColor :value="current()" width="full" @input="apply" />
 		</div>
 	</VMenu>

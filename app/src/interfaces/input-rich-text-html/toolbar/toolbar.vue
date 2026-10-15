@@ -148,6 +148,11 @@ function resolve(group: RenderGroup): { key: string; button: ToolbarButton }[] {
 }
 
 const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ? `${availableWidth.value}px` : '100%'));
+
+function onOverflowClick(event: MouseEvent) {
+	if ((event.target as Element).closest('.v-menu-activator')) return;
+	overflowMenuActive.value = false;
+}
 </script>
 
 <template>
@@ -172,7 +177,7 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 		<div v-if="hasOverflow" class="toolbar-more-group">
 			<div class="toolbar-separator" />
 
-			<VMenu v-model="overflowMenuActive" placement="bottom-end" show-arrow>
+			<VMenu v-model="overflowMenuActive" placement="bottom-end" show-arrow :close-on-content-click="false">
 				<template #activator="{ toggle }">
 					<VButton
 						v-tooltip="t('show_more')"
@@ -186,7 +191,7 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 						<VIcon name="more_horiz" />
 					</VButton>
 				</template>
-				<div class="toolbar-overflow" :style="{ '--toolbar-width': overflowMaxWidth }">
+				<div class="toolbar-overflow" :style="{ '--toolbar-width': overflowMaxWidth }" @click="onOverflowClick">
 					<template v-for="(group, index) in overflowGroups" :key="group.id">
 						<div v-if="index > 0" class="toolbar-separator" />
 						<ToolbarPopover
