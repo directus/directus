@@ -539,9 +539,14 @@ translations_collection: Collection de traduction
 languages_collection: Collection de langues
 enable_translations: Activer les traductions
 manage_translation_fields: Ajouter des champs de traduction
+translations_already_enabled: Traductions activées
 add_fields: Ajouter des champs
+show_advanced_options: Afficher les détails de la relation
+hide_advanced_options: Masquer les détails de la relation
+translation_configuration: Configuration de la traduction
 translations_preview_collections: Collections
 translations_preview_fields: Champs
+translations_preview_relations: Relations
 import_data_input_placeholder: CSV ou JSON...
 import_data_button: Commencer l'import
 import_background: Importer en arrière-plan
@@ -550,8 +555,15 @@ import_data_success: Données importées avec succès depuis {filename}
 import_upload_success: '{filename} a été téléchargé avec succès. Importation des données en arrière-plan.'
 import_data_errors: Erreur d'importation
 import_data_error: La structure des données de ce fichier ne correspond pas à la collection.
+export_flows: Exporter les flux
+flow_import_input_placeholder: JSON...
+flow_import_success: Flux importé avec succès.
+flow_import_failed: Impossible d'importer le flux
+flow_import_not_json: Ce fichier n'est pas un JSON valide.
+flow_import_invalid_file: Ce fichier n'est pas un flux exporté.
 snapshot:
   export: Exporter le schéma
+  download: Télécharger Snapshot (JSON)
 label_import: Importer
 label_export: Export
 import_export: Importer/Exporter
@@ -775,6 +787,7 @@ modified_on: Modifié le
 card_size: Taille de tuile
 sort_field: Champ de tri
 add_sort_field: Ajouter un champ de tri
+add_to_ai_context: Ajouter au contexte IA
 sort: Trier
 status: État
 remove: Retirer
@@ -801,6 +814,7 @@ account_created_successfully: Compte créé avec succès
 auto_fill: Remplissage automatique
 corresponding_field: Champ correspondant
 errors:
+  COLLECTION_INACTIVE: La collection est inactive
   COLLECTION_NOT_FOUND: "La collection n'existe pas"
   CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
   CONTENT_TOO_LARGE: L'élément/fichier soumis est trop volumineux
@@ -871,6 +885,8 @@ active_users: Utilisateurs actifs
 suspended_users: Utilisateurs Suspendus
 invited_users: Utilisateurs invités
 delete_collection: Supprimer la collection
+deactivate_collection: Désactiver la collection
+deactivated_collections: Collections désactivées
 update_collection_success: Collection mise à jour
 delete_collection_success: Collection supprimée
 make_collection_visible: Rendre la collection visible
@@ -1200,6 +1216,12 @@ wysiwyg_options:
   table: Tableau
   visualaid: Voir les éléments invisibles
   source_code: Modifier le code source
+  normalization_warning_body: Ce contenu inclut des éléments non supportés par le nouvel éditeur, il est donc en lecture seule pour l'instant. Si vous le modifiez quand même, ces éléments seront retirés au moment de la sauvegarde. Pour garder le HTML stocké tel quel, modifiez le code HTML brut à la place. Cet avertissement disparaîtra une fois que les éléments non pris en charge seront supprimés. Si vous avez déjà enregistré sans eux, vous pouvez ramener le contenu original à partir des révisions.
+  normalization_warning_view_changes: Afficher les modifications
+  normalization_warning_keep_readonly: Garder en lecture seule
+  normalization_warning_edit_anyway: Modifier quand même
+  normalization_warning_edit_raw: Modifier le HTML brut
+  normalization_locked_notice: Ce champ inclut de la mise en forme non supportée par le nouvel éditeur, il est donc en lecture seule. Sélectionnez le champ pour choisir comment le mettre à jour.
   fullscreen: Plein écran
   directionality: Sens de lecture
   ltr: De gauche à droite
@@ -1235,9 +1257,15 @@ licensing:
   unlimited: Illimité
   addon_manage: Gérer
   addon_update: Mettre à jour
+  deactivate: Désactiver la licence
+  deactivate_confirm_title: Désactiver la licence ?
+  deactivate_confirm_body: Êtes-vous sûr de vouloir désactiver la licence ? Votre instance sera rétrogradée vers le plan Core.
+  resolve_title_manual: Désactiver la licence
   resolve_continue: Continuer
+  resolve_submit: Désactiver les éléments sélectionnés
   resolve_show_n_more: 'Afficher {count} de plus'
   resolve_section_flows: Flux
+  resolve_section_collections_caption: Sélectionnez la ou les collections à désactiver
   resolve_sso_admin_email: Adresse courriel
   resolve_sso_admin_password: Mot de passe
   key: Clé de licence
@@ -2017,6 +2045,7 @@ interfaces:
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
     interface_group: Options d'interface
     display_group: Options d'affichage
+    edit_mode_drawer: Tiroir
     edit_mode_inline: En ligne
   slider:
     slider: Curseur
