@@ -17,6 +17,16 @@ import { directive as clickOutside } from '@/directives/click-outside';
 
 const resizeObserver = vi.hoisted(() => ({ callback: undefined as ((entries: unknown[]) => void) | undefined }));
 
+// jsdom doesn't load the theme stylesheet, so theme variables would resolve to an empty string
+vi.mock('@directus/utils/browser', async () => {
+	const actual = await vi.importActual<typeof import('@directus/utils/browser')>('@directus/utils/browser');
+
+	return {
+		...actual,
+		cssVar: () => '#ffffff',
+	};
+});
+
 vi.mock('@vueuse/core', async () => {
 	const actual = await vi.importActual<typeof import('@vueuse/core')>('@vueuse/core');
 
