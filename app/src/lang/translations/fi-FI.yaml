@@ -20,7 +20,9 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Tietoja
+directus_mscl: Directus MSCL-1.0-GPL
 data_processing_agreement: Tiedon Käsittely Sopimus
+contact_support: ota yhteyttä tukeen
 setup_welcome: Tervetuloa Directukseen
 setup_info: Luodaan järjestelmänvalvojatilisi ja saat projektisi valmiiksi ja käyntiin.
 setup_license_key_notice: >
@@ -45,9 +47,29 @@ org_name: Organisaation Nimi
 org_name_placeholder: Acme Inc.
 license_key_option: Minulla on lisenssiavain
 license_key_option_desc: 'OIG, Tiimi tai Enterprise palvelupaketti'
+core_option: Käytän Core-tilausta
+core_option_desc: Ilmainen, avainta ei tarvita
+remind_later: Muistuta myöhemmin
+remind_next_login: Muistutamme sinua seuraavalla kerralla, kun kirjaudut sisään
+open_innovation_grant: Avoimen innovaation apuraha
+setup_project: Määritä projekti
+enter_license_key: Syötä lisenssiavaimesi
+license_valid: Lisenssi voimassa
+plan_prefix: 'Tilaus: {plan}'
+license_key: Lisenssiavain
+no_license_key: Eikö sinulla ole lisenssiavainta?
+get_license_key: Hanki lisenssiavain
+expires_on: Erääntyy
+environment: Ympäristö
+production: Tuotanto
+non_production: Ei-tuotanto
+skip: Ohita
 continue: Jatka
 first_name: Etunimi
 last_name: Sukunimi
+admin_email: Ylläpitäjän sähköposti
+owner_email: Omistajan sähköposti
+email_address: Sähköpostiosoite
 identifier: Tunniste
 avatar: Avatari
 application: Sovellus
@@ -56,25 +78,53 @@ method: Metodi
 published: Julkaistu
 draft: Luonnos
 archived: Arkistoitu
+not_archived: Ei arkistoitu
+marketplace: Kauppapaikka
+extensions: Laajennukset
+skip_link_nav: Siirry navigaatioon
+skip_link_module_nav: Siirry moduulin navigointiin
+skip_link_main: Siirry pääsisältöön
+skip_link_sidebar: Siirry sivupalkkiin
 modules: Moduulit
 module_bar: Moduulipalkki
 logs: Lokit
+unknown: Tuntematon
 reset_width: Palauta leveys
 tile_size: Neliön koko
 edit_field: Muokkaa kenttää
 conditions: Ehdot
 location: Sijainti
+collection_names_are_case_sensitive: Kokoelmien nimissä kirjainkoko on merkitsevä
 condition_rules: Ehdot
 input: Syöte
+invalid_input: Virheellinen syöte
+invalid_file_type: Virheellinen tiedostotyyppi
+invalid_files_selected: 'Ei virheellisiä tietoja | Virheellinen tiedosto valittu | {count} virheellisiä tiedostoja valittu'
+files_wrong_type: 'Tiedostoissa {files} on virheellinen tyyppi, oletetaan {expected} tyyppiä.'
+files_are_empty: 'Seuraavat tiedostot ovat tyhjiä eikä niity voida ladata: {files}'
+not_a_number: Ei ole numero
+invalid_range_min: Arvo on alle minimin {value}
+invalid_range_max: Arvo ylittää maksimin {value}
 maps: Kartat
 switch_user: Vaihda käyttäjää
+item_deleted: Muokkaamasi kohde on poistettu.
 item_creation: Kohteen luonti
 item_revision: Kohteen versio
+previous_revision: Edellinen versio
+latest_revision: Viimeisin versio
+comparing_to: Vertaillaan
+compare_to_latest_to_restore: Vertaa viimeisimpään harkitaksesi tämän version palauttamista
+select_earlier_revision_to_restore: Valitse aikaisempi versio harkitaksesi sen palauttamista
 enter_a_name: Syötä nimi...
 duplicate_field: Monista kenttä
 half_width: Puolileveä
 full_width: Täysleveä
 group: Ryhmä
+popular: Suosittu
+recent: Äskettäinen
+previous: Edellinen
+latest: Viimeisin
+updated: Päivitetty
 export_items: Vie kohteet
 and: Ja
 or: Tai
@@ -92,8 +142,10 @@ hook: Koukku
 fill_width: Täysleveä
 field_name_translations: Kentän nimen käännökset
 enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
+cancel_setup: Peruuta asennus
 add_field: Lisää kenttä
 role_name: Roolin nimi
+policy_name: Käytännön nimi
 branch: Haara
 leaf: Lehti
 indeterminate: Määrittelemätön
@@ -111,9 +163,14 @@ requires_value: Vaatii arvon
 create_preset: Luo esiasetus
 create_panel: Luo paneeli
 create_role: Luo rooli
+create_policy: Luo käytäntö
 create_user: Luo käyttäjä
 message: Viesti
 delete_panel: Poista paneeli
+create_custom_translation: Luo mukautettu käännös
+edit_custom_translation: Muokkaa mukautettua käännöstä
+no_custom_translations: Ei mukautettuja käännöksiä
+no_custom_translations_copy: Mukautettuja käännöksiä ei vielä ole.
 invite_users: Kutsu käyttäjiä
 invite: Kutsu
 email_already_invited: Sähköposti "{email}" on jo kutsuttu
@@ -125,10 +182,29 @@ connection_good: Hyvä yhteys
 connection_fair: Hyvä yhteys
 connection_poor: Huono yhteys
 primary: Ensisijainen
+download_folder: Lataa kansio
 rename_folder: Nimeä kansio uudelleen
 delete_folder: Poista kansio
 prefix: Etuliite
 suffix: Jälkiliite
+keep: Säilytä
+version: Versio
+version_key: Version avain
+version_name: Version nimi
+your_version: Sinun versiosi
+switch_version: Vaihda versiota
+switch_version_copy: Oletko varma että haluat vaihtaa "{version}" versioon? Tallentamattomat muutokset menetetään.
+create_version: Luo versio
+rename_version: Nimeä versio uudelleen
+reserved_version_key: 'Versioavain "{key}" on varattu, eikä sitä voi käyttää.'
+compare_version: Vertaa versiota
+save_version: Tallenna versio
+publish: Julkaise
+version_create_item_less: Versiot voidaan luoda vain kerran, kun luonnosversio on julkaistu
+apply: Käytä
+discard: Hylkää
+select_all_differences: Valitse kaikki erot
+show_differences_only: Näytä vain erot
 reset_bookmark: Nollaa kirjanmerkki
 update_bookmark: Päivitä kirjanmerkki
 delete_bookmark: Poista kirjanmerkki
@@ -930,10 +1006,15 @@ licensing:
   resolve_continue: Jatka
   resolve_show_n_more: 'Näytä {count} lisää'
   resolve_section_flows: Toiminnot
+  resolve_sso_admin_email: Sähköpostiosoite
   resolve_sso_admin_password: Salasana
+  key: Lisenssiavain
   entitlements:
     collections: Kokoelmat
     flows: Toiminnot
+  badge:
+    oig: Avoimen innovaation apuraha
+    non_prod: Ei-tuotanto
 settings_presets: Kirjainmerkit
 settings_translations: Käännökset
 one_or_more_options_are_missing: Yksi tai useampi vaihtoehto puuttuu
@@ -967,6 +1048,7 @@ batch_delete_confirm: >-
   Kohteita ei ole valittu | Oletko varma, että haluat poistaa tämän kohteen? Tätä toimintoa ei voi perua. | Oletko varma, että haluat poistaa nämä {count} kohteet? Tätä toimintoa ei voi perua.
 cancel: Peruuta
 no_upscale: Älä skaalaa kuvia isommaksi
+source_registry: Kauppapaikka
 collection: Kokoelma
 collections: Kokoelmat
 content: Sisältö
@@ -1111,6 +1193,7 @@ fields:
     description: Kuvaus
     users: Käyttäjät roolissa
   directus_policies:
+    name: Käytännön nimi
     description: Kuvaus
 field_options:
   directus_settings:
@@ -1211,6 +1294,7 @@ live_preview:
   new_window: Avaa uudessa ikkunassa
 ai:
   input: Syöte
+  unknown: Tuntematon
   items: Kohteet
   content: Sisältö
   settings: Asetukset
@@ -1233,6 +1317,7 @@ continue_label: Jatka
 editing_role: '{role} rooli'
 default_label: Oletus
 delete_label: Poista
+discard_label: Hylkää
 delete_are_you_sure: >-
   Tämä toiminto on pysyvä eikä sitä voi peruuttaa. Oletko varma, että haluat jatkaa?
 delete_field_are_you_sure: >-
@@ -1775,4 +1860,6 @@ fonts:
   bold: Lihavoitu
   italic: Kursiivi
   auto: Automaattinen
+license_banner:
+  remind_later: Muistuta myöhemmin
 set_to_now: Aseta olemaan nyt

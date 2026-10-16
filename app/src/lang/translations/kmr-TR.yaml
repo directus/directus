@@ -180,8 +180,6 @@ logoutReason:
   SESSION_EXPIRED: Danişîn bi dawî bû
 public_label: Giştî
 public_description: Kontrol dike ka kîjan daneyên API bêyî rastpêkirin hene.
-public_role_info: >-
-  Rola giştî kontrol dike ka kîjan daneyên API ji bo bikarhênerên nerastpêkirî an bêrol hene. Daxwazên bi rola giştî nikarin gihîştina sepan an rêveberiyê hebin. Heke gihîştina sepan an rêveberiyê ji polîtîkayekê re were dayîn ku ji rola giştî re hatiye dayîn, ew dê were paşguhkirin.
 admin_description: Rola rêveberiyê ya destpêkê bi gihîştina bêsînor a Sepan/API.
 admin_policy_description: Polîtîkaya rêveberiyê ya destpêkê bi gihîştina bêsînor a Sepan/API.
 no_description: Danasîn tine...

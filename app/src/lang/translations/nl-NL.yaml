@@ -207,8 +207,6 @@ logoutReason:
   SESSION_EXPIRED: Sessie verlopen
 public_label: Openbaar
 public_description: Bepaalt welke data beschikbaar is in de API zonder in te loggen.
-public_role_info: >-
-  De publieke rol bepaalt welke API-gegevens beschikbaar zijn voor niet-geverifieerde gebruikers of gebruikers zonder rol. API-verzoeken met de publieke rol kunnen geen app- of beheerderstoegang hebben. Als app- of beheerderstoegang wordt gegeven aan een policy die is toegewezen aan de publieke rol, worden deze genegeerd.
 admin_description: Initiële administratieve rol met onbeperkte App/API toegang.
 admin_policy_description: Initiële beheerder-policy met onbeperkte app/API-toegang.
 no_description: Geen beschrijving...

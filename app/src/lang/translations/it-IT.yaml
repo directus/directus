@@ -180,8 +180,6 @@ logoutReason:
   SESSION_EXPIRED: Sessione scaduta
 public_label: Pubblico
 public_description: Controlla quali dati API sono disponibili senza autenticarsi.
-public_role_info: >-
-  Il ruolo pubblico controlla quali dati API sono disponibili per gli utenti non autenticati o per gli utenti senza un ruolo assegnato. Le richieste con il ruolo pubblico non possono avere accesso all'app o all'area amministrativa. Se vengono concessi accessi all'app o all'area amministrativa in una policy assegnata al ruolo pubblico, questi verranno ignorati.
 admin_description: Ruolo amministrativo iniziale con accesso illimitato ad App/API.
 admin_policy_description: Policy amministrativa iniziale con accesso illimitato ad App/API.
 no_description: Nessuna descrizione...
