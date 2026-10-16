@@ -1187,8 +1187,12 @@ wysiwyg_options:
   bullist: Liste à puces
   numlist: Liste numérotée
   hr: Barre horizontale
+  pagebreak: Saut de page
+  insertdatetime: Insérer une Date / Heure
   insertdatetime_date: Date
   insertdatetime_time: Heure
+  insertdatetime_datetime: Date et heure
+  insertdatetime_locale: Localisé
   link: Ajouter/modifier un lien
   unlink: Supprimer le lien
   media: Ajouter/modifier un média
@@ -1204,8 +1208,10 @@ wysiwyg_options:
   h4: En-tête 4
   h5: En-tête 5
   h6: En-tête 6
+  pre: Préformaté
   fontselect: Sélectionner la police
   fontsizeselect: Sélectionner la taille de la police
+  styles: Formats
   indent: Augmenter le retrait
   outdent: Diminuer le retrait
   undo: Annuler
@@ -1214,14 +1220,44 @@ wysiwyg_options:
   removeformat: Supprimer le formatage
   selectall: Tout sélectionner
   table: Tableau
+  table_cell: Cellule
+  table_row: Ligne
+  table_column: Colonne
+  table_insert: Insérer un tableau
+  table_insert_size: '{cols} × {rows}'
+  table_add_row_before: Ajouter une ligne au-dessus
+  table_add_row_after: Ajouter une ligne en dessous
+  table_add_column_before: Ajouter une colonne à gauche
+  table_add_column_after: Ajouter une colonne à droite
+  table_delete_row: Supprimer la ligne
+  table_delete_column: Supprimer la colonne
+  table_toggle_header_row: Activer/désactiver la ligne d'en-tête
+  table_toggle_header_column: Activer/désactiver la colonne d'en-tête
+  table_merge_cells: Fusionner les cellules
+  table_split_cell: Diviser la cellule
+  table_delete: Supprimer le tableau
   visualaid: Voir les éléments invisibles
   source_code: Modifier le code source
+  source_code_normalization_notice: Le balisage que l'éditeur ne peut pas représenter est normalisé lorsque vous enregistrez.
+  source_code_normalize_title: Certaines balises seront supprimées
+  source_code_normalize_body: L'éditeur ne peut pas représenter le balisage en surbrillance, il sera donc supprimé lorsque vous enregistrez.
+  save_anyway: Enregistrer quand même
+  normalization_warning_title: Certains formatages ici ne sont pas pris en charge
   normalization_warning_body: Ce contenu inclut des éléments non supportés par le nouvel éditeur, il est donc en lecture seule pour l'instant. Si vous le modifiez quand même, ces éléments seront retirés au moment de la sauvegarde. Pour garder le HTML stocké tel quel, modifiez le code HTML brut à la place. Cet avertissement disparaîtra une fois que les éléments non pris en charge seront supprimés. Si vous avez déjà enregistré sans eux, vous pouvez ramener le contenu original à partir des révisions.
   normalization_warning_view_changes: Afficher les modifications
   normalization_warning_keep_readonly: Garder en lecture seule
   normalization_warning_edit_anyway: Modifier quand même
   normalization_warning_edit_raw: Modifier le HTML brut
   normalization_locked_notice: Ce champ inclut de la mise en forme non supportée par le nouvel éditeur, il est donc en lecture seule. Sélectionnez le champ pour choisir comment le mettre à jour.
+  normalization_locked_learn_more: Apprenez ce qui a changé
+  paste_warning_notice: Nous avons nettoyé les balises non prises en charge de ce que vous avez collé. Certaines applications enveloppent le contenu copié dans un balisage supplémentaire que cet éditeur ne prend pas en charge.
+  paste_warning_see_removed: Voir ce qui a été supprimé
+  paste_warning_title: Le balisage non pris en charge a été supprimé de votre coller
+  paste_warning_body: Le coller nettoyé conserve votre texte et votre mise en forme. Annuler le coller le retire. Coller brut conserve le HTML exactement comme copié et bascule ce champ vers l'éditeur HTML brut.
+  paste_warning_body_kept: Le coller nettoyé conserve votre texte et votre mise en forme. Le contenu a changé depuis le collage, alors il ne peut plus être annulé à partir d'ici.
+  paste_warning_undo: Annuler Coller
+  paste_warning_paste_raw: Coller brute
+  paste_warning_keep: Garder nettoyé
   fullscreen: Plein écran
   directionality: Sens de lecture
   ltr: De gauche à droite
@@ -1265,7 +1301,7 @@ licensing:
   resolve_submit: Désactiver les éléments sélectionnés
   resolve_show_n_more: 'Afficher {count} de plus'
   resolve_section_flows: Flux
-  resolve_section_collections_caption: Sélectionnez la ou les collections à désactiver
+  resolve_section_collections_caption:
   resolve_sso_admin_email: Adresse courriel
   resolve_sso_admin_password: Mot de passe
   key: Clé de licence
