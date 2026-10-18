@@ -241,6 +241,32 @@ describe('Integration Tests', () => {
 				expect(result.every((field) => field.collection === 'test_collection')).toBe(true);
 			});
 
+			test('should include group fields whose special has no alias entry', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+					accountability: { role: 'admin', admin: true } as Accountability,
+				});
+
+				service.schemaInspector.columnInfo = vi.fn().mockResolvedValue([]);
+
+				tracker.on.select('directus_fields').response([]);
+
+				service.payloadService.processValues = vi.fn().mockResolvedValue([
+					{
+						id: 1,
+						collection: 'test_collection',
+						field: 'group_test',
+						special: ['group'],
+						interface: 'group-accordion',
+					},
+				]);
+
+				const result = await service.readAll('test_collection');
+
+				expect(result.find((field) => field.field === 'group_test')).toBeDefined();
+			});
+
 			test('should throw ForbiddenError for non-admin users without access', async () => {
 				vi.mocked(fetchPermissions).mockResolvedValueOnce([]);
 

@@ -200,6 +200,7 @@ export class FieldsService {
 
 		aliasFields = aliasFields.filter((field) => {
 			const specials = toArray(field.special);
+			
 
 			for (const type of ALIAS_TYPES) {
 				if (specials.includes(type)) return true;
