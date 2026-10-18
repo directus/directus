@@ -12,6 +12,8 @@ import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { getWithArrayIndex } from '@/utils/get-with-array-index';
 import { translate } from '@/utils/translate-literal';
 
+defineOptions({ inheritAttrs: false });
+
 const props = withDefaults(
 	defineProps<{
 		template: string;
