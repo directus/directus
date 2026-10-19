@@ -184,10 +184,17 @@ export class SubscribeHandler {
 
 				if ('item' in message) subscription.item = String(message.item);
 
-				await validateSubscriptionAccess(
-					{ accountability, collection, item: subscription.item },
-					{ knex: getDatabase(), schema },
-				);
+				// event subscriptions skip the getPayload read, validate access here
+				if (subscription.event) {
+					await validateSubscriptionAccess(
+						{
+							...(subscription.event !== 'create' ? { item: subscription.item } : {}),
+							accountability,
+							collection,
+						},
+						{ knex: getDatabase(), schema },
+					);
+				}
 
 				if ('uid' in message) {
 					subscription.uid = String(message.uid);

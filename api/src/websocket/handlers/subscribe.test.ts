@@ -2,6 +2,7 @@ import type { Accountability, CollectionsOverview, Relation } from '@directus/ty
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../emitter.js';
 import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
+import { ItemsService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { WebSocketEvent, WebSocketSubscribeMessage } from '../messages.js';
 import type { WebSocketClient } from '../types.js';
@@ -18,14 +19,10 @@ vi.mock('../../utils/get-schema', () => ({
 	getSchema: vi.fn(),
 }));
 
-vi.mock('../../services', () => ({
-	ItemsService: vi.fn(function () {
-		return {
-			readByQuery: vi.fn(),
-		};
-	}),
-	MetaService: vi.fn(),
-}));
+vi.mock('../../services', async () => {
+	const { mockItemsService } = await import('../../test-utils/services/items-service.js');
+	return { ...mockItemsService(), MetaService: vi.fn() };
+});
 
 vi.mock('../../permissions/modules/validate-access/validate-access.js', () => ({
 	validateAccess: vi.fn(),
@@ -330,7 +327,7 @@ describe('WebSocket subscribe handler', () => {
 			mockSchema('test_collection');
 
 			// simulate a user without permission to read the collection
-			vi.mocked(validateAccess).mockRejectedValueOnce(new Error('FORBIDDEN'));
+			vi.mocked(ItemsService.prototype.readByQuery).mockRejectedValueOnce(new Error('FORBIDDEN'));
 
 			const subscribe = vi.spyOn(handler, 'subscribe');
 
@@ -345,8 +342,8 @@ describe('WebSocket subscribe handler', () => {
 
 			await delay(10);
 
-			// the access check ran and the subscription was not registered
-			expect(validateAccess).toBeCalled();
+			// reading the initial payload is the access check, no separate one is needed
+			expect(validateAccess).not.toBeCalled();
 			expect(subscribe).not.toBeCalled();
 			expect(handler.subscriptions['test_collection']?.size).toBeFalsy();
 		});
@@ -458,6 +455,85 @@ describe('WebSocket subscribe handler', () => {
 			);
 
 			expect(handler.subscriptions['test_collection']?.size).toBe(1);
+		});
+
+		test('should validate access to the item for item scoped update subscriptions', async () => {
+			const client = mockClient(mockAccountability());
+
+			mockSchema('test_collection');
+
+			emitter.emitAction('websocket.message', {
+				client,
+				message: {
+					type: 'subscribe',
+					collection: 'test_collection',
+					event: 'update',
+					item: 5,
+					uid: '123',
+				},
+			});
+
+			await delay(10);
+
+			expect(validateAccess).toBeCalledWith(
+				expect.objectContaining({ action: 'read', collection: 'test_collection', primaryKeys: ['5'] }),
+				expect.anything(),
+			);
+
+			expect(handler.subscriptions['test_collection']?.size).toBe(1);
+		});
+
+		test('should allow item scoped create subscriptions for an item that does not exist yet', async () => {
+			const client = mockClient(mockAccountability());
+
+			mockSchema('test_collection');
+
+			emitter.emitAction('websocket.message', {
+				client,
+				message: {
+					type: 'subscribe',
+					collection: 'test_collection',
+					event: 'create',
+					item: 'future_id',
+					uid: '123',
+				},
+			});
+
+			await delay(10);
+
+			// only the collection is validated, the created item is read with the user's permissions on dispatch
+			expect(validateAccess).toBeCalledWith(
+				expect.not.objectContaining({ primaryKeys: expect.anything() }),
+				expect.anything(),
+			);
+
+			expect(handler.subscriptions['test_collection']?.size).toBe(1);
+		});
+
+		test('should reject create subscriptions when the user lacks read access', async () => {
+			const client = mockClient(mockAccountability());
+
+			mockSchema('test_collection');
+
+			vi.mocked(validateAccess).mockRejectedValueOnce(new Error('FORBIDDEN'));
+
+			const subscribe = vi.spyOn(handler, 'subscribe');
+
+			emitter.emitAction('websocket.message', {
+				client,
+				message: {
+					type: 'subscribe',
+					collection: 'test_collection',
+					event: 'create',
+					item: 'future_id',
+					uid: '123',
+				},
+			});
+
+			await delay(10);
+
+			expect(subscribe).not.toBeCalled();
+			expect(handler.subscriptions['test_collection']?.size).toBeFalsy();
 		});
 
 		test('should reject item scoped subscriptions when the item is not accessible', async () => {
