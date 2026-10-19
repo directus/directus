@@ -3,9 +3,14 @@ import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
 import { EXTENSION_LANGUAGES } from '@directus/extensions';
 import { execa } from 'execa';
 import fse from 'fs-extra';
-import { afterAll, describe, expect, test } from 'vitest';
+import { afterAll, describe, expect, test, vi } from 'vitest';
+import add from './src/cli/commands/add.js';
 import { create } from './src/cli/index.js';
 import { languageToShort } from './src/cli/utils/languages.js';
+
+const { prompt } = vi.hoisted(() => ({ prompt: vi.fn() }));
+
+vi.mock('inquirer', () => ({ default: { prompt } }));
 
 const TEST_PREFIX = 'temp-extension';
 
@@ -73,6 +78,59 @@ describe('create and build', () => {
 		// Bump up timeout duration as the build process can take slightly longer to complete
 		30_000,
 	);
+
+	test('should keep Tiptap external in a richtext build', async () => {
+		const currentTime = Date.now();
+
+		for (const language of EXTENSION_LANGUAGES) {
+			const testExtensionPath = `${TEST_PREFIX}-init-richtext-${language}-${currentTime}`;
+
+			await create('richtext', testExtensionPath, { language });
+
+			const { devDependencies } = await fse.readJson(resolve(testExtensionPath, 'package.json'));
+
+			expect(devDependencies).toHaveProperty('@tiptap/core');
+
+			await execa('node', ['../cli.js', 'build'], { cwd: testExtensionPath });
+
+			const output = await fse.readFile(resolve(testExtensionPath, 'dist', 'index.js'), 'utf8');
+
+			expect(output).toMatch(/from\s*["']@tiptap\/core["']/);
+		}
+	}, 60_000);
+
+	test('should add a richtext entry to a bundle and keep Tiptap external', async () => {
+		const testExtensionPath = `${TEST_PREFIX}-add-richtext-${Date.now()}`;
+
+		await create('bundle', testExtensionPath, {});
+
+		prompt.mockResolvedValueOnce({ type: 'richtext', name: 'my-richtext', language: 'typescript' });
+
+		const cwd = process.cwd();
+
+		try {
+			process.chdir(testExtensionPath);
+			await add({});
+		} finally {
+			process.chdir(cwd);
+		}
+
+		const manifest = await fse.readJson(resolve(testExtensionPath, 'package.json'));
+
+		expect(manifest['directus:extension'].entries).toContainEqual({
+			type: 'richtext',
+			name: 'my-richtext',
+			source: 'src/my-richtext/index.ts',
+		});
+
+		expect(manifest.devDependencies).toHaveProperty('@tiptap/core');
+
+		await execa('node', ['../cli.js', 'build'], { cwd: testExtensionPath });
+
+		const output = await fse.readFile(resolve(testExtensionPath, 'dist', 'app.js'), 'utf8');
+
+		expect(output).toMatch(/from\s*["']@tiptap\/core["']/);
+	}, 60_000);
 });
 
 describe('validate extension', async () => {
