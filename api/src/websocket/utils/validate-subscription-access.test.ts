@@ -31,6 +31,15 @@ test('skips validation when access control is disabled', async () => {
 	expect(validateAccess).not.toBeCalled();
 });
 
+test('skips validation for admins', async () => {
+	await validateSubscriptionAccess(
+		{ accountability: { ...accountability, admin: true }, collection: 'articles' },
+		context,
+	);
+
+	expect(validateAccess).not.toBeCalled();
+});
+
 test('validates read access to the collection', async () => {
 	await validateSubscriptionAccess({ accountability, collection: 'articles' }, context);
 
