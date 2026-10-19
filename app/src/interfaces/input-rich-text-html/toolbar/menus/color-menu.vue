@@ -51,8 +51,7 @@ defineExpose({ apply });
 				<ToolbarCaret class="color-menu-caret" />
 			</VButton>
 		</template>
-		<!-- close-on-content-click is off, so nothing else stops clicks reaching the "Show More" menu's click-outside -->
-		<div class="color-menu" @click.stop>
+		<div class="color-menu">
 			<SelectColor :value="current()" width="full" @input="apply" />
 		</div>
 	</VMenu>

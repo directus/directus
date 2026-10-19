@@ -110,7 +110,14 @@ describe('color-menu', () => {
 				stubs: {
 					VButton: menuStubs.VButton,
 					VIcon: true,
-					SelectColor: { template: '<input class="select-color" />' },
+					SelectColor: {
+						components: { VMenu },
+						template: `
+							<VMenu :close-on-content-click="false">
+								<template #activator="{ toggle }"><input class="select-color" @click="toggle" /></template>
+								<button class="preset" type="button" />
+							</VMenu>`,
+					},
 				},
 			},
 		});
@@ -127,6 +134,12 @@ describe('color-menu', () => {
 		expect(parentActive.value).toBe(true);
 
 		document.querySelector<HTMLInputElement>('.color-menu .select-color')!.click();
+		await settle();
+
+		expect(parentActive.value).toBe(true);
+		expect(document.querySelector('.color-menu')).not.toBeNull();
+
+		document.querySelector<HTMLButtonElement>('#menu-outlet .preset')!.click();
 		await settle();
 
 		expect(parentActive.value).toBe(true);
