@@ -35,7 +35,7 @@ const gql = {
 	accountability,
 	knex: {} as Knex,
 	schema: {} as SchemaOverview,
-} as GraphQLService;
+} as unknown as GraphQLService;
 
 const request = {
 	fieldNodes: [{ selectionSet: { selections: [] }, arguments: [] }],

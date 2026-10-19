@@ -616,19 +616,21 @@ describe('WebSocket subscribe handler', () => {
 	});
 
 	describe('access control on dispatch', () => {
-		const deleteEvent: WebSocketEvent = {
-			action: 'delete',
-			collection: 'test_collection',
-			keys: ['5'],
-		};
+		const events = {
+			create: { action: 'create', collection: 'test_collection', key: '5' },
+			update: { action: 'update', collection: 'test_collection', keys: ['5'] },
+			delete: { action: 'delete', collection: 'test_collection', keys: ['5'] },
+		} satisfies Record<string, WebSocketEvent>;
 
-		async function subscribeToDeletes(client: WebSocketClient) {
+		const deleteEvent = events.delete;
+
+		async function subscribeTo(client: WebSocketClient, event: keyof typeof events) {
 			mockSchema('test_collection');
 
 			await handler.onMessage(client, {
 				type: 'subscribe',
 				collection: 'test_collection',
-				event: 'delete',
+				event,
 				uid: '123',
 			} as unknown as WebSocketSubscribeMessage);
 
@@ -638,7 +640,7 @@ describe('WebSocket subscribe handler', () => {
 
 		test('should dispatch delete events to subscribers with read access', async () => {
 			const client = mockClient(mockAccountability());
-			await subscribeToDeletes(client);
+			await subscribeTo(client, 'delete');
 
 			await handler.dispatch(deleteEvent);
 
@@ -647,22 +649,46 @@ describe('WebSocket subscribe handler', () => {
 			);
 		});
 
-		test('should not dispatch delete events once read access has been revoked', async () => {
-			const client = mockClient(mockAccountability());
-			await subscribeToDeletes(client);
+		test.each(['create', 'update'] as const)(
+			'should dispatch %s events read with the permissions of the subscriber',
+			async (action) => {
+				const accountability = mockAccountability();
+				const client = mockClient(accountability);
+				await subscribeTo(client, action);
 
-			// the subscription was registered while the user still had access
-			vi.mocked(validateAccess).mockRejectedValueOnce(new Error('FORBIDDEN'));
+				vi.mocked(ItemsService.prototype.readMany).mockResolvedValueOnce([{ id: '5' }]);
 
-			await handler.dispatch(deleteEvent);
+				await handler.dispatch(events[action]);
 
-			// no payload, and no error either: an error would leak that the event happened
-			expect(client.send).not.toBeCalled();
-		});
+				expect(ItemsService).toHaveBeenLastCalledWith('test_collection', expect.objectContaining({ accountability }));
+				expect(ItemsService.prototype.readMany).toBeCalledWith(['5'], {});
+
+				expect(client.send).toBeCalledWith(
+					JSON.stringify({ type: 'subscription', event: action, data: [{ id: '5' }], uid: '123' }),
+				);
+			},
+		);
+
+		test.each(['create', 'update', 'delete'] as const)(
+			'should not dispatch %s events once read access has been revoked',
+			async (action) => {
+				const client = mockClient(mockAccountability());
+				await subscribeTo(client, action);
+
+				// the subscription was registered while the user still had access
+				vi.mocked(validateAccess).mockRejectedValueOnce(new Error('FORBIDDEN'));
+
+				await handler.dispatch(events[action]);
+
+				// no payload, and no error either: an error would leak that the event happened
+				expect(ItemsService.prototype.readMany).not.toBeCalled();
+				expect(client.send).not.toBeCalled();
+			},
+		);
 
 		test('should re-validate access for every dispatched event', async () => {
 			const client = mockClient(mockAccountability());
-			await subscribeToDeletes(client);
+			await subscribeTo(client, 'delete');
 
 			vi.mocked(validateAccess).mockClear();
 
@@ -674,7 +700,7 @@ describe('WebSocket subscribe handler', () => {
 
 		test('should not validate access when access control is disabled', async () => {
 			const client = mockClient(null);
-			await subscribeToDeletes(client);
+			await subscribeTo(client, 'delete');
 
 			await handler.dispatch(deleteEvent);
 
