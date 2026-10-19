@@ -10,6 +10,7 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
+import { translate } from '@/utils/translate-literal';
 
 const props = defineProps<{
 	editor: Editor | undefined;
@@ -50,7 +51,7 @@ function run(item: RichTextMenuItem): void {
 		<template #activator="{ toggle, active }">
 			<!-- .stop keeps a parent menu (the "Show More" overflow panel) open when this lives inside it -->
 			<VButton
-				v-tooltip="button.label"
+				v-tooltip="translate(button.label)"
 				class="toolbar-button toolbar-popover"
 				ghost
 				:active="active || isActive()"
@@ -73,7 +74,7 @@ function run(item: RichTextMenuItem): void {
 				@click="run(item)"
 			>
 				<VListItemIcon v-if="item.icon"><VIcon :name="item.icon" /></VListItemIcon>
-				<VListItemContent>{{ item.label }}</VListItemContent>
+				<VListItemContent>{{ translate(item.label) }}</VListItemContent>
 			</VListItem>
 		</VList>
 	</VMenu>

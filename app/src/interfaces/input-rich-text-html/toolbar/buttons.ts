@@ -38,8 +38,10 @@ export interface ToolbarContext {
 
 export interface ToolbarButton {
 	icon: string;
-	/** i18n key, resolved with `t()` at render time */
+	/** i18n key, resolved with `t()` at render time. */
 	label: string;
+	/** The label is plain text or a `$t:` key instead, as on a button from a richtext extension. */
+	literalLabel?: boolean;
 	/** Click-command buttons set this. Menu buttons (`component`) omit it. */
 	command?: (editor: Editor, ctx: ToolbarContext) => void;
 	isActive?: (editor: Editor, ctx: ToolbarContext) => boolean;

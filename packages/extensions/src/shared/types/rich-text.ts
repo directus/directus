@@ -4,7 +4,11 @@ interface RichTextButtonBase {
 	/** A field switches the button on with `<extension id>:<key>` in its `toolbar` option. */
 	key: string;
 	icon: string;
-	/** Plain text, not an i18n key: extensions cannot reach the app's i18n instance. */
+	/**
+	 * Plain text, or `$t:<key>` to show the translation of a key an admin adds in Settings → Translations,
+	 * like the name of an interface or display. The extension cannot ship its own translations, and a key
+	 * with no translation shows as the bare key.
+	 */
 	label: string;
 	isActive?: (editor: Editor) => boolean;
 	/** Can only add disabled cases: a locked or disabled field disables the button anyway. */
@@ -19,7 +23,7 @@ export interface RichTextCommandButton extends RichTextButtonBase {
 export interface RichTextMenuItem {
 	/** Unique inside the button. */
 	key: string;
-	/** Plain text, like the button label. */
+	/** Plain text or `$t:<key>`, like the button label. */
 	label: string;
 	icon?: string;
 	command: (editor: Editor) => void;
@@ -49,6 +53,7 @@ export interface RichTextBubbleMenu {
 
 export interface RichTextConfig {
 	id: string;
+	/** Plain text or `$t:<key>`, like the button label. */
 	name: string;
 	/**
 	 * Every node and mark must be symmetric: `parseHTML` must read back exactly the markup

@@ -19,7 +19,7 @@ export default defineInterface({
 	options: ({ field }) => ({
 		standard: [
 			// Only rendered when something is installed: an empty multi-select would confuse every
-			// other project. Names are plain text, not i18n keys: extensions have no i18n instance.
+			// other project.
 			...(useRichTexts().value.length > 0
 				? [
 						{

@@ -104,6 +104,7 @@ function toToolbarButton(button: RichTextToolbarButton): ToolbarButton {
 		return {
 			icon: button.icon,
 			label: button.label,
+			literalLabel: true,
 			component: ContributedMenu,
 			componentProps: { button },
 			width: MENU_BUTTON_WIDTH,
@@ -115,6 +116,7 @@ function toToolbarButton(button: RichTextToolbarButton): ToolbarButton {
 	return {
 		icon: button.icon,
 		label: button.label,
+		literalLabel: true,
 		command,
 		disabled: isDisabled,
 		...(isActive ? { isActive } : {}),
