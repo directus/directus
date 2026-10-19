@@ -45,6 +45,7 @@ get_license_key: Obtenir une clé de licence
 expires_on: Expire le
 environment: Environnement
 production: Production
+non_production: Non-Production
 skip: Ignorer
 continue: Continuer
 first_name: Prénom
@@ -1309,6 +1310,8 @@ licensing:
   entitlements:
     collections: Collections
     flows: Flux
+  badge:
+    non_prod: Non-Production
 settings_appearance: Personnalisation du thème
 settings_ai: IA
 settings_system_logs: Journaux système
