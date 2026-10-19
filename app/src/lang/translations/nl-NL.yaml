@@ -1202,7 +1202,6 @@ licensing:
 settings_appearance: Uiterlijk
 settings_ai: AI
 model_context_protocol: Model Context Protocol
-settings_flows: Flows
 settings_system_logs: Systeemlogs
 settings_presets: Bladwijzers
 settings_translations: Vertalingen

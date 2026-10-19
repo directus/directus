@@ -31,7 +31,9 @@ describe('collections tool', () => {
 				deleteMany: vi.fn(),
 			};
 
-			vi.mocked(CollectionsService).mockImplementation(() => mockCollectionsService as unknown as CollectionsService);
+			vi.mocked(CollectionsService).mockImplementation(function () {
+				return mockCollectionsService as unknown as CollectionsService;
+			});
 		});
 
 		describe('CREATE action', () => {

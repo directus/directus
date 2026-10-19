@@ -23,7 +23,7 @@ export async function assertCollectionActive(options: AssertCollectionActiveOpti
 
 	if (isCollectionActive(collectionOverview)) return;
 
-	if (accountability && isAdmin(accountability) === false) {
+	if (isAdmin(accountability) === false) {
 		const hasAccess = await validateCollectionAccess({ accountability, collection, action }, context);
 
 		if (!hasAccess) {

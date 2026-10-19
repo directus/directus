@@ -96,7 +96,7 @@ export default defineConfig({
 		css: { include: [/input-rich-text-html\.vue/] },
 		deps: {
 			optimizer: {
-				web: {
+				client: {
 					exclude: ['pinia', 'url'],
 				},
 			},

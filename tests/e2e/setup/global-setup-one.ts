@@ -1,7 +1,7 @@
 import util from 'node:util';
 import { type Database, type Env, type Options, type Sandbox, sandbox } from '@directus/sandbox';
 import type { DeepPartial } from '@directus/types';
-import { TestProject } from 'vitest/node';
+import type { TestProject } from 'vitest/node';
 
 let sb: Sandbox | undefined;
 
