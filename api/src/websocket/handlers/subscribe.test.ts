@@ -1,6 +1,7 @@
 import type { Accountability, CollectionsOverview, Relation } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../emitter.js';
+import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
 import { ItemsService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
@@ -21,11 +22,19 @@ vi.mock('../../utils/get-schema', () => ({
 
 vi.mock('../../services', async () => {
 	const { mockItemsService } = await import('../../test-utils/services/items-service.js');
-	return { ...mockItemsService(), MetaService: vi.fn() };
+	return { ...mockItemsService(), FieldsService: vi.fn(), MetaService: vi.fn() };
 });
 
 vi.mock('../../permissions/modules/validate-access/validate-access.js', () => ({
 	validateAccess: vi.fn(),
+}));
+
+vi.mock('../../permissions/lib/fetch-policies.js', () => ({
+	fetchPolicies: vi.fn().mockResolvedValue([]),
+}));
+
+vi.mock('../../permissions/lib/fetch-permissions.js', () => ({
+	fetchPermissions: vi.fn().mockResolvedValue([{ permissions: null }]),
 }));
 
 vi.mock('../../database/index');
@@ -326,7 +335,6 @@ describe('WebSocket subscribe handler', () => {
 
 			mockSchema('test_collection');
 
-			// simulate a user without permission to read the collection
 			vi.mocked(ItemsService.prototype.readByQuery).mockRejectedValueOnce(new Error('FORBIDDEN'));
 
 			const subscribe = vi.spyOn(handler, 'subscribe');
@@ -353,7 +361,6 @@ describe('WebSocket subscribe handler', () => {
 
 			mockSchema('test_collection');
 
-			// simulate a user without permission to read the collection
 			vi.mocked(validateAccess).mockRejectedValueOnce(new Error('FORBIDDEN'));
 
 			const subscribe = vi.spyOn(handler, 'subscribe');
@@ -371,7 +378,6 @@ describe('WebSocket subscribe handler', () => {
 
 			await delay(10);
 
-			// the access check still ran and the subscription was not registered
 			expect(validateAccess).toBeCalled();
 			expect(subscribe).not.toBeCalled();
 			expect(handler.subscriptions['test_collection']?.size).toBeFalsy();
@@ -382,7 +388,6 @@ describe('WebSocket subscribe handler', () => {
 
 			mockSchema('test_collection');
 
-			// user has permission to read the collection
 			vi.mocked(validateAccess).mockResolvedValueOnce(undefined);
 
 			const subscribe = vi.spyOn(handler, 'subscribe');
@@ -541,7 +546,6 @@ describe('WebSocket subscribe handler', () => {
 
 			mockSchema('test_collection');
 
-			// the user can read the collection, but not this particular item
 			vi.mocked(validateAccess).mockRejectedValueOnce(new Error('FORBIDDEN'));
 
 			const subscribe = vi.spyOn(handler, 'subscribe');
@@ -573,7 +577,7 @@ describe('WebSocket subscribe handler', () => {
 				message: {
 					type: 'subscribe',
 					collection: 'directus_collections',
-					event: 'delete',
+					event: 'update',
 					item: 'some_collection',
 					uid: '123',
 				},
@@ -588,6 +592,63 @@ describe('WebSocket subscribe handler', () => {
 			);
 
 			expect(handler.subscriptions['directus_collections']?.size).toBe(1);
+		});
+
+		test.each(['directus_collections', 'directus_fields'])(
+			'should reject delete subscriptions to "%s" for non-admins',
+			async (collection) => {
+				const client = mockClient(mockAccountability());
+
+				mockSchema(collection);
+
+				await handler.onMessage(client, {
+					type: 'subscribe',
+					collection,
+					event: 'delete',
+					uid: '123',
+				} as unknown as WebSocketSubscribeMessage);
+
+				// their permissions are removed along with the deleted items, so read access can't be verified
+				expect(handler.subscriptions[collection]?.size).toBeFalsy();
+				expect(client.send).toBeCalledWith(expect.stringContaining('FORBIDDEN'));
+			},
+		);
+
+		test('should reject collection wide delete subscriptions when read access is limited by row rules', async () => {
+			const client = mockClient(mockAccountability());
+
+			mockSchema('test_collection');
+
+			vi.mocked(fetchPermissions).mockResolvedValueOnce([{ permissions: { owner: { _eq: 'me' } } } as any]);
+
+			await handler.onMessage(client, {
+				type: 'subscribe',
+				collection: 'test_collection',
+				event: 'delete',
+				uid: '123',
+			} as unknown as WebSocketSubscribeMessage);
+
+			expect(handler.subscriptions['test_collection']?.size).toBeFalsy();
+			expect(client.send).toBeCalledWith(expect.stringContaining('FORBIDDEN'));
+		});
+
+		test('should validate item scoped delete subscriptions against the item instead of the row rules', async () => {
+			const client = mockClient(mockAccountability());
+
+			mockSchema('test_collection');
+
+			await handler.onMessage(client, {
+				type: 'subscribe',
+				collection: 'test_collection',
+				event: 'delete',
+				item: 5,
+				uid: '123',
+			} as unknown as WebSocketSubscribeMessage);
+
+			// the item itself is validated against the row rules instead
+			expect(validateAccess).toBeCalledWith(expect.objectContaining({ primaryKeys: ['5'] }), expect.anything());
+			expect(fetchPermissions).not.toBeCalled();
+			expect(handler.subscriptions['test_collection']?.size).toBe(1);
 		});
 
 		test('should keep an existing subscription when a rejected one reuses its uid', async () => {
@@ -685,6 +746,44 @@ describe('WebSocket subscribe handler', () => {
 				expect(client.send).not.toBeCalled();
 			},
 		);
+
+		test('should not dispatch collection wide delete events once read access is limited by row rules', async () => {
+			const client = mockClient(mockAccountability());
+			await subscribeTo(client, 'delete');
+
+			vi.mocked(fetchPermissions).mockResolvedValueOnce([{ permissions: { owner: { _eq: 'me' } } } as any]);
+
+			await handler.dispatch(deleteEvent);
+
+			expect(client.send).not.toBeCalled();
+		});
+
+		test('should dispatch item scoped delete events without checking row rules', async () => {
+			const client = mockClient(mockAccountability());
+
+			mockSchema('test_collection');
+			handler.subscribe({ client, collection: 'test_collection', event: 'delete', item: '5', uid: '123' });
+
+			await handler.dispatch(deleteEvent);
+
+			// the item was validated against the row rules when subscribing
+			expect(fetchPermissions).not.toBeCalled();
+
+			expect(client.send).toBeCalledWith(
+				JSON.stringify({ type: 'subscription', event: 'delete', data: '5', uid: '123' }),
+			);
+		});
+
+		test('should not dispatch field delete events to non-admins', async () => {
+			const client = mockClient(mockAccountability());
+
+			mockSchema('directus_fields');
+			handler.subscribe({ client, collection: 'directus_fields', uid: '123' });
+
+			await handler.dispatch({ action: 'delete', collection: 'directus_fields', keys: [1] });
+
+			expect(client.send).not.toBeCalled();
+		});
 
 		test('should re-validate access for every dispatched event', async () => {
 			const client = mockClient(mockAccountability());

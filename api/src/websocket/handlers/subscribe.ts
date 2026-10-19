@@ -14,7 +14,7 @@ import { WebSocketSubscribeMessage } from '../messages.js';
 import type { Subscription, SubscriptionEvent, WebSocketClient } from '../types.js';
 import { getPayload } from '../utils/items.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
-import { validateSubscriptionAccess } from '../utils/validate-subscription-access.js';
+import { validateDeleteEventAccess, validateSubscriptionAccess } from '../utils/validate-subscription-access.js';
 
 /**
  * Handler responsible for subscriptions
@@ -128,10 +128,23 @@ export class SubscribeHandler {
 			}
 
 			try {
-				await validateSubscriptionAccess(
-					{ accountability: client.accountability, collection: subscription.collection },
-					{ knex: getDatabase(), schema },
-				);
+				const context = { knex: getDatabase(), schema };
+
+				if (event.action === 'delete') {
+					await validateDeleteEventAccess(
+						{
+							accountability: client.accountability,
+							collection: subscription.collection,
+							itemScoped: 'item' in subscription,
+						},
+						context,
+					);
+				} else {
+					await validateSubscriptionAccess(
+						{ accountability: client.accountability, collection: subscription.collection },
+						context,
+					);
+				}
 			} catch {
 				// don't notify the client of permission errors, as that would leak the existence of the event
 				continue;
@@ -187,11 +200,7 @@ export class SubscribeHandler {
 				// event subscriptions skip the getPayload read, validate access here
 				if (subscription.event) {
 					await validateSubscriptionAccess(
-						{
-							...(subscription.event !== 'create' ? { item: subscription.item } : {}),
-							accountability,
-							collection,
-						},
+						{ accountability, collection, event: subscription.event, item: subscription.item },
 						{ knex: getDatabase(), schema },
 					);
 				}

@@ -2,7 +2,6 @@ import { InvalidPayloadError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { CollectionsService, FieldsService, MetaService } from '../../services/index.js';
 import { getService } from '../../utils/get-service.js';
-import { isAdmin } from '../../utils/is-admin.js';
 import type { WebSocketEvent } from '../messages.js';
 import type { Subscription } from '../types.js';
 
@@ -71,14 +70,10 @@ export async function getCollectionPayload(
 ) {
 	const service = new CollectionsService({ schema, accountability });
 
-	// The permissions of a deleted collection are removed along with it, leaving no read access to verify against, so
-	// only admins receive collection delete events. An empty result is not dispatched.
-	const receivesDeletes = isAdmin(accountability);
-
 	if ('item' in subscription) {
 		if (event?.action === 'delete') {
 			// return only the subscribed id in case a bulk delete was done
-			return receivesDeletes ? subscription.item : [];
+			return subscription.item;
 		} else {
 			return await service.readOne(String(subscription.item));
 		}
@@ -90,7 +85,7 @@ export async function getCollectionPayload(
 		case 'update':
 			return await service.readMany(event.keys.map((key: any) => String(key)));
 		case 'delete':
-			return receivesDeletes ? event.keys : [];
+			return event.keys;
 		case undefined:
 		default:
 			return await service.readByQuery();

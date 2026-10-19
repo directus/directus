@@ -6,7 +6,7 @@ import { afterEach, beforeAll, expect, test, vi } from 'vitest';
 import { useBus } from '../../bus/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { getPayload } from '../../websocket/utils/items.js';
-import { validateSubscriptionAccess } from '../../websocket/utils/validate-subscription-access.js';
+import { validateDeleteEventAccess } from '../../websocket/utils/validate-subscription-access.js';
 import { getQuery } from './schema/parse-query.js';
 import { bindPubSub, createSubscriptionGenerator } from './subscription.js';
 import type { GraphQLService } from './index.js';
@@ -17,7 +17,7 @@ vi.mock('./schema/parse-query.js', () => ({ getQuery: vi.fn() }));
 vi.mock('../../websocket/utils/items.js', () => ({ getPayload: vi.fn() }));
 
 vi.mock('../../websocket/utils/validate-subscription-access.js', () => ({
-	validateSubscriptionAccess: vi.fn(),
+	validateDeleteEventAccess: vi.fn(),
 }));
 
 const EVENT = 'articles_mutated';
@@ -59,7 +59,7 @@ beforeAll(() => {
 });
 
 afterEach(() => {
-	vi.mocked(validateSubscriptionAccess).mockReset();
+	vi.mocked(validateDeleteEventAccess).mockReset();
 	vi.mocked(getPayload).mockReset();
 });
 
@@ -89,8 +89,8 @@ test('yields the keys of delete events when read access is allowed', async () =>
 		value: { [EVENT]: { key: '1', data: null, event: 'delete' } },
 	});
 
-	expect(validateSubscriptionAccess).toBeCalledWith(
-		{ accountability, collection: 'articles' },
+	expect(validateDeleteEventAccess).toBeCalledWith(
+		{ accountability, collection: 'articles', itemScoped: false },
 		{ knex: gql.knex, schema: {} },
 	);
 
@@ -100,10 +100,9 @@ test('yields the keys of delete events when read access is allowed', async () =>
 test('skips delete events when read access is denied', async () => {
 	const { iterator, next } = await subscribe();
 
-	vi.mocked(validateSubscriptionAccess).mockRejectedValueOnce(new ForbiddenError());
+	vi.mocked(validateDeleteEventAccess).mockRejectedValueOnce(new ForbiddenError());
 
-	// Regression for GHSA-f3mg-j7hc-hh45: the keys of deleted rows used to be yielded without any
-	// permission check
+	// the keys of deleted rows used to be yielded without any permission check
 	publish({ collection: 'articles', action: 'delete', keys: ['leaked'] });
 	publish({ collection: 'articles', action: 'delete', keys: ['permitted'] });
 
@@ -140,7 +139,7 @@ test('reads create events through the permission aware payload read', async () =
 	});
 
 	// The payload read enforces access control for create events, so no separate check is needed
-	expect(validateSubscriptionAccess).not.toBeCalled();
+	expect(validateDeleteEventAccess).not.toBeCalled();
 
 	await iterator.return();
 });

@@ -5,7 +5,7 @@ import { getSchema } from '../../utils/get-schema.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
 import type { Subscription } from '../../websocket/types.js';
 import { getPayload } from '../../websocket/utils/items.js';
-import { validateSubscriptionAccess } from '../../websocket/utils/validate-subscription-access.js';
+import { validateDeleteEventAccess } from '../../websocket/utils/validate-subscription-access.js';
 import { getQuery } from './schema/parse-query.js';
 import type { GraphQLService } from './index.js';
 
@@ -41,8 +41,8 @@ export function createSubscriptionGenerator(gql: GraphQLService, event: string) 
 
 			if (eventData['action'] === 'delete') {
 				try {
-					await validateSubscriptionAccess(
-						{ accountability: gql.accountability, collection: eventData['collection'] },
+					await validateDeleteEventAccess(
+						{ accountability: gql.accountability, collection: eventData['collection'], itemScoped: false },
 						{ knex: gql.knex, schema },
 					);
 				} catch {

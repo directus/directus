@@ -2,12 +2,21 @@ import { ForbiddenError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
 import type { Context } from '../../permissions/types.js';
-import { validateSubscriptionAccess } from './validate-subscription-access.js';
+import { validateDeleteEventAccess, validateSubscriptionAccess } from './validate-subscription-access.js';
 
 vi.mock('../../permissions/modules/validate-access/validate-access.js', () => ({
 	validateAccess: vi.fn(),
+}));
+
+vi.mock('../../permissions/lib/fetch-policies.js', () => ({
+	fetchPolicies: vi.fn().mockResolvedValue([]),
+}));
+
+vi.mock('../../permissions/lib/fetch-permissions.js', () => ({
+	fetchPermissions: vi.fn().mockResolvedValue([{ permissions: null }]),
 }));
 
 const accountability = {
@@ -20,6 +29,8 @@ const accountability = {
 } satisfies Accountability;
 
 const context = { knex: {} as Knex, schema: {} as SchemaOverview } satisfies Context;
+
+const rowRule = { permissions: { owner: { _eq: '$CURRENT_USER' } } } as any;
 
 afterEach(() => {
 	vi.clearAllMocks();
@@ -66,9 +77,87 @@ describe.each(['directus_collections', 'directus_fields', 'directus_relations'])
 	},
 );
 
+test('validates only the collection for create subscriptions, as the item may not exist yet', async () => {
+	await validateSubscriptionAccess({ accountability, collection: 'articles', event: 'create', item: '5' }, context);
+
+	expect(validateAccess).toBeCalledWith({ accountability, action: 'read', collection: 'articles' }, context);
+});
+
+test('validates the item for update subscriptions', async () => {
+	await validateSubscriptionAccess({ accountability, collection: 'articles', event: 'update', item: '5' }, context);
+
+	expect(validateAccess).toBeCalledWith(
+		{ accountability, action: 'read', collection: 'articles', primaryKeys: ['5'] },
+		context,
+	);
+});
+
 test('propagates the error when access is denied', async () => {
 	const error = new ForbiddenError();
 	vi.mocked(validateAccess).mockRejectedValueOnce(error);
 
 	await expect(validateSubscriptionAccess({ accountability, collection: 'articles' }, context)).rejects.toThrow(error);
+});
+
+describe('delete rules', () => {
+	describe.each([
+		[
+			'validateSubscriptionAccess',
+			(item?: string) =>
+				validateSubscriptionAccess({ accountability, collection: 'articles', event: 'delete', item }, context),
+		],
+		[
+			'validateDeleteEventAccess',
+			(item?: string) =>
+				validateDeleteEventAccess({ accountability, collection: 'articles', itemScoped: item !== undefined }, context),
+		],
+	] as const)('%s', (_name, validate) => {
+		test('allows collection wide deletes with unrestricted read access', async () => {
+			await expect(validate()).resolves.toBeUndefined();
+		});
+
+		test('rejects collection wide deletes when every read permission has row rules', async () => {
+			vi.mocked(fetchPermissions).mockResolvedValueOnce([rowRule]);
+
+			await expect(validate()).rejects.toBeInstanceOf(ForbiddenError);
+		});
+
+		test('allows collection wide deletes when any read permission is unrestricted', async () => {
+			vi.mocked(fetchPermissions).mockResolvedValueOnce([rowRule, { permissions: {} } as any]);
+
+			await expect(validate()).resolves.toBeUndefined();
+		});
+
+		test('skips the row rule check for item scoped deletes', async () => {
+			await expect(validate('5')).resolves.toBeUndefined();
+			expect(fetchPermissions).not.toBeCalled();
+		});
+	});
+
+	describe.each(['directus_collections', 'directus_fields'])('"%s"', (collection) => {
+		test('rejects deletes for non-admins', async () => {
+			await expect(
+				validateSubscriptionAccess({ accountability, collection, event: 'delete' }, context),
+			).rejects.toBeInstanceOf(ForbiddenError);
+
+			await expect(
+				validateDeleteEventAccess({ accountability, collection, itemScoped: true }, context),
+			).rejects.toBeInstanceOf(ForbiddenError);
+		});
+
+		test('allows deletes for admins', async () => {
+			await expect(
+				validateDeleteEventAccess(
+					{ accountability: { ...accountability, admin: true }, collection, itemScoped: false },
+					context,
+				),
+			).resolves.toBeUndefined();
+		});
+	});
+
+	test('does not re-validate the deleted item on dispatch', async () => {
+		await validateDeleteEventAccess({ accountability, collection: 'articles', itemScoped: true }, context);
+
+		expect(validateAccess).toBeCalledWith({ accountability, action: 'read', collection: 'articles' }, context);
+	});
 });
