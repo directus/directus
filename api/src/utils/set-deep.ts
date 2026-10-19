@@ -24,14 +24,19 @@ export function setDeep(
 	for (let i = 0; i < segments.length - 1; i += 1) {
 		const key = segments[i]!;
 
-		if (typeof node[key] !== 'object' || node[key] === null) {
-			node[key] = Object.create(null);
+		if (!Object.hasOwn(node, key) || typeof node[key] !== 'object' || node[key] === null) {
+			assignOwn(node, key, Object.create(null));
 		}
 
 		node = node[key];
 	}
 
-	node[segments[segments.length - 1]!] = value;
+	assignOwn(node, segments[segments.length - 1]!, value);
 
 	return root;
+}
+
+/** Creates `key` as an own data property: plain `obj['__proto__'] = x` reparents `obj` instead of creating a key. */
+function assignOwn(obj: Record<string, any>, key: string, value: unknown): void {
+	Object.defineProperty(obj, key, { value, writable: true, enumerable: true, configurable: true });
 }

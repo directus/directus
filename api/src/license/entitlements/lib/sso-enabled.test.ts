@@ -15,8 +15,8 @@ vi.mock('../../../database/index.js', async () => {
 });
 
 vi.mock('../../../services/index.js', async () => {
-	const { mockUsersService } = await import('../../../test-utils/services/users-service.js');
-	return mockUsersService();
+	const { mockItemsService } = await import('../../../test-utils/services/items-service.js');
+	return { UsersService: mockItemsService().ItemsService };
 });
 
 afterEach(() => {
