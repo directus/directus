@@ -1,4 +1,4 @@
-import { InvalidPayloadError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { type Bus } from '@directus/memory';
 import { useBus } from '../../bus/index.js';
 import getDatabase from '../../database/index.js';
@@ -128,8 +128,7 @@ export class SubscribeHandler {
 			}
 
 			try {
-				const context = { knex: getDatabase(), schema };
-
+				// create and update events are read with the subscriber's permissions by getPayload, deletes have nothing to read
 				if (event.action === 'delete') {
 					await validateDeleteEventAccess(
 						{
@@ -137,26 +136,19 @@ export class SubscribeHandler {
 							collection: subscription.collection,
 							itemScoped: 'item' in subscription,
 						},
-						context,
-					);
-				} else {
-					await validateSubscriptionAccess(
-						{ accountability: client.accountability, collection: subscription.collection },
-						context,
+						{ knex: getDatabase(), schema },
 					);
 				}
-			} catch {
-				// don't notify the client of permission errors, as that would leak the existence of the event
-				continue;
-			}
 
-			try {
 				const result = await getPayload(subscription, client.accountability, schema, event);
 
 				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) continue;
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
+				// don't notify the client of permission errors, as that would leak the existence of the event
+				if (isDirectusError(err, ErrorCode.Forbidden)) continue;
+
 				handleWebSocketError(client, err, { type: 'subscribe', uid: subscription.uid });
 			}
 		}

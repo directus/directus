@@ -1,3 +1,4 @@
+import { ForbiddenError, ServiceUnavailableError } from '@directus/errors';
 import type { Accountability, CollectionsOverview, Relation } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../emitter.js';
@@ -730,22 +731,70 @@ describe('WebSocket subscribe handler', () => {
 			},
 		);
 
-		test.each(['create', 'update', 'delete'] as const)(
+		test.each(['create', 'update'] as const)('should not run a separate access check for %s events', async (action) => {
+			const client = mockClient(mockAccountability());
+			await subscribeTo(client, action);
+
+			vi.mocked(validateAccess).mockClear();
+
+			await handler.dispatch(events[action]);
+
+			// the payload read applies the subscriber's permissions
+			expect(validateAccess).not.toBeCalled();
+			expect(ItemsService.prototype.readMany).toBeCalled();
+		});
+
+		test.each(['create', 'update'] as const)(
 			'should not dispatch %s events once read access has been revoked',
 			async (action) => {
 				const client = mockClient(mockAccountability());
 				await subscribeTo(client, action);
 
-				// the subscription was registered while the user still had access
-				vi.mocked(validateAccess).mockRejectedValueOnce(new Error('FORBIDDEN'));
+				vi.mocked(ItemsService.prototype.readMany).mockRejectedValueOnce(new ForbiddenError());
 
 				await handler.dispatch(events[action]);
 
 				// no payload, and no error either: an error would leak that the event happened
-				expect(ItemsService.prototype.readMany).not.toBeCalled();
 				expect(client.send).not.toBeCalled();
 			},
 		);
+
+		test('should not dispatch delete events once read access has been revoked', async () => {
+			const client = mockClient(mockAccountability());
+			await subscribeTo(client, 'delete');
+
+			vi.mocked(validateAccess).mockRejectedValueOnce(new ForbiddenError());
+
+			await handler.dispatch(deleteEvent);
+
+			expect(client.send).not.toBeCalled();
+		});
+
+		test('should not dispatch item scoped create events for an item the subscriber cannot read', async () => {
+			const client = mockClient(mockAccountability());
+
+			mockSchema('test_collection');
+			handler.subscribe({ client, collection: 'test_collection', event: 'create', item: '5', uid: '123' });
+
+			vi.mocked(ItemsService.prototype.readOne).mockRejectedValueOnce(new ForbiddenError());
+
+			await handler.dispatch(events.create);
+
+			expect(client.send).not.toBeCalled();
+		});
+
+		test('should report errors other than permission errors to the subscriber', async () => {
+			const client = mockClient(mockAccountability());
+			await subscribeTo(client, 'delete');
+
+			vi.mocked(validateAccess).mockRejectedValueOnce(
+				new ServiceUnavailableError({ service: 'database', reason: 'down' }),
+			);
+
+			await handler.dispatch(deleteEvent);
+
+			expect(client.send).toBeCalledWith(expect.stringContaining('SERVICE_UNAVAILABLE'));
+		});
 
 		test('should not dispatch collection wide delete events once read access is limited by row rules', async () => {
 			const client = mockClient(mockAccountability());
