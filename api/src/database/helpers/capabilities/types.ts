@@ -14,4 +14,11 @@ export class CapabilitiesHelper extends DatabaseHelper {
 	supportsDeduplicationOfParameters(): boolean {
 		return true;
 	}
+
+	/**
+	 * The maximum number of values that can be bound in a single query, including within a single `IN` list.
+	 */
+	getMaxBindings(): number {
+		return Infinity;
+	}
 }
