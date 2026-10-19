@@ -378,6 +378,17 @@ function buildURL(tool: ToolConfig<any>, input: unknown, data: unknown): string 
 }
 
 function toRegistryError(error: unknown, tool?: ToolConfig<any>): RegistryError {
+	// Payload validation throws an array of FailedValidationErrors (one per failing field)
+	if (Array.isArray(error) && error.length > 0) {
+		const errors = error.map((entry) => toRegistryError(entry, tool));
+
+		return {
+			code: errors[0]!.code,
+			message: errors.map(({ message }) => message).join(' '),
+			recoverable: errors.every(({ recoverable }) => recoverable),
+		};
+	}
+
 	if (isDirectusError(error)) {
 		return {
 			code: error.code,
