@@ -2,7 +2,6 @@ import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { getRelationInfo } from '@directus/utils';
 import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
 import { get, mapKeys, merge, uniq } from 'lodash-es';
-import { getRelatedCollection } from '../../../database/get-ast-from-query/utils/get-related-collection.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { setDeep } from '../../../utils/set-deep.js';
 import { validateQuery } from '../../../utils/validate-query.js';
@@ -113,7 +112,8 @@ export async function getQuery(
 					// For A2O, getRelatedCollection returns null. Fallback to currentCollection
 					// keeps the junction in context so the next level can detect M2A via isM2AField.
 					// The actual target collection is then set from the InlineFragment typeCondition.
-					childCollection = getRelatedCollection(schema, currentCollection, selection.name.value) ?? currentCollection;
+					const { oppositeCollection } = getRelationInfo(schema.relations, currentCollection, selection.name.value);
+					childCollection = oppositeCollection ?? currentCollection;
 				}
 			}
 

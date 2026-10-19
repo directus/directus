@@ -1,6 +1,7 @@
-export type Schema = {
-	fields: Fields;
-};
-export type Fields = {
-	id: string | number;
-};
+export interface Schema {
+	fields: Fields[];
+}
+
+export interface Fields {
+	id: number;
+}
