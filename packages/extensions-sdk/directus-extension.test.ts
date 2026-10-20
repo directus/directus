@@ -123,6 +123,7 @@ describe('create and build', () => {
 			source: 'src/my-richtext/index.ts',
 		});
 
+		expect(manifest['directus:extension'].host).toBe('^12.6.0');
 		expect(manifest.devDependencies).toHaveProperty('@tiptap/core');
 
 		await execa('node', ['../cli.js', 'build'], { cwd: testExtensionPath });
