@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Disabled editing admin-only permission actions on Policy Editor
+Disabled admin-only permission actions in the Policy Editor and added a warning about stored permissions that don't take effect
