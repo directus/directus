@@ -1,5 +1,11 @@
 ---
-'@directus/api': patch
+'@directus/api': major
 ---
 
-Fixed subscription delete events not enforcing read permissions. Delete events for a whole collection are now only sent to users who can read every item in it, and delete events for collections and fields are limited to admins.
+Fixed websocket subscription delete events not enforcing read permissions
+
+::: notice
+
+WebSocket Subscription delete events now require read permissions for a whole collection. Delete events will not be sent to users that have a policy with custom item rules on the events collection.
+
+:::

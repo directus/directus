@@ -128,7 +128,7 @@ export class SubscribeHandler {
 			}
 
 			try {
-				// create and update events are read with the subscriber's permissions by getPayload, deletes have nothing to read
+				// manually check delete events permissions, create and update are checked by getPayload
 				if (event.action === 'delete') {
 					await validateDeleteEventAccess(
 						{
@@ -189,7 +189,7 @@ export class SubscribeHandler {
 
 				if ('item' in message) subscription.item = String(message.item);
 
-				// event subscriptions skip the getPayload read, validate access here
+				// subscriptions on specific events skip getPayload, validate access here
 				if (subscription.event) {
 					await validateSubscriptionAccess(
 						{ accountability, collection, event: subscription.event, item: subscription.item },

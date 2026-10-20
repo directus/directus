@@ -18,7 +18,6 @@ const COLLECTIONS_WITHOUT_FILTER = ['directus_collections', 'directus_fields', '
 export interface ValidateSubscriptionAccessOptions {
 	accountability: Accountability | null;
 	collection: string;
-	/** The event the subscription is limited to, undefined for all events */
 	event?: SubscriptionEvent | undefined;
 	item?: PrimaryKey | undefined;
 }
@@ -53,7 +52,6 @@ export async function validateSubscriptionAccess(
 export interface ValidateDeleteEventAccessOptions {
 	accountability: Accountability | null;
 	collection: string;
-	/** Whether the subscription is limited to a single item, which was validated when subscribing */
 	itemScoped: boolean;
 }
 
@@ -86,8 +84,8 @@ async function validateDeleteRules(
 
 	if (itemScoped) return;
 
-	// Without the deleted items, row level permissions can't be applied to the keys of a collection wide delete event,
-	// so they are only sent to subscribers who can read every item in the collection
+	// Because the item is already deleted, row level permissions can't be checked for the event data,
+	// so they are only sent to subscribers without item rules on the collection and admins
 	const policies = await fetchPolicies(accountability, context);
 
 	const permissions = await fetchPermissions(
