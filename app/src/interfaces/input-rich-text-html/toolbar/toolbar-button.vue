@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import type { ToolbarButton, ToolbarContext } from './buttons';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { translate } from '@/utils/translate-literal';
 
 const props = defineProps<{
 	button: ToolbarButton;
@@ -14,12 +15,11 @@ const props = defineProps<{
 	tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
 }>();
 
-const { t, te } = useI18n();
+const { t } = useI18n();
 
 const placement = computed(() => props.tooltipPlacement ?? 'top');
 
-// A contributed button has a text. A core button has an i18n key.
-const label = computed(() => (te(props.button.label) ? t(props.button.label) : props.button.label));
+const label = computed(() => (props.button.literalLabel ? translate(props.button.label) : t(props.button.label)));
 </script>
 
 <template>

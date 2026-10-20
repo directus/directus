@@ -6,6 +6,7 @@ import { computed, shallowRef } from 'vue';
 import { useContributedGuard } from '../use-contributed-guard';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { translate } from '@/utils/translate-literal';
 
 const props = defineProps<{
 	editor: Editor | undefined;
@@ -53,7 +54,7 @@ defineExpose({ updateActiveMenu });
 				<VButton
 					v-for="button in activeMenu.buttons"
 					:key="button.key"
-					v-tooltip="button.label"
+					v-tooltip="translate(button.label)"
 					class="toolbar-button"
 					ghost
 					small

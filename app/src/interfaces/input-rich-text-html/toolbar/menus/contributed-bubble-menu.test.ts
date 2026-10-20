@@ -1,13 +1,17 @@
 import type { RichTextBubbleMenu } from '@directus/extensions';
 import { Editor } from '@tiptap/vue-3';
 import { mount } from '@vue/test-utils';
+import { cloneDeep } from 'lodash-es';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { nextTick } from 'vue';
 import { editorExtensions } from '../../extensions';
 import ContributedBubbleMenu from './contributed-bubble-menu.vue';
+import { i18n } from '@/lang';
 
 const global = {
-	directives: { tooltip: {} },
+	directives: {
+		tooltip: { mounted: (el: HTMLElement, { value }: { value: string }) => el.setAttribute('data-tooltip', value) },
+	},
 	stubs: {
 		VIcon: { template: '<i :data-icon="name" />', props: ['name'] },
 		VButton: {
@@ -25,7 +29,12 @@ beforeEach(() => {
 	editor = new Editor({ extensions: editorExtensions, content: '<p>hello</p>' });
 });
 
-afterEach(() => editor.destroy());
+const enUS = cloneDeep(i18n.global.getLocaleMessage('en-US'));
+
+afterEach(() => {
+	editor.destroy();
+	i18n.global.setLocaleMessage('en-US', cloneDeep(enUS));
+});
 
 const button = (key: string, overrides: object = {}) => ({
 	key,
@@ -138,6 +147,18 @@ describe('content', () => {
 		expect(error.mock.calls[0]!.join(' ')).toContain('"ext:a:b"');
 		expect(wrapper.find('button').attributes('disabled')).toBeDefined();
 		error.mockRestore();
+	});
+
+	test('shows a plain label as is and resolves a $t: label', async () => {
+		i18n.global.mergeLocaleMessage('en-US', { my_ext_callout: 'Callout' });
+
+		const { wrapper, vm } = mountMenu([
+			menu('a', () => true, [button('a', { label: 'save' }), button('b', { label: '$t:my_ext_callout' })]),
+		]);
+
+		vm.updateActiveMenu();
+		await nextTick();
+		expect(wrapper.findAll('button').map((b) => b.attributes('data-tooltip'))).toEqual(['save', 'Callout']);
 	});
 
 	test('reflects isActive and isDisabled', async () => {
