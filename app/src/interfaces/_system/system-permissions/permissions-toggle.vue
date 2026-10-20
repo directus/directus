@@ -22,6 +22,8 @@ const props = defineProps<{
 	appMinimal?: Partial<Permission>;
 	// The API restricts this action to admins regardless of policy; render it read-only.
 	restricted?: boolean;
+	// The API requires an authenticated user for this action, which a public policy never reaches unauthenticated.
+	requiresUser?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -63,6 +65,8 @@ const saving = ref(false);
 // A restricted action can still have a permission stored from before it was blocked, which only removal can clear.
 const hasStalePermission = computed(() => props.restricted && permission.value !== undefined);
 
+const hasUserOnlyPermission = computed(() => props.requiresUser && permission.value !== undefined);
+
 const appMinimalLevel = computed(() => {
 	if (!props.appMinimal) return null;
 
@@ -83,6 +87,8 @@ const appMinimalLevel = computed(() => {
 			(hasStalePermission &&
 				$t('hardcoded_admin_only_stale_permission_note', { action: $t(action), collection: collection.name })) ||
 			(restricted && $t('hardcoded_admin_only_action_note', { action: $t(action), collection: collection.name })) ||
+			(hasUserOnlyPermission &&
+				$t('hardcoded_user_only_action_note', { action: $t(action), collection: collection.name })) ||
 			(appMinimal && $t('required_for_app_access')) ||
 			$t(`permissionsLevel.${permissionLevel}`, { action: $t(action) })
 		"
@@ -115,6 +121,7 @@ const appMinimalLevel = computed(() => {
 			<template #activator="{ toggle, active }">
 				<VChip small clickable class="toggle" :class="[permissionLevel, { active }]" @click="toggle">
 					<VProgressCircular v-if="loading || saving" indeterminate small />
+
 					<template v-else>{{ $t(action) }}</template>
 				</VChip>
 			</template>

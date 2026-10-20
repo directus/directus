@@ -1,16 +1,22 @@
 <script setup lang="ts">
 import { Permission, PermissionsAction } from '@directus/types';
+import { computed } from 'vue';
 import PermissionsToggle from './permissions-toggle.vue';
-import { editablePermissionActions, EditablePermissionsAction } from '@/app-permissions.js';
+import { editablePermissionActions, EditablePermissionsAction, getStoredUserOnlyActions } from '@/app-permissions.js';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { Collection } from '@/types/collections';
 
-defineProps<{
+const props = defineProps<{
 	collection: Collection;
 	disabledActions?: EditablePermissionsAction[];
+	userOnlyActions?: EditablePermissionsAction[];
 	permissions: Permission[];
 	appMinimal?: Partial<Permission>[];
 }>();
+
+const storedUserOnlyActions = computed(() =>
+	props.userOnlyActions ? getStoredUserOnlyActions(props.collection.collection, props.permissions) : [],
+);
 
 const emit = defineEmits<{
 	editItem: [action: PermissionsAction];
@@ -26,7 +32,22 @@ const emit = defineEmits<{
 	<tr class="permissions-row" :data-collection="collection.collection">
 		<td class="collection">
 			<div>
-				<div v-tooltip.left="collection.name" class="name">{{ collection.collection }}</div>
+				<div class="name">
+					<span v-tooltip.left="collection.name" class="text">{{ collection.collection }}</span>
+
+					<VIcon
+						v-if="storedUserOnlyActions.length > 0"
+						v-tooltip.left="
+							$t('hardcoded_user_only_collection_note', {
+								actions: storedUserOnlyActions.map((action) => $t(action)).join(', '),
+								collection: collection.name,
+							})
+						"
+						class="user-only-warning"
+						name="warning"
+						small
+					/>
+				</div>
 				<div class="shortcuts">
 					<button type="button" class="all" @click="emit('setFullAccessAll')">{{ $t('all') }}</button>
 					<span class="divider">/</span>
@@ -40,6 +61,7 @@ const emit = defineEmits<{
 				:action="action"
 				:collection="collection"
 				:restricted="disabledActions?.includes(action)"
+				:requires-user="userOnlyActions?.includes(action)"
 				:permission="permissions.find((permission) => permission.action === action)"
 				:app-minimal="appMinimal && appMinimal.find((permission) => permission.action === action)"
 				@edit="emit('editItem', action)"
@@ -66,12 +88,24 @@ const emit = defineEmits<{
 	}
 
 	.name {
+		display: flex;
 		flex: 1;
+		gap: 0.375rem;
+		align-items: center;
 		inline-size: 0.0625rem;
 		padding: 0 0.6875rem;
 		font-family: var(--theme--fonts--monospace--font-family);
+	}
+
+	.text {
+		min-inline-size: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+
+	.user-only-warning {
+		flex-shrink: 0;
+		color: var(--theme--warning);
 	}
 
 	.shortcuts {

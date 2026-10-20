@@ -95,3 +95,28 @@ describe('unrestricted action', () => {
 		expect(wrapper.findAll('.list-item').length).toBeGreaterThan(1);
 	});
 });
+
+describe('action that requires an authenticated user', () => {
+	const commentsCollection = { collection: 'directus_comments', name: 'Comments' } as Collection;
+	const commentsPermission = { collection: 'directus_comments', action: 'create', fields: ['*'] } as Permission;
+
+	test('explains a stored permission in the tooltip and keeps the regular access menu', () => {
+		const wrapper = mount(PermissionsToggle, {
+			props: { collection: commentsCollection, action: 'create', requiresUser: true, permission: commentsPermission },
+			global,
+		});
+
+		expect(wrapper.attributes('data-tooltip')).toBe('hardcoded_user_only_action_note:create:Comments');
+		expect(wrapper.text()).not.toContain('remove_permission');
+		expect(wrapper.findAll('.list-item').length).toBeGreaterThan(1);
+	});
+
+	test('uses the regular tooltip when no permission is stored', () => {
+		const wrapper = mount(PermissionsToggle, {
+			props: { collection: commentsCollection, action: 'create', requiresUser: true },
+			global,
+		});
+
+		expect(wrapper.attributes('data-tooltip')).not.toContain('hardcoded_user_only_action_note');
+	});
+});

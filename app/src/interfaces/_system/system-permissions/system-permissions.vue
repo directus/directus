@@ -10,7 +10,7 @@ import PermissionsDetail from './detail/permissions-detail.vue';
 import PermissionsHeader from './permissions-header.vue';
 import PermissionsRow from './permissions-row.vue';
 import api from '@/api';
-import { appRecommendedPermissions, disabledActions } from '@/app-permissions.js';
+import { appRecommendedPermissions, disabledActions, userOnlyActions } from '@/app-permissions.js';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -18,6 +18,7 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDivider from '@/components/v-divider.vue';
 import VNotice from '@/components/v-notice.vue';
+import { useIsAttachedToPublicRole } from '@/composables/use-is-attached-to-public-role';
 import { DisplayItem } from '@/composables/use-relation-multiple';
 import { RelationO2M, useRelationO2M } from '@/composables/use-relation-o2m';
 import { useCollectionsStore } from '@/stores/collections';
@@ -57,6 +58,7 @@ const { relationInfo } = useRelationO2M(collection, field);
 const values = inject<Ref<Record<string, any>>>('values');
 const appAccess = computed(() => values?.value.app_access ?? false);
 const adminAccess = computed(() => values?.value.admin_access ?? false);
+const isAttachedToPublicRole = useIsAttachedToPublicRole(primaryKey);
 
 const value = computed({
 	get: () => props.value,
@@ -631,6 +633,7 @@ function useGroupedPermissions() {
 						:collection="group.collection"
 						:policy="primaryKey"
 						:disabled-actions="disabledActions[group.collection.collection]"
+						:user-only-actions="isAttachedToPublicRole ? userOnlyActions[group.collection.collection] : undefined"
 						:app-minimal="
 							appAccess
 								? appAccessMinimalPermissions.filter(
