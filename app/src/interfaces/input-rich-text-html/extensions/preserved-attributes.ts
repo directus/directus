@@ -30,7 +30,8 @@ const PASSTHROUGH_NAMES = ['class', 'id', 'title', 'role', 'lang', 'dir'] as con
 
 const WILDCARD_PREFIXES = ['data-', 'aria-'] as const;
 
-const CLIPBOARD_SLICE_ATTRIBUTE = 'data-pm-slice';
+/** ProseMirror stamps copied HTML with its slice context; transport metadata, never content. */
+const TRANSPORT_ATTRIBUTES = new Set(['data-pm-slice']);
 
 /** The Tiptap attribute keys PreservedAttributes adds; other extensions must not redefine them. */
 export const PRESERVED_ATTRIBUTE_KEYS: ReadonlySet<string> = new Set([
@@ -47,10 +48,14 @@ export function isPreservedAttributeName(name: string): boolean {
 	);
 }
 
+function isWildcardAttribute(name: string): boolean {
+	return !TRANSPORT_ATTRIBUTES.has(name) && WILDCARD_PREFIXES.some((prefix) => name.startsWith(prefix));
+}
+
 /** True when the element carries an attribute PreservedAttributes would round-trip. */
 export function hasPreservedAttributes(element: HTMLElement): boolean {
 	if (PASSTHROUGH_NAMES.some((name) => element.getAttribute(name))) return true;
-	return Array.from(element.attributes).some(({ name }) => WILDCARD_PREFIXES.some((prefix) => name.startsWith(prefix)));
+	return Array.from(element.attributes).some(({ name }) => isWildcardAttribute(name));
 }
 
 /** A plain string attribute round-tripped verbatim; empty → dropped so it never churns. */
@@ -88,7 +93,7 @@ function wildcardAttribute(name: string, prefix: (typeof WILDCARD_PREFIXES)[numb
 		default: null,
 		parseHTML: (element: HTMLElement) => {
 			const matches = Array.from(element.attributes).filter(
-				({ name: attrName }) => attrName.startsWith(prefix) && attrName !== CLIPBOARD_SLICE_ATTRIBUTE,
+				({ name: attrName }) => attrName.startsWith(prefix) && isWildcardAttribute(attrName),
 			);
 
 			if (matches.length === 0) return null;

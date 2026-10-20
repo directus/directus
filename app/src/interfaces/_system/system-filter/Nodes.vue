@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import {
+	Field,
 	FieldFilter,
 	FieldFilterOperator,
 	FieldFunction,
@@ -61,6 +62,8 @@ interface Props {
 	/** Resolved by system-filter.vue; when false, `_json` nodes cannot be created here */
 	includeJsonFunction?: boolean;
 	relationalFieldSelectable?: boolean;
+	/** Hide fields the consumer can't filter on. Applies at every level of the field tree. */
+	fieldFilter?: (field: Field) => boolean;
 	rawFieldNames?: boolean;
 	variableInputEnabled: boolean | undefined;
 }
@@ -334,6 +337,7 @@ function isExistingField(node: Record<string, any>): boolean {
 									:excluded-functions="includeJsonFunction ? [] : ['json']"
 									:include-relations="includeRelations"
 									:relational-field-selectable="relationalFieldSelectable"
+									:field-filter="fieldFilter"
 									:allow-select-all="false"
 									:raw-field-names="rawFieldNames"
 									@add="updateField(index, $event[0])"
@@ -401,6 +405,9 @@ function isExistingField(node: Record<string, any>): boolean {
 						:depth="depth + 1"
 						:inline="inline"
 						:include-json-function="includeJsonFunction"
+						:include-relations="includeRelations"
+						:relational-field-selectable="relationalFieldSelectable"
+						:field-filter="fieldFilter"
 						:raw-field-names="rawFieldNames"
 						:variable-input-enabled="variableInputEnabled"
 						@change="$emit('change')"

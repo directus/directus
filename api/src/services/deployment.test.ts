@@ -1,5 +1,6 @@
 import { InvalidPayloadError, InvalidProviderConfigError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
+import type { Item } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
 import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
 import { DeploymentProjectsService } from './deployment-projects.js';
@@ -430,13 +431,29 @@ describe('DeploymentService', () => {
 			user_created: 'user-1',
 		};
 
+		// `DeploymentProjectsService` and `DeploymentRunsService` both inherit `readByQuery` from
+		// `ItemsService`. Vitest 4 hands back the existing spy when the inherited method is already
+		// mocked, so spying each subclass prototype separately collapses into a single spy and only
+		// the last implementation survives. Dispatch on the collection instead.
+		const stubReadByQuery = (deploymentRows: Item[]) =>
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockImplementation(async function (this: ItemsService) {
+				switch (this.collection) {
+					case 'directus_deployment_projects':
+						return [selectedProject];
+					case 'directus_deployment_runs':
+						return [];
+					default:
+						return deploymentRows;
+				}
+			});
+
 		beforeEach(() => {
 			service = new DeploymentService({
 				knex: db,
 				schema,
 			});
 
-			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([deployment]);
+			stubReadByQuery([deployment]);
 
 			tracker.on.select('directus_deployments').response([deployment]);
 		});
@@ -444,10 +461,7 @@ describe('DeploymentService', () => {
 		it('should skip sync when last_synced_at is recent', async () => {
 			const recentDeployment = { ...deployment, last_synced_at: new Date().toISOString() };
 
-			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([recentDeployment]);
-
-			vi.spyOn(DeploymentProjectsService.prototype, 'readByQuery').mockResolvedValue([selectedProject]);
-			vi.spyOn(DeploymentRunsService.prototype, 'readByQuery').mockResolvedValue([]);
+			stubReadByQuery([recentDeployment]);
 
 			await service.getDashboard('vercel', new Date());
 
@@ -458,8 +472,6 @@ describe('DeploymentService', () => {
 		});
 
 		it('should run sync when last_synced_at is null', async () => {
-			vi.spyOn(DeploymentProjectsService.prototype, 'readByQuery').mockResolvedValue([selectedProject]);
-			vi.spyOn(DeploymentRunsService.prototype, 'readByQuery').mockResolvedValue([]);
 			vi.spyOn(DeploymentProjectsService.prototype, 'updateBatch').mockResolvedValue([]);
 			vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('deploy-1');
 
@@ -484,9 +496,7 @@ describe('DeploymentService', () => {
 				last_synced_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
 			};
 
-			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([staleDeployment]);
-			vi.spyOn(DeploymentProjectsService.prototype, 'readByQuery').mockResolvedValue([selectedProject]);
-			vi.spyOn(DeploymentRunsService.prototype, 'readByQuery').mockResolvedValue([]);
+			stubReadByQuery([staleDeployment]);
 			vi.spyOn(DeploymentProjectsService.prototype, 'updateBatch').mockResolvedValue([]);
 			vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('deploy-1');
 
@@ -503,9 +513,6 @@ describe('DeploymentService', () => {
 		});
 
 		it('should not crash getDashboard if sync fails', async () => {
-			vi.spyOn(DeploymentProjectsService.prototype, 'readByQuery').mockResolvedValue([selectedProject]);
-			vi.spyOn(DeploymentRunsService.prototype, 'readByQuery').mockResolvedValue([]);
-
 			mockGetProject.mockRejectedValueOnce(new Error('API down'));
 
 			const result = await service.getDashboard('vercel', new Date());

@@ -7,7 +7,7 @@ import { formatHtml } from './format-html';
 // Re-parse through the schema exactly as saveSourceCode will, so the diff compares against what
 // actually gets stored. `extraExtensions` is the per-field slice from buildFieldSchema the live
 // editor was built with — without it that markup reads as dropped and falsely trips the warning.
-function roundTrip(html: string, extraExtensions: AnyExtension[]): string {
+export function roundTrip(html: string, extraExtensions: AnyExtension[] = []): string {
 	const editor = new Editor({ extensions: fieldEditorExtensions(extraExtensions), content: html });
 	const out = editor.getHTML();
 	editor.destroy();
@@ -32,7 +32,7 @@ function sortAttributes(html: string): string {
 }
 
 // Both sides run through formatHtml so only semantic loss surfaces, never cosmetic reformatting.
-function diffFormatted(rawBefore: string, rawAfter: string): Change[] | null {
+export function diffFormatted(rawBefore: string, rawAfter: string): Change[] | null {
 	const before = formatHtml(sortAttributes(rawBefore));
 	const after = formatHtml(sortAttributes(rawAfter));
 	if (before === after) return null;
