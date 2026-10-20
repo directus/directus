@@ -2076,6 +2076,7 @@ fields:
     ai_openai_compatible_api_key: API Key
     ai_openai_compatible_models: Models
     ai_openai_compatible_headers: Custom Headers
+    ai_api: API
     ai_model_id: Model ID
     ai_context_limit: Context Limit
     ai_output_limit: Output Limit

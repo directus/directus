@@ -20,6 +20,7 @@ export type SystemTool =
 	| 'relations';
 
 export interface OpenAICompatibleModel {
+	api?: 'chat-completions' | 'responses';
 	id: string;
 	name: string;
 	context?: number;

@@ -1081,6 +1081,21 @@ fields:
     options:
       template: '{{name}}'
       fields:
+        - field: api
+          name: $t:fields.directus_settings.ai_api
+          type: string
+          schema:
+            is_nullable: true
+            default_value: chat-completions
+          meta:
+            interface: select-dropdown
+            width: full
+            options:
+              choices:
+                - text: Chat Completions
+                  value: chat-completions
+                - text: Responses
+                  value: responses
         - field: id
           name: $t:fields.directus_settings.ai_model_id
           type: string

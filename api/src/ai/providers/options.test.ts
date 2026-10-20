@@ -47,6 +47,69 @@ describe('getModelDefinition', () => {
 });
 
 describe('getProviderOptions', () => {
+	it('uses OpenAI options and reasoning state for a Responses deployment', () => {
+		const settings: AISettings = {
+			...baseSettings,
+			openaiCompatibleName: 'Azure Foundry',
+			openaiCompatibleModels: [{ id: 'my-deployment', name: 'Sol', api: 'responses', reasoning: true }],
+		};
+
+		expect(getProviderOptions('openai-compatible', 'my-deployment', settings)).toEqual({
+			openai: {
+				store: false,
+				forceReasoning: true,
+				reasoningSummary: 'auto',
+				include: ['reasoning.encrypted_content'],
+			},
+		});
+	});
+
+	it('uses stateless Responses for a non-reasoning model', () => {
+		const settings: AISettings = {
+			...baseSettings,
+			openaiCompatibleModels: [{ id: 'plain', name: 'Plain', api: 'responses' }],
+		};
+
+		expect(getProviderOptions('openai-compatible', 'plain', settings)).toEqual({ openai: { store: false } });
+	});
+
+	it('allows Responses provider options to override defaults', () => {
+		const settings: AISettings = {
+			...baseSettings,
+			openaiCompatibleModels: [
+				{
+					id: 'my-deployment',
+					name: 'Sol',
+					api: 'responses',
+					reasoning: true,
+					providerOptions: { reasoningEffort: 'high', reasoningSummary: 'detailed', store: true },
+				},
+			],
+		};
+
+		expect(getProviderOptions('openai-compatible', 'my-deployment', settings)).toEqual({
+			openai: {
+				store: true,
+				forceReasoning: true,
+				reasoningSummary: 'detailed',
+				reasoningEffort: 'high',
+				include: ['reasoning.encrypted_content'],
+			},
+		});
+	});
+
+	it('preserves the compatible provider namespace for an explicit Chat Completions model', () => {
+		const settings: AISettings = {
+			...baseSettings,
+			openaiCompatibleName: 'custom',
+			openaiCompatibleModels: [
+				{ id: 'chat', name: 'Chat', api: 'chat-completions', providerOptions: { customOption: true } },
+			],
+		};
+
+		expect(getProviderOptions('openai-compatible', 'chat', settings)).toEqual({ custom: { customOption: true } });
+	});
+
 	it('returns reasoning options for OpenAI reasoning model', () => {
 		const result = getProviderOptions('openai', 'gpt-5', baseSettings);
 

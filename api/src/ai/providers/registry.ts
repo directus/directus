@@ -1,7 +1,7 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
-import { createProviderRegistry } from 'ai';
+import { createProviderRegistry, customProvider } from 'ai';
 import { createAnthropicWithFileSupport } from './anthropic-file-support.js';
 import type { AISettings, ProviderConfig } from './types.js';
 
@@ -68,12 +68,31 @@ export function createAIProviderRegistry(configs: ProviderConfig[], settings?: A
 						settings?.openaiCompatibleHeaders?.map(({ header, value }) => [header, value]) ?? [],
 					);
 
-					providers['openai-compatible'] = createOpenAICompatible({
+					const chatProvider = createOpenAICompatible({
 						name: settings?.openaiCompatibleName ?? 'openai-compatible',
 						apiKey: config.apiKey,
 						baseURL: config.baseUrl,
 						headers: customHeaders,
 					});
+
+					const responsesModels = settings?.openaiCompatibleModels?.filter((model) => model.api === 'responses') ?? [];
+
+					if (responsesModels.length === 0) {
+						providers['openai-compatible'] = chatProvider;
+						break;
+					}
+
+					const responsesProvider = createOpenAI({
+						apiKey: config.apiKey,
+						baseURL: config.baseUrl,
+						headers: customHeaders,
+					});
+
+					const languageModels = Object.fromEntries(
+						responsesModels.map((model) => [model.id, responsesProvider.responses(model.id)]),
+					);
+
+					providers['openai-compatible'] = customProvider({ languageModels, fallbackProvider: chatProvider });
 				}
 
 				break;

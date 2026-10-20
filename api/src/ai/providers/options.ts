@@ -29,6 +29,18 @@ export function getProviderOptions(provider: ProviderType, model: string, settin
 	if (provider === 'openai-compatible') {
 		const customModel = settings.openaiCompatibleModels?.find((m) => m.id === model);
 
+		if (customModel?.api === 'responses') {
+			return {
+				openai: {
+					store: false,
+					...(customModel.reasoning
+						? { forceReasoning: true, reasoningSummary: 'auto', include: ['reasoning.encrypted_content'] }
+						: {}),
+					...customModel.providerOptions,
+				},
+			};
+		}
+
 		if (customModel?.providerOptions) {
 			const providerName = settings.openaiCompatibleName ?? 'openai-compatible';
 			return { [providerName]: customModel.providerOptions };
