@@ -23,7 +23,7 @@ const global: GlobalMountOptions = {
 	stubs: { PermissionsToggle: true, VIcon: true },
 };
 
-describe('user-only warning', () => {
+describe('permission warning', () => {
 	test('shows on a collection with a stored permission the API restricts to authenticated users', () => {
 		const wrapper = mount(PermissionsRow, {
 			props: { collection, permissions, userOnlyActions: ['create', 'update', 'delete'] },
@@ -45,6 +45,32 @@ describe('user-only warning', () => {
 	test('is hidden when none of the restricted actions has a stored permission', () => {
 		const wrapper = mount(PermissionsRow, {
 			props: { collection, permissions: [], userOnlyActions: ['create', 'update', 'delete'] },
+			global,
+		});
+
+		expect(wrapper.find('v-icon-stub[name="warning"]').exists()).toBe(false);
+	});
+});
+
+describe('admin-only warning', () => {
+	const extensions = { collection: 'directus_extensions', name: 'Extensions' } as Collection;
+	const stored = [{ collection: 'directus_extensions', action: 'update', fields: ['*'] }] as Permission[];
+
+	test('shows on a collection with a stored permission the API restricts to admins', () => {
+		const wrapper = mount(PermissionsRow, {
+			props: { collection: extensions, permissions: stored, disabledActions: ['create', 'update', 'delete'] },
+			global,
+		});
+
+		const icon = wrapper.find('v-icon-stub[name="warning"]');
+
+		expect(icon.exists()).toBe(true);
+		expect(icon.attributes('data-tooltip')).toBe('hardcoded_admin_only_collection_note:update:Extensions');
+	});
+
+	test('is hidden when no restricted action has a stored permission', () => {
+		const wrapper = mount(PermissionsRow, {
+			props: { collection: extensions, permissions: [], disabledActions: ['create', 'update', 'delete'] },
 			global,
 		});
 

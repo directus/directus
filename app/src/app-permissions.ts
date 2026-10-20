@@ -24,12 +24,16 @@ export const disabledActions: Record<string, EditablePermissionsAction[]> = grou
 // authenticated users, but the grid warns about them on policies attached to the public role.
 export const userOnlyActions: Record<string, EditablePermissionsAction[]> = groupActionsByCollection('user');
 
+function getStoredActions(actions: EditablePermissionsAction[] | undefined, permissions: { action: string }[]) {
+	return (actions ?? []).filter((action) => permissions.some((permission) => permission.action === action));
+}
+
+// The actions of a collection that have a stored permission although the API restricts them to admins.
+export function getStoredDisabledActions(collection: string, permissions: { action: string }[]) {
+	return getStoredActions(disabledActions[collection], permissions);
+}
+
 // The actions of a collection that have a stored permission and that the API restricts to authenticated users.
-export function getStoredUserOnlyActions(
-	collection: string,
-	permissions: { action: string }[],
-): EditablePermissionsAction[] {
-	return (userOnlyActions[collection] ?? []).filter((action) =>
-		permissions.some((permission) => permission.action === action),
-	);
+export function getStoredUserOnlyActions(collection: string, permissions: { action: string }[]) {
+	return getStoredActions(userOnlyActions[collection], permissions);
 }

@@ -2,7 +2,12 @@
 import { Permission, PermissionsAction } from '@directus/types';
 import { computed } from 'vue';
 import PermissionsToggle from './permissions-toggle.vue';
-import { editablePermissionActions, EditablePermissionsAction, getStoredUserOnlyActions } from '@/app-permissions.js';
+import {
+	editablePermissionActions,
+	EditablePermissionsAction,
+	getStoredDisabledActions,
+	getStoredUserOnlyActions,
+} from '@/app-permissions.js';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { Collection } from '@/types/collections';
 
@@ -14,8 +19,17 @@ const props = defineProps<{
 	appMinimal?: Partial<Permission>[];
 }>();
 
-const storedUserOnlyActions = computed(() =>
-	props.userOnlyActions ? getStoredUserOnlyActions(props.collection.collection, props.permissions) : [],
+const warnings = computed(() =>
+	[
+		{
+			note: 'hardcoded_admin_only_collection_note',
+			actions: getStoredDisabledActions(props.collection.collection, props.permissions),
+		},
+		{
+			note: 'hardcoded_user_only_collection_note',
+			actions: props.userOnlyActions ? getStoredUserOnlyActions(props.collection.collection, props.permissions) : [],
+		},
+	].filter(({ actions }) => actions.length > 0),
 );
 
 const emit = defineEmits<{
@@ -36,14 +50,15 @@ const emit = defineEmits<{
 					<span v-tooltip.left="collection.name" class="text">{{ collection.collection }}</span>
 
 					<VIcon
-						v-if="storedUserOnlyActions.length > 0"
+						v-if="warnings.length > 0"
 						v-tooltip.left="
-							$t('hardcoded_user_only_collection_note', {
-								actions: storedUserOnlyActions.map((action) => $t(action)).join(', '),
-								collection: collection.name,
-							})
+							warnings
+								.map(({ note, actions }) =>
+									$t(note, { actions: actions.map((action) => $t(action)).join(', '), collection: collection.name }),
+								)
+								.join(' ')
 						"
-						class="user-only-warning"
+						class="permission-warning"
 						name="warning"
 						small
 					/>
@@ -103,7 +118,7 @@ const emit = defineEmits<{
 		text-overflow: ellipsis;
 	}
 
-	.user-only-warning {
+	.permission-warning {
 		flex-shrink: 0;
 		color: var(--theme--warning);
 	}
