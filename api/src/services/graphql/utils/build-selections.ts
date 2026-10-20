@@ -79,5 +79,13 @@ function replaceInSelections(
  * @returns The selections asked for on that field, or null when it has no selection set
  */
 export function buildSelections(info: GraphQLResolveInfo): readonly SelectionNode[] | null {
-	return replaceInSelections(info.fieldNodes[0]?.selectionSet?.selections, getNamedType(info.returnType), info);
+	const returnType = getNamedType(info.returnType);
+
+	// Same-named fields requested through separate fragments are collected into a single resolver call, which
+	// means every node in `fieldNodes` holds selections for the field being resolved and all of them count.
+	const selections = info.fieldNodes.flatMap(
+		(node) => replaceInSelections(node.selectionSet?.selections, returnType, info) ?? [],
+	);
+
+	return selections.length > 0 ? selections : null;
 }

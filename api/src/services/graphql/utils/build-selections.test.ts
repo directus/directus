@@ -250,6 +250,71 @@ describe('buildSelections', () => {
 		expect(buildSelections(buildInfo(selections, fragments))).toEqual(expected);
 	});
 
+	// Same-named fields requested through separate fragments are collected into a single resolver call, so the
+	// selections of every node in `fieldNodes` have to be read, not just the first one
+	describe('fields requested through multiple fragments', () => {
+		const buildMergedInfo = (
+			selectionSets: (readonly SelectionNode[])[],
+			fragments?: Record<string, FragmentDefinitionNode>,
+		) =>
+			buildResolveInfo({
+				selectionSets,
+				...(fragments && { fragments }),
+				schema: gqlSchema,
+				returnType: gqlSchema.getQueryType()!.getFields()['Page']!.type,
+			});
+
+		test('merges the selections of every field node', () => {
+			const info = buildMergedInfo([[buildField('id')], [buildField('title')]]);
+
+			expect(buildSelections(info)).toEqual([buildField('id'), buildField('title')]);
+		});
+
+		test('merges plain and fragment selections across field nodes', () => {
+			const info = buildMergedInfo([[buildField('id'), buildFragmentSpread('Fields')]], {
+				Fields: buildFragmentDefinition('Fields', 'Page', [buildField('title')]),
+			});
+
+			expect(buildSelections(info)).toEqual([buildField('id'), buildField('title')]);
+		});
+
+		test('merges selections nested inside a relational field across field nodes', () => {
+			const info = buildMergedInfo([
+				[buildField('contents', { children: [buildField('id')] })],
+				[buildField('contents', { children: [buildField('text')] })],
+			]);
+
+			expect(buildSelections(info)).toEqual([
+				buildField('contents', { children: [buildField('id')] }),
+				buildField('contents', { children: [buildField('text')] }),
+			]);
+		});
+
+		test('skips a field node that carries no selections', () => {
+			const info = buildMergedInfo([[], [buildField('title')]]);
+
+			expect(buildSelections(info)).toEqual([buildField('title')]);
+		});
+
+		test('returns null when no field node carries selections', () => {
+			expect(buildSelections(buildMergedInfo([[], []]))).toBeNull();
+		});
+
+		test('returns the same selections for a single field node as before', () => {
+			const selections = [buildField('id'), buildField('title')];
+
+			expect(buildSelections(buildMergedInfo([selections]))).toEqual(
+				buildSelections(
+					buildResolveInfo({
+						selections,
+						schema: gqlSchema,
+						returnType: gqlSchema.getQueryType()!.getFields()['Page']!.type,
+					}),
+				),
+			);
+		});
+	});
+
 	test('does not mutate the incoming selections', () => {
 		const selections = buildContentItem([buildFragmentSpread('Text')]);
 		const fragments = { Text: buildFragmentDefinition('Text', 'ComponentText', [buildField('text')]) };
