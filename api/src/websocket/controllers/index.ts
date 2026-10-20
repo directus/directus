@@ -1,6 +1,5 @@
 import type { Server as httpServer } from 'http';
 import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import { GraphQLSubscriptionController } from './graphql.js';
 import { LogsController } from './logs.js';
 import { WebSocketController } from './rest.js';
@@ -12,7 +11,7 @@ let logsController: LogsController | undefined;
 export function createWebSocketController(server: httpServer) {
 	const env = useEnv();
 
-	if (toBoolean(env['WEBSOCKETS_REST_ENABLED'])) {
+	if (env.WEBSOCKETS_REST_ENABLED) {
 		websocketController = new WebSocketController(server);
 	}
 }
@@ -24,7 +23,7 @@ export function getWebSocketController() {
 export function createSubscriptionController(server: httpServer) {
 	const env = useEnv();
 
-	if (toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])) {
+	if (env.WEBSOCKETS_GRAPHQL_ENABLED) {
 		subscriptionController = new GraphQLSubscriptionController(server);
 	}
 }
@@ -36,7 +35,7 @@ export function getSubscriptionController() {
 export function createLogsController(server: httpServer) {
 	const env = useEnv();
 
-	if (toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
+	if (env.WEBSOCKETS_LOGS_ENABLED) {
 		logsController = new LogsController(server);
 	}
 }

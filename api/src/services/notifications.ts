@@ -9,7 +9,7 @@ import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { UsersService } from './users.js';
 
-const env = useEnv();
+const { PUBLIC_URL } = useEnv();
 const logger = useLogger();
 
 export class NotificationsService extends ItemsService {
@@ -34,9 +34,7 @@ export class NotificationsService extends ItemsService {
 			});
 
 			if (user['email'] && user['email_notifications'] === true) {
-				const manageUserAccountUrl = new Url(env['PUBLIC_URL'] as string)
-					.addPath('admin', 'users', user['id'])
-					.toString();
+				const manageUserAccountUrl = new Url(PUBLIC_URL).addPath('admin', 'users', user['id']).toString();
 
 				const html = data.message ? md(data.message) : '';
 				const roles = await fetchRolesTree(user['role'], { knex: this.knex });

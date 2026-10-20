@@ -14,12 +14,12 @@ import getModuleDefault from '../../utils/get-module-default.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
-	const env = useEnv();
+	const { MIGRATIONS_PATH } = useEnv();
 	const logger = useLogger();
 
 	let migrationFiles = await fse.readdir(__dirname);
 
-	const customMigrationsPath = path.resolve(env['MIGRATIONS_PATH'] as string);
+	const customMigrationsPath = path.resolve(MIGRATIONS_PATH);
 
 	let customMigrationFiles =
 		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];

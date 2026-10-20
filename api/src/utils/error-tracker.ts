@@ -3,9 +3,7 @@ import { createError, ErrorCode } from '@directus/errors';
 import type { DirectusError } from '@directus/types';
 import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 
-const env = useEnv();
-
-const MAX_IMPORT_ERRORS = env['MAX_IMPORT_ERRORS'] as number;
+const { MAX_IMPORT_ERRORS } = useEnv();
 
 type CapturedErrorData = {
 	message: string;

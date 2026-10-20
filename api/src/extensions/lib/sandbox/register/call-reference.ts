@@ -9,16 +9,14 @@ export async function callReference<T extends (...args: any[]) => unknown | Prom
 	fn: Reference<T>,
 	args: Args<T>,
 ): Promise<Reference<Result<T>>> {
-	const env = useEnv();
+	const { EXTENSIONS_SANDBOX_TIMEOUT } = useEnv();
 	const logger = useLogger();
-
-	const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
 
 	try {
 		return await fn.apply(undefined, args, {
 			arguments: { copy: true },
 			result: { reference: true, promise: true },
-			timeout: sandboxTimeout,
+			timeout: EXTENSIONS_SANDBOX_TIMEOUT,
 		});
 	} catch (e) {
 		if (e instanceof RangeError) {

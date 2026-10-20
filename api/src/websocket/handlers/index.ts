@@ -1,5 +1,4 @@
 import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import { CollabHandler } from '../collab/collab.js';
 import { HeartbeatHandler } from './heartbeat.js';
 import { ItemsHandler } from './items.js';
@@ -9,31 +8,31 @@ import { SubscribeHandler } from './subscribe.js';
 let collabHandler: CollabHandler | undefined;
 
 export function startWebSocketHandlers() {
-	const env = useEnv();
+	const {
+		WEBSOCKETS_HEARTBEAT_ENABLED,
+		WEBSOCKETS_REST_ENABLED,
+		WEBSOCKETS_GRAPHQL_ENABLED,
+		WEBSOCKETS_LOGS_ENABLED,
+		WEBSOCKETS_COLLAB_ENABLED,
+	} = useEnv();
 
-	const heartbeatEnabled = toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']);
-	const restEnabled = toBoolean(env['WEBSOCKETS_REST_ENABLED']);
-	const graphqlEnabled = toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED']);
-	const logsEnabled = toBoolean(env['WEBSOCKETS_LOGS_ENABLED']);
-	const collabEnabled = toBoolean(env['WEBSOCKETS_COLLAB_ENABLED']);
-
-	if (restEnabled && heartbeatEnabled) {
+	if (WEBSOCKETS_REST_ENABLED && WEBSOCKETS_HEARTBEAT_ENABLED) {
 		new HeartbeatHandler();
 	}
 
-	if (restEnabled || graphqlEnabled) {
+	if (WEBSOCKETS_REST_ENABLED || WEBSOCKETS_GRAPHQL_ENABLED) {
 		new ItemsHandler();
 	}
 
-	if (restEnabled) {
+	if (WEBSOCKETS_REST_ENABLED) {
 		new SubscribeHandler();
 	}
 
-	if (logsEnabled) {
+	if (WEBSOCKETS_LOGS_ENABLED) {
 		new LogsHandler();
 	}
 
-	if (collabEnabled) {
+	if (WEBSOCKETS_COLLAB_ENABLED) {
 		collabHandler = new CollabHandler();
 	}
 }

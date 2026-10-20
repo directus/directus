@@ -3,6 +3,7 @@ import { join, sep } from 'node:path';
 import { useEnv } from '@directus/env';
 import type { Driver } from '@directus/storage';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { mockEnv } from '../../../test-utils/env.js';
 import { getExtensionsPath } from '../get-extensions-path.js';
 import { compareFileMetadata, fsStat, getSyncPaths, pathDepth } from './utils.js';
 
@@ -52,7 +53,7 @@ describe('extensions sync utils', () => {
 
 		beforeEach(() => {
 			vi.mocked(getExtensionsPath).mockReturnValue(mockLocalPath);
-			vi.mocked(useEnv).mockReturnValue({ EXTENSIONS_PATH: mockRemotePath });
+			vi.mocked(useEnv).mockReturnValue(mockEnv({ EXTENSIONS_PATH: mockRemotePath }));
 		});
 
 		test('should return root paths when partialPath is undefined', () => {

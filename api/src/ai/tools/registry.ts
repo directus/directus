@@ -365,16 +365,15 @@ const executeRootTool: RootTool = {
 };
 
 function buildURL(tool: ToolConfig<any>, input: unknown, data: unknown): string | undefined {
-	const env = useEnv();
-	const publicURL = env['PUBLIC_URL'] as string | undefined;
+	const { PUBLIC_URL } = useEnv();
 
-	if (!publicURL || !tool.endpoint) return;
+	if (!tool.endpoint) return;
 
 	const path = tool.endpoint({ input, data });
 
 	if (!path) return;
 
-	return new Url(publicURL).addPath('admin', ...path).toString();
+	return new Url(PUBLIC_URL).addPath('admin', ...path).toString();
 }
 
 function toRegistryError(error: unknown, tool?: ToolConfig<any>): RegistryError {

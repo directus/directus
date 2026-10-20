@@ -52,14 +52,14 @@ vi.mock('@directus/storage', () => ({
 	supportsTus: vi.fn().mockReturnValue(true),
 }));
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
-		STORAGE_LOCATIONS: 'local',
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../../test-utils/env.js');
+	return mockUseEnv({
 		PUBLIC_URL: 'http://localhost:8055',
 		CORS_ALLOWED_HEADERS: ['*'],
 		CORS_EXPOSED_HEADERS: ['*'],
-	}),
-}));
+	});
+});
 
 const MOCK_NOW = new Date('2024-05-06T07:08:09.000Z');
 

@@ -17,7 +17,6 @@ import { getCache, getCacheValueWithTTL, setCacheValueWithExpiry } from '../cach
 import type { DeploymentDriver } from '../deployment/deployment.js';
 import { getDeploymentDriver } from '../deployment.js';
 import { useLogger } from '../logger/index.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { parseValue } from '../utils/parse-value.js';
 import type { DeploymentProject } from './deployment-projects.js';
 import { DeploymentProjectsService } from './deployment-projects.js';
@@ -26,7 +25,6 @@ import { DeploymentRunsService } from './deployment-runs.js';
 import { ItemsService } from './items.js';
 
 const env = useEnv();
-const DEPLOYMENT_CACHE_TTL = getMilliseconds(env['CACHE_DEPLOYMENT_TTL']) || 5000; // Default 5s
 const SYNC_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
 
 export class DeploymentService extends ItemsService<DeploymentConfig> {
@@ -287,8 +285,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			}
 		}
 
-		const publicUrl = env['PUBLIC_URL'] as string;
-		const webhookUrl = `${publicUrl}/deployments/webhooks/${provider}`;
+		const webhookUrl = `${env.PUBLIC_URL}/deployments/webhooks/${provider}`;
 
 		logger.debug(
 			`[webhook:${provider}] Registering webhook → ${webhookUrl} for ${projectExternalIds.length} project(s)`,
@@ -325,10 +322,10 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const projects = await driver.listProjects();
 
 		// Store in cache
-		await setCacheValueWithExpiry(deploymentCache, cacheKey, projects, DEPLOYMENT_CACHE_TTL);
+		await setCacheValueWithExpiry(deploymentCache, cacheKey, projects, env.CACHE_DEPLOYMENT_TTL);
 
 		// Return with full TTL (just cached)
-		return { data: projects, remainingTTL: DEPLOYMENT_CACHE_TTL };
+		return { data: projects, remainingTTL: env.CACHE_DEPLOYMENT_TTL };
 	}
 
 	/**
@@ -350,10 +347,10 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const project = await driver.getProject(projectId);
 
 		// Store in cache
-		await setCacheValueWithExpiry(deploymentCache, cacheKey, project, DEPLOYMENT_CACHE_TTL);
+		await setCacheValueWithExpiry(deploymentCache, cacheKey, project, env.CACHE_DEPLOYMENT_TTL);
 
 		// Return with full TTL (just cached)
-		return { data: project, remainingTTL: DEPLOYMENT_CACHE_TTL };
+		return { data: project, remainingTTL: env.CACHE_DEPLOYMENT_TTL };
 	}
 
 	/**

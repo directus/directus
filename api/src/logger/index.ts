@@ -55,7 +55,7 @@ export const createLogger = () => {
 	const env = useEnv();
 
 	const pinoOptions: LoggerOptions = {
-		level: (env['LOG_LEVEL'] as string) || 'info',
+		level: env.LOG_LEVEL,
 		redact: {
 			paths: ['req.headers.authorization', 'req.headers.cookie'],
 			censor: REDACTED_TEXT,
@@ -89,7 +89,7 @@ export const createLogger = () => {
 	const streams = [];
 
 	// Console Logs
-	if (env['LOG_STYLE'] !== 'raw') {
+	if (env.LOG_STYLE !== 'raw') {
 		streams.push({
 			level: mergedOptions.level!,
 			stream: pinoPretty({
@@ -102,8 +102,8 @@ export const createLogger = () => {
 	}
 
 	// WebSocket Logs
-	if (toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
-		const wsLevel = (env['WEBSOCKETS_LOGS_LEVEL'] as string) || 'info';
+	if (env.WEBSOCKETS_LOGS_ENABLED) {
+		const wsLevel = env.WEBSOCKETS_LOGS_LEVEL;
 
 		if (getLoggerLevelValue(wsLevel) < getLoggerLevelValue(mergedOptions.level!)) {
 			mergedOptions.level = wsLevel;
@@ -111,7 +111,7 @@ export const createLogger = () => {
 
 		streams.push({
 			level: wsLevel,
-			stream: getLogsStream(env['WEBSOCKETS_LOGS_STYLE'] !== 'raw'),
+			stream: getLogsStream(env.WEBSOCKETS_LOGS_STYLE !== 'raw'),
 		});
 	}
 
@@ -125,14 +125,14 @@ export const createExpressLogger = () => {
 	const loggerEnvConfig = getConfigFromEnv('LOGGER_', { omitPrefix: 'LOGGER_HTTP' });
 
 	const httpLoggerOptions: LoggerOptions = {
-		level: (env['LOG_LEVEL'] as string) || 'info',
+		level: env.LOG_LEVEL,
 		redact: {
 			paths: ['req.headers.authorization', 'req.headers.cookie'],
 			censor: REDACTED_TEXT,
 		},
 	};
 
-	if (env['LOG_STYLE'] === 'raw' || toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
+	if (env.LOG_STYLE === 'raw' || env.WEBSOCKETS_LOGS_ENABLED) {
 		httpLoggerOptions.redact = {
 			paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers', 'req.query.access_token'],
 			censor: (value, pathParts) => {
@@ -172,8 +172,8 @@ export const createExpressLogger = () => {
 		delete loggerEnvConfig['levels'];
 	}
 
-	if (env['LOG_HTTP_IGNORE_PATHS']) {
-		const ignorePathsSet = new Set(env['LOG_HTTP_IGNORE_PATHS'] as string);
+	if (env.LOG_HTTP_IGNORE_PATHS) {
+		const ignorePathsSet = new Set(env.LOG_HTTP_IGNORE_PATHS);
 
 		httpLoggerEnvConfig['autoLogging'] = {
 			ignore: (req) => {
@@ -187,7 +187,7 @@ export const createExpressLogger = () => {
 	const mergedHttpOptions = merge(httpLoggerOptions, loggerEnvConfig);
 	const streams = [];
 
-	if (env['LOG_STYLE'] !== 'raw') {
+	if (env.LOG_STYLE !== 'raw') {
 		const pinoHttpPretty = httpPrintFactory({
 			all: true,
 			translateTime: 'SYS:HH:MM:ss',
@@ -204,8 +204,8 @@ export const createExpressLogger = () => {
 	}
 
 	// WebSocket Logs
-	if (toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
-		const wsLevel = (env['WEBSOCKETS_LOGS_LEVEL'] as string) || 'info';
+	if (toBoolean(env.WEBSOCKETS_LOGS_ENABLED)) {
+		const wsLevel = env.WEBSOCKETS_LOGS_LEVEL;
 
 		if (getLoggerLevelValue(wsLevel) < getLoggerLevelValue(mergedHttpOptions.level!)) {
 			mergedHttpOptions.level = wsLevel;
@@ -213,7 +213,7 @@ export const createExpressLogger = () => {
 
 		streams.push({
 			level: wsLevel,
-			stream: getHttpLogsStream(env['WEBSOCKETS_LOGS_STYLE'] !== 'raw'),
+			stream: getHttpLogsStream(env.WEBSOCKETS_LOGS_STYLE !== 'raw'),
 		});
 	}
 

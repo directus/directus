@@ -148,7 +148,7 @@ export const fields = defineTool<z.infer<typeof FieldsValidateSchema>, z.infer<t
 		}
 
 		if (args.action === 'read') {
-			let result = null;
+			let result;
 
 			if (args.collection) {
 				if (args.field) {

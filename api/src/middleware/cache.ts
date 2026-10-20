@@ -1,5 +1,4 @@
 import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import type { RequestHandler } from 'express';
 import { getCache, getCacheValue } from '../cache.js';
 import { getEntitlementManager } from '../license/index.js';
@@ -17,7 +16,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 	const entitlementManager = getEntitlementManager();
 
 	if (req.method.toLowerCase() !== 'get' && req.originalUrl?.startsWith('/graphql') === false) return next();
-	if (env['CACHE_ENABLED'] !== true) return next();
+	if (!env.CACHE_ENABLED) return next();
 	if (!cache) return next();
 
 	if (shouldSkipCache(req)) {
@@ -56,7 +55,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 
 		const force_telemetry = entitlementManager.isEntitled('telemetry_required');
 
-		if (force_telemetry || toBoolean(env['TELEMETRY'])) {
+		if (force_telemetry || env.TELEMETRY) {
 			try {
 				const counter = useBufferedCounter('api-requests');
 				counter.increment('cached');

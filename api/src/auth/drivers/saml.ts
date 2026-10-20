@@ -160,7 +160,7 @@ export function createSAMLAuthRouter(providerName: string) {
 			const { context } = sp.createLogoutRequest(idp, 'redirect', req.body);
 
 			const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
-			const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
+			const sessionCookieName = env.SESSION_COOKIE_NAME;
 
 			if (req.cookies[sessionCookieName]) {
 				await authService.logout(req.cookies[sessionCookieName]);
@@ -210,9 +210,9 @@ export function createSAMLAuthRouter(providerName: string) {
 
 				if (redirect) {
 					if (authMode === 'session') {
-						res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+						res.cookie(env.SESSION_COOKIE_NAME, accessToken, SESSION_COOKIE_OPTIONS);
 					} else {
-						res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+						res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, REFRESH_COOKIE_OPTIONS);
 					}
 
 					return res.redirect(redirect);

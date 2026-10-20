@@ -343,7 +343,7 @@ expect(emitter.emitAction).toHaveBeenCalledWith(
 
 Provides environment variable mocking utilities for the `@directus/env` package.
 
-#### `mockEnv(overrides?)`
+#### `mockUseEnv(overrides?)`
 
 Creates an environment mock based on the actual `@directus/env` defaults.
 
@@ -354,14 +354,19 @@ Creates an environment mock based on the actual `@directus/env` defaults.
 
 **Returns:** Mock module object with `useEnv` function
 
+#### `mockEnv(overrides?)`
+
+Builds a plain env object from the actual `@directus/env` defaults and the overrides, typed as `Env`. Useful as a value
+for `vi.mocked(useEnv).mockReturnValue()`.
+
 #### `setEnv(overrides)`
 
-Overrides env values on top of the `mockEnv()` defaults, until the next `resetEnv()`. The object returned by `useEnv()`
-is updated in place, so modules holding a reference from a top level `useEnv()` call see the change too.
+Overrides env values on top of the `mockUseEnv()` defaults, until the next `resetEnv()`. The object returned by
+`useEnv()` is updated in place, so modules holding a reference from a top level `useEnv()` call see the change too.
 
 #### `resetEnv()`
 
-Restores the env to the `mockEnv()` defaults, undoing any `setEnv()` calls.
+Restores the env to the `mockUseEnv()` defaults, undoing any `setEnv()` calls.
 
 **Example:**
 
@@ -370,16 +375,16 @@ import { resetEnv, setEnv } from '../test-utils/env.js';
 
 // Standard usage with defaults
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv();
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
 });
 
 // With custom default values
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv({
-		STORAGE_LOCATIONS: 'custom-storage',
-		FILES_DELETE_ORIGINAL_ON_MOVE: 'true',
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({
+		STORAGE_LOCATIONS: ['custom-storage'],
+		FILES_DELETE_ORIGINAL_ON_MOVE: true,
 	});
 });
 
@@ -388,13 +393,13 @@ beforeEach(() => {
 });
 
 it('should use custom env value', () => {
-	setEnv({ FILES_DELETE_ORIGINAL_ON_MOVE: 'true' });
+	setEnv({ FILES_DELETE_ORIGINAL_ON_MOVE: true });
 
 	// ... rest of test
 });
 
 it('should use custom env value for values derived at import time', async () => {
-	setEnv({ FILES_DELETE_ORIGINAL_ON_MOVE: 'true' });
+	setEnv({ FILES_DELETE_ORIGINAL_ON_MOVE: true });
 
 	// Clear the module cache and re-import, so the module is evaluated again with the current env
 	vi.resetModules();
@@ -1084,11 +1089,11 @@ describe('Service Tests', () => {
 ```typescript
 // Mock environment variables (using utility)
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv({
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({
 		CACHE_SCHEMA: true,
 		DB_CLIENT: 'postgres',
-		STORAGE_LOCATIONS: 'local',
+		STORAGE_LOCATIONS: ['local'],
 	});
 });
 

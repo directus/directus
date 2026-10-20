@@ -13,12 +13,11 @@ export async function up(knex: Knex): Promise<void> {
 	}
 
 	const rowsLimit = 50;
-	let hasMore = true;
 
 	const existingUsers = new Set();
 	const missingUsers = new Set();
 
-	while (hasMore) {
+	while (true) {
 		const legacyComments = await knex
 			.select('*')
 			.from('directus_activity')
@@ -26,7 +25,6 @@ export async function up(knex: Knex): Promise<void> {
 			.limit(rowsLimit);
 
 		if (legacyComments.length === 0) {
-			hasMore = false;
 			break;
 		}
 

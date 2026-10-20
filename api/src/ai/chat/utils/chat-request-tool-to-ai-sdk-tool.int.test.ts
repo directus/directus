@@ -1,14 +1,14 @@
 import { describe, expect, test, vi } from 'vitest';
 import { chatRequestToolsToAiSdkTools } from './chat-request-tool-to-ai-sdk-tool.js';
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn(() => ({
-		EMAIL_TEMPLATES_PATH: './templates',
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../../../test-utils/env.js');
+	return mockUseEnv({
 		MAX_PAYLOAD_SIZE: '1mb',
 		PUBLIC_URL: 'https://directus.example',
 		QUERY_LIMIT_DEFAULT: 100,
-	})),
-}));
+	});
+});
 
 const accountability = { app: true, admin: true, role: null, roles: [], user: 'user-id' } as any;
 const schema = { collections: {} } as any;

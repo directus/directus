@@ -49,16 +49,16 @@ export function isOriginAllowed(request: IncomingMessage): boolean {
 	const env = useEnv();
 
 	// Configured PUBLIC_URL (handles reverse-proxy deployments).
-	const publicUrl = env['PUBLIC_URL'];
+	const publicUrl = env.PUBLIC_URL;
 
 	if (typeof publicUrl === 'string' && URL.canParse(publicUrl) && new URL(publicUrl).origin === originUrl.origin) {
 		return true;
 	}
 
 	// Fall back to the CORS allowlist so operators have a single source of truth.
-	if (env['CORS_ENABLED'] !== true) return false;
+	if (!env.CORS_ENABLED) return false;
 
-	return matchesCorsOrigin(env['CORS_ORIGIN'], origin);
+	return matchesCorsOrigin(env.CORS_ORIGIN, origin);
 }
 
 /**

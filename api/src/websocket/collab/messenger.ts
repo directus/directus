@@ -15,9 +15,7 @@ import { useBus } from '../../bus/index.js';
 import { useLogger } from '../../logger/index.js';
 import { useStore } from './store.js';
 
-const env = useEnv();
-
-const INSTANCE_TIMEOUT = Number(env['WEBSOCKETS_COLLAB_INSTANCE_TIMEOUT']);
+const { WEBSOCKETS_COLLAB_INSTANCE_TIMEOUT: INSTANCE_TIMEOUT } = useEnv();
 
 type Instance = {
 	clients: ClientID[];

@@ -7,12 +7,12 @@ import { getSchema } from '../../utils/get-schema.js';
 export async function getLicenseToken(options?: {
 	database?: Knex;
 }): Promise<{ source: LicenseSource; token: string | null }> {
-	const env = useEnv();
+	const { LICENSE_TOKEN } = useEnv();
 
-	if (env['LICENSE_TOKEN']) {
+	if (LICENSE_TOKEN) {
 		return {
 			source: 'env',
-			token: String(env['LICENSE_TOKEN']),
+			token: LICENSE_TOKEN,
 		};
 	}
 

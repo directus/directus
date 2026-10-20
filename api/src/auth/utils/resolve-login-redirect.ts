@@ -12,7 +12,7 @@ import isUrlAllowed from '../../utils/is-url-allowed.js';
  */
 export function resolveLoginRedirect(redirect: unknown, opts: { provider?: string | undefined } = {}) {
 	const env = useEnv();
-	const publicURL = env['PUBLIC_URL'] as string;
+	const publicURL = env.PUBLIC_URL;
 
 	// Default empty redirect to root
 	if (!redirect) return '/';

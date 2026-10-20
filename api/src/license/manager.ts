@@ -26,7 +26,6 @@ import {
 	verifyLicense,
 } from '@directus/license';
 import type { Accountability } from '@directus/types';
-import { toBoolean } from '@directus/utils';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionCache } from '../permissions/cache.js';
 import { UsersService } from '../services/index.js';
@@ -86,7 +85,7 @@ export class LicenseManager {
 	/** Ignores remote syncs while initializing */
 	private initializing = false;
 	private rpc: RPC<LicenseManager, 'syncState'> | null = null;
-	private store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
+	private store = useStore<LicenseStore>(env.LICENSE_NAMESPACE);
 	/** Scheduled license check */
 	private check: { job: ScheduledJob | null; cron: string | null } | null = null;
 
@@ -112,8 +111,8 @@ export class LicenseManager {
 
 	/** Run the license action for the current key and token */
 	public async reconcile(): Promise<void> {
-		const envKey = env['LICENSE_KEY'] as string | undefined;
-		const envToken = env['LICENSE_TOKEN'] as string | undefined;
+		const envKey = env['LICENSE_KEY'];
+		const envToken = env['LICENSE_TOKEN'];
 
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
@@ -234,7 +233,7 @@ export class LicenseManager {
 		// Read env directly, a downgrade clears the source
 		if (env['LICENSE_KEY'] || env['LICENSE_TOKEN']) return false;
 
-		return toBoolean(env['LICENSE_KEY_MANAGEMENT_ENABLED']);
+		return env.LICENSE_KEY_MANAGEMENT_ENABLED;
 	}
 
 	public async getLicense() {
@@ -330,7 +329,7 @@ export class LicenseManager {
 		const { token, new_project_id } = await activateKey({
 			license_key: key,
 			project_id: project_id!,
-			public_url: env['PUBLIC_URL'] as string,
+			public_url: env.PUBLIC_URL,
 		});
 
 		await settingsService.upsertSingleton({
@@ -358,7 +357,7 @@ export class LicenseManager {
 			await deactivateKey({
 				license_key: this.licenseKey!,
 				project_id: project_id!,
-				public_url: env['PUBLIC_URL'] as string,
+				public_url: env.PUBLIC_URL,
 			});
 		} catch (error) {
 			// A missing or bound elsewhere key counts as deactivated, downgrade
@@ -399,7 +398,7 @@ export class LicenseManager {
 				{
 					license_key: currentKey,
 					project_id: project_id!,
-					public_url: env['PUBLIC_URL'] as string,
+					public_url: env.PUBLIC_URL,
 				},
 				{ license_key: newKey },
 			);
@@ -485,7 +484,7 @@ export class LicenseManager {
 					{
 						license_key: key,
 						project_id: project_id!,
-						public_url: env['PUBLIC_URL'] as string,
+						public_url: env.PUBLIC_URL,
 					},
 					{ usage_metrics },
 				);
@@ -523,7 +522,7 @@ export class LicenseManager {
 			const { url } = await billingPortal({
 				license_key: this.licenseKey!,
 				project_id: project_id!,
-				public_url: env['PUBLIC_URL'] as string,
+				public_url: env.PUBLIC_URL,
 			});
 
 			return url;
@@ -543,7 +542,7 @@ export class LicenseManager {
 			const addons = await readAddons({
 				license_key: this.licenseKey!,
 				project_id: project_id!,
-				public_url: env['PUBLIC_URL'] as string,
+				public_url: env.PUBLIC_URL,
 			});
 
 			return addons.available_addons.map((addon) => ({
@@ -581,7 +580,7 @@ export class LicenseManager {
 				{
 					license_key: this.licenseKey!,
 					project_id: project_id!,
-					public_url: env['PUBLIC_URL'] as string,
+					public_url: env.PUBLIC_URL,
 				},
 				{
 					addons: [
@@ -623,7 +622,7 @@ export class LicenseManager {
 				{
 					license_key: this.licenseKey!,
 					project_id: project_id!,
-					public_url: env['PUBLIC_URL'] as string,
+					public_url: env.PUBLIC_URL,
 				},
 				{ addon_ids: [addonId] },
 			);
