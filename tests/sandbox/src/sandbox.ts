@@ -6,7 +6,7 @@ import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { type Env, getEnv } from './config.js';
 import { directusFolder } from './find-directus.js';
-import { kill } from './kill.js';
+import { kill, killAndWait } from './kill.js';
 import { createLogger, type Logger } from './logger.js';
 import { getPort, type Port, type PortRange } from './port.js';
 import { startApp } from './steps/app.js';
@@ -21,7 +21,6 @@ import {
 	saveSchema,
 	startApi,
 } from './steps/index.js';
-import { startLicenseServer } from './steps/license.js';
 
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -162,7 +161,6 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 
 export const apiFolder = join(directusFolder, 'api');
 export const appFolder = join(directusFolder, 'app');
-export const licenseFolder = join(directusFolder, 'tests/mock-license-server');
 
 export const databases: Database[] = [
 	'maria',
@@ -201,12 +199,6 @@ export async function sandboxes(
 
 	let build: ChildProcessWithoutNullStreams | undefined;
 	const projects: { project: string; logger: Logger; env: Env; keep: boolean }[] = [];
-
-	let license: ChildProcessWithoutNullStreams | undefined;
-
-	if (opts.extras.license) {
-		license = await startLicenseServer(await getEnv('sqlite', opts), logger);
-	}
 
 	try {
 		// Rebuild directus
@@ -259,8 +251,6 @@ export async function sandboxes(
 			}
 		}
 
-		kill(license);
-
 		await Promise.all(
 			projects.filter(({ keep }) => !keep).map(({ project, logger, env }) => dockerDown(project, env, logger)),
 		);
@@ -279,7 +269,6 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	let app: ChildProcessWithoutNullStreams | undefined;
 	let build: ChildProcessWithoutNullStreams | undefined;
 	let interval: NodeJS.Timeout;
-	let license: ChildProcessWithoutNullStreams | undefined;
 	let knex: Knex | undefined;
 	let project: string | undefined;
 
@@ -287,10 +276,6 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		// Rebuild directus
 		if (opts.build && !opts.dev) {
 			build = await buildApi(opts, logger, restartApi);
-		}
-
-		if (opts.extras.license) {
-			license = await startLicenseServer(env, logger);
 		}
 
 		project = await dockerUp(database, opts, env, logger);
@@ -309,23 +294,8 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	}
 
 	async function restartApi() {
-		apis?.forEach((api) => kill(api.process));
-
-		// Re-resolve the port — the just-killed API may keep the port in
-		// TIME_WAIT for a short window. getPort falls back to a free port if
-		// the requested one is taken, and we propagate that everywhere
-		// (opts.port, env.PORT, env.PUBLIC_URL) so the API and any consumer of
-		// directus.apis/env stay in lockstep.
-		const resolvedPort = await getPort(opts.port);
-
-		if (resolvedPort !== opts.port) {
-			opts.port = resolvedPort;
-			env.PORT = String(resolvedPort);
-
-			const publicUrl = new URL(env.PUBLIC_URL);
-			publicUrl.port = String(resolvedPort);
-			env.PUBLIC_URL = publicUrl.toString().replace(/\/$/, '');
-		}
+		// Restart on the same port once the old process is gone, keeping PUBLIC_URL stable
+		await Promise.all(apis?.map((api) => killAndWait(api.process)) ?? []);
 
 		apis = await startApi(opts, env, logger);
 	}
@@ -342,7 +312,6 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		}
 
 		kill(app);
-		kill(license);
 
 		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
 
