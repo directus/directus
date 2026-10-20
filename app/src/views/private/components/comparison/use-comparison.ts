@@ -312,6 +312,7 @@ export function useComparison(options: UseComparisonOptions) {
 				const { extensions, key } = buildFieldSchema({
 					customFormats: field.meta?.options?.['customFormats'],
 					extensions: field.meta?.options?.['extensions'],
+					extensionOptions: field.meta?.options?.['extensionOptions'],
 					comparisonMode: true,
 				});
 

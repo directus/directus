@@ -2,6 +2,7 @@ import type { RichTextConfig } from '@directus/extensions';
 import { createDocument, flattenExtensions, getHTMLFromFragment, getSchema, splitExtensions } from '@tiptap/core';
 import type { MarkType, NodeType, Node as ProseMirrorNode, Schema } from '@tiptap/pm/model';
 import { fieldEditorExtensions } from '@/interfaces/input-rich-text-html/extensions';
+import { resolveRichText } from '@/rich-text/register';
 
 function inParagraphDoc(schema: Schema, content: ProseMirrorNode): ProseMirrorNode | null {
 	const inParagraph = schema.nodes['paragraph']!.createAndFill(null, content);
@@ -44,17 +45,18 @@ function findMismatch(schema: Schema, doc: ProseMirrorNode): string | null {
  * Runs in production builds too, because authors build against a built Directus, not the app dev
  * server.
  *
- * Best effort: only default attribute values are sampled, and types with no standalone sample
+ * Best effort: only default option and attribute values are sampled, and types with no standalone sample
  * (child-only nodes, marks a paragraph refuses) are skipped silently.
  */
 export function warnAsymmetricRichTexts(configs: RichTextConfig[]): void {
 	for (const config of configs) {
-		if (!config.extensions?.length) continue;
+		const extensions = resolveRichText(config)?.extensions ?? [];
+		if (!extensions.length) continue;
 
 		try {
 			// each extension alone, so a clash between two extensions enabled on one field is not caught
-			const schema = getSchema(fieldEditorExtensions(config.extensions));
-			const { nodeExtensions, markExtensions } = splitExtensions(flattenExtensions(config.extensions));
+			const schema = getSchema(fieldEditorExtensions(extensions));
+			const { nodeExtensions, markExtensions } = splitExtensions(flattenExtensions(extensions));
 
 			const checks = [
 				...nodeExtensions.map(({ name }) => ({

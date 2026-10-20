@@ -1,4 +1,10 @@
-import type { RichTextConfig, RichTextToolbarButton } from '@directus/extensions';
+import type {
+	RichTextBubbleMenu,
+	RichTextConfig,
+	RichTextOptionValues,
+	RichTextPerField,
+	RichTextToolbarButton,
+} from '@directus/extensions';
 import {
 	type AnyExtension,
 	type Attributes,
@@ -14,6 +20,13 @@ import { editorExtensions, fieldEditorExtensions } from '@/interfaces/input-rich
 import { ComparisonDiff } from '@/interfaces/input-rich-text-html/extensions/comparison-diff';
 import { CUSTOM_FORMAT_PREFIX } from '@/interfaces/input-rich-text-html/extensions/custom-formats';
 import { PRESERVED_ATTRIBUTE_KEYS } from '@/interfaces/input-rich-text-html/extensions/preserved-attributes';
+import {
+	errorMessage,
+	optionValues,
+	resolveEntries,
+	type RichTextEntries,
+	stableStringify,
+} from '@/rich-text/register';
 
 const SLUG = /^[a-z0-9-]+$/;
 
@@ -119,30 +132,57 @@ function validateBubbleMenu(menu: Record<string, unknown>): string | null {
 	return validateKeyed(menu['buttons'], 'buttons', 'button', (button) => validateButton(button, { allowItems: false }));
 }
 
+function validateOptions(options: unknown): string | null {
+	if (options === undefined) return null;
+	if (!Array.isArray(options)) return '"options" must be an array';
+
+	const fields = new Set<string>();
+
+	for (const option of options) {
+		if (!isObject(option) || typeof option['field'] !== 'string') return 'every option needs a "field" string';
+		const field = option['field'];
+		if (fields.has(field)) return `option "${field}" is defined twice`;
+		fields.add(field);
+
+		if (typeof option['type'] !== 'string') return `option "${field}" needs a "type" string`;
+		if (option['meta'] !== undefined && !isObject(option['meta'])) return `option "${field}" "meta" must be an object`;
+		if (option['schema'] !== undefined && !isObject(option['schema']))
+			return `option "${field}" "schema" must be an object`;
+	}
+
+	return null;
+}
+
+const PER_FIELD = ['extensions', 'buttons', 'bubbleMenus'] as const;
+
 function validateShape(config: unknown): string | null {
 	if (!isObject(config)) return 'config is not an object';
 	if (typeof config['id'] !== 'string' || !SLUG.test(config['id'])) return '"id" must match [a-z0-9-]+';
 	if (typeof config['name'] !== 'string') return '"name" must be a string';
 
-	const { extensions, buttons, bubbleMenus } = config;
+	const optionsError = validateOptions(config['options']);
+	if (optionsError) return optionsError;
 
-	if (extensions !== undefined) {
-		if (!Array.isArray(extensions)) return '"extensions" must be an array';
-		if (!extensions.every(isTiptapExtension)) return '"extensions" must only hold Tiptap extensions, nodes or marks';
+	for (const field of PER_FIELD) {
+		const value = config[field];
+		if (value !== undefined && !Array.isArray(value) && typeof value !== 'function')
+			return `"${field}" must be an array or a function`;
 	}
-
-	if (buttons !== undefined) {
-		const buttonError = validateKeyed(buttons, 'buttons', 'button', (button) =>
-			validateButton(button, { allowItems: true }),
-		);
-
-		if (buttonError) return buttonError;
-	}
-
-	if (bubbleMenus !== undefined) return validateKeyed(bubbleMenus, 'bubbleMenus', 'bubble menu', validateBubbleMenu);
 
 	return null;
 }
+
+function validateExtensionList(extensions: unknown): string | null {
+	if (!Array.isArray(extensions)) return '"extensions" must be an array';
+	if (!extensions.every(isTiptapExtension)) return '"extensions" must only hold Tiptap extensions, nodes or marks';
+	return null;
+}
+
+const validateButtons = (buttons: unknown) =>
+	validateKeyed(buttons, 'buttons', 'button', (button) => validateButton(button, { allowItems: true }));
+
+const validateBubbleMenus = (bubbleMenus: unknown) =>
+	validateKeyed(bubbleMenus, 'bubbleMenus', 'bubble menu', validateBubbleMenu);
 
 function callAttributesField<T>(
 	extension: AnyExtension,
@@ -191,17 +231,22 @@ function findCoreAttributeClash(
 	return undefined;
 }
 
-function validateConflicts(config: RichTextConfig, owners: Map<string, string>): string | null {
-	const contributed = flattenExtensions(config.extensions ?? []);
+function validateNames(extensions: AnyExtension[], owners: Map<string, string>): string | null {
 	const core = getCoreSchema();
 
-	for (const { name } of contributed) {
+	for (const { name } of flattenExtensions(extensions)) {
 		if (core.names.has(name)) return `"${name}" is a core node, mark or extension name`;
 		if (name.startsWith(CUSTOM_FORMAT_PREFIX))
 			return `"${name}" uses the "${CUSTOM_FORMAT_PREFIX}" prefix reserved for field custom formats`;
 		if (owners.has(name)) return `"${name}" is already defined by richtext extension "${owners.get(name)}"`;
 	}
 
+	return null;
+}
+
+function validateAttributes(extensions: AnyExtension[]): string | null {
+	const contributed = flattenExtensions(extensions);
+	const core = getCoreSchema();
 	const { nodeExtensions, markExtensions } = splitExtensions([...flattenExtensions(editorExtensions), ...contributed]);
 
 	for (const extension of contributed) {
@@ -228,29 +273,41 @@ function validateConflicts(config: RichTextConfig, owners: Map<string, string>):
 	return null;
 }
 
-function findRejection(config: unknown, ids: Set<string>, owners: Map<string, string>): string | null {
+const validateExtensions = (extensions: unknown, owners: Map<string, string>): string | null =>
+	validateExtensionList(extensions) ??
+	validateNames(extensions as AnyExtension[], owners) ??
+	validateAttributes(extensions as AnyExtension[]) ??
+	validateSchemaBuild(extensions as AnyExtension[]);
+
+type ConfigCheck = { reason: string } | { config: RichTextConfig; defaults: RichTextEntries };
+
+function checkConfig(config: unknown, ids: Set<string>, owners: Map<string, string>): ConfigCheck {
 	try {
 		const shapeError = validateShape(config);
-		if (shapeError) return shapeError;
+		if (shapeError) return { reason: shapeError };
 
 		const richText = config as RichTextConfig;
-		if (ids.has(richText.id)) return 'another richtext extension already uses this id';
+		if (ids.has(richText.id)) return { reason: 'another richtext extension already uses this id' };
 
-		const conflict = validateConflicts(richText, owners);
-		if (conflict) return conflict;
+		const defaults = resolveEntries(richText, optionValues(richText));
 
-		return validateSchemaBuild(richText);
+		const reason =
+			validateExtensions(defaults.extensions, owners) ??
+			validateButtons(defaults.buttons) ??
+			validateBubbleMenus(defaults.bubbleMenus);
+
+		if (reason) return { reason };
+
+		return { config: richText, defaults };
 	} catch (error) {
-		return `extension threw while being validated: ${errorMessage(error)}`;
+		return { reason: `extension threw while being validated: ${errorMessage(error)}` };
 	}
 }
 
-const errorMessage = (error: unknown) => (error instanceof Error ? error.message : String(error));
-
 // a schema-build throw would otherwise surface in every field that enabled the extension
-function validateSchemaBuild(config: RichTextConfig): string | null {
+function validateSchemaBuild(extensions: AnyExtension[]): string | null {
 	try {
-		getSchema(fieldEditorExtensions(config.extensions ?? []));
+		getSchema(fieldEditorExtensions(extensions));
 		return null;
 	} catch (error) {
 		return `extension threw while building the editor schema: ${errorMessage(error)}`;
@@ -260,15 +317,13 @@ function validateSchemaBuild(config: RichTextConfig): string | null {
 const FALLBACK_ICON = 'extension';
 
 // an unknown name renders as its raw ligature text, so the button gets a placeholder instead of a rejection
-function withKnownIcons(config: RichTextConfig): RichTextConfig {
-	const { buttons, bubbleMenus } = config;
-
+function knownIcons(id: string) {
 	const knownIcon = (icon: string, owner: string): string => {
 		if (isKnownIcon(icon)) return icon;
 
 		// eslint-disable-next-line no-console
 		console.warn(
-			`Richtext extension "${config.id}": ${owner} uses the unknown icon "${icon}". ` +
+			`Richtext extension "${id}": ${owner} uses the unknown icon "${icon}". ` +
 				`It shows the "${FALLBACK_ICON}" icon instead.`,
 		);
 
@@ -288,18 +343,87 @@ function withKnownIcons(config: RichTextConfig): RichTextConfig {
 	});
 
 	return {
+		buttons: (buttons: RichTextToolbarButton[]) =>
+			buttons.map((button) => withKnownIcon(button, `button "${button.key}"`)),
+		bubbleMenus: (bubbleMenus: RichTextBubbleMenu[]) =>
+			bubbleMenus.map((menu) => ({
+				...menu,
+				buttons: menu.buttons.map((button) =>
+					withKnownIcon(button, `bubble menu "${menu.key}" button "${button.key}"`),
+				),
+			})),
+	};
+}
+
+const nameList = (extensions: AnyExtension[]) =>
+	flattenExtensions(extensions)
+		.map(({ name }) => name)
+		.sort()
+		.join(', ');
+
+/**
+ * Wraps a factory so each new set of option values gets the load-time checks once. A failing set
+ * throws, which leaves the extension out of that field only (see resolveRichText).
+ */
+function guardFactory<T>(
+	factory: (values: RichTextOptionValues) => T[],
+	validate: (entries: unknown) => string | null,
+	finish: (entries: T[]) => T[] = (entries) => entries,
+): (values: RichTextOptionValues) => T[] {
+	const cache = new Map<string, { entries: T[] } | { error: Error }>();
+
+	return (values) => {
+		const key = stableStringify(values);
+		let result = cache.get(key);
+
+		if (!result) {
+			try {
+				const entries = factory(values);
+				const reason = validate(entries);
+				result = reason ? { error: new Error(reason) } : { entries: finish(entries) };
+			} catch (error) {
+				result = { error: error instanceof Error ? error : new Error(String(error)) };
+			}
+
+			cache.set(key, result);
+		}
+
+		if ('error' in result) throw result.error;
+		return result.entries;
+	};
+}
+
+// a fixed list was already checked by checkConfig, so it only gets `finish`
+function guardEntries<T>(
+	entries: RichTextPerField<T, RichTextOptionValues> | undefined,
+	validate: (entries: unknown) => string | null,
+	finish?: (entries: T[]) => T[],
+): RichTextPerField<T, RichTextOptionValues> | undefined {
+	if (typeof entries === 'function') return guardFactory(entries, validate, finish);
+	return entries && finish ? finish(entries) : entries;
+}
+
+function withPerFieldChecks(config: RichTextConfig, defaults: RichTextEntries): RichTextConfig {
+	const icons = knownIcons(config.id);
+	const defaultNames = nameList(defaults.extensions);
+
+	const sameNames = (entries: AnyExtension[]) => {
+		const names = nameList(entries);
+		return names === defaultNames ? null : `"extensions" returns the names [${names}] instead of [${defaultNames}]`;
+	};
+
+	return {
 		...config,
-		...(buttons ? { buttons: buttons.map((button) => withKnownIcon(button, `button "${button.key}"`)) } : {}),
-		...(bubbleMenus
-			? {
-					bubbleMenus: bubbleMenus.map((menu) => ({
-						...menu,
-						buttons: menu.buttons.map((button) =>
-							withKnownIcon(button, `bubble menu "${menu.key}" button "${button.key}"`),
-						),
-					})),
-				}
-			: {}),
+		extensions: guardEntries(
+			config.extensions,
+			(entries) =>
+				validateExtensionList(entries) ??
+				sameNames(entries as AnyExtension[]) ??
+				validateAttributes(entries as AnyExtension[]) ??
+				validateSchemaBuild(entries as AnyExtension[]),
+		),
+		buttons: guardEntries(config.buttons, validateButtons, icons.buttons),
+		bubbleMenus: guardEntries(config.bubbleMenus, validateBubbleMenus, icons.bubbleMenus),
 	};
 }
 
@@ -327,23 +451,23 @@ export function validateRichTexts(configs: unknown[]): RichTextConfig[] {
 	const owners = new Map<string, string>();
 
 	for (const config of [...configs].sort(byId)) {
-		const reason = findRejection(config, ids, owners);
+		const checked = checkConfig(config, ids, owners);
 
-		if (reason) {
+		if ('reason' in checked) {
 			const label = isObject(config) && typeof config['id'] === 'string' ? `"${config['id']}"` : '(unknown id)';
 			// eslint-disable-next-line no-console
-			console.error(`Richtext extension ${label} was not loaded: ${reason}`);
+			console.error(`Richtext extension ${label} was not loaded: ${checked.reason}`);
 			continue;
 		}
 
-		const richText = config as RichTextConfig;
+		const { config: richText, defaults } = checked;
 		ids.add(richText.id);
 
-		for (const { name } of flattenExtensions(richText.extensions ?? [])) {
+		for (const { name } of flattenExtensions(defaults.extensions)) {
 			owners.set(name, richText.id);
 		}
 
-		valid.push(withKnownIcons(richText));
+		valid.push(withPerFieldChecks(richText, defaults));
 	}
 
 	return valid;

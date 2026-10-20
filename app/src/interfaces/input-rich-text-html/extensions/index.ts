@@ -74,6 +74,8 @@ export interface FieldSchemaOptions {
 	customFormats?: unknown;
 	/** Field `extensions` option: ids of the registered richtext extensions this field opted into. */
 	extensions?: string[] | null;
+	/** Field `extensionOptions` option: per-extension values, keyed by extension id. */
+	extensionOptions?: unknown;
 	comparisonMode?: boolean;
 }
 
@@ -96,25 +98,25 @@ export interface FieldSchema {
  */
 export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema {
 	const customFormats = buildCustomFormats(options.customFormats);
-	const contributed = enabledRichTexts(options.extensions);
+	const contributed = enabledRichTexts(options.extensions, options.extensionOptions);
 
 	return {
 		extensions: [
-			...contributed.flatMap((config) => config.extensions ?? []),
+			...contributed.flatMap((config) => config.extensions),
 			...customFormats.extensions,
 			...(options.comparisonMode ? [ComparisonDiff] : []),
 		],
 		key: [
 			options.comparisonMode ? 'comparison' : '',
 			customFormats.key,
-			contributed.map((config) => config.id).join('\u0000'),
+			contributed.map((config) => config.key).join('\u0000'),
 		].join('\u0000'),
 		formats: customFormats.formats,
-		buttons: contributed.flatMap(
-			(config) => config.buttons?.map((button) => ({ ...button, key: contributedKey(config, button) })) ?? [],
+		buttons: contributed.flatMap((config) =>
+			config.buttons.map((button) => ({ ...button, key: contributedKey(config, button) })),
 		),
-		bubbleMenus: contributed.flatMap(
-			(config) => config.bubbleMenus?.map((menu) => ({ ...menu, key: contributedKey(config, menu) })) ?? [],
+		bubbleMenus: contributed.flatMap((config) =>
+			config.bubbleMenus.map((menu) => ({ ...menu, key: contributedKey(config, menu) })),
 		),
 	};
 }

@@ -30,5 +30,7 @@ export type {
 	RichTextConfig,
 	RichTextMenuButton,
 	RichTextMenuItem,
+	RichTextOptionValues,
+	RichTextPerField,
 	RichTextToolbarButton,
 } from '@directus/extensions';
