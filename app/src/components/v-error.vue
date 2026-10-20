@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isPlainObject } from 'lodash';
+import { isPlainObject } from 'lodash-es';
 import { computed, ref } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useClipboard } from '@/composables/use-clipboard';

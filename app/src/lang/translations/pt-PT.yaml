@@ -971,7 +971,6 @@ licensing:
   resolve_sso_admin_email: Endereço de e-mail
   entitlements:
     flows: Fluxos
-settings_flows: Fluxos
 settings_presets: Favoritos
 settings_translations: Traduções
 one_or_more_options_are_missing: Uma ou mais opções estão em falta

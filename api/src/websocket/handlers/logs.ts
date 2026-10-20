@@ -66,10 +66,10 @@ export class LogsHandler {
 
 				this.onMessage(client, parsedMessage).catch((error) => {
 					// this catch is required because the async onMessage function is not awaited
-					handleWebSocketError(client, error, 'logs');
+					handleWebSocketError(client, error, { type: 'logs' });
 				});
 			} catch (error) {
-				handleWebSocketError(client, error, 'logs');
+				handleWebSocketError(client, error, { type: 'logs' });
 			}
 		});
 
@@ -128,7 +128,7 @@ export class LogsHandler {
 				this.subscribe(logLevel, client);
 				client.send(fmtMessage('logs', { event: 'subscribe', log_level: logLevel }));
 			} catch (err) {
-				handleWebSocketError(client, err, 'subscribe');
+				handleWebSocketError(client, err, { type: 'subscribe' });
 			}
 		} else if (message.type === 'unsubscribe') {
 			try {
@@ -136,7 +136,7 @@ export class LogsHandler {
 
 				client.send(fmtMessage('logs', { event: 'unsubscribe' }));
 			} catch (err) {
-				handleWebSocketError(client, err, 'unsubscribe');
+				handleWebSocketError(client, err, { type: 'unsubscribe' });
 			}
 		}
 	}

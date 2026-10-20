@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { DeepPartial, Field, Relation } from '@directus/types';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';

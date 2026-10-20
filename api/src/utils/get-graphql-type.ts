@@ -23,6 +23,10 @@ export function getGraphQLType(
 		return GraphQLHash;
 	}
 
+	if (localType.startsWith('geometry')) {
+		return GraphQLGeoJSON;
+	}
+
 	switch (localType) {
 		case 'boolean':
 			return GraphQLBoolean;
@@ -37,8 +41,6 @@ export function getGraphQLType(
 			return new GraphQLList(GraphQLString);
 		case 'json':
 			return GraphQLJSON;
-		case 'geometry':
-			return GraphQLGeoJSON;
 		case 'time':
 		case 'timestamp':
 		case 'dateTime':

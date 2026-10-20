@@ -1,7 +1,7 @@
 import { Action } from '@directus/constants';
 import type { Filter } from '@directus/types';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
-import { groupBy, orderBy } from 'lodash';
+import { groupBy, orderBy } from 'lodash-es';
 import { Ref, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
