@@ -280,6 +280,94 @@ describe('NestedPartial accepts the detailed create/update/delete object for rel
 		});
 	});
 
+	test('a union of item types accepts a mix of its members in the same create', () => {
+		type Related = { id: number; a: string } | { id: number; b: string };
+
+		assertType<NestedPartial<{ rel: Related[] }>>({ rel: [{ a: 'x' }, { b: 'y' }] });
+
+		assertType<NestedPartial<{ rel: Related[] }>>({
+			rel: { create: [{ a: 'x' }, { b: 'y' }], delete: [1] },
+		});
+	});
+
+	test('an id[] | object[] union accepts the detailed object', () => {
+		assertType<NestedPartial<{ rel: (number | { id: number; a: string })[] }>>({
+			rel: { create: [{ a: 'x' }], delete: [1] },
+		});
+	});
+
+	test('a built-in object array does not gain the detailed object', () => {
+		assertType<NestedPartial<{ dates: Date[] }>>({
+			// @ts-expect-error Date[] is a scalar array, not a relation
+			dates: { create: [new Date()] },
+		});
+	});
+
+	test('a nullable relation array accepts the detailed object', () => {
+		assertType<NestedPartial<{ rel: { id: number }[] | null }>>({ rel: { delete: [1] } });
+		assertType<NestedPartial<{ rel: { id: number }[] | null }>>({ rel: null });
+	});
+
+	test('a related item with fields named create, update, and delete is not read as the detailed object', () => {
+		type Related = { id: number; create: string; update: number; delete: boolean };
+		type JsonRelated = { id: number; create: { halo: string } };
+
+		assertType<NestedPartial<{ rel: Related[] }>>({ rel: [{ create: 'x', update: 1, delete: true }] });
+		assertType<NestedPartial<{ rel: JsonRelated[] }>>({ rel: [{ create: { halo: '' } }] });
+
+		assertType<NestedPartial<{ rel: Related[] }>>({
+			rel: { create: [{ create: 'x' }], update: [{ id: 1, delete: true }], delete: [1] },
+		});
+
+		assertType<NestedPartial<{ rel: Related[] }>>({
+			// @ts-expect-error the detailed `create` must be an array, not the item's own scalar field
+			rel: { create: 'x' },
+		});
+
+		assertType<NestedPartial<{ rel: JsonRelated[] }>>({
+			// @ts-expect-error the detailed `create` must be an array, not the item's own object field
+			rel: { create: { halo: '' } },
+		});
+	});
+
+	test('a relation item field named create can hold its own nested detailed object', () => {
+		type Other = { id: number; label: string };
+		type Related = { id: number; create: Other[] };
+
+		assertType<NestedPartial<{ rel: Related[] }>>({
+			rel: { create: [{ create: { create: [{ label: 'x' }] } }] },
+		});
+	});
+
+	test('a one-to-one or m2o item with a `create` field is plain data', () => {
+		type Related = { id: number; create: string };
+
+		assertType<NestedPartial<{ rel: Related }>>({ rel: { create: 'x' } });
+
+		assertType<NestedPartial<{ rel: Related }>>({
+			// @ts-expect-error an m2o does not accept the detailed object
+			rel: { create: [{ id: 1 }] },
+		});
+	});
+
+	test('unknown keys in the detailed object are rejected', () => {
+		assertType<NestedItemsInput<CollectionC>>({
+			// @ts-expect-error `creat` is a deliberate misspelling; only create, update, and delete are valid
+			creat: [],
+		});
+	});
+
+	test('a string primary key rejects numeric delete values', () => {
+		type Related = { id: string; a: string };
+
+		assertType<NestedItemsInput<Related>>({ delete: ['abc'], update: [{ id: 'abc' }] });
+
+		assertType<NestedItemsInput<Related>>({
+			// @ts-expect-error uuid primary keys are strings
+			delete: [1],
+		});
+	});
+
 	test('createItem and updateItem accept the detailed object for relation arrays', () => {
 		createItem<TestSchema, 'collection_a', any>('collection_a', {
 			o2m: { create: [{ non_nullable: 'a' }], delete: [1] },

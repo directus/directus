@@ -61,15 +61,15 @@ export type RelationPrimaryKey<Item> = Item extends { id: infer PK } ? NonNullab
  * The API's "Detailed" object syntax for relation array fields: create/update/delete by key,
  * alongside the plain nested-array shorthand NestedPartial already allows.
  */
-export type NestedItemsInput<RawItem> = RawItem extends object
-	? {
-			create?: NestedPartial<RawItem>[];
-			update?: (RawItem extends { id: any }
-				? NestedPartial<RawItem> & { id: RelationPrimaryKey<RawItem> }
-				: NestedPartial<RawItem>)[];
-			delete?: RelationPrimaryKey<RawItem>[];
-		}
-	: never;
+export type NestedItemsInput<RawItem, Item = Exclude<Extract<RawItem, object>, Builtin>> = [Item] extends [never]
+	? never
+	: {
+			create?: NestedPartial<Item>[];
+			update?: (Item extends { id: any }
+				? NestedPartial<Item> & { id: RelationPrimaryKey<Item> }
+				: NestedPartial<Item>)[];
+			delete?: RelationPrimaryKey<Item>[];
+		};
 
 /**
  * Recursively make properties optional
