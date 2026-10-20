@@ -1,5 +1,5 @@
 import type { AuthenticationClient } from '../auth/types.js';
-import type { ConsoleInterface, ExtendedQuery, WebSocketInterface } from '../index.js';
+import type { ConsoleInterface, ExtendedQuery, MessageEventInterface, WebSocketInterface } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
 import { queryToParams } from '../utils/query-to-params.js';
 import { auth } from './commands/auth.js';
@@ -145,7 +145,7 @@ export function realtime(config: WebSocketConfig = {}) {
 			message: new Set<WebSocketEventHandler>([]),
 		};
 
-		function isAuthError(message: Record<string, any> | MessageEvent<string>): message is WebSocketAuthError {
+		function isAuthError(message: Record<string, any> | MessageEventInterface<string>): message is WebSocketAuthError {
 			return (
 				'type' in message &&
 				'status' in message &&
@@ -366,7 +366,7 @@ export function realtime(config: WebSocketConfig = {}) {
 			onWebSocket(event: WebSocketEvents, callback: (this: WebSocketInterface, ev: Event | CloseEvent | any) => any) {
 				if (event === 'message') {
 					// add some message parsing
-					const updatedCallback = function (this: WebSocketInterface, event: MessageEvent<any>) {
+					const updatedCallback = function (this: WebSocketInterface, event: MessageEventInterface<any>) {
 						if (typeof event.data !== 'string') return callback.call(this, event);
 
 						try {

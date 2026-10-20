@@ -1,7 +1,7 @@
-import type { WebSocketInterface } from '../../index.js';
+import type { MessageEventInterface, WebSocketInterface } from '../../index.js';
 
 interface WebSocketListener {
-	(data: MessageEvent<string>): any;
+	(data: MessageEventInterface<string>): any;
 }
 
 /**
@@ -15,9 +15,9 @@ interface WebSocketListener {
 export const messageCallback = (
 	socket: WebSocketInterface,
 	timeout = 1000,
-): Promise<Record<string, any> | MessageEvent<string> | undefined> =>
-	new Promise<Record<string, any> | MessageEvent<string> | undefined>((resolve, reject) => {
-		const handler: WebSocketListener = (data: MessageEvent<string>) => {
+): Promise<Record<string, any> | MessageEventInterface<string> | undefined> =>
+	new Promise<Record<string, any> | MessageEventInterface<string> | undefined>((resolve, reject) => {
+		const handler: WebSocketListener = (data: MessageEventInterface<string>) => {
 			try {
 				const message = JSON.parse(data.data) as Record<string, any>;
 
