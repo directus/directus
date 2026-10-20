@@ -595,7 +595,7 @@ describe('WebSocket subscribe handler', () => {
 			expect(handler.subscriptions['directus_collections']?.size).toBe(1);
 		});
 
-		test.each(['directus_collections', 'directus_fields'])(
+		test.each(['directus_collections', 'directus_fields', 'directus_relations'])(
 			'should reject delete subscriptions to "%s" for non-admins',
 			async (collection) => {
 				const client = mockClient(mockAccountability());

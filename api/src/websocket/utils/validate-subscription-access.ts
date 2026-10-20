@@ -10,14 +10,10 @@ import type { SubscriptionEvent } from '../types.js';
 
 /**
  * System collections whose services don't extend the ItemsService, so their items can't be validated with row level
- * permissions. Their services filter what they return by the permissions on the underlying collections instead.
+ * permissions. Their services filter what they return by the permissions on the underlying collections instead, which
+ * a deleted item can no longer be checked against, so their delete events are limited to admins.
  */
 const COLLECTIONS_WITHOUT_FILTER = ['directus_collections', 'directus_fields', 'directus_relations'];
-
-/**
- * System collections whose deleted items take their permissions with them, leaving no read access to verify against
- */
-const ADMIN_ONLY_DELETES = ['directus_collections', 'directus_fields'];
 
 export interface ValidateSubscriptionAccessOptions {
 	accountability: Accountability | null;
@@ -84,7 +80,7 @@ async function validateDeleteRules(
 	}: { accountability: Accountability; collection: string; itemScoped: boolean },
 	context: Context,
 ) {
-	if (ADMIN_ONLY_DELETES.includes(collection)) {
+	if (COLLECTIONS_WITHOUT_FILTER.includes(collection)) {
 		throw new ForbiddenError({ reason: `Only admins can subscribe to delete events of "${collection}"` });
 	}
 

@@ -134,7 +134,7 @@ describe('delete rules', () => {
 		});
 	});
 
-	describe.each(['directus_collections', 'directus_fields'])('"%s"', (collection) => {
+	describe.each(['directus_collections', 'directus_fields', 'directus_relations'])('"%s"', (collection) => {
 		test('rejects deletes for non-admins', async () => {
 			await expect(
 				validateSubscriptionAccess({ accountability, collection, event: 'delete' }, context),

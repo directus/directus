@@ -1,7 +1,5 @@
-import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Relation, SchemaOverview } from '@directus/types';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { fetchAllowedFields } from '../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { RelationsService } from '../../services/index.js';
 import { getPayload, getRelationsPayload } from './items.js';
 
@@ -13,10 +11,6 @@ vi.mock('../../services/index.js', async () => {
 
 	return { RelationsService: ItemsService, CollectionsService: vi.fn(), FieldsService: vi.fn(), MetaService: vi.fn() };
 });
-
-vi.mock('../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js', () => ({
-	fetchAllowedFields: vi.fn(),
-}));
 
 const accountability = {
 	role: null,
@@ -84,45 +78,5 @@ describe('getRelationsPayload', () => {
 		});
 
 		expect(result).toEqual([]);
-	});
-
-	describe('delete events', () => {
-		const deleteEvent = {
-			action: 'delete',
-			collection: 'directus_relations',
-			keys: ['author'],
-			payload: { collection: 'articles', fields: ['author'] },
-		} as const;
-
-		test('returns the deleted relation when the user can read its field', async () => {
-			vi.mocked(fetchAllowedFields).mockResolvedValueOnce(['id', 'author']);
-
-			const result = await getRelationsPayload(accountability, schema, { ...deleteEvent, keys: ['author'] });
-
-			expect(fetchAllowedFields).toBeCalledWith(
-				{ collection: 'articles', action: 'read', accountability },
-				expect.anything(),
-			);
-
-			expect(result).toEqual(deleteEvent.payload);
-		});
-
-		test('rejects the deleted relation when the user cannot read its field', async () => {
-			vi.mocked(fetchAllowedFields).mockResolvedValueOnce(['id']);
-
-			await expect(
-				getRelationsPayload(accountability, schema, { ...deleteEvent, keys: ['author'] }),
-			).rejects.toBeInstanceOf(ForbiddenError);
-		});
-
-		test('returns the deleted relation for admins', async () => {
-			const result = await getRelationsPayload({ ...accountability, admin: true }, schema, {
-				...deleteEvent,
-				keys: ['author'],
-			});
-
-			expect(fetchAllowedFields).not.toBeCalled();
-			expect(result).toEqual(deleteEvent.payload);
-		});
 	});
 });

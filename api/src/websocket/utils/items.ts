@@ -1,9 +1,7 @@
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { InvalidPayloadError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { fetchAllowedFields } from '../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { CollectionsService, FieldsService, MetaService, RelationsService } from '../../services/index.js';
 import { getService } from '../../utils/get-service.js';
-import { isAdmin } from '../../utils/is-admin.js';
 import type { WebSocketEvent } from '../messages.js';
 import type { Subscription } from '../types.js';
 
@@ -153,23 +151,8 @@ export async function getRelationsPayload(
 		return relations.filter((relation) => relation.meta && keys.includes(String(relation.meta.id)));
 	}
 
-	if (event?.action === 'delete') {
-		const { collection, fields = [] } = event.payload ?? {};
-
-		// the relation no longer exists, so validate read access to the fields it was defined on instead
-		if (!isAdmin(accountability)) {
-			const allowedFields = await fetchAllowedFields(
-				{ collection, action: 'read', accountability },
-				{ schema, knex: service.knex },
-			);
-
-			if (!allowedFields.includes('*') && !fields.every((field: string) => allowedFields.includes(field))) {
-				throw new ForbiddenError();
-			}
-		}
-
-		return event.payload;
-	}
+	// delete events are only dispatched to admins, see validateDeleteEventAccess
+	if (event?.action === 'delete') return event.payload;
 
 	return await service.readAll();
 }
