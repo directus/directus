@@ -2,4 +2,5 @@
 '@directus/api': patch
 ---
 
-Fixed handling of unsupported methods in the handleRequest MCP endpoint
+Updated the `/mcp` to return `405 Method Not Allowed` for authenticated `GET` and `HEAD` requests
+
