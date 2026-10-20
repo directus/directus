@@ -5,13 +5,14 @@ import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { afterAll, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 import { createRestrictedUser, type Rule } from './users.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 
 await api.request(updateSettings({ collaborative_editing_enabled: true } as any));
 
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 const clients: { close: () => void }[] = [];
 
@@ -58,7 +59,7 @@ const RELATIONS = [
 		kind: 'm2m',
 		field: 'm2m_related',
 		related: () => collections.m2m,
-		junction: () => collections.relational_m2m,
+		junction: () => collections.relational_m2m_junction,
 		changes: (id: string) => ({
 			create: [{ m2m_id: { id, name: 'Related', field_a: 'New A', field_b: 'New B' } }],
 			update: [],
@@ -70,7 +71,7 @@ const RELATIONS = [
 		kind: 'm2a',
 		field: 'a2o_items',
 		related: () => collections.a2o,
-		junction: () => collections.relational_a2o,
+		junction: () => collections.relational_a2o_items,
 		changes: (id: string) => ({
 			create: [{ collection: collections.a2o, item: { id, name: 'Related', field_a: 'New A', field_b: 'New B' } }],
 			update: [],
@@ -177,7 +178,7 @@ test('a nested o2m draft is trimmed at every level', async () => {
 test('an m2a draft keeps the members the recipient may read and drops the rest', async () => {
 	const { admin, viewer, room } = await shareRoom([
 		...PARENT_RULES,
-		{ collection: collections.relational_a2o, action: 'read', fields: ['*'] },
+		{ collection: collections.relational_a2o_items, action: 'read', fields: ['*'] },
 		{ collection: collections.a2o, action: 'read', fields: ['id', 'name', 'field_a'] },
 	]);
 

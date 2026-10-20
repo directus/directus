@@ -1,4 +1,4 @@
-import type { MergeCoreCollection } from '../index.js';
+import type { CollectionName, MergeCoreCollection } from '../index.js';
 import type { DirectusActivity } from './activity.js';
 import type { DirectusVersion } from './version.js';
 
@@ -8,7 +8,7 @@ export type DirectusRevision<Schema = any> = MergeCoreCollection<
 	{
 		id: number;
 		activity: DirectusActivity<Schema> | number;
-		collection: string; // TODO keyof complete schema
+		collection: CollectionName<Schema>;
 		item: string;
 		data: Record<string, any> | null;
 		delta: Record<string, any> | null;

@@ -60,7 +60,7 @@ const props = defineProps<{
 	folder?: string;
 }>();
 
-const { createAllowed, deleteAllowed } = useCollectionPermissions('directus_flows');
+const { createAllowed, updateAllowed, deleteAllowed } = useCollectionPermissions('directus_flows');
 const { createAllowed: operationsCreateAllowed } = useCollectionPermissions('directus_operations');
 
 const { createAllowed: createFolderAllowed } = useCollectionPermissions('directus_folders');
@@ -436,12 +436,25 @@ async function batchDelete() {
 	}
 }
 
-async function toggleFlowStatusById(id: string, value: string) {
-	try {
-		await api.patch(`/flows/${id}`, {
-			status: value === 'active' ? 'inactive' : 'active',
-		});
+const selectedFlows = computed(() => flowsStore.flows.filter(({ id }) => selectedKeys.value.includes(id)));
+const canActivateSelected = computed(() => selectedFlows.value.some(({ status }) => status !== 'active'));
+const canDeactivateSelected = computed(() => selectedFlows.value.some(({ status }) => status === 'active'));
+const updatingStatus = ref(false);
 
+async function setFlowsStatus(keys: string[], status: 'active' | 'inactive') {
+	// Only send Flows that change
+	const changedKeys = flowsStore.flows
+		.filter((flow) => keys.includes(flow.id) && flow.status !== status)
+		.map(({ id }) => id);
+
+	if (changedKeys.length === 0 || updatingStatus.value) {
+		return;
+	}
+
+	updatingStatus.value = true;
+
+	try {
+		await api.patch('/flows', { keys: changedKeys, data: { status } });
 		await flowsStore.hydrate();
 		licenseStore.hydrate();
 	} catch (error) {
@@ -451,6 +464,8 @@ async function toggleFlowStatusById(id: string, value: string) {
 		} else {
 			unexpectedError(error);
 		}
+	} finally {
+		updatingStatus.value = false;
 	}
 }
 
@@ -480,6 +495,22 @@ function onFlowDrawerCompletion(id: string) {
 				:placeholder="$t('search_flow')"
 			/>
 
+			<PrivateViewHeaderBarActionButton
+				v-if="canActivateSelected"
+				v-tooltip.bottom="updateAllowed ? $t('set_flows_active') : $t('not_allowed')"
+				:disabled="updateAllowed !== true || updatingStatus"
+				icon="check"
+				variant="ghost"
+				@click="setFlowsStatus(selectedKeys, 'active')"
+			/>
+			<PrivateViewHeaderBarActionButton
+				v-if="canDeactivateSelected"
+				v-tooltip.bottom="updateAllowed ? $t('set_flows_inactive') : $t('not_allowed')"
+				:disabled="updateAllowed !== true || updatingStatus"
+				icon="block"
+				variant="ghost"
+				@click="setFlowsStatus(selectedKeys, 'inactive')"
+			/>
 			<AddFolder type="flows" :parent="folder" :disabled="createFolderAllowed !== true" @created="navigateToFolder" />
 			<PrivateViewHeaderBarActionButton
 				v-if="selectedKeys.length > 0"
@@ -602,7 +633,11 @@ function onFlowDrawerCompletion(id: string) {
 						</template>
 
 						<VList>
-							<VListItem clickable @click="toggleFlowStatusById(item.id, item.status)">
+							<VListItem
+								:disabled="updateAllowed !== true || updatingStatus"
+								clickable
+								@click="setFlowsStatus([item.id], item.status === 'active' ? 'inactive' : 'active')"
+							>
 								<template v-if="item.status === 'active'">
 									<VListItemIcon><VIcon name="block" /></VListItemIcon>
 									<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>

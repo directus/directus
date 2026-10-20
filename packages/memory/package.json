@@ -1,6 +1,6 @@
 {
 	"name": "@directus/memory",
-	"version": "4.0.5",
+	"version": "4.1.0",
 	"description": "Memory / Redis abstraction for Directus",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -23,8 +23,9 @@
 	"scripts": {
 		"build": "tsdown src/index.ts --dts",
 		"dev": "tsdown src/index.ts --dts --watch",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"test": "vitest run --project unit",
+		"test:coverage": "vitest run --coverage --project unit",
+		"test:integration": "vitest run --project integration"
 	},
 	"dependencies": {
 		"@directus/errors": "workspace:*",

@@ -5,6 +5,7 @@ import { getRelation } from './get-relation.js';
 export type RelationInfo = {
 	relation: Relation | null;
 	relationType: 'o2m' | 'm2o' | 'a2o' | 'o2a' | null;
+	oppositeCollection: string | null;
 };
 
 function checkImplicitRelation(field: string) {
@@ -20,7 +21,7 @@ export function getRelationInfo(
 	collection: string | undefined,
 	field: string | undefined,
 ): RelationInfo {
-	if (!collection || !field) return { relation: null, relationType: null };
+	if (!collection || !field) return { relation: null, relationType: null, oppositeCollection: null };
 
 	if (field.startsWith('$FOLLOW') && field.length > 500) {
 		throw new Error(`Implicit $FOLLOW statement is too big to parse. Got: "${field.substring(500)}..."`);
@@ -40,7 +41,7 @@ export function getRelationInfo(
 				meta: null,
 			};
 
-			return { relation, relationType: 'o2m' };
+			return { relation, relationType: 'o2m', oppositeCollection: m2oCollection!.trim() };
 		} else {
 			const [a2oCollection, a2oItemField, a2oCollectionField] = implicitRelation;
 
@@ -54,12 +55,19 @@ export function getRelationInfo(
 				} as RelationMeta,
 			};
 
-			return { relation, relationType: 'o2a' };
+			return { relation, relationType: 'o2a', oppositeCollection: a2oCollection!.trim() };
 		}
 	}
 
 	const relation = getRelation(relations, collection, field) ?? null;
 	const relationType = relation ? getRelationType({ relation, collection, field, useA2O: true }) : null;
+	let oppositeCollection: string | null = null;
 
-	return { relation, relationType };
+	if (relationType === 'o2m') {
+		oppositeCollection = relation?.collection ?? null;
+	} else if (relationType === 'a2o' || relationType === 'm2o') {
+		oppositeCollection = relation?.related_collection ?? null;
+	}
+
+	return { relation, relationType, oppositeCollection };
 }
