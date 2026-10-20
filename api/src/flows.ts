@@ -34,6 +34,7 @@ import { getService } from './utils/get-service.js';
 import { isUnauthenticated } from './utils/is-unauthenticated.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
+import { getCollectionFromSchema } from './utils/schema/get-collection-from-schema.js';
 
 let flowManager: FlowManager | undefined;
 
@@ -306,7 +307,7 @@ class FlowManager {
 						throw new ForbiddenError();
 					}
 
-					if (accountability.admin === false) {
+					if (accountability && accountability.admin === false) {
 						const database = (context['database'] as Knex) ?? getDatabase();
 						const schema = (context['schema'] as SchemaOverview) ?? (await getSchema({ database }));
 
@@ -329,7 +330,7 @@ class FlowManager {
 
 						if (Array.isArray(targetKeys) && targetKeys.length > 0) {
 							const service = getService(targetCollection, { schema, accountability, knex: database });
-							const primaryField = schema.collections[targetCollection]!.primary;
+							const primaryField = getCollectionFromSchema(schema, targetCollection).primary;
 
 							const keys = await service.readMany(
 								targetKeys,

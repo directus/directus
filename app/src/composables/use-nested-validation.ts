@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { computed, inject, provide, ref } from 'vue';
 
 const nestedValidationSymbol = 'nestedValidation';

@@ -27,6 +27,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useLicenseStore } from '@/stores/license';
 import { useUserStore } from '@/stores/user';
+import { localizedFormat } from '@/utils/localized-format';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
@@ -45,7 +46,7 @@ const { t } = useI18n();
 const router = useRouter();
 
 const licenseStore = useLicenseStore();
-const { info, pendingResolution } = storeToRefs(licenseStore);
+const { info, pendingResolution, downgradeReason } = storeToRefs(licenseStore);
 
 const userStore = useUserStore();
 
@@ -58,7 +59,7 @@ const scope = computed<ResolveScope>(() => {
 	if (info.value.status === 'locked') return 'locked';
 
 	// Downgraded to core (within limits): informational acknowledgement.
-	if (info.value.downgrade_reason != null) return 'no_resolution';
+	if (downgradeReason.value !== null) return 'no_resolution';
 
 	return 'manual';
 });
@@ -68,19 +69,29 @@ const graceCountdown = computed<{ days: number; date: string } | null>(() => {
 	const deadlineSeconds = info.value.expires_at + (info.value.grace_period ?? 0);
 	const deadlineMs = deadlineSeconds * 1000;
 	const days = Math.max(0, Math.ceil((deadlineMs - Date.now()) / (1000 * 60 * 60 * 24)));
-	const date = new Date(deadlineMs).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+	const date = localizedFormat(deadlineMs, String(t('date-fns_date_short')));
 	return { days, date };
 });
 
-type TitleKey = ResolveScope | InvalidLicenseStatus;
+type TranslationKey = ResolveScope | InvalidLicenseStatus;
 
 const title = computed<string>(() => {
-	const reason = info.value?.downgrade_reason;
-	const key: TitleKey = reason && (scope.value === 'locked' || scope.value === 'no_resolution') ? reason : scope.value;
+	const reason = downgradeReason.value;
+
+	const key: TranslationKey =
+		reason && (scope.value === 'locked' || scope.value === 'no_resolution') ? reason : scope.value;
+
 	return t(`licensing.resolve_title_${key}`);
 });
 
-const noticeMessage = computed(() => t(`licensing.resolve_notice_${scope.value}`));
+const noticeMessage = computed<string>(() => {
+	const reason = downgradeReason.value;
+
+	// A locked project keeps its scope notice
+	const key: TranslationKey = reason && scope.value === 'no_resolution' ? reason : scope.value;
+
+	return t(`licensing.resolve_notice_${key}`);
+});
 
 const severity = computed<'warning' | 'danger'>(() => {
 	return scope.value === 'grace' || scope.value === 'no_resolution' ? 'warning' : 'danger';

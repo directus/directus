@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { clone } from 'lodash';
+import { clone } from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import ExtensionOptions from '../shared/extension-options.vue';

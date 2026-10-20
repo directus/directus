@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Collection } from '@directus/types';
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import { computed, nextTick, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';

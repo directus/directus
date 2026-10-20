@@ -43,9 +43,17 @@ describe('schema tool', () => {
 				readByQuery: vi.fn(),
 			};
 
-			vi.mocked(RelationsService).mockImplementation(() => mockRelationsService as unknown as RelationsService);
-			vi.mocked(FieldsService).mockImplementation(() => mockFieldsService as unknown as FieldsService);
-			vi.mocked(CollectionsService).mockImplementation(() => mockCollectionsService as unknown as CollectionsService);
+			vi.mocked(RelationsService).mockImplementation(function () {
+				return mockRelationsService as unknown as RelationsService;
+			});
+
+			vi.mocked(FieldsService).mockImplementation(function () {
+				return mockFieldsService as unknown as FieldsService;
+			});
+
+			vi.mocked(CollectionsService).mockImplementation(function () {
+				return mockCollectionsService as unknown as CollectionsService;
+			});
 		});
 
 		describe('LIGHTWEIGHT', () => {

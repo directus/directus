@@ -7,6 +7,10 @@ import type { GlobalMountOptions } from '@/__utils__/types';
 import api from '@/api';
 import { i18n } from '@/lang';
 
+vi.mock('@/utils/get-related-collection', () => ({
+	getRelatedCollection: () => null,
+}));
+
 vi.mock('@/stores/collections', () => ({
 	useCollectionsStore: () => ({
 		getCollection: vi.fn(() => ({})),

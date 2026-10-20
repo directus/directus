@@ -79,6 +79,24 @@ fields:
     special:
       - cast-json
 
+  - field: live_preview_divider
+    interface: presentation-divider
+    options:
+      icon: preview
+      title: $t:fields.directus_settings.live_preview
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: preview_base_url
+    interface: input
+    options:
+      iconRight: link
+      placeholder: https://example.com
+    note: $t:fields.directus_settings.preview_base_url_note
+    width: full
+
   - field: visual_editor_divider
     interface: presentation-divider
     options:

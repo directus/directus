@@ -2,7 +2,7 @@ import { ErrorCode, InvalidPayloadError } from '@directus/errors';
 import { isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
-import validateCollection from '../middleware/collection-exists.js';
+import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { RelationsService } from '../services/relations.js';
@@ -29,7 +29,7 @@ router.get(
 
 router.get(
 	'/:collection',
-	validateCollection,
+	collectionExists,
 	asyncHandler(async (req, res, next) => {
 		const service = new RelationsService({
 			accountability: req.accountability,
@@ -46,7 +46,7 @@ router.get(
 
 router.get(
 	'/:collection/:field',
-	validateCollection,
+	collectionExists,
 	asyncHandler(async (req, res, next) => {
 		const service = new RelationsService({
 			accountability: req.accountability,
@@ -119,7 +119,7 @@ const updateRelationSchema = Joi.object({
 
 router.patch(
 	'/:collection/:field',
-	validateCollection,
+	collectionExists,
 	asyncHandler(async (req, res, next) => {
 		const service = new RelationsService({
 			accountability: req.accountability,
@@ -152,7 +152,7 @@ router.patch(
 
 router.delete(
 	'/:collection/:field',
-	validateCollection,
+	collectionExists,
 	asyncHandler(async (req, _res, next) => {
 		const service = new RelationsService({
 			accountability: req.accountability,

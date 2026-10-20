@@ -1,14 +1,15 @@
 import { createTestingPinia } from '@pinia/testing';
-import { mount } from '@vue/test-utils';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { flushPromises, mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { defineComponent, h, ref } from 'vue';
 import TransitionBounce from './transition/bounce.vue';
 import VMenu from './v-menu.vue';
 import { directive } from '@/directives/click-outside';
 
-vi.mock('lodash', async () => {
-	const mod = await vi.importActual<{ default: typeof import('lodash') }>('lodash');
+vi.mock('lodash-es', async () => {
+	const mod = await vi.importActual<typeof import('lodash-es')>('lodash-es');
 	return {
-		...mod.default,
+		...mod,
 		debounce: (fn: any) => fn,
 	};
 });
@@ -417,4 +418,73 @@ test('should place menu arrow right when using placement "bottom-start" and usin
 	expect(menuArrow.attributes('style')).toContain('left: unset');
 	expect(menuArrow.attributes('style')).toContain('right: 0px');
 	expect(menuArrow.attributes('style')).toContain('transform: translate3d(-6px, 0px, 0)');
+});
+
+describe('nested menus', () => {
+	const settle = async () => {
+		await flushPromises();
+		await new Promise((r) => setTimeout(r));
+	};
+
+	function mountNested(depth: number) {
+		const active = Array.from({ length: depth }, () => ref(true));
+
+		const renderLevel = (level: number): ReturnType<typeof h> =>
+			h(
+				VMenu,
+				{
+					modelValue: active[level]!.value,
+					'onUpdate:modelValue': (value: boolean) => (active[level]!.value = value),
+					closeOnContentClick: false,
+				},
+				{
+					activator: () => h('span'),
+					default: () =>
+						level + 1 < depth ? renderLevel(level + 1) : h('button', { class: 'deepest', type: 'button' }),
+				},
+			);
+
+		const wrapper = mount(
+			defineComponent(() => () => renderLevel(0)),
+			{ ...mountOptions, attachTo: document.body, slots: {} },
+		);
+
+		return { wrapper, active };
+	}
+
+	test('clicks inside a child menu keep the parent open', async () => {
+		const { wrapper, active } = mountNested(2);
+		await settle();
+
+		document.querySelector<HTMLButtonElement>('.deepest')!.click();
+		await settle();
+
+		expect(active.map((a) => a.value)).toEqual([true, true]);
+
+		wrapper.unmount();
+	});
+
+	test('clicks inside a grandchild menu keep every ancestor open', async () => {
+		const { wrapper, active } = mountNested(3);
+		await settle();
+
+		document.querySelector<HTMLButtonElement>('.deepest')!.click();
+		await settle();
+
+		expect(active.map((a) => a.value)).toEqual([true, true, true]);
+
+		wrapper.unmount();
+	});
+
+	test('clicks outside every menu still close them', async () => {
+		const { wrapper, active } = mountNested(2);
+		await settle();
+
+		document.body.click();
+		await settle();
+
+		expect(active.map((a) => a.value)).toEqual([false, false]);
+
+		wrapper.unmount();
+	});
 });

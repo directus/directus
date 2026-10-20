@@ -33,8 +33,8 @@ vi.mock('./items.js', async () => {
 });
 
 vi.mock('./users.js', async () => {
-	const { mockUsersService } = await import('../test-utils/services/users-service.js');
-	return mockUsersService();
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
+	return { UsersService: mockItemsService().ItemsService };
 });
 
 vi.mock('./notifications.js', async () => {

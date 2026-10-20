@@ -3,7 +3,7 @@ import { useLayout } from '@directus/composables';
 import { useShortcut } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { DeepPartial, Field, Filter, Preset } from '@directus/types';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
