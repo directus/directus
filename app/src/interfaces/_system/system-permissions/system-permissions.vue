@@ -176,8 +176,6 @@ function setFullAccess(collection: string, action: PermissionsAction) {
 }
 
 function setNoAccess(collection: string, action: PermissionsAction) {
-	if (disabledActions[collection]?.includes(action)) return;
-
 	const existing = getPermission(collection, action);
 
 	if (existing && existing.$type !== 'deleted') {

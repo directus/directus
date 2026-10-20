@@ -60,6 +60,9 @@ const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
 
 const saving = ref(false);
 
+// A restricted action can still have a permission stored from before it was blocked, which only removal can clear.
+const hasStalePermission = computed(() => props.restricted && permission.value !== undefined);
+
 const appMinimalLevel = computed(() => {
 	if (!props.appMinimal) return null;
 
@@ -77,13 +80,34 @@ const appMinimalLevel = computed(() => {
 <template>
 	<div
 		v-tooltip="
+			(hasStalePermission &&
+				$t('hardcoded_admin_only_stale_permission_note', { action: $t(action), collection: collection.name })) ||
 			(restricted && $t('hardcoded_admin_only_action_note', { action: $t(action), collection: collection.name })) ||
 			(appMinimal && $t('required_for_app_access')) ||
 			$t(`permissionsLevel.${permissionLevel}`, { action: $t(action) })
 		"
 		:class="[{ 'has-app-minimal': !!appMinimal }, appMinimalLevel]"
 	>
-		<VChip v-if="restricted" small disabled class="toggle restricted">{{ $t(action) }}</VChip>
+		<VChip v-if="restricted && !hasStalePermission" small disabled class="toggle restricted">{{ $t(action) }}</VChip>
+
+		<VMenu v-else-if="hasStalePermission" show-arrow>
+			<template #activator="{ toggle, active }">
+				<VChip small clickable class="toggle restricted stale" :class="{ active }" @click="toggle">
+					{{ $t(action) }}
+				</VChip>
+			</template>
+
+			<VList>
+				<VListItem clickable @click="emit('setNoAccess')">
+					<VListItemIcon>
+						<VIcon name="delete" />
+					</VListItemIcon>
+					<VListItemContent>
+						{{ $t('remove_permission') }}
+					</VListItemContent>
+				</VListItem>
+			</VList>
+		</VMenu>
 
 		<VChip v-else-if="appMinimalLevel === 'full'" small class="toggle all">{{ $t(action) }}</VChip>
 
@@ -194,6 +218,16 @@ const appMinimalLevel = computed(() => {
 		--v-chip-background-color: var(--theme--background-subdued);
 		--v-chip-border-color: var(--theme--border-color-subdued);
 		cursor: not-allowed;
+
+		&.stale {
+			--v-chip-color: var(--theme--warning);
+			--v-chip-color-hover: var(--theme--warning);
+			--v-chip-background-color: var(--theme--warning-background);
+			--v-chip-background-color-hover: var(--theme--warning-background);
+			--v-chip-border-color: var(--theme--warning);
+			--v-chip-border-color-hover: var(--theme--warning-accent);
+			cursor: pointer;
+		}
 	}
 }
 </style>

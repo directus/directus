@@ -300,7 +300,10 @@ the_following_are_minimum_permissions:
   The following minimum permissions are automatically applied when "App Access" is enabled. You can grant additional
   permissions if needed, but you cannot reduce permissions below this level.
 hardcoded_admin_only_action_note: >-
-  {action} on {collection} is enforced by an admin-only check in the API and can't be granted through a policy.
+  The API restricts the {action} action for {collection} to admins. Policies can't grant it.
+hardcoded_admin_only_stale_permission_note: >-
+  The API restricts the {action} action for {collection} to admins. This permission has no effect. Select to remove it.
+remove_permission: Remove Permission
 app_access_minimum: App Access Minimum
 recommended_defaults: Recommended Defaults
 unarchive: Unarchive
