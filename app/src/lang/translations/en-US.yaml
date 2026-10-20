@@ -2433,6 +2433,11 @@ public_policy_dialog:
   copy: >-
     You're about to change public permissions on the following system collections. These actions will be available to
     unauthenticated users and users without a role:
+  copy_authenticated: >-
+    These actions will only be available to users without a role (require an authenticated user):
+  copy_authenticated_only: >-
+    You're about to change public permissions on the following system collections. These actions will only be available
+    to users without a role (require an authenticated user):
   unfiltered_read_warning: Read access without a filter exposes every record in the collection.
   best_practices: Refer to the {docs} for more information.
 no_permissions: No Permissions
