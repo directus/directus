@@ -40,3 +40,18 @@ test('Returns values spread across multiple places in multi-array path as flatte
 	const input = { test: [{ path: [{ test: 'example' }, { test: 'example2' }] }, { path: [{ test: 'another' }] }] };
 	expect(get(input, 'test.path.test')).toEqual(['example', 'example2', 'another']);
 });
+
+test('Keeps falsy values (0, false, empty string) in array path results', () => {
+	const input = { test: [{ value: 'blocked' }, { value: 0 }, { value: false }, { value: '' }] };
+	expect(get(input, 'test.value')).toEqual(['blocked', 0, false, '']);
+});
+
+test('Drops null, undefined and missing values in array path results', () => {
+	const input = { test: [{ value: 'blocked' }, { value: null }, { value: undefined }, {}, { value: 0 }] };
+	expect(get(input, 'test.value')).toEqual(['blocked', 0]);
+});
+
+test('Keeps falsy values in multi-array path', () => {
+	const input = { test: [{ path: [{ value: 0 }, { value: false }] }, { path: [{ value: '' }] }] };
+	expect(get(input, 'test.path.value')).toEqual([0, false, '']);
+});

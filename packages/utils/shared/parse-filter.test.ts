@@ -753,6 +753,34 @@ describe('#parseFilter', () => {
 		expect(parseFilter(mockFilter, mockAccountability, mockContext)).toStrictEqual(mockResult);
 	});
 
+	it('keeps falsy values when resolving array-backed dynamic variable paths', () => {
+		const mockFilter = {
+			_and: [{ field: { _in: ['$CURRENT_USER.o2m.value'] } }],
+		} as Filter;
+
+		const mockResult = {
+			_and: [{ field: { _in: ['blocked', 0, false, ''] } }],
+		} as Filter;
+
+		const mockAccountability = { role: 'admin', user: 'user', roles: [] };
+
+		const mockContext = {
+			$CURRENT_USER: {
+				o2m: [
+					{ value: 'blocked' },
+					{ value: 0 },
+					{ value: false },
+					{ value: '' },
+					{ value: null },
+					{ value: undefined },
+					{},
+				],
+			} as unknown as User,
+		};
+
+		expect(parseFilter(mockFilter, mockAccountability, mockContext)).toStrictEqual(mockResult);
+	});
+
 	it('replaces the policies with the ids of the $CURRENT_POLICIES variable', () => {
 		const mockFilter = {
 			_and: [
