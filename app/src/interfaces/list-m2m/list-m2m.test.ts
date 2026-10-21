@@ -68,10 +68,12 @@ vi.mock('@/stores/fields', () => ({
 	}),
 }));
 
+const mockUpdate = vi.hoisted(() => vi.fn());
+
 vi.mock('@/composables/use-relation-multiple', () => ({
 	useRelationMultiple: () => ({
 		create: vi.fn(),
-		update: vi.fn(),
+		update: mockUpdate,
 		remove: vi.fn(),
 		select: vi.fn(),
 		displayItems: ref([{ id: '1', related_id: { id: '10' }, $type: 'existingItem', $index: 0, $edits: 0 }]),
@@ -211,6 +213,66 @@ describe('list-m2m', () => {
 
 			expect(drawer.props('collection')).toBe('junction-collection');
 			expect(drawer.props('fields')).toEqual([{ field: 'note' }, { field: 'related_id.title' }]);
+		});
+
+		it('should stage junction edits and nest related edits for each selected item', () => {
+			const wrapper = mount(ListM2M, {
+				props: listProps,
+				global,
+			});
+
+			(wrapper.vm as any).selection = [
+				{ id: '1', related_id: { id: '10' }, $type: 'existingItem', $index: 0, $edits: 0 },
+				{ id: '2', related_id: { id: '20' }, $type: 'existingItem', $index: 1, $edits: 0 },
+			];
+
+			wrapper.findComponent(DrawerBatch).vm.$emit('input', { note: 'hello', 'related_id.title': 'Title' });
+
+			expect(mockUpdate).toHaveBeenCalledTimes(2);
+
+			expect(mockUpdate).toHaveBeenNthCalledWith(1, {
+				$index: 0,
+				$type: 'existingItem',
+				$edits: 0,
+				id: '1',
+				note: 'hello',
+				related_id: { id: '10', title: 'Title' },
+			});
+
+			expect(mockUpdate).toHaveBeenNthCalledWith(2, {
+				$index: 1,
+				$type: 'existingItem',
+				$edits: 0,
+				id: '2',
+				note: 'hello',
+				related_id: { id: '20', title: 'Title' },
+			});
+
+			expect((wrapper.vm as any).selection).toEqual([]);
+		});
+
+		it('should only stage junction edits when no related field was changed', () => {
+			const wrapper = mount(ListM2M, {
+				props: listProps,
+				global,
+			});
+
+			(wrapper.vm as any).selection = [
+				{ id: '1', related_id: { id: '10' }, $type: 'existingItem', $index: 0, $edits: 0 },
+			];
+
+			wrapper.findComponent(DrawerBatch).vm.$emit('input', { note: 'hello' });
+
+			expect(mockUpdate).toHaveBeenCalledTimes(1);
+
+			expect(mockUpdate).toHaveBeenCalledWith({
+				$index: 0,
+				$type: 'existingItem',
+				$edits: 0,
+				id: '1',
+				note: 'hello',
+				related_id: { id: '10' },
+			});
 		});
 	});
 
