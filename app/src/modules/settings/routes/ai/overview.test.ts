@@ -1,4 +1,5 @@
 import { DEFAULT_ALLOWED_MODELS } from '@directus/ai';
+import { useShortcut } from '@directus/composables';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { describe, expect, test, vi } from 'vitest';
@@ -6,6 +7,8 @@ import { defineComponent, ref } from 'vue';
 import Overview from './overview.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
 
 const settingsFields = ref([
 	{ field: 'ai_group', meta: null },
@@ -188,6 +191,7 @@ describe('settings ai overview', () => {
 	test('shows defaults for a cleared allowed models field while keeping it null', async () => {
 		const wrapper = mountOverview();
 		const aiForm = wrapper.findAllComponents(VFormStub)[0]!;
+
 		const getNote = () =>
 			(aiForm.props('fields') as any[]).find((field) => field.field === 'ai_anthropic_allowed_models')?.meta?.note;
 
@@ -211,5 +215,28 @@ describe('settings ai overview', () => {
 		await wrapper.vm.$nextTick();
 
 		expect(getNote()).toBeUndefined();
+	});
+
+	test('saves a cleared allowed models field as null and an emptied one as []', async () => {
+		const wrapper = mountOverview();
+		const aiForm = wrapper.findAllComponents(VFormStub)[0]!;
+		const settingsStore = useSettingsStore();
+		vi.spyOn(settingsStore, 'updateSettings').mockResolvedValue(undefined as never);
+		vi.spyOn(useServerStore(), 'hydrate').mockResolvedValue(undefined as never);
+
+		await aiForm.vm.$emit('update:modelValue', { ai_anthropic_allowed_models: null });
+
+		await aiForm.vm.$emit('update:modelValue', {
+			ai_anthropic_allowed_models: [...DEFAULT_ALLOWED_MODELS.anthropic],
+			ai_openai_allowed_models: [],
+		});
+
+		const save = vi.mocked(useShortcut).mock.calls.findLast(([shortcut]) => shortcut === 'meta+s')![1];
+		await save({} as KeyboardEvent, {} as Element);
+
+		expect(settingsStore.updateSettings).toHaveBeenCalledWith({
+			ai_anthropic_allowed_models: null,
+			ai_openai_allowed_models: [],
+		});
 	});
 });

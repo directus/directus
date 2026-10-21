@@ -4,4 +4,4 @@
 '@directus/ai': minor
 ---
 
-AI allowed models now fall back to recommended defaults that update with Directus releases when the setting is empty. Existing saved selections are unchanged.
+Added recommended default AI allowed models that update with Directus releases and apply while the setting is unset (null). Existing saved selections are unchanged.
