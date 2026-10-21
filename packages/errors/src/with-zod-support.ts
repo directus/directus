@@ -1,17 +1,16 @@
-import type { ZodError as ZodV3Error } from 'zod/v3';
-import type { $ZodError } from 'zod/v4/core';
-import { fromZodError, isZodErrorLike } from 'zod-validation-error';
+import { $ZodError } from 'zod/v4/core';
 import type { DirectusError, DirectusErrorConstructor } from './create-error.js';
+import { formatZodError } from './format-zod-error.js';
 
-/** Any validation error produced by Zod 4 (classic or mini) or Zod 3 */
-export type AnyZodError = $ZodError | ZodV3Error;
+/** Any validation error produced by Zod 4 (classic or mini) */
+export type AnyZodError = $ZodError;
 
 export interface ZodAwareErrorConstructor<Extensions extends { reason: string }>
 	extends DirectusErrorConstructor<Extensions> {
 	new (extensions: Extensions | AnyZodError, options?: ErrorOptions): DirectusError<Extensions>;
 }
 
-const isZodError = (value: unknown): value is AnyZodError => value instanceof Error && isZodErrorLike(value);
+const isZodError = (value: unknown): value is AnyZodError => value instanceof $ZodError;
 
 /**
  * Allow a reason-based error to be constructed directly from a Zod error.
@@ -23,8 +22,7 @@ export const withZodSupport = <Extensions extends { reason: string }>(
 	class extends Base {
 		constructor(extensions: Extensions | AnyZodError, options?: ErrorOptions) {
 			if (isZodError(extensions)) {
-				// fromZodError is only typed for Zod 4, but formats Zod 3 issues the same way at runtime
-				const reason = fromZodError(extensions as $ZodError).message;
+				const reason = formatZodError(extensions);
 				super({ reason } as Extensions, { cause: extensions, ...options });
 			} else {
 				super(extensions, options);

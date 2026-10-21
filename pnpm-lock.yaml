@@ -966,9 +966,6 @@ catalogs:
     zod:
       specifier: 4.1.12
       version: 4.1.12
-    zod-validation-error:
-      specifier: 4.0.2
-      version: 4.0.2
 
 overrides:
   tar: 7.5.22
@@ -1431,9 +1428,6 @@ importers:
       zod:
         specifier: 'catalog:'
         version: 4.1.12
-      zod-validation-error:
-        specifier: 'catalog:'
-        version: 4.0.2(zod@4.1.12)
     devDependencies:
       '@directus/schema-builder':
         specifier: workspace:*
@@ -2263,9 +2257,6 @@ importers:
       zod:
         specifier: 'catalog:'
         version: 4.1.12
-      zod-validation-error:
-        specifier: 'catalog:'
-        version: 4.0.2(zod@4.1.12)
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -13635,12 +13626,6 @@ packages:
     peerDependencies:
       zod: ^3.25.28 || ^4
 
-  zod-validation-error@4.0.2:
-    resolution: {integrity: sha512-Q6/nZLe6jxuU80qb/4uJ4t5v2VEZ44lzQjPDhYJNztRQ4wyWc6VF3D3Kb/fAuPetZQnhS3hnajCf9CsWesghLQ==}
-    engines: {node: '>=18.0.0'}
-    peerDependencies:
-      zod: ^3.25.0 || ^4.0.0
-
   zod@4.1.1:
     resolution: {integrity: sha512-SgMZK/h8Tigt9nnKkfJMvB/mKjiJXaX26xegP4sa+0wHIFVFWVlsQGdhklDmuargBD3Hsi3rsQRIzwJIhTPJHA==}
 
@@ -24839,10 +24824,6 @@ snapshots:
       readable-stream: 4.7.0
 
   zod-to-json-schema@3.25.2(zod@4.1.12):
-    dependencies:
-      zod: 4.1.12
-
-  zod-validation-error@4.0.2(zod@4.1.12):
     dependencies:
       zod: 4.1.12
 

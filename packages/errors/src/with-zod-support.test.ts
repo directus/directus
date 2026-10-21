@@ -1,9 +1,8 @@
 import { expect, expectTypeOf, test } from 'vitest';
 import { z } from 'zod';
 import * as zMini from 'zod/mini';
-import { z as zV3 } from 'zod/v3';
-import { fromZodError } from 'zod-validation-error';
 import { createError, type DirectusError, type DirectusErrorConstructor } from './create-error.js';
+import { formatZodError } from './format-zod-error.js';
 import { withZodSupport } from './with-zod-support.js';
 
 interface Extensions {
@@ -35,7 +34,7 @@ test('Formats a Zod error into the reason and keeps it as cause', () => {
 	if (result.success) throw new Error('Expected invalid input');
 
 	const error = new TestError(result.error);
-	const reason = fromZodError(result.error).message;
+	const reason = formatZodError(result.error);
 
 	expect(error.extensions).toEqual({ reason });
 	expect(reason).toContain('profile.name');
@@ -54,7 +53,7 @@ test('Prefers an explicitly passed cause over the Zod error', () => {
 	const error = new TestError(result.error, { cause });
 
 	expect(error.cause).toBe(cause);
-	expect(error.extensions).toEqual({ reason: fromZodError(result.error).message });
+	expect(error.extensions).toEqual({ reason: formatZodError(result.error) });
 });
 
 test('Supports Zod Mini errors', () => {
@@ -64,18 +63,7 @@ test('Supports Zod Mini errors', () => {
 
 	const error = new TestError(result.error);
 
-	expect(error.extensions).toEqual({ reason: fromZodError(result.error).message });
-});
-
-test('Supports Zod 3 errors', () => {
-	const result = zV3.object({ profile: zV3.object({ name: zV3.string() }) }).safeParse(invalidInput);
-
-	if (result.success) throw new Error('Expected invalid input');
-
-	const error = new TestError(result.error);
-
-	expect(error.extensions.reason).toContain('profile.name');
-	expect(error.cause).toBe(result.error);
+	expect(error.extensions).toEqual({ reason: formatZodError(result.error) });
 });
 
 test('Treats plain objects shaped like a Zod error as extensions', () => {

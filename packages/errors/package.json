@@ -28,8 +28,7 @@
 	},
 	"dependencies": {
 		"ms": "catalog:",
-		"zod": "catalog:",
-		"zod-validation-error": "catalog:"
+		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",

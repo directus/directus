@@ -1,7 +1,7 @@
 import { beforeEach, expect, test } from 'vitest';
 import { z } from 'zod';
-import { fromZodError } from 'zod-validation-error';
 import { ErrorCode } from '../codes.js';
+import { formatZodError } from '../format-zod-error.js';
 import { isDirectusError } from '../is-directus-error.js';
 import type { InvalidPayloadErrorExtensions } from './invalid-payload.js';
 import { InvalidPayloadError, messageConstructor } from './invalid-payload.js';
@@ -25,7 +25,7 @@ test('Accepts a Zod error', () => {
 
 	const error = new InvalidPayloadError(result.error);
 
-	expect(error.extensions).toEqual({ reason: fromZodError(result.error).message });
+	expect(error.extensions).toEqual({ reason: formatZodError(result.error) });
 	expect(error.status).toBe(400);
 	expect(isDirectusError(error, ErrorCode.InvalidPayload)).toBe(true);
 });
