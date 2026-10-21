@@ -1,4 +1,4 @@
-import type { Filter, Policy, User } from '@directus/types';
+import type { Filter, Policy, Role, User } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parseFilter, parsePreset } from './parse-filter.js';
 
@@ -652,6 +652,36 @@ describe('#parseFilter', () => {
 
 		const mockAccountability = { role: null, roles: ['admin'], user: null };
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+	});
+
+	it('preserves falsy role values while excluding null from a _nin dynamic variable', () => {
+		const mockFilter = {
+			field: {
+				_nin: '$CURRENT_ROLES.value',
+			},
+		} as Filter;
+
+		const mockResult = {
+			field: {
+				_nin: ['blocked', 0, false, ''],
+			},
+		} as Filter;
+
+		const mockAccountability = { role: null, roles: [], user: null };
+
+		const mockContext = {
+			$CURRENT_ROLES: [
+				{ value: 'blocked' },
+				{ value: 0 },
+				{ value: false },
+				{ value: '' },
+				{ value: null },
+				{ value: undefined },
+				{},
+			] as unknown as Role[],
+		};
+
+		expect(parseFilter(mockFilter, mockAccountability, mockContext)).toStrictEqual(mockResult);
 	});
 
 	it('adjusts the date by 1 day', () => {

@@ -50,3 +50,8 @@ test('Indexes into a nested array', () => {
 	const input = { test: [{ path: [{ test: 'a' }, { test: 'b' }] }] };
 	expect(getWithArrayIndex(input, 'test[0].path[1].test')).toBe('b');
 });
+
+test('Keeps falsy values when spreading across an array path', () => {
+	const input = { test: [{ path: 0 }, { path: false }, { path: '' }, { path: null }, {}] };
+	expect(getWithArrayIndex(input, 'test.path')).toEqual([0, false, '']);
+});
