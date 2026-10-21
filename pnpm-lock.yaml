@@ -2260,6 +2260,12 @@ importers:
       ms:
         specifier: 'catalog:'
         version: 2.1.3
+      zod:
+        specifier: 'catalog:'
+        version: 4.1.12
+      zod-validation-error:
+        specifier: 'catalog:'
+        version: 4.0.2(zod@4.1.12)
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
