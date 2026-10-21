@@ -4,6 +4,7 @@ import { Direction } from './direction';
 import { DropCursor } from './drop-cursor';
 import { figureExtensions } from './figure';
 import { CustomImage } from './image';
+import { isAllowedLinkUri } from './link';
 import { Media } from './media';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
@@ -28,6 +29,7 @@ export const editorExtensions = [
 			defaultProtocol: 'https',
 			openOnClick: false,
 			HTMLAttributes: { target: null, rel: null },
+			isAllowedUri: (url) => isAllowedLinkUri(url),
 		},
 	}),
 	DropCursor,

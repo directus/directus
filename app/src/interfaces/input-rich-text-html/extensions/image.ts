@@ -1,7 +1,7 @@
 import { type Editor, mergeAttributes } from '@tiptap/core';
 import { Image } from '@tiptap/extension-image';
-import { isAllowedUri } from '@tiptap/extension-link';
 import type { DOMOutputSpec } from '@tiptap/pm/model';
+import { isAllowedLinkUri } from './link';
 
 /**
  * Image node extended with:
@@ -45,7 +45,7 @@ function wrappingLink(img: HTMLElement): ImageLink | null {
 
 	const href = anchor.getAttribute('href');
 	// same allow-list as the Link mark, so an image link cannot smuggle in what a text link rejects
-	if (!onlyImage || !href || !isAllowedUri(href)) return null;
+	if (!onlyImage || !href || !isAllowedLinkUri(href)) return null;
 
 	return { href, target: anchor.getAttribute('target') || null, rel: anchor.getAttribute('rel') || null };
 }
@@ -90,7 +90,7 @@ export const CustomImage = Image.extend({
 				(attrs) =>
 				({ commands }) => {
 					// same guard as parsing, so the drawer cannot store what a load would drop
-					if (!isAllowedUri(attrs.href)) return false;
+					if (!isAllowedLinkUri(attrs.href)) return false;
 					return commands.updateAttributes(this.name, attrs);
 				},
 			unsetImageLink:
