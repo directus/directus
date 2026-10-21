@@ -28,7 +28,8 @@ All flows share these core fields for creation:
 - `color` - Hex color code (optional)
 - `description` - Flow description (optional)
 - `options` - Trigger-specific configuration object (optional)
-- `operation` - UUID of first operation (optional, set after creating operations) </core_fields>
+- `operation` - UUID of first operation (optional, set after creating operations)
+- `folder` - UUID of the flow folder holding this flow, or `null` for none (optional) </core_fields>
 
 <crud_actions>
 
@@ -164,7 +165,7 @@ UI button that users click to start flows
 	"trigger": "manual",
 	"options": {
 		"collections": ["posts", "products"],
-		"location": "item", // item|collection|both
+		"location": "item", // item|collection|both|hidden
 		"requireSelection": false, // Default true - requires item selection
 		"requireConfirmation": true,
 		"confirmationDescription": "AI Ghostwriter",

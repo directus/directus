@@ -2,6 +2,8 @@ import type { ReadLicenseOutput } from '@directus/license';
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLicenseStore } from './license';
+import { i18n } from '@/lang';
+import { localizedFormat } from '@/utils/localized-format';
 
 const entitlements: ReadLicenseOutput['entitlements'] = {
 	seats: { limit: 10 },
@@ -22,11 +24,13 @@ const entitlements: ReadLicenseOutput['entitlements'] = {
 function createLicenseInfo(overrides: Partial<ReadLicenseOutput> = {}): ReadLicenseOutput {
 	return {
 		status: 'active',
+		editable: true,
 		source: 'settings',
 		name: 'Team',
 		renews_at: 1_800_000_000,
 		offline: false,
 		grace_period: 0,
+		invalid_reason: null,
 		entitlements,
 		usage: {
 			seats: 8,
@@ -119,7 +123,9 @@ describe('formattedGraceDeadline', () => {
 			renews_at: undefined,
 		});
 
-		expect(licenseStore.formattedGraceDeadline).toBe(Intl.DateTimeFormat().format(deadline));
+		expect(licenseStore.formattedGraceDeadline).toBe(
+			localizedFormat(deadline, String(i18n.global.t('date-fns_date_short'))),
+		);
 	});
 });
 
@@ -241,5 +247,48 @@ describe('history timeframes', () => {
 
 		expect(licenseStore.revisionHistoryTimeframe).toBeNull();
 		expect(licenseStore.activityHistoryTimeframe).toBeNull();
+	});
+});
+
+describe('invalid reason', () => {
+	test('reports a downgrade reason once running on core', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ source: null, invalid_reason: 'expired' });
+
+		expect(licenseStore.downgradeReason).toBe('expired');
+		expect(licenseStore.warningReason).toBeNull();
+	});
+
+	test('reports a warning reason while the license is still applied', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ source: 'settings', invalid_reason: 'binding_mismatch' });
+
+		expect(licenseStore.warningReason).toBe('binding_mismatch');
+		expect(licenseStore.downgradeReason).toBeNull();
+	});
+
+	test('reports no reason without an invalid reason', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ source: null, invalid_reason: null });
+
+		expect(licenseStore.downgradeReason).toBeNull();
+		expect(licenseStore.warningReason).toBeNull();
+	});
+});
+
+describe('tokenExpiresAt', () => {
+	test('returns null without a token expiry', () => {
+		const licenseStore = useLicenseStore();
+		licenseStore.info = createLicenseInfo();
+		expect(licenseStore.tokenExpiresAt).toBeNull();
+	});
+
+	test('returns the date the token expires', () => {
+		const licenseStore = useLicenseStore();
+		licenseStore.info = createLicenseInfo({ token_expires_at: FIXED_NOW_SEC });
+		expect(licenseStore.tokenExpiresAt).toEqual(new Date(FIXED_NOW_SEC * 1000));
 	});
 });

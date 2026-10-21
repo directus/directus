@@ -5,4 +5,9 @@ export default defineConfig({
 	define: {
 		__SYSTEM_COLLECTION_NAMES__: JSON.stringify(systemCollectionNames),
 	},
+	test: {
+		typecheck: {
+			tsconfig: './tests/tsconfig.json',
+		},
+	},
 });

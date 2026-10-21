@@ -106,14 +106,13 @@ const oracle = {
 	DB_PORT: '$PORT',
 	DB_USER: 'secretsysuser',
 	DB_PASSWORD: 'secretpassword',
-	DB_DATABASE: 'XEPDB1',
-	DB_VERSION: '21-slim-faststart' as string,
+	DB_DATABASE: 'FREEPDB1',
+	DB_VERSION: '23-slim-faststart' as string,
 	...directusConfig,
 } as const;
 
 const saml = {
 	SAML_PORT: '$PORT_SAML',
-	AUTH_PROVIDERS: 'saml',
 	AUTH_SAML_DRIVER: 'saml',
 	AUTH_SAML_ALLOW_PUBLIC_REGISTRATION: 'true',
 	AUTH_SAML_SP_metadata:
@@ -131,10 +130,25 @@ const rustfs = {
 	STORAGE_RUSTFS_DRIVER: 's3',
 	STORAGE_RUSTFS_KEY: 'directus',
 	STORAGE_RUSTFS_SECRET: 'rustfssecret',
-	STORAGE_RUSTFS_BUCKET: 'directus-blackbox-test',
+	STORAGE_RUSTFS_BUCKET: 'directus-test',
 	STORAGE_RUSTFS_REGION: 'us-east-1',
 	STORAGE_RUSTFS_ENDPOINT: 'http://127.0.0.1:$PORT_RUSTFS',
 	STORAGE_RUSTFS_FORCE_PATH_STYLE: 'true',
+} as const;
+
+const ldap = {
+	LDAP_PORT: '$PORT_LDAP',
+	AUTH_LDAP_DRIVER: 'ldap',
+	AUTH_LDAP_CLIENT_URL: 'ldap://127.0.0.1:$PORT_LDAP',
+	AUTH_LDAP_BIND_DN: 'cn=Manager,dc=my-domain,dc=com',
+	AUTH_LDAP_BIND_PASSWORD: 'secret',
+	AUTH_LDAP_USER_DN: 'ou=users,dc=my-domain,dc=com',
+	AUTH_LDAP_USER_ATTRIBUTE: 'uid',
+	AUTH_LDAP_USER_SCOPE: 'one',
+	AUTH_LDAP_MAIL_ATTRIBUTE: 'mail',
+	AUTH_LDAP_FIRST_NAME_ATTRIBUTE: 'givenName',
+	AUTH_LDAP_LAST_NAME_ATTRIBUTE: 'sn',
+	AUTH_LDAP_ALLOW_PUBLIC_REGISTRATION: 'true',
 } as const;
 
 const maildev = {
@@ -173,18 +187,23 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 					ADMIN_TOKEN: 'admin',
 				}
 			: {}),
-		...(process.arch === 'arm64' ? { DOCKER_DEFAULT_PLATFORM: 'linux/amd64' } : {}),
+		AUTH_PROVIDERS: [opts.extras.saml && 'saml', opts.extras.ldap && 'ldap']
+			.filter((s) => typeof s === 'string')
+			.join(','),
 		...(opts.extras.rustfs ? rustfs : {}),
 		...(opts.extras.saml ? saml : {}),
+		...(opts.extras.ldap ? ldap : {}),
 		...(opts.extras.maildev ? maildev : {}),
 		...opts.env,
 		...(process.env as Record<string, any>),
 		...(opts.extras.license ? { NODE_ENV: 'development', LICENSE_API_URL: `http://${base.HOST}:$PORT_LICENSE` } : {}),
 		// PORT/PUBLIC_URL must be authoritative — process.env carries the vitest
 		// per-project PORT baseline, but opts.port is the resolved port the API
-		// actually binds (and what tests reach via apis[0].port).
+		// actually binds (and what tests reach via apis[0].port). A PUBLIC_URL the
+		// caller asked for explicitly still wins, for tests that need a subpath or
+		// a different host than the one the API binds to.
 		PORT: String(opts.port),
-		PUBLIC_URL: `http://${base.HOST}:${opts.port}`,
+		PUBLIC_URL: opts.env['PUBLIC_URL'] ?? `http://${base.HOST}:${opts.port}`,
 	} satisfies Env;
 
 	if (opts.dbVersion && 'DB_VERSION' in env) {
@@ -216,13 +235,14 @@ export type Env = (typeof baseConfig)[Database] & {
 	PUBLIC_URL: string;
 	REDIS_ENABLED: string;
 	CACHE_ENABLED: string;
+	AUTH_PROVIDERS: string;
 	NODE_ENV: string;
 	ADMIN_EMAIL?: 'admin@example.com';
 	PROJECT_OWNER?: 'admin@example.com';
 	ADMIN_PASSWORD?: 'pw';
 	ADMIN_TOKEN?: 'admin';
-	DOCKER_DEFAULT_PLATFORM?: string;
 } & Partial<typeof rustfs> &
 	Partial<typeof saml> &
+	Partial<typeof ldap> &
 	Partial<typeof maildev> &
 	Partial<{ LICENSE_API_URL: string }>;

@@ -58,13 +58,13 @@ function makeSchemaComposer() {
 	};
 }
 
-function makeSchema(action: 'read' | 'create', collections: Record<string, any>) {
+function makeSchema(action: 'read' | 'create' | 'update', collections: Record<string, any>) {
 	const empty = { collections: {}, relations: [] };
 
 	return {
 		read: action === 'read' ? { collections, relations: [] } : empty,
 		create: action === 'create' ? { collections, relations: [] } : empty,
-		update: empty,
+		update: action === 'update' ? { collections, relations: [] } : empty,
 		delete: empty,
 	};
 }
@@ -73,8 +73,8 @@ function makeCollection(name: string, fields: Record<string, any>) {
 	return { collection: name, primary: 'id', singleton: false, fields };
 }
 
-function makeField(name: string, type: string) {
-	return { field: name, type, special: [], note: null, nullable: true, defaultValue: null };
+function makeField(name: string, type: string, overrides: Record<string, any> = {}) {
+	return { field: name, type, special: [], note: null, nullable: true, defaultValue: null, ...overrides };
 }
 
 const mockInconsistentFields = { read: {}, create: {}, update: {}, delete: {} } as any;
@@ -207,5 +207,80 @@ describe('getTypes – json() inside {field}_func (Phase 3)', () => {
 		const { CollectionTypes } = getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'create');
 
 		expect(CollectionTypes['articles']!.getFields()).not.toHaveProperty('metadata_func');
+	});
+});
+
+describe('getTypes – non-null marking (directus/directus#25888)', () => {
+	type Action = 'read' | 'create' | 'update';
+
+	function fieldType(
+		action: Action,
+		field: ReturnType<typeof makeField>,
+		{ collection = 'articles', inconsistent = [] as readonly string[] } = {},
+	) {
+		const schema = makeSchema(action, {
+			[collection]: makeCollection(collection, {
+				id: makeField('id', 'integer', { nullable: false }),
+				[field.field]: field,
+			}),
+		});
+
+		const inconsistentFields = {
+			read: { [collection]: inconsistent },
+			create: { [collection]: inconsistent },
+			update: { [collection]: inconsistent },
+			delete: {},
+		} as any;
+
+		const { CollectionTypes } = getTypes(
+			makeSchemaComposer() as any,
+			'items',
+			schema as any,
+			inconsistentFields,
+			action,
+		);
+
+		return String(CollectionTypes[collection]!.getFields()[field.field]!.type);
+	}
+
+	test.each([
+		['read', 'NOT NULL with default', 'String!', 'string', { nullable: false, defaultValue: 'small' }],
+		['read', 'NOT NULL without default', 'String!', 'string', { nullable: false }],
+		['read', 'nullable with default', 'String', 'string', { defaultValue: 'small' }],
+		['read', 'NOT NULL with false default', 'Boolean!', 'boolean', { nullable: false, defaultValue: false }],
+		['read', 'NOT NULL generated', 'Date', 'timestamp', { nullable: false, special: ['date-created'] }],
+		['read', 'NOT NULL inconsistent', 'String', 'string', { nullable: false }, { inconsistent: ['size'] }],
+		['read', 'primary key', 'ID!', 'integer', { field: 'id', nullable: false }],
+		[
+			'read',
+			'directus_permissions primary key',
+			'ID',
+			'integer',
+			{ field: 'id', nullable: false },
+			{ collection: 'directus_permissions' },
+		],
+		['create', 'NOT NULL with default', 'String', 'string', { nullable: false, defaultValue: 'small' }],
+		['create', 'NOT NULL with empty string default', 'String', 'string', { nullable: false, defaultValue: '' }],
+		['create', 'NOT NULL with false default', 'Boolean', 'boolean', { nullable: false, defaultValue: false }],
+		['create', 'NOT NULL with 0 default', 'Int', 'integer', { nullable: false, defaultValue: 0 }],
+		['create', 'NOT NULL without default', 'String!', 'string', { nullable: false }],
+		['create', 'NOT NULL generated', 'Date', 'timestamp', { nullable: false, special: ['date-created'] }],
+		['create', 'NOT NULL inconsistent', 'String', 'string', { nullable: false }, { inconsistent: ['size'] }],
+		['create', 'nullable without default', 'String', 'string', {}],
+		['create', 'primary key without default', 'ID!', 'integer', { field: 'id', nullable: false }],
+		[
+			'create',
+			'auto increment primary key',
+			'ID',
+			'integer',
+			{ field: 'id', nullable: false, defaultValue: 'AUTO_INCREMENT' },
+		],
+		['create', 'primary key with 0 default', 'ID', 'integer', { field: 'id', nullable: false, defaultValue: 0 }],
+		['create', 'uuid primary key', 'ID', 'uuid', { field: 'id', nullable: false, special: ['uuid'] }],
+		['update', 'NOT NULL with default', 'String', 'string', { nullable: false, defaultValue: 'small' }],
+		['update', 'NOT NULL without default', 'String', 'string', { nullable: false }],
+		['update', 'primary key', 'ID', 'integer', { field: 'id', nullable: false }],
+	] as const)('%s: %s is %s', (action, _label, expected, type, overrides, options?) => {
+		expect(fieldType(action, makeField('size', type, overrides), options)).toBe(expected);
 	});
 });

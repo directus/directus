@@ -192,6 +192,48 @@ function reconcileOne(
 }
 
 /**
+ * A record can only be identified once the collections its natural key points at have been matched, so
+ * those are reconciled first. Only references inside the key count: two collections often point back at
+ * each other, and honouring every reference would leave each one waiting on the other forever.
+ */
+function inDependencyOrder(inputs: readonly ReconcileInput[]): ReconcileInput[] {
+	const byCollection = new Map(inputs.map((input) => [input.collection, input]));
+	const ordered: ReconcileInput[] = [];
+	const emitted = new Set<ReconcileInput>();
+	const visiting = new Set<ReconcileInput>();
+
+	function visit(input: ReconcileInput): void {
+		if (emitted.has(input) || visiting.has(input)) {
+			return;
+		}
+
+		visiting.add(input);
+
+		for (const fk of input.fkFields) {
+			if (!input.naturalKey.includes(fk.field)) {
+				continue;
+			}
+
+			const referenced = byCollection.get(fk.references);
+
+			if (referenced !== undefined && referenced !== input) {
+				visit(referenced);
+			}
+		}
+
+		visiting.delete(input);
+		emitted.add(input);
+		ordered.push(input);
+	}
+
+	for (const input of inputs) {
+		visit(input);
+	}
+
+	return ordered;
+}
+
+/**
  * Parent-first: already-mapped source IDs are skipped but their targets claimed, and each new match
  * becomes available to the child FK keys reconciled after it.
  */
@@ -217,7 +259,7 @@ export function reconcileCollections(
 
 	const results: CollectionReconcile[] = [];
 
-	for (const input of inputs) {
+	for (const input of inDependencyOrder(inputs)) {
 		results.push(reconcileOne(input, existing, progress, claimed));
 	}
 
