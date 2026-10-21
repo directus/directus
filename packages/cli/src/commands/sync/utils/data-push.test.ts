@@ -559,6 +559,21 @@ describe('prepareDataPush skip and precondition', () => {
 			expect(plan?.batch).toEqual([{ collection: 'directus_presets', items: [{ ...globalView, id: '10' }] }]);
 		});
 
+		it('skips a role preset whose role exists on the target only under the same name, until roles ride along', async () => {
+			writePresets([roleBookmark]);
+			mockTarget([], [{ id: 'r-tgt', name: 'Moderator' }]);
+
+			expect((await previewData(target(), 'merge'))?.skipped).toBe(1);
+
+			writePresets([roleBookmark], [{ id: 'r-src', name: 'Moderator' }]);
+
+			const preview = await previewData(target(), 'merge');
+			const presets = preview?.batch.find((entry) => entry.collection === 'directus_presets');
+
+			expect(preview?.skipped).toBe(0);
+			expect(presets?.items).toEqual([{ ...roleBookmark, id: -1, role: 'r-tgt' }]);
+		});
+
 		it('skips the target roles read when every role rides in the same push', async () => {
 			writePresets([roleBookmark], [{ id: 'r-src', name: 'Moderator' }]);
 			mockTarget([], []);

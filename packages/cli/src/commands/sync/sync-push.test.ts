@@ -1181,7 +1181,8 @@ describe('sync push with data', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
 
 		const err = stderr.join('');
-		expect(err).toContain('presets: skipped 1 role preset because its role does not exist on the target.');
+		expect(err).toContain('presets: skipped 1 role preset because its role is not linked to a role on the target.');
+		expect(err).toContain('Pull with --roles --no-deps');
 		expect(err).toContain('except 1 skipped configuration record — nothing else to push.');
 	});
 

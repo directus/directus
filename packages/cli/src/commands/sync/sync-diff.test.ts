@@ -286,6 +286,31 @@ describe('sync diff with data', () => {
 		writeDataFiles(dataDir, collections, source);
 	}
 
+	it('explains skipped role presets even when nothing else would change', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{
+				collection: 'directus_presets',
+				primaryKey: 'id',
+				records: [{ id: 1, collection: 'articles', bookmark: 'Queue', role: 'sr-gone', user: null }],
+			},
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/roles', []);
+		interceptTarget('/presets', []);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
+
+		const err = stderr.join('');
+		expect(err).toContain('presets: skipped 1 role preset because its role is not linked to a role on the target.');
+		expect(err).toContain('except 1 skipped configuration record — nothing else to do.');
+	});
+
 	it('dry-runs the remapped batch, renders per-collection data lines, and writes nothing', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());

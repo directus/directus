@@ -123,8 +123,9 @@ async function resolvePresetRoles(
 	};
 }
 
+// A same-named role made by hand on the target is not enough: without the roles file there is no name to match.
 export function skippedPresetsMessage(skipped: number): string {
-	return `presets: skipped ${maybePluralize(skipped, 'role preset')} because ${skipped === 1 ? 'its role does' : 'their roles do'} not exist on the target. Create the role there, or pull with --roles (this also brings policies and permissions).`;
+	return `presets: skipped ${maybePluralize(skipped, 'role preset')} because ${skipped === 1 ? 'its role is not' : 'their roles are not'} linked to a role on the target. Pull with --roles --no-deps to match roles by name without their policies, then push again.`;
 }
 
 const TARGET_PREFIX = 'target:';
