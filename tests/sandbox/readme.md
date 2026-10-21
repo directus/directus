@@ -31,6 +31,7 @@ Options:
   --docker.keep                Keep containers running when stopping the sandbox
   --docker.name <name>         Overwrite the name of the docker project
   --docker.suffix <suffix>     Adds a suffix to the docker project. Can be used to ensure uniqueness
+  --docker.shared              Reuse a long lived database container and create a fresh user and database inside of it instead of starting a new one
   --env <env...>               Add environment variables that the api should start with. Format: KEY=VALUE (default: {})
   --cache                      Enable or disable caching
   --prefix <prefix>            Prefix the logs, useful when starting multiple sandboxes
@@ -62,6 +63,25 @@ console.log(await result.json());
 
 await sb.close();
 ```
+
+### Shared database mode
+
+Starting a database container and bootstrapping it are usually the slowest parts of spinning up a sandbox. With
+`--docker.shared` (or `docker: { shared: true }`, or `SANDBOX_SHARED=true` as an environment variable), the sandbox
+instead:
+
+1. Reuses a long lived database container in the compose project `sandbox_shared_<database>_<version>`, starting it on
+   first use. That container is never stopped by the sandbox; remove it with
+   `docker compose -p sandbox_shared_<database>_<version> down`.
+2. Bootstraps a template database once and snapshots it (a template database for postgres, a dump or backup file inside
+   of the container for the other vendors). The template is keyed by the migration and seed files as well as the initial
+   admin env variables, so it is rebuilt automatically whenever one of those changes.
+3. Creates a fresh user and a database cloned from the template (a schema/user in `FREEPDB1` for oracle), with the same
+   privileges the default setup uses, and skips bootstrapping. Each clone gets its own `project_id`.
+4. Drops that user and database again when the sandbox is stopped.
+
+Extras like redis still run in their own per sandbox compose project. Sandboxes that crash without stopping can leave
+their `sandbox_*` user and database behind.
 
 ## Inner workings
 

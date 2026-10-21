@@ -18,9 +18,6 @@ declare module 'vitest' {
 // mark this file as a module so augmentation works correctly
 export {};
 
-// Each sandbox file boots its own database container, too many of these at once starve docker and time out
-const heavyDatabases: Database[] = ['oracle', 'cockroachdb', 'mssql'];
-
 export default defineConfig({
 	plugins: [tsconfigPaths() as any],
 	test: {
@@ -59,7 +56,6 @@ export default defineConfig({
 							setupFiles: './setup/setup-files.ts',
 							name: `${database}-sb`,
 							silent: false,
-							...(heavyDatabases.includes(database) && { maxWorkers: 2 }),
 							passWithNoTests: true,
 							include: ['**/*.sb.test.ts'],
 							testTimeout: 100_000,
