@@ -8,6 +8,9 @@ packages:
 
 # api -> directus -> api cyclic dependency temp fix
 ignoreWorkspaceCycles: true
+engineStrict: true
+shellEmulator: true
+savePrefix: ''
 
 overrides:
   '@yarnpkg/shell>cross-spawn': 7.0.6
