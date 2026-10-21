@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 import { cwd } from 'node:process';
-import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
+import { DEFAULT_CHUNK_SIZE, DIRECTUS_DOMAIN } from '@directus/constants';
 import type { Env } from '../types/env.js';
 
 export const DEFAULTS: Env = {
@@ -94,8 +94,7 @@ export const DEFAULTS: Env = {
 	CACHE_AUTO_PURGE_IGNORE_LIST: 'directus_activity,directus_presets',
 	CACHE_CONTROL_S_MAXAGE: '0',
 	CACHE_SCHEMA: true,
-	CACHE_SCHEMA_MAX_ITERATIONS: 100,
-	CACHE_SCHEMA_SYNC_TIMEOUT: 10000,
+	CACHE_SCHEMA_SYNC_TIMEOUT: 1000 * 60, // 1min
 	CACHE_SCHEMA_FREEZE_ENABLED: false,
 	CACHE_VALUE_MAX_SIZE: false,
 	CACHE_SKIP_ALLOWED: false,
@@ -124,8 +123,8 @@ export const DEFAULTS: Env = {
 	MARKETPLACE_TRUST: 'sandbox',
 
 	TELEMETRY: true,
-	TELEMETRY_URL: 'https://telemetry.directus.io',
-	COMPLIANCE_URL: 'https://telemetry.directus.io',
+	TELEMETRY_URL: `https://telemetry.${DIRECTUS_DOMAIN}`,
+	COMPLIANCE_URL: `https://telemetry.${DIRECTUS_DOMAIN}`,
 
 	ASSETS_CACHE_TTL: '30d',
 	ASSETS_CACHE_REVALIDATE: false,
