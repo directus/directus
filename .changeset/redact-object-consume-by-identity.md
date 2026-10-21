@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed `redactObject` deleting the wrong matched key
+Fixed `redactObject` skipping a key path when an earlier path matched the same key, which could leave that value unredacted
