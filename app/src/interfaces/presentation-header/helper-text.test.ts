@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { mount } from '@vue/test-utils';
 import { describe, expect, test } from 'vitest';
 import HelperText from './helper-text.vue';

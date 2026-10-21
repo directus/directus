@@ -1,7 +1,7 @@
 import { extname } from 'node:path';
 import stream from 'node:stream';
 import { useEnv } from '@directus/env';
-import { UnsupportedMediaTypeError } from '@directus/errors';
+import { InvalidPayloadError, UnsupportedMediaTypeError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import type { TusDriver } from '@directus/storage';
 import type { Accountability, ChunkedUploadContext, File, SchemaOverview } from '@directus/types';
@@ -86,10 +86,18 @@ export class TusDataStore extends DataStore {
 
 		// If the payload contains a primary key, we'll check if the file already exists for replacement
 		if (upload.metadata['id']) {
-			existingFile = await knex.select('tus_id').from('directus_files').andWhere({ id: upload.metadata['id'] }).first();
+			existingFile = await knex
+				.select('tus_id', 'storage', 'filename_disk')
+				.from('directus_files')
+				.andWhere({ id: upload.metadata['id'] })
+				.first();
 
 			if (existingFile && existingFile['tus_id'] !== null) {
 				throw ERRORS.INVALID_METADATA;
+			}
+
+			if (existingFile) {
+				this.assertValidReplacementTarget(existingFile);
 			}
 		}
 
@@ -189,7 +197,15 @@ export class TusDataStore extends DataStore {
 
 				// If the file is a replacement, delete the old files, and upgrade the temp file. DB record will be cleanup on in onUploadFinish handler
 				if (isReplacement) {
-					const replaceData = await sudoFilesItemsService.readOne(targetId, { fields: ['filename_disk'] });
+					const replaceData = await sudoFilesItemsService.readOne(targetId, { fields: ['storage', 'filename_disk'] });
+
+					// The target may have changed since the upload was created
+					try {
+						this.assertValidReplacementTarget(replaceData);
+					} catch (err) {
+						await this.remove(fileData.tus_id!);
+						throw err;
+					}
 
 					// delete the previously saved file and thumbnails to ensure they're generated fresh
 					for await (const partPath of this.storageDriver.list(targetId)) {
@@ -257,6 +273,25 @@ export class TusDataStore extends DataStore {
 
 		await Promise.allSettled(toDelete);
 		return toDelete.length;
+	}
+
+	/**
+	 * Replacements are written to this store's location at the target's path, so the target has to be stored
+	 * in that location and its path has to be valid there
+	 *
+	 * @throws InvalidPayloadError
+	 * @throws ForbiddenError
+	 */
+	protected assertValidReplacementTarget(target: Partial<File>): void {
+		if (target.storage !== this.location) {
+			throw new InvalidPayloadError({
+				reason: `Only files stored in "${this.location}" can be replaced via resumable uploads`,
+			});
+		}
+
+		if (target.filename_disk) {
+			assertValidStoragePath(target.filename_disk, this.location);
+		}
 	}
 
 	override getExpiration(): number {

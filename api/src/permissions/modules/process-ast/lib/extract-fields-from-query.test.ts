@@ -180,3 +180,33 @@ test('All together now', () => {
 		]),
 	);
 });
+
+test.each([
+	['o2m', '$FOLLOW(links, article_id)', 'links'],
+	['o2a', '$FOLLOW(blocks, item, collection)', 'blocks'],
+])('Appends nested paths based on implicit %s $FOLLOW relation', (_, follow, relatedCollection) => {
+	const fieldMap = { read: new Map(), other: new Map() };
+
+	const query: Query = {
+		filter: {
+			[follow]: {
+				_some: {
+					title: {
+						_eq: 'Hello World',
+					},
+				},
+			},
+		},
+	};
+
+	const schema: DeepPartial<SchemaOverview> = { relations: [] };
+
+	extractFieldsFromQuery('articles', query, fieldMap, schema as SchemaOverview);
+
+	expect(fieldMap.read).toEqual(
+		new Map([
+			['', { collection: 'articles', fields: new Set() }],
+			[follow, { collection: relatedCollection, fields: new Set(['title']) }],
+		]),
+	);
+});

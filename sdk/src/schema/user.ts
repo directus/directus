@@ -1,4 +1,4 @@
-import type { MergeCoreCollection } from '../index.js';
+import type { MergeCoreCollection, StringLiteralUnion } from '../index.js';
 import type { DirectusAccess } from './access.js';
 import type { DirectusFile } from './file.js';
 import type { DirectusRole } from './role.js';
@@ -11,7 +11,9 @@ export type DirectusUser<Schema = any> = MergeCoreCollection<
 	'directus_users',
 	{
 		id: string; // uuid
-		status: 'draft' | 'invited' | 'unverified' | 'active' | 'suspended' | 'archived' | 'inactive-license' | string;
+		status: StringLiteralUnion<
+			'draft' | 'invited' | 'unverified' | 'active' | 'suspended' | 'archived' | 'inactive-license'
+		>;
 		first_name: string | null;
 		last_name: string | null;
 		email: string | null;
@@ -23,7 +25,7 @@ export type DirectusUser<Schema = any> = MergeCoreCollection<
 		tfa_secret: string | null;
 		auth_data: Record<string, any> | null;
 		provider: string;
-		appearance: 'auto' | 'dark' | 'light' | string | null;
+		appearance: StringLiteralUnion<'auto' | 'dark' | 'light'> | null;
 		theme_light: string | null;
 		theme_dark: string | null;
 		theme_light_overrides: Record<string, unknown> | null;
@@ -31,7 +33,7 @@ export type DirectusUser<Schema = any> = MergeCoreCollection<
 		role: DirectusRole<Schema> | string | null;
 		policies: string[] | DirectusAccess<Schema>[];
 		language: string | null;
-		text_direction: 'ltr' | 'rtl' | 'auto' | string;
+		text_direction: StringLiteralUnion<'ltr' | 'rtl' | 'auto'>;
 		avatar: DirectusFile<Schema> | string | null;
 		title: string | null;
 		description: string | null;

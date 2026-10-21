@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import axios from 'axios';
-import { debounce, get, throttle } from 'lodash';
+import { debounce, get, throttle } from 'lodash-es';
 import { render } from 'micromustache';
 import { ref } from 'vue';
 import api from '@/api';

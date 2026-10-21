@@ -4,7 +4,7 @@ import { APP_SHARED_DEPS } from '@directus/extensions';
 import { generateExtensionsEntrypoint, resolveFsExtensions, resolveModuleExtensions } from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
 import { templateCompilerOptions } from '@tresjs/core';
-import UnheadVite from '@unhead/addons/vite';
+import { Unhead } from '@unhead/vue/vite';
 import vue from '@vitejs/plugin-vue';
 import { searchForWorkspaceRoot } from 'vite';
 import vueDevtools from 'vite-plugin-vue-devtools';
@@ -44,7 +44,7 @@ export default defineConfig({
 		vue({
 			...templateCompilerOptions,
 		}),
-		UnheadVite(),
+		...Unhead(),
 		yaml({
 			transform(data) {
 				return data === null ? {} : undefined;
@@ -95,7 +95,7 @@ export default defineConfig({
 		environment: 'happy-dom',
 		deps: {
 			optimizer: {
-				web: {
+				client: {
 					exclude: ['pinia', 'url'],
 				},
 			},

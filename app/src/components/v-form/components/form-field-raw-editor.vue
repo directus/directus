@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Field } from '@directus/types';
 import { isValidJSON, parseJSON } from '@directus/utils';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { computed, ref, watch } from 'vue';
 import type { FormField } from '../types';
 import VButton from '@/components/v-button.vue';

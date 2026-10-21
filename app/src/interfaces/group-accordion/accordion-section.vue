@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import TransitionExpand from '@/components/transition/expand.vue';

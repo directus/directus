@@ -19,6 +19,7 @@ const gqlSchema = buildSchema(`
 	type ComponentText { id: ID, text: String, items: [component_text_items] }
 	type ComponentImage { id: ID, src: String }
 	union page_content_item_union = ComponentText | ComponentImage
+	union post_content_item_union = ComponentText
 	type page_content { id: ID, item: page_content_item_union }
 	type author { id: ID, name: String }
 	type count_functions { count: Int }
@@ -167,6 +168,16 @@ const unionCases: SelectionCase[] = [
 		selections: buildContentItem([
 			buildInlineFragment('page_content_item_union', [buildInlineFragment('ComponentText', [buildField('text')])]),
 		]),
+		expected: buildContentItem([buildInlineFragment('ComponentText', [buildField('text')])]),
+	},
+	{
+		name: 'drops the type condition of a fragment on the union of another m2a field',
+		selections: buildContentItem([buildFragmentSpread('PostBlock')]),
+		fragments: {
+			PostBlock: buildFragmentDefinition('PostBlock', 'post_content_item_union', [
+				buildInlineFragment('ComponentText', [buildField('text')]),
+			]),
+		},
 		expected: buildContentItem([buildInlineFragment('ComponentText', [buildField('text')])]),
 	},
 	{

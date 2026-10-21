@@ -1,4 +1,7 @@
-Perform CRUD operations on Directus Folders. Folders are used to organize files in Directus.
+Perform CRUD operations on Directus Folders. Folders are used to organize files and Flows in Directus.
+
+A folder's `type` decides what it organizes: `files` for the file library, `flows` for Flows. It defaults to `files`, so
+set it explicitly when creating a folder for Flows, and filter on it when reading folders of one kind.
 
 ## Available Actions
 
@@ -17,6 +20,29 @@ Perform CRUD operations on Directus Folders. Folders are used to organize files 
 	"data": {
 		"name": "Product Images",
 		"parent": "parent-folder-uuid"
+	}
+}
+```
+
+### Create Flow Folder
+
+```json
+{
+	"action": "create",
+	"data": {
+		"name": "Notifications",
+		"type": "flows"
+	}
+}
+```
+
+### Read Flow Folders
+
+```json
+{
+	"action": "read",
+	"query": {
+		"filter": { "type": { "_eq": "flows" } }
 	}
 }
 ```

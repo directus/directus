@@ -48,7 +48,7 @@ export class LogsController extends SocketController {
 			try {
 				emitter.emitAction('websocket.logs', { message, client });
 			} catch (error) {
-				handleWebSocketError(client, error, 'server');
+				handleWebSocketError(client, error, { type: 'server' });
 				return;
 			}
 		});

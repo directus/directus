@@ -9,6 +9,7 @@ import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { i18n } from '@/lang';
+import { isCollectionInactive } from '@/utils/collection-status';
 import { getItemRoute } from '@/utils/get-route';
 import { userName } from '@/utils/user-name';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -47,6 +48,8 @@ const error = ref<any>(null);
 
 const openItemLink = computed(() => {
 	if (!item.value || isSystemCollection(item.value.collection) || item.value.action === 'delete') return;
+	// The item route renders as not found for an inactive collection
+	if (isCollectionInactive(item.value.collection)) return;
 
 	return getItemRoute(item.value.collection, item.value.item);
 });

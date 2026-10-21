@@ -1,7 +1,7 @@
 import type { ContentVersion, Field, Item, PrimaryKey, User } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import type { AnyExtension } from '@tiptap/vue-3';
-import { has, isEqual, mergeWith, orderBy } from 'lodash';
+import { has, isEqual, mergeWith, orderBy } from 'lodash-es';
 import { computed, type Ref, ref, watch } from 'vue';
 import type {
 	ComparisonData,
