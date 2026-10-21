@@ -97,7 +97,19 @@ export class DriverS3 implements TusDriver {
 		const maxSockets = this.config.maxSockets ?? 500;
 		const keepAlive = this.config.keepAlive ?? true;
 
-		const agentOptions: HttpAgentOptions = { maxSockets, keepAlive, proxyEnv: process.env };
+		/*
+		 * Only hand the proxy variables to the agents, not the whole environment.
+		 * HTTPS requests fall back to HTTP_PROXY when HTTPS_PROXY isn't set
+		 */
+		const getEnv = (key: string) => process.env[key] || process.env[key.toLowerCase()];
+
+		const proxyEnv = {
+			HTTP_PROXY: getEnv('HTTP_PROXY'),
+			HTTPS_PROXY: getEnv('HTTPS_PROXY') || getEnv('HTTP_PROXY'),
+			NO_PROXY: getEnv('NO_PROXY'),
+		};
+
+		const agentOptions: HttpAgentOptions = { maxSockets, keepAlive, proxyEnv };
 
 		const s3ClientConfig: S3ClientConfig = {
 			requestHandler: new NodeHttpHandler({

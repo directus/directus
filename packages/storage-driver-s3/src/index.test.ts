@@ -122,6 +122,7 @@ beforeEach(() => {
 
 afterEach(() => {
 	vi.resetAllMocks();
+	vi.unstubAllEnvs();
 });
 
 describe('#constructor', () => {
@@ -302,11 +303,11 @@ describe('#getClient', () => {
 		const [handlerOptions] = vi.mocked(NodeHttpHandler).mock.calls.at(-1)!;
 		const { connectionTimeout, socketTimeout } = handlerOptions as NodeHttpHandlerOptions;
 
-		const agentOptions = { maxSockets: 500, keepAlive: true, proxyEnv: process.env };
+		const agentOptions = { maxSockets: 500, keepAlive: true, proxyEnv: expect.any(Object) };
 
 		expect({ connectionTimeout, socketTimeout }).toEqual({ connectionTimeout: 5000, socketTimeout: 120000 });
-		expect(HttpAgent).toHaveBeenCalledWith(agentOptions);
-		expect(HttpsAgent).toHaveBeenCalledWith(agentOptions);
+		expect(HttpAgent).toHaveBeenLastCalledWith(agentOptions);
+		expect(HttpsAgent).toHaveBeenLastCalledWith(agentOptions);
 	});
 
 	test('takes the request handler timeouts and agent options from the driver config', () => {
@@ -321,11 +322,52 @@ describe('#getClient', () => {
 		const [handlerOptions] = vi.mocked(NodeHttpHandler).mock.calls.at(-1)!;
 		const { connectionTimeout, socketTimeout } = handlerOptions as NodeHttpHandlerOptions;
 
-		const agentOptions = { maxSockets: 10, keepAlive: false, proxyEnv: process.env };
+		const agentOptions = { maxSockets: 10, keepAlive: false, proxyEnv: expect.any(Object) };
 
 		expect({ connectionTimeout, socketTimeout }).toEqual({ connectionTimeout: 30000, socketTimeout: 60000 });
-		expect(HttpAgent).toHaveBeenCalledWith(agentOptions);
-		expect(HttpsAgent).toHaveBeenCalledWith(agentOptions);
+		expect(HttpAgent).toHaveBeenLastCalledWith(agentOptions);
+		expect(HttpsAgent).toHaveBeenLastCalledWith(agentOptions);
+	});
+
+	test('passes only the proxy variables from the environment to the agents', () => {
+		vi.stubEnv('HTTPS_PROXY', 'http://proxy:3128');
+		vi.stubEnv('NO_PROXY', 'minio');
+		vi.stubEnv('SECRET', 'secret');
+
+		new DriverS3({ bucket: 'bucket' });
+
+		for (const Agent of [HttpAgent, HttpsAgent]) {
+			const [agentOptions] = vi.mocked(Agent).mock.calls.at(-1)!;
+
+			expect(agentOptions?.proxyEnv).toMatchObject({ HTTPS_PROXY: 'http://proxy:3128', NO_PROXY: 'minio' });
+			expect(agentOptions?.proxyEnv).not.toHaveProperty('SECRET');
+		}
+	});
+
+	test('falls back to the lowercase proxy variables, with uppercase taking precedence', () => {
+		vi.stubEnv('HTTPS_PROXY', 'http://proxy:3128');
+		vi.stubEnv('https_proxy', 'http://other-proxy:3128');
+		vi.stubEnv('NO_PROXY', undefined);
+		vi.stubEnv('no_proxy', 'minio');
+
+		new DriverS3({ bucket: 'bucket' });
+
+		const [agentOptions] = vi.mocked(HttpsAgent).mock.calls.at(-1)!;
+
+		expect(agentOptions?.proxyEnv).toMatchObject({ HTTPS_PROXY: 'http://proxy:3128', NO_PROXY: 'minio' });
+		expect(agentOptions?.proxyEnv).not.toHaveProperty('no_proxy');
+	});
+
+	test('falls back to HTTP_PROXY for HTTPS requests when HTTPS_PROXY is not set', () => {
+		vi.stubEnv('HTTP_PROXY', 'http://proxy:3128');
+		vi.stubEnv('HTTPS_PROXY', undefined);
+		vi.stubEnv('https_proxy', undefined);
+
+		new DriverS3({ bucket: 'bucket' });
+
+		const [agentOptions] = vi.mocked(HttpsAgent).mock.calls.at(-1)!;
+
+		expect(agentOptions?.proxyEnv).toMatchObject({ HTTPS_PROXY: 'http://proxy:3128' });
 	});
 });
 
