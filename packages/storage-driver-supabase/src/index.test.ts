@@ -88,6 +88,7 @@ beforeEach(() => {
 
 afterEach(() => {
 	vi.resetAllMocks();
+	vi.unstubAllEnvs();
 });
 
 describe('#constructor', () => {
@@ -816,13 +817,45 @@ describe('#list', () => {
 });
 
 describe('#writeChunk', () => {
-	test('gives the tus agents the proxy env and keeps them alive', () => {
+	test('gives undici and the tus agents the same proxy settings', () => {
+		vi.stubEnv('HTTP_PROXY', undefined);
+		vi.stubEnv('http_proxy', undefined);
+		vi.stubEnv('HTTPS_PROXY', 'http://proxy:3128');
+		vi.stubEnv('NO_PROXY', 'example.local');
+
 		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
 
-		const agentOptions = { proxyEnv: process.env, keepAlive: true };
+		const agentOptions = {
+			proxyEnv: { HTTP_PROXY: undefined, HTTPS_PROXY: 'http://proxy:3128', NO_PROXY: 'example.local' },
+			keepAlive: true,
+			timeout: 5000,
+		};
 
 		expect(HttpAgent).toHaveBeenCalledWith(agentOptions);
 		expect(HttpsAgent).toHaveBeenCalledWith(agentOptions);
+
+		expect(EnvHttpProxyAgent).toHaveBeenCalledWith({
+			httpProxy: '',
+			httpsProxy: 'http://proxy:3128',
+			noProxy: 'example.local',
+		});
+	});
+
+	test('falls back to HTTP_PROXY for HTTPS requests, with uppercase taking precedence', () => {
+		vi.stubEnv('HTTP_PROXY', 'http://proxy:3128');
+		vi.stubEnv('http_proxy', 'http://other-proxy:3128');
+		vi.stubEnv('HTTPS_PROXY', undefined);
+		vi.stubEnv('https_proxy', undefined);
+
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
+
+		const [agentOptions] = vi.mocked(HttpsAgent).mock.calls.at(-1)!;
+
+		expect(agentOptions?.proxyEnv).toMatchObject({ HTTP_PROXY: 'http://proxy:3128', HTTPS_PROXY: 'http://proxy:3128' });
+
+		expect(EnvHttpProxyAgent).toHaveBeenLastCalledWith(
+			expect.objectContaining({ httpProxy: 'http://proxy:3128', httpsProxy: 'http://proxy:3128' }),
+		);
 	});
 
 	test('routes each tus request through the agent matching the url scheme', () => {
@@ -848,7 +881,7 @@ describe('#writeChunk', () => {
 	});
 
 	test('passes the proxy-aware http stack to the tus upload', async () => {
-		vi.mocked(Upload).mockImplementation((_content: any, options: any) => {
+		vi.mocked(Upload).mockImplementation(function (_content: any, options: any) {
 			return { url: null, start: () => options.onSuccess() } as any;
 		});
 
