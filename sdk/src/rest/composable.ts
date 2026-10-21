@@ -1,6 +1,7 @@
 import type { StaticTokenClient } from '../auth/types.js';
 import type { DirectusClient } from '../types/client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
+import { isFormData } from '../utils/is-form-data.js';
 import { request } from '../utils/request.js';
 import type { RestClient, RestCommand, RestConfig } from './types.js';
 
@@ -22,10 +23,7 @@ export const rest = (config: Partial<RestConfig> = {}) => {
 					options.headers = {};
 				}
 
-				if (
-					'Content-Type' in options.headers === false &&
-					(options.body === undefined || typeof options.body === 'string')
-				) {
+				if ('Content-Type' in options.headers === false && isFormData(options.body) === false) {
 					options.headers['Content-Type'] = 'application/json';
 				} else if (options.headers['Content-Type'] === 'multipart/form-data') {
 					// let the fetch function deal with multipart boundaries
