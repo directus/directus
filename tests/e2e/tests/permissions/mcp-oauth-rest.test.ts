@@ -12,9 +12,10 @@ import {
 	loginAsAdminSession,
 } from '../auth/mcp-oauth/utils.js';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken(adminToken));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 beforeAll(async () => {
 	await enableMcpOAuthSettings();
