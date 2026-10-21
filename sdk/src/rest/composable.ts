@@ -19,15 +19,13 @@ export const rest = (config: Partial<RestConfig> = {}) => {
 			async request<Output = any>(getOptions: RestCommand<Output, Schema>): Promise<Output> {
 				const options = getOptions();
 
-				if (!options.headers) {
-					options.headers = {};
-				}
+				options.headers = { ...options.headers };
 
-				if ('Content-Type' in options.headers === false && isFormData(options.body) === false) {
-					options.headers['Content-Type'] = 'application/json';
-				} else if (options.headers['Content-Type'] === 'multipart/form-data') {
-					// let the fetch function deal with multipart boundaries
+				if (options.headers['Content-Type'] === 'multipart/form-data' || isFormData(options.body)) {
+					// let fetch set the multipart content type and boundary
 					delete options.headers['Content-Type'];
+				} else if ('Content-Type' in options.headers === false) {
+					options.headers['Content-Type'] = 'application/json';
 				}
 
 				// we need to use THIS here instead of client to access overridden functions
