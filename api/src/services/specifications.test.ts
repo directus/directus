@@ -126,6 +126,8 @@ describe('Integration Tests', () => {
 						expect(getSchema).toMatchObject({
 							properties: { meta: { $ref: '#/components/schemas/Metadata' } },
 						});
+
+						expect(spec.components?.schemas).toHaveProperty('Metadata');
 					});
 				});
 
