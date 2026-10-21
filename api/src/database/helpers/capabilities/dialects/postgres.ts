@@ -13,4 +13,9 @@ export class CapabilitiesHelperPostgres extends CapabilitiesHelper {
 		// See https://www.postgresql.org/docs/current/sql-prepare.html
 		return false;
 	}
+
+	override getMaxBindings(): number {
+		// https://www.postgresql.org/docs/current/protocol-message-formats.html#PROTOCOL-MESSAGE-FORMATS-BIND
+		return 65535;
+	}
 }
