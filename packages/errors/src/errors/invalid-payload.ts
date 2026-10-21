@@ -1,5 +1,4 @@
-import { fromZodError, isZodErrorLike, type ZodError } from 'zod-validation-error';
-import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
+import { createError, ErrorCode, withZodSupport, type ZodAwareErrorConstructor } from '../index.js';
 
 export interface InvalidPayloadErrorExtensions {
 	reason: string;
@@ -7,11 +6,6 @@ export interface InvalidPayloadErrorExtensions {
 
 export const messageConstructor = ({ reason }: InvalidPayloadErrorExtensions) => `Invalid payload. ${reason}.`;
 
-const BaseInvalidPayloadError: DirectusErrorConstructor<InvalidPayloadErrorExtensions> =
-	createError<InvalidPayloadErrorExtensions>(ErrorCode.InvalidPayload, messageConstructor, 400);
-
-export class InvalidPayloadError extends BaseInvalidPayloadError {
-	constructor(extensions: InvalidPayloadErrorExtensions | ZodError, options?: ErrorOptions) {
-		super(isZodErrorLike(extensions) ? { reason: fromZodError(extensions).message } : extensions, options);
-	}
-}
+export const InvalidPayloadError: ZodAwareErrorConstructor<InvalidPayloadErrorExtensions> = withZodSupport(
+	createError<InvalidPayloadErrorExtensions>(ErrorCode.InvalidPayload, messageConstructor, 400),
+);

@@ -7,7 +7,6 @@ import contentDisposition from 'content-disposition';
 import { Router } from 'express';
 import { merge, pick } from 'lodash-es';
 import * as z from 'zod';
-import { fromZodError } from 'zod-validation-error';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
@@ -109,7 +108,7 @@ router.post(
 			.safeParse(req.body);
 
 		if (error) {
-			throw new InvalidPayloadError({ reason: fromZodError(error).message });
+			throw new InvalidPayloadError(error);
 		}
 
 		const { archive, complete } = await service.zipFiles(data.ids);

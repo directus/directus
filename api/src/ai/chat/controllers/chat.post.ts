@@ -2,7 +2,6 @@ import type { StandardProviderType } from '@directus/ai';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { safeValidateUIMessages } from 'ai';
 import type { RequestHandler } from 'express';
-import { fromZodError } from 'zod-validation-error';
 import { createUiStream } from '../lib/create-ui-stream.js';
 import { ChatRequest } from '../models/chat-request.js';
 import { chatRequestToolsToAiSdkTools } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
@@ -16,7 +15,7 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 	const parseResult = ChatRequest.safeParse(req.body);
 
 	if (!parseResult.success) {
-		throw new InvalidPayloadError({ reason: fromZodError(parseResult.error).message });
+		throw new InvalidPayloadError(parseResult.error);
 	}
 
 	const { provider, model, messages: rawMessages, tools: requestedTools, toolApprovals, context } = parseResult.data;
