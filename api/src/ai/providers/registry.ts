@@ -1,6 +1,7 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { createProviderRegistry } from 'ai';
 import { createAnthropicWithFileSupport } from './anthropic-file-support.js';
 import type { AISettings, ProviderConfig } from './types.js';
@@ -10,7 +11,12 @@ type ProviderRegistry = ReturnType<typeof createProviderRegistry>;
 /** The subset of AI settings required to determine which providers are configured. */
 export type ProviderCredentials = Pick<
 	AISettings,
-	'openaiApiKey' | 'anthropicApiKey' | 'googleApiKey' | 'openaiCompatibleApiKey' | 'openaiCompatibleBaseUrl'
+	| 'openaiApiKey'
+	| 'anthropicApiKey'
+	| 'googleApiKey'
+	| 'openrouterApiKey'
+	| 'openaiCompatibleApiKey'
+	| 'openaiCompatibleBaseUrl'
 >;
 
 export function buildProviderConfigs(settings: ProviderCredentials): ProviderConfig[] {
@@ -34,6 +40,13 @@ export function buildProviderConfigs(settings: ProviderCredentials): ProviderCon
 		configs.push({
 			type: 'google',
 			apiKey: settings.googleApiKey,
+		});
+	}
+
+	if (settings.openrouterApiKey) {
+		configs.push({
+			type: 'openrouter',
+			apiKey: settings.openrouterApiKey,
 		});
 	}
 
@@ -61,6 +74,14 @@ export function createAIProviderRegistry(configs: ProviderConfig[], settings?: A
 				break;
 			case 'google':
 				providers['google'] = createGoogleGenerativeAI({ apiKey: config.apiKey });
+				break;
+			case 'openrouter':
+				providers['openrouter'] = createOpenRouter({
+					apiKey: config.apiKey,
+					appName: 'Directus',
+					appUrl: 'https://directus.io',
+				});
+
 				break;
 			case 'openai-compatible':
 				if (config.baseUrl) {

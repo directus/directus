@@ -911,6 +911,24 @@ fields:
     width: half
     group: ai_group
 
+  - field: ai_openrouter_api_key
+    special:
+      - encrypt
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+      autocomplete: 'off'
+    width: half
+    group: ai_group
+
+  - field: ai_openrouter_models
+    interface: system-openrouter-models
+    special:
+      - cast-json
+    width: half
+    group: ai_group
+
   - field: ai_system_prompt
     interface: input-rich-text-md
     group: ai_group

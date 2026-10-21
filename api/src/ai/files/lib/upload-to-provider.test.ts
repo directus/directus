@@ -22,6 +22,7 @@ describe('uploadToProvider', () => {
 		openaiApiKey: null,
 		anthropicApiKey: null,
 		googleApiKey: null,
+		openrouterApiKey: null,
 		openaiCompatibleApiKey: null,
 		openaiCompatibleBaseUrl: null,
 		openaiCompatibleName: null,
@@ -30,6 +31,7 @@ describe('uploadToProvider', () => {
 		openaiAllowedModels: null,
 		anthropicAllowedModels: null,
 		googleAllowedModels: null,
+		openrouterModels: null,
 		systemPrompt: null,
 	};
 

@@ -25,8 +25,10 @@ import {
 	applyAnthropicConversationCaching,
 	buildCacheAwareSystemPrompt,
 	formatUsageWithCacheTokens,
+	getOpenRouterAutomaticCacheOptions,
 	type PromptCachingUsage,
 	sortToolsByName,
+	usesAnthropicCaching,
 } from '../utils/prompt-caching.js';
 import { ipValidatedDownload } from './ip-validated-download.js';
 import { transformFilePartsForProvider } from './transform-file-parts.js';
@@ -69,20 +71,20 @@ export const createUiStream = async (
 		});
 	}
 
-	// For Anthropic, keep `system` as the stable base prompt only (so the tools+system prefix
+	// For Anthropic models, keep `system` as the stable base prompt only (so the tools+system prefix
 	// caches across page changes) and inject context after a cache breakpoint on the last
 	// existing message. For other providers, keep context inside `system` as before.
 	const systemPromptText =
-		provider === 'anthropic' || !contextBlock ? baseSystemPrompt : baseSystemPrompt + contextBlock;
+		usesAnthropicCaching(provider, model) || !contextBlock ? baseSystemPrompt : baseSystemPrompt + contextBlock;
 
-	const streamSystemPrompt = buildCacheAwareSystemPrompt(provider, systemPromptText);
+	const streamSystemPrompt = buildCacheAwareSystemPrompt(provider, model, systemPromptText);
 
 	const finalTools = sortToolsByName(tools);
 	const telemetryConfig = getAITelemetryConfig({ provider, model, userId, role });
 	const logger = useLogger();
 
 	const modelMessages = await convertToModelMessages(transformFilePartsForProvider(messages));
-	const streamMessages = applyAnthropicConversationCaching(provider, modelMessages, contextBlock);
+	const streamMessages = applyAnthropicConversationCaching(provider, model, modelMessages, contextBlock);
 
 	const stream = streamText({
 		system: streamSystemPrompt,
@@ -90,7 +92,7 @@ export const createUiStream = async (
 		messages: streamMessages,
 		stopWhen: [stepCountIs(10)],
 		experimental_download: ipValidatedDownload,
-		providerOptions,
+		providerOptions: { ...providerOptions, ...getOpenRouterAutomaticCacheOptions(provider, model, modelMessages) },
 		tools: finalTools,
 		...(telemetryConfig ? { experimental_telemetry: telemetryConfig } : {}),
 		onError(error) {

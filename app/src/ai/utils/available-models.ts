@@ -13,6 +13,7 @@ export type AIModelSettings = Pick<
 	| 'ai_openai_allowed_models'
 	| 'ai_anthropic_allowed_models'
 	| 'ai_google_allowed_models'
+	| 'ai_openrouter_models'
 >;
 
 export function getAvailableModels(
@@ -20,12 +21,14 @@ export function getAvailableModels(
 	availableProviders: ProviderType[],
 ): AppModelDefinition[] {
 	const customModels = buildCustomModels(settings?.ai_openai_compatible_models ?? null);
-	const allModels = [...AI_MODELS, ...customModels];
+	const openRouterModels = buildCustomModels(settings?.ai_openrouter_models ?? null, 'openrouter');
+	const allModels = [...AI_MODELS, ...customModels, ...openRouterModels];
 
 	const allowedModelsMap: Record<StandardProviderType, string[] | null> = {
 		openai: settings?.ai_openai_allowed_models ?? null,
 		anthropic: settings?.ai_anthropic_allowed_models ?? null,
 		google: settings?.ai_google_allowed_models ?? null,
+		openrouter: settings?.ai_openrouter_models?.map((model) => model.id) ?? null,
 	};
 
 	const result: AppModelDefinition[] = [];
@@ -98,6 +101,8 @@ export function getProviderIcon(provider: ProviderType): string {
 			return 'logo_anthropic';
 		case 'google':
 			return 'logo_google';
+		case 'openrouter':
+			return 'logo_openrouter';
 		case 'openai-compatible':
 			return 'logo_custom_provider';
 	}

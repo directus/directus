@@ -1,4 +1,4 @@
-export type ProviderType = 'openai' | 'anthropic' | 'google' | 'openai-compatible';
+export type ProviderType = 'openai' | 'anthropic' | 'google' | 'openrouter' | 'openai-compatible';
 
 export type StandardProviderType = Exclude<ProviderType, 'openai-compatible'>;
 

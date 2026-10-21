@@ -1,3 +1,4 @@
+import type { OpenAICompatibleModel } from '@directus/ai';
 import { createTestingPinia } from '@pinia/testing';
 import { lastAssistantMessageIsCompleteWithToolCalls, type UIMessage } from 'ai';
 import { setActivePinia } from 'pinia';
@@ -10,6 +11,16 @@ import { useAiToolsStore } from './use-ai-tools';
 let lastChatConfig: any;
 let lastTransportConfig: any;
 let sessionMessagesRef: { value: UIMessage[] } | undefined;
+
+const mockServerInfo = vi.hoisted(() => ({ ai_providers: ['openai'] as string[] }));
+
+const mockSettings = vi.hoisted(() => ({
+	ai_openai_allowed_models: ['gpt-4o-mini', 'gpt-5-nano'],
+	ai_anthropic_allowed_models: null,
+	ai_google_allowed_models: null,
+	ai_openrouter_models: null as OpenAICompatibleModel[] | null,
+	ai_openai_compatible_models: null,
+}));
 
 vi.mock('@vueuse/core', () => {
 	return {
@@ -40,20 +51,13 @@ vi.mock('@vueuse/core', () => {
 // Mock dependencies
 vi.mock('@/stores/settings', () => ({
 	useSettingsStore: vi.fn(() => ({
-		settings: {
-			ai_openai_allowed_models: ['gpt-4o-mini', 'gpt-5-nano'],
-			ai_anthropic_allowed_models: null,
-			ai_google_allowed_models: null,
-			ai_openai_compatible_models: null,
-		},
+		settings: mockSettings,
 	})),
 }));
 
 vi.mock('@/stores/server', () => ({
 	useServerStore: vi.fn(() => ({
-		info: {
-			ai_providers: ['openai'],
-		},
+		info: mockServerInfo,
 	})),
 }));
 
@@ -117,6 +121,8 @@ beforeEach(() => {
 	lastChatConfig = undefined;
 	lastTransportConfig = undefined;
 	sessionMessagesRef = undefined;
+	mockServerInfo.ai_providers = ['openai'];
+	mockSettings.ai_openrouter_models = null;
 });
 
 describe('useAiStore', () => {
@@ -404,6 +410,23 @@ describe('useAiStore', () => {
 			expect(parts[0].url).toBe('');
 			expect(parts[1].url).toBe('');
 			expect(parts[2].url).toBe('/assets/abc');
+		});
+	});
+
+	describe('openrouter', () => {
+		test('lists the saved models and disables file uploads', () => {
+			mockServerInfo.ai_providers = ['openrouter'];
+
+			mockSettings.ai_openrouter_models = [
+				{ id: 'openai/gpt-6-luna', name: 'GPT-6 Luna', context: 1_050_000 },
+				{ id: 'anthropic/claude-haiku-4.5', name: 'Claude Haiku 4.5' },
+			];
+
+			const aiStore = useAiStore();
+
+			expect(aiStore.models.map((model) => model.name)).toEqual(['GPT-6 Luna', 'Claude Haiku 4.5']);
+			expect(aiStore.selectedModel?.provider).toBe('openrouter');
+			expect(aiStore.supportsFileUpload).toBe(false);
 		});
 	});
 

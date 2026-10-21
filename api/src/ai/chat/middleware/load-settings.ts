@@ -13,6 +13,7 @@ export const loadSettings: RequestHandler = async (_req, res, next) => {
 			'ai_openai_api_key',
 			'ai_anthropic_api_key',
 			'ai_google_api_key',
+			'ai_openrouter_api_key',
 			'ai_openai_compatible_api_key',
 			'ai_openai_compatible_base_url',
 			'ai_openai_compatible_name',
@@ -21,6 +22,7 @@ export const loadSettings: RequestHandler = async (_req, res, next) => {
 			'ai_openai_allowed_models',
 			'ai_anthropic_allowed_models',
 			'ai_google_allowed_models',
+			'ai_openrouter_models',
 			'ai_system_prompt',
 		],
 	});
@@ -29,6 +31,7 @@ export const loadSettings: RequestHandler = async (_req, res, next) => {
 		openaiApiKey: settings['ai_openai_api_key'] ?? null,
 		anthropicApiKey: settings['ai_anthropic_api_key'] ?? null,
 		googleApiKey: settings['ai_google_api_key'] ?? null,
+		openrouterApiKey: settings['ai_openrouter_api_key'] ?? null,
 		openaiCompatibleApiKey: settings['ai_openai_compatible_api_key'] ?? null,
 		openaiCompatibleBaseUrl: settings['ai_openai_compatible_base_url'] ?? null,
 		openaiCompatibleName: settings['ai_openai_compatible_name'] ?? null,
@@ -37,6 +40,7 @@ export const loadSettings: RequestHandler = async (_req, res, next) => {
 		openaiAllowedModels: settings['ai_openai_allowed_models'] ?? null,
 		anthropicAllowedModels: settings['ai_anthropic_allowed_models'] ?? null,
 		googleAllowedModels: settings['ai_google_allowed_models'] ?? null,
+		openrouterModels: settings['ai_openrouter_models'] ?? null,
 		systemPrompt: settings['ai_system_prompt'] ?? null,
 	};
 

@@ -54,6 +54,7 @@ describe('createUiStream', () => {
 		openaiApiKey: 'openai-key',
 		anthropicApiKey: 'anthropic-key',
 		googleApiKey: null,
+		openrouterApiKey: null,
 		openaiCompatibleApiKey: null,
 		openaiCompatibleBaseUrl: null,
 		openaiCompatibleName: null,
@@ -62,6 +63,7 @@ describe('createUiStream', () => {
 		openaiAllowedModels: null,
 		anthropicAllowedModels: null,
 		googleAllowedModels: null,
+		openrouterModels: null,
 		systemPrompt: null,
 	};
 
@@ -199,6 +201,43 @@ describe('createUiStream', () => {
 		expect(typeof trailingContext?.content === 'string' ? trailingContext.content : '').toContain(
 			'Path: /content/posts/123',
 		);
+	});
+
+	it('applies Anthropic caching to Anthropic models through OpenRouter', async () => {
+		const userInitiatedMessages: UIMessage[] = [
+			{ id: '1', role: 'user', parts: [{ type: 'text', text: 'Hello' }] },
+			{ id: '2', role: 'assistant', parts: [{ type: 'text', text: 'Hi there!' }] },
+			{ id: '3', role: 'user', parts: [{ type: 'text', text: 'Update the title' }] },
+		];
+
+		await createUiStream(userInitiatedMessages, {
+			provider: 'openrouter',
+			model: 'anthropic/claude-sonnet-5.5',
+			tools: {},
+			aiSettings: { ...aiSettings, openrouterApiKey: 'openrouter-key' },
+			context: {
+				page: {
+					path: '/content/posts/123',
+					collection: 'posts',
+				},
+			},
+		});
+
+		const call = vi.mocked(streamText).mock.calls[0]?.[0];
+
+		expect(call?.system).toEqual({
+			role: 'system',
+			content: 'DEFAULT_SYSTEM_PROMPT',
+			providerOptions: { anthropic: { cacheControl: { type: 'ephemeral' } } },
+		});
+
+		const callMessages = call?.messages ?? [];
+
+		expect(callMessages.at(-2)?.providerOptions).toEqual(
+			expect.objectContaining({ anthropic: { cacheControl: { type: 'ephemeral' } } }),
+		);
+
+		expect(callMessages.at(-1)?.role).toBe('user');
 	});
 
 	it('does not append context as a trailing user message during multi-step continuations', async () => {

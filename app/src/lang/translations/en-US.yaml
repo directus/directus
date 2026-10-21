@@ -2068,6 +2068,8 @@ fields:
     ai_anthropic_allowed_models: Anthropic Allowed Models
     ai_google_api_key: Google API Key
     ai_google_allowed_models: Google Allowed Models
+    ai_openrouter_api_key: OpenRouter API Key
+    ai_openrouter_models: OpenRouter Models
     ai_openai_compatible: OpenAI-Compatible Provider
     ai_translations_notice: Your current plan doesn't include AI Translation. Upgrade to unlock.
     ai_openai_compatible_notice: Your current plan doesn't include Custom LLM. Upgrade to unlock.
@@ -2756,6 +2758,11 @@ interfaces:
     one-to-many: One to Many
     description: Select multiple related items
     no_collection: The collection could not be found
+  system-openrouter-models:
+    name: OpenRouter Models
+    description: Search and select OpenRouter models
+    add_custom: 'Add "{id}"'
+    unavailable: Couldn't reach OpenRouter. Type a model ID to add it.
   system-folder:
     folder: Root Folder
     description: Select a folder

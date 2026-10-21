@@ -446,11 +446,14 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 	},
 ];
 
-export function buildCustomModels(customModels: OpenAICompatibleModel[] | null): ModelDefinition[] {
+export function buildCustomModels(
+	customModels: OpenAICompatibleModel[] | null,
+	provider: ProviderType = 'openai-compatible',
+): ModelDefinition[] {
 	if (!customModels) return [];
 
 	return customModels.map((m) => ({
-		provider: 'openai-compatible' as const,
+		provider,
 		model: m.id,
 		name: m.name,
 		limit: {

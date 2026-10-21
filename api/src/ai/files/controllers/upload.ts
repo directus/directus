@@ -117,8 +117,8 @@ export const aiFileUploadHandler: RequestHandler = async (req, res, next) => {
 		if (!isSupportedProvider(provider)) {
 			throw new InvalidPayloadError({
 				reason:
-					provider === 'openai-compatible'
-						? 'File uploads not supported for openai-compatible provider'
+					provider === 'openai-compatible' || provider === 'openrouter'
+						? `File uploads not supported for ${provider} provider`
 						: `Unsupported provider: ${provider}`,
 			});
 		}
