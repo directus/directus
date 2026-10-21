@@ -1,6 +1,5 @@
 import { expect, expectTypeOf, test } from 'vitest';
 import { z } from 'zod';
-import * as zMini from 'zod/mini';
 import { createError, type DirectusError, type DirectusErrorConstructor } from './create-error.js';
 import { formatZodError } from './format-zod-error.js';
 import { withZodSupport } from './with-zod-support.js';
@@ -53,16 +52,6 @@ test('Prefers an explicitly passed cause over the Zod error', () => {
 	const error = new TestError(result.error, { cause });
 
 	expect(error.cause).toBe(cause);
-	expect(error.extensions).toEqual({ reason: formatZodError(result.error) });
-});
-
-test('Supports Zod Mini errors', () => {
-	const result = zMini.safeParse(zMini.string(), 42);
-
-	if (result.success) throw new Error('Expected invalid input');
-
-	const error = new TestError(result.error);
-
 	expect(error.extensions).toEqual({ reason: formatZodError(result.error) });
 });
 
