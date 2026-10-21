@@ -37,6 +37,15 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v47
 
+      - name: Get changed manifests
+        id: changed-manifests
+        uses: tj-actions/changed-files@v47
+        with:
+          files: |
+            **/package.json
+            pnpm-workspace.yaml
+            eslint.config.js
+
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
@@ -49,6 +58,12 @@ jobs:
             ${{ steps.changed-files.outputs.modified_files }} \
             ${{ steps.changed-files.outputs.renamed_files }} \
             ${{ steps.changed-files.outputs.copied_files }}
+
+      # Moving a dependency between dependencies / devDependencies can break unchanged source files
+      # (see 'import/no-extraneous-dependencies' in eslint.config.js), so lint all published packages
+      - name: Check Runtime Dependencies
+        if: steps.changed-manifests.outputs.any_changed == 'true'
+        run: pnpm exec eslint --quiet api packages sdk
 
   stylelint:
     name: Stylelint
