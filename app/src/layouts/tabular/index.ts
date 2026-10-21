@@ -2,7 +2,7 @@ import { useCollection, useItems, useSync } from '@directus/composables';
 import { isPublishedVersionKey } from '@directus/constants';
 import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
-import { debounce, flatten } from 'lodash';
+import { debounce, flatten } from 'lodash-es';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import TabularActions from './actions.vue';

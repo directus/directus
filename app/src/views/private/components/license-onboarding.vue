@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { DIRECTUS_OIG_URL } from '@directus/constants';
-import { LICENSE_KEY } from '@directus/license';
+import { DIRECTUS_LICENSE_KEY } from '@directus/license';
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { computed, ref, watch } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
@@ -36,7 +36,7 @@ const orgName = ref<string | null>(null);
 const isSaving = ref(false);
 
 const isKeyValid = computed(
-	() => !!licenseKey.value && licenseKey.value.length >= 29 && LICENSE_KEY.safeParse(licenseKey.value).success,
+	() => !!licenseKey.value && licenseKey.value.length >= 29 && DIRECTUS_LICENSE_KEY.safeParse(licenseKey.value).success,
 );
 
 const {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ContentVersion, Filter } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
-import { clamp, get, isEmpty, isNil, set } from 'lodash';
+import { clamp, get, isEmpty, isNil, set } from 'lodash-es';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';

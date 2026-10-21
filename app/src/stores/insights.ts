@@ -4,7 +4,7 @@ import type { Item } from '@directus/types';
 import { applyOptionsData, getSimpleHash, toArray } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import escapeStringRegexp from 'escape-string-regexp';
-import { assign, clone, get, isUndefined, mapKeys, omit, omitBy, pull, uniq } from 'lodash';
+import { assign, clone, get, isUndefined, mapKeys, omit, omitBy, pull, uniq } from 'lodash-es';
 import { nanoid } from 'nanoid';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, ref, unref } from 'vue';

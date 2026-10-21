@@ -1,5 +1,5 @@
 import { Notification } from '@directus/types';
-import { reverse, sortBy } from 'lodash';
+import { reverse, sortBy } from 'lodash-es';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 import { useUserStore } from './user';

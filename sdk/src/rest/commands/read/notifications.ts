@@ -37,7 +37,7 @@ export const readNotification =
 		query?: TQuery,
 	): RestCommand<ReadNotificationOutput<Schema, TQuery>, Schema> =>
 	() => {
-		throwIfEmpty(String(key), 'Key cannot be empty');
+		throwIfEmpty(key, 'Key cannot be empty');
 
 		return {
 			path: `/notifications/${key}`,

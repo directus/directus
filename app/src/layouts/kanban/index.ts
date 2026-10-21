@@ -2,7 +2,7 @@ import { useCollection, useFilterFields, useItems, useSync } from '@directus/com
 import { defineLayout } from '@directus/extensions';
 import { Field, PermissionsAction, User } from '@directus/types';
 import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
-import { uniq } from 'lodash';
+import { uniq } from 'lodash-es';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import KanbanActions from './actions.vue';

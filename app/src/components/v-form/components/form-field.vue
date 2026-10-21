@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { ComparisonContext, FormField } from '../types';

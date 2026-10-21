@@ -1243,7 +1243,6 @@ settings_appearance: Внешний вид
 settings_ai: ИИ
 model_context_protocol: Model Context Protocol
 ai_assistant: ИИ помощник
-settings_flows: Процессы
 settings_system_logs: Системные логи
 settings_presets: Закладки
 settings_translations: Переводы

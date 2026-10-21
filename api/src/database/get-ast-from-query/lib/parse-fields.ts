@@ -1,6 +1,6 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
-import { getRelation, getRelationType, isCollectionActive, parseFilterFunctionPath } from '@directus/utils';
+import { getRelationInfo, isCollectionActive, parseFilterFunctionPath } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
@@ -10,7 +10,6 @@ import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from
 import { splitFieldPath } from '../../../utils/split-field-path.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
-import { getRelatedCollectionFromRelation } from '../utils/get-related-collection.js';
 import { convertWildcards } from './convert-wildcards.js';
 
 interface CollectionScope {
@@ -60,6 +59,19 @@ export async function parseFields(
 
 	const relationalStructure: Record<string, string[] | CollectionScope> = Object.create(null);
 
+	const rootFieldIndex = new Map<string, number>();
+
+	const trackRootFieldOrder = (key: string): number => {
+		let index = rootFieldIndex.get(key);
+
+		if (index === undefined) {
+			index = rootFieldIndex.size;
+			rootFieldIndex.set(key, index);
+		}
+
+		return index;
+	};
+
 	for (const fieldKey of fields) {
 		let alias = false;
 		let name = fieldKey;
@@ -94,7 +106,7 @@ export async function parseFields(
 				);
 
 				if (foundRelation) {
-					children.push({
+					children[trackRootFieldOrder(fieldKey)] = {
 						type: 'functionField',
 						name,
 						fieldKey,
@@ -102,7 +114,7 @@ export async function parseFields(
 						relatedCollection: foundRelation.collection,
 						whenCase: [],
 						cases: [],
-					});
+					};
 
 					continue;
 				}
@@ -110,7 +122,7 @@ export async function parseFields(
 
 			// Create a FunctionFieldNode for direct (non-relational) json function calls
 			if (functionName === 'json') {
-				children.push({
+				children[trackRootFieldOrder(fieldKey)] = {
 					type: 'functionField',
 					name,
 					fieldKey,
@@ -118,7 +130,7 @@ export async function parseFields(
 					relatedCollection: options.parentCollection,
 					whenCase: [],
 					cases: [],
-				});
+				};
 
 				continue;
 			}
@@ -152,6 +164,8 @@ export async function parseFields(
 				collectionScope = scope!;
 			}
 
+			trackRootFieldOrder(rootField);
+
 			if (rootField in relationalStructure === false) {
 				if (collectionScope) {
 					relationalStructure[rootField] = { [collectionScope]: [] };
@@ -177,6 +191,8 @@ export async function parseFields(
 			if (name.includes(':')) {
 				const [key, scope] = name.split(':') as [string, string];
 
+				trackRootFieldOrder(key);
+
 				if (key in relationalStructure === false) {
 					relationalStructure[key] = { [scope]: [] };
 				} else if (scope in (relationalStructure[key] as CollectionScope) === false) {
@@ -186,7 +202,7 @@ export async function parseFields(
 				continue;
 			}
 
-			children.push({ type: 'field', name, fieldKey, whenCase: [], alias });
+			children[trackRootFieldOrder(fieldKey)] = { type: 'field', name, fieldKey, whenCase: [], alias };
 		}
 	}
 
@@ -197,20 +213,16 @@ export async function parseFields(
 			fieldName = options.query.alias[fieldKey]!;
 		}
 
-		const relation = getRelation(context.schema.relations, options.parentCollection, fieldName);
+		// Implicit $FOLLOW relations are only supported in filters, not as queryable fields
+		if (fieldName.startsWith('$FOLLOW')) continue;
 
-		if (!relation) continue;
-
-		const relatedCollection = getRelatedCollectionFromRelation(relation, options.parentCollection, fieldName);
-
-		const relationType = getRelationType({
+		const {
 			relation,
-			collection: options.parentCollection,
-			field: fieldName,
-			useA2O: true,
-		});
+			relationType,
+			oppositeCollection: relatedCollection,
+		} = getRelationInfo(context.schema.relations, options.parentCollection, fieldName);
 
-		if (!relationType) continue;
+		if (!relation || !relationType || relationType === 'o2a') continue;
 
 		let child: NestedCollectionNode | null = null;
 
@@ -353,7 +365,7 @@ export async function parseFields(
 		}
 
 		if (child) {
-			children.push(child);
+			children[trackRootFieldOrder(fieldKey)] = child;
 		}
 	}
 

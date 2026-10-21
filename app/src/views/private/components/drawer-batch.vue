@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import { getEndpoint } from '@directus/utils';
-import { isObject, omit } from 'lodash';
+import { isObject, omit } from 'lodash-es';
 import { computed, ref, toRefs } from 'vue';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import api from '@/api';

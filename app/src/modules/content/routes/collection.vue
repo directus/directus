@@ -5,7 +5,7 @@ import { ErrorCode } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import { Filter, Preset } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { computed, ref, toRefs, watch } from 'vue';
 import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import BookmarkAdd from '../components/bookmark-add.vue';
@@ -203,7 +203,7 @@ const archiveFilter = computed<Filter | null>(() => {
 	}
 });
 
-const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
+const { flowDialogsContext, provideRunManualFlow, sidebarManualFlows } = useFlows({
 	collection,
 	selection,
 	location: 'collection',
@@ -691,7 +691,7 @@ function getInactiveCollection(error: any): string | null {
 					:on-download="downloadHandler"
 					@refresh="refresh"
 				/>
-				<FlowSidebarDetail v-if="!isVersion" :manual-flows />
+				<FlowSidebarDetail v-if="!isVersion" :manual-flows="sidebarManualFlows" />
 			</template>
 
 			<VDialog :model-value="deleteError !== null" @esc="deleteError = null">

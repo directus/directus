@@ -116,6 +116,17 @@ test('parse fields with m2o relation', async () => {
 	]);
 });
 
+test('parse fields preserves the requested field order when a relational field is placed between direct fields (#25521)', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const result = await parseFields(
+		{ accountability, fields: ['id', 'author.name', 'title'], parentCollection: 'articles', query: {} },
+		{ knex: db, schema: schemaRelational },
+	);
+
+	expect(result.map((node) => node.fieldKey)).toEqual(['id', 'author', 'title']);
+});
+
 test('parse fields with o2m relation', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
@@ -221,27 +232,6 @@ test('parse fields with *.*.*', async () => {
 
 	expect(result).toEqual([
 		{
-			alias: false,
-			fieldKey: 'id',
-			name: 'id',
-			type: 'field',
-			whenCase: [],
-		},
-		{
-			alias: false,
-			fieldKey: 'title',
-			name: 'title',
-			type: 'field',
-			whenCase: [],
-		},
-		{
-			alias: false,
-			fieldKey: 'date',
-			name: 'date',
-			type: 'field',
-			whenCase: [],
-		},
-		{
 			cases: [],
 			children: [
 				{
@@ -271,13 +261,6 @@ test('parse fields with *.*.*', async () => {
 		{
 			cases: [],
 			children: [
-				{
-					alias: false,
-					fieldKey: 'id',
-					name: 'id',
-					type: 'field',
-					whenCase: [],
-				},
 				{
 					cases: [],
 					children: [
@@ -347,6 +330,13 @@ test('parse fields with *.*.*', async () => {
 					type: 'm2o',
 					whenCase: [],
 				},
+				{
+					alias: false,
+					fieldKey: 'id',
+					name: 'id',
+					type: 'field',
+					whenCase: [],
+				},
 			],
 			fieldKey: 'links',
 			name: 'links',
@@ -362,13 +352,6 @@ test('parse fields with *.*.*', async () => {
 		{
 			cases: [],
 			children: [
-				{
-					alias: false,
-					fieldKey: 'id',
-					name: 'id',
-					type: 'field',
-					whenCase: [],
-				},
 				{
 					cases: [],
 					children: [
@@ -458,6 +441,13 @@ test('parse fields with *.*.*', async () => {
 					type: 'm2o',
 					whenCase: [],
 				},
+				{
+					alias: false,
+					fieldKey: 'id',
+					name: 'id',
+					type: 'field',
+					whenCase: [],
+				},
 			],
 			fieldKey: 'tags',
 			name: 'articles_tags_junction',
@@ -468,6 +458,27 @@ test('parse fields with *.*.*', async () => {
 			relatedKey: 'id',
 			relation: getRelation(schemaRelational.relations, 'articles_tags_junction', 'articles_id'),
 			type: 'o2m',
+			whenCase: [],
+		},
+		{
+			alias: false,
+			fieldKey: 'id',
+			name: 'id',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			alias: false,
+			fieldKey: 'title',
+			name: 'title',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			alias: false,
+			fieldKey: 'date',
+			name: 'date',
+			type: 'field',
 			whenCase: [],
 		},
 	]);
@@ -656,8 +667,11 @@ test('parse fields distinguishes json function from relational fields', async ()
 		whenCase: [],
 	});
 
-	// json function is processed first since it's detected before relational fields
-	expect(result[1]).toEqual({
+	// author.name was requested before json(metadata, color), so the relational node keeps
+	// that position rather than the function field jumping ahead of it.
+	expect(result[1]?.type).toBe('m2o');
+
+	expect(result[2]).toEqual({
 		type: 'functionField',
 		fieldKey: 'json(metadata, color)',
 		name: 'json(metadata, color)',
@@ -666,8 +680,6 @@ test('parse fields distinguishes json function from relational fields', async ()
 		whenCase: [],
 		cases: [],
 	});
-
-	expect(result[2]?.type).toBe('m2o');
 });
 
 const schemaM2A = new SchemaBuilder()
@@ -701,7 +713,7 @@ test('parse fields with an aliased m2o nested inside an m2a block (#27772)', asy
 	const result = await parseFields(
 		{
 			accountability,
-			parentCollection: 'blog_builder',
+			parentCollection: 'blog_blocks',
 			fields: ['item:text.a.name'],
 			query: { alias: {} },
 			deep: { 'item:text': { _alias: { a: 'author' } } },
@@ -741,7 +753,7 @@ test('parse fields with an aliased m2o nested inside an m2a block (#27772)', asy
 			relatedKey: { text: 'id' },
 			parentKey: 'id',
 			fieldKey: 'item',
-			relation: getRelation(schemaM2A.relations, 'blog_builder', 'item'),
+			relation: getRelation(schemaM2A.relations, 'blog_blocks', 'item'),
 			cases: {},
 			whenCase: [],
 		},
@@ -754,7 +766,7 @@ test('parse fields with a non-aliased m2o nested inside an m2a block', async () 
 	const result = await parseFields(
 		{
 			accountability,
-			parentCollection: 'blog_builder',
+			parentCollection: 'blog_blocks',
 			fields: ['item:text.author.name'],
 			query: { alias: {} },
 			deep: {},
@@ -794,7 +806,7 @@ test('parse fields with a non-aliased m2o nested inside an m2a block', async () 
 			relatedKey: { text: 'id' },
 			parentKey: 'id',
 			fieldKey: 'item',
-			relation: getRelation(schemaM2A.relations, 'blog_builder', 'item'),
+			relation: getRelation(schemaM2A.relations, 'blog_blocks', 'item'),
 			cases: {},
 			whenCase: [],
 		},
@@ -810,7 +822,7 @@ test('parse fields rejects an inactive collection named through the a2o scope sy
 		parseFields(
 			{
 				accountability,
-				parentCollection: 'blog_builder',
+				parentCollection: 'blog_blocks',
 				fields: ['item:text.id'],
 				query: { alias: {} },
 			},
@@ -825,7 +837,7 @@ test('parse fields silently ignores an a2o scope naming a collection that does n
 	const result = await parseFields(
 		{
 			accountability,
-			parentCollection: 'blog_builder',
+			parentCollection: 'blog_blocks',
 			fields: ['item:nonexistent_collection.id'],
 			query: { alias: {} },
 		},
@@ -843,7 +855,7 @@ test('parse fields skips an inactive collection that was only reached through an
 	const result = await parseFields(
 		{
 			accountability,
-			parentCollection: 'blog_builder',
+			parentCollection: 'blog_blocks',
 			fields: ['item.*'],
 			query: { alias: {} },
 		},
@@ -851,4 +863,25 @@ test('parse fields skips an inactive collection that was only reached through an
 	);
 
 	expect(result).toEqual([expect.objectContaining({ type: 'a2o', names: [] })]);
+});
+
+test.each([
+	['o2m', '$FOLLOW(links,article_id)'],
+	['o2a', '$FOLLOW(links,article_id,collection)'],
+	['non-existent collection', '$FOLLOW(does_not_exist,article_id)'],
+	['oversized', `$FOLLOW(${'a'.repeat(500)})`],
+])('parse fields ignores an alias pointing to an implicit %s $FOLLOW relation', async (_, follow) => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const result = await parseFields(
+		{
+			accountability,
+			parentCollection: 'articles',
+			fields: ['id', 'x.*'],
+			query: { alias: { x: follow } },
+		},
+		{ knex: db, schema: schemaRelational },
+	);
+
+	expect(result).toEqual([expect.objectContaining({ type: 'field', name: 'id' })]);
 });

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toArray } from '@directus/utils';
 import { remove as removeDiacritics } from 'diacritics';
-import { flatten } from 'lodash';
+import { flatten } from 'lodash-es';
 import { computed } from 'vue';
 
 type HighlightPart = {

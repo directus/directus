@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type OtherValue, useCustomSelection, useCustomSelectionMultiple } from '@directus/composables';
 import { Placement } from '@popperjs/core';
-import { debounce, get, isArray } from 'lodash';
+import { debounce, get, isArray } from 'lodash-es';
 import { computed, Ref, ref, toRefs, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SelectListItem from './select-list-item.vue';

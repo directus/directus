@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Field } from '@directus/types';
 import { useElementHover } from '@vueuse/core';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
 import LanguageSelect from './language-select.vue';
 import type { TranslationJob } from './use-translation-job';

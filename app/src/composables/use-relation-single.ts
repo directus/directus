@@ -1,6 +1,6 @@
 import { ErrorCode } from '@directus/errors';
 import { getEndpoint } from '@directus/utils';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { computed, MaybeRefOrGetter, ref, Ref, toValue, watch } from 'vue';
 import { RelationM2O } from '@/composables/use-relation-m2o';
 import sdk, { requestEndpoint } from '@/sdk';

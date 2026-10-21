@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
 import { Field, ValidationError } from '@directus/types';
-import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
+import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash-es';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import VDivider from '../v-divider.vue';
 import VInfo from '../v-info.vue';

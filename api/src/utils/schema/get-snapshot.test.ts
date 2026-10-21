@@ -71,9 +71,17 @@ describe('getSnapshot', () => {
 		(getDatabaseClient as Mock).mockReturnValue('postgres');
 		(getSchema as Mock).mockResolvedValue(mockSchema);
 
-		(CollectionsService as Mock).mockImplementation(() => mockCollectionsService);
-		(FieldsService as Mock).mockImplementation(() => mockFieldsService);
-		(RelationsService as Mock).mockImplementation(() => mockRelationsService);
+		(CollectionsService as Mock).mockImplementation(function () {
+			return mockCollectionsService;
+		});
+
+		(FieldsService as Mock).mockImplementation(function () {
+			return mockFieldsService;
+		});
+
+		(RelationsService as Mock).mockImplementation(function () {
+			return mockRelationsService;
+		});
 	});
 
 	describe('basic functionality', () => {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { saveAs } from 'file-saver';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { computed, ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 import Draggable from 'vuedraggable';

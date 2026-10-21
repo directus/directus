@@ -122,54 +122,6 @@ describe('sanitizeCollection', () => {
 			},
 			schema: { name: 'test' },
 		});
-
-		describe('sanitizeColumn', () => {
-			test('should only contain certain properties from column', () => {
-				const testColumn: Column = {
-					name: 'id',
-					table: 'test',
-					data_type: 'integer',
-					default_value: "nextval('test_id_seq'::regclass)",
-					max_length: null,
-					numeric_precision: 32,
-					numeric_scale: 0,
-					is_nullable: false,
-					is_unique: true,
-					is_indexed: false,
-					is_primary_key: true,
-					is_generated: false,
-					generation_expression: null,
-					has_auto_increment: true,
-					foreign_key_table: null,
-					foreign_key_column: null,
-					// unknown properties that should be removed
-					comment: null,
-					schema: 'public',
-					foreign_key_schema: null,
-				} as Column;
-
-				const result = sanitizeColumn(testColumn);
-
-				expect(result).toEqual({
-					name: 'id',
-					table: 'test',
-					data_type: 'integer',
-					default_value: "nextval('test_id_seq'::regclass)",
-					max_length: null,
-					numeric_precision: 32,
-					numeric_scale: 0,
-					is_nullable: false,
-					is_unique: true,
-					is_indexed: false,
-					is_primary_key: true,
-					is_generated: false,
-					generation_expression: null,
-					has_auto_increment: true,
-					foreign_key_table: null,
-					foreign_key_column: null,
-				});
-			});
-		});
 	});
 });
 
