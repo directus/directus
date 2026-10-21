@@ -52,7 +52,7 @@ vi.mock('@/composables/use-relation-permissions', () => ({
 }));
 
 const mockGetField = vi.hoisted(() => vi.fn(() => null as any));
-const mockGetFieldsForCollection = vi.hoisted(() => vi.fn(() => [] as any[]));
+const mockGetFieldsForCollection = vi.hoisted(() => vi.fn((_collection?: string) => [] as any[]));
 const mockGetWidth = vi.hoisted(() => vi.fn((_key: string, defaultWidth: number) => defaultWidth));
 const mockUpdateWidths = vi.hoisted(() => vi.fn());
 
@@ -195,13 +195,12 @@ describe('list-m2m', () => {
 			mockGetFieldsForCollection.mockReturnValue([]);
 		});
 
-		it('should batch edit the junction collection without its relational fields', () => {
-			mockGetFieldsForCollection.mockReturnValue([
-				{ field: 'id' },
-				{ field: 'related_id' },
-				{ field: 'item_id' },
-				{ field: 'note' },
-			]);
+		it('should batch edit the junction and related fields without the relational fields', () => {
+			mockGetFieldsForCollection.mockImplementation((collection?: string) =>
+				collection === 'junction-collection'
+					? [{ field: 'id' }, { field: 'related_id' }, { field: 'item_id' }, { field: 'note' }]
+					: [{ field: 'id' }, { field: 'title' }],
+			);
 
 			const wrapper = mount(ListM2M, {
 				props: listProps,
@@ -211,7 +210,7 @@ describe('list-m2m', () => {
 			const drawer = wrapper.findComponent(DrawerBatch);
 
 			expect(drawer.props('collection')).toBe('junction-collection');
-			expect(drawer.props('fields')).toEqual([{ field: 'note' }]);
+			expect(drawer.props('fields')).toEqual([{ field: 'note' }, { field: 'related_id.title' }]);
 		});
 	});
 
