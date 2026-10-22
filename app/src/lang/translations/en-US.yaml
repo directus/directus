@@ -281,10 +281,6 @@ logoutReason:
   SESSION_EXPIRED: Session expired
 public_label: Public
 public_description: Controls what API data is available without authenticating.
-public_role_info: >-
-  The public role controls what API data is available to unauthenticated users or users without a role. Requests with
-  the public role can not have app or admin access. If app or admin access are given to a policy assigned to the public
-  role they will be ignored.
 admin_description: Initial administrative role with unrestricted App/API access.
 admin_policy_description: Initial administrative policy with unrestricted App/API access.
 no_description: No description...
@@ -748,6 +744,8 @@ download_file: Download File
 open_file_in_tab: Open File in New Tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
+exporting_folder_not_selectable: The file will be saved to the project's default folder
+exporting_folder_root: The file will be saved to the root of the File Library
 exporting_all_items_in_collection: Exporting all items ({total}) within {collection}.
 exporting_limited_items_in_collection: '{count} out of {total} items within {collection} will be exported.'
 exporting_no_items_to_export: No items to export. Adjust the exporting configuration and/or add items to the collection.
@@ -755,6 +753,12 @@ exporting_download_hint: Once the {format} file is created, it will be downloade
 exporting_library_hint: Once the {format} file is created, it will be saved to the File Library.
 exporting_library_hint_forced:
   This export must be processed in batches. Once completed, the {format} file will be saved to the File Library.
+exporting_too_large_to_download: >-
+  This export is too large to download directly and must be saved to the File Library, which you don't have permission
+  to do. Lower the limit or adjust the filter, or contact an administrator.
+exporting_library_access_warning: >-
+  Anyone with read access to files, including unauthenticated users if the Public policy allows it, will be able to view
+  and download the exported file. Refer to the {docs} for more information.
 collection_key: Collection Key
 name: Name
 primary_key_field: Primary Key Field
@@ -1978,6 +1982,9 @@ fields:
     auth_login_attempts: Auth Login Attempts
     files_and_thumbnails: Files & Storage
     storage_default_folder: Default Folder
+    default_exports_folder: Default Exports Folder
+    default_exports_folder_note:
+      Default folder for exports saved to the File Library without a folder specified. Falls back to the Default Folder.
     storage_asset_presets: Transformation Presets
     storage_asset_transform: Allowed Transformations
     overrides: App Overrides
@@ -2424,14 +2431,14 @@ continue_as: >-
 editing_role: '{role} Role'
 editing_policy: '{policy} Policy'
 public_policy_warning: >-
-  Changes here affect what unauthenticated users can access and the actions they can perform. Refer to the {docs} for
-  more information.
+  Changes here affect what unauthenticated users and users without a role can access, and the actions they can perform.
+  Refer to the {docs} for more information.
 public_policy_warning_docs_link: security best practices documentation
 public_policy_dialog:
   title: Change Public Access to System Collections?
   copy: >-
-    You're about to change Public policy permissions on the following system collections. These actions will be
-    available to unauthenticated users:
+    You're about to change public permissions on the following system collections. These actions will be available to
+    unauthenticated users and users without a role:
   unfiltered_read_warning: Read access without a filter exposes every record in the collection.
   best_practices: Refer to the {docs} for more information.
 no_permissions: No Permissions
