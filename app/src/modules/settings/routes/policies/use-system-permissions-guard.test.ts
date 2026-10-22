@@ -6,7 +6,14 @@ import { unexpectedError } from '@/utils/unexpected-error';
 
 vi.mock('@/utils/unexpected-error');
 
-const change = { collection: 'directus_files', action: 'read' as const, unfilteredRead: true };
+const change = { collection: 'directus_files', action: 'read' as const, unfilteredRead: true, requiresUser: false };
+
+const userChange = {
+	collection: 'directus_comments',
+	action: 'create' as const,
+	unfilteredRead: false,
+	requiresUser: true,
+};
 
 test('saves right away when there are no system permission changes', async () => {
 	const saveFn = vi.fn().mockResolvedValue(undefined);
@@ -16,6 +23,16 @@ test('saves right away when there are no system permission changes', async () =>
 
 	expect(saveFn).toHaveBeenCalledOnce();
 	expect(confirmSystemPermissions.value).toBe(false);
+});
+
+test('holds the save when only changes that require an authenticated user are made', async () => {
+	const saveFn = vi.fn().mockResolvedValue(undefined);
+	const { guardSave, confirmSystemPermissions } = useSystemPermissionsGuard(() => [userChange], ref(false));
+
+	await guardSave(saveFn);
+
+	expect(saveFn).not.toHaveBeenCalled();
+	expect(confirmSystemPermissions.value).toBe(true);
 });
 
 test('holds the save until it is confirmed', async () => {
