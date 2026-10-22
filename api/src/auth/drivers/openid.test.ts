@@ -89,7 +89,7 @@ vi.mock('openid-client', () => {
 				},
 			});
 
-			constructor() { }
+			constructor() {}
 			Client = class {
 				constructor() {
 					return mockClient;
@@ -113,7 +113,7 @@ vi.mock('openid-client', () => {
 					this.error_description = params.error_description;
 				}
 			},
-			RPError: class RPError extends Error { },
+			RPError: class RPError extends Error {},
 		},
 	};
 });
@@ -784,6 +784,7 @@ describe('OpenIDAuthDriver', () => {
 					}),
 				);
 			});
+
 			test('includes user info in update payload when syncUserInfo is true', async () => {
 				const config = createOpenIDConfig({
 					syncUserInfo: true,
@@ -845,6 +846,7 @@ describe('OpenIDAuthDriver', () => {
 				vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue('existing-user-id');
 
 				const updateOneSpy = vi.fn();
+
 				vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
 					updateOne: updateOneSpy,
 				});
@@ -1009,6 +1011,7 @@ describe('OpenIDAuthDriver', () => {
 
 				await expect(driver.getUserID(payload)).rejects.toThrow();
 			});
+
 			test('does not overwrite existing auth_data when no refresh token is returned', async () => {
 				const driver = new OpenIDAuthDriver({ knex: {} as any }, createOpenIDConfig());
 				await driver['getClient']();
@@ -1025,6 +1028,7 @@ describe('OpenIDAuthDriver', () => {
 				vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue('existing-user-id');
 
 				const updateOneSpy = vi.fn();
+
 				vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
 					updateOne: updateOneSpy,
 				});
@@ -1050,7 +1054,6 @@ describe('OpenIDAuthDriver', () => {
 			const user = { id: 'user-123' } as any;
 
 			await driver.login(user);
-
 
 			expect(refreshSpy).not.toHaveBeenCalled();
 		});
@@ -1289,6 +1292,7 @@ describe('OpenIDAuthDriver', () => {
 			await expect(driver.refresh(user)).rejects.toThrow(unknownError);
 			expect(mockLogger.warn).toHaveBeenCalledWith(unknownError, '[OpenID] Unknown error');
 		});
+
 		test('clears auth_data when client.refresh fails with invalid_grant', async () => {
 			const config = createOpenIDConfig();
 			const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
@@ -1304,6 +1308,7 @@ describe('OpenIDAuthDriver', () => {
 			vi.spyOn(driver.client!, 'refresh').mockRejectedValue(invalidGrantError);
 
 			const updateOneSpy = vi.fn();
+
 			vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
 				updateOne: updateOneSpy,
 			});

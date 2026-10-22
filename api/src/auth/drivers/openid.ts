@@ -394,6 +394,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				// Update user refreshToken if provided
 				if (tokenSet.refresh_token) {
 					const usersService = this.getUsersService(await getSchema());
+
 					await usersService.updateOne(user.id, {
 						auth_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 					});
@@ -403,6 +404,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				if ((e instanceof errors.OPError && e.error === 'invalid_grant') || e.error === 'invalid_grant') {
 					try {
 						const usersService = this.getUsersService(await getSchema());
+
 						await usersService.updateOne(user.id, {
 							auth_data: null,
 						});
