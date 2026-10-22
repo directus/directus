@@ -50,7 +50,6 @@ import getModuleDefault from '../utils/get-module-default.js';
 import { getSchema } from '../utils/get-schema.js';
 import { importFileUrl } from '../utils/import-file-url.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
-import { getEnabledExtensions } from './lib/get-enabled-extensions.js';
 import { getExtensionsPath } from './lib/get-extensions-path.js';
 import { getExtensionsSettings } from './lib/get-extensions-settings.js';
 import { getExtensions } from './lib/get-extensions.js';
@@ -578,12 +577,10 @@ export class ExtensionManager {
 			replacement: path,
 		}));
 
-		const enabledExtensions = getEnabledExtensions(
-			{ local: this.localExtensions, registry: this.registryExtensions, module: this.moduleExtensions },
+		const entrypoint = generateExtensionsEntrypoint(
+			{ module: this.moduleExtensions, registry: this.registryExtensions, local: this.localExtensions },
 			this.extensionsSettings,
 		);
-
-		const entrypoint = generateExtensionsEntrypoint(enabledExtensions, this.extensionsSettings);
 
 		try {
 			/** Opt In for now. Should be @deprecated later to always use rolldown! */
@@ -677,17 +674,18 @@ export class ExtensionManager {
 	}
 
 	private async registerApiExtensions(): Promise<void> {
-		const enabledExtensions = getEnabledExtensions(
-			{ local: this.localExtensions, registry: this.registryExtensions, module: this.moduleExtensions },
-			this.extensionsSettings,
-		);
+		const sources = {
+			module: this.moduleExtensions,
+			registry: this.registryExtensions,
+			local: this.localExtensions,
+		} as const;
 
 		await Promise.all(
-			Object.entries(enabledExtensions).map(async ([source, extensions]) => {
+			Object.entries(sources).map(async ([source, extensions]) => {
 				await Promise.all(
 					Array.from(extensions.entries()).map(async ([folder, extension]) => {
 						const { id, enabled } = this.extensionsSettings.find(
-							(settings) => settings.source === source && settings.folder === folder,
+							(settings) => settings.source === source && settings.folder === folder && settings.bundle === null,
 						) ?? { enabled: false };
 
 						if (!enabled) return;

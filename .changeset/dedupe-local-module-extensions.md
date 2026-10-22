@@ -1,4 +1,5 @@
 ---
+'@directus/extensions': patch
 '@directus/api': patch
 ---
 
