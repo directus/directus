@@ -1,9 +1,12 @@
-import { ForbiddenError } from '@directus/errors';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import { setImmediate } from 'node:timers/promises';
+import { ForbiddenError, ServiceUnavailableError } from '@directus/errors';
+import type { SchemaOverview } from '@directus/types';
 import type { GraphQLResolveInfo } from 'graphql';
 import type { Knex } from 'knex';
-import { afterEach, beforeAll, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, expect, onTestFinished, test, vi } from 'vitest';
 import { useBus } from '../../bus/index.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
+import { createMockBus } from '../../test-utils/bus.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { getPayload } from '../../websocket/utils/items.js';
 import { validateDeleteEventAccess } from '../../websocket/utils/validate-subscription-access.js';
@@ -22,14 +25,7 @@ vi.mock('../../websocket/utils/validate-subscription-access.js', () => ({
 
 const EVENT = 'articles_mutated';
 
-const accountability = {
-	role: null,
-	user: 'a5e0e0b0-0000-4000-8000-000000000000',
-	roles: [],
-	admin: false,
-	app: false,
-	ip: null,
-} satisfies Accountability;
+const accountability = createDefaultAccountability({ user: 'a5e0e0b0-0000-4000-8000-000000000000' });
 
 const gql = {
 	accountability,
@@ -42,16 +38,10 @@ const request = {
 	variableValues: {},
 } as unknown as GraphQLResolveInfo;
 
-/** Push an event onto the bus the subscriptions listen on */
-let publish: (event: Record<string, any>) => void;
+const { bus } = createMockBus();
 
 beforeAll(() => {
-	vi.mocked(useBus).mockReturnValue({
-		subscribe: (_channel: string, callback: (message: any) => void) => {
-			publish = callback;
-		},
-	} as unknown as ReturnType<typeof useBus>);
-
+	vi.mocked(useBus).mockReturnValue(bus as unknown as ReturnType<typeof useBus>);
 	vi.mocked(getSchema).mockResolvedValue({} as SchemaOverview);
 	vi.mocked(getQuery).mockResolvedValue({ fields: ['*'] } as any);
 
@@ -63,26 +53,25 @@ afterEach(() => {
 	vi.mocked(getPayload).mockReset();
 });
 
-function sleep(ms: number) {
-	return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-/**
- * Start a subscription and wait until it is listening, so events published afterwards are picked up
- */
+/** Start a subscription and wait until it is listening, so events published afterwards are picked up */
 async function subscribe() {
 	const iterator = createSubscriptionGenerator(gql, EVENT)(null, null, null, request);
 	const next = iterator.next();
 
-	await sleep(10);
+	onTestFinished(async () => {
+		await iterator.return();
+	});
+
+	// The generator starts listening once its pending promises have settled
+	await setImmediate();
 
 	return { iterator, next };
 }
 
 test('yields the keys of delete events when read access is allowed', async () => {
-	const { iterator, next } = await subscribe();
+	const { next } = await subscribe();
 
-	publish({ collection: 'articles', action: 'delete', keys: ['1'] });
+	await bus.publish('websocket.event', { collection: 'articles', action: 'delete', keys: ['1'] });
 
 	await expect(next).resolves.toEqual({
 		done: false,
@@ -93,53 +82,89 @@ test('yields the keys of delete events when read access is allowed', async () =>
 		{ accountability, collection: 'articles', itemScoped: false },
 		{ knex: gql.knex, schema: {} },
 	);
-
-	await iterator.return();
 });
 
-test('skips delete events when read access is denied', async () => {
-	const { iterator, next } = await subscribe();
+test('skips delete events when the access check throws any error', async () => {
+	const { next } = await subscribe();
 
-	vi.mocked(validateDeleteEventAccess).mockRejectedValueOnce(new ForbiddenError());
+	vi.mocked(validateDeleteEventAccess).mockRejectedValueOnce(
+		new ServiceUnavailableError({ service: 'database', reason: 'down' }),
+	);
 
-	// the keys of deleted rows used to be yielded without any permission check
-	publish({ collection: 'articles', action: 'delete', keys: ['leaked'] });
-	publish({ collection: 'articles', action: 'delete', keys: ['permitted'] });
+	await bus.publish('websocket.event', { collection: 'articles', action: 'delete', keys: ['leaked'] });
+	await bus.publish('websocket.event', { collection: 'articles', action: 'delete', keys: ['permitted'] });
 
-	// The first event is dropped entirely, so the first yielded value belongs to the second event
 	await expect(next).resolves.toEqual({
 		done: false,
 		value: { [EVENT]: { key: 'permitted', data: null, event: 'delete' } },
 	});
-
-	await iterator.return();
 });
 
 test('yields every key of a bulk delete', async () => {
 	const { iterator, next } = await subscribe();
 
-	publish({ collection: 'articles', action: 'delete', keys: ['1', '2'] });
+	await bus.publish('websocket.event', { collection: 'articles', action: 'delete', keys: ['1', '2'] });
 
 	await expect(next).resolves.toMatchObject({ value: { [EVENT]: { key: '1' } } });
 	await expect(iterator.next()).resolves.toMatchObject({ value: { [EVENT]: { key: '2' } } });
-
-	await iterator.return();
 });
 
 test('reads create events through the permission aware payload read', async () => {
-	const { iterator, next } = await subscribe();
+	const { next } = await subscribe();
 
 	vi.mocked(getPayload).mockResolvedValue({ data: { id: '1', title: 'Hello' } });
 
-	publish({ collection: 'articles', action: 'create', key: '1' });
+	await bus.publish('websocket.event', { collection: 'articles', action: 'create', key: '1' });
 
 	await expect(next).resolves.toEqual({
 		done: false,
 		value: { [EVENT]: { key: '1', data: { id: '1', title: 'Hello' }, event: 'create' } },
 	});
 
-	// The payload read enforces access control for create events, so no separate check is needed
-	expect(validateDeleteEventAccess).not.toBeCalled();
+	expect(getPayload).toBeCalledWith(
+		expect.objectContaining({ item: '1' }),
+		accountability,
+		expect.anything(),
+		expect.anything(),
+	);
+});
 
-	await iterator.return();
+test('skips create events the subscriber cannot read', async () => {
+	const { next } = await subscribe();
+
+	vi.mocked(getPayload)
+		.mockRejectedValueOnce(new ForbiddenError())
+		.mockResolvedValueOnce({ data: { id: '2' } });
+
+	await bus.publish('websocket.event', { collection: 'articles', action: 'create', key: '1' });
+	await bus.publish('websocket.event', { collection: 'articles', action: 'create', key: '2' });
+
+	await expect(next).resolves.toMatchObject({ value: { [EVENT]: { key: '2', data: { id: '2' } } } });
+});
+
+test('reads every key of an update event separately, skipping the keys the subscriber cannot read', async () => {
+	const { iterator, next } = await subscribe();
+
+	vi.mocked(getPayload).mockImplementation(async (subscription) => {
+		if (subscription.item === '2') throw new ForbiddenError();
+		return { data: { id: subscription.item } };
+	});
+
+	await bus.publish('websocket.event', { collection: 'articles', action: 'update', keys: ['1', '2', '3'] });
+
+	await expect(next).resolves.toEqual({
+		done: false,
+		value: { [EVENT]: { key: '1', data: { id: '1' }, event: 'update' } },
+	});
+
+	await expect(iterator.next()).resolves.toEqual({
+		done: false,
+		value: { [EVENT]: { key: '3', data: { id: '3' }, event: 'update' } },
+	});
+
+	expect(vi.mocked(getPayload).mock.calls.map((call) => call[1])).toEqual([
+		accountability,
+		accountability,
+		accountability,
+	]);
 });
