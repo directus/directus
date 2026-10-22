@@ -48,6 +48,9 @@ const createDialogActive = ref(false);
 const { createAllowed, updateAllowed, deleteAllowed } = useCollectionPermissions('directus_dashboards');
 const batchDeleteAllowed = deleteAllowed;
 
+const { createAllowed: panelsCreateAllowed } = useCollectionPermissions('directus_panels');
+const duplicateAllowed = computed(() => createAllowed.value && panelsCreateAllowed.value);
+
 const internalSort = ref<Sort>({ by: 'name', desc: false });
 
 function refresh() {
@@ -121,11 +124,17 @@ const duplicating = ref<string | null>(null);
 
 async function duplicateDashboard(id: string, toggle: () => void) {
 	duplicating.value = id;
-	const values = getNewDashboardData(id);
-	await api.post('/dashboards', { ...values, name: `${values.name} (copy)` }, { params: { fields: ['id'] } });
-	await insightsStore.hydrate();
-	duplicating.value = null;
-	toggle();
+
+	try {
+		const values = getNewDashboardData(id);
+		await api.post('/dashboards', { ...values, name: `${values.name} (copy)` }, { params: { fields: ['id'] } });
+		await insightsStore.hydrate();
+		toggle();
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		duplicating.value = null;
+	}
 }
 
 function exportDashboard(ids: string[]) {
@@ -327,7 +336,12 @@ async function batchDelete() {
 								</VListItemContent>
 							</VListItem>
 
-							<VListItem class="warning" clickable @click="duplicateDashboard(item.id, toggle)">
+							<VListItem
+								class="warning"
+								:disabled="!duplicateAllowed"
+								clickable
+								@click="duplicateDashboard(item.id, toggle)"
+							>
 								<VListItemIcon>
 									<VProgressCircular v-if="duplicating === item.id" indeterminate small />
 									<VIcon v-if="duplicating !== item.id" name="content_copy" />
