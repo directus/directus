@@ -93,7 +93,7 @@ async function validateDeleteRules(
 		context,
 	);
 
-	if (permissions.every((permission) => hasItemPermissions(permission))) {
+	if (permissions.some((permission) => hasItemPermissions(permission))) {
 		throw new ForbiddenError({
 			reason: `Delete events of "${collection}" require read access to every item in the collection`,
 		});
