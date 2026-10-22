@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TriggerType } from '@directus/types';
 import { isEmpty, isEqual, omitBy } from 'lodash-es';
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { getTriggers } from './triggers';
 import api from '@/api';
 import VDivider from '@/components/v-divider.vue';
@@ -40,6 +40,7 @@ const props = withDefaults(
 		active: boolean;
 		startTab?: string;
 		folder?: string;
+		status?: string;
 	}>(),
 	{ primaryKey: '+', startTab: 'flow_setup' },
 );
@@ -64,40 +65,59 @@ const values: Values = reactive({
 	options: {},
 });
 
+let isResetting = false;
+
+/**
+ * Loads the form from the stored flow, preferring the status staged in the editor
+ */
+function resetValues() {
+	isResetting = true;
+	currentTab.value = [props.startTab];
+
+	if (props.primaryKey === '+') {
+		values.name = null;
+		values.icon = 'bolt';
+		values.color = null;
+		values.description = null;
+		values.status = 'active';
+		values.accountability = 'all';
+		values.trigger = undefined;
+		values.options = {};
+	} else {
+		const existing = flowsStore.flows.find((existingFlow) => existingFlow.id === props.primaryKey)!;
+
+		values.name = existing.name;
+		values.icon = existing.icon;
+		values.color = existing.color;
+		values.description = existing.description;
+		values.status = props.status ?? existing.status;
+		values.accountability = existing.accountability;
+		values.trigger = existing.trigger;
+		values.options = existing.options ?? {};
+	}
+
+	nextTick(() => {
+		isResetting = false;
+	});
+}
+
+watch(() => props.primaryKey, resetValues, { immediate: true });
+
 watch(
-	() => props.primaryKey,
-	(newKey) => {
-		currentTab.value = [props.startTab];
-
-		if (newKey === '+') {
-			values.name = null;
-			values.icon = 'bolt';
-			values.color = null;
-			values.description = null;
-			values.status = 'active';
-			values.accountability = 'all';
-			values.trigger = undefined;
-			values.options = {};
-		} else {
-			const existing = flowsStore.flows.find((existingFlow) => existingFlow.id === newKey)!;
-
-			values.name = existing.name;
-			values.icon = existing.icon;
-			values.color = existing.color;
-			values.description = existing.description;
-			values.status = existing.status;
-			values.accountability = existing.accountability;
-			values.trigger = existing.trigger;
-			values.options = existing.options ?? {};
+	() => props.active,
+	(active) => {
+		if (active) {
+			resetValues();
 		}
 	},
-	{ immediate: true },
 );
 
 watch(
 	() => values.trigger,
 	(_, previousTrigger) => {
-		if (previousTrigger === undefined) return;
+		if (previousTrigger === undefined || isResetting) {
+			return;
+		}
 
 		values.options = {};
 	},
@@ -106,7 +126,9 @@ watch(
 watch(
 	() => values.options?.type,
 	(type, previousType) => {
-		if (previousType === undefined) return;
+		if (previousType === undefined || isResetting) {
+			return;
+		}
 
 		values.options = {
 			type,
