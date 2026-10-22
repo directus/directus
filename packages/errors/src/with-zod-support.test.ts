@@ -55,6 +55,16 @@ test('Prefers an explicitly passed cause over the Zod error', () => {
 	expect(error.extensions).toEqual({ reason: formatZodError(result.error) });
 });
 
+test('Keeps the Zod error as cause when the passed cause is undefined', () => {
+	const result = z.string().safeParse(42);
+
+	if (result.success) throw new Error('Expected invalid input');
+
+	const error = new TestError(result.error, { cause: undefined });
+
+	expect(error.cause).toBe(result.error);
+});
+
 test('Treats plain objects shaped like a Zod error as extensions', () => {
 	const extensions = { name: 'ZodError', issues: [], reason: 'Forwarded reason' };
 	const error = new TestError(extensions);

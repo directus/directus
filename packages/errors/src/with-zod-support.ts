@@ -10,15 +10,16 @@ export interface ZodAwareErrorConstructor<Extensions extends { reason: string }>
 /**
  * Allow a reason-based error to be constructed directly from a Zod error.
  * The Zod error is formatted into the `reason` extension and kept as the error's `cause`.
+ * Only errors whose extensions require nothing but `reason` are supported.
  */
 export const withZodSupport = <Extensions extends { reason: string }>(
-	Base: DirectusErrorConstructor<Extensions>,
+	Base: DirectusErrorConstructor<Extensions> & ({ reason: string } extends Extensions ? unknown : never),
 ): ZodAwareErrorConstructor<Extensions> =>
 	class extends Base {
 		constructor(extensions: Extensions | ZodError, options?: ErrorOptions) {
 			if (extensions instanceof ZodError) {
 				const reason = formatZodError(extensions);
-				super({ reason } as Extensions, { cause: extensions, ...options });
+				super({ reason } as Extensions, { ...options, cause: options?.cause ?? extensions });
 			} else {
 				super(extensions, options);
 			}
