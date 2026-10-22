@@ -369,8 +369,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return (await this.fetchUserId(identifier)) as string;
 	}
 
-	override async login(user: User): Promise<void> {
-		return this.refresh(user);
+	override async login(_user: User): Promise<void> {
+		return;
 	}
 
 	override async refresh(user: User): Promise<void> {
@@ -394,12 +394,23 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				// Update user refreshToken if provided
 				if (tokenSet.refresh_token) {
 					const usersService = this.getUsersService(await getSchema());
-
 					await usersService.updateOne(user.id, {
 						auth_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 					});
 				}
-			} catch (e) {
+			} catch (e: any) {
+				// Clear dead refresh token from database if IdP rejects it with invalid_grant
+				if ((e instanceof errors.OPError && e.error === 'invalid_grant') || e.error === 'invalid_grant') {
+					try {
+						const usersService = this.getUsersService(await getSchema());
+						await usersService.updateOne(user.id, {
+							auth_data: null,
+						});
+					} catch (cleanupError) {
+						logger.warn(cleanupError, `[OpenID] Failed to clear expired auth_data for user ${user.id}`);
+					}
+				}
+
 				throw handleError(e);
 			}
 		}
