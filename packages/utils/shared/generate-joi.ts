@@ -193,7 +193,10 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 		const getNumberSchema = () => (schema[key] ?? Joi.number()) as NumberSchema;
 		const getDateSchema = () => (schema[key] ?? Joi.date()) as DateSchema;
 
-		if (operator === '_eq') {
+		// Case insensitivity only applies to non-empty strings, other values are validated like `_eq` / `_neq`
+		const isCaseInsensitive = typeof compareValue === 'string' && compareValue !== '';
+
+		if (operator === '_eq' || (operator === '_ieq' && !isCaseInsensitive)) {
 			let typecastedValue: string | number;
 
 			if (typeof compareValue === 'number') {
@@ -209,7 +212,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			}
 		}
 
-		if (operator === '_neq') {
+		if (operator === '_neq' || (operator === '_nieq' && !isCaseInsensitive)) {
 			let typecastedValue: string | number;
 
 			if (typeof compareValue === 'number') {
@@ -225,20 +228,15 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			}
 		}
 
-		if (operator === '_ieq') {
-			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
-				schema[key] = Joi.any().equal(true);
-			} else {
-				schema[key] = getStringSchema().ieq(compareValue);
-			}
+		if (operator === '_ieq' && isCaseInsensitive) {
+			schema[key] = getStringSchema().ieq(compareValue);
 		}
 
-		if (operator === '_nieq') {
-			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
-				schema[key] = Joi.any().equal(true);
-			} else {
-				schema[key] = getStringSchema().nieq(compareValue);
-			}
+		if (operator === '_nieq' && isCaseInsensitive) {
+			schema[key] = Joi.alternatives().conditional(Joi.string(), {
+				then: getStringSchema().nieq(compareValue),
+				otherwise: getAnySchema(),
+			});
 		}
 
 		if (operator === '_contains') {

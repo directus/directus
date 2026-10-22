@@ -317,14 +317,14 @@ validation_value_is_invalid: Value is invalid
 validationError:
   eq: Value has to be {valid}
   neq: Value can't be {invalid}
-  ieq: Value has to be {valid}
-  nieq: Value can't be {invalid}
+  ieq: Value has to be {valid} (case-insensitive)
+  nieq: Value can't be {invalid} (case-insensitive)
   in: Value has to be one of {valid}
   nin: Value can't be one of {invalid}
   contains: Value has to contain {substring}
   ncontains: Value can't contain {substring}
-  icontains: Value has to contain {substring}
-  nicontains: Value can't contain {substring}
+  icontains: Value has to contain {substring} (case-insensitive)
+  nicontains: Value can't contain {substring} (case-insensitive)
   gt: Value has to be greater than {valid}
   gte: Value has to be greater than or equal to {valid}
   lt: Value has to be less than {valid}

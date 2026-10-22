@@ -280,8 +280,33 @@ describe(`generateJoi`, () => {
 		expect(schema.validate({ field: invalid }).error).toBeDefined();
 	});
 
-	it.each(['_ieq', '_nieq', '_nicontains'])(`returns the correct schema for a %s with null value`, (operator) => {
-		const mockFieldFilter = { field: { [operator]: null } } as FieldFilter;
+	it.each([
+		['_ieq', null, null, 'field'],
+		['_ieq', '', '', 'field'],
+		['_ieq', 5, 5, 6],
+		['_ieq', true, true, false],
+		['_nieq', null, 'field', null],
+		['_nieq', '', 'field', ''],
+		['_nieq', 5, 6, 5],
+		['_nieq', true, false, true],
+		['_nieq', 'Field', null, 'FIELD'],
+		['_nieq', 'Field', '', 'field'],
+		['_nieq', 'Field', 5, 'field'],
+	])(`validates a %s match with %o like its case sensitive counterpart`, (operator, compareValue, valid, invalid) => {
+		const schema = generateJoi({ field: { [operator]: compareValue } } as FieldFilter);
+
+		expect(schema.validate({ field: valid }).error).toBeUndefined();
+		expect(schema.validate({ field: invalid }).error).toBeDefined();
+	});
+
+	it(`reports the nieq error type for a _nieq mismatch`, () => {
+		const schema = generateJoi({ field: { _nieq: 'Field' } } as FieldFilter);
+
+		expect(schema.validate({ field: 'FIELD' }).error?.details[0]?.type).toBe('string.nieq');
+	});
+
+	it(`returns the correct schema for a _nicontains with null value`, () => {
+		const mockFieldFilter = { field: { _nicontains: null } } as FieldFilter;
 
 		const mockSchema = Joi.object({
 			field: Joi.any().equal(true),

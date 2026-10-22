@@ -30,8 +30,10 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 	if ('valid' in extensions) {
 		switch (extensions.type) {
 			case 'eq':
-			case 'ieq':
 				message += ` Value has to be "${extensions.valid}".`;
+				break;
+			case 'ieq':
+				message += ` Value has to be "${extensions.valid}" (case-insensitive).`;
 				break;
 			case 'lt':
 				message += ` Value has to be less than "${extensions.valid}".`;
@@ -57,8 +59,10 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 	if ('invalid' in extensions) {
 		switch (extensions.type) {
 			case 'neq':
-			case 'nieq':
 				message += ` Value can't be "${extensions.invalid}".`;
+				break;
+			case 'nieq':
+				message += ` Value can't be "${extensions.invalid}" (case-insensitive).`;
 				break;
 			case 'nin':
 				message += ` Value can't be one of ${toArray(extensions.invalid)
@@ -72,12 +76,16 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 	if ('substring' in extensions) {
 		switch (extensions.type) {
 			case 'contains':
-			case 'icontains':
 				message += ` Value has to contain "${extensions.substring}".`;
 				break;
+			case 'icontains':
+				message += ` Value has to contain "${extensions.substring}" (case-insensitive).`;
+				break;
 			case 'ncontains':
-			case 'nicontains':
 				message += ` Value can't contain "${extensions.substring}".`;
+				break;
+			case 'nicontains':
+				message += ` Value can't contain "${extensions.substring}" (case-insensitive).`;
 				break;
 		}
 	}
