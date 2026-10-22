@@ -144,5 +144,29 @@ export type FieldOutputMap = {
 	time: string;
 };
 
+/**
+ * Literal markers mapped on the write path. 'csv' is left out because the API accepts a different
+ * shape on write than it returns on read, which needs a separate read/write field type.
+ */
+type InputFieldMarker = Exclude<keyof FieldOutputMap, 'csv'>;
+
+/**
+ * True when a field carries one of the input literal markers (e.g. 'datetime', 'json').
+ * `any` never counts as a marker, so an `any` field keeps passing through NestedPartial untouched.
+ */
+export type HasFieldMarker<T> = IfAny<T, false, [Extract<T, InputFieldMarker>] extends [never] ? false : true>;
+
+/**
+ * Map a field's literal markers to the value accepted on write: a string for 'datetime'/'date'/'time'
+ * and a JsonValue for 'json', the same values the read path returns through FieldOutputMap.
+ * Non-marker members (like null) are kept as is.
+ */
+export type MapInputFieldMarkers<T> =
+	Extract<T, InputFieldMarker> extends infer Marker
+		? Marker extends InputFieldMarker
+			? FieldOutputMap[Marker] | Exclude<T, InputFieldMarker>
+			: T
+		: never;
+
 // all functions return a numeric type
 type FunctionOutputType = number;
