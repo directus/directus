@@ -7,6 +7,9 @@ export interface StringSchema extends BaseStringSchema {
 	contains(substring: string): this;
 	icontains(substring: string): this;
 	ncontains(substring: string): this;
+	nicontains(substring: string): this;
+	ieq(valid: string): this;
+	nieq(invalid: string): this;
 }
 
 export const Joi: typeof BaseJoi = BaseJoi.extend({
@@ -16,6 +19,9 @@ export const Joi: typeof BaseJoi = BaseJoi.extend({
 		'string.contains': '{{#label}} must contain [{{#substring}}]',
 		'string.icontains': '{{#label}} must contain case insensitive [{{#substring}}]',
 		'string.ncontains': "{{#label}} can't contain [{{#substring}}]",
+		'string.nicontains': "{{#label}} can't contain case insensitive [{{#substring}}]",
+		'string.ieq': '{{#label}} must equal case insensitive [{{#valid}}]',
+		'string.nieq': "{{#label}} can't equal case insensitive [{{#invalid}}]",
 	},
 	rules: {
 		contains: {
@@ -78,6 +84,66 @@ export const Joi: typeof BaseJoi = BaseJoi.extend({
 				return value;
 			},
 		},
+		nicontains: {
+			args: [
+				{
+					name: 'substring',
+					ref: true,
+					assert: (val) => typeof val === 'string',
+					message: 'must be a string',
+				},
+			],
+			method(substring) {
+				return this.$_addRule({ name: 'nicontains', args: { substring } });
+			},
+			validate(value: string, helpers, { substring }) {
+				if (value.toLowerCase().includes(substring.toLowerCase()) === true) {
+					return helpers.error('string.nicontains', { substring });
+				}
+
+				return value;
+			},
+		},
+		ieq: {
+			args: [
+				{
+					name: 'valid',
+					ref: true,
+					assert: (val) => typeof val === 'string',
+					message: 'must be a string',
+				},
+			],
+			method(valid) {
+				return this.$_addRule({ name: 'ieq', args: { valid } });
+			},
+			validate(value: string, helpers, { valid }) {
+				if (value.toLowerCase() !== valid.toLowerCase()) {
+					return helpers.error('string.ieq', { valid });
+				}
+
+				return value;
+			},
+		},
+		nieq: {
+			args: [
+				{
+					name: 'invalid',
+					ref: true,
+					assert: (val) => typeof val === 'string',
+					message: 'must be a string',
+				},
+			],
+			method(invalid) {
+				return this.$_addRule({ name: 'nieq', args: { invalid } });
+			},
+			validate(value: string, helpers, { invalid }) {
+				if (value.toLowerCase() === invalid.toLowerCase()) {
+					return helpers.error('string.nieq', { invalid });
+				}
+
+				return value;
+			},
+		},
 	},
 });
 
@@ -127,7 +193,10 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 		const getNumberSchema = () => (schema[key] ?? Joi.number()) as NumberSchema;
 		const getDateSchema = () => (schema[key] ?? Joi.date()) as DateSchema;
 
-		if (operator === '_eq') {
+		// Case insensitivity only applies to non-empty strings, other values are validated like `_eq` / `_neq`
+		const isCaseInsensitive = typeof compareValue === 'string' && compareValue !== '';
+
+		if (operator === '_eq' || (operator === '_ieq' && !isCaseInsensitive)) {
 			let typecastedValue: string | number;
 
 			if (typeof compareValue === 'number') {
@@ -143,7 +212,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			}
 		}
 
-		if (operator === '_neq') {
+		if (operator === '_neq' || (operator === '_nieq' && !isCaseInsensitive)) {
 			let typecastedValue: string | number;
 
 			if (typeof compareValue === 'number') {
@@ -157,6 +226,17 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			} else {
 				schema[key] = getAnySchema().not(compareValue, typecastedValue);
 			}
+		}
+
+		if (operator === '_ieq' && isCaseInsensitive) {
+			schema[key] = getStringSchema().ieq(compareValue);
+		}
+
+		if (operator === '_nieq' && isCaseInsensitive) {
+			schema[key] = Joi.alternatives().conditional(Joi.string(), {
+				then: getStringSchema().nieq(compareValue),
+				otherwise: getAnySchema(),
+			});
 		}
 
 		if (operator === '_contains') {
@@ -188,6 +268,17 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 				schema[key] = Joi.alternatives().try(
 					getStringSchema().ncontains(compareValue),
 					Joi.array().items(getStringSchema().contains(compareValue).forbidden()),
+				);
+			}
+		}
+
+		if (operator === '_nicontains') {
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = Joi.alternatives().try(
+					getStringSchema().nicontains(compareValue),
+					Joi.array().items(getStringSchema().icontains(compareValue).forbidden()),
 				);
 			}
 		}
