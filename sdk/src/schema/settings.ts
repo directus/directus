@@ -44,6 +44,7 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 		custom_aspect_ratios: { text: string; value: number }[] | null;
 		custom_css: string | null;
 		storage_default_folder: DirectusFolder<Schema> | string | null;
+		default_exports_folder: DirectusFolder<Schema> | string | null;
 		basemaps:
 			| {
 					name: string;

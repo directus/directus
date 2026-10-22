@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TriggerType } from '@directus/types';
+import { isEmpty, isEqual, omitBy } from 'lodash-es';
 import { computed, reactive, ref, watch } from 'vue';
 import { getTriggers } from './triggers';
 import api from '@/api';
@@ -120,6 +121,12 @@ const currentTrigger = computed(() => triggers.find((trigger) => trigger.id === 
 const isFlowSetupDisabled = computed(() => !values.name || values.name.length === 0);
 const isFlowTriggerDisabled = computed(() => !values.trigger);
 
+// Only send changed fields, `options` is a JSON field that gets replaced on update, so any change to it sends the whole object
+const edits = computed(() => {
+	const existing = flowsStore.flows.find((flow) => flow.id === props.primaryKey);
+	return omitBy(values, (value, key) => isEqual(value, existing?.[key as keyof Values]));
+});
+
 const currentTriggerOptionFields = computed(() => {
 	if (!currentTrigger.value) return [];
 
@@ -133,6 +140,11 @@ const currentTriggerOptionFields = computed(() => {
 const saving = ref(false);
 
 async function save() {
+	if (!isNew.value && isEmpty(edits.value)) {
+		emit('done', props.primaryKey);
+		return;
+	}
+
 	saving.value = true;
 
 	try {
@@ -144,7 +156,7 @@ async function save() {
 				.then((res) => res.data.data.id);
 		} else {
 			id = await api
-				.patch(`/flows/${props.primaryKey}`, values, { params: { fields: ['id'] } })
+				.patch(`/flows/${props.primaryKey}`, edits.value, { params: { fields: ['id'] } })
 				.then((res) => res.data.data.id);
 		}
 

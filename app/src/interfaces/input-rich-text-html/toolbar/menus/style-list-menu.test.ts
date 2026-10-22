@@ -1,6 +1,7 @@
 import { Editor } from '@tiptap/vue-3';
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { defineComponent, h } from 'vue';
 import { createI18n } from 'vue-i18n';
 import { editorExtensions } from '../../extensions';
 import StyleListMenu from './style-list-menu.vue';
@@ -10,6 +11,14 @@ const global = {
 	plugins: [createI18n({ legacy: false })],
 	directives: { tooltip: {} },
 	stubs: { VMenu: true, VButton: true, VIcon: true, VList: true, VListItem: true, VListItemContent: true },
+};
+
+const menuStubs = {
+	VMenu: {
+		data: () => ({ open: false }),
+		template: '<div><slot name="activator" :toggle="() => (open = !open)" :active="open" /><slot v-if="open" /></div>',
+	},
+	VButton: { emits: ['click'], template: '<button @click="$emit(\'click\', $event)"><slot /></button>' },
 };
 
 let editor: Editor;
@@ -133,5 +142,30 @@ describe('style-list-menu', () => {
 
 		// The label resolves to the named font, not the raw quoted value.
 		expect(vm.currentLabel).toBe('Arial Black');
+	});
+
+	// Inside the toolbar's "Show More" menu, a click that bubbles out closes that menu before this one opens.
+	test('opens without letting the activator click reach a parent menu', async () => {
+		const onParentClick = vi.fn();
+
+		const Parent = defineComponent(
+			() => () =>
+				h('div', { onClick: onParentClick }, [
+					h(StyleListMenu, {
+						editor,
+						icon: 'format_size',
+						label: 'wysiwyg_options.fontsizeselect',
+						attr: 'fontSize' as const,
+						items: [{ label: '16', value: '16px' }],
+					}),
+				]),
+		);
+
+		const wrapper = mount(Parent, { global: { ...global, stubs: { ...global.stubs, ...menuStubs } } });
+
+		await wrapper.find('button').trigger('click');
+
+		expect(wrapper.findComponent({ name: 'VList' }).exists()).toBe(true);
+		expect(onParentClick).not.toHaveBeenCalled();
 	});
 });

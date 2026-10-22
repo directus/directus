@@ -1,7 +1,7 @@
-import url from 'url';
 import { useEnv } from '@directus/env';
 import { getEndpoint } from '@directus/utils';
 import type { Request } from 'express';
+import { parseRequestUrl } from './parse-request-url.js';
 import { Url } from './url.js';
 
 /**
@@ -34,9 +34,7 @@ export function shouldSkipCache(req: Request): boolean {
 	function checkAutoPurge() {
 		if (env['CACHE_AUTO_PURGE'] === false) return true;
 
-		const path = url.parse(req.originalUrl).pathname;
-
-		if (!path) return false;
+		const path = parseRequestUrl(req.originalUrl).pathname;
 
 		for (const collection of env['CACHE_AUTO_PURGE_IGNORE_LIST'] as string[]) {
 			const ignoredPath = getEndpoint(collection);
