@@ -829,6 +829,42 @@ describe('OpenIDAuthDriver', () => {
 				);
 			});
 
+			test('updates auth_data when a refresh token is returned', async () => {
+				const driver = new OpenIDAuthDriver({ knex: {} as any }, createOpenIDConfig());
+				await driver['getClient']();
+
+				vi.spyOn(driver.client!, 'callback').mockResolvedValue({
+					access_token: 'test-access-token',
+					refresh_token: 'new-refresh-token',
+					claims: vi.fn(),
+				} as any);
+
+				vi.spyOn(driver.client!, 'userinfo').mockResolvedValue({
+					email: 'test@test.com',
+				} as any);
+
+				vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue('existing-user-id');
+
+				const updateOneSpy = vi.fn();
+
+				vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
+					updateOne: updateOneSpy,
+				});
+
+				await driver.getUserID({
+					code: 'test-code',
+					codeVerifier: 'test-verifier',
+					state: 'test-state',
+				});
+
+				expect(updateOneSpy).toHaveBeenCalledWith(
+					'existing-user-id',
+					expect.objectContaining({
+						auth_data: JSON.stringify({ refreshToken: 'new-refresh-token' }),
+					}),
+				);
+			});
+
 			test('does not call updateOne when payload is empty', async () => {
 				const config = createOpenIDConfig({
 					defaultRoleId: 'role-id',
@@ -975,21 +1011,51 @@ describe('OpenIDAuthDriver', () => {
 
 				await expect(driver.getUserID(payload)).rejects.toThrow();
 			});
+
+			test('does not overwrite existing auth_data when no refresh token is returned', async () => {
+				const driver = new OpenIDAuthDriver({ knex: {} as any }, createOpenIDConfig());
+				await driver['getClient']();
+
+				vi.spyOn(driver.client!, 'callback').mockResolvedValue({
+					access_token: 'test-access-token',
+					claims: vi.fn(),
+				} as any);
+
+				vi.spyOn(driver.client!, 'userinfo').mockResolvedValue({
+					email: 'test@test.com',
+				} as any);
+
+				vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue('existing-user-id');
+
+				const updateOneSpy = vi.fn();
+
+				vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
+					updateOne: updateOneSpy,
+				});
+
+				await driver.getUserID({
+					code: 'test-code',
+					codeVerifier: 'test-verifier',
+					state: 'test-state',
+				});
+
+				expect(updateOneSpy).not.toHaveBeenCalled();
+			});
 		});
 	});
 
 	describe('login', () => {
-		test('calls refresh method', async () => {
+		test('does not call refresh method during login', async () => {
 			const config = createOpenIDConfig();
 			const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
-			const refreshSpy = vi.spyOn(driver, 'refresh').mockResolvedValue();
+			const refreshSpy = vi.spyOn(driver, 'refresh');
 
 			const user = { id: 'user-123' } as any;
 
 			await driver.login(user);
 
-			expect(refreshSpy).toHaveBeenCalledWith(user);
+			expect(refreshSpy).not.toHaveBeenCalled();
 		});
 	});
 
@@ -1225,6 +1291,38 @@ describe('OpenIDAuthDriver', () => {
 
 			await expect(driver.refresh(user)).rejects.toThrow(unknownError);
 			expect(mockLogger.warn).toHaveBeenCalledWith(unknownError, '[OpenID] Unknown error');
+		});
+
+		test('clears auth_data when client.refresh fails with invalid_grant', async () => {
+			const config = createOpenIDConfig();
+			const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+			await driver['getClient']();
+
+			// Use real OPError so that (e instanceof errors.OPError) evaluates to true
+			const invalidGrantError = new openidErrors.OPError({
+				error: 'invalid_grant',
+				error_description: 'Token expired',
+			});
+
+			vi.spyOn(driver.client!, 'refresh').mockRejectedValue(invalidGrantError);
+
+			const updateOneSpy = vi.fn();
+
+			vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
+				updateOne: updateOneSpy,
+			});
+
+			const user = {
+				id: 'user-123',
+				auth_data: { refreshToken: 'expired-refresh-token' },
+			} as any;
+
+			await expect(driver.refresh(user)).rejects.toThrow();
+
+			expect(updateOneSpy).toHaveBeenCalledWith(user.id, {
+				auth_data: null,
+			});
 		});
 	});
 });
