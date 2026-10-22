@@ -154,7 +154,7 @@ export async function getRelationsPayload(
 	// delete events are only dispatched to admins, see validateDeleteEventAccess
 	if (event?.action === 'delete') return event.payload;
 
-	return await service.readAll();
+	return service.readAll();
 }
 
 /**
