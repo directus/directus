@@ -16,7 +16,7 @@ vi.mock('../../permissions/lib/fetch-policies.js', () => ({
 }));
 
 vi.mock('../../permissions/lib/fetch-permissions.js', () => ({
-	fetchPermissions: vi.fn().mockResolvedValue([{ permissions: null }]),
+	fetchPermissions: vi.fn().mockResolvedValue([{ permissions: null, fields: ['*'] }]),
 }));
 
 const accountability = {
@@ -28,9 +28,18 @@ const accountability = {
 	ip: null,
 } satisfies Accountability;
 
-const context = { knex: {} as Knex, schema: {} as SchemaOverview } satisfies Context;
+const schema = {
+	collections: Object.fromEntries(
+		['articles', 'directus_collections', 'directus_fields', 'directus_relations'].map((collection) => [
+			collection,
+			{ primary: 'id' },
+		]),
+	),
+} as unknown as SchemaOverview;
 
-const rowRule = { permissions: { owner: { _eq: '$CURRENT_USER' } } } as any;
+const context = { knex: {} as Knex, schema } satisfies Context;
+
+const rowRule = { permissions: { owner: { _eq: '$CURRENT_USER' } }, fields: ['*'] } as any;
 
 afterEach(() => {
 	vi.clearAllMocks();
@@ -116,21 +125,37 @@ describe('delete rules', () => {
 			await expect(validate()).resolves.toBeUndefined();
 		});
 
-		test('rejects collection wide deletes when every read permission has row rules', async () => {
+		test('rejects collection wide deletes when a read permission has row rules', async () => {
 			vi.mocked(fetchPermissions).mockResolvedValueOnce([rowRule]);
 
 			await expect(validate()).rejects.toBeInstanceOf(ForbiddenError);
 		});
 
-		test('allows collection wide deletes when any read permission is unrestricted', async () => {
-			vi.mocked(fetchPermissions).mockResolvedValueOnce([rowRule, { permissions: {} } as any]);
+		test('rejects collection wide deletes when any read permission has row rules', async () => {
+			vi.mocked(fetchPermissions).mockResolvedValueOnce([rowRule, { permissions: {}, fields: ['*'] } as any]);
 
-			await expect(validate()).resolves.toBeUndefined();
+			await expect(validate()).rejects.toBeInstanceOf(ForbiddenError);
 		});
 
 		test('skips the row rule check for item scoped deletes', async () => {
+			vi.mocked(fetchPermissions).mockResolvedValueOnce([rowRule]);
+
 			await expect(validate('5')).resolves.toBeUndefined();
-			expect(fetchPermissions).not.toBeCalled();
+		});
+
+		test.each([undefined, '5'])('rejects deletes without read access to the primary key (item: %s)', async (item) => {
+			vi.mocked(fetchPermissions).mockResolvedValueOnce([{ permissions: null, fields: ['title'] } as any]);
+
+			await expect(validate(item)).rejects.toBeInstanceOf(ForbiddenError);
+		});
+
+		test.each([undefined, '5'])('allows deletes with read access to the primary key (item: %s)', async (item) => {
+			vi.mocked(fetchPermissions).mockResolvedValueOnce([
+				{ permissions: null, fields: ['title'] } as any,
+				{ permissions: null, fields: ['id'] } as any,
+			]);
+
+			await expect(validate(item)).resolves.toBeUndefined();
 		});
 	});
 

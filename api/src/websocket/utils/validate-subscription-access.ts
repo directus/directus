@@ -57,7 +57,7 @@ export interface ValidateDeleteEventAccessOptions {
 
 /**
  * Verify a subscriber may receive a delete event. Deleted items can no longer be checked against row level permissions,
- * so only the collection access and the delete rules are validated.
+ * so only the collection access, primary key field access and the delete rules are validated.
  */
 export async function validateDeleteEventAccess(
 	{ accountability, collection, itemScoped }: ValidateDeleteEventAccessOptions,
@@ -82,10 +82,6 @@ async function validateDeleteRules(
 		throw new ForbiddenError({ reason: `Only admins can subscribe to delete events of "${collection}"` });
 	}
 
-	if (itemScoped) return;
-
-	// Because the item is already deleted, row level permissions can't be checked for the event data,
-	// so they are only sent to subscribers without item rules on the collection and admins
 	const policies = await fetchPolicies(accountability, context);
 
 	const permissions = await fetchPermissions(
@@ -93,6 +89,24 @@ async function validateDeleteRules(
 		context,
 	);
 
+	// Delete events contain the primary keys of the deleted items, so they require read access to the primary key field
+	const primaryKeyField = context.schema.collections[collection]?.primary;
+
+	const canReadPrimaryKey = permissions.some(
+		(permission) =>
+			permission.fields?.includes('*') ||
+			(primaryKeyField !== undefined && permission.fields?.includes(primaryKeyField)),
+	);
+
+	if (!canReadPrimaryKey) {
+		throw new ForbiddenError({
+			reason: `Delete events of "${collection}" require read access to the primary key field`,
+		});
+	}
+
+	if (itemScoped) return;
+
+	// Because the item is already deleted, row level permissions can't be checked for the event data
 	if (permissions.some((permission) => hasItemPermissions(permission))) {
 		throw new ForbiddenError({
 			reason: `Delete events of "${collection}" require read access to every item in the collection`,
