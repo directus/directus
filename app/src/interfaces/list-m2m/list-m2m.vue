@@ -387,12 +387,48 @@ const selectedKeys = computed(() => {
 		.filter((key) => !isNil(key));
 });
 
+const batchFields = computed(() => {
+	if (!relationInfo.value) return undefined;
+
+	const fieldsStore = useFieldsStore();
+	const junctionField = relationInfo.value.junctionField.field;
+
+	const excluded = new Set([
+		relationInfo.value.junctionPrimaryKeyField.field,
+		junctionField,
+		relationInfo.value.reverseJunctionField.field,
+	]);
+
+	const junctionFields = fieldsStore
+		.getFieldsForCollection(relationInfo.value.junctionCollection.collection)
+		.filter((field) => !excluded.has(field.field));
+
+	const relatedFields = fieldsStore
+		.getFieldsForCollection(relationInfo.value.relatedCollection.collection)
+		.filter((field) => field.field !== relationInfo.value!.relatedPrimaryKeyField.field)
+		.map((field) => ({ ...field, field: `${junctionField}.${field.field}` }));
+
+	return [...junctionFields, ...relatedFields];
+});
+
 function stageBatchEdits(edits: Record<string, any>) {
 	if (!relationInfo.value) return;
 
 	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
 	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
+
+	const prefix = `${junctionField}.`;
+	const junctionEdits: Record<string, any> = {};
+	const relatedEdits: Record<string, any> = {};
+
+	for (const [key, value] of Object.entries(edits)) {
+		if (key.startsWith(prefix)) relatedEdits[key.slice(prefix.length)] = value;
+		else junctionEdits[key] = value;
+	}
+
+	const batchEdits =
+		Object.keys(relatedEdits).length > 0 ? { ...junctionEdits, [junctionField]: relatedEdits } : junctionEdits;
 
 	for (const item of selection.value) {
 		const junctionId = get(item, [junctionPkField], null);
@@ -402,11 +438,7 @@ function stageBatchEdits(edits: Record<string, any>) {
 			$index: item.$index,
 			$type: item.$type,
 			$edits: item.$edits,
-			...merge(getItemEdits(item), {
-				[junctionField]: {
-					...edits,
-				},
-			}),
+			...merge(getItemEdits(item), batchEdits),
 		};
 
 		if (junctionId !== null) {
@@ -762,7 +794,8 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 		<DrawerBatch
 			v-model:active="batchEditActive"
 			:primary-keys="selectedKeys"
-			:collection="relationInfo.relatedCollection.collection"
+			:collection="relationInfo.junctionCollection.collection"
+			:fields="batchFields"
 			stage-on-save
 			@input="stageBatchEdits"
 		/>
