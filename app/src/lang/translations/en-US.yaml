@@ -1799,6 +1799,12 @@ license:
   pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
     grace_period_body: Manage your license key in Settings > License.
+    warning_title:
+      generic: 'License Check Failed ({days}d left)'
+      invalid_key: 'Invalid License Key ({days}d left)'
+      activation_limit: 'Activation Limit Reached ({days}d left)'
+      binding_mismatch: 'License URL Mismatch ({days}d left)'
+      unavailable: 'License Service Unreachable ({days}d left)'
   unlicensed_pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
 no_upscale: Don't upscale images
