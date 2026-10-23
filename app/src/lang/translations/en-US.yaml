@@ -1784,7 +1784,7 @@ license:
       the Core plan. Check your license key in Settings > License.
     invalid_key:
       Your license key is no longer valid. It remains active until {date}, then your project moves to the Core plan.
-      Check your key in Settings > License or add a new one.
+      Check your key in Setting > License or add a new one.
     activation_limit:
       Your license has reached its activation limit and could not be activated for this project. It remains active until
       {date}, then your project moves to the Core plan. Deactivate this license on a project you no longer use before
