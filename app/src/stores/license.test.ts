@@ -292,3 +292,42 @@ describe('tokenExpiresAt', () => {
 		expect(licenseStore.tokenExpiresAt).toEqual(new Date(FIXED_NOW_SEC * 1000));
 	});
 });
+
+describe('activeWarning', () => {
+	beforeEach(() => {
+		vi.spyOn(Date, 'now').mockReturnValue(FIXED_NOW_SEC * 1000);
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	test('returns null without a token expiry or on core', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ invalid_reason: 'binding_mismatch' });
+		expect(licenseStore.activeWarning).toBeNull();
+
+		licenseStore.info = createLicenseInfo({ source: null, invalid_reason: 'expired', token_expires_at: FIXED_NOW_SEC });
+		expect(licenseStore.activeWarning).toBeNull();
+	});
+
+	test('falls back to a generic danger warning for other reasons', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({
+			invalid_reason: 'verification',
+			token_expires_at: FIXED_NOW_SEC + 2.5 * 86400,
+		});
+
+		expect(licenseStore.activeWarning).toEqual({ reason: 'generic', severity: 'danger', daysRemaining: 3 });
+	});
+
+	test('treats an unreachable licensing service as a warning', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ invalid_reason: 'unavailable', token_expires_at: FIXED_NOW_SEC + 86400 });
+
+		expect(licenseStore.activeWarning).toEqual({ reason: 'unavailable', severity: 'warning', daysRemaining: 1 });
+	});
+});

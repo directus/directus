@@ -14,7 +14,7 @@ const { t } = useI18n();
 
 const serverStore = useServerStore();
 
-const { gracePeriodDaysRemaining, isLocked, isCoreGrace, isCore, graceDeadline, warningReason, tokenExpiresAt } =
+const { gracePeriodDaysRemaining, isLocked, isCoreGrace, isCore, graceDeadline, activeWarning, tokenExpiresAt } =
 	storeToRefs(useLicenseStore());
 
 // Non-breaking spaces keep the date from wrapping across lines
@@ -31,21 +31,14 @@ const show = computed(
 const showOig = computed(() => isAdmin.value && isCore.value && !isLocked.value);
 
 const warningMessage = computed(() => {
-	if (warningReason.value === null || tokenExpiresAt.value === null) return null;
+	if (activeWarning.value === null || tokenExpiresAt.value === null) return null;
 
-	let reason = 'generic';
-
-	if (['invalid_key', 'activation_limit', 'binding_mismatch', 'unavailable'].includes(warningReason.value)) {
-		reason = warningReason.value;
-	}
-
-	return t(`license.warning_status_notice.${reason}`, { date: formatLongDate(tokenExpiresAt.value) });
+	return t(`license.warning_status_notice.${activeWarning.value.reason}`, {
+		date: formatLongDate(tokenExpiresAt.value),
+	});
 });
 
 const showWarning = computed(() => isAdmin.value && warningMessage.value !== null);
-
-// The licensing service being unreachable is usually transient
-const warningSeverity = computed(() => (warningReason.value === 'unavailable' ? 'warning' : 'danger'));
 
 const severity = computed(() =>
 	gracePeriodDaysRemaining.value !== null && gracePeriodDaysRemaining.value <= GRACE_DANGER_THRESHOLD_DAYS
@@ -65,7 +58,7 @@ const oigUrl = computed(() =>
 </script>
 
 <template>
-	<VNotice v-if="showWarning" :type="warningSeverity" class="status-notice">
+	<VNotice v-if="showWarning" :type="activeWarning?.severity" class="status-notice">
 		{{ warningMessage }}
 	</VNotice>
 	<VNotice v-if="show && isLocked" type="danger" class="status-notice">

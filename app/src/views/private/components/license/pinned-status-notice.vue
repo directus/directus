@@ -8,33 +8,51 @@ import { GRACE_DANGER_THRESHOLD_DAYS, useLicenseStore } from '@/stores/license';
 import { useUserStore } from '@/stores/user';
 
 const { t } = useI18n();
-const { gracePeriodDaysRemaining, isLocked, isCoreGrace } = storeToRefs(useLicenseStore());
+const { gracePeriodDaysRemaining, isLocked, isCoreGrace, activeWarning } = storeToRefs(useLicenseStore());
 const { isAdmin } = storeToRefs(useUserStore());
 
-const show = computed(
-	() => isAdmin.value && (gracePeriodDaysRemaining.value !== null || isCoreGrace.value) && !isLocked.value,
-);
+type PinnedNotice = { key: string; severity: 'warning' | 'danger'; title: string };
 
-const severity = computed(() =>
-	gracePeriodDaysRemaining.value !== null && gracePeriodDaysRemaining.value <= GRACE_DANGER_THRESHOLD_DAYS
-		? 'danger'
-		: 'warning',
-);
+const notices = computed<PinnedNotice[]>(() => {
+	if (!isAdmin.value || isLocked.value) return [];
 
-const titleKey = computed(() =>
-	isCoreGrace.value
-		? 'license.unlicensed_pinned_status_notice.grace_period_title'
-		: 'license.pinned_status_notice.grace_period_title',
-);
+	const result: PinnedNotice[] = [];
+
+	if (activeWarning.value) {
+		result.push({
+			key: 'warning',
+			severity: activeWarning.value.severity,
+			title: t(`license.pinned_status_notice.warning_title.${activeWarning.value.reason}`, {
+				days: activeWarning.value.daysRemaining,
+			}),
+		});
+	}
+
+	if (gracePeriodDaysRemaining.value !== null || isCoreGrace.value) {
+		result.push({
+			key: 'grace',
+			severity:
+				gracePeriodDaysRemaining.value !== null && gracePeriodDaysRemaining.value <= GRACE_DANGER_THRESHOLD_DAYS
+					? 'danger'
+					: 'warning',
+			title: t(
+				isCoreGrace.value
+					? 'license.unlicensed_pinned_status_notice.grace_period_title'
+					: 'license.pinned_status_notice.grace_period_title',
+				{ days: gracePeriodDaysRemaining.value },
+			),
+		});
+	}
+
+	return result;
+});
 </script>
 
 <template>
-	<div v-if="show" class="pinned-status-notice" :class="severity">
-		<VIcon :name="severity === 'danger' ? 'error' : 'warning'" class="notice-icon" />
+	<div v-for="notice in notices" :key="notice.key" class="pinned-status-notice" :class="notice.severity">
+		<VIcon :name="notice.severity === 'danger' ? 'error' : 'warning'" class="notice-icon" />
 		<div class="notice-content">
-			<span class="notice-title">
-				{{ t(titleKey, { days: gracePeriodDaysRemaining }) }}
-			</span>
+			<span class="notice-title">{{ notice.title }}</span>
 			<RouterLink :to="{ name: 'settings-license' }" class="notice-body">
 				{{ t('license.pinned_status_notice.grace_period_body') }}
 			</RouterLink>
