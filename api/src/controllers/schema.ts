@@ -5,7 +5,6 @@ import { toArray } from '@directus/utils';
 import bytes from 'bytes';
 import express from 'express';
 import { z } from 'zod';
-import { fromZodError } from 'zod-validation-error';
 import checkIsAdmin from '../middleware/is-admin.js';
 import readFileUploadBody from '../middleware/read-file-upload-body.js';
 import { respond } from '../middleware/respond.js';
@@ -36,7 +35,7 @@ router.get(
 	checkIsAdmin,
 	asyncHandler(async (req, res, next) => {
 		const parsed = snapshotQuerySchema.safeParse(req.query);
-		if (!parsed.success) throw new InvalidPayloadError({ reason: fromZodError(parsed.error).message });
+		if (!parsed.success) throw new InvalidPayloadError(parsed.error);
 
 		const service = new SchemaService({ accountability: req.accountability });
 		const currentSnapshot = await service.snapshot({ scope: parsed.data });
@@ -57,7 +56,7 @@ router.post(
 	readFileUploadBody({ allowYaml: true, maxFileSize: IMPORT_MAX_FILE_SIZE }),
 	asyncHandler(async (req, res, next) => {
 		const parsed = diffQuerySchema.safeParse(req.query);
-		if (!parsed.success) throw new InvalidPayloadError({ reason: fromZodError(parsed.error).message });
+		if (!parsed.success) throw new InvalidPayloadError(parsed.error);
 
 		const service = new SchemaService({ accountability: req.accountability });
 		const snapshot: Snapshot = req.body;
