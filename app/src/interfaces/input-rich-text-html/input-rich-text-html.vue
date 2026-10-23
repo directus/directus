@@ -17,9 +17,9 @@ import MediaDrawer from './drawers/media-drawer.vue';
 import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
 import PasteWarningDialog from './drawers/paste-warning-dialog.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
-import { editorExtensions } from './extensions';
+import { mergeEditorExtensions } from './extensions';
 import { ComparisonDiff } from './extensions/comparison-diff';
-import { buildCustomFormats } from './extensions/custom-formats';
+import { buildInstanceSchema } from './extensions/instance-schema';
 import { LinkShortcut } from './extensions/link-shortcut';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
@@ -45,6 +45,8 @@ const props = withDefaults(
 		folder?: string;
 		/** Legacy TinyMCE `customFormats` option (array or JSON string); see extensions/custom-formats.ts. */
 		customFormats?: unknown;
+		/** Extra URL schemes links may use (e.g. `myapp`), on top of Tiptap's defaults. */
+		linkProtocols?: string[] | null;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -80,12 +82,13 @@ if (
 	);
 }
 
-// built once at init: `customFormats` is design-time config, not reactive
+// built once at init: these options are design-time config, not reactive
 const {
-	extensions: customFormatExtensions,
+	extensions: instanceExtensions,
 	formats: customFormatList,
-	key: customFormatsKey,
-} = buildCustomFormats(props.customFormats);
+	linkProtocols,
+	key: instanceSchemaKey,
+} = buildInstanceSchema(props);
 
 const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
 
@@ -97,8 +100,8 @@ const fontFamily = computed(() => {
 
 // in comparison mode ComparisonDiff joins the check, so precomputed diff spans don't read as loss
 const { extensions: normalizationExtensions, schemaKey: normalizationSchemaKey } = props.comparisonMode
-	? comparisonSchema(props.customFormats)
-	: { extensions: customFormatExtensions, schemaKey: customFormatsKey };
+	? comparisonSchema(props)
+	: { extensions: instanceExtensions, schemaKey: instanceSchemaKey };
 
 const {
 	normalizationLocked,
@@ -150,12 +153,11 @@ const percRemaining = computed(() => percentage(count.value, props.softLength) ?
 const editor = useEditor({
 	// LinkShortcut is per-instance (its Mod-K handler opens this editor's drawer); ComparisonDiff only
 	// joins the schema in comparison mode, so normal editing keeps stripping diff spans
-	extensions: [
-		...editorExtensions,
-		...customFormatExtensions,
+	extensions: mergeEditorExtensions([
+		...instanceExtensions,
 		LinkShortcut.configure({ onTrigger: () => openLinkDrawer() }),
 		...(props.comparisonMode ? [ComparisonDiff] : []),
-	],
+	]),
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
@@ -211,7 +213,7 @@ const {
 	undoPaste,
 	takeRawPaste,
 	dismissPasteWarning,
-} = usePasteWarning(editor, customFormatExtensions);
+} = usePasteWarning(editor, instanceExtensions);
 
 function onEditorClick() {
 	if (props.disabled || props.nonEditable || props.comparisonMode) return;
@@ -289,12 +291,13 @@ const {
 	linkSelection,
 	isEditingLink,
 	targetsImage,
+	linkUrlDisallowed,
 	isLinkSaveable,
 	openLinkDrawer,
 	closeLinkDrawer,
 	saveLink,
 	unlink,
-} = useLink(editor as Ref<Editor>);
+} = useLink(editor as Ref<Editor>, linkProtocols);
 
 const {
 	mediaDrawerOpen,
@@ -318,7 +321,7 @@ const {
 	saveSourceCode,
 	confirmSaveSourceCode,
 	cancelNormalize,
-} = useSourceCode(editor as Ref<Editor>, customFormatExtensions);
+} = useSourceCode(editor as Ref<Editor>, instanceExtensions);
 
 // pause the surrounding view's focus trap while a drawer is open so its inputs stay reachable
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
@@ -444,6 +447,7 @@ onKeyStroke('Escape', () => {
 			v-model:link-selection="linkSelection"
 			:editing="isEditingLink"
 			:targets-image="targetsImage"
+			:url-disallowed="linkUrlDisallowed"
 			:saveable="isLinkSaveable"
 			@save="saveLink"
 			@unlink="unlink"

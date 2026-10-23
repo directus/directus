@@ -310,7 +310,7 @@ export function useComparison(options: UseComparisonOptions) {
 				// instead). Those values are compared without highlighting.
 				if (sanitizeDropsContent(baseValue) || sanitizeDropsContent(incomingValue)) continue;
 
-				const { extensions, schemaKey } = comparisonSchema(field.meta?.options?.['customFormats']);
+				const { extensions, schemaKey } = comparisonSchema(field.meta?.options ?? {});
 				const isLossy = (value: unknown) => isLossyForEditor(value, extensions, schemaKey);
 
 				if (isLossy(baseValue) || isLossy(incomingValue)) continue;

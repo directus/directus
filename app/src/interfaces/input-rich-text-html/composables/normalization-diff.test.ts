@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { buildCustomFormats } from '../extensions/custom-formats';
+import { buildLinkProtocols } from '../extensions/link-protocols';
 import { comparisonSchema, computeNormalizationDiff, computeValueNormalizationDiff } from './normalization-diff';
 
 function removedText(code: string): string {
@@ -113,6 +114,15 @@ describe('computeValueNormalizationDiff', () => {
 		expect(computeValueNormalizationDiff(value, highlight.extensions, highlight.key)).not.toBeNull();
 	});
 
+	test('keeps the verdicts of two link-protocol schemas apart', () => {
+		const myapp = buildLinkProtocols(['myapp']);
+		const other = buildLinkProtocols(['other']);
+		const value = '<p><a href="myapp://some/route">open</a></p>';
+
+		expect(computeValueNormalizationDiff(value, myapp.extensions, myapp.key)).toBeNull();
+		expect(computeValueNormalizationDiff(value, other.extensions, other.key)).not.toBeNull();
+	});
+
 	test('does not cache a schema it cannot identify', () => {
 		const { extensions } = buildCustomFormats([{ title: 'Cite', inline: 'cite', classes: 'src' }]);
 		const value = '<p><cite class="other">b</cite></p>';
@@ -124,9 +134,18 @@ describe('computeValueNormalizationDiff', () => {
 describe('comparisonSchema', () => {
 	test('accepts the diff spans the comparison view feeds the editor', () => {
 		const value = '<p><span class="comparison-diff--added">a</span></p>';
-		const { extensions, schemaKey } = comparisonSchema(null);
+		const { extensions, schemaKey } = comparisonSchema({});
 
 		expect(computeValueNormalizationDiff(value, extensions, schemaKey)).toBeNull();
 		expect(computeValueNormalizationDiff(value)).not.toBeNull();
+	});
+
+	test('accepts links with the allowed custom schemes of the field', () => {
+		const value = '<p><a href="myapp://some/route">open</a></p>';
+		const allowed = comparisonSchema({ linkProtocols: ['myapp'] });
+		const base = comparisonSchema({});
+
+		expect(computeValueNormalizationDiff(value, allowed.extensions, allowed.schemaKey)).toBeNull();
+		expect(computeValueNormalizationDiff(value, base.extensions, base.schemaKey)).not.toBeNull();
 	});
 });

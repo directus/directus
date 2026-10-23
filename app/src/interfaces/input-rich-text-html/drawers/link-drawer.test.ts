@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import { createI18n } from 'vue-i18n';
 import LinkDrawer from './link-drawer.vue';
 
-function mountDrawer(targetsImage: boolean) {
+function mountDrawer(targetsImage: boolean, urlDisallowed = false) {
 	const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
 
 	return mount(LinkDrawer, {
@@ -13,6 +13,7 @@ function mountDrawer(targetsImage: boolean) {
 			editing: false,
 			saveable: false,
 			targetsImage,
+			urlDisallowed,
 		},
 		global: {
 			plugins: [i18n],
@@ -22,6 +23,7 @@ function mountDrawer(targetsImage: boolean) {
 				// the auto stub chokes on VInput's `prefix` prop
 				VInput: { template: '<input>' },
 				VCheckbox: true,
+				VNotice: { template: '<div class="v-notice"><slot /></div>' },
 				PrivateViewHeaderBarActionButton: true,
 			},
 		},
@@ -44,5 +46,16 @@ describe('link drawer', () => {
 			.map((label) => label.text());
 
 		expect(labels).toContain('display_text');
+	});
+
+	test('shows an error for a url with a scheme that is not allowed', () => {
+		const notice = mountDrawer(false, true).find('.v-notice');
+
+		expect(notice.exists()).toBe(true);
+		expect(notice.text()).toBe('interfaces.input-rich-text-html.link_protocol_not_allowed');
+	});
+
+	test('shows no error for an allowed url', () => {
+		expect(mountDrawer(false).find('.v-notice').exists()).toBe(false);
 	});
 });

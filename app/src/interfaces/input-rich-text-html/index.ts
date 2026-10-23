@@ -281,6 +281,19 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'linkProtocols',
+				name: '$t:interfaces.input-rich-text-html.link_protocols',
+				type: 'csv',
+				meta: {
+					width: 'full',
+					interface: 'tags',
+					note: '$t:interfaces.input-rich-text-html.link_protocols_note',
+					options: {
+						placeholder: '$t:interfaces.input-rich-text-html.link_protocols_placeholder',
+					},
+				},
+			},
+			{
 				field: 'customFormats',
 				name: '$t:interfaces.input-rich-text-html.custom_formats',
 				type: 'json',

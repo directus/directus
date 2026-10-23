@@ -1,9 +1,11 @@
 import { CharacterCount } from '@tiptap/extensions';
 import StarterKit from '@tiptap/starter-kit';
+import type { AnyExtension } from '@tiptap/vue-3';
 import { Direction } from './direction';
 import { DropCursor } from './drop-cursor';
 import { figureExtensions } from './figure';
 import { CustomImage } from './image';
+import { BaseLink } from './link-protocols';
 import { Media } from './media';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
@@ -17,19 +19,16 @@ import { TextStyle } from './text-style';
 
 /**
  * The editor's extension set, shared by input-rich-text-html.vue and the round-trip tests so the
- * two never drift. Link's default HTMLAttributes force `target="_blank"`/`rel` on every link, which
- * would rewrite same-tab links on round-trip — nulling them lets both parse from the source.
+ * two never drift.
  */
 export const editorExtensions = [
 	StarterKit.configure({
 		// replaced by DropCursor, which draws a vertical indicator between same-row inline-block nodes
 		dropcursor: false,
-		link: {
-			defaultProtocol: 'https',
-			openOnClick: false,
-			HTMLAttributes: { target: null, rel: null },
-		},
+		// standalone so buildLinkProtocols can swap it for a per-field configured Link
+		link: false,
 	}),
+	BaseLink,
 	DropCursor,
 	CustomImage,
 	Media,
@@ -47,3 +46,10 @@ export const editorExtensions = [
 	...semanticHtml,
 	PreservedAttributes,
 ];
+
+/** `editorExtensions` plus per-instance ones; an extra with a base extension's name replaces it in place. */
+export function mergeEditorExtensions(extra: AnyExtension[]): AnyExtension[] {
+	const byName = new Map(extra.map((extension) => [extension.name, extension]));
+	const merged = editorExtensions.map((extension) => byName.get(extension.name) ?? extension);
+	return [...merged, ...extra.filter((extension) => !merged.includes(extension))];
+}

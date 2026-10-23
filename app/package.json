@@ -141,6 +141,7 @@
 		"jsdom": "catalog:",
 		"json-to-graphql-query": "catalog:",
 		"jsonlint-mod": "catalog:",
+		"linkifyjs": "catalog:",
 		"lodash-es": "catalog:",
 		"maplibre-gl": "catalog:",
 		"marked": "catalog:",

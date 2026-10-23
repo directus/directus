@@ -1,6 +1,7 @@
 import { type Editor, getMarkRange } from '@tiptap/vue-3';
 import { computed, ComputedRef, Ref, ref } from 'vue';
 import { isImageLinkActive } from '../extensions/image';
+import { isLinkAllowed } from '../extensions/link-protocols';
 
 export type LinkSelection = {
 	url: string | null;
@@ -15,6 +16,8 @@ type UsableLink = {
 	isEditingLink: Ref<boolean>;
 	/** The drawer targets a selected image (linked or not) instead of text. */
 	targetsImage: Ref<boolean>;
+	/** The url uses a scheme the editor would strip (not a Tiptap default nor in `linkProtocols`). */
+	linkUrlDisallowed: ComputedRef<boolean>;
 	isLinkSaveable: ComputedRef<boolean>;
 	openLinkDrawer: () => void;
 	closeLinkDrawer: () => void;
@@ -38,7 +41,7 @@ export function unsetAnyLink(editor: Editor): void {
 // tokens on an edited link are treated as author-set and preserved.
 const SECURITY_REL = ['noopener', 'noreferrer'];
 
-export function useLink(editor: Ref<Editor>): UsableLink {
+export function useLink(editor: Ref<Editor>, linkProtocols: string[] = []): UsableLink {
 	const linkDrawerOpen = ref(false);
 	const isEditingLink = ref(false);
 	const targetsImage = ref(false);
@@ -48,13 +51,19 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 	// the link's rel when the drawer opened, so saveLink can preserve author tokens (nofollow, etc.)
 	const originalRel = ref('');
 
-	const isLinkSaveable = computed(() => Boolean(linkSelection.value.url));
+	const linkUrlDisallowed = computed(() => {
+		const { url } = linkSelection.value;
+		return Boolean(url) && !isLinkAllowed(url!, linkProtocols);
+	});
+
+	const isLinkSaveable = computed(() => Boolean(linkSelection.value.url) && !linkUrlDisallowed.value);
 
 	return {
 		linkDrawerOpen,
 		linkSelection,
 		isEditingLink,
 		targetsImage,
+		linkUrlDisallowed,
 		isLinkSaveable,
 		openLinkDrawer,
 		closeLinkDrawer,
