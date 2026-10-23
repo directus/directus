@@ -4,6 +4,7 @@ import type { Field } from '@directus/types';
 import { computed } from 'vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { configurableRichTexts, type StoredExtensionOptions } from '@/rich-text/register';
+import { translate } from '@/utils/translate-literal';
 
 const props = defineProps<{
 	value: StoredExtensionOptions | null;
@@ -30,7 +31,7 @@ function update(id: string, values: RichTextOptionValues) {
 	<div class="richtext-extension-options">
 		<div v-for="config in configurable" :key="config.id">
 			<p class="label type-label">
-				{{ $t('interfaces.input-rich-text-html.extension_options_for', { extension: config.name }) }}
+				{{ $t('interfaces.input-rich-text-html.extension_options_for', { extension: translate(config.name) }) }}
 			</p>
 			<div class="inset">
 				<VForm

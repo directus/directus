@@ -16,8 +16,7 @@ export function roundTrip(html: string, extraExtensions: AnyExtension[] = []): s
 
 // a re-parse renders preserved global attributes before a node's own, so attribute order is not stable
 function sortAttributes(html: string): string {
-	const root = document.createElement('div');
-	root.innerHTML = html;
+	const root = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html').body;
 
 	for (const el of root.querySelectorAll('*')) {
 		const attributes = Array.from(el.attributes, ({ name, value }) => [name, value] as const);

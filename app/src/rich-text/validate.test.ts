@@ -275,6 +275,7 @@ describe('button icons', () => {
 
 	test.each([
 		['a Material icon', 'info'],
+		['a Material icon the icon picker does not list', 'new_releases'],
 		['an app custom icon', 'format_align_justify_remove'],
 		['a social icon', '500px'],
 	])('keeps %s', (_, icon) => {

@@ -213,8 +213,9 @@ describe('a factory that fails for a field', () => {
 	test('reports a failing set of values once', () => {
 		register(
 			callout({
-				extensions: () => {
-					throw new Error('boom');
+				extensions: ({ tones }) => {
+					if (tones.length === 0) throw new Error('boom');
+					return [Callout.configure({ tones })];
 				},
 			}),
 		);
@@ -223,6 +224,7 @@ describe('a factory that fails for a field', () => {
 		schema({ callout: { tones: [] } });
 
 		expect(error).toHaveBeenCalledOnce();
+		expect(error.mock.calls[0]!.join(' ')).toContain('was left out of a field');
 	});
 });
 
