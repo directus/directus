@@ -295,7 +295,7 @@ catalog:
   sharp: 0.35.5
   snappy: 7.3.3
   sqlite3: 6.0.1
-  stream-json: 3.6.0
+  stream-json: 3.7.0
   string-width: 7.2.0
   strip-ansi: 7.1.2
   stylelint: 17.13.0
