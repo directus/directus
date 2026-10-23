@@ -20,15 +20,48 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: О программе
+data_processing_agreement: Соглашение об обработке данных
 contact_support: свяжитесь со службой поддержки
 setup_welcome: Добро пожаловать в Directus
 setup_info: Давайте создадим учетную запись администратора и запустим ваш проект.
+setup_license_key_notice: >
+  Если у вас есть лицензионный ключ, введите его ниже, чтобы разблокировать полный план. Компаниям, соответствующим критериям, с годовой выручкой до 5 млн долларов может предоставляться {oig}.
 setup_save_accept_license: >
   Нажав сохранить, вы принимаете условия [{directusMscl} и {privacyPolicy}.
+setup_license_invalid: >
+  Лицензия недействительна. Пожалуйста, {contactSupport}, чтобы решить эту проблему.
+setup_license_invalid_format: Неверный формат лицензионного ключа.
+setup_accept_license: Я принимаю условия {directusMscl} и {privacyPolicy}
 setup_marketing_emails: Присылать мне обновления и заметки к выпуску
 setup_launch: Запустить Directus
+setup_license_title: Настройте лицензию
+license_onboarding_title: Есть лицензионный ключ?
+license_onboarding_desc: >
+  Введите его ниже, чтобы разблокировать полный план. Компаниям, соответствующим критериям, с годовой выручкой до 5 млн долларов может предоставляться {oig}.
+project_usage: Для чего вы используете Directus?
+project_usage_personal: Собственные / сторонние проекты
+project_usage_commercial: Бизнес / Коммерческое
+project_usage_community: Исходный код / Сообщество
+org_name: Название организации
+org_name_placeholder: Acme Inc.
+license_key_option: У меня есть лицензионный ключ
+license_key_option_desc: 'OIG, Team, or Enterprise plan'
+core_option: Я использую основной план
+core_option_desc: Бесплатно, ключ не требуется
+remind_later: Напомнить позже
 remind_next_login: Мы напомним вам при следующем входе
+open_innovation_grant: Грант на открытые инновации
 setup_project: Организовать проект
+enter_license_key: Введите ваш лицензионный ключ
+license_valid: Лицензия действительна
+plan_prefix: 'План: {plan}'
+license_key: Лицензионный ключ
+no_license_key: Нет лицензионного ключа?
+get_license_key: Получить лиц. ключ
+expires_on: Истекает
+environment: Среда
+production: Рабочая среда
+non_production: Тестовая среда
 skip: Пропустить
 continue: Продолжить
 first_name: Имя
@@ -44,6 +77,7 @@ method: Метод
 published: Опубликовано
 draft: Черновик
 archived: Архивировано
+not_archived: Не в архиве
 marketplace: Магазин расширений
 extensions: Расширения
 skip_link_nav: Перейти к навигации
@@ -64,7 +98,11 @@ condition_rules: Правила условий
 input: Ввод текста
 invalid_input: Некорректное значение
 invalid_file_type: Недопустимый тип файла
+invalid_files_selected: 'Недействительных файлов нет | Выбран недействительный файл | Выбрано недействительных файлов: {count}'
+files_wrong_type: 'Файлы {files} имеют недопустимый тип. Ожидается тип: {expected}.'
+files_are_empty: 'Следующие файлы пусты и не могут быть загружены: {files}'
 not_a_number: Не число
+invalid_range_min: Значение меньше минимального {value}
 invalid_range_max: Значение превышает максимальный размер {value}
 maps: Карты
 switch_user: Сменить пользователя
@@ -74,6 +112,8 @@ item_revision: Редакция элемента
 previous_revision: Предыдущая версия
 latest_revision: Последняя версия
 comparing_to: Сравнивая с
+compare_to_latest_to_restore: Сравните с текущей версией перед восстановлением
+select_earlier_revision_to_restore: Выберите более раннюю версию для её восстановления
 enter_a_name: Введите название...
 duplicate_field: Дублировать поле
 half_width: Полширины
@@ -129,7 +169,9 @@ website: Веб-сайт
 github: GitHub
 beta: Бета
 collab_collision: Этот элемент был изменен во время редактирования. Выберите какие изменения оставить.
+collab_disconnected: Совместное редактирование отключено
 collab_editing_field: Редактирование поля “{field}”
+collab_currently_viewing: Сейчас просматривают
 you: вы
 n_downloads: '{n} загрузок'
 downloads: Загрузки
@@ -201,14 +243,23 @@ switch_version: Сменить Версию
 switch_version_copy: Вы уверены, что хотите переключиться на версию "{version}"? Несохраненные изменения будут потеряны.
 create_version: Создать Версию
 rename_version: Переименовать Версию
+reserved_version_key: 'Ключ версии «{key}» зарезервирован. Используйте другое имя.'
 compare_version: Сравнить Версии
 save_version: Сохранить Версию
+publish: Опубликовать
+version_create_item_less: Создавать версии можно только после публикации черновика
 apply: Применить
 discard: Отменить
 select_all_differences: Выбрать все различия
+show_differences_only: Показывать только различия
+published_updated_notice: Опубликованный элемент был обновлен после создания этой версии.
 delete_version: Удалить версию
 delete_version_copy: >-
   Вы уверены, что хотите удалить версию «{version}»? Это действие нельзя отменить.
+auto_save_failed: Ошибка автосохранения
+auto_save_failed_copy: Не закрывайте страницу, пока мы пробуем снова!
+auto_save_enabled: Автосохранение включено
+content_edited: Контент изменён
 reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
@@ -222,8 +273,6 @@ logoutReason:
   SESSION_EXPIRED: Сессия истекла
 public_label: Публичный
 public_description: Контролирует, какие данные API доступны без входа в личный кабинет.
-public_role_info: >-
-  Публичная роль определяет, какие данные API доступны для неавторизованных пользователей или пользователей без роли. Запросы с публичной ролью не могут иметь доступ к приложению или администратору. Если приложению или администратору предоставлен доступ к политике, назначенной публичной роли, они будут проигнорированы.
 admin_description: Начальная административная роль с неограниченным доступом к приложениям/API.
 admin_policy_description: Начальная административная роль с неограниченным доступом к приложениям/API.
 no_description: Нет описания...
@@ -241,6 +290,8 @@ recommended_defaults: Рекомендуемые значения по умол�
 unarchive: Разархивировать
 unarchive_confirm: Вы уверены, что хотите разархивировать этот элемент?
 nested_files_folders_will_be_moved: Вложенные файлы и папки будут перемещены на один уровень вверх.
+delete_folder_dialog:
+  move_content: Переместить содержимое на уровень выше
 validation_errors_notice: 'В следующих полях есть недопустимые значения:'
 validationError:
   eq: Значение должно быть {valid}
@@ -1236,9 +1287,13 @@ licensing:
   resolve_sso_admin_email: Адрес электронной почты
   resolve_sso_admin_password: Пароль
   resolve_sso_admin_password_placeholder: Задайте пароль...
+  key: Лицензионный ключ
   entitlements:
     collections: Коллекции
     flows: Процессы
+  badge:
+    oig: Грант на открытые инновации
+    non_prod: Тестовая среда
 settings_appearance: Внешний вид
 settings_ai: ИИ
 model_context_protocol: Model Context Protocol
@@ -2607,5 +2662,7 @@ show_password: Показать пароль
 hide_password: Скрыть пароль
 license_grace_key_modal:
   optional: Необязательно
+license_banner:
+  remind_later: Напомнить позже
 accepted: Принято
 set_to_now: Установить Сейчас

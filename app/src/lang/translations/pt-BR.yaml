@@ -20,10 +20,28 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Sobre
+directus_mscl: Directus MSCL-1.0-GPL
+data_processing_agreement: Contrato de processamento de dados
+contact_support: contatar suporte
 setup_welcome: Bem-Vindo ao Directus
 setup_info: Vamos criar sua conta de administrador e começar seu projeto.
+setup_license_key_notice: >
+  Se tiver uma chave de licença, digite-a abaixo para desbloquear seu plano completo. Empresas qualificadas com uma receita anual inferior a US$ 5 milhões podem se enquadrar em nosso {oig}.
+setup_save_accept_license: >
+  Ao clicar em salvar, você aceita os termos de {directusMscl} e {privacyPolicy}.
+setup_license_invalid: >
+  Licença inválida. {contactSupport} para resolver o problema.
+setup_license_invalid_format: Formato de chave de licença inválido.
+setup_accept_license: Eu aceito os termos de {directusMscl} e {privacyPolicy}
 setup_marketing_emails: Receber novidades do produto e notas de lançamento
 setup_launch: Iniciar Directus
+setup_license_title: Configurar licença
+license_onboarding_title: Possui uma chave de licença?
+license_onboarding_desc: >
+  Digite sua chave abaixo para desbloquear seu plano completo. Empresas qualificadas com uma receita anual inferior a US$ 5 milhões podem se enquadrar em nosso {oig}.
+project_usage: Para que usar o Directus?
+project_usage_personal: Projeto pessoal/ paralelo (Side project)
+project_usage_commercial: Empresarial / Comercial
 setup_project: Configurar Projeto
 continue: Continuar
 first_name: Primeiro Nome
@@ -217,8 +235,6 @@ logoutReason:
   SESSION_EXPIRED: Sessão expirada
 public_label: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
-public_role_info: >-
-  A função pública controla quais dados de API estão disponíveis para usuários não autenticados ou usuários sem uma função. Requisições com cargo público não podem ter acesso a aplicativo ou administrador. Se o app ou o acesso de administrador forem dados a uma política atribuída ao cargo público eles serão ignorados.
 admin_description: Cargo administrativo inicial com acesso irrestrito ao App/API.
 admin_policy_description: Política administrativa inicial com acesso irrestrito ao App/API.
 no_description: Sem descrição...

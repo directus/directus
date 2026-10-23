@@ -22,18 +22,37 @@
 about: À propos
 directus_mscl: Directus MSCL-1.0-GPL
 data_processing_agreement: Contrat sur le traitement des données personnelles
+contact_support: contacter le support technique
 setup_welcome: Bienvenue sur Directus
+setup_license_invalid_format: Format de clé de licence invalide.
 setup_launch: Lancer Directus
+setup_license_title: Configurez votre licence
+license_onboarding_title: Vous avez une clé de licence ?
+project_usage: Pour quoi utilisez-vous Directus ?
+project_usage_personal:
 org_name: Nom de l’organisation
 license_key_option: J’ai une clé de licence
+core_option: J'utilise le plan de base
+core_option_desc: Gratuit, aucune clé requise
+remind_later: Rappeler plus tard
 setup_project: Configurer un projet
+enter_license_key: Entrez votre clé de licence
+license_valid: Licence valide
+plan_prefix: 'Forfait: {plan}'
+license_key: Clé de licence
+no_license_key: Vous n'avez pas de clé de licence ?
+get_license_key: Obtenir une clé de licence
 expires_on: Expire le
 environment: Environnement
 production: Production
+non_production: Non-Production
 skip: Ignorer
 continue: Continuer
 first_name: Prénom
 last_name: Nom
+admin_email: Courriel de l'administrateur
+owner_email: Adresse courriel du propriétaire
+email_address: Adresse courriel
 identifier: Identifiant
 avatar: Avatar
 application: Application
@@ -64,6 +83,8 @@ input: Texte simple
 invalid_input: Saisie invalide
 invalid_file_type: Type de fichier invalide
 not_a_number: Pas un nombre
+invalid_range_min: La valeur est inférieure au minimum de {value}
+invalid_range_max: La valeur dépasse le maximum de {value}
 maps: Cartes
 switch_user: Changer d'utilisateur
 item_deleted: L'élément que vous étiez en train de modifier a été supprimé.
@@ -204,6 +225,7 @@ rename_version: Renommer la version
 reserved_version_key: 'L''identifiant de version "{key}" est réservé et ne peut pas être utilisé.'
 compare_version: Comparer la version
 save_version: Enregistrer la version
+publish: Publier
 apply: Appliquer
 discard: Abandonner
 select_all_differences: Sélectionner toutes les différences
@@ -211,6 +233,9 @@ show_differences_only: Afficher uniquement les différences
 delete_version: Supprimer la version
 delete_version_copy: >-
   Êtes-vous sûr de vouloir supprimer la version "{version}"? Cette action est irréversible.
+auto_save_failed: Échec de l’enregistrement automatique
+auto_save_enabled: Sauvegarde automatique activée
+content_edited: Contenu modifié
 reset_bookmark: Réinitialiser le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
@@ -224,8 +249,6 @@ logoutReason:
   SESSION_EXPIRED: Votre session a expiré
 public_label: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
-public_role_info: >-
-  Le rôle public contrôle quelles données de l'API sont rendues disponibles pour les utilisateurs non authentifiés ou les utilisateurs sans rôle. Les requêtes faites avec le rôle public ne peuvent pas avoir accès à l'application ou aux fonctions réservées à l'administrateur. Si l'un de ces deux accès sont donnés à une politique assignée au rôle public, ils seront ignorés.
 admin_description: Rôle administratif initial avec accès illimité à l'application/à l'API.
 admin_policy_description: Règle d'administration initiale avec accès non restreint à l'application / à l'API.
 no_description: Aucune description...
@@ -517,9 +540,14 @@ translations_collection: Collection de traduction
 languages_collection: Collection de langues
 enable_translations: Activer les traductions
 manage_translation_fields: Ajouter des champs de traduction
+translations_already_enabled: Traductions activées
 add_fields: Ajouter des champs
+show_advanced_options: Afficher les détails de la relation
+hide_advanced_options: Masquer les détails de la relation
+translation_configuration: Configuration de la traduction
 translations_preview_collections: Collections
 translations_preview_fields: Champs
+translations_preview_relations: Relations
 import_data_input_placeholder: CSV ou JSON...
 import_data_button: Commencer l'import
 import_background: Importer en arrière-plan
@@ -528,8 +556,15 @@ import_data_success: Données importées avec succès depuis {filename}
 import_upload_success: '{filename} a été téléchargé avec succès. Importation des données en arrière-plan.'
 import_data_errors: Erreur d'importation
 import_data_error: La structure des données de ce fichier ne correspond pas à la collection.
+export_flows: Exporter les flux
+flow_import_input_placeholder: JSON...
+flow_import_success: Flux importé avec succès.
+flow_import_failed: Impossible d'importer le flux
+flow_import_not_json: Ce fichier n'est pas un JSON valide.
+flow_import_invalid_file: Ce fichier n'est pas un flux exporté.
 snapshot:
   export: Exporter le schéma
+  download: Télécharger Snapshot (JSON)
 label_import: Importer
 label_export: Export
 import_export: Importer/Exporter
@@ -657,6 +692,10 @@ manual_string: Chaîne de caractère saisie manuellement
 save_and_create_new: Enregistrer et en créer un nouveau
 save_and_stay: Enregistrer et rester
 save_and_quit: Enregistrer et quitter
+publish_and_quit: Publier et quitter
+publish_without_review: Publier sans révision
+publish_anyway: Publier quand même
+save_and_return_to_published: Enregistrer et revenir à Publié
 save_as_copy: Enregistrer une copie
 save_as_new_file: Enregistrer comme nouveau fichier
 add_existing: Sélectionner
@@ -749,6 +788,7 @@ modified_on: Modifié le
 card_size: Taille de tuile
 sort_field: Champ de tri
 add_sort_field: Ajouter un champ de tri
+add_to_ai_context: Ajouter au contexte IA
 sort: Trier
 status: État
 remove: Retirer
@@ -775,6 +815,7 @@ account_created_successfully: Compte créé avec succès
 auto_fill: Remplissage automatique
 corresponding_field: Champ correspondant
 errors:
+  COLLECTION_INACTIVE: La collection est inactive
   COLLECTION_NOT_FOUND: "La collection n'existe pas"
   CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
   CONTENT_TOO_LARGE: L'élément/fichier soumis est trop volumineux
@@ -845,6 +886,8 @@ active_users: Utilisateurs actifs
 suspended_users: Utilisateurs Suspendus
 invited_users: Utilisateurs invités
 delete_collection: Supprimer la collection
+deactivate_collection: Désactiver la collection
+deactivated_collections: Collections désactivées
 update_collection_success: Collection mise à jour
 delete_collection_success: Collection supprimée
 make_collection_visible: Rendre la collection visible
@@ -1145,8 +1188,12 @@ wysiwyg_options:
   bullist: Liste à puces
   numlist: Liste numérotée
   hr: Barre horizontale
+  pagebreak: Saut de page
+  insertdatetime: Insérer une Date / Heure
   insertdatetime_date: Date
   insertdatetime_time: Heure
+  insertdatetime_datetime: Date et heure
+  insertdatetime_locale: Localisé
   link: Ajouter/modifier un lien
   unlink: Supprimer le lien
   media: Ajouter/modifier un média
@@ -1162,8 +1209,10 @@ wysiwyg_options:
   h4: En-tête 4
   h5: En-tête 5
   h6: En-tête 6
+  pre: Préformaté
   fontselect: Sélectionner la police
   fontsizeselect: Sélectionner la taille de la police
+  styles: Formats
   indent: Augmenter le retrait
   outdent: Diminuer le retrait
   undo: Annuler
@@ -1172,8 +1221,45 @@ wysiwyg_options:
   removeformat: Supprimer le formatage
   selectall: Tout sélectionner
   table: Tableau
+  table_cell: Cellule
+  table_row: Ligne
+  table_column: Colonne
+  table_insert: Insérer un tableau
+  table_insert_size: '{cols} × {rows}'
+  table_add_row_before: Ajouter une ligne au-dessus
+  table_add_row_after: Ajouter une ligne en dessous
+  table_add_column_before: Ajouter une colonne à gauche
+  table_add_column_after: Ajouter une colonne à droite
+  table_delete_row: Supprimer la ligne
+  table_delete_column: Supprimer la colonne
+  table_toggle_header_row: Activer/désactiver la ligne d'en-tête
+  table_toggle_header_column: Activer/désactiver la colonne d'en-tête
+  table_merge_cells: Fusionner les cellules
+  table_split_cell: Diviser la cellule
+  table_delete: Supprimer le tableau
   visualaid: Voir les éléments invisibles
   source_code: Modifier le code source
+  source_code_normalization_notice: Le balisage que l'éditeur ne peut pas représenter est normalisé lorsque vous enregistrez.
+  source_code_normalize_title: Certaines balises seront supprimées
+  source_code_normalize_body: L'éditeur ne peut pas représenter le balisage en surbrillance, il sera donc supprimé lorsque vous enregistrez.
+  save_anyway: Enregistrer quand même
+  normalization_warning_title: Certains formatages ici ne sont pas pris en charge
+  normalization_warning_body: Ce contenu inclut des éléments non supportés par le nouvel éditeur, il est donc en lecture seule pour l'instant. Si vous le modifiez quand même, ces éléments seront retirés au moment de la sauvegarde. Pour garder le HTML stocké tel quel, modifiez le code HTML brut à la place. Cet avertissement disparaîtra une fois que les éléments non pris en charge seront supprimés. Si vous avez déjà enregistré sans eux, vous pouvez ramener le contenu original à partir des révisions.
+  normalization_warning_view_changes: Afficher les modifications
+  normalization_warning_keep_readonly: Garder en lecture seule
+  normalization_warning_edit_anyway: Modifier quand même
+  normalization_warning_edit_raw: Modifier le HTML brut
+  normalization_locked_notice: Ce champ inclut de la mise en forme non supportée par le nouvel éditeur, il est donc en lecture seule. Sélectionnez le champ pour choisir comment le mettre à jour.
+  normalization_locked_learn_more: Apprenez ce qui a changé
+  paste_warning_notice: Nous avons nettoyé les balises non prises en charge de ce que vous avez collé. Certaines applications enveloppent le contenu copié dans un balisage supplémentaire que cet éditeur ne prend pas en charge.
+  paste_warning_see_removed: Voir ce qui a été supprimé
+  paste_warning_title: Le balisage non pris en charge a été supprimé de votre coller
+  paste_warning_body: Le coller nettoyé conserve votre texte et votre mise en forme. Annuler le coller le retire. Coller brut conserve le HTML exactement comme copié et bascule ce champ vers l'éditeur HTML brut.
+  paste_warning_body_kept: Le coller nettoyé conserve votre texte et votre mise en forme. Le contenu a changé depuis le collage, alors il ne peut plus être annulé à partir d'ici.
+  paste_warning_undo: Annuler Coller
+  paste_warning_paste_raw: Coller brute
+  paste_warning_keep: Garder nettoyé
+  normalization_comparison_notice: Cette version inclut de la mise en forme que l'éditeur ne peut pas afficher, donc le HTML stocké est affiché tel quel. L'appliquer restaure le contenu inchangé.
   fullscreen: Plein écran
   directionality: Sens de lecture
   ltr: De gauche à droite
@@ -1209,14 +1295,24 @@ licensing:
   unlimited: Illimité
   addon_manage: Gérer
   addon_update: Mettre à jour
+  deactivate: Désactiver la licence
+  deactivate_confirm_title: Désactiver la licence ?
+  deactivate_confirm_body: Êtes-vous sûr de vouloir désactiver la licence ? Votre instance sera rétrogradée vers le plan Core.
+  resolve_title_manual: Désactiver la licence
   resolve_continue: Continuer
+  resolve_submit: Désactiver les éléments sélectionnés
   resolve_show_n_more: 'Afficher {count} de plus'
   resolve_section_flows: Flux
+  resolve_section_collections_caption:
+  resolve_sso_admin_email: Adresse courriel
   resolve_sso_admin_password: Mot de passe
+  key: Clé de licence
   entitlements:
     collections: Collections
     flows: Flux
-settings_appearance: Personnalisation du Thème
+  badge:
+    non_prod: Non-Production
+settings_appearance: Personnalisation du thème
 settings_ai: IA
 settings_system_logs: Journaux système
 settings_presets: Favoris
@@ -1243,6 +1339,8 @@ unsaved_changes_copy_collab: Vous éditez cet objet avec d'autres. Vos modificat
 discard_changes: Annuler les modifications
 discard_all_changes: Ignorer toutes les modifications
 discard_changes_copy: Êtes-vous sûr de vouloir annuler vos modifications ?
+published_item_has_changed: L'élément publié a été modifié
+published_item_has_changed_copy: L'élément publié a été mis à jour depuis que cette version a été créée. Publier maintenant écrasera ces modifications.
 discard_changes_copy_collab: Vous éditez cet élément avec d'autres. Annuler les modifications effacera toutes les modifications non enregistrées pour tous les participants à cette session collaborative.
 show_x_axis: Afficher l'axe X
 show_y_axis: Afficher l'axe Y
@@ -1987,6 +2085,7 @@ interfaces:
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
     interface_group: Options d'interface
     display_group: Options d'affichage
+    edit_mode_drawer: Tiroir
     edit_mode_inline: En ligne
   slider:
     slider: Curseur
@@ -2573,4 +2672,6 @@ show_password: Afficher le mot de passe
 hide_password: Masquer le mot de passe
 license_grace_key_modal:
   optional: Facultatif
+license_banner:
+  remind_later: Rappeler plus tard
 set_to_now: Configurer à maintenant

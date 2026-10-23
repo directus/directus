@@ -180,8 +180,6 @@ logoutReason:
   SESSION_EXPIRED: Sesijos laikas baigėsi
 public_label: Vieša
 public_description: Nustato kokie API duomenys yra prieinami neprisijungus.
-public_role_info: >-
-  Vieša rolė valdo kokia informacija per API yra pateikiama neautentifikuotiems naudotojams arba naudotojams be rolės. Užklausos su vieša role negali turėti aplikacijos arba administratoriaus prieigos. Jeigu šiai rolei bus suteikta aplikacijos arba administratoriaus prieiga tai ji bus ignoruojama.
 admin_description: Pradinė administratoriaus rolė su neribojama prieiga prie aplikacijos ir API.
 admin_policy_description: Pradinė administratoriaus rolė su neribojama prieiga prie aplikacijos ir API.
 no_description: Nėra aprašymo...

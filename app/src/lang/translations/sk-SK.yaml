@@ -180,8 +180,6 @@ logoutReason:
   SESSION_EXPIRED: Relácia vypršala
 public_label: Verejné
 public_description: Určuje, ktoré údaje z API sú dostupné bez overovania.
-public_role_info: >-
-  Verejná rola určuje, ktoré údaje z API sú dostupné pre neoverených používateľov alebo používateľov bez role. Požiadavky s verejnou rolou nemôžu mať prístup k appke admin práva. Ak sú práva na appku alebo admin nastavené pravidlu s verejnou rolou, ignorujú sa.
 admin_description: Počiatočná administratívna rola s neobmedzeným prístupom k Appke/API.
 admin_policy_description: Počiatočné administratívna politika s neobmedzeným prístupom k appke/API.
 no_description: Žiadny popis...
