@@ -2,7 +2,7 @@
 import { useSync } from '@directus/composables';
 import type { ShowSelect } from '@directus/types';
 import { clone, throttle } from 'lodash-es';
-import { computed, ref, useSlots } from 'vue';
+import { computed, onBeforeUpdate, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
 import { Header, Sort } from './types';
 import VCheckbox from '@/components/v-checkbox.vue';
@@ -54,7 +54,11 @@ const resizeHeader = ref<Header | null>(null);
 
 const slots = useSlots();
 
-const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !== undefined);
+const hasHeaderContextMenuSlot = ref(slots['header-context-menu'] !== undefined);
+
+onBeforeUpdate(() => {
+	hasHeaderContextMenuSlot.value = slots['header-context-menu'] !== undefined;
+});
 
 useEventListener(window, 'pointermove', throttle(onMouseMove, 40));
 useEventListener(window, 'pointerup', onMouseUp);

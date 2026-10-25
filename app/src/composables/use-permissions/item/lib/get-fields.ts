@@ -40,7 +40,17 @@ export function getFields(
 		let permission;
 
 		if (collectionInfo.value?.meta?.singleton) {
-			permission = fetchedItemPermissions.value.update;
+			if (fetchedItemPermissions.value?.update?.access) {
+				permission = fetchedItemPermissions.value.update;
+			} else {
+				const storePermission = getPermission(collectionValue, 'update') ?? getPermission(collectionValue, 'create');
+
+				if (storePermission && storePermission.access !== 'partial') {
+					permission = storePermission;
+				} else {
+					permission = null;
+				}
+			}
 		} else if (unref(isNew)) {
 			permission = getPermission(collectionValue, 'create');
 		} else {

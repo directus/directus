@@ -508,4 +508,59 @@ describe('non-admin users', () => {
 			}
 		});
 	});
+
+	describe('singleton collection with store permissions', () => {
+		beforeEach(() => {
+			vi.mocked(useCollection).mockReturnValue({
+				fields: ref(sample.fields),
+				info: ref({ meta: { singleton: true } }),
+			} as any);
+		});
+
+		it('should not mark fields as read-only if user has update permission in store before fetchedItemPermissions resolves', () => {
+			const permissionsStore = mockedStore(usePermissionsStore());
+
+			permissionsStore.getPermission.mockImplementation((_, action) => {
+				if (action === 'update') return { access: 'full', fields: ['*'] };
+				return null;
+			});
+
+			fetchedItemPermissions = ref({
+				update: { access: false },
+				delete: { access: false },
+				share: { access: false },
+			});
+
+			const fields = getFields(sample.collection, false, fetchedItemPermissions);
+
+			expect(fields.value.length).toEqual(sample.fields.length);
+
+			for (const field of fields.value) {
+				expect(!!field.meta?.readonly).toBe(false);
+				expect(!!(field as FormField).meta?.non_editable).toBe(false);
+			}
+		});
+
+		it('should not mark fields as read-only if user has create permission in store for uncreated singleton', () => {
+			const permissionsStore = mockedStore(usePermissionsStore());
+
+			permissionsStore.getPermission.mockImplementation((_, action) => {
+				if (action === 'create') return { access: 'full', fields: ['*'] };
+				return null;
+			});
+
+			fetchedItemPermissions = ref({
+				update: { access: false },
+				delete: { access: false },
+				share: { access: false },
+			});
+
+			const fields = getFields(sample.collection, false, fetchedItemPermissions);
+
+			for (const field of fields.value) {
+				expect(!!field.meta?.readonly).toBe(false);
+				expect(!!(field as FormField).meta?.non_editable).toBe(false);
+			}
+		});
+	});
 });
