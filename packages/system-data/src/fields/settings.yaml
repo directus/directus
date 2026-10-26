@@ -239,6 +239,11 @@ fields:
     width: half
     note: $t:interfaces.system-folder.field_hint
 
+  - field: default_exports_folder
+    interface: system-folder
+    width: half
+    note: $t:fields.directus_settings.default_exports_folder_note
+
   - field: storage_asset_presets
     interface: list
     options:

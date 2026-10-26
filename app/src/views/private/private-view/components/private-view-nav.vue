@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useTemplateRef } from 'vue';
+import { useNavScroll } from '../composables/use-nav-scroll';
 import PrivateViewNavFooter from './private-view-nav-footer.vue';
 import PrivateViewNavProjectName from './private-view-nav-project-name.vue';
 import VLicenseBadge from '@/components/v-license-badge.vue';
@@ -7,13 +9,17 @@ import PinnedStatusNotice from '@/views/private/components/license/pinned-status
 
 // id attribute for accessibility linking doesn’t work on the top-level element
 defineProps<{ id?: string }>();
+
+const contentEl = useTemplateRef<HTMLDivElement>('content');
+
+useNavScroll(contentEl);
 </script>
 
 <template>
 	<aside role="navigation" aria-label="Module Navigation" class="module-nav alt-colors">
 		<PrivateViewNavProjectName />
 
-		<div :id class="module-nav-content">
+		<div :id ref="content" class="module-nav-content">
 			<slot name="navigation" />
 		</div>
 

@@ -25,7 +25,7 @@ import { vi } from 'vitest';
  * ```
  */
 export function createMockKnex() {
-	const db = vi.mocked(knex.default({ client: MockClient }));
+	const db = knex.default({ client: MockClient });
 	const tracker = createTracker(db);
 
 	// Mock schema builder methods with functional callbacks

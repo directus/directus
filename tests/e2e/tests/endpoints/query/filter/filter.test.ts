@@ -4,9 +4,10 @@ import { useSnapshot } from '@utils/use-snapshot.js';
 import { range } from 'lodash-es';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(graphql()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 test(`string _eq`, async () => {
 	const ids = (
@@ -349,7 +350,7 @@ test(`$FOLLOW filter resolves an ad hoc o2m relation`, async () => {
 	const result = await api.request(
 		readItems(collections.articles, {
 			filter: {
-				[`$FOLLOW(${collections.articles_tags},articles_id)`]: { _some: { tags_id: { _eq: tagId } } },
+				[`$FOLLOW(${collections.articles_tags_junction},articles_id)`]: { _some: { tags_id: { _eq: tagId } } },
 			} as any,
 		}),
 	);

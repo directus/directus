@@ -82,7 +82,7 @@ export async function seed(
 	const supplier = byName(suppliers);
 
 	await api.request(
-		createItems(collections.products_suppliers, [
+		createItems(collections.products_suppliers_junction, [
 			{ products_id: product['Alpha'], suppliers_id: supplier['Supplier A'] },
 			{ products_id: product['Beta'], suppliers_id: supplier['Supplier A'] },
 			{ products_id: product['Beta'], suppliers_id: supplier['Supplier B'] },

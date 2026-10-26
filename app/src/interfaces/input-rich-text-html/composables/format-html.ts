@@ -140,7 +140,6 @@ function serialize(nodes: NodeListOf<ChildNode> | ChildNode[], depth: number): s
 }
 
 export function formatHtml(html: string): string {
-	const root = document.createElement('div');
-	root.innerHTML = html;
+	const root = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html').body;
 	return serialize(root.childNodes, 0);
 }

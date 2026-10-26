@@ -12,10 +12,11 @@ import {
 	updateCollection,
 	updateCollectionsBatch,
 } from '@directus/sdk';
+import type { Collection } from '@directus/types';
 import { port } from '@utils/constants.js';
 import { afterEach, expect, test } from 'vitest';
 
-const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 
 const collectionName = `collections_${randomUUID()}`;
 
@@ -174,7 +175,7 @@ test('batch updates collections, as used for sorting them', async () => {
 		await api.request(createCollection({ collection, meta: {}, schema: {} } as any));
 	}
 
-	const result = await api.request(
+	const result = await api.request<Collection[]>(
 		updateCollectionsBatch(
 			collections.map((collection, index) => ({
 				collection,
@@ -184,7 +185,7 @@ test('batch updates collections, as used for sorting them', async () => {
 	);
 
 	for (const [index, collection] of collections.entries()) {
-		const updated = result.find((item: any) => item.collection === collection);
+		const updated = result.find((item) => item.collection === collection);
 
 		expect(updated).toMatchObject({
 			collection,

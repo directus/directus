@@ -124,7 +124,7 @@ test('signing in provisions a Directus user from the directory entry', async () 
 
 	expect(response.status).toBe(200);
 
-	expect((await response.json()).data).toEqual([
+	expect(((await response.json()) as any).data).toEqual([
 		{
 			email: USER.email,
 			first_name: USER.firstName,

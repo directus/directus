@@ -45,7 +45,7 @@ afterEach(async () => {
 
 	if (folders.length === 0) return;
 
-	adminApi.request(deleteFolders(folders.map((folder) => folder.id)));
+	await adminApi.request(deleteFolders(folders.map((folder) => folder.id)));
 });
 
 const userApi = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken(token));

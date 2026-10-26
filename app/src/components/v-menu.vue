@@ -12,7 +12,7 @@ import { createPopper } from '@popperjs/core/lib/popper-lite';
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
 import { debounce } from 'lodash-es';
 import { nanoid } from 'nanoid/non-secure';
-import { computed, nextTick, onUnmounted, type Ref, ref, useTemplateRef, watch } from 'vue';
+import { computed, inject, nextTick, onUnmounted, provide, type Ref, ref, useTemplateRef, watch } from 'vue';
 import TransitionBounce from '@/components/transition/bounce.vue';
 import { useUserStore } from '@/stores/user';
 
@@ -120,6 +120,8 @@ const {
 
 const { isActive, activate, deactivate, toggle } = useActiveState();
 
+const { isInChildMenu } = useNestedMenus();
+
 useShortcut('escape', (_event, cancelNext) => {
 	if (isActive.value) {
 		deactivate();
@@ -219,8 +221,27 @@ function useActiveState() {
 	}
 }
 
+// Child menus teleport to #menu-outlet, so their poppers are not inside this one in the DOM.
+function useNestedMenus() {
+	type ContainsCheck = (node: Node) => boolean;
+
+	const parentChildren = inject<Set<ContainsCheck> | null>('v-menu-children', null);
+	const children = new Set<ContainsCheck>();
+
+	provide('v-menu-children', children);
+
+	const isInChildMenu: ContainsCheck = (node) => [...children].some((contains) => contains(node));
+	const contains: ContainsCheck = (node) => !!document.getElementById(id.value)?.contains(node) || isInChildMenu(node);
+
+	parentChildren?.add(contains);
+	onUnmounted(() => parentChildren?.delete(contains));
+
+	return { isInChildMenu };
+}
+
 function onClickOutsideMiddleware(e: Event) {
-	return !activator.value?.contains(e.target as Node);
+	const target = e.target as Node;
+	return !activator.value?.contains(target) && !isInChildMenu(target);
 }
 
 function onContentClick(e: Event) {

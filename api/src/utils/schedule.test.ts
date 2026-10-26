@@ -1,164 +1,135 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { SynchronizedClock } from '../synchronization.js';
 import { scheduleSynchronizedJob, validateCron } from './schedule.js';
 
-// Mock SynchronizedClock to isolate scheduling logic
+const clock = vi.hoisted(() => ({ set: vi.fn(), reset: vi.fn() }));
+
 vi.mock('../synchronization.js', () => ({
-	SynchronizedClock: vi.fn().mockImplementation(function () {
-		return {
-			set: vi.fn().mockResolvedValue(true),
-			reset: vi.fn().mockResolvedValue(undefined),
-		};
+	SynchronizedClock: vi.fn(function () {
+		return clock;
 	}),
 }));
 
+const oneHour = 60 * 60 * 1000;
+const maxSetTimeout = Math.pow(2, 31) - 1;
+
 describe('validateCron', () => {
-	test('Returns true for valid cron expression', () => {
-		expect(validateCron('0 0 * * *')).toBe(true);
-		expect(validateCron('*/5 * * * *')).toBe(true);
-		expect(validateCron('0 23 * * *')).toBe(true);
+	test.each([
+		'* * * * *',
+		'0 0 * * *',
+		'*/5 * * * *',
+		'1,15,30 * * * *',
+		'1-30/5 * * * *',
+		'0 9 * * 1-5',
+		'0 0 * * 0',
+		'0 0 * * 7',
+		'0 0 29 2 *',
+		'* * * * * *',
+		'*/10 * * * * *',
+	])('accepts "%s"', (rule) => {
+		expect(validateCron(rule)).toBe(true);
 	});
 
-	test('Returns false for invalid cron expression', () => {
-		expect(validateCron('#')).toBe(false);
-		expect(validateCron('invalid')).toBe(false);
-		expect(validateCron('60 * * * *')).toBe(false);
+	test.each([
+		'',
+		'invalid',
+		'* * * *',
+		'* * * * * * *',
+		'60 * * * *',
+		'* 24 * * *',
+		'0 0 0 * *',
+		'0 0 32 * *',
+		'0 0 * 13 *',
+		'0 0 * * 8',
+		'*/0 * * * *',
+	])('rejects "%s"', (rule) => {
+		expect(validateCron(rule)).toBe(false);
 	});
 });
 
 describe('scheduleSynchronizedJob', () => {
-	describe('long-running scenarios (25+ days)', () => {
-		beforeEach(() => {
-			vi.useFakeTimers();
-		});
+	beforeEach(() => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date(2025, 0, 1, 0, 0, 1));
 
-		afterEach(() => {
-			vi.clearAllTimers();
-			vi.useRealTimers();
-		});
-
-		test('Should execute daily job for 26 consecutive days', async () => {
-			const callback = vi.fn().mockResolvedValue(undefined);
-			const startTime = new Date('2025-01-01T22:00:00.000Z');
-
-			vi.setSystemTime(startTime);
-			const job = scheduleSynchronizedJob('test-daily', '0 23 * * *', callback);
-
-			const dayInMs = 24 * 60 * 60 * 1000;
-			const oneHourMs = 60 * 60 * 1000;
-
-			// Simulate 26 days (exceeds setTimeout limit of ~24.8 days)
-			for (let day = 0; day < 26; day++) {
-				const targetTime = new Date(startTime.getTime() + day * dayInMs + oneHourMs);
-				vi.setSystemTime(targetTime);
-				await vi.runOnlyPendingTimersAsync();
-			}
-
-			expect(callback).toHaveBeenCalledTimes(26);
-			await job.stop();
-		});
-
-		test('Should execute hourly job beyond setTimeout limit', async () => {
-			const callback = vi.fn().mockResolvedValue(undefined);
-			const startTime = new Date('2025-01-01T00:00:00.000Z');
-
-			vi.setSystemTime(startTime);
-			const job = scheduleSynchronizedJob('test-hourly', '0 * * * *', callback);
-			await vi.runOnlyPendingTimersAsync();
-
-			const oneHour = 60 * 60 * 1000;
-			const maxSetTimeoutMs = Math.pow(2, 31) - 1; // ~24.8 days
-			const hoursToTest = Math.ceil(maxSetTimeoutMs / oneHour) + 24; // Beyond limit + 1 day
-
-			for (let hour = 1; hour <= hoursToTest; hour++) {
-				const targetTime = new Date(startTime.getTime() + hour * oneHour);
-				vi.setSystemTime(targetTime);
-				await vi.runOnlyPendingTimersAsync();
-			}
-
-			const maxSetTimeoutHours = Math.floor(maxSetTimeoutMs / oneHour);
-			expect(callback.mock.calls.length).toBeGreaterThan(maxSetTimeoutHours);
-
-			await job.stop();
-		});
-
-		test('Should execute daily job for 30 days without missing executions', async () => {
-			const callback = vi.fn().mockResolvedValue(undefined);
-			const startTime = new Date('2025-01-01T22:00:00.000Z');
-
-			vi.setSystemTime(startTime);
-			const job = scheduleSynchronizedJob('test-30-days', '0 23 * * *', callback);
-
-			const dayInMs = 24 * 60 * 60 * 1000;
-			const oneHourMs = 60 * 60 * 1000;
-
-			// Test 30 consecutive days
-			for (let day = 0; day < 30; day++) {
-				const targetTime = new Date(startTime.getTime() + day * dayInMs + oneHourMs);
-				vi.setSystemTime(targetTime);
-				await vi.runOnlyPendingTimersAsync();
-			}
-
-			expect(callback).toHaveBeenCalledTimes(30);
-			await job.stop();
-		});
-
-		test('Should stop job execution after stop() is called', async () => {
-			const callback = vi.fn().mockResolvedValue(undefined);
-			const startTime = new Date('2025-01-01T00:00:00.000Z');
-
-			vi.setSystemTime(startTime);
-			const job = scheduleSynchronizedJob('test-stop', '0 0 * * *', callback);
-			await vi.runOnlyPendingTimersAsync();
-
-			// Run for 26 days
-			const targetTime = new Date(startTime.getTime() + 26 * 24 * 60 * 60 * 1000);
-			vi.setSystemTime(targetTime);
-			await vi.runOnlyPendingTimersAsync();
-
-			const callsBeforeStop = callback.mock.calls.length;
-
-			// Stop the job
-			await job.stop();
-
-			// Advance one more day
-			const afterStopTime = new Date(targetTime.getTime() + 24 * 60 * 60 * 1000);
-			vi.setSystemTime(afterStopTime);
-			await vi.runOnlyPendingTimersAsync();
-
-			// Should not have any new calls after stop
-			expect(callback).toHaveBeenCalledTimes(callsBeforeStop);
-		});
+		clock.set.mockResolvedValue(true);
+		clock.reset.mockResolvedValue(undefined);
 	});
 
-	describe('CronJob execution timing', () => {
-		test('cron job fires at scheduled time', async () => {
-			vi.useFakeTimers();
+	afterEach(() => {
+		vi.clearAllTimers();
+		vi.useRealTimers();
+		vi.clearAllMocks();
+	});
 
-			const mockCallback = vi.fn();
-			const startTime = new Date('2025-01-01T23:55:00.000Z');
+	test('keys the clock by job id and rule', async () => {
+		const job = scheduleSynchronizedJob('test-key', '0 * * * *', vi.fn());
 
-			vi.setSystemTime(startTime);
+		expect(SynchronizedClock).toHaveBeenCalledWith('test-key:0 * * * *');
 
-			const { CronJob } = await import('cron');
+		await job.stop();
+	});
 
-			// Create a CronJob that fires every minute
-			CronJob.from({
-				cronTime: '* * * * *',
-				onTick: mockCallback,
-				start: true,
-			});
+	test('claims each tick by setting the clock to the next run time', async () => {
+		const job = scheduleSynchronizedJob('test-claim', '0 * * * *', vi.fn());
 
-			// Advance time by 1 minute
-			await vi.advanceTimersByTimeAsync(60 * 1000);
+		await vi.advanceTimersByTimeAsync(2 * oneHour);
 
-			expect(mockCallback).toHaveBeenCalledTimes(1);
+		expect(clock.set.mock.calls).toEqual([[new Date(2025, 0, 1, 2).getTime()], [new Date(2025, 0, 1, 3).getTime()]]);
 
-			// Advance time by another minute
-			await vi.advanceTimersByTimeAsync(60 * 1000);
+		await job.stop();
+	});
 
-			expect(mockCallback).toHaveBeenCalledTimes(2);
+	test('skips the callback for ticks already claimed by another instance', async () => {
+		const callback = vi.fn();
 
-			vi.useRealTimers();
-		});
+		clock.set.mockResolvedValueOnce(false).mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+
+		const job = scheduleSynchronizedJob('test-claimed', '0 * * * *', callback);
+
+		await vi.advanceTimersByTimeAsync(3 * oneHour);
+
+		expect(clock.set).toHaveBeenCalledTimes(3);
+		expect(callback).toHaveBeenCalledOnce();
+
+		await job.stop();
+	});
+
+	test('relies on cron to run a job scheduled beyond the setTimeout limit', async () => {
+		const callback = vi.fn();
+		const start = Date.now();
+		const fireTime = new Date(2026, 0, 1).getTime();
+
+		expect(fireTime - start).toBeGreaterThan(maxSetTimeout);
+
+		const job = scheduleSynchronizedJob('test-yearly', '0 0 1 1 *', callback);
+
+		await vi.advanceTimersByTimeAsync(fireTime - start - 1);
+
+		expect(callback).not.toHaveBeenCalled();
+
+		await vi.advanceTimersByTimeAsync(1);
+
+		expect(callback).toHaveBeenCalledOnce();
+
+		await job.stop();
+	});
+
+	test('stops the job and resets the clock on stop', async () => {
+		const callback = vi.fn();
+		const job = scheduleSynchronizedJob('test-stop', '0 * * * *', callback);
+
+		await vi.advanceTimersByTimeAsync(3 * oneHour);
+
+		expect(callback).toHaveBeenCalledTimes(3);
+
+		await job.stop();
+
+		expect(clock.reset).toHaveBeenCalledOnce();
+
+		await vi.advanceTimersByTimeAsync(3 * oneHour);
+
+		expect(callback).toHaveBeenCalledTimes(3);
+		expect(vi.getTimerCount()).toBe(0);
 	});
 });

@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { createDirectus, deleteFile, readFile, rest, staticToken, updateFile, uploadFiles } from '@directus/sdk';
 import { port } from '@utils/constants.js';
+import { directusError } from '@utils/errors.js';
 import { afterEach, describe, expect, test } from 'vitest';
 
 const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
@@ -31,9 +32,7 @@ describe('filename_disk uniqueness', () => {
 
 		await upload(name);
 
-		await expect(upload(name)).rejects.toMatchObject({
-			errors: [expect.objectContaining({ extensions: expect.objectContaining({ code: 'FORBIDDEN' }) })],
-		});
+		await expect(upload(name)).rejects.toMatchObject(directusError('FORBIDDEN'));
 	});
 
 	test('allows an upload with a unique filename_disk', async () => {
