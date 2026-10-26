@@ -372,6 +372,5 @@ catalog:
   wellknown: 0.5.0
   ws: 8.21.0
   zod: 4.1.12
-  zod-validation-error: 4.0.2
 
 catalogMode: strict

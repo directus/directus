@@ -2,7 +2,6 @@ import type { StandardProviderType } from '@directus/ai';
 import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { jsonSchema, streamObject, wrapLanguageModel } from 'ai';
 import type { RequestHandler } from 'express';
-import { fromZodError } from 'zod-validation-error';
 import { getDevToolsMiddleware } from '../../devtools/index.js';
 import {
 	type AISettings,
@@ -22,7 +21,7 @@ export const aiObjectPostHandler: RequestHandler = async (req, res) => {
 	const parseResult = ObjectRequest.safeParse(req.body);
 
 	if (!parseResult.success) {
-		throw new InvalidPayloadError({ reason: fromZodError(parseResult.error).message });
+		throw new InvalidPayloadError(parseResult.error);
 	}
 
 	const { provider, model, prompt, outputSchema, maxOutputTokens } = parseResult.data;

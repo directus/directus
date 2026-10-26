@@ -3,14 +3,13 @@ import { randomUUID } from 'node:crypto';
 import type internal from 'stream';
 import { parse } from 'url';
 import { useEnv } from '@directus/env';
-import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
+import { formatZodError, InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { WebSocketMessage } from '@directus/types';
 import { parseJSON, toBoolean } from '@directus/utils';
 import cookie from 'cookie';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
 import WebSocket, { type Server, WebSocketServer } from 'ws';
-import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
 import { getLicenseManager } from '../../license/manager.js';
 import { useLogger } from '../../logger/index.js';
@@ -77,7 +76,7 @@ export default abstract class SocketController {
 		if (!authMode.success) {
 			throw new InvalidProviderConfigError({
 				provider: 'ws',
-				reason: fromZodError(authMode.error, { prefix: `${configPrefix}_AUTH` }).message,
+				reason: `${configPrefix}_AUTH: ${formatZodError(authMode.error)}`,
 			});
 		}
 

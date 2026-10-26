@@ -3,7 +3,6 @@ import { InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { isObject, toArray } from '@directus/utils';
 import { z } from 'zod';
-import { fromZodError } from 'zod-validation-error';
 import { Url } from '../../utils/url.js';
 import { schema as schemaTool } from './schema/index.js';
 import { getToolTypeStrings } from './schema-to-type-string.js';
@@ -266,7 +265,7 @@ export class MountedToolRegistry {
 		const { error, data: args } = tool.validateSchema?.safeParse(coercedArgs) ?? { data: coercedArgs };
 
 		if (error) {
-			throw new InvalidPayloadError({ reason: fromZodError(error).message });
+			throw new InvalidPayloadError(error);
 		}
 
 		if (!isObject(args)) {

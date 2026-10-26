@@ -193,8 +193,7 @@
 		"uuid": "catalog:",
 		"wellknown": "catalog:",
 		"ws": "catalog:",
-		"zod": "catalog:",
-		"zod-validation-error": "catalog:"
+		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/schema-builder": "workspace:*",

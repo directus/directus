@@ -36,7 +36,7 @@ export default defineOperationApi<Options>({
 		const validation = inputSchema.safeParse({ keys, query: queryObject, payload: payloadObject });
 
 		if (!validation.success) {
-			throw new InvalidPayloadError({ reason: validation.error.issues[0]?.message ?? 'Invalid input' });
+			throw new InvalidPayloadError(validation.error);
 		}
 
 		const isBatch = Array.isArray(payloadObject);
