@@ -690,8 +690,8 @@ catalogs:
       specifier: 9.0.0
       version: 9.0.0
     dompurify:
-      specifier: 3.4.16
-      version: 3.4.16
+      specifier: 3.4.17
+      version: 3.4.17
     dotenv:
       specifier: 17.2.3
       version: 17.2.3
@@ -1773,7 +1773,7 @@ importers:
         version: link:../packages/format-title
       '@directus/license':
         specifier: 'catalog:'
-        version: 0.6.1(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))
+        version: 0.6.1(mysql2@3.24.4(@types/node@26.6.5))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))
       '@directus/sdk':
         specifier: workspace:*
         version: link:../sdk
@@ -2046,7 +2046,7 @@ importers:
         version: 9.0.0
       dompurify:
         specifier: 'catalog:'
-        version: 3.4.16
+        version: 3.4.17
       editorjs-toggle-block:
         specifier: 'catalog:'
         version: 0.3.16
@@ -2772,7 +2772,7 @@ importers:
     dependencies:
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))
+        version: 3.1.0(mysql2@3.24.4(@types/node@26.6.5))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -3117,7 +3117,7 @@ importers:
         version: 5.9.3
       unplugin-yaml:
         specifier: 'catalog:'
-        version: 3.0.7(esbuild@0.28.2)(rolldown@1.2.14)(rollup@4.59.0)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))
+        version: 3.0.7(esbuild@0.28.2)(rolldown@1.2.14)(rollup@4.59.0)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1))
       vitest:
         specifier: 'catalog:'
         version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@26.6.5)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(happy-dom@20.10.6)(jsdom@29.1.1)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1))
@@ -3239,7 +3239,7 @@ importers:
         version: 1.0.5
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))
+        version: 3.1.0(mysql2@3.24.4(@types/node@26.6.5))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(supports-color@10.2.2)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -3471,7 +3471,7 @@ importers:
         version: 0.6.1(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))
       '@directus/mock-license-server':
         specifier: 'catalog:'
-        version: 0.6.0(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0(supports-color@10.2.2))(openapi3-ts@4.5.0)(pino@9.7.0)(supports-color@10.2.2)(vue-router@4.6.3(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))
+        version: 0.6.0(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2)))(mysql2@3.24.4(@types/node@26.2.0))(openapi3-ts@4.5.0)(pg@8.16.3)(pino@9.7.0)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))(vue-router@4.6.3(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))
       '@directus/sandbox':
         specifier: workspace:*
         version: link:../sandbox
@@ -8933,8 +8933,8 @@ packages:
     resolution: {integrity: sha512-gYzvtM72ZtxQO0T048kd6HWSbbGCNOUwcnfQ01cqIJ4X2IYKFFHZ5mKvrQETcFXxsRObZulDaKmy//R7TPtsBg==}
     engines: {node: '>=20.19.0'}
 
-  dompurify@3.4.16:
-    resolution: {integrity: sha512-sqo+pNp3qRhCIpbgRi1y8Tgk27Bo2Ry7w0dC1NBeNTdZChWjz9Xb/KOoZbRP/R6pQZ80Qw8YhXw13hWWBbMRnQ==}
+  dompurify@3.4.17:
+    resolution: {integrity: sha512-B/pSlYVHQ58kqISD/yDjuJ1yfzI34m1gF4lAod2bwSRhiN4K5Cl3H8Af7hqB2PmTL911tdEudnnXn5FnhRoz0w==}
 
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
@@ -14636,7 +14636,7 @@ snapshots:
       '@directus/storage': 12.0.4
       ms: 2.1.3
 
-  '@directus/license@0.6.0(supports-color@10.2.2)':
+  '@directus/license@0.6.0(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))':
     dependencies:
       '@directus/errors': 2.3.1
       '@directus/sdk': 21.3.0
@@ -14672,10 +14672,28 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/mock-license-server@0.6.0(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0(supports-color@10.2.2))(openapi3-ts@4.5.0)(pino@9.7.0)(supports-color@10.2.2)(vue-router@4.6.3(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))':
+  '@directus/license@0.6.1(mysql2@3.24.4(@types/node@26.6.5))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))':
     dependencies:
-      '@directus/license': 0.6.0(supports-color@10.2.2)
-      '@directus/types': 15.0.3(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0(supports-color@10.2.2))(openapi3-ts@4.5.0)(pino@9.7.0)(supports-color@10.2.2)(vue-router@4.6.3(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))
+      '@directus/errors': 2.3.1
+      '@directus/sdk': 21.3.0
+      jose: 6.2.3
+      knex: 3.1.0(mysql2@3.24.4(@types/node@26.6.5))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))
+      lodash-es: 4.18.1
+      zod: 4.1.1
+    transitivePeerDependencies:
+      - better-sqlite3
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - sqlite3
+      - supports-color
+      - tedious
+
+  '@directus/mock-license-server@0.6.0(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2)))(mysql2@3.24.4(@types/node@26.2.0))(openapi3-ts@4.5.0)(pg@8.16.3)(pino@9.7.0)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))(vue-router@4.6.3(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))':
+    dependencies:
+      '@directus/license': 0.6.0(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))
+      '@directus/types': 15.0.3(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2)))(mysql2@3.24.4(@types/node@26.2.0))(openapi3-ts@4.5.0)(pg@8.16.3)(pino@9.7.0)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))(vue-router@4.6.3(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))
       fastify: 5.12.5
       jose: 6.2.3
       lodash-es: 4.18.1
@@ -14702,7 +14720,7 @@ snapshots:
       - vue-router
       - ws
 
-  '@directus/schema@13.0.8(supports-color@10.2.2)':
+  '@directus/schema@13.0.8(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))':
     dependencies:
       knex: 3.1.0(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))
     transitivePeerDependencies:
@@ -14721,11 +14739,11 @@ snapshots:
 
   '@directus/tsconfig@4.0.0': {}
 
-  '@directus/types@15.0.3(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0(supports-color@10.2.2))(openapi3-ts@4.5.0)(pino@9.7.0)(supports-color@10.2.2)(vue-router@4.6.3(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))':
+  '@directus/types@15.0.3(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2)))(mysql2@3.24.4(@types/node@26.2.0))(openapi3-ts@4.5.0)(pg@8.16.3)(pino@9.7.0)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))(vue-router@4.6.3(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))':
     dependencies:
       '@directus/ai': 1.3.1
       '@directus/constants': 14.3.0
-      '@directus/schema': 13.0.8(supports-color@10.2.2)
+      '@directus/schema': 13.0.8(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))
       '@types/archiver': 7.0.0
       '@types/express': 4.17.21
       '@types/geojson': 7946.0.16
@@ -17706,13 +17724,29 @@ snapshots:
     optionalDependencies:
       vite: 8.1.2(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1)
 
-  '@vitest/mocker@4.1.11(vite@8.3.4(@types/node@26.2.0)(jiti@2.7.0))':
+  '@vitest/mocker@4.1.11(vite@8.3.4(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1))':
     dependencies:
       '@vitest/spy': 4.1.11
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
       vite: 8.3.4(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1)
+
+  '@vitest/mocker@4.1.11(vite@8.3.4(@types/node@26.2.0)(jiti@2.7.0)(tsx@4.22.4))':
+    dependencies:
+      '@vitest/spy': 4.1.11
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+    optionalDependencies:
+      vite: 8.3.4(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1)
+
+  '@vitest/mocker@4.1.11(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1))':
+    dependencies:
+      '@vitest/spy': 4.1.11
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+    optionalDependencies:
+      vite: 8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1)
 
   '@vitest/mocker@4.1.11(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0))':
     dependencies:
@@ -19071,7 +19105,7 @@ snapshots:
     dependencies:
       domelementtype: 3.0.0
 
-  dompurify@3.4.16:
+  dompurify@3.4.17:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -20555,6 +20589,30 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  knex@3.1.0(mysql2@3.24.4(@types/node@26.6.5))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2)):
+    dependencies:
+      colorette: 2.0.19
+      commander: 10.0.1
+      debug: 4.3.4(supports-color@10.2.2)
+      escalade: 3.2.0
+      esm: 3.2.25
+      get-package-type: 0.1.0
+      getopts: 2.3.0
+      interpret: 2.2.0
+      lodash: 4.18.1
+      pg-connection-string: 2.6.2
+      rechoir: 0.8.0
+      resolve-from: 5.0.0
+      tarn: 3.1.2
+      tildify: 2.0.0
+    optionalDependencies:
+      mysql2: 3.24.4(@types/node@26.6.5)
+      pg: 8.16.3
+      sqlite3: 6.0.1
+      tedious: 18.6.1(supports-color@10.2.2)
+    transitivePeerDependencies:
+      - supports-color
+
   known-css-properties@0.37.0: {}
 
   kolorist@1.8.0: {}
@@ -20995,6 +21053,18 @@ snapshots:
   mysql2@3.24.4(@types/node@26.2.0):
     dependencies:
       '@types/node': 26.2.0
+      aws-ssl-profiles: 1.1.2
+      generate-function: 2.3.1
+      iconv-lite: 0.7.3
+      long: 5.3.2
+      lru.min: 1.1.5
+      named-placeholders: 1.1.6
+      sql-escaper: 1.5.2
+    optional: true
+
+  mysql2@3.24.4(@types/node@26.6.5):
+    dependencies:
+      '@types/node': 26.6.5
       aws-ssl-profiles: 1.1.2
       generate-function: 2.3.1
       iconv-lite: 0.7.3
@@ -23725,7 +23795,7 @@ snapshots:
       - webpack
       - yaml
 
-  unplugin-yaml@3.0.7(esbuild@0.28.2)(rolldown@1.2.14)(rollup@4.59.0)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)):
+  unplugin-yaml@3.0.7(esbuild@0.28.2)(rolldown@1.2.14)(rollup@4.59.0)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1)):
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.59.0)
       unplugin: 2.3.10
@@ -23990,7 +24060,7 @@ snapshots:
   vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@26.2.0)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(happy-dom@20.10.6)(jsdom@29.1.1)(vite@8.3.4(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1)):
     dependencies:
       '@vitest/expect': 4.1.11
-      '@vitest/mocker': 4.1.11(vite@8.3.4(@types/node@26.2.0)(jiti@2.7.0))
+      '@vitest/mocker': 4.1.11(vite@8.3.4(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1))
       '@vitest/pretty-format': 4.1.11
       '@vitest/runner': 4.1.11
       '@vitest/snapshot': 4.1.11
@@ -24022,7 +24092,7 @@ snapshots:
   vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@26.2.0)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(happy-dom@20.10.6)(jsdom@29.1.1)(vite@8.3.4(@types/node@26.2.0)(jiti@2.7.0)(tsx@4.22.4)):
     dependencies:
       '@vitest/expect': 4.1.11
-      '@vitest/mocker': 4.1.11(vite@8.3.4(@types/node@26.2.0)(jiti@2.7.0))
+      '@vitest/mocker': 4.1.11(vite@8.3.4(@types/node@26.2.0)(jiti@2.7.0)(tsx@4.22.4))
       '@vitest/pretty-format': 4.1.11
       '@vitest/runner': 4.1.11
       '@vitest/snapshot': 4.1.11
@@ -24118,7 +24188,7 @@ snapshots:
   vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@26.6.5)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(happy-dom@20.10.6)(jsdom@29.1.1)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1)):
     dependencies:
       '@vitest/expect': 4.1.11
-      '@vitest/mocker': 4.1.11(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0))
+      '@vitest/mocker': 4.1.11(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1))
       '@vitest/pretty-format': 4.1.11
       '@vitest/runner': 4.1.11
       '@vitest/snapshot': 4.1.11
