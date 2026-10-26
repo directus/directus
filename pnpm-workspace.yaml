@@ -185,8 +185,8 @@ catalog:
   '@types/ws': 8.18.1
   '@unhead/vue': 3.4.1
   '@vitejs/plugin-vue': 6.0.1
-  '@vitest/coverage-v8': 4.1.11
-  '@vitest/ui': 4.1.11
+  '@vitest/coverage-v8': 4.1.12
+  '@vitest/ui': 4.1.12
   '@vue/test-utils': 2.4.6
   '@vueuse/core': 14.0.0
   '@vueuse/integrations': 14.0.0
@@ -364,7 +364,7 @@ catalog:
   vite: 8.1.6
   vite-plugin-vue-devtools: 7.7.2
   vite-tsconfig-paths: 5.1.4
-  vitest: 4.1.11
+  vitest: 4.1.12
   vue: 3.5.43
   vue-eslint-parser: 10.4.1
   vue-i18n: 11.1.12
