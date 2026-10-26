@@ -232,6 +232,7 @@ const RESOURCE_LIST = [
 			'public_background',
 			'public_favicon',
 			'storage_default_folder',
+			'default_exports_folder',
 			'project_id',
 			'license_key',
 			'license_token',

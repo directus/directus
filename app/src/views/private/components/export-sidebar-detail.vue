@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
+import { DIRECTUS_SECURITY_BEST_PRACTICES_URL } from '@directus/constants';
 import { Filter } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import type { AxiosProgressEvent } from 'axios';
 import { debounce, pick } from 'lodash-es';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { I18nT, useI18n } from 'vue-i18n';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import ImportErrorDialog from './import-error-dialog.vue';
 import SidebarDetail from './sidebar-detail.vue';
@@ -28,6 +29,7 @@ import InterfaceSystemField from '@/interfaces/_system/system-field/system-field
 import InterfaceSystemFields from '@/interfaces/_system/system-fields/system-fields.vue';
 import InterfaceSystemFilter from '@/interfaces/_system/system-filter/system-filter.vue';
 import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
 import type { APIError } from '@/types/error';
 import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
@@ -73,8 +75,11 @@ const fileExtension = computed(() => {
 const { primaryKeyField, fields, info: collectionInfo } = useCollection(collection);
 
 const { createAllowed } = useCollectionPermissions(collection);
+const { readAllowed: readFoldersAllowed } = useCollectionPermissions('directus_folders');
+const { createAllowed: createFilesAllowed } = useCollectionPermissions('directus_files');
 
 const { info } = useServerStore();
+const settingsStore = useSettingsStore();
 
 const queryLimitMax = info.queryLimit === undefined || info.queryLimit.max === -1 ? Infinity : info.queryLimit.max;
 const defaultLimit = info.queryLimit !== undefined ? Math.min(25, queryLimitMax) : 25;
@@ -146,7 +151,10 @@ watch(
 
 const format = ref('csv');
 const location = ref('download');
-const folder = ref<string | null>(null);
+
+const folder = ref<string | null>(
+	settingsStore.settings?.default_exports_folder ?? settingsStore.settings?.storage_default_folder ?? null,
+);
 
 const lockedToFiles = ref<{ previousLocation: string } | null>(null);
 
@@ -214,13 +222,18 @@ const exportCount = computed(() => {
 	return itemCount.value !== undefined ? Math.min(itemCount.value, limit) : limit;
 });
 
-watch(
-	exportCount,
-	() => {
-		const queryLimitThreshold = exportCount.value > queryLimitMax;
-		const batchThreshold = exportCount.value >= 2500;
+const tooLargeToDownload = computed(() => exportCount.value > queryLimitMax || exportCount.value >= 2500);
+const exportBlocked = computed(() => tooLargeToDownload.value && !createFilesAllowed.value);
 
-		if (queryLimitThreshold || batchThreshold) {
+const locationOptions = computed(() => [
+	{ value: 'download', text: t('download_file') },
+	...(createFilesAllowed.value ? [{ value: 'files', text: t('file_library') }] : []),
+]);
+
+watch(
+	tooLargeToDownload,
+	() => {
+		if (tooLargeToDownload.value && createFilesAllowed.value) {
 			lockedToFiles.value = {
 				previousLocation: lockedToFiles.value?.previousLocation ?? location.value,
 			};
@@ -357,6 +370,10 @@ function useUpload() {
 }
 
 function startExport() {
+	if (exportBlocked.value) {
+		return;
+	}
+
 	if (location.value === 'download') {
 		exportDataLocal();
 	} else {
@@ -522,6 +539,7 @@ async function exportDataFiles() {
 				<PrivateViewHeaderBarActionButton
 					:label="location === 'download' ? $t('download_file') : $t('start_export')"
 					:loading="exporting"
+					:disabled="exportBlocked"
 					:icon="location === 'download' ? 'download' : 'start'"
 					@click="startExport"
 				/>
@@ -564,23 +582,19 @@ async function exportDataFiles() {
 
 				<div class="field half-left">
 					<p class="type-label">{{ $t('export_location') }}</p>
-					<VSelect
-						v-model="location"
-						:disabled="lockedToFiles !== null"
-						:items="[
-							{ value: 'download', text: $t('download_file') },
-							{ value: 'files', text: $t('file_library') },
-						]"
-					/>
+					<VSelect v-model="location" :disabled="lockedToFiles !== null" :items="locationOptions" />
 				</div>
 
 				<div class="field half-right">
 					<p class="type-label">{{ $t('folder') }}</p>
-					<FolderPicker v-if="location === 'files'" v-model="folder" type="files" />
+					<FolderPicker v-if="location === 'files' && readFoldersAllowed" v-model="folder" type="files" />
+					<VNotice v-else-if="location === 'files'" class="folder-not-selectable-notice">
+						{{ folder ? $t('exporting_folder_not_selectable') : $t('exporting_folder_root') }}
+					</VNotice>
 					<VNotice v-else>{{ $t('not_available_for_local_downloads') }}</VNotice>
 				</div>
 
-				<VNotice class="full" :type="lockedToFiles ? 'warning' : undefined">
+				<VNotice class="full" :type="exportBlocked ? 'danger' : lockedToFiles ? 'warning' : undefined">
 					<div>
 						<p v-if="itemCountLoading">
 							{{ $t('loading') }}
@@ -609,7 +623,11 @@ async function exportDataFiles() {
 							}}
 						</p>
 
-						<p v-if="lockedToFiles">
+						<p v-if="exportBlocked" class="export-blocked-hint">
+							{{ $t('exporting_too_large_to_download') }}
+						</p>
+
+						<p v-else-if="lockedToFiles">
 							{{ $t('exporting_library_hint_forced', { format: $t(format) }) }}
 						</p>
 
@@ -621,6 +639,16 @@ async function exportDataFiles() {
 							{{ $t('exporting_download_hint', { format: $t(format) }) }}
 						</p>
 					</div>
+				</VNotice>
+
+				<VNotice v-if="location === 'files'" class="full files-access-notice" type="warning">
+					<I18nT keypath="exporting_library_access_warning" tag="span">
+						<template #docs>
+							<a :href="DIRECTUS_SECURITY_BEST_PRACTICES_URL" target="_blank" rel="noopener noreferrer">
+								{{ $t('public_policy_warning_docs_link') }}
+							</a>
+						</template>
+					</I18nT>
 				</VNotice>
 
 				<VDivider />
@@ -718,6 +746,11 @@ async function exportDataFiles() {
 
 	margin-block-start: 1.375rem;
 	padding: var(--content-padding);
+}
+
+.files-access-notice a {
+	text-decoration: underline;
+	color: var(--theme--primary);
 }
 
 .v-checkbox {

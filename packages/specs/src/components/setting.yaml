@@ -55,6 +55,11 @@ properties:
     description: Default folder to place files
     type: string
     format: uuid
+  default_exports_folder:
+    description: Default folder to place exported files
+    type: string
+    format: uuid
+    nullable: true
   storage_asset_transform:
     description: What transformations are allowed in the assets endpoint.
     type: string

@@ -292,3 +292,65 @@ describe('tokenExpiresAt', () => {
 		expect(licenseStore.tokenExpiresAt).toEqual(new Date(FIXED_NOW_SEC * 1000));
 	});
 });
+
+describe('licenseWarning', () => {
+	beforeEach(() => {
+		vi.spyOn(Date, 'now').mockReturnValue(FIXED_NOW_SEC * 1000);
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	test('returns null without a token expiry or on core', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ invalid_reason: 'binding_mismatch' });
+		expect(licenseStore.licenseWarning).toBeNull();
+
+		licenseStore.info = createLicenseInfo({ source: null, invalid_reason: 'expired', token_expires_at: FIXED_NOW_SEC });
+		expect(licenseStore.licenseWarning).toBeNull();
+	});
+
+	test('falls back to a generic danger warning for other reasons', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({
+			invalid_reason: 'verification',
+			token_expires_at: FIXED_NOW_SEC + 2.5 * 86400,
+		});
+
+		expect(licenseStore.licenseWarning).toEqual({ reason: 'generic', severity: 'danger', daysRemaining: 3 });
+	});
+
+	test('treats an unreachable licensing service as a warning', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ invalid_reason: 'unavailable', token_expires_at: FIXED_NOW_SEC + 86400 });
+
+		expect(licenseStore.licenseWarning).toEqual({ reason: 'unavailable', severity: 'warning', daysRemaining: 1 });
+	});
+});
+
+describe('hasPinnedNotice', () => {
+	test('is true for a warning, grace or core grace, unless locked', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo();
+		expect(licenseStore.hasPinnedNotice).toBe(false);
+
+		licenseStore.info = createLicenseInfo({ invalid_reason: 'binding_mismatch', token_expires_at: FIXED_NOW_SEC });
+		expect(licenseStore.hasPinnedNotice).toBe(true);
+
+		licenseStore.info = createLicenseInfo({ source: null, status: 'grace' });
+		expect(licenseStore.hasPinnedNotice).toBe(true);
+
+		licenseStore.info = createLicenseInfo({
+			status: 'locked',
+			invalid_reason: 'binding_mismatch',
+			token_expires_at: FIXED_NOW_SEC,
+		});
+
+		expect(licenseStore.hasPinnedNotice).toBe(false);
+	});
+});
