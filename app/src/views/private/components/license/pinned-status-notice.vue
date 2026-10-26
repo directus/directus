@@ -8,13 +8,13 @@ import { GRACE_DANGER_THRESHOLD_DAYS, useLicenseStore } from '@/stores/license';
 import { useUserStore } from '@/stores/user';
 
 const { t } = useI18n();
-const { gracePeriodDaysRemaining, isLocked, isCoreGrace, licenseWarning } = storeToRefs(useLicenseStore());
+const { gracePeriodDaysRemaining, isCoreGrace, licenseWarning, hasPinnedNotice } = storeToRefs(useLicenseStore());
 const { isAdmin } = storeToRefs(useUserStore());
 
 type PinnedNotice = { key: string; severity: 'warning' | 'danger'; title: string };
 
 const notices = computed<PinnedNotice[]>(() => {
-	if (!isAdmin.value || isLocked.value) return [];
+	if (!isAdmin.value || !hasPinnedNotice.value) return [];
 
 	const result: PinnedNotice[] = [];
 

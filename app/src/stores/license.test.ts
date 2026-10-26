@@ -331,3 +331,26 @@ describe('licenseWarning', () => {
 		expect(licenseStore.licenseWarning).toEqual({ reason: 'unavailable', severity: 'warning', daysRemaining: 1 });
 	});
 });
+
+describe('hasPinnedNotice', () => {
+	test('is true for a warning, grace or core grace, unless locked', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo();
+		expect(licenseStore.hasPinnedNotice).toBe(false);
+
+		licenseStore.info = createLicenseInfo({ invalid_reason: 'binding_mismatch', token_expires_at: FIXED_NOW_SEC });
+		expect(licenseStore.hasPinnedNotice).toBe(true);
+
+		licenseStore.info = createLicenseInfo({ source: null, status: 'grace' });
+		expect(licenseStore.hasPinnedNotice).toBe(true);
+
+		licenseStore.info = createLicenseInfo({
+			status: 'locked',
+			invalid_reason: 'binding_mismatch',
+			token_expires_at: FIXED_NOW_SEC,
+		});
+
+		expect(licenseStore.hasPinnedNotice).toBe(false);
+	});
+});

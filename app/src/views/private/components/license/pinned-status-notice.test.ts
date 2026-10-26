@@ -23,7 +23,7 @@ function setupStores() {
 	const userStore = mockedStore(useUserStore());
 
 	userStore.isAdmin = true;
-	licenseStore.isLocked = false;
+	licenseStore.hasPinnedNotice = true;
 	licenseStore.isCoreGrace = false;
 	licenseStore.gracePeriodDaysRemaining = null;
 	licenseStore.licenseWarning = { reason: 'binding_mismatch', severity: 'danger', daysRemaining: 5 };

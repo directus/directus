@@ -150,6 +150,12 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		};
 	});
 
+	const hasPinnedNotice = computed(
+		() =>
+			!isLocked.value &&
+			(licenseWarning.value !== null || gracePeriodDaysRemaining.value !== null || isCoreGrace.value),
+	);
+
 	function isEntitlementEnabled(key: string) {
 		const ent = info.value?.entitlements[key];
 		if (!ent) return false;
@@ -284,6 +290,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		warningReason,
 		tokenExpiresAt,
 		licenseWarning,
+		hasPinnedNotice,
 		customPermissionRulesEnabled,
 		isLicensed,
 		customLLMEnabled,
