@@ -1784,21 +1784,28 @@ license:
       the Core plan. Check your license key in Settings > License.
     invalid_key:
       Your license key is no longer valid. It remains active until {date}, then your project moves to the Core plan.
-      Check your key in Settings > License or add a new one.
+      Check your key in Settings > License or add a new one.
     activation_limit:
       Your license has reached its activation limit and could not be activated for this project. It remains active until
       {date}, then your project moves to the Core plan. Deactivate this license on a project you no longer use before
-      retrying to activate on this project.
+      retrying to activate it for this project.
     binding_mismatch:
-      Your license is linked to a different project or URL and it's active status could not be refreshed. It remains
+      Your license is linked to a different project or URL and its active status could not be refreshed. It remains
       active until {date}, then your project moves to the Core plan. Check that your project URL matches the URL where
       the key was activated.
     unavailable:
-      We couldn't reach the licensing service to refreshe your license's status. We'll keep trying automatically. Your
-      license remains active until {date}, then your project moves to the Core plan if it's active cannot be refreshed.
+      We couldn't reach the licensing service to refresh your license's status. We'll keep trying periodically. Your
+      license remains active until {date}, then your project moves to the Core plan if its active status cannot be
+      refreshed.
   pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
     grace_period_body: Manage your license key in Settings > License.
+    warning_title:
+      generic: 'License Check Failed ({days}d left)'
+      invalid_key: 'Invalid License Key ({days}d left)'
+      activation_limit: 'Activation Limit Reached ({days}d left)'
+      binding_mismatch: 'License URL Mismatch ({days}d left)'
+      unavailable: 'License Service Unreachable ({days}d left)'
   unlicensed_pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
 no_upscale: Don't upscale images
