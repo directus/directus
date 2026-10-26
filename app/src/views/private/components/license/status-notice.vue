@@ -14,7 +14,7 @@ const { t } = useI18n();
 
 const serverStore = useServerStore();
 
-const { gracePeriodDaysRemaining, isLocked, isCoreGrace, isCore, graceDeadline, activeWarning, tokenExpiresAt } =
+const { gracePeriodDaysRemaining, isLocked, isCoreGrace, isCore, graceDeadline, licenseWarning, tokenExpiresAt } =
 	storeToRefs(useLicenseStore());
 
 // Non-breaking spaces keep the date from wrapping across lines
@@ -31,9 +31,9 @@ const show = computed(
 const showOig = computed(() => isAdmin.value && isCore.value && !isLocked.value);
 
 const warningMessage = computed(() => {
-	if (activeWarning.value === null || tokenExpiresAt.value === null) return null;
+	if (licenseWarning.value === null || tokenExpiresAt.value === null) return null;
 
-	return t(`license.warning_status_notice.${activeWarning.value.reason}`, {
+	return t(`license.warning_status_notice.${licenseWarning.value.reason}`, {
 		date: formatLongDate(tokenExpiresAt.value),
 	});
 });
@@ -58,7 +58,7 @@ const oigUrl = computed(() =>
 </script>
 
 <template>
-	<VNotice v-if="showWarning" :type="activeWarning?.severity" class="status-notice">
+	<VNotice v-if="showWarning" :type="licenseWarning?.severity" class="status-notice">
 		{{ warningMessage }}
 	</VNotice>
 	<VNotice v-if="show && isLocked" type="danger" class="status-notice">

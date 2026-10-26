@@ -26,7 +26,7 @@ function setupStores() {
 	licenseStore.isLocked = false;
 	licenseStore.isCoreGrace = false;
 	licenseStore.gracePeriodDaysRemaining = null;
-	licenseStore.activeWarning = { reason: 'binding_mismatch', severity: 'danger', daysRemaining: 5 };
+	licenseStore.licenseWarning = { reason: 'binding_mismatch', severity: 'danger', daysRemaining: 5 };
 
 	return { licenseStore, userStore };
 }

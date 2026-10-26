@@ -135,7 +135,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		graceDeadline.value ? daysUntil(graceDeadline.value) : null,
 	);
 
-	const activeWarning = computed<LicenseWarning | null>(() => {
+	const licenseWarning = computed<LicenseWarning | null>(() => {
 		if (warningReason.value === null || tokenExpiresAt.value === null) return null;
 
 		const reason = (WARNING_REASONS as readonly string[]).includes(warningReason.value)
@@ -283,7 +283,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		downgradeReason,
 		warningReason,
 		tokenExpiresAt,
-		activeWarning,
+		licenseWarning,
 		customPermissionRulesEnabled,
 		isLicensed,
 		customLLMEnabled,

@@ -8,7 +8,7 @@ import { GRACE_DANGER_THRESHOLD_DAYS, useLicenseStore } from '@/stores/license';
 import { useUserStore } from '@/stores/user';
 
 const { t } = useI18n();
-const { gracePeriodDaysRemaining, isLocked, isCoreGrace, activeWarning } = storeToRefs(useLicenseStore());
+const { gracePeriodDaysRemaining, isLocked, isCoreGrace, licenseWarning } = storeToRefs(useLicenseStore());
 const { isAdmin } = storeToRefs(useUserStore());
 
 type PinnedNotice = { key: string; severity: 'warning' | 'danger'; title: string };
@@ -18,12 +18,12 @@ const notices = computed<PinnedNotice[]>(() => {
 
 	const result: PinnedNotice[] = [];
 
-	if (activeWarning.value) {
+	if (licenseWarning.value) {
 		result.push({
 			key: 'warning',
-			severity: activeWarning.value.severity,
-			title: t(`license.pinned_status_notice.warning_title.${activeWarning.value.reason}`, {
-				days: activeWarning.value.daysRemaining,
+			severity: licenseWarning.value.severity,
+			title: t(`license.pinned_status_notice.warning_title.${licenseWarning.value.reason}`, {
+				days: licenseWarning.value.daysRemaining,
 			}),
 		});
 	}
