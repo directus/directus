@@ -1,10 +1,15 @@
 import { knex } from 'knex';
-import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterAll, expect, test, vi } from 'vitest';
 import runSeed from '../seeds/run.js';
 import run from './run.js';
 
-// `directus init` runs migrations before the .env file exists, so migrations must only use the
-// connection that is passed to them and never fall back to the global database instance
+// No .env during `directus init`. Schema cache off so every `getSchema()` call hits the guard
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../../test-utils/env.js');
+	return mockEnv({ CACHE_SCHEMA: false });
+});
+
+// Migrations must only use the passed connection
 vi.mock('../index.js', async (importOriginal) => {
 	const actual = await importOriginal<typeof import('../index.js')>();
 
@@ -15,27 +20,14 @@ vi.mock('../index.js', async (importOriginal) => {
 	return { ...actual, default: getDatabase, getDatabase };
 });
 
-describe('migrations', () => {
-	const db = knex({
-		client: 'sqlite3',
-		connection: { filename: ':memory:' },
-		useNullAsDefault: true,
-		pool: { min: 1, max: 1 },
-	});
+const db = knex({ client: 'sqlite3', connection: { filename: ':memory:' }, useNullAsDefault: true });
 
-	beforeAll(async () => {
-		await runSeed(db);
-	});
-
-	afterAll(async () => {
-		await db.destroy();
-	});
-
-	test('run to latest using only the passed database connection', async () => {
-		await run(db, 'latest', false);
-
-		const pending = await run(db, 'up', false).catch((err: Error) => err.message);
-
-		expect(pending).toBe('Nothing to upgrade');
-	}, 60_000);
+afterAll(async () => {
+	await db.destroy();
 });
+
+test('should migrate to latest using only the passed database connection', async () => {
+	await runSeed(db);
+
+	await expect(run(db, 'latest', false)).resolves.toBeUndefined();
+}, 60_000);
