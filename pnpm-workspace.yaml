@@ -26,6 +26,7 @@ overrides:
   '@directus/mock-license-server>fastify': 5.12.5
   zod: 4.6.7
   happy-dom: 21.0.4
+  '@azure/identity>@azure/msal-node': 7.1.1
 
 allowBuilds:
   '@fortawesome/fontawesome-common-types': true
