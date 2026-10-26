@@ -1795,7 +1795,8 @@ license:
       the key was activated.
     unavailable:
       We couldn't reach the licensing service to refresh your license's status. We'll keep trying periodically. Your
-      license remains active until {date}, then your project moves to the Core plan if its active status cannot be refreshed.
+      license remains active until {date}, then your project moves to the Core plan if its active status cannot be
+      refreshed.
   pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
     grace_period_body: Manage your license key in Settings > License.
