@@ -92,7 +92,14 @@ export const createUiStream = async (
 		messages: streamMessages,
 		stopWhen: [stepCountIs(10)],
 		experimental_download: ipValidatedDownload,
-		providerOptions: { ...providerOptions, ...getOpenRouterAutomaticCacheOptions(provider, model, modelMessages) },
+		providerOptions,
+		...(provider === 'openrouter'
+			? {
+					prepareStep: ({ messages }) => ({
+						providerOptions: { ...providerOptions, ...getOpenRouterAutomaticCacheOptions(provider, model, messages) },
+					}),
+				}
+			: {}),
 		tools: finalTools,
 		...(telemetryConfig ? { experimental_telemetry: telemetryConfig } : {}),
 		onError(error) {

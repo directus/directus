@@ -1,6 +1,6 @@
 import { ServiceUnavailableError } from '@directus/errors';
 import type { UIMessage } from 'ai';
-import { streamText } from 'ai';
+import { convertToModelMessages, createProviderRegistry, stepCountIs, streamText } from 'ai';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AISettings } from '../../providers/types.js';
 import { createUiStream } from './create-ui-stream.js';
@@ -238,6 +238,79 @@ describe('createUiStream', () => {
 		);
 
 		expect(callMessages.at(-1)?.role).toBe('user');
+	});
+
+	it('caches growing tool history across OpenRouter server tool steps', async () => {
+		const ai = await vi.importActual<typeof import('ai')>('ai');
+
+		vi.mocked(streamText).mockImplementationOnce(ai.streamText);
+		vi.mocked(convertToModelMessages).mockImplementationOnce(ai.convertToModelMessages);
+		vi.mocked(createProviderRegistry).mockImplementationOnce(ai.createProviderRegistry);
+		vi.mocked(stepCountIs).mockImplementationOnce(ai.stepCountIs);
+
+		const requests: Array<{ cache_control?: { type: string } }> = [];
+
+		const fetchMock = vi.fn(async (_url: string | URL | Request, init?: RequestInit) => {
+			requests.push(JSON.parse(init?.body as string));
+
+			const callsTool = requests.length < 3;
+
+			const chunk = {
+				id: `gen-${requests.length}`,
+				model: 'anthropic/claude-sonnet-5.5',
+				choices: [
+					{
+						index: 0,
+						delta: callsTool
+							? {
+									tool_calls: [
+										{
+											index: 0,
+											id: `call-${requests.length}`,
+											type: 'function',
+											function: { name: 'items', arguments: '{}' },
+										},
+									],
+								}
+							: { content: 'Done' },
+						finish_reason: callsTool ? 'tool_calls' : 'stop',
+					},
+				],
+			};
+
+			return new Response(`data: ${JSON.stringify(chunk)}\n\ndata: [DONE]\n\n`, {
+				headers: { 'content-type': 'text/event-stream' },
+			});
+		});
+
+		vi.stubGlobal('fetch', fetchMock);
+
+		try {
+			const result = await createUiStream([{ id: '1', role: 'user', parts: [{ type: 'text', text: 'Read items' }] }], {
+				provider: 'openrouter',
+				model: 'anthropic/claude-sonnet-5.5',
+				aiSettings: { ...aiSettings, openrouterApiKey: 'openrouter-key' },
+				tools: {
+					items: ai.tool({
+						inputSchema: ai.jsonSchema({ type: 'object', properties: {} }),
+						execute: async () => ({ items: 'tool result '.repeat(1000) }),
+					}),
+				},
+				context: { page: { path: '/content/posts/123' } },
+			});
+
+			await result.consumeStream();
+
+			expect(await result.text).toBe('Done');
+
+			expect(requests.map((request) => request.cache_control)).toEqual([
+				undefined,
+				{ type: 'ephemeral' },
+				{ type: 'ephemeral' },
+			]);
+		} finally {
+			vi.unstubAllGlobals();
+		}
 	});
 
 	it('does not append context as a trailing user message during multi-step continuations', async () => {
