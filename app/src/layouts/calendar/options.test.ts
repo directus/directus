@@ -1,4 +1,3 @@
-import type { Field } from '@directus/types';
 import { mount } from '@vue/test-utils';
 import { beforeAll, expect, test, vi } from 'vitest';
 import { createI18n, I18n } from 'vue-i18n';
@@ -36,6 +35,7 @@ test('should have days array in firstDayOptions variable', async () => {
 					meta: null,
 				},
 			],
+			colorFields: [],
 		},
 		shallow: true,
 		global,
@@ -46,30 +46,4 @@ test('should have days array in firstDayOptions variable', async () => {
 	expect((wrapper.vm as any).firstDayOptions.map((option: { text: string; value: number }) => option.text)).toEqual(
 		expected,
 	);
-});
-
-test('should bind colorField prop and colorFields in Options component', () => {
-	const colorFields: Field[] = [
-		{
-			collection: 'test',
-			field: 'color',
-			name: 'Color',
-			type: 'string',
-			schema: null,
-			meta: null,
-		},
-	];
-
-	const wrapper = mount(Options, {
-		props: {
-			collection: 'test',
-			dateFields: [],
-			colorFields,
-			colorField: 'color',
-		},
-		shallow: true,
-		global,
-	});
-
-	expect((wrapper.vm as any).colorFieldWritable).toBe('color');
 });

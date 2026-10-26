@@ -16,7 +16,7 @@ const props = withDefaults(
 	defineProps<{
 		collection: string;
 		dateFields: Field[];
-		colorFields?: Field[];
+		colorFields: Field[];
 		template?: string;
 		startDateField?: string;
 		endDateField?: string;
@@ -24,7 +24,6 @@ const props = withDefaults(
 		firstDay?: number;
 	}>(),
 	{
-		colorFields: () => [],
 		firstDay: 0,
 	},
 );

@@ -189,7 +189,6 @@ export default defineLayout<LayoutOptions>({
 							minute: '2-digit',
 							meridiem: 'narrow',
 						},
-						eventDisplay: 'block',
 					},
 					week: { displayEventTime },
 					day: { displayEventTime },
@@ -377,8 +376,6 @@ export default defineLayout<LayoutOptions>({
 			const primaryKey = item[primaryKeyField.value.field];
 			const eventId = isVersion.value ? item.$meta?.version_id : primaryKey;
 
-			const styling = getEventStyling(item, colorField.value);
-
 			return {
 				id: eventId,
 				title:
@@ -390,7 +387,7 @@ export default defineLayout<LayoutOptions>({
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,
-				...styling,
+				...getEventStyling(item, colorField.value),
 				className: selection.value.includes(eventId) ? 'selected' : undefined,
 			};
 		}
@@ -415,8 +412,7 @@ export default defineLayout<LayoutOptions>({
 });
 
 export function getEventStyling(item: Record<string, any>, colorField?: string | null) {
-	const value = colorField ? item[colorField] : undefined;
-	const color = typeof value === 'string' && value.trim().length > 0 ? value.trim() : undefined;
+	const color: string | undefined = (colorField && item[colorField]) || undefined;
 
 	let textColor: string | undefined;
 
@@ -424,7 +420,7 @@ export function getEventStyling(item: Record<string, any>, colorField?: string |
 		try {
 			textColor = Color(color).isDark() ? '#ffffff' : '#000000';
 		} catch {
-			textColor = undefined;
+			// unparseable color: keep the default text color
 		}
 	}
 

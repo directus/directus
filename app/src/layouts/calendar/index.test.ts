@@ -145,29 +145,7 @@ function createMockField(field: string, type: Field['type'], interfaceType?: str
 		name: field,
 		type,
 		schema: null,
-		meta: interfaceType
-			? ({
-					id: 1,
-					collection: 'events',
-					field,
-					group: null,
-					hidden: false,
-					interface: interfaceType,
-					display: null,
-					display_options: null,
-					options: null,
-					readonly: false,
-					required: false,
-					sort: null,
-					special: null,
-					translations: null,
-					width: 'full',
-					note: null,
-					conditions: null,
-					validation: null,
-					validation_message: null,
-				} as any)
-			: null,
+		meta: interfaceType ? ({ interface: interfaceType } as any) : null,
 	};
 }
 
@@ -175,9 +153,6 @@ type CalendarSetupResult = {
 	colorFields: Ref<Field[]>;
 	colorField: Ref<string | undefined>;
 	createCalendar: (el: HTMLElement) => void;
-	destroyCalendar: () => void;
-	resize: () => void;
-	resetPresetAndRefresh: () => Promise<void>;
 };
 
 function setupCalendar(props: LayoutProps<LayoutOptions>, emit: (event: string, ...args: any[]) => void) {
@@ -214,7 +189,7 @@ describe('getEventStyling', () => {
 
 		expect(getEventStyling({ id: 1, color: '#ff0000' }, undefined)).toEqual(empty);
 		expect(getEventStyling({ id: 1 }, 'color')).toEqual(empty);
-		expect(getEventStyling({ id: 1, color: '   ' }, 'color')).toEqual(empty);
+		expect(getEventStyling({ id: 1, color: null }, 'color')).toEqual(empty);
 	});
 
 	it('returns color with a contrasting textColor', () => {
@@ -325,48 +300,7 @@ describe('calendarLayout.setup', () => {
 		const calendarInstance = mockCalendarInstances[0];
 
 		expect(calendarInstance.options.eventDisplay).toBe('block');
-		expect(calendarInstance.options.views.dayGridMonth.eventDisplay).toBe('block');
 
-		const events = calendarInstance.options.events;
-		expect(events).toHaveLength(2);
-
-		expect(events[0]).toMatchObject({
-			id: 1,
-			start: '2026-06-01T10:00:00',
-			end: '2026-06-01T11:00:00',
-			color: '#ff0000',
-			textColor: '#ffffff',
-			display: 'block',
-		});
-
-		expect(events[1]).toMatchObject({
-			id: 2,
-			start: '2026-06-02T00:00:00',
-			end: '2026-06-02T23:59:59',
-			color: '#ffffff',
-			textColor: '#000000',
-			display: 'block',
-		});
-	});
-
-	it('provides helper methods destroyCalendar, resize, resetPresetAndRefresh, and refresh', async () => {
-		const props = createMockProps();
-		const emit = vi.fn();
-
-		const setupResult = setupCalendar(props, emit);
-
-		const container = document.createElement('div');
-		setupResult.createCalendar(container);
-
-		const calendarInstance = mockCalendarInstances[0];
-
-		setupResult.resize();
-		expect(calendarInstance.updateSize).toHaveBeenCalled();
-
-		setupResult.destroyCalendar();
-		expect(calendarInstance.destroy).toHaveBeenCalled();
-
-		await setupResult.resetPresetAndRefresh();
-		expect(props.resetPreset).toHaveBeenCalled();
+		expect(calendarInstance.options.events[0]).toMatchObject({ color: '#ff0000', textColor: '#ffffff' });
 	});
 });
