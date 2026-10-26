@@ -1,9 +1,7 @@
 import type { Field, Item } from '@directus/types';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { nextTick, reactive, ref } from 'vue';
-import calendarLayout, { getColorFields, getContrastColor, getEventColor, getEventStyling } from './index';
-
-const mockDarkMode = ref(false);
+import { reactive, ref } from 'vue';
+import calendarLayout, { getEventStyling } from './index';
 
 const mockPrimaryKeyField = ref<Field | null>({
 	collection: 'events',
@@ -42,12 +40,6 @@ vi.mock('@/stores/server', () => ({
 		info: {
 			queryLimit: { max: 100 },
 		},
-	}),
-}));
-
-vi.mock('@/composables/use-theme-configuration', () => ({
-	useThemeConfiguration: () => ({
-		darkMode: mockDarkMode,
 	}),
 }));
 
@@ -202,149 +194,40 @@ function createMockProps(overrides: Record<string, any> = {}) {
 	});
 }
 
-describe('calendar layout helpers', () => {
-	describe('getColorFields', () => {
-		it('returns empty array when fields are empty', () => {
-			expect(getColorFields([])).toEqual([]);
+describe('getEventStyling', () => {
+	it('returns no color or textColor without a colorField or value', () => {
+		const empty = { color: undefined, textColor: undefined, display: 'block' };
+
+		expect(getEventStyling({ id: 1, color: '#ff0000' }, undefined)).toEqual(empty);
+		expect(getEventStyling({ id: 1 }, 'color')).toEqual(empty);
+		expect(getEventStyling({ id: 1, color: '   ' }, 'color')).toEqual(empty);
+	});
+
+	it('returns color with a contrasting textColor', () => {
+		expect(getEventStyling({ id: 1, color: '#ffffff' }, 'color')).toEqual({
+			color: '#ffffff',
+			textColor: '#000000',
+			display: 'block',
 		});
 
-		it('returns only colorPickerFields when stringFields are empty', () => {
-			const colorField = createMockField('color', 'string', 'select-color');
-			const dateField = createMockField('start_date', 'dateTime');
-
-			const result = getColorFields([colorField, dateField]);
-			expect(result).toEqual([colorField]);
-		});
-
-		it('returns only stringFields when colorPickerFields are empty', () => {
-			const textField = createMockField('category', 'string', 'input');
-			const intField = createMockField('count', 'integer');
-
-			const result = getColorFields([textField, intField]);
-			expect(result).toEqual([textField]);
-		});
-
-		it('returns both types separated by divider and header when both exist', () => {
-			const colorField = createMockField('color', 'string', 'select-color');
-			const textField = createMockField('category', 'string', 'input');
-
-			const result = getColorFields([colorField, textField]);
-			expect(result).toEqual([colorField, { divider: true }, { header: 'other' }, textField]);
-		});
-
-		it('supports custom translation function for header', () => {
-			const colorField = createMockField('color', 'string', 'select-color');
-			const textField = createMockField('category', 'string');
-
-			const customT = vi.fn((key: string) => `translated_${key}`);
-			const result = getColorFields([colorField, textField], customT);
-
-			expect(customT).toHaveBeenCalledWith('other');
-			expect(result).toEqual([colorField, { divider: true }, { header: 'translated_other' }, textField]);
+		expect(getEventStyling({ id: 1, color: '#6644FF' }, 'color')).toEqual({
+			color: '#6644FF',
+			textColor: '#ffffff',
+			display: 'block',
 		});
 	});
 
-	describe('getEventStyling', () => {
-		it('returns display block and undefined color/textColor when colorField is not provided', () => {
-			const item = { id: 1, title: 'Test', color: '#ff0000' };
-
-			expect(getEventStyling(item, undefined)).toEqual({
-				color: undefined,
-				textColor: undefined,
-				display: 'block',
-			});
-
-			expect(getEventStyling(item, null)).toEqual({
-				color: undefined,
-				textColor: undefined,
-				display: 'block',
-			});
-		});
-
-		it('returns display block and undefined color/textColor when field value is missing or empty', () => {
-			expect(getEventStyling({ id: 1 }, 'color')).toEqual({
-				color: undefined,
-				textColor: undefined,
-				display: 'block',
-			});
-
-			expect(getEventStyling({ id: 1, color: '   ' }, 'color')).toEqual({
-				color: undefined,
-				textColor: undefined,
-				display: 'block',
-			});
-		});
-
-		it('returns color and contrast textColor in light theme', () => {
-			expect(getEventStyling({ id: 1, color: '#ffffff' }, 'color', false)).toEqual({
-				color: '#ffffff',
-				textColor: '#000000',
-				display: 'block',
-			});
-
-			expect(getEventStyling({ id: 1, color: '#000000' }, 'color', false)).toEqual({
-				color: '#000000',
-				textColor: '#ffffff',
-				display: 'block',
-			});
-		});
-
-		it('returns contrast textColor in dark theme', () => {
-			expect(getEventStyling({ id: 1, color: '#ffffff' }, 'color', true)).toEqual({
-				color: '#ffffff',
-				textColor: '#000000',
-				display: 'block',
-			});
-
-			expect(getEventStyling({ id: 1, color: '#000000' }, 'color', true)).toEqual({
-				color: '#000000',
-				textColor: '#ffffff',
-				display: 'block',
-			});
-		});
-
-		it('handles transparent colors across light and dark themes', () => {
-			expect(getEventStyling({ id: 1, color: 'transparent' }, 'color', false)).toEqual({
-				color: 'transparent',
-				textColor: '#000000',
-				display: 'block',
-			});
-
-			expect(getEventStyling({ id: 1, color: 'transparent' }, 'color', true)).toEqual({
-				color: 'transparent',
-				textColor: '#ffffff',
-				display: 'block',
-			});
-		});
-
-		it('handles invalid color strings gracefully', () => {
-			expect(getEventStyling({ id: 1, color: 'invalid-color' }, 'color')).toEqual({
-				color: 'invalid-color',
-				textColor: undefined,
-				display: 'block',
-			});
-		});
-	});
-
-	describe('getEventColor and getContrastColor', () => {
-		it('returns trimmed string or undefined for invalid values', () => {
-			expect(getEventColor({ col: ' #123456 ' }, 'col')).toBe('#123456');
-			expect(getEventColor({ col: 123 }, 'col')).toBeUndefined();
-			expect(getEventColor({}, 'col')).toBeUndefined();
-		});
-
-		it('computes contrast color for short hex and rgba values', () => {
-			expect(getContrastColor('#fff')).toBe('#000000');
-			expect(getContrastColor('#000')).toBe('#ffffff');
-			expect(getContrastColor('rgba(255, 255, 255, 1)')).toBe('#000000');
-			expect(getContrastColor('rgba(0, 0, 0, 1)')).toBe('#ffffff');
+	it('returns undefined textColor for unparseable colors', () => {
+		expect(getEventStyling({ id: 1, color: 'invalid-color' }, 'color')).toEqual({
+			color: 'invalid-color',
+			textColor: undefined,
+			display: 'block',
 		});
 	});
 });
 
 describe('calendarLayout.setup', () => {
 	beforeEach(() => {
-		mockDarkMode.value = false;
 		mockCalendarInstances.length = 0;
 		capturedItemsOptions = null;
 
@@ -368,23 +251,18 @@ describe('calendarLayout.setup', () => {
 				title: 'Holiday',
 				start_date: '2026-06-02T00:00:00',
 				end_date: '2026-06-02T23:59:59',
-				color: 'transparent',
+				color: '#ffffff',
 			},
 		];
 	});
 
-	it('computes and returns colorFields from fields in collection', () => {
+	it('offers only select-color fields as colorFields', () => {
 		const props = createMockProps();
 		const emit = vi.fn();
 
 		const setupResult = calendarLayout.setup(props, { emit });
 
-		expect(setupResult.colorFields.value).toEqual([
-			mockFieldsInCollection.value[3],
-			{ divider: true },
-			{ header: 'other' },
-			mockFieldsInCollection.value[4],
-		]);
+		expect(setupResult.colorFields.value).toEqual([mockFieldsInCollection.value[3]]);
 	});
 
 	it('synchronizes colorField reactively and updates queryFields', () => {
@@ -451,43 +329,8 @@ describe('calendarLayout.setup', () => {
 			id: 2,
 			start: '2026-06-02T00:00:00',
 			end: '2026-06-02T23:59:59',
-			color: 'transparent',
+			color: '#ffffff',
 			textColor: '#000000',
-			display: 'block',
-		});
-	});
-
-	it('reactively updates event textColor when darkMode changes', async () => {
-		const props = createMockProps({
-			layoutOptions: {
-				startDateField: 'start_date',
-				endDateField: 'end_date',
-				colorField: 'color',
-				template: '{{ title }}',
-			},
-		});
-
-		const emit = vi.fn();
-
-		const setupResult = calendarLayout.setup(props, { emit });
-
-		const container = document.createElement('div');
-		setupResult.createCalendar(container);
-
-		const calendarInstance = mockCalendarInstances[0];
-
-		mockDarkMode.value = true;
-		await nextTick();
-
-		const resetOptionsCall = calendarInstance.resetOptions.mock.calls.at(-1);
-		expect(resetOptionsCall).toBeDefined();
-
-		const updatedEvents = resetOptionsCall[0].events;
-
-		expect(updatedEvents[1]).toMatchObject({
-			id: 2,
-			color: 'transparent',
-			textColor: '#ffffff',
 			display: 'block',
 		});
 	});

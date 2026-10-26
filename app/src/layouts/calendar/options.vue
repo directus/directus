@@ -16,7 +16,7 @@ const props = withDefaults(
 	defineProps<{
 		collection: string;
 		dateFields: Field[];
-		colorFields?: (Field | Record<string, any>)[];
+		colorFields?: Field[];
 		template?: string;
 		startDateField?: string;
 		endDateField?: string;
