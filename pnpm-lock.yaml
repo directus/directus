@@ -1068,8 +1068,8 @@ catalogs:
       specifier: 8.66.0
       version: 8.66.0
     undici:
-      specifier: 7.30.0
-      version: 7.30.0
+      specifier: 7.30.1
+      version: 7.30.1
     universal-cookie:
       specifier: 8.0.1
       version: 8.0.1
@@ -2243,7 +2243,7 @@ importers:
         version: 5.9.3
       undici:
         specifier: 'catalog:'
-        version: 7.30.0
+        version: 7.30.1
       vitest:
         specifier: 'catalog:'
         version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@26.2.0)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(happy-dom@20.10.6)(jsdom@29.1.1)(vite@8.3.4(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.1))
@@ -2894,7 +2894,7 @@ importers:
         version: 8.1.0
       undici:
         specifier: 'catalog:'
-        version: 7.30.0
+        version: 7.30.1
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -3057,7 +3057,7 @@ importers:
         version: 4.3.1
       undici:
         specifier: 'catalog:'
-        version: 7.30.0
+        version: 7.30.1
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -12981,10 +12981,6 @@ packages:
   undici@6.29.1:
     resolution: {integrity: sha512-EvRlUt/QqAEvXdQeRMYUfwOQsfzpDztykrG2owGEE/rBOBoYv9uF39ZzsNDh4lTFHhTr2XOZjKkYgueD12ZmGA==}
     engines: {node: '>=18.17'}
-
-  undici@7.30.0:
-    resolution: {integrity: sha512-dkrQXeHSaoamnItlYbmzG0wFYrM0ZwDxCIg0A7aKjTyyhh9svRzCNFEzV+Vm05/yehjCzjDZ31KXfGEjYSztDQ==}
-    engines: {node: '>=20.18.1'}
 
   undici@7.30.1:
     resolution: {integrity: sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==}
@@ -23706,8 +23702,6 @@ snapshots:
   undici-types@8.9.0: {}
 
   undici@6.29.1: {}
-
-  undici@7.30.0: {}
 
   undici@7.30.1: {}
 
