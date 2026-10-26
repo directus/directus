@@ -1,6 +1,7 @@
-import type { Field, Item } from '@directus/types';
+import type { Field, Item, LayoutProps } from '@directus/types';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { reactive, ref } from 'vue';
+import { reactive, ref, type Ref } from 'vue';
+import type { LayoutOptions } from './types';
 import calendarLayout, { getEventStyling } from './index';
 
 const mockPrimaryKeyField = ref<Field | null>({
@@ -137,7 +138,7 @@ vi.mock('@fullcalendar/core', async () => {
 	};
 });
 
-function createMockField(field: string, type: string, interfaceType?: string): Field {
+function createMockField(field: string, type: Field['type'], interfaceType?: string): Field {
 	return {
 		collection: 'events',
 		field,
@@ -170,6 +171,19 @@ function createMockField(field: string, type: string, interfaceType?: string): F
 	};
 }
 
+type CalendarSetupResult = {
+	colorFields: Ref<Field[]>;
+	colorField: Ref<string | undefined>;
+	createCalendar: (el: HTMLElement) => void;
+	destroyCalendar: () => void;
+	resize: () => void;
+	resetPresetAndRefresh: () => Promise<void>;
+};
+
+function setupCalendar(props: LayoutProps<LayoutOptions>, emit: (event: string, ...args: any[]) => void) {
+	return calendarLayout.setup(props, { emit }) as unknown as CalendarSetupResult;
+}
+
 function createMockProps(overrides: Record<string, any> = {}) {
 	return reactive({
 		collection: 'events',
@@ -191,7 +205,7 @@ function createMockProps(overrides: Record<string, any> = {}) {
 		showSelect: 'none',
 		resetPreset: vi.fn(),
 		...overrides,
-	});
+	}) as unknown as LayoutProps<LayoutOptions>;
 }
 
 describe('getEventStyling', () => {
@@ -260,7 +274,7 @@ describe('calendarLayout.setup', () => {
 		const props = createMockProps();
 		const emit = vi.fn();
 
-		const setupResult = calendarLayout.setup(props, { emit });
+		const setupResult = setupCalendar(props, emit);
 
 		expect(setupResult.colorFields.value).toEqual([mockFieldsInCollection.value[3]]);
 	});
@@ -274,7 +288,7 @@ describe('calendarLayout.setup', () => {
 			}
 		});
 
-		const setupResult = calendarLayout.setup(props, { emit });
+		const setupResult = setupCalendar(props, emit);
 
 		expect(setupResult.colorField.value).toBeUndefined();
 		expect(capturedItemsOptions.fields.value).not.toContain('color');
@@ -302,7 +316,7 @@ describe('calendarLayout.setup', () => {
 			}
 		});
 
-		const setupResult = calendarLayout.setup(props, { emit });
+		const setupResult = setupCalendar(props, emit);
 
 		const container = document.createElement('div');
 		setupResult.createCalendar(container);
@@ -339,7 +353,7 @@ describe('calendarLayout.setup', () => {
 		const props = createMockProps();
 		const emit = vi.fn();
 
-		const setupResult = calendarLayout.setup(props, { emit });
+		const setupResult = setupCalendar(props, emit);
 
 		const container = document.createElement('div');
 		setupResult.createCalendar(container);
