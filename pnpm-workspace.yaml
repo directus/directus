@@ -24,6 +24,7 @@ overrides:
   '@opentelemetry/core': 2.11.0
   get-uri>basic-ftp: 6.2.2
   '@directus/mock-license-server>fastify': 5.12.5
+  zod: 4.6.7
 
 allowBuilds:
   '@fortawesome/fontawesome-common-types': true
@@ -371,7 +372,7 @@ catalog:
   vuedraggable: 4.1.0
   wellknown: 0.5.0
   ws: 8.21.0
-  zod: 4.1.12
+  zod: 4.6.7
   zod-validation-error: 4.0.2
 
 catalogMode: strict
