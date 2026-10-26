@@ -885,8 +885,8 @@ catalogs:
       specifier: 1.1.12
       version: 1.1.12
     nodemailer:
-      specifier: 10.0.15
-      version: 10.0.15
+      specifier: 10.1.7
+      version: 10.1.7
     nodemailer-mailgun-transport:
       specifier: 2.1.5
       version: 2.1.5
@@ -1489,7 +1489,7 @@ importers:
         version: 1.1.12
       nodemailer:
         specifier: 'catalog:'
-        version: 10.0.15
+        version: 10.1.7
       object-hash:
         specifier: 'catalog:'
         version: 3.0.0
@@ -1719,7 +1719,7 @@ importers:
         version: 3.37.0(@aws-sdk/credential-provider-web-identity@3.972.81)(supports-color@10.2.2)(zod@4.6.7)
       mailtrap:
         specifier: 'catalog:'
-        version: 4.9.0(@types/nodemailer@8.0.1)(debug@4.3.7(supports-color@10.2.2))(nodemailer@10.0.15)(supports-color@10.2.2)
+        version: 4.9.0(@types/nodemailer@8.0.1)(debug@4.3.7(supports-color@10.2.2))(nodemailer@10.1.7)(supports-color@10.2.2)
       mysql2:
         specifier: 'catalog:'
         version: 3.24.4(@types/node@26.2.0)
@@ -3208,7 +3208,7 @@ importers:
         version: 16.12.0
       nodemailer:
         specifier: 'catalog:'
-        version: 10.0.15
+        version: 10.1.7
       openapi3-ts:
         specifier: 'catalog:'
         version: 4.5.0
@@ -10873,8 +10873,8 @@ packages:
   nodemailer-mailgun-transport@2.1.5:
     resolution: {integrity: sha512-hF7POkaxFgMvYEd5aHLaQJI2511ld+aQlQi7JH6bGjhjlZ33cIbTB9PimlIrLu5XC3z76Kde6e65OIwL9lOdTA==}
 
-  nodemailer@10.0.15:
-    resolution: {integrity: sha512-EUqp5PhtcsYXs9Fq/lS7s/8zlTrnBqmzZWzFFROrNikMiz+om/YRKMwqN907t+0A1KKyT8jd39CBUbFZmaZmcA==}
+  nodemailer@10.1.7:
+    resolution: {integrity: sha512-OQa6FDln5fLttmqSbjDiRYvFDOFNrBqfiOwHPlEbURil3b+vPB1v8xpi+Sp46drzNDlsTnNsS502vthmz56r4w==}
     engines: {node: '>=20.0.0'}
 
   nodemon@3.1.14:
@@ -20841,13 +20841,13 @@ snapshots:
       - supports-color
     optional: true
 
-  mailtrap@4.9.0(@types/nodemailer@8.0.1)(debug@4.3.7(supports-color@10.2.2))(nodemailer@10.0.15)(supports-color@10.2.2):
+  mailtrap@4.9.0(@types/nodemailer@8.0.1)(debug@4.3.7(supports-color@10.2.2))(nodemailer@10.1.7)(supports-color@10.2.2):
     dependencies:
       axios: 1.20.0(debug@4.3.7(supports-color@10.2.2))(supports-color@10.2.2)
       qs: 6.16.0
     optionalDependencies:
       '@types/nodemailer': 8.0.1
-      nodemailer: 10.0.15
+      nodemailer: 10.1.7
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -21221,7 +21221,7 @@ snapshots:
       - whiskers
     optional: true
 
-  nodemailer@10.0.15: {}
+  nodemailer@10.1.7: {}
 
   nodemon@3.1.14:
     dependencies:
