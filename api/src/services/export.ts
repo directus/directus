@@ -161,8 +161,19 @@ export class ExportService {
 			const title = `export-${collection}-${getDateTimeFormatted()}`;
 			const filename = `${title}.${format}`;
 
+			const file: Partial<File> = { ...(options?.file ?? {}) };
+
+			// If no folder is specified, we'll use the default exports folder from the settings if it exists
+			if ('folder' in file === false) {
+				const settings = await this.knex.select('default_exports_folder').from('directus_settings').first();
+
+				if (settings?.default_exports_folder) {
+					file.folder = settings.default_exports_folder;
+				}
+			}
+
 			const fileWithDefaults: Partial<File> & { filename_download: string } = {
-				...(options?.file ?? {}),
+				...file,
 				title: options?.file?.title ?? title,
 				filename_download: options?.file?.filename_download ?? filename,
 				type: mimeTypes[format],

@@ -744,6 +744,8 @@ download_file: Download File
 open_file_in_tab: Open File in New Tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
+exporting_folder_not_selectable: The file will be saved to the project's default folder
+exporting_folder_root: The file will be saved to the root of the File Library
 exporting_all_items_in_collection: Exporting all items ({total}) within {collection}.
 exporting_limited_items_in_collection: '{count} out of {total} items within {collection} will be exported.'
 exporting_no_items_to_export: No items to export. Adjust the exporting configuration and/or add items to the collection.
@@ -751,6 +753,12 @@ exporting_download_hint: Once the {format} file is created, it will be downloade
 exporting_library_hint: Once the {format} file is created, it will be saved to the File Library.
 exporting_library_hint_forced:
   This export must be processed in batches. Once completed, the {format} file will be saved to the File Library.
+exporting_too_large_to_download: >-
+  This export is too large to download directly and must be saved to the File Library, which you don't have permission
+  to do. Lower the limit or adjust the filter, or contact an administrator.
+exporting_library_access_warning: >-
+  Anyone with read access to files, including unauthenticated users if the Public policy allows it, will be able to view
+  and download the exported file. Refer to the {docs} for more information.
 collection_key: Collection Key
 name: Name
 primary_key_field: Primary Key Field
@@ -1974,6 +1982,9 @@ fields:
     auth_login_attempts: Auth Login Attempts
     files_and_thumbnails: Files & Storage
     storage_default_folder: Default Folder
+    default_exports_folder: Default Exports Folder
+    default_exports_folder_note:
+      Default folder for exports saved to the File Library without a folder specified. Falls back to the Default Folder.
     storage_asset_presets: Transformation Presets
     storage_asset_transform: Allowed Transformations
     overrides: App Overrides
