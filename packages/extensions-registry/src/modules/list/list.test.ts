@@ -11,7 +11,9 @@ import {
 vi.mock('ky');
 vi.mock('../../utils/assert-version-compatibility.js');
 vi.mock('./lib/construct-url.js');
-vi.mock('./schemas/registry-list-response.js');
+vi.mock('./schemas/registry-list-response.js', () => ({
+	RegistryListResponse: { parseAsync: vi.fn() },
+}));
 
 afterEach(() => {
 	vi.resetAllMocks();
