@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 
-ARG NODE_VERSION=26
+ARG NODE_VERSION=26.12.1
 
 # Pin alpine version so libs are in sync between builder and runtime
 ARG ALPINE_VERSION=3.23
