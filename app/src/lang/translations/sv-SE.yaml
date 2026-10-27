@@ -1803,6 +1803,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: En textredigerare som skriver HTML-innehåll
     toolbar: Verktygsfält
+    extensions: Tillägg
     custom_formats: Anpassade format
     folder_note: Mapp för uppladdade filer. Påverkar inte befintliga filer.
   input-block-editor:
