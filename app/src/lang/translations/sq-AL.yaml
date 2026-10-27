@@ -1960,6 +1960,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Një redaktues teksti të pasur që shkruan përmbajtje HTML
     toolbar: Shirit Mjetesh
+    extensions: Zgjerime
     custom_formats: Formate të Personalizuara
     folder_note: Dosje për skedarët e ngarkuar. Nuk ndikon në skedarët ekzistues.
     imageToken: Token i Qasshëm
