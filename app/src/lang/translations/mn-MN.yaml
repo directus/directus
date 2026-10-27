@@ -1960,6 +1960,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: HTML үүсгэдэг дэвшилтэт засварлагч
     toolbar: Хэрэгслийн самбар
+    extensions: Суулгасан хэрэгсэл
     custom_formats: Тохируулгат форматууд
     folder_note: Оруулсан файлуудын хавтас. Одоогийн файлуудад хамаарахгүй.
     imageToken: Статик хандалтын токен
