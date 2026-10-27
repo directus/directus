@@ -108,3 +108,74 @@ describe('collection name', () => {
 		expect(wrapper.text()).toBe('Acme redesign');
 	});
 });
+
+describe('M2A rendering', () => {
+	beforeEach(() => {
+		mockCollectionsStore.getCollection.mockReturnValue(null);
+		mockFieldsStore.getField.mockReturnValue(null);
+
+		mockRelationsStore.getRelationsForField.mockImplementation((collection, field) => {
+			if (collection === 'junction_collection' && field === 'item') {
+				return [
+					{
+						collection: 'junction_collection',
+						field: 'item',
+						meta: {
+							one_collection_field: 'collection',
+							one_allowed_collections: ['posts', 'pages'],
+						},
+					},
+				];
+			}
+
+			return [];
+		});
+	});
+
+	it('renders only the matching M2A collection fields without dashes for non-matching collections', () => {
+		const wrapper = mountRenderTemplate({
+			collection: 'junction_collection',
+			item: {
+				collection: 'posts',
+				item: {
+					title: 'Directus in depth',
+				},
+			},
+			template: '{{ item:posts.title }} {{ item:pages.name }}',
+		});
+
+		expect(wrapper.text().trim()).toBe('Directus in depth');
+		expect(wrapper.text()).not.toContain('--');
+	});
+
+	it('renders pages M2A collection fields when collection matches pages', () => {
+		const wrapper = mountRenderTemplate({
+			collection: 'junction_collection',
+			item: {
+				collection: 'pages',
+				item: {
+					name: 'Homepage',
+				},
+			},
+			template: '{{ item:posts.title }} {{ item:pages.name }}',
+		});
+
+		expect(wrapper.text().trim()).toBe('Homepage');
+		expect(wrapper.text()).not.toContain('--');
+	});
+
+	it('still renders ValueNull when matching collection field value is null', () => {
+		const wrapper = mountRenderTemplate({
+			collection: 'junction_collection',
+			item: {
+				collection: 'posts',
+				item: {
+					title: null,
+				},
+			},
+			template: '{{ item:posts.title }} {{ item:pages.name }}',
+		});
+
+		expect(wrapper.text().trim()).toBe('--');
+	});
+});

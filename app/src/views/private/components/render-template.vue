@@ -50,14 +50,19 @@ const getNestedValues = (data: any, path: string) => {
 	const pathParts = path.split('.');
 	let currentData = data;
 
-	pathParts.filter(partWithoutDollarPrefix).forEach((part) => {
+	for (const part of pathParts.filter(partWithoutDollarPrefix)) {
 		if (props.collection && partIsM2AItem(part)) {
 			const [itemField = '', anyCollection = ''] = part.split(':');
-			if (!anyCollection || anyCollection !== getM2AJunctionCollectionField(props.collection, itemField)) return;
+
+			if (!anyCollection || anyCollection !== getM2AJunctionCollectionField(props.collection, itemField)) {
+				return [];
+			}
 		}
 
 		currentData = getWithArrayIndex(currentData, part) ?? null;
-	});
+
+		if (currentData === null) break;
+	}
 
 	return Array.isArray(currentData) ? currentData : [currentData];
 
@@ -77,7 +82,7 @@ const getNestedValues = (data: any, path: string) => {
 		const collectionField =
 			relations.find((relation) => relation.meta?.one_collection_field)?.meta?.one_collection_field ?? '';
 
-		return currentData[collectionField];
+		return data[collectionField];
 	}
 };
 
