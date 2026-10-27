@@ -2160,6 +2160,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Un editor de texto rich escribiendo contenido HTML
     toolbar: Barra de Herramientas
+    extensions: Extensiones
     custom_formats: Formatos Personalizados
     folder_note: Carpeta para los archivos subidos. No afecta a los archivos existentes.
     imageToken: Token de acceso estático
