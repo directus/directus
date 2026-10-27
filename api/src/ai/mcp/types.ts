@@ -5,7 +5,16 @@ export interface Prompt {
 	messages: { role: 'user' | 'assistant'; text: string }[];
 }
 
+export interface MCPProject {
+	name?: string | null;
+	descriptor?: string | null;
+	url?: string | null;
+	/** Project icon as a PNG */
+	icon?: Buffer;
+}
+
 export interface MCPOptions {
+	project?: MCPProject;
 	promptsCollection?: string;
 	allowDeletes?: boolean;
 	systemPromptEnabled?: boolean;
