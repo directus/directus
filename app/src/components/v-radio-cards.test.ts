@@ -1,13 +1,14 @@
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
-import VRadioCards, { type RadioCardItem } from './v-radio-cards.vue';
+import type { ChoiceCardItem } from './v-choice-cards/types';
+import VRadioCards from './v-radio-cards.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],
 };
 
-const items: RadioCardItem[] = [
+const items: ChoiceCardItem[] = [
 	{ value: 'core', label: "I'm using Core", description: 'Free, no key required', icon: 'deployed_code' },
 	{ value: 'licensed', label: 'I have a license key', description: 'OIG, Team, or Enterprise plan', icon: 'key' },
 ];
@@ -85,7 +86,7 @@ test('disabled prop disables all cards', () => {
 });
 
 test('item-level disabled disables only that card', () => {
-	const mixedItems: RadioCardItem[] = [
+	const mixedItems: ChoiceCardItem[] = [
 		{ value: 'a', label: 'A', disabled: true },
 		{ value: 'b', label: 'B' },
 	];
@@ -101,7 +102,7 @@ test('item-level disabled disables only that card', () => {
 });
 
 test('accepts numeric values', async () => {
-	const numericItems: RadioCardItem[] = [
+	const numericItems: ChoiceCardItem[] = [
 		{ value: 1, label: 'One' },
 		{ value: 2, label: 'Two' },
 	];

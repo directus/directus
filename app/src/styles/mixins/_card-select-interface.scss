@@ -1,4 +1,4 @@
-@mixin card-select-interface($root-selector, $hover: ':hover', $disabled: ':disabled', $item-selector: '.interface') {
+@mixin card-select-interface($root-selector) {
 	.card-select-interface {
 		--card-min-width: 12rem;
 
@@ -29,7 +29,7 @@
 			}
 		}
 
-		#{$item-selector} {
+		:deep(#{$root-selector}) {
 			--border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
 			display: flex;
 			flex-direction: column;
@@ -39,7 +39,7 @@
 			cursor: pointer;
 			transition: opacity var(--fast) var(--transition);
 
-			&#{$hover} {
+			&:hover:not(:disabled) {
 				--border-color: var(--theme--form--field--input--border-color-hover);
 			}
 
@@ -47,16 +47,15 @@
 				--border-color: var(--theme--primary);
 			}
 
-			&.active,
 			&[data-state='checked'] {
 				--border-color: var(--theme--primary);
 			}
 
-			&.gray {
+			&.unselected {
 				opacity: 0.8;
 			}
 
-			&#{$disabled} {
+			&:disabled {
 				cursor: not-allowed;
 				opacity: 0.5;
 			}
@@ -64,20 +63,6 @@
 
 		.v-input {
 			margin-block-end: var(--theme--form--row-gap);
-		}
-
-		.list-enter-active,
-		.list-leave-active {
-			transition: opacity var(--fast) var(--transition);
-		}
-
-		.list-enter-from,
-		.list-leave-to {
-			opacity: 0;
-		}
-
-		.list-move {
-			transition: transform var(--fast) var(--transition);
 		}
 	}
 

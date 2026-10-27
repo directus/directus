@@ -1,0 +1,49 @@
+@mixin choice-cards {
+	.choice-cards {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+		gap: 1rem;
+	}
+
+	.choice-card:not(.custom) {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		padding: 1rem;
+		background-color: transparent;
+		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+		border-radius: 0.75rem;
+		text-align: start;
+		cursor: pointer;
+		transition-property: border-color, background-color;
+		transition-duration: var(--fast);
+		transition-timing-function: var(--transition);
+		appearance: none;
+
+		&:hover:not(:disabled):not([data-state='checked']) {
+			border-color: var(--theme--form--field--input--border-color-hover);
+		}
+
+		&[data-state='checked'] {
+			border-color: var(--choice-cards-color, var(--theme--primary));
+			background-color: color-mix(in srgb, var(--choice-cards-color, var(--theme--primary)) 10%, transparent);
+
+			--choice-card-icon-background: color-mix(
+				in srgb,
+				var(--choice-cards-color, var(--theme--primary)) 15%,
+				transparent
+			);
+			--choice-card-foreground: var(--choice-cards-color, var(--theme--primary));
+			--choice-card-description-color: color-mix(
+				in srgb,
+				var(--choice-cards-color, var(--theme--primary)) 70%,
+				transparent
+			);
+		}
+
+		&:disabled {
+			cursor: not-allowed;
+			opacity: 0.5;
+		}
+	}
+}

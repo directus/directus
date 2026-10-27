@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CardPreview from '../select-card/card-preview.vue';
 import type { Choice } from '../select-card/types';
@@ -29,16 +29,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const selectedValue = ref(props.value);
-
 const { searchQuery, showSearch, filteredChoices, clearSearch } = useCardSearch(computed(() => props.choices));
-
-watch(
-	() => props.value,
-	(newValue) => {
-		selectedValue.value = newValue;
-	},
-);
 
 const items = computed(() => filteredChoices.value.map((choice) => ({ ...choice, label: choice.text })));
 </script>
@@ -55,7 +46,7 @@ const items = computed(() => filteredChoices.value.map((choice) => ({ ...choice,
 		</VInput>
 
 		<VRadioCards
-			v-model="selectedValue"
+			:model-value="value"
 			:items="items"
 			:disabled="disabled"
 			class="grid"
@@ -82,5 +73,5 @@ const items = computed(() => filteredChoices.value.map((choice) => ({ ...choice,
 <style lang="scss" scoped>
 @use '@/styles/mixins';
 
-@include mixins.card-select-interface('.v-radio-card', $item-selector: ':deep(.v-radio-card)');
+@include mixins.card-select-interface('.v-radio-card');
 </style>
