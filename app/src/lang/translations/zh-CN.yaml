@@ -2090,6 +2090,7 @@ interfaces:
     wysiwyg: 所见即所得
     description: 富文本编辑器
     toolbar: 工具栏
+    extensions: 扩展
     custom_formats: 自定义格式
     folder_note: 用于上传文件的文件夹。不影响现有文件。
     imageToken: 静态访问令牌
