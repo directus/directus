@@ -155,7 +155,8 @@ describe('related-values.vue M2A', () => {
 							item: Object,
 							showCollectionName: Boolean,
 						},
-						template: '<div class="mock-render-template" :data-collection="collection" :data-template="template" :data-show-name="String(showCollectionName)">{{ collection }}: {{ item?.text }}</div>',
+						template:
+							'<div class="mock-render-template" :data-collection="collection" :data-template="template" :data-show-name="String(showCollectionName)">{{ collection }}: {{ item?.text }}</div>',
 					},
 				},
 			},

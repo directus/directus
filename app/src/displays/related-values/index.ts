@@ -164,10 +164,9 @@ export default defineDisplay({
 						allowedCollectionInfo?.meta?.display_template || (allowedPkField ? `{{${allowedPkField.field}}}` : '');
 
 					if (template) {
-						const displayFields = adjustFieldsForDisplays(
-							getFieldsFromTemplate(template),
-							allowedCollection,
-						).map((f) => `${junctionField}:${allowedCollection}.${f}`);
+						const displayFields = adjustFieldsForDisplays(getFieldsFromTemplate(template), allowedCollection).map(
+							(f) => `${junctionField}:${allowedCollection}.${f}`,
+						);
 
 						for (const f of displayFields) {
 							if (!fields.includes(f)) {
