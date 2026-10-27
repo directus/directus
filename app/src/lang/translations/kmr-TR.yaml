@@ -1968,6 +1968,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Edîtorek nivîsa dewlemend a ku naveroka HTML dinivîse
     toolbar: Darika Amûran
+    extensions: Pêvek
     custom_formats: Formatên Taybet
     folder_note: Peldank ji bo pelên barkirî. Bandorê li pelên heyî nake.
     imageToken: Tokena Gihîştina Girtî
