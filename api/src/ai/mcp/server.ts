@@ -1,27 +1,22 @@
 import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { toNodeHandler } from '@modelcontextprotocol/node';
 import {
-	type CallToolRequest,
-	CallToolRequestSchema,
 	type CallToolResult,
-	type GetPromptRequest,
-	GetPromptRequestSchema,
+	createMcpHandler,
 	type GetPromptResult,
-	InitializedNotificationSchema,
-	ErrorCode as JSONRPCErrorCode,
-	JSONRPCMessageSchema,
-	ListPromptsRequestSchema,
-	ListToolsRequestSchema,
-	McpError,
 	type PromptArgument,
-} from '@modelcontextprotocol/sdk/types.js';
+	ProtocolError,
+	ProtocolErrorCode,
+	Server,
+	type Tool,
+} from '@modelcontextprotocol/server';
+import { version } from 'directus/version';
 import type { Request, Response } from 'express';
 import { render, tokenize } from 'micromustache';
 import { z } from 'zod';
 import { ItemsService } from '../../services/index.js';
 import { ALL_TOOLS, type RegistryError, type RegistryExecuteResult, ToolRegistry } from '../tools/index.js';
 import type { RootTool, ToolResult } from '../tools/types.js';
-import { DirectusTransport } from './transport.js';
 import type { MCPOptions, Prompt } from './types.js';
 import { buildMcpWWWAuthenticateHeader, getMcpUrls, MCP_ACCESS_SCOPE } from './utils.js';
 
@@ -31,7 +26,6 @@ export class DirectusMCP {
 	promptsCollection?: string | null;
 	systemPrompt?: string | null;
 	systemPromptEnabled?: boolean;
-	server: Server;
 	allowDeletes?: boolean;
 
 	constructor(options: MCPOptions = {}) {
@@ -39,19 +33,6 @@ export class DirectusMCP {
 		this.systemPromptEnabled = options.systemPromptEnabled ?? true;
 		this.systemPrompt = options.systemPrompt ?? null;
 		this.allowDeletes = options.allowDeletes ?? false;
-
-		this.server = new Server(
-			{
-				name: 'directus-mcp',
-				version: '0.1.0',
-			},
-			{
-				capabilities: {
-					tools: {},
-					prompts: {},
-				},
-			},
-		);
 	}
 
 	/**
@@ -70,19 +51,16 @@ export class DirectusMCP {
 	}
 
 	/**
-	 * Handle an incoming MCP JSON-RPC request.
+	 * Handle an incoming MCP request. Serves the 2026-07-28 protocol and, statelessly, 2025-era clients.
 	 *
 	 * OAuth-specific checks (when `accountability.oauth` is set):
 	 * - Transport restriction: token must be in Authorization header (RFC 6750), not cookie/query
 	 * - Scope check: must include mcp:access
 	 * - Audience check: must match the canonical MCP resource URL (PUBLIC_URL/mcp)
 	 *
-	 * Note: this function does not await lower-level logic; the actual response is an
-	 * asynchronous side effect happening after the function returns.
-	 *
 	 * @see sendUnauthorized for WWW-Authenticate format (RFC 9728 `resource_metadata` attribute)
 	 */
-	handleRequest(req: Request, res: Response) {
+	async handleRequest(req: Request, res: Response): Promise<void> {
 		const oauth = req.accountability?.oauth;
 
 		// Unauthenticated: no user, no role, not admin
@@ -116,84 +94,80 @@ export class DirectusMCP {
 			return;
 		}
 
-		if (!req.accepts('application/json')) {
-			// we currently dont support "text/event-stream" requests
-			res.status(405).send();
-			return;
+		const handler = createMcpHandler(() => this.createServer(req));
+
+		try {
+			await toNodeHandler(handler)(req, res, req.body);
+		} finally {
+			await handler.close();
 		}
+	}
 
-		this.server.setNotificationHandler(InitializedNotificationSchema, () => {
-			res.status(202).send();
-		});
+	createServer(req: Request): Server {
+		const server = new Server(
+			{
+				name: 'directus',
+				title: 'Directus',
+				version,
+			},
+			{
+				capabilities: {
+					tools: {},
+					prompts: {},
+				},
+			},
+		);
 
-		// list prompts
-		this.server.setRequestHandler(ListPromptsRequestSchema, async () => {
-			const prompts = [];
-
-			if (!this.promptsCollection) {
-				throw new McpError(1001, `A prompts collection must be set in settings`);
-			}
+		server.setRequestHandler('prompts/list', async () => {
+			if (!this.promptsCollection) return { prompts: [] };
 
 			const service = new ItemsService<Prompt>(this.promptsCollection, {
 				accountability: req.accountability,
 				schema: req.schema,
 			});
 
-			try {
-				const promptList = await service.readByQuery({
-					fields: ['name', 'description', 'system_prompt', 'messages'],
-				});
+			const promptList = await service.readByQuery({
+				fields: ['name', 'description', 'system_prompt', 'messages'],
+			});
 
-				for (const prompt of promptList) {
-					// builds args
-					const args: PromptArgument[] = [];
+			const prompts = promptList.map((prompt) => {
+				const varNames = new Set<string>();
 
-					// Add system prompt as the first assistant message if it exists
-					if (prompt.system_prompt) {
-						for (const varName of tokenize(prompt.system_prompt).varNames) {
-							args.push({
-								name: varName,
-								description: `Value for ${varName}`,
-								required: false,
-							});
-						}
-					}
-
-					for (const message of prompt.messages || []) {
-						for (const varName of tokenize(message.text).varNames) {
-							args.push({
-								name: varName,
-								description: `Value for ${varName}`,
-								required: false,
-							});
-						}
-					}
-
-					prompts.push({
-						name: prompt.name,
-						description: prompt.description,
-						arguments: args,
-					});
+				if (prompt.system_prompt) {
+					for (const varName of tokenize(prompt.system_prompt).varNames) varNames.add(varName);
 				}
 
-				return { prompts };
-			} catch (error) {
-				return this.toExecutionError(error);
-			}
+				for (const message of prompt.messages || []) {
+					for (const varName of tokenize(message.text).varNames) varNames.add(varName);
+				}
+
+				const args: PromptArgument[] = [...varNames].map((varName) => ({
+					name: varName,
+					description: `Value for ${varName}`,
+					required: false,
+				}));
+
+				return {
+					name: prompt.name,
+					description: prompt.description,
+					arguments: args,
+				};
+			});
+
+			return { prompts };
 		});
 
-		// get prompt
-		this.server.setRequestHandler(GetPromptRequestSchema, async (request: GetPromptRequest) => {
+		server.setRequestHandler('prompts/get', async (request) => {
+			const { name: promptName, arguments: args } = request.params;
+
 			if (!this.promptsCollection) {
-				throw new McpError(1001, `A prompts collection must be set in settings`);
+				throw new ProtocolError(ProtocolErrorCode.InvalidParams, `Invalid prompt "${promptName}"`);
 			}
 
 			const service = new ItemsService<Prompt>(this.promptsCollection, {
 				accountability: req.accountability,
 				schema: req.schema,
 			});
-
-			const { name: promptName, arguments: args } = request.params;
 
 			const promptCommand = await service.readByQuery({
 				fields: ['description', 'system_prompt', 'messages'],
@@ -207,7 +181,7 @@ export class DirectusMCP {
 			const prompt = promptCommand[0];
 
 			if (!prompt) {
-				throw new McpError(JSONRPCErrorCode.InvalidParams, `Invalid prompt "${promptName}"`);
+				throw new ProtocolError(ProtocolErrorCode.InvalidParams, `Invalid prompt "${promptName}"`);
 			}
 
 			const messages: GetPromptResult['messages'] = [];
@@ -254,8 +228,7 @@ export class DirectusMCP {
 
 		const toolMode: McpToolMode = req.query?.['tool_mode'] === 'registry' ? 'registry' : 'legacy';
 
-		// listing tools
-		this.server.setRequestHandler(ListToolsRequestSchema, () => {
+		server.setRequestHandler('tools/list', () => {
 			return {
 				tools: (toolMode === 'registry' ? mountedRegistry.getRootTools() : mountedRegistry.tools).map((tool) =>
 					this.toMcpTool(tool, toolMode),
@@ -263,8 +236,7 @@ export class DirectusMCP {
 			};
 		});
 
-		// calling tools
-		this.server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest) => {
+		server.setRequestHandler('tools/call', async (request) => {
 			try {
 				if (toolMode === 'legacy') {
 					const tool = ALL_TOOLS.find(({ name }) => name === request.params.name);
@@ -289,18 +261,7 @@ export class DirectusMCP {
 			}
 		});
 
-		const transport = new DirectusTransport(res);
-
-		this.server.connect(transport);
-
-		try {
-			const parsedMessage = JSONRPCMessageSchema.parse(req.body);
-			transport.onmessage?.(parsedMessage);
-		} catch (error) {
-			transport.onerror?.(error as Error);
-
-			throw error;
-		}
+		return server;
 	}
 
 	toPromptResponse(result: {
@@ -318,13 +279,13 @@ export class DirectusMCP {
 		return response;
 	}
 
-	toMcpTool(tool: RootTool, mode: McpToolMode = 'legacy') {
+	toMcpTool(tool: RootTool, mode: McpToolMode = 'legacy'): Tool {
 		return {
 			name: tool.name,
 			description: mode === 'legacy' && tool.instructions ? tool.instructions : tool.description,
-			inputSchema: z.toJSONSchema(tool.inputSchema),
+			inputSchema: z.toJSONSchema(tool.inputSchema) as Tool['inputSchema'],
 			annotations: tool.annotations,
-			...(mode === 'registry' && tool.output && { outputSchema: z.toJSONSchema(tool.output) }),
+			...(mode === 'registry' && tool.output && { outputSchema: z.toJSONSchema(tool.output) as Tool['outputSchema'] }),
 		};
 	}
 

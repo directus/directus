@@ -50,7 +50,7 @@ const mcpHandler = asyncHandler(async (req, res) => {
 		systemPrompt: mcp_system_prompt,
 	});
 
-	mcp.handleRequest(req, res);
+	await mcp.handleRequest(req, res);
 });
 
 router.get('/', mcpHandler);

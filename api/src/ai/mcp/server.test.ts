@@ -1,11 +1,13 @@
+import type { Server as HttpServer } from 'node:http';
+import type { AddressInfo } from 'node:net';
 import { createError, ErrorCode } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
-import type { Request, Response } from 'express';
-import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
+import express, { type Request, type Response } from 'express';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 import { ItemsService } from '../../services/items.js';
 import { expectMcpBearerChallenge } from '../../test-utils/mcp-oauth.js';
 import { DirectusMCP } from './server.js';
-import { DirectusTransport } from './transport.js';
+import type { MCPOptions } from './types.js';
 
 const toolMocks = vi.hoisted(() => ({
 	adminHandler: vi.fn(),
@@ -108,1042 +110,418 @@ vi.mock('../tools/index.js', async (importOriginal) => {
 	};
 });
 
-function awaitJsonResponse(mcp: DirectusMCP): Promise<void> {
-	return new Promise<void>((res) => {
-		const _send = mcp.server.transport!.send.bind(mcp.server.transport!);
+const MODERN_VERSION = '2026-07-28';
 
-		mcp.server.transport!.send = async (...args) => {
-			_send(...args);
-			res();
-		};
+const regularAccountability = {
+	user: 'user-id',
+	role: 'role-id',
+	roles: ['role-id'],
+	admin: false,
+	app: false,
+	ip: null,
+} as Accountability;
+
+type RequestContext = Pick<Request, 'accountability' | 'token' | 'tokenSource'>;
+
+let mcpOptions: MCPOptions = {};
+let requestContext: RequestContext;
+let httpServer: HttpServer;
+let mcpUrl: string;
+
+beforeAll(async () => {
+	const app = express();
+
+	app.use(express.json());
+
+	app.post('/mcp', async (req, res) => {
+		Object.assign(req, requestContext, { schema: {} as SchemaOverview });
+		await new DirectusMCP(mcpOptions).handleRequest(req, res);
 	});
+
+	httpServer = app.listen(0);
+	await new Promise((resolve) => httpServer.once('listening', resolve));
+	mcpUrl = `http://127.0.0.1:${(httpServer.address() as AddressInfo).port}/mcp`;
+});
+
+afterAll(() => {
+	httpServer.close();
+});
+
+beforeEach(() => {
+	mcpOptions = {};
+	requestContext = { accountability: regularAccountability, token: null, tokenSource: 'header' };
+	toolMocks.testHandler.mockResolvedValue({ type: 'text', data: 'test result' });
+	toolMocks.adminHandler.mockResolvedValue({ type: 'text', data: 'admin result' });
+	toolMocks.deleteHandler.mockResolvedValue({ type: 'text', data: 'deleted' });
+	toolMocks.systemHandler.mockResolvedValue({ type: 'text', data: 'system prompt' });
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
+
+type RpcOptions = { era?: 'modern' | 'legacy'; toolMode?: 'registry' };
+
+function post(body: unknown, headers: Record<string, string> = {}, toolMode?: 'registry') {
+	return fetch(toolMode ? `${mcpUrl}?tool_mode=${toolMode}` : mcpUrl, {
+		method: 'POST',
+		headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', ...headers },
+		body: JSON.stringify(body),
+	});
+}
+
+/** Send one JSON-RPC request and return the parsed JSON-RPC response. */
+async function rpc(
+	method: string,
+	params: Record<string, unknown> = {},
+	{ era = 'modern', toolMode }: RpcOptions = {},
+) {
+	const headers: Record<string, string> = {};
+	let body: Record<string, unknown> = { jsonrpc: '2.0', id: 1, method, params };
+
+	if (era === 'modern') {
+		headers['mcp-protocol-version'] = MODERN_VERSION;
+		headers['mcp-method'] = method;
+		if (typeof params['name'] === 'string') headers['mcp-name'] = params['name'];
+
+		body = {
+			...body,
+			params: {
+				...params,
+				_meta: {
+					'io.modelcontextprotocol/protocolVersion': MODERN_VERSION,
+					'io.modelcontextprotocol/clientCapabilities': {},
+				},
+			},
+		};
+	}
+
+	const response = await post(body, headers, toolMode);
+	const text = await response.text();
+
+	// 2025-era responses come back as a single SSE message
+	const json = response.headers.get('content-type')?.includes('text/event-stream')
+		? text
+				.split('\n')
+				.find((line) => line.startsWith('data: '))!
+				.slice('data: '.length)
+		: text;
+
+	return JSON.parse(json);
+}
+
+async function callTool(name: string, args: Record<string, unknown> = {}, options?: RpcOptions) {
+	return (await rpc('tools/call', { name, arguments: args }, options)).result;
 }
 
 describe('mcp server', () => {
 	let directusMCP: DirectusMCP;
-	let mockReq: Partial<Request>;
-	let mockRes: Response;
 
-	beforeEach(() => {
-		toolMocks.testHandler.mockResolvedValue({ type: 'text', data: 'test result' });
-		toolMocks.adminHandler.mockResolvedValue({ type: 'text', data: 'admin result' });
-		toolMocks.deleteHandler.mockResolvedValue({ type: 'text', data: 'deleted' });
-		toolMocks.systemHandler.mockResolvedValue({ type: 'text', data: 'system prompt' });
-	});
+	describe('protocol', () => {
+		test('advertises supported versions and server identity through server/discover', async () => {
+			const { result } = await rpc('server/discover');
 
-	afterEach(() => {
-		vi.clearAllMocks();
-	});
+			expect(result.supportedVersions).toContain(MODERN_VERSION);
+			expect(result.capabilities).toEqual({ tools: {}, prompts: {} });
 
-	describe('handleRequest', () => {
-		beforeEach(() => {
-			directusMCP = new DirectusMCP();
-
-			mockRes = {
-				json: vi.fn(),
-				status: vi.fn().mockReturnThis(),
-				set: vi.fn().mockReturnThis(),
-				send: vi.fn(),
-			} as unknown as Response;
-
-			mockReq = {
-				accepts: vi.fn((type: string) =>
-					type === 'application/json' ? 'application/json' : false,
-				) as unknown as Request['accepts'],
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'tools/list',
-				},
-				accountability: { user: 'user', admin: false } as Accountability,
-				schema: {} as SchemaOverview,
-				token: null,
-				tokenSource: null,
-				method: 'POST',
-			};
+			expect(result._meta['io.modelcontextprotocol/serverInfo']).toMatchObject({
+				name: 'directus',
+				title: 'Directus',
+				version: expect.any(String),
+			});
 		});
 
-		test('should reject non-JSON requests', async () => {
-			mockReq.accepts = vi.fn(() => false) as unknown as Request['accepts'];
+		test('marks list results cacheable per user', async () => {
+			const { result } = await rpc('tools/list');
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			expect(mockRes.status).toHaveBeenCalledWith(405);
-			expect(mockRes.send).toHaveBeenCalled();
+			expect(result).toMatchObject({ resultType: 'complete', cacheScope: 'private', ttlMs: expect.any(Number) });
 		});
 
-		test.each(['GET', 'HEAD'])('should return 405 for authenticated %s requests', async (method) => {
-			mockReq.method = method;
-			const connectSpy = vi.spyOn(directusMCP.server, 'connect');
+		test('serves 2025-era clients without a session', async () => {
+			const initialize = await rpc(
+				'initialize',
+				{ protocolVersion: '2025-11-25', capabilities: {}, clientInfo: { name: 'test', version: '1.0.0' } },
+				{ era: 'legacy' },
+			);
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+			expect(initialize.result.protocolVersion).toBe('2025-11-25');
 
-			expect(mockRes.status).toHaveBeenCalledWith(405);
-			expect(mockRes.send).toHaveBeenCalled();
-			expect(mockRes.set).toHaveBeenCalledWith('Allow', 'POST');
-			expect(connectSpy).not.toHaveBeenCalled();
+			const list = await rpc('tools/list', {}, { era: 'legacy' });
+
+			expect(list.result.tools.length).toBeGreaterThan(0);
 		});
 
-		test('unauthenticated /mcp request returns 401 with WWW-Authenticate', () => {
-			mockReq.accountability = { user: null, role: null, roles: [], admin: false, app: false, ip: null };
-			mockReq.token = null;
-			mockReq.tokenSource = null;
+		test.each(['notifications/initialized', 'notifications/cancelled'])('acknowledges %s with 202', async (method) => {
+			const response = await post({ jsonrpc: '2.0', method, params: { requestId: 1 } });
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			expectMcpBearerChallenge(mockRes, { status: 401, resourceMetadata: true });
+			expect(response.status).toBe(202);
 		});
 
-		test('should accept JSON requests', async () => {
-			expect(() => directusMCP.handleRequest(mockReq as Request, mockRes as Response)).not.toThrow();
+		test('rejects invalid JSON-RPC messages', async () => {
+			const response = await post({ invalid: 'message' });
+			const body = await response.json();
+
+			expect(response.status).toBe(400);
+			expect(body.error.code).toBe(-32600);
 		});
 
-		test('should handle invalid JSON-RPC messages', async () => {
-			mockReq.body = { invalid: 'message' };
+		test('rejects modern requests without the protocol version header', async () => {
+			const response = await post({
+				jsonrpc: '2.0',
+				id: 1,
+				method: 'tools/list',
+				params: { _meta: { 'io.modelcontextprotocol/protocolVersion': MODERN_VERSION } },
+			});
 
-			expect(() => directusMCP.handleRequest(mockReq as Request, mockRes as Response)).toThrow();
+			expect(response.status).toBe(400);
 		});
 	});
 
 	describe('tool listing', () => {
-		beforeEach(() => {
-			directusMCP = new DirectusMCP();
-
-			mockRes = {
-				json: vi.fn(),
-				status: vi.fn().mockReturnThis(),
-				send: vi.fn(),
-			} as unknown as Response;
-
-			mockReq = {
-				accepts: vi.fn((type: string) =>
-					type === 'application/json' ? 'application/json' : false,
-				) as unknown as Request['accepts'],
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'tools/list',
-				},
-				accountability: { user: 'user', admin: false } as Accountability,
-				schema: {} as SchemaOverview,
-				method: 'POST',
-			};
-		});
-
 		test('should list individual MCP tools by default', async () => {
-			mockReq.accountability = { admin: false, user: 'user' } as Accountability;
+			const { result } = await rpc('tools/list');
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			const result = vi.mocked(mockRes.json).mock.calls[0]![0] as any;
-
-			expect(result.result.tools.map((tool: { name: string }) => tool.name)).toEqual([
+			expect(result.tools.map((tool: { name: string }) => tool.name)).toEqual([
 				'test-tool',
 				'delete-tool',
 				'system-prompt',
 				'schema',
 			]);
 
-			expect(result.result.tools.find((tool: { name: string }) => tool.name === 'test-tool')).toMatchObject({
+			expect(result.tools.find((tool: { name: string }) => tool.name === 'test-tool')).toMatchObject({
 				description: 'Full test tool instructions',
 			});
 
-			expect(result.result.tools.find((tool: { name: string }) => tool.name === 'schema')).not.toHaveProperty(
-				'outputSchema',
-			);
+			expect(result.tools.find((tool: { name: string }) => tool.name === 'schema')).not.toHaveProperty('outputSchema');
 		});
 
 		test('should list only MCP root tools in registry mode', async () => {
-			mockReq.accountability = { admin: false, user: 'user' } as Accountability;
-			mockReq.query = { tool_mode: 'registry' };
+			const { result } = await rpc('tools/list', {}, { toolMode: 'registry' });
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			const result = vi.mocked(mockRes.json).mock.calls[0]![0] as any;
-
-			expect(result.result.tools.map((tool: { name: string }) => tool.name)).toEqual(['search', 'execute', 'schema']);
-
-			expect(result.result.tools.find((tool: { name: string }) => tool.name === 'schema')).toHaveProperty(
-				'outputSchema',
-			);
-
-			expect(result.result.tools.find((tool: { name: string }) => tool.name === 'execute')).not.toHaveProperty(
-				'outputSchema',
-			);
+			expect(result.tools.map((tool: { name: string }) => tool.name)).toEqual(['search', 'execute', 'schema']);
+			expect(result.tools.find((tool: { name: string }) => tool.name === 'schema')).toHaveProperty('outputSchema');
+			expect(result.tools.find((tool: { name: string }) => tool.name === 'execute')).not.toHaveProperty('outputSchema');
 		});
 	});
 
 	describe('tool execution', () => {
-		beforeEach(() => {
-			directusMCP = new DirectusMCP();
+		test('should execute a valid tool successfully', async () => {
+			const result = await callTool('test-tool', { test: 'value' });
 
-			mockRes = {
-				json: vi.fn(),
-				status: vi.fn().mockReturnThis(),
-				send: vi.fn(),
-			} as unknown as Response;
-
-			mockReq = {
-				accepts: vi.fn((type: string) =>
-					type === 'application/json' ? 'application/json' : false,
-				) as unknown as Request['accepts'],
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'tools/list',
-				},
-				accountability: { user: 'user', admin: false } as Accountability,
-				schema: {} as SchemaOverview,
-				method: 'POST',
-			};
+			expect(result.content).toEqual([{ type: 'text', text: JSON.stringify({ raw: 'test result' }) }]);
 		});
 
-		test('should execute a valid tool successfully', async () => {
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'tools/call',
-					params: {
-						name: 'test-tool',
-						arguments: { test: 'value' },
-					},
-				},
-				accountability: { user: 'user', admin: false },
-				schema: {},
-				method: 'POST',
-			} as unknown as Request;
+		test('should execute a valid tool for 2025-era clients', async () => {
+			const result = await callTool('test-tool', { test: 'value' }, { era: 'legacy' });
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			// Verify the response was sent via res.json
-			expect(mockRes.json).toHaveBeenCalledWith(
-				expect.objectContaining({
-					jsonrpc: '2.0',
-					id: 1,
-					result: expect.objectContaining({
-						content: expect.arrayContaining([
-							expect.objectContaining({
-								type: 'text',
-								text: JSON.stringify({ raw: 'test result' }),
-							}),
-						]),
-					}),
-				}),
-			);
+			expect(result.content).toEqual([{ type: 'text', text: JSON.stringify({ raw: 'test result' }) }]);
 		});
 
 		test('should execute tools through the registry root execute tool in registry mode', async () => {
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'tools/call',
-					params: {
-						name: 'execute',
-						arguments: { name: 'test-tool', input: { test: 'value' } },
-					},
-				},
-				query: { tool_mode: 'registry' },
-				accountability: { user: 'user', admin: false },
-				schema: {},
-				method: 'POST',
-			} as unknown as Request;
-
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith(
-				expect.objectContaining({
-					jsonrpc: '2.0',
-					id: 1,
-					result: expect.objectContaining({
-						content: expect.arrayContaining([
-							expect.objectContaining({
-								type: 'text',
-								text: JSON.stringify({ data: 'test result' }),
-							}),
-						]),
-					}),
-				}),
+			const result = await callTool(
+				'execute',
+				{ name: 'test-tool', input: { test: 'value' } },
+				{ toolMode: 'registry' },
 			);
+
+			expect(result.content).toEqual([{ type: 'text', text: JSON.stringify({ data: 'test result' }) }]);
 		});
 
 		test('should not accept the registry root execute tool by default', async () => {
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'tools/call',
-					params: {
-						name: 'execute',
-						arguments: { name: 'test-tool', input: { test: 'value' } },
-					},
-				},
-				accountability: { user: 'user', admin: false },
-				schema: {},
-				method: 'POST',
-			} as unknown as Request;
+			const result = await callTool('execute', { name: 'test-tool', input: { test: 'value' } });
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith(
-				expect.objectContaining({
-					jsonrpc: '2.0',
-					id: 1,
-					result: expect.objectContaining({
-						isError: true,
-						content: expect.arrayContaining([
-							expect.objectContaining({
-								type: 'text',
-								text: expect.stringContaining('INVALID_PAYLOAD'),
-							}),
-						]),
-					}),
-				}),
-			);
+			expect(result.isError).toBe(true);
+			expect(result.content[0].text).toContain('INVALID_PAYLOAD');
 		});
 
 		test('should return error for non-existent tool', async () => {
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'tools/call',
-					params: {
-						name: 'non-existent-tool',
-						arguments: {},
-					},
-				},
-				accountability: { user: 'user', admin: false },
-				schema: {},
-				method: 'POST',
-			} as unknown as Request;
+			const result = await callTool('non-existent-tool');
 
-			directusMCP.handleRequest(mockReq, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith(
-				expect.objectContaining({
-					jsonrpc: '2.0',
-					id: 1,
-					result: expect.objectContaining({
-						isError: true,
-						content: expect.arrayContaining([
-							expect.objectContaining({
-								type: 'text',
-								text: expect.stringMatching(/doesn't exist in the toolset.*INVALID_PAYLOAD/),
-							}),
-						]),
-					}),
-				}),
-			);
+			expect(result.isError).toBe(true);
+			expect(result.content[0].text).toMatch(/doesn't exist in the toolset.*INVALID_PAYLOAD/);
 		});
 
 		test('should preserve the forbidden error for non-admin callers of admin tools', async () => {
-			mockReq.body = {
-				jsonrpc: '2.0',
-				id: 1,
-				method: 'tools/call',
-				params: {
-					name: 'admin-tool',
-					arguments: {},
-				},
-			};
+			const result = await callTool('admin-tool');
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			const response = vi.mocked(mockRes.json).mock.calls[0]![0] as any;
-			expect(response.result.content[0].text).toContain('FORBIDDEN');
+			expect(result.content[0].text).toContain('FORBIDDEN');
 			expect(toolMocks.adminHandler).not.toHaveBeenCalled();
 		});
 
 		test('should return error for calling system-prompt if it is disabled', async () => {
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'tools/call',
-					params: {
-						name: 'system-prompt',
-						arguments: {},
-					},
-				},
-				accountability: { user: 'user', admin: false },
-				schema: {},
-				method: 'POST',
-			} as unknown as Request;
+			mcpOptions = { systemPromptEnabled: false };
 
-			directusMCP = new DirectusMCP({ systemPromptEnabled: false });
+			const result = await callTool('system-prompt');
 
-			directusMCP.handleRequest(mockReq, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith(
-				expect.objectContaining({
-					jsonrpc: '2.0',
-					id: 1,
-					result: expect.objectContaining({
-						isError: true,
-						content: expect.arrayContaining([
-							expect.objectContaining({
-								type: 'text',
-								text: expect.stringContaining("doesn't exist in the toolset"),
-							}),
-						]),
-					}),
-				}),
-			);
+			expect(result.isError).toBe(true);
+			expect(result.content[0].text).toContain("doesn't exist in the toolset");
 		});
 
 		test('should allow admin users to access admin tools', async () => {
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'tools/call',
-					params: {
-						name: 'admin-tool',
-						arguments: {},
-					},
-				},
-				accountability: { admin: true, user: 'user' }, // Admin user
-				schema: {},
-				method: 'POST',
-			} as unknown as Request;
+			requestContext.accountability = { ...regularAccountability, admin: true };
 
-			directusMCP.handleRequest(mockReq, mockRes as Response);
+			const result = await callTool('admin-tool');
 
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith(
-				expect.objectContaining({
-					jsonrpc: '2.0',
-					id: 1,
-					result: expect.objectContaining({
-						content: expect.arrayContaining([
-							expect.objectContaining({
-								type: 'text',
-								text: JSON.stringify({ raw: 'admin result' }),
-							}),
-						]),
-					}),
-				}),
-			);
+			expect(result.content).toEqual([{ type: 'text', text: JSON.stringify({ raw: 'admin result' }) }]);
 		});
 
 		test('should error on delete action if deletes disabled', async () => {
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'tools/call',
-					params: {
-						name: 'delete-tool',
-						arguments: { action: 'delete' },
-					},
-				},
-				accountability: { user: 'user', admin: false },
-				schema: {},
-				method: 'POST',
-			} as unknown as Request;
+			const result = await callTool('delete-tool', { action: 'delete' });
 
-			directusMCP.handleRequest(mockReq, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith(
-				expect.objectContaining({
-					jsonrpc: '2.0',
-					id: 1,
-					result: expect.objectContaining({
-						isError: true,
-						content: expect.arrayContaining([
-							expect.objectContaining({
-								type: 'text',
-								text: expect.stringContaining('Delete actions are disabled'),
-							}),
-						]),
-					}),
-				}),
-			);
+			expect(result.isError).toBe(true);
+			expect(result.content[0].text).toContain('Delete actions are disabled');
 		});
 	});
 
 	describe('prompt list', () => {
-		let mockItemsService: {
-			readByQuery: MockedFunction<any>;
-			readOne: MockedFunction<any>;
-		};
+		let mockItemsService: { readByQuery: MockedFunction<any> };
 
 		beforeEach(() => {
-			mockRes = {
-				json: vi.fn(),
-				status: vi.fn().mockReturnThis(),
-				send: vi.fn(),
-			} as unknown as Response;
-
-			mockReq = {
-				accepts: vi.fn((type: string) =>
-					type === 'application/json' ? 'application/json' : false,
-				) as unknown as Request['accepts'],
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'prompts/list',
-				},
-				accountability: { user: 'user', admin: false } as Accountability,
-				schema: {} as SchemaOverview,
-				method: 'POST',
-			};
-
-			mockItemsService = {
-				readByQuery: vi.fn(),
-				readOne: vi.fn(),
-			};
+			mockItemsService = { readByQuery: vi.fn().mockResolvedValue([]) };
 
 			vi.mocked(ItemsService).mockImplementation(function () {
 				return mockItemsService as unknown as ItemsService;
 			});
 		});
 
-		test('should return a json rpc error if no prompt collection defined', async () => {
-			const directusMCP = new DirectusMCP({});
+		test('should return no prompts if no prompt collection defined', async () => {
+			const { result } = await rpc('prompts/list');
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith({
-				id: 1,
-				jsonrpc: '2.0',
-				error: {
-					code: 1001,
-					message: 'MCP error 1001: A prompts collection must be set in settings',
-				},
-			});
+			expect(result.prompts).toEqual([]);
+			expect(ItemsService).not.toHaveBeenCalled();
 		});
 
 		test('should query prompt collection fields', async () => {
-			const directusMCP = new DirectusMCP({ promptsCollection: 'ai_collection' });
+			mcpOptions = { promptsCollection: 'ai_collection' };
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
+			await rpc('prompts/list');
 
 			expect(mockItemsService.readByQuery).toHaveBeenCalledWith({
 				fields: ['name', 'description', 'system_prompt', 'messages'],
 			});
 		});
 
-		test('should return empty prompts array for no results', async () => {
-			const directusMCP = new DirectusMCP({ promptsCollection: 'ai_collection' });
-
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			vi.mocked(mockItemsService.readByQuery).mockResolvedValue([]);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith({
-				id: 1,
-				jsonrpc: '2.0',
-				result: {
-					prompts: [],
-				},
-			});
-		});
-
 		test('should return defined prompts', async () => {
-			const directusMCP = new DirectusMCP({ promptsCollection: 'ai_collection' });
+			mcpOptions = { promptsCollection: 'ai_collection' };
+			mockItemsService.readByQuery.mockResolvedValue([{ name: 'lorem', description: 'Lorem Ipsum' }]);
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+			const { result } = await rpc('prompts/list');
 
-			const prompt = {
-				name: 'lorem',
-				description: 'Lorem Ipsum',
-			};
-
-			vi.mocked(mockItemsService.readByQuery).mockResolvedValue([prompt]);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith({
-				id: 1,
-				jsonrpc: '2.0',
-				result: {
-					prompts: [
-						{
-							...prompt,
-							arguments: [],
-						},
-					],
-				},
-			});
+			expect(result.prompts).toEqual([{ name: 'lorem', description: 'Lorem Ipsum', arguments: [] }]);
 		});
 
-		test('should build prompt args based on message field', async () => {
-			const directusMCP = new DirectusMCP({ promptsCollection: 'ai_collection' });
+		test('should build prompt args from the system prompt and messages once per variable', async () => {
+			mcpOptions = { promptsCollection: 'ai_collection' };
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			const prompt = {
-				name: 'lorem',
-				description: 'Lorem Ipsum',
-				messages: [
-					{
-						text: 'My {{user}}',
-					},
-				],
-			};
-
-			vi.mocked(mockItemsService.readByQuery).mockResolvedValue([prompt]);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith({
-				id: 1,
-				jsonrpc: '2.0',
-				result: {
-					prompts: [
-						{
-							name: prompt.name,
-							description: prompt.description,
-							arguments: [
-								{
-									description: 'Value for user',
-									name: 'user',
-									required: false,
-								},
-							],
-						},
-					],
+			mockItemsService.readByQuery.mockResolvedValue([
+				{
+					name: 'lorem',
+					description: 'Lorem Ipsum',
+					messages: [{ text: 'My {{user}}' }, { text: 'Again {{user}} at {{url}}' }],
+					system_prompt: 'The {{url}} is',
 				},
-			});
+			]);
+
+			const { result } = await rpc('prompts/list');
+
+			expect(result.prompts[0].arguments).toEqual([
+				{ name: 'url', description: 'Value for url', required: false },
+				{ name: 'user', description: 'Value for user', required: false },
+			]);
 		});
 
-		test('should auto inject system prompt args', async () => {
-			const directusMCP = new DirectusMCP({ promptsCollection: 'ai_collection' });
+		test('should return a JSON-RPC error if reading prompts fails', async () => {
+			mcpOptions = { promptsCollection: 'ai_collection' };
+			mockItemsService.readByQuery.mockRejectedValue(new Error('boom'));
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+			const response = await rpc('prompts/list');
 
-			const prompt = {
-				name: 'lorem',
-				description: 'Lorem Ipsum',
-				messages: [
-					{
-						text: 'My {{user}}',
-					},
-				],
-				system_prompt: 'The {{url}} is',
-			};
-
-			vi.mocked(mockItemsService.readByQuery).mockResolvedValue([prompt]);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith({
-				id: 1,
-				jsonrpc: '2.0',
-				result: {
-					prompts: [
-						{
-							name: prompt.name,
-							description: prompt.description,
-							arguments: [
-								{
-									description: 'Value for url',
-									name: 'url',
-									required: false,
-								},
-								{
-									description: 'Value for user',
-									name: 'user',
-									required: false,
-								},
-							],
-						},
-					],
-				},
-			});
+			expect(response.error).toBeDefined();
 		});
 	});
 
 	describe('prompt get', () => {
-		let mockItemsService: {
-			readByQuery: MockedFunction<any>;
-			readOne: MockedFunction<any>;
-		};
-
-		afterEach(() => {
-			vi.clearAllMocks();
-		});
+		let mockItemsService: { readByQuery: MockedFunction<any> };
 
 		beforeEach(() => {
-			mockRes = {
-				json: vi.fn(),
-				status: vi.fn().mockReturnThis(),
-				send: vi.fn(),
-			} as unknown as Response;
-
-			mockReq = {
-				accepts: vi.fn((type: string) =>
-					type === 'application/json' ? 'application/json' : false,
-				) as unknown as Request['accepts'],
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'prompts/get',
-					params: {
-						name: '',
-						arguments: {},
-					},
-				},
-				accountability: { user: 'user', admin: false } as Accountability,
-				schema: {} as SchemaOverview,
-				method: 'POST',
-			};
-
-			mockItemsService = {
-				readByQuery: vi.fn(),
-				readOne: vi.fn(),
-			};
+			mcpOptions = { promptsCollection: 'ai_collection' };
+			mockItemsService = { readByQuery: vi.fn().mockResolvedValue([]) };
 
 			vi.mocked(ItemsService).mockImplementation(function () {
 				return mockItemsService as unknown as ItemsService;
 			});
 		});
 
-		test('should return a json rpc error if no prompt collection defined', async () => {
-			const directusMCP = new DirectusMCP({});
+		test('should return invalid params if no prompt collection defined', async () => {
+			mcpOptions = {};
 
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+			const { error } = await rpc('prompts/get', { name: 'test', arguments: {} });
 
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith({
-				id: 1,
-				jsonrpc: '2.0',
-				error: {
-					code: 1001,
-					message: 'MCP error 1001: A prompts collection must be set in settings',
-				},
-			});
+			expect(error).toMatchObject({ code: -32602, message: expect.stringContaining('Invalid prompt "test"') });
 		});
 
 		test('should query prompt by name', async () => {
-			const directusMCP = new DirectusMCP({ promptsCollection: 'ai_collection' });
-
-			const promptName = 'test';
-
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'prompts/get',
-					params: {
-						name: promptName,
-						arguments: {},
-					},
-				},
-				accountability: { user: 'user', admin: false },
-				schema: {},
-				method: 'POST',
-			} as unknown as Request;
-
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
+			await rpc('prompts/get', { name: 'test', arguments: {} });
 
 			expect(mockItemsService.readByQuery).toHaveBeenCalledWith({
 				fields: ['description', 'system_prompt', 'messages'],
-				filter: {
-					name: {
-						_eq: promptName,
-					},
-				},
+				filter: { name: { _eq: 'test' } },
 			});
 		});
 
 		test('should return invalid params if invalid prompt', async () => {
-			const directusMCP = new DirectusMCP({ promptsCollection: 'ai_collection' });
+			const { error } = await rpc('prompts/get', { name: 'test', arguments: {} });
 
-			vi.mocked(mockItemsService.readByQuery).mockResolvedValue([]);
-
-			const promptName = 'test';
-
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'prompts/get',
-					params: {
-						name: promptName,
-						arguments: {},
-					},
-				},
-				accountability: { user: 'user', admin: false },
-				schema: {},
-				method: 'POST',
-			} as unknown as Request;
-
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith({
-				id: 1,
-				jsonrpc: '2.0',
-				error: {
-					code: -32602,
-					message: `MCP error -32602: Invalid prompt "${promptName}"`,
-				},
-			});
+			expect(error).toMatchObject({ code: -32602, message: expect.stringContaining('Invalid prompt "test"') });
 		});
 
-		test('should render messages with args params', async () => {
-			const directusMCP = new DirectusMCP({ promptsCollection: 'ai_collection' });
-
-			vi.spyOn(directusMCP, 'toPromptResponse');
-
-			vi.mocked(mockItemsService.readByQuery).mockResolvedValue([
+		test('should render system prompt and messages with args', async () => {
+			mockItemsService.readByQuery.mockResolvedValue([
 				{
 					name: 'test',
 					description: 'Lorem Ipsum',
-					messages: [
-						{
-							role: 'user',
-							text: 'My {{user}}',
-						},
-					],
-				},
-			]);
-
-			const promptName = 'test';
-
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'prompts/get',
-					params: {
-						name: promptName,
-						arguments: {
-							user: '1',
-						},
-					},
-				},
-				accountability: { user: 'user', admin: false },
-				schema: {},
-				method: 'POST',
-			} as unknown as Request;
-
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(directusMCP.toPromptResponse).toHaveBeenCalledWith({
-				description: 'Lorem Ipsum',
-				messages: [
-					{
-						content: {
-							text: 'My 1',
-							type: 'text',
-						},
-						role: 'user',
-					},
-				],
-			});
-		});
-
-		test('should render system prompt with args params', async () => {
-			const directusMCP = new DirectusMCP({ promptsCollection: 'ai_collection' });
-
-			vi.spyOn(directusMCP, 'toPromptResponse');
-
-			vi.mocked(mockItemsService.readByQuery).mockResolvedValue([
-				{
-					name: 'test',
-					description: 'Lorem Ipsum',
-					messages: [
-						{
-							role: 'user',
-							text: 'My {{user}}',
-						},
-					],
+					messages: [{ role: 'user', text: 'My {{user}}' }],
 					system_prompt: 'Hello {{admin}}',
 				},
 			]);
 
-			const promptName = 'test';
+			const { result } = await rpc('prompts/get', { name: 'test', arguments: { user: '1', admin: '2' } });
 
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'prompts/get',
-					params: {
-						name: promptName,
-						arguments: {
-							user: '1',
-							admin: '2',
-						},
-					},
-				},
-				accountability: { user: 'user', admin: false },
-				schema: {},
-				method: 'POST',
-			} as unknown as Request;
-
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(directusMCP.toPromptResponse).toHaveBeenCalledWith({
+			expect(result).toMatchObject({
 				description: 'Lorem Ipsum',
 				messages: [
-					{
-						content: {
-							text: 'Hello 2',
-							type: 'text',
-						},
-						role: 'assistant',
-					},
-					{
-						content: {
-							text: 'My 1',
-							type: 'text',
-						},
-						role: 'user',
-					},
+					{ role: 'assistant', content: { type: 'text', text: 'Hello 2' } },
+					{ role: 'user', content: { type: 'text', text: 'My 1' } },
 				],
 			});
 		});
 
 		test('should support no messages or system_prompt', async () => {
-			const directusMCP = new DirectusMCP({ promptsCollection: 'ai_collection' });
-
-			vi.spyOn(directusMCP, 'toPromptResponse');
-
-			vi.mocked(mockItemsService.readByQuery).mockResolvedValue([
-				{
-					name: 'test',
-					description: 'Lorem Ipsum',
-					messages: null,
-					system_prompt: null,
-				},
+			mockItemsService.readByQuery.mockResolvedValue([
+				{ name: 'test', description: 'Lorem Ipsum', messages: null, system_prompt: null },
 			]);
 
-			const promptName = 'test';
+			const { result } = await rpc('prompts/get', { name: 'test', arguments: {} });
 
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'prompts/get',
-					params: {
-						name: promptName,
-						arguments: {
-							user: '1',
-							admin: '2',
-						},
-					},
-				},
-				accountability: { user: 'user', admin: false },
-				schema: {},
-				method: 'POST',
-			} as unknown as Request;
-
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(directusMCP.toPromptResponse).toHaveBeenCalledWith({
-				description: 'Lorem Ipsum',
-				messages: [],
-			});
+			expect(result).toMatchObject({ description: 'Lorem Ipsum', messages: [] });
 		});
 
 		test('should skip messages missing role and/or text', async () => {
-			const directusMCP = new DirectusMCP({ promptsCollection: 'ai_collection' });
-
-			vi.spyOn(directusMCP, 'toPromptResponse');
-
-			vi.mocked(mockItemsService.readByQuery).mockResolvedValue([
+			mockItemsService.readByQuery.mockResolvedValue([
 				{
 					name: 'test',
 					description: 'Lorem Ipsum',
 					messages: [
-						{
-							role: null,
-							text: 'Lorem',
-						},
-						{
-							role: 'user',
-							text: null,
-						},
-						{
-							role: null,
-							text: null,
-						},
+						{ role: null, text: 'Lorem' },
+						{ role: 'user', text: null },
+						{ role: null, text: null },
 					],
 				},
 			]);
 
-			const promptName = 'test';
+			const { result } = await rpc('prompts/get', { name: 'test', arguments: {} });
 
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'prompts/get',
-					params: {
-						name: promptName,
-						arguments: {
-							user: '1',
-							admin: '2',
-						},
-					},
-				},
-				accountability: { user: 'user', admin: false },
-				schema: {},
-				method: 'POST',
-			} as unknown as Request;
-
-			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(directusMCP.toPromptResponse).toHaveBeenCalledWith({
-				description: 'Lorem Ipsum',
-				messages: [],
-			});
+			expect(result.messages).toEqual([]);
 		});
 	});
 
@@ -1355,132 +733,18 @@ describe('mcp server', () => {
 		});
 	});
 
-	describe('DirectusTransport', () => {
-		let transport: DirectusTransport;
-		let mockRes: Partial<Response>;
-
-		beforeEach(() => {
-			mockRes = {
-				json: vi.fn(),
-				status: vi.fn().mockReturnThis(),
-				send: vi.fn(),
-			};
-
-			transport = new DirectusTransport(mockRes as Response);
-		});
-
-		describe('send', () => {
-			test('should send JSON-RPC message via response.json', async () => {
-				const message = {
-					jsonrpc: '2.0' as const,
-					id: 1,
-					result: { data: 'test' },
-				};
-
-				await transport.send(message);
-
-				expect(mockRes.json).toHaveBeenCalledTimes(1);
-				expect(mockRes.json).toHaveBeenCalledWith(message);
-			});
-
-			test('should send error responses', async () => {
-				const errorMessage = {
-					jsonrpc: '2.0' as const,
-					id: 1,
-					error: {
-						code: -32600,
-						message: 'Invalid Request',
-					},
-				};
-
-				await transport.send(errorMessage);
-
-				expect(mockRes.json).toHaveBeenCalledWith(errorMessage);
-			});
-
-			test('should send notification messages (no id)', async () => {
-				const notification = {
-					jsonrpc: '2.0' as const,
-					method: 'notifications/initialized',
-				};
-
-				await transport.send(notification);
-
-				expect(mockRes.json).toHaveBeenCalledWith(notification);
-			});
-		});
-
-		describe('event handling', () => {
-			test('should handle messages when onmessage is set', () => {
-				const messageHandler = vi.fn();
-				transport.onmessage = messageHandler;
-
-				const message = {
-					jsonrpc: '2.0' as const,
-					id: 1,
-					method: 'tools/list',
-				};
-
-				// Simulate message handling (this would typically be called by the server)
-				transport.onmessage?.(message);
-
-				expect(messageHandler).toHaveBeenCalledWith(message);
-			});
-
-			test('should handle errors when onerror is set', () => {
-				const errorHandler = vi.fn();
-				transport.onerror = errorHandler;
-
-				const error = new Error('Transport error');
-
-				// Simulate error handling
-				transport.onerror?.(error);
-
-				expect(errorHandler).toHaveBeenCalledWith(error);
-			});
-
-			test('should handle messages with extra info', () => {
-				const messageHandler = vi.fn();
-				transport.onmessage = messageHandler;
-
-				const message = {
-					jsonrpc: '2.0' as const,
-					id: 1,
-					method: 'tools/call',
-					params: { name: 'test-tool' },
-				};
-
-				const extraInfo = {};
-
-				transport.onmessage?.(message, extraInfo);
-
-				expect(messageHandler).toHaveBeenCalledWith(message, extraInfo);
-			});
-		});
-	});
-
 	describe('auth guard', () => {
 		const MCP_RESOURCE_URL = 'https://directus.example.com/mcp';
-
-		const regularAccountability = {
-			user: 'user-id',
-			role: 'role-id',
-			roles: ['role-id'],
-			admin: false,
-			app: false,
-			ip: null,
-		};
 
 		const oauthAccountability = {
 			...regularAccountability,
 			oauth: { client: 'client-id', scopes: ['mcp:access'], aud: [MCP_RESOURCE_URL] },
-		};
+		} as Accountability;
 
 		let mockRes: Response;
 
 		beforeEach(() => {
 			mockRes = {
-				json: vi.fn(),
 				status: vi.fn().mockReturnThis(),
 				set: vi.fn().mockReturnThis(),
 				send: vi.fn(),
@@ -1489,9 +753,6 @@ describe('mcp server', () => {
 
 		function makeAuthReq(overrides: Partial<Request> = {}): Request {
 			return {
-				accepts: vi.fn((type: string) =>
-					type === 'application/json' ? 'application/json' : false,
-				) as unknown as Request['accepts'],
 				body: { jsonrpc: '2.0', id: 1, method: 'tools/list' },
 				accountability: regularAccountability,
 				schema: {} as SchemaOverview,
@@ -1502,50 +763,24 @@ describe('mcp server', () => {
 			} as unknown as Request;
 		}
 
-		test('unauthenticated request returns 401 with WWW-Authenticate', () => {
-			const directusMCP = new DirectusMCP();
-
+		test('unauthenticated request returns 401 with WWW-Authenticate', async () => {
 			const req = makeAuthReq({
 				accountability: { user: null, role: null, roles: [], admin: false, app: false, ip: null },
 			});
 
-			directusMCP.handleRequest(req, mockRes);
+			await new DirectusMCP().handleRequest(req, mockRes);
+
 			expectMcpBearerChallenge(mockRes, { status: 401, resourceMetadata: true });
 		});
 
-		test('regular session passes through without OAuth checks', () => {
-			const directusMCP = new DirectusMCP();
-			const req = makeAuthReq({ tokenSource: 'cookie' });
+		test.each(['GET', 'HEAD'])('should return 405 for authenticated %s requests', async (method) => {
+			await new DirectusMCP().handleRequest(makeAuthReq({ method }), mockRes);
 
-			expect(() => directusMCP.handleRequest(req, mockRes)).not.toThrow();
-			expect(mockRes.status).not.toHaveBeenCalledWith(401);
+			expect(mockRes.status).toHaveBeenCalledWith(405);
+			expect(mockRes.set).toHaveBeenCalledWith('Allow', 'POST');
 		});
 
-		test('valid OAuth session with correct scope and aud via header returns JSON-RPC result', async () => {
-			const directusMCP = new DirectusMCP();
-			const req = makeAuthReq({ accountability: oauthAccountability, tokenSource: 'header' });
-
-			expect(() => directusMCP.handleRequest(req, mockRes)).not.toThrow();
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith(
-				expect.objectContaining({
-					id: 1,
-					jsonrpc: '2.0',
-					result: expect.objectContaining({
-						tools: expect.any(Array),
-					}),
-				}),
-			);
-
-			expect(mockRes.status).not.toHaveBeenCalledWith(401);
-			expect(mockRes.status).not.toHaveBeenCalledWith(403);
-			expect(mockRes.set).not.toHaveBeenCalledWith('WWW-Authenticate', expect.any(String));
-		});
-
-		test('OAuth session with wrong aud returns 401', () => {
-			const directusMCP = new DirectusMCP();
-
+		test('OAuth session with wrong aud returns 401', async () => {
 			const req = makeAuthReq({
 				accountability: {
 					...regularAccountability,
@@ -1554,36 +789,23 @@ describe('mcp server', () => {
 				tokenSource: 'header',
 			});
 
-			directusMCP.handleRequest(req, mockRes);
+			await new DirectusMCP().handleRequest(req, mockRes);
+
 			expectMcpBearerChallenge(mockRes, { status: 401, error: 'invalid_token' });
 		});
 
 		test.each([
 			['query', 'via query-string'],
 			['cookie', 'via cookie'],
-		] as const)('%s: OAuth session %s returns 401 invalid_request', (tokenSource) => {
-			const directusMCP = new DirectusMCP();
+		] as const)('%s: OAuth session %s returns 401 invalid_request', async (tokenSource, _description) => {
 			const req = makeAuthReq({ accountability: oauthAccountability, tokenSource });
 
-			directusMCP.handleRequest(req, mockRes);
+			await new DirectusMCP().handleRequest(req, mockRes);
+
 			expectMcpBearerChallenge(mockRes, { status: 401, error: 'invalid_request' });
 		});
 
-		test.each([
-			['query (legacy compat)', 'static-or-jwt-token', 'query' as const],
-			['cookie', undefined, 'cookie' as const],
-			['query (static token)', 'static-token', 'query' as const],
-		])('regular session via %s passes through', (_label, token, tokenSource) => {
-			const directusMCP = new DirectusMCP();
-			const req = makeAuthReq({ token, tokenSource });
-
-			expect(() => directusMCP.handleRequest(req, mockRes)).not.toThrow();
-			expect(mockRes.status).not.toHaveBeenCalledWith(401);
-		});
-
-		test('OAuth session without mcp:access scope returns 403 insufficient_scope', () => {
-			const directusMCP = new DirectusMCP();
-
+		test('OAuth session without mcp:access scope returns 403 insufficient_scope', async () => {
 			const req = makeAuthReq({
 				accountability: {
 					...regularAccountability,
@@ -1592,8 +814,29 @@ describe('mcp server', () => {
 				tokenSource: 'header',
 			});
 
-			directusMCP.handleRequest(req, mockRes);
+			await new DirectusMCP().handleRequest(req, mockRes);
+
 			expectMcpBearerChallenge(mockRes, { status: 403, error: 'insufficient_scope' });
+		});
+
+		test('valid OAuth session with correct scope and aud via header returns tools', async () => {
+			requestContext = { accountability: oauthAccountability, token: null, tokenSource: 'header' };
+
+			const { result } = await rpc('tools/list');
+
+			expect(result.tools).toEqual(expect.any(Array));
+		});
+
+		test.each([
+			['query (legacy compat)', 'static-or-jwt-token', 'query' as const],
+			['cookie', null, 'cookie' as const],
+			['query (static token)', 'static-token', 'query' as const],
+		])('regular session via %s passes through', async (_label, token, tokenSource) => {
+			requestContext = { accountability: regularAccountability, token, tokenSource };
+
+			const { result } = await rpc('tools/list');
+
+			expect(result.tools).toEqual(expect.any(Array));
 		});
 	});
 });
