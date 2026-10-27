@@ -456,10 +456,9 @@ export class ServerService {
 				],
 			};
 
-			const mailer = getMailer();
-
 			try {
-				await mailer.verify();
+				// Building the mailer can throw on a misconfigured transport.
+				await getMailer().verify();
 			} catch (err: any) {
 				checks['email:connection']![0]!.status = 'error';
 				checks['email:connection']![0]!.output = err;

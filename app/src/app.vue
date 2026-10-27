@@ -53,10 +53,10 @@ useHead({
 	templateParams: {
 		projectName: computed(() => serverStore.info?.project?.project_name ?? 'Directus'),
 	},
-	htmlAttrs: computed(() => ({
-		lang: userStore.language,
-		dir: userStore.textDirection,
-	})),
+	htmlAttrs: {
+		lang: computed(() => userStore.language),
+		dir: computed(() => userStore.textDirection),
+	},
 	meta: computed(() => {
 		const content = serverStore.info?.project?.project_color ?? '#6644ff';
 
@@ -89,7 +89,7 @@ useHead({
 			},
 		];
 	}),
-	bodyAttrs: computed(() => ({ class: [darkMode.value ? 'dark' : 'light'] })),
+	bodyAttrs: { class: [computed(() => (darkMode.value ? 'dark' : 'light'))] },
 });
 
 onMounted(() => startIdleTracking());

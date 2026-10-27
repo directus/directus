@@ -113,5 +113,45 @@ test('accepts numeric values', async () => {
 
 	await wrapper.findAll('.v-radio-card')[0]!.trigger('click');
 
-	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['1']);
+	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([1]);
+});
+
+test('keeps numeric and string values distinct', async () => {
+	const wrapper = mount(VRadioCards, {
+		props: {
+			items: [
+				{ value: 0, label: 'Number' },
+				{ value: '0', label: 'String' },
+			],
+			modelValue: 0,
+		},
+		global,
+	});
+
+	const cards = wrapper.findAll('[role="radio"]');
+	expect(cards[0]!.attributes('aria-checked')).toBe('true');
+	expect(cards[1]!.attributes('aria-checked')).toBe('false');
+	await cards[1]!.trigger('click');
+	expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['0']);
+});
+
+test('custom card content receives selection and accessible label IDs', async () => {
+	const wrapper = mount(VRadioCards, {
+		props: { items, modelValue: 'core' },
+		global,
+		slots: {
+			item: `<template #item="{ item, selected, labelId, descriptionId }">
+				<span :id="labelId">{{ item.label }}</span>
+				<span :id="descriptionId">{{ item.description }}</span>
+				<span class="selected">{{ selected }}</span>
+			</template>`,
+		},
+	});
+
+	const card = wrapper.find('[role="radio"]');
+	expect(card.find('.selected').text()).toBe('true');
+	expect(card.find(`[id="${card.attributes('aria-labelledby')}"]`).text()).toBe(items[0]!.label);
+	expect(card.find(`[id="${card.attributes('aria-describedby')}"]`).text()).toBe(items[0]!.description);
+	await wrapper.setProps({ modelValue: 'licensed' });
+	expect(card.find('.selected').text()).toBe('false');
 });

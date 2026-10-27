@@ -175,7 +175,8 @@ watch(
 	transition: opacity var(--fast) var(--transition);
 }
 
-.image-preview:hover .actions {
+.image-preview:hover .actions,
+.image-preview:focus-within .actions {
 	opacity: 1;
 }
 </style>

@@ -28,5 +28,9 @@ export default async function getExtensionDevDeps(
 		deps['vue'] = `^${await getPackageVersion('vue')}`;
 	}
 
+	if (types.includes('richtext')) {
+		deps['@tiptap/core'] = `^${await getPackageVersion('@tiptap/core')}`;
+	}
+
 	return deps;
 }

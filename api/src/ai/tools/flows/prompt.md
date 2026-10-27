@@ -28,7 +28,8 @@ All flows share these core fields for creation:
 - `color` - Hex color code (optional)
 - `description` - Flow description (optional)
 - `options` - Trigger-specific configuration object (optional)
-- `operation` - UUID of first operation (optional, set after creating operations) </core_fields>
+- `operation` - UUID of first operation (optional, set after creating operations)
+- `folder` - UUID of the flow folder holding this flow, or `null` for none (optional) </core_fields>
 
 <crud_actions>
 
@@ -164,7 +165,7 @@ UI button that users click to start flows
 	"trigger": "manual",
 	"options": {
 		"collections": ["posts", "products"],
-		"location": "item", // item|collection|both
+		"location": "item", // item|collection|both|hidden
 		"requireSelection": false, // Default true - requires item selection
 		"requireConfirmation": true,
 		"confirmationDescription": "AI Ghostwriter",
@@ -243,7 +244,7 @@ UI button that users click to start flows
 **Use the `operations` tool for complete details on:**
 
 - Creating and linking operations
-- 14x14 grid positioning system
+- Automatic positioning (omit `position_x`/`position_y`)
 - Data chain variable syntax
 - Operation-specific configuration
 
@@ -255,6 +256,9 @@ UI button that users click to start flows
 4. Update flow to set first operation as entry point
 
 **Why This Order:** Operations must exist before they can be referenced. UUIDs only available after creation.
+
+**Nested `operations` arrays are laid out automatically as well** - omit `position_x`/`position_y` there too. Use the
+`operations` tool to edit individual operations after creation.
 
 **Complete Example:**
 
@@ -270,7 +274,6 @@ UI button that users click to start flows
 // Step 2: Create operations with null connections
 {"action": "create", "data": {
   "flow": "flow-uuid-123", "key": "check_status", "type": "condition",
-  "position_x": 19, "position_y": 1,
   "options": {"filter": {"$trigger": {"payload": {"status": {"_eq": "published"}}}}},
   "resolve": null, "reject": null
 }}
@@ -278,7 +281,6 @@ UI button that users click to start flows
 
 {"action": "create", "data": {
   "flow": "flow-uuid-123", "key": "send_email", "type": "mail",
-  "position_x": 37, "position_y": 1,
   "options": {"to": ["admin@example.com"], "subject": "New post", "body": "{{$trigger.payload.title}}"},
   "resolve": null, "reject": null
 }}

@@ -3,9 +3,10 @@ import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(graphql()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 test(`scalar alias (REST)`, async () => {
 	const id = (
@@ -343,6 +344,68 @@ test(`m2o original + alias inside a fragment`, async () => {
 	expect(result).toEqual({
 		author: { name: 'Author A' },
 		aliased: { name: 'Author A' },
+	});
+});
+
+test(`m2o alias without the original inside a fragment`, async () => {
+	const id = (
+		await api.request(
+			createItem(collections.articles, {
+				title: `Article A`,
+				author: { name: 'Author A' },
+			}),
+		)
+	).id!;
+
+	const result = (
+		await api.query(`
+			fragment ArticleSummary on ${collections.articles} {
+				aliased: author {
+					name
+				}
+			}
+
+			query {
+				${collections.articles} (filter: { id: { _eq: "${id}" }}) {
+					...ArticleSummary
+				}
+			}
+		`)
+	)[collections.articles][0];
+
+	expect(result).toEqual({
+		aliased: { name: 'Author A' },
+	});
+});
+
+test(`o2m alias with arguments and without the original inside a fragment`, async () => {
+	const id = (
+		await api.request(
+			createItem(collections.articles, {
+				title: `Article A`,
+				links: [{ link: 'Link A' }, { link: 'Link B' }],
+			}),
+		)
+	).id!;
+
+	const result = (
+		await api.query(`
+			fragment ArticleSummary on ${collections.articles} {
+				aliased: links(limit: 1, sort: ["-link"]) {
+					link
+				}
+			}
+
+			query {
+				${collections.articles} (filter: { id: { _eq: "${id}" }}) {
+					...ArticleSummary
+				}
+			}
+		`)
+	)[collections.articles][0];
+
+	expect(result).toEqual({
+		aliased: [{ link: 'Link B' }],
 	});
 });
 

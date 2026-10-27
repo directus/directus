@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { AcceptableValue } from 'reka-ui';
-import { RadioGroupItem, RadioGroupRoot } from 'reka-ui';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CardPreview from '../select-card/card-preview.vue';
@@ -9,6 +7,7 @@ import { useCardSearch } from '../select-card/use-card-search';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
+import VRadioCards from '@/components/v-radio-cards.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -31,7 +30,6 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 const selectedValue = ref(props.value);
-const hasSelectedValue = computed(() => selectedValue.value !== null && selectedValue.value !== undefined);
 
 const { searchQuery, showSearch, filteredChoices, clearSearch } = useCardSearch(computed(() => props.choices));
 
@@ -42,9 +40,7 @@ watch(
 	},
 );
 
-function handleChange(value: AcceptableValue) {
-	emit('input', value as string | number);
-}
+const items = computed(() => filteredChoices.value.map((choice) => ({ ...choice, label: choice.text })));
 </script>
 
 <template>
@@ -54,38 +50,37 @@ function handleChange(value: AcceptableValue) {
 				<VIcon name="search" />
 			</template>
 			<template #append>
-				<VIcon v-if="searchQuery" name="close" clickable @click="clearSearch" />
+				<VIcon v-if="searchQuery" name="close" clickable :aria-label="t('clear_value')" @click="clearSearch" />
 			</template>
 		</VInput>
 
-		<RadioGroupRoot v-model="selectedValue" :disabled="disabled" class="group" @update:model-value="handleChange">
-			<TransitionGroup name="list" tag="div" class="grid" :class="{ 'two-column-floor': filteredChoices.length > 1 }">
-				<RadioGroupItem
-					v-for="choice in filteredChoices"
-					:key="choice.value"
-					:value="choice.value"
-					:aria-label="choice.text"
-					class="interface radio-root"
-					:class="{ active: selectedValue === choice.value, gray: hasSelectedValue && selectedValue !== choice.value }"
-				>
-					<CardPreview
-						:choice="choice"
-						:is-selected="selectedValue === choice.value"
-						:disabled="disabled"
-						selection-type="radio"
-					/>
-				</RadioGroupItem>
-			</TransitionGroup>
+		<VRadioCards
+			v-model="selectedValue"
+			:items="items"
+			:disabled="disabled"
+			class="grid"
+			:class="{ 'two-column-floor': filteredChoices.length > 1 }"
+			@update:model-value="emit('input', $event)"
+		>
+			<template #item="{ index, selected, labelId, descriptionId }">
+				<CardPreview
+					:choice="filteredChoices[index]!"
+					:is-selected="selected"
+					selection-type="radio"
+					:label-id="labelId"
+					:description-id="descriptionId"
+				/>
+			</template>
+		</VRadioCards>
 
-			<VNotice v-if="filteredChoices.length === 0 && searchQuery" type="info">
-				{{ t('no_results') }}
-			</VNotice>
-		</RadioGroupRoot>
+		<VNotice v-if="filteredChoices.length === 0" type="info">
+			{{ t(searchQuery ? 'no_results' : 'no_options_available') }}
+		</VNotice>
 	</div>
 </template>
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
 
-@include mixins.card-select-interface('.radio-root');
+@include mixins.card-select-interface('.v-radio-card', $item-selector: ':deep(.v-radio-card)');
 </style>

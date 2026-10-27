@@ -1,9 +1,4 @@
-// Shared layout, grid, and item styling for the select-card-radio and select-card-checkbox interfaces.
-// `$root-selector` is the reka-ui item selector each interface renders (`.radio-root` / `.checkbox-root`).
-// Disabled items differ: radio items are <button>s using the `:disabled` pseudo-class, while checkbox
-// items are wrappers toggling a `.disabled` class — hence the configurable `$hover` and `$disabled`
-// selectors.
-@mixin card-select-interface($root-selector, $hover: ':hover', $disabled: ':disabled') {
+@mixin card-select-interface($root-selector, $hover: ':hover', $disabled: ':disabled', $item-selector: '.interface') {
 	.card-select-interface {
 		--card-min-width: 12rem;
 
@@ -34,7 +29,7 @@
 			}
 		}
 
-		.interface {
+		#{$item-selector} {
 			--border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
 			display: flex;
 			flex-direction: column;
@@ -52,7 +47,8 @@
 				--border-color: var(--theme--primary);
 			}
 
-			&.active {
+			&.active,
+			&[data-state='checked'] {
 				--border-color: var(--theme--primary);
 			}
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { TabsList, TabsRoot } from 'reka-ui';
 import { computed, ref, watch } from 'vue';
 import TabContent from './tab-content.vue';

@@ -2,7 +2,7 @@
 import { useSizeClass } from '@directus/composables';
 import { isIn } from '@directus/utils';
 import type { IconName } from '@fortawesome/fontawesome-svg-core';
-import { camelCase, upperFirst } from 'lodash';
+import { camelCase, upperFirst } from 'lodash-es';
 import { computed, defineAsyncComponent } from 'vue';
 import { RTL_REVERSE_ICONS } from '../../constants/text-direction';
 import { components } from './custom-icons';

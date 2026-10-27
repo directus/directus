@@ -633,6 +633,41 @@ describe('Integration Tests', () => {
 
 				expect(signSpy.mock.calls[0]![1]).not.toBe('');
 				expect(mailService.send).toHaveBeenCalledTimes(1);
+				expect(mailService.send).toHaveBeenCalledWith(expect.objectContaining({ to: 'test@example.com' }));
+			});
+
+			it('should verify the email address stored on the matched user, not the one provided', async () => {
+				vi.spyOn(SettingsService.prototype, 'readSingleton').mockResolvedValueOnce({
+					public_registration: true,
+					public_registration_verify_email: true,
+					public_registration_role: 'role-id',
+				});
+
+				// An accent variation of the stored email, which the lookup can match on MySQL/MariaDB
+				mockGetUserByEmail({
+					id: 'user-id-19',
+					status: 'unverified',
+					email: 'test@example.com',
+				});
+
+				const mailService = new MailService({ schema });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.registerUser({
+					email: 'tëst@example.com',
+					password: 'Password123!',
+					verification_url: 'https://example.com/verify',
+				});
+
+				const mail = vi.mocked(mailService.send).mock.lastCall![0];
+				const token = new URL(mail.template!.data['url']).searchParams.get('token');
+
+				expect(mail.to).toBe('test@example.com');
+				expect(jwt.decode(token!)).toEqual(expect.objectContaining({ email: 'test@example.com' }));
 			});
 		});
 

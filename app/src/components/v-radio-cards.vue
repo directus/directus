@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RadioGroupItem, RadioGroupRoot } from 'reka-ui';
+import { useId } from 'vue';
 import VIcon from './v-icon/v-icon.vue';
 
 export interface RadioCardItem {
@@ -29,30 +30,48 @@ withDefaults(defineProps<Props>(), {
 	disabled: false,
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits<{
+	'update:modelValue': [value: string | number];
+}>();
+
+const groupId = useId();
 </script>
 
 <template>
 	<RadioGroupRoot
 		class="v-radio-cards"
-		:model-value="modelValue != null ? String(modelValue) : undefined"
+		:model-value="modelValue != null ? modelValue : undefined"
 		:disabled="disabled"
-		@update:model-value="emit('update:modelValue', $event)"
+		@update:model-value="emit('update:modelValue', $event as string | number)"
 	>
 		<RadioGroupItem
-			v-for="item in items"
-			:key="String(item.value)"
-			:value="String(item.value)"
+			v-for="(item, index) in items"
+			:key="item.value"
+			:value="item.value"
 			:disabled="item.disabled || disabled"
 			class="v-radio-card"
+			:class="{ custom: $slots.item }"
+			:aria-labelledby="item.label ? `${groupId}-${index}-label` : undefined"
+			:aria-describedby="item.description ? `${groupId}-${index}-description` : undefined"
 		>
-			<div v-if="item.icon" class="icon-box">
-				<VIcon :name="item.icon" />
-			</div>
-			<div class="text">
-				<p v-if="item.label" class="label type-text-bold">{{ item.label }}</p>
-				<p v-if="item.description" class="description type-text">{{ item.description }}</p>
-			</div>
+			<slot
+				name="item"
+				:item="item"
+				:index="index"
+				:selected="modelValue === item.value"
+				:label-id="`${groupId}-${index}-label`"
+				:description-id="`${groupId}-${index}-description`"
+			>
+				<div v-if="item.icon" class="icon-box">
+					<VIcon :name="item.icon" />
+				</div>
+				<div class="text">
+					<p v-if="item.label" :id="`${groupId}-${index}-label`" class="label type-text-bold">{{ item.label }}</p>
+					<p v-if="item.description" :id="`${groupId}-${index}-description`" class="description type-text">
+						{{ item.description }}
+					</p>
+				</div>
+			</slot>
 		</RadioGroupItem>
 	</RadioGroupRoot>
 </template>
@@ -72,7 +91,7 @@ const emit = defineEmits(['update:modelValue']);
 	gap: 1rem;
 }
 
-.v-radio-card {
+.v-radio-card:not(.custom) {
 	display: flex;
 	flex-direction: column;
 	gap: 0.75rem;

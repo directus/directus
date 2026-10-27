@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useIntersectionObserver } from '@vueuse/core';
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import { computed, ref, useAttrs, watch } from 'vue';
 import { requestQueue } from '@/api';
 

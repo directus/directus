@@ -232,7 +232,7 @@ export async function down(knex: Knex) {
 		table.setNullable('policy');
 	});
 
-	const context = { knex, schema: await getSchema() };
+	const context = { knex, schema: await getSchema({ database: knex }) };
 
 	// fetch all roles
 	const roles: Array<{ id: string | null }> = await knex.select('id').from('directus_roles');

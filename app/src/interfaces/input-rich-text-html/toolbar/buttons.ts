@@ -1,5 +1,6 @@
 import type { Editor } from '@tiptap/vue-3';
 import type { Component } from 'vue';
+import { isAnyLinkActive, unsetAnyLink } from '../composables/use-link';
 import { PAGE_BREAK_NODE } from '../extensions/page-break';
 import ColorMenu from './menus/color-menu.vue';
 import DateTimeMenu from './menus/datetime-menu.vue';
@@ -38,8 +39,10 @@ export interface ToolbarContext {
 
 export interface ToolbarButton {
 	icon: string;
-	/** i18n key, resolved with `t()` at render time */
+	/** i18n key, resolved with `t()` at render time. */
 	label: string;
+	/** The label is plain text or a `$t:` key instead, as on a button from a richtext extension. */
+	literalLabel?: boolean;
 	/** Click-command buttons set this. Menu buttons (`component`) omit it. */
 	command?: (editor: Editor, ctx: ToolbarContext) => void;
 	isActive?: (editor: Editor, ctx: ToolbarContext) => boolean;
@@ -284,13 +287,13 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		icon: 'link',
 		label: 'wysiwyg_options.link',
 		command: (_e, ctx) => ctx.link.open(),
-		isActive: (e) => e.isActive('link'),
+		isActive: (e) => isAnyLinkActive(e),
 	},
 	unlink: {
 		icon: 'link_off',
 		label: 'wysiwyg_options.unlink',
-		command: (e) => e.chain().focus().extendMarkRange('link').unsetLink().run(),
-		disabled: (e) => !e.isActive('link'),
+		command: (e) => unsetAnyLink(e),
+		disabled: (e) => !isAnyLinkActive(e),
 	},
 	customImage: {
 		icon: 'image',

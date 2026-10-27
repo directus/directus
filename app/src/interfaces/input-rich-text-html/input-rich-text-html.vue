@@ -1,25 +1,26 @@
 <script setup lang="ts">
+import { RICHTEXT_EDITABLE_INJECT } from '@directus/constants';
 import type { SettingsStorageAssetPreset } from '@directus/types';
 import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
-import { computed, nextTick, ref, type Ref, toRefs, watch } from 'vue';
+import { computed, nextTick, provide, ref, type Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { comparisonSchema } from './composables/normalization-diff';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
 import { useMedia } from './composables/use-media';
 import { useNormalizationWarning } from './composables/use-normalization-warning';
+import { usePasteWarning } from './composables/use-paste-warning';
 import { useSourceCode } from './composables/use-source-code';
 import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
 import MediaDrawer from './drawers/media-drawer.vue';
 import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
+import PasteWarningDialog from './drawers/paste-warning-dialog.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
-import { editorExtensions } from './extensions';
-import { ComparisonDiff } from './extensions/comparison-diff';
-import { buildCustomFormats } from './extensions/custom-formats';
+import { buildFieldSchema, fieldEditorExtensions } from './extensions';
 import { LinkShortcut } from './extensions/link-shortcut';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
+import ContributedBubbleMenu from './toolbar/menus/contributed-bubble-menu.vue';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
@@ -27,6 +28,7 @@ import VNotice from '@/components/v-notice.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
 import { parseGlobalMimeTypeAllowList, useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
+import type { StoredExtensionOptions } from '@/rich-text/register';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
@@ -43,6 +45,10 @@ const props = withDefaults(
 		folder?: string;
 		/** Legacy TinyMCE `customFormats` option (array or JSON string); see extensions/custom-formats.ts. */
 		customFormats?: unknown;
+		/** Field `extensions` option: ids of the registered richtext extensions this field opted into. */
+		extensions?: string[];
+		/** Field `extensionOptions` option: per-extension values, keyed by extension id. */
+		extensionOptions?: StoredExtensionOptions;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -78,12 +84,14 @@ if (
 	);
 }
 
-// built once at init: `customFormats` is design-time config, not reactive
-const {
-	extensions: customFormatExtensions,
-	formats: customFormatList,
-	key: customFormatsKey,
-} = buildCustomFormats(props.customFormats);
+// built once: the schema is frozen when the editor is constructed, so a field options change needs a remount
+// In comparison mode ComparisonDiff joins the schema, so precomputed diff spans don't read as loss.
+const fieldSchema = buildFieldSchema({
+	customFormats: props.customFormats,
+	extensions: props.extensions,
+	extensionOptions: props.extensionOptions,
+	comparisonMode: props.comparisonMode,
+});
 
 const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
 
@@ -93,11 +101,6 @@ const fontFamily = computed(() => {
 	return `var(--theme--fonts--${token}--font-family)`;
 });
 
-// in comparison mode ComparisonDiff joins the check, so precomputed diff spans don't read as loss
-const { extensions: normalizationExtensions, schemaKey: normalizationSchemaKey } = props.comparisonMode
-	? comparisonSchema(props.customFormats)
-	: { extensions: customFormatExtensions, schemaKey: customFormatsKey };
-
 const {
 	normalizationLocked,
 	normalizationWarningOpen,
@@ -106,7 +109,7 @@ const {
 	onLockedClick,
 	confirmNormalizationWarning,
 	cancelNormalizationWarning,
-} = useNormalizationWarning(value, normalizationExtensions, normalizationSchemaKey);
+} = useNormalizationWarning(value, fieldSchema.extensions, fieldSchema.key);
 
 // comparison runs it to pick the source fallback below; plain read-only display has nothing to act on
 if (!props.nonEditable || props.comparisonMode) checkValue();
@@ -120,6 +123,9 @@ watch(normalizationLocked, (locked) => emit('readonly', locked), { immediate: tr
 const isEditable = computed(
 	() => !props.disabled && !props.nonEditable && !props.comparisonMode && !normalizationLocked.value,
 );
+
+// `editor.isEditable` is not reactive, so node views inject this to follow a later lock
+provide(RICHTEXT_EDITABLE_INJECT, isEditable);
 
 const editorDir = computed(() => (props.direction === 'rtl' ? 'rtl' : 'ltr'));
 
@@ -146,17 +152,17 @@ function updateCount(instance: Editor) {
 const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
 const editor = useEditor({
-	// LinkShortcut is per-instance (its Mod-K handler opens this editor's drawer); ComparisonDiff only
-	// joins the schema in comparison mode, so normal editing keeps stripping diff spans
+	// LinkShortcut is per-instance (its Mod-K handler opens this editor's drawer), so it stays out of
+	// the shared field schema the normalization checks re-parse with
 	extensions: [
-		...editorExtensions,
-		...customFormatExtensions,
+		...fieldEditorExtensions(fieldSchema.extensions),
 		LinkShortcut.configure({ onTrigger: () => openLinkDrawer() }),
-		...(props.comparisonMode ? [ComparisonDiff] : []),
 	],
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
+		// public styling hook: richtext extensions scope their CSS under it, so never rename it
+		attributes: { class: 'richtext-content' },
 		// media nodes handle dblclick themselves in their node view
 		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
 			if (node.type.name === 'image') {
@@ -167,13 +173,24 @@ const editor = useEditor({
 
 			return false;
 		},
-		// Cmd/Ctrl+click opens links in a new tab (parity with TinyMCE)
-		handleClick: (_view, _pos, event) => {
-			if (event.button !== 0 || !(event.metaKey || event.ctrlKey)) return false;
-			const link = (event.target as HTMLElement | null)?.closest('a');
-			if (!link?.href) return false;
-			window.open(link.href, '_blank', 'noopener,noreferrer');
-			return true;
+		handlePaste: (view, event) => handlePaste(view, event),
+		handleDOMEvents: {
+			// handleClick fires on mouseup, too late to preventDefault; the browser would follow a linked image's `<a>`
+			click: (view, event) => {
+				if (!view.editable || event.button !== 0) return false;
+				const link = (event.target as HTMLElement | null)?.closest('a');
+				if (!link?.href) return false;
+
+				event.preventDefault();
+
+				// Cmd/Ctrl+click opens links in a new tab (parity with TinyMCE)
+				if (event.metaKey || event.ctrlKey) {
+					window.open(link.href, '_blank', 'noopener,noreferrer');
+					return true;
+				}
+
+				return false;
+			},
 		},
 	},
 	onCreate: ({ editor }) => {
@@ -186,6 +203,19 @@ const editor = useEditor({
 		emit('input', editor.isEmpty ? null : encodePageBreaks(editor.getHTML()));
 	},
 });
+
+const {
+	pasteNoticeVisible,
+	pasteWarningOpen,
+	pasteWarningDiff,
+	pasteUndoable,
+	handlePaste,
+	openPasteWarning,
+	keepPaste,
+	undoPaste,
+	takeRawPaste,
+	dismissPasteWarning,
+} = usePasteWarning(editor, fieldSchema.extensions);
 
 function onEditorClick() {
 	if (props.disabled || props.nonEditable || props.comparisonMode) return;
@@ -206,6 +236,15 @@ function enterRawMode() {
 	}
 
 	rawMode.value = true;
+}
+
+// The clipboard HTML goes in verbatim, so raw mode has to be on before the emit: the value watcher
+// skips syncing while it's on, and would otherwise push the new value back through the schema.
+function onPasteRaw() {
+	const html = takeRawPaste();
+	if (html === null) return;
+	rawMode.value = true;
+	emit('input', html);
 }
 
 // the unlock flips `isEditable` on the next flush, so focus has to wait for it
@@ -253,6 +292,7 @@ const {
 	linkDrawerOpen,
 	linkSelection,
 	isEditingLink,
+	targetsImage,
 	isLinkSaveable,
 	openLinkDrawer,
 	closeLinkDrawer,
@@ -282,7 +322,7 @@ const {
 	saveSourceCode,
 	confirmSaveSourceCode,
 	cancelNormalize,
-} = useSourceCode(editor as Ref<Editor>, customFormatExtensions);
+} = useSourceCode(editor as Ref<Editor>, fieldSchema.extensions);
 
 // pause the surrounding view's focus trap while a drawer is open so its inputs stay reachable
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
@@ -314,6 +354,8 @@ watch(
 		if (!editor.value) return;
 		// compare the encoded (stored) form so a re-emitted page-break marker doesn't look like a change
 		if (encodePageBreaks(editor.value.getHTML()) === props.value) return;
+		// the content the notice refers to is gone with the replaced value
+		dismissPasteWarning();
 		syncValue(editor.value, props.value);
 		if (!props.nonEditable || props.comparisonMode) checkValue();
 	},
@@ -334,6 +376,10 @@ onKeyStroke('Escape', () => {
 			{{ t('wysiwyg_options.normalization_locked_learn_more') }}
 		</a>
 	</VNotice>
+	<VNotice v-if="pasteNoticeVisible && !rawMode" type="warning" multiline class="paste-notice">
+		{{ t('wysiwyg_options.paste_warning_notice') }}
+		<a href="#" @click.prevent="openPasteWarning">{{ t('wysiwyg_options.paste_warning_see_removed') }}</a>
+	</VNotice>
 	<div
 		class="wysiwyg"
 		:class="{ disabled, 'non-editable': nonEditable || comparisonMode, fullscreen, visualaid }"
@@ -344,7 +390,8 @@ onKeyStroke('Escape', () => {
 			:editor="editor"
 			:toolbar="toolbar"
 			:font="font"
-			:custom-formats="customFormatList"
+			:custom-formats="fieldSchema.formats"
+			:contributed-buttons="fieldSchema.buttons"
 			:disabled="disabled || normalizationLocked"
 			:fullscreen="fullscreen"
 			:visualaid="visualaid"
@@ -383,7 +430,13 @@ onKeyStroke('Escape', () => {
 			{{ softLength - count }}
 		</span>
 
-		<TableBubbleMenu v-if="!nonEditable && !comparisonMode && !normalizationLocked" :editor="editor" />
+		<!-- `isEditable`, not `shouldShow`: a lock flip changes no selection, so an open menu would stay usable -->
+		<TableBubbleMenu v-if="isEditable" :editor="editor" />
+		<ContributedBubbleMenu
+			v-if="fieldSchema.bubbleMenus.length > 0 && isEditable"
+			:editor="editor"
+			:menus="fieldSchema.bubbleMenus"
+		/>
 
 		<ImageDrawer
 			v-model="imageDrawerOpen"
@@ -401,6 +454,7 @@ onKeyStroke('Escape', () => {
 			v-model="linkDrawerOpen"
 			v-model:link-selection="linkSelection"
 			:editing="isEditingLink"
+			:targets-image="targetsImage"
 			:saveable="isLinkSaveable"
 			@save="saveLink"
 			@unlink="unlink"
@@ -438,6 +492,15 @@ onKeyStroke('Escape', () => {
 			@confirm="onWarningConfirm"
 			@cancel="cancelNormalizationWarning"
 			@raw="enterRawMode"
+		/>
+
+		<PasteWarningDialog
+			v-model="pasteWarningOpen"
+			:diff="pasteWarningDiff"
+			:undoable="pasteUndoable"
+			@keep="keepPaste"
+			@undo="undoPaste"
+			@raw="onPasteRaw"
 		/>
 	</div>
 </template>
@@ -489,7 +552,8 @@ onKeyStroke('Escape', () => {
 	}
 }
 
-.normalization-notice {
+.normalization-notice,
+.paste-notice {
 	margin-block-end: 0.5rem;
 }
 
@@ -513,7 +577,8 @@ onKeyStroke('Escape', () => {
 }
 
 /* Content styles, scoped to the ProseMirror container so they neither leak into the app nor inherit app styles. */
-.wysiwyg :deep(.ProseMirror) {
+/* :where() keeps these at `.ProseMirror p` specificity, so extension rules scoped under .richtext-content can override them. */
+:where(.wysiwyg) :deep(.ProseMirror) {
 	min-block-size: var(--input-height-tall);
 	padding: 1.125rem;
 	outline: none;
@@ -646,8 +711,10 @@ onKeyStroke('Escape', () => {
 	}
 
 	// `.range-selected` (RangeSelectedAtoms) covers selections that merely span the leaf, which
-	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image
-	:is(img, hr, .page-break):is(.ProseMirror-selectednode, .range-selected) {
+	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image.
+	// A linked image renders as `<a><img></a>`, so the class lands on the anchor, not the img
+	:is(img, hr, .page-break):is(.ProseMirror-selectednode, .range-selected),
+	a:is(.ProseMirror-selectednode, .range-selected) > img {
 		outline: 2px solid var(--theme--primary);
 	}
 
@@ -749,8 +816,10 @@ onKeyStroke('Escape', () => {
 		margin-block-start: 0.1875rem;
 		text-align: center;
 	}
+}
 
-	// content versioning / revision diff highlights (comparison mode)
+/* Outside the :where() block so extension styles cannot hide the diff highlights. */
+.wysiwyg :deep(.ProseMirror) {
 	.comparison-diff--added {
 		color: var(--theme--success);
 		background-color: var(--theme--success-background);

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CheckboxGroupRoot, CheckboxRoot } from 'reka-ui';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, useId, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CardPreview from '../select-card/card-preview.vue';
 import type { Choice } from '../select-card/types';
@@ -29,6 +29,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+const choiceGroupId = useId();
 
 const selectedValues = ref<string[]>([...(props.value ?? [])]);
 
@@ -44,6 +45,10 @@ watch(
 function handleChange(values: string[]) {
 	emit('input', [...values]);
 }
+
+function getChoiceId(value: string) {
+	return `${choiceGroupId}-${encodeURIComponent(value)}`;
+}
 </script>
 
 <template>
@@ -53,7 +58,7 @@ function handleChange(values: string[]) {
 				<VIcon name="search" />
 			</template>
 			<template #append>
-				<VIcon v-if="searchQuery" name="close" clickable @click="clearSearch" />
+				<VIcon v-if="searchQuery" name="close" clickable :aria-label="t('clear_value')" @click="clearSearch" />
 			</template>
 		</VInput>
 
@@ -76,19 +81,26 @@ function handleChange(values: string[]) {
 						disabled,
 					}"
 				>
-					<CheckboxRoot :value="choice.value" :disabled="disabled" class="checkbox-root" :aria-label="choice.text">
+					<CheckboxRoot
+						:value="choice.value"
+						:disabled="disabled"
+						class="checkbox-root"
+						:aria-labelledby="`${getChoiceId(choice.value)}-label`"
+						:aria-describedby="choice.description ? `${getChoiceId(choice.value)}-description` : undefined"
+					>
 						<CardPreview
 							:choice="choice"
 							:is-selected="selectedValues.includes(choice.value)"
-							:disabled="disabled"
 							selection-type="checkbox"
+							:label-id="`${getChoiceId(choice.value)}-label`"
+							:description-id="`${getChoiceId(choice.value)}-description`"
 						/>
 					</CheckboxRoot>
 				</div>
 			</TransitionGroup>
 
-			<VNotice v-if="filteredChoices.length === 0 && searchQuery" type="info">
-				{{ t('no_results') }}
+			<VNotice v-if="filteredChoices.length === 0" type="info">
+				{{ t(searchQuery ? 'no_results' : 'no_options_available') }}
 			</VNotice>
 		</CheckboxGroupRoot>
 	</div>

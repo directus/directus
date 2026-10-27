@@ -18,7 +18,6 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	CACHE_SKIP_ALLOWED: 'boolean',
 	CACHE_AUTO_PURGE_IGNORE_LIST: 'array',
-	CACHE_SCHEMA_MAX_ITERATIONS: 'number',
 	CACHE_SCHEMA_SYNC_TIMEOUT: 'number',
 	CACHE_SCHEMA_FREEZE_ENABLED: 'boolean',
 
@@ -89,6 +88,11 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	MCP_OAUTH_CIMD_BLOCKED_TLDS: 'array',
 
 	EMAIL_SMTP_PASSWORD: 'string',
+
+	EMAIL_MAILTRAP_TOKEN: 'string',
+	EMAIL_MAILTRAP_SANDBOX: 'boolean',
+	EMAIL_MAILTRAP_TEST_INBOX_ID: 'number',
+	EMAIL_MAILTRAP_BULK: 'boolean',
 
 	'STORAGE_.+_SECRET': 'string',
 

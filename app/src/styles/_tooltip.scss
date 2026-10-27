@@ -1,3 +1,8 @@
+// Wrapper is force-mounted and stays in the DOM; without this it intercepts pointer events after close.
+[data-reka-popper-content-wrapper]:has(> #app-tooltip-content) {
+	pointer-events: none;
+}
+
 .tooltip {
 	--tooltip-foreground-color: var(--foreground-inverted);
 	--tooltip-background-color: var(--background-inverted);

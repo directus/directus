@@ -2,22 +2,22 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { parseArgs } from '../schema/parse-args.js';
 import { getQuery } from '../schema/parse-query.js';
 import { getAggregateQuery } from '../utils/aggregate-query.js';
-import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
+import { buildSelections } from '../utils/build-selections.js';
 import { resolveQuery } from './query.js';
 
-vi.mock('../utils/replace-fragments.js');
+vi.mock('../utils/build-selections.js');
 vi.mock('../schema/parse-args.js');
 vi.mock('../utils/aggregate-query.js');
 vi.mock('../schema/parse-query.js');
 
 describe('resolveQuery', () => {
-	const mockReplaceFragments = vi.fn();
+	const mockGetSelections = vi.fn();
 	const mockParseArgs = vi.fn();
 	const mockGetAggregateQuery = vi.fn();
 	const mockGetQuery = vi.fn();
 
 	beforeEach(() => {
-		vi.mocked(replaceFragmentsInSelections).mockImplementation(mockReplaceFragments);
+		vi.mocked(buildSelections).mockImplementation(mockGetSelections);
 		vi.mocked(parseArgs).mockImplementation(mockParseArgs);
 		vi.mocked(getAggregateQuery).mockImplementation(mockGetAggregateQuery);
 		vi.mocked(getQuery).mockImplementation(mockGetQuery);
@@ -30,7 +30,7 @@ describe('resolveQuery', () => {
 	});
 
 	test('system scope prefixes collection with directus_', async () => {
-		mockReplaceFragments.mockReturnValue([{}]);
+		mockGetSelections.mockReturnValue([{}]);
 		mockParseArgs.mockReturnValue({});
 
 		mockGetQuery.mockResolvedValue({
@@ -60,7 +60,7 @@ describe('resolveQuery', () => {
 	});
 
 	test('returns null when selections are missing', async () => {
-		mockReplaceFragments.mockReturnValue(null);
+		mockGetSelections.mockReturnValue(null);
 
 		const gql: any = {
 			scope: 'app',
@@ -83,7 +83,7 @@ describe('resolveQuery', () => {
 	});
 
 	test('aggregate branch calls getAggregateQuery with correct collection name', async () => {
-		mockReplaceFragments.mockReturnValue([{}]);
+		mockGetSelections.mockReturnValue([{}]);
 		mockParseArgs.mockReturnValue({ id: 'id' });
 
 		mockGetAggregateQuery.mockReturnValue({
@@ -114,7 +114,7 @@ describe('resolveQuery', () => {
 	});
 
 	test('query by id calls getQuery with correct collection name', async () => {
-		mockReplaceFragments.mockReturnValue([{}]);
+		mockGetSelections.mockReturnValue([{}]);
 		mockParseArgs.mockReturnValue({ id: 'abc' });
 
 		mockGetQuery.mockReturnValue({
@@ -146,7 +146,7 @@ describe('resolveQuery', () => {
 	});
 
 	test('query by version injects versionRaw to query', async () => {
-		mockReplaceFragments.mockReturnValue([{}]);
+		mockGetSelections.mockReturnValue([{}]);
 		mockParseArgs.mockReturnValue({ id: 'abc' });
 
 		mockGetQuery.mockReturnValue({
@@ -178,7 +178,7 @@ describe('resolveQuery', () => {
 	});
 
 	test('properly resolves fields to correct path for each nested function field', async () => {
-		mockReplaceFragments.mockReturnValue([{}]);
+		mockGetSelections.mockReturnValue([{}]);
 		mockParseArgs.mockReturnValue({ id: 'abc' });
 
 		mockGetAggregateQuery.mockResolvedValue({
@@ -208,7 +208,7 @@ describe('resolveQuery', () => {
 	});
 
 	test('groupBy field named "group"', async () => {
-		mockReplaceFragments.mockReturnValue([{}]);
+		mockGetSelections.mockReturnValue([{}]);
 		mockParseArgs.mockReturnValue({});
 
 		mockGetAggregateQuery.mockResolvedValue({
@@ -242,7 +242,7 @@ describe('resolveQuery', () => {
 	});
 
 	test('groupBy function field', async () => {
-		mockReplaceFragments.mockReturnValue([{}]);
+		mockGetSelections.mockReturnValue([{}]);
 		mockParseArgs.mockReturnValue({});
 
 		mockGetAggregateQuery.mockResolvedValue({
@@ -276,7 +276,7 @@ describe('resolveQuery', () => {
 	});
 
 	test('inject group field for each item when grouping', async () => {
-		mockReplaceFragments.mockReturnValue([{}]);
+		mockGetSelections.mockReturnValue([{}]);
 		mockParseArgs.mockReturnValue({});
 
 		mockGetAggregateQuery.mockResolvedValue({

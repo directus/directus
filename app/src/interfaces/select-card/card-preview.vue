@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type { Choice } from './types';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VImage from '@/components/v-image.vue';
@@ -9,13 +9,12 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 interface CardPreviewProps {
 	choice: Choice;
 	isSelected: boolean;
-	disabled?: boolean;
 	selectionType: 'radio' | 'checkbox';
+	labelId: string;
+	descriptionId?: string;
 }
 
-const props = withDefaults(defineProps<CardPreviewProps>(), {
-	disabled: false,
-});
+const props = defineProps<CardPreviewProps>();
 
 const iconName = computed(() => {
 	if (props.selectionType === 'checkbox') {
@@ -26,10 +25,15 @@ const iconName = computed(() => {
 });
 
 const imageError = ref(false);
+
+watch(
+	() => props.choice.image,
+	() => (imageError.value = false),
+);
 </script>
 
 <template>
-	<div class="preview" :aria-checked="isSelected" :aria-disabled="disabled">
+	<div class="preview" :class="{ selected: isSelected }">
 		<div v-if="choice.icon_type === 'image' && choice.image && !imageError" class="image">
 			<VImage
 				:src="getAssetUrl(choice.image, { imageKey: 'system-medium-contain' })"
@@ -53,8 +57,8 @@ const imageError = ref(false);
 			/>
 		</div>
 	</div>
-	<VTextOverflow :text="choice.text" class="name type-label" />
-	<span v-if="choice.description" class="description type-text">
+	<VTextOverflow :id="labelId" :text="choice.text" class="name type-label" />
+	<span v-if="choice.description" :id="descriptionId" class="description type-text">
 		{{ choice.description }}
 	</span>
 </template>
@@ -113,7 +117,7 @@ const imageError = ref(false);
 	}
 }
 
-.preview[aria-checked='true'] {
+.preview.selected {
 	border-color: var(--theme--primary);
 	box-shadow: inset 0 0 0 var(--theme--border-width) var(--theme--primary);
 }
