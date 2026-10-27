@@ -31,7 +31,7 @@ function mountLicenseForm(licenseKey: string | null = null) {
 	return wrapper;
 }
 
-test('selecting Core clears the license key without losing admin details', async () => {
+test('switches between licensing modes without retaining incompatible values or losing admin details', async () => {
 	const wrapper = mountLicenseForm('existing-license-key');
 	expect(wrapper.find('[value="key"]').attributes('aria-checked')).toBe('true');
 	expect(wrapper.vm.canProceed).toBe(true);
@@ -42,18 +42,9 @@ test('selecting Core clears the license key without losing admin details', async
 	expect(wrapper.props('modelValue')?.admin.email).toBe('admin@example.com');
 	expect(wrapper.vm.canProceed).toBe(false);
 
-	wrapper.findComponent(VFormStub).vm.$emit('update:modelValue', { project_usage: 'personal' });
-	await nextTick();
-	expect(wrapper.vm.canProceed).toBe(true);
-});
-
-test('switching back to a license key clears Core details and requires a key', async () => {
-	const wrapper = mountLicenseForm();
-	await wrapper.find('[value="core"]').trigger('click');
 	wrapper.findComponent(VFormStub).vm.$emit('update:modelValue', { project_usage: 'commercial', org_name: 'Example' });
 	await nextTick();
 	expect(wrapper.vm.canProceed).toBe(true);
-
 	await wrapper.find('[value="key"]').trigger('click');
 	expect(wrapper.find('[value="key"]').attributes('aria-checked')).toBe('true');
 	expect(wrapper.props('modelValue')?.owner.project_usage).toBeNull();

@@ -1,26 +1,7 @@
-import { mount, shallowMount } from '@vue/test-utils';
-import { describe, expect, test } from 'vitest';
+import { mount } from '@vue/test-utils';
+import { expect, test } from 'vitest';
 import SelectCardRadio from './select-card-radio.vue';
 import { i18n } from '@/lang';
-
-const global = {
-	plugins: [i18n],
-	renderStubDefaultSlot: true,
-	stubs: {
-		VNotice: { template: '<div class="notice"><slot /></div>' },
-	},
-};
-
-describe('SelectCardRadio', () => {
-	test('shows an empty state when no choices are configured', () => {
-		const wrapper = shallowMount(SelectCardRadio, {
-			props: { value: null, choices: [] },
-			global,
-		});
-
-		expect(wrapper.find('.notice').text()).toBe('No options available');
-	});
-});
 
 test('selects numeric cards through VRadioCards and follows external resets', async () => {
 	const wrapper = mount(SelectCardRadio, {
@@ -35,6 +16,7 @@ test('selects numeric cards through VRadioCards and follows external resets', as
 			plugins: [i18n],
 			stubs: {
 				VIcon: true,
+				VNotice: { template: '<div class="notice"><slot /></div>' },
 				VInput: true,
 				CardPreview: { props: ['choice', 'labelId'], template: '<span :id="labelId">{{ choice.text }}</span>' },
 			},
@@ -48,6 +30,8 @@ test('selects numeric cards through VRadioCards and follows external resets', as
 	await wrapper.setProps({ value: null });
 	expect(cards.every((card) => card.attributes('aria-checked') === 'false')).toBe(true);
 	await wrapper.setProps({ disabled: true });
-	await cards[0]!.trigger('click');
+	await wrapper.find('[role="radio"]').trigger('click');
 	expect(wrapper.emitted('input')).toHaveLength(1);
+	await wrapper.setProps({ choices: [] });
+	expect(wrapper.find('.notice').text()).toBe('No options available');
 });

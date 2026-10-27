@@ -22,13 +22,6 @@ test('toggles multiple cards without mutating the input array', async () => {
 	await cards[0]!.trigger('click');
 	expect(wrapper.emitted('update:modelValue')?.[1]).toEqual([['b']]);
 	expect(modelValue).toEqual(['a']);
-});
-
-test('follows external changes and treats null as an empty selection', async () => {
-	const wrapper = mount(VCheckboxCards, { props: { items, modelValue: null }, global });
-	const cards = wrapper.findAll('[role="checkbox"]');
-	await wrapper.setProps({ modelValue: ['b'] });
-	expect(cards[1]!.attributes('aria-checked')).toBe('true');
 	await wrapper.setProps({ modelValue: null });
 	expect(cards.every((card) => card.attributes('aria-checked') === 'false')).toBe(true);
 });

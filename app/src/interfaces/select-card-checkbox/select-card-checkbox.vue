@@ -29,7 +29,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const { searchQuery, showSearch, filteredChoices, clearSearch } = useCardSearch(computed(() => props.choices));
+const { searchQuery, showSearch, filteredChoices } = useCardSearch(computed(() => props.choices));
 
 const items = computed(() => filteredChoices.value.map((choice) => ({ ...choice, label: choice.text })));
 </script>
@@ -41,7 +41,7 @@ const items = computed(() => filteredChoices.value.map((choice) => ({ ...choice,
 				<VIcon name="search" />
 			</template>
 			<template #append>
-				<VIcon v-if="searchQuery" name="close" clickable :aria-label="t('clear_value')" @click="clearSearch" />
+				<VIcon v-if="searchQuery" name="close" clickable :aria-label="t('clear_value')" @click="searchQuery = ''" />
 			</template>
 		</VInput>
 
