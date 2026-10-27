@@ -29,7 +29,6 @@ setup_launch: Lancer Directus
 setup_license_title: Configurez votre licence
 license_onboarding_title: Vous avez une clé de licence ?
 project_usage: Pour quoi utilisez-vous Directus ?
-project_usage_personal:
 org_name: Nom de l’organisation
 license_key_option: J’ai une clé de licence
 core_option: J'utilise le plan de base
@@ -1303,7 +1302,6 @@ licensing:
   resolve_submit: Désactiver les éléments sélectionnés
   resolve_show_n_more: 'Afficher {count} de plus'
   resolve_section_flows: Flux
-  resolve_section_collections_caption:
   resolve_sso_admin_email: Adresse courriel
   resolve_sso_admin_password: Mot de passe
   key: Clé de licence
@@ -2159,6 +2157,7 @@ interfaces:
     wysiwyg: Éditeur avancé
     description: Un éditeur de texte avancé pour écrire du contenu HTML
     toolbar: Barre d’outils
+    extensions: Extensions
     custom_formats: Formats personnalisés
     folder_note: Dossier pour les fichiers téléchargés. Cela n'affecte pas les fichiers existants.
     imageToken: Jeton d'accès statique
