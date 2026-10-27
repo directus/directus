@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions",
-	"version": "4.0.5",
+	"version": "4.0.6",
 	"description": "Utilities and types for Directus extensions",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -41,6 +41,8 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@tiptap/core": "catalog:",
+		"@tiptap/pm": "catalog:",
 		"@types/fs-extra": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
@@ -54,12 +56,16 @@
 		"vue-router": "catalog:"
 	},
 	"peerDependencies": {
+		"@tiptap/core": "catalog:",
 		"knex": "catalog:",
 		"pino": "catalog:",
 		"vue": "catalog:",
 		"vue-router": "catalog:"
 	},
 	"peerDependenciesMeta": {
+		"@tiptap/core": {
+			"optional": true
+		},
 		"knex": {
 			"optional": true
 		},

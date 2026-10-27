@@ -11,6 +11,7 @@ export type RunExclusiveOptions = {
 	/**
 	 * How long to wait for a result before giving up, in ms.
 	 * Taken from the caller that starts the run; callers joining it in this process share its deadline.
+	 * `Infinity` waits for as long as the run takes, relying on the lock lease to hand over a run that died.
 	 * @default 300_000
 	 */
 	timeout?: number;

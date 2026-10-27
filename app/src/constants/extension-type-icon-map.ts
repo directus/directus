@@ -7,6 +7,7 @@ export const extensionTypeIconMap: Record<ExtensionType, string> = {
 	module: 'web',
 	panel: 'analytics',
 	theme: 'palette',
+	richtext: 'edit_note',
 	hook: 'webhook',
 	endpoint: 'api',
 	operation: 'flowsheet',

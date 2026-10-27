@@ -1,5 +1,6 @@
 import type { DirectusFile } from '../../../schema/file.js';
 import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
+import { isFormData } from '../../../utils/is-form-data.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -69,7 +70,7 @@ export const updateFile =
 	() => {
 		throwIfEmpty(key, 'Key cannot be empty');
 
-		if (item instanceof FormData) {
+		if (isFormData(item)) {
 			return {
 				path: `/files/${key}`,
 				params: query ?? {},

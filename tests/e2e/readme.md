@@ -66,20 +66,33 @@ enpoint belong into `/tests/endpoints/items`.
 
 ### Tests requiring a custom schema
 
-To make it simpler to write tests that require custom tables, the test suite provides a `useSnapshot` function. This
-function loads the `snaphot.json` file located in the same folder the test is located and applies the schema to the
-database when called. The function ensures uniqueness of collection names by replacing all `_1234` suffixes with a
-unique prefix. To improve type savety, an additional Schema can be provided. All collection names can be then accessed
-through the `collections` property of the returned snapshot.
+To make it simpler to write tests that require custom tables, the test suite provides a `useSnapshot` function. It
+applies a schema snapshot to the database when called and ensures uniqueness of collection names by prefixing them with
+a unique id. All collection names can then be accessed through the `collections` property of the returned object.
+
+Schemas are defined with the [SchemaBuilder](../../packages/schema-builder/readme.md) in a `snapshot.ts` next to the
+test. Export both the builder as `schema` and its snapshot as `snapshot`:
 
 ```ts
-const { collections } = await useSnapshot<Schema>(api);
+import { SchemaBuilder } from '@directus/schema-builder';
+
+export const schema = new SchemaBuilder().collection('articles', (c) => {
+	c.field('id').id();
+	c.field('title').string();
+});
+
+export const snapshot = schema.snapshot();
 ```
 
-A custom schema can be generated using the sandbox cli: `sandbox -x postgres` in the folder of your tests. This will
-create the `schema.d.ts` and `snapshot.json` into the current folder. Make sure all collection names end with `_1234` to
-ensure uniqueness. To modify an existing schema of a test, use `sandbox -s -x postgres` to start up a sandbox with the
-schema preloaded.
+To improve type safety, run `pnpm build` in `tests/e2e` to generate a `schema.d.ts` next to every `snapshot.ts`, which
+can then be passed to `useSnapshot`:
+
+```ts
+import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
+
+const { collections } = await useSnapshot<Schema>(api, snapshot);
+```
 
 ### Interacting with the API
 
