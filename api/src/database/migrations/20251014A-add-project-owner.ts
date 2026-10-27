@@ -17,7 +17,7 @@ export async function up(knex: Knex): Promise<void> {
 
 	const env = useEnv();
 
-	const settingsService = new SettingsService({ schema: await getSchema() });
+	const settingsService = new SettingsService({ knex, schema: await getSchema({ database: knex }) });
 
 	if (email().safeParse(env['PROJECT_OWNER']).success) {
 		await settingsService.setOwner({
