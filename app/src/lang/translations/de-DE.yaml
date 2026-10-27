@@ -2625,6 +2625,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Ein Rich-Text-Editor, der HTML-Inhalte erzeugt
     toolbar: Toolbar
+    extensions: Erweiterungen
     custom_formats: Benutzerdefinierte Formate
     folder_note: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     imageToken: Statisches Zugriffstoken
