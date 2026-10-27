@@ -1,12 +1,7 @@
-import type { NumericType, NumericValue } from '@directus/types';
+import type { NumericValue } from '@directus/types';
+import type { NumberInfo } from '@directus/utils';
 import type { Knex } from 'knex';
 import { DatabaseHelper } from '../types.js';
-
-export type NumberInfo = {
-	type: NumericType;
-	precision: number | null;
-	scale: number | null;
-};
 
 export abstract class NumberDatabaseHelper extends DatabaseHelper {
 	addSearchCondition(

@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { InvalidPayloadError, InvalidQueryError, RangeNotSatisfiableError } from '@directus/errors';
 import type { Range, TransformationFormat, TransformationParams } from '@directus/types';
 import { TransformationMethods } from '@directus/types';
-import { getDateTimeFormatted, parseJSON } from '@directus/utils';
+import { getDateTimeFormatted, isValidUuid, parseJSON } from '@directus/utils';
 import contentDisposition from 'content-disposition';
 import { Router } from 'express';
 import { merge, pick } from 'lodash-es';
@@ -22,7 +22,6 @@ import { destroyOnDisconnect } from '../utils/destroy-on-disconnect.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
-import { isValidUuid } from '../utils/is-valid-uuid.js';
 
 const router = Router();
 
