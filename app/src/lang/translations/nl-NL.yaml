@@ -2119,6 +2119,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Een rich-text editor voor HTML-inhoud
     toolbar: Werkbalk
+    extensions: Extensies
     custom_formats: Aangepaste vorm
     folder_note: Map voor geüploade bestanden. Heeft geen invloed op bestaande bestanden.
     imageToken: Statische toegangstoken
