@@ -1956,6 +1956,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Textový editor s HTML obsahom
     toolbar: Panel nástrojov
+    extensions: Rozšírenia
     custom_formats: Vlastné formáty
     folder_note: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     imageToken: Statický prístupový token
