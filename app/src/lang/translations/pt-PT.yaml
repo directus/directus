@@ -1208,6 +1208,8 @@ interfaces:
     default_language: Idioma Padrão
   user:
     user: Utilizador
+  input-rich-text-html:
+    extensions: Extensões
   input-block-editor:
     tools_options:
       table: Tabela
