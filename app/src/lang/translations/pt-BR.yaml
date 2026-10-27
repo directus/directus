@@ -2097,6 +2097,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Um editor de rich-text que gera HTML
     toolbar: Barra de ferramentas
+    extensions: Extensões
     custom_formats: Formatos Personalizados
     folder_note: Pasta para arquivos carregados. Não afeta os arquivos existentes.
     imageToken: Token de Acesso Estático
