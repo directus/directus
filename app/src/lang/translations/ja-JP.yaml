@@ -1948,6 +1948,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: HTML コンテンツを作成するリッチテキストエディター
     toolbar: ツールバー
+    extensions: 拡張機能
     custom_formats: カスタムフォーマット
   input-block-editor:
     tools: ツールバー
