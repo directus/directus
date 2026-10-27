@@ -2142,6 +2142,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Расширенный редактор, генерирующий HTML
     toolbar: Панель инструментов
+    extensions: Расширения
     custom_formats: Пользовательские форматы
     folder_note: Папка для загруженных файлов. Не влияет на существующие файлы.
     imageToken: Токен Статического Доступа
