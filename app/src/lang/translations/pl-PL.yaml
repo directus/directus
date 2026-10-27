@@ -1933,6 +1933,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Edytor zawartość HTML
     toolbar: Pasek narzędzi
+    extensions: Rozszerzenia
     custom_formats: Niestandardowe formaty
     folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
     imageToken: Statyczny token dostępu
