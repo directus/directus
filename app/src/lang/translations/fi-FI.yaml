@@ -1625,6 +1625,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Rikastekstieditori HTML-sisällön kirjoitukseen
     toolbar: Työkalupalkki
+    extensions: Laajennukset
     custom_formats: Mukautetut muodot
     folder_note: Ladattujen tiedostojen kansio. Ei vaikuta olemassa oleviin tiedostoihin.
   input-block-editor:
