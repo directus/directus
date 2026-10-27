@@ -2413,6 +2413,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: A rich-text editor writing HTML content
     toolbar: نوار ابزار
+    extensions: افزونه‌ها
     custom_formats: نوع سفارشی
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
