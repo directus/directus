@@ -1868,6 +1868,7 @@ interfaces:
     wysiwyg: ما تراه هو ما حصل عليه (WYSIWYG)
     description: محرر نص يكتب محتوى HTML
     toolbar: شريط الأدوات
+    extensions: الإضافات
     custom_formats: تنسيقات مخصصة
     folder_note: مجلد الملفات التي تم رفعها. لا يؤثر على الملفات الموجودة.
     imageToken: رمز الوصول الثابت
