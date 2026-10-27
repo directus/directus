@@ -56,7 +56,7 @@ export const createUiStream = async (
 
 	const registry = createAIProviderRegistry(configs, aiSettings);
 
-	const baseSystemPrompt = systemPrompt || SYSTEM_PROMPT;
+	const baseSystemPrompt = systemPrompt?.trim() || SYSTEM_PROMPT;
 	const contextBlock = context ? formatContextForSystemPrompt(context) : null;
 	const providerOptions = getProviderOptions(provider, model, aiSettings);
 	let languageModel = registry.languageModel(`${provider}:${model}`);

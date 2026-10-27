@@ -141,6 +141,30 @@ describe('createUiStream', () => {
 		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'CUSTOM_PROMPT' }));
 	});
 
+	it('replaces empty string system prompt with default', async () => {
+		await createUiStream(messages, {
+			provider: 'openai',
+			model: 'gpt-4o-mini',
+			tools: {},
+			aiSettings,
+			systemPrompt: '',
+		});
+
+		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'DEFAULT_SYSTEM_PROMPT' }));
+	});
+
+	it('replaces whitespace-only system prompt with default', async () => {
+		await createUiStream(messages, {
+			provider: 'openai',
+			model: 'gpt-4o-mini',
+			tools: {},
+			aiSettings,
+			systemPrompt: '   ',
+		});
+
+		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'DEFAULT_SYSTEM_PROMPT' }));
+	});
+
 	it('includes context in the top-level system prompt without prepareStep override', async () => {
 		await createUiStream(messages, {
 			provider: 'openai',
