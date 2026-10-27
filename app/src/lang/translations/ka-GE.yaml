@@ -1984,6 +1984,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: მდიდარი ტექსტის რედაქტორი HTML კონტენტის დასაწერად
     toolbar: ხელსაწყოთა პანელი
+    extensions: გაფართოებები
     custom_formats: მორგებული ფორმატები
     folder_note: საქაღალდე ატვირთული ფაილებისთვის. არ მოქმედებს არსებულ ფაილებზე.
     imageToken: სტატიკური წვდომის ტოკენი
