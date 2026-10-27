@@ -3,6 +3,7 @@ import { APP_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@d
 import type { ExtensionOptionsBundleEntry, ExtensionManifest as TExtensionManifest } from '@directus/extensions';
 import {
 	API_SHARED_DEPS,
+	APP_SHARED_DEP_ALIASES,
 	APP_SHARED_DEPS,
 	EXTENSION_PKG_KEY,
 	ExtensionManifest,
@@ -20,7 +21,7 @@ import vue from '@vitejs/plugin-vue';
 import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
-import type { RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
+import type { Plugin, RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
 import { rollup, watch as rollupWatch } from 'rollup';
 import esbuild from 'rollup-plugin-esbuild';
 import styles from 'rollup-plugin-styler';
@@ -540,6 +541,7 @@ function getRollupOptions({
 			esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }),
 			mode === 'browser' ? styles() : null,
 			...plugins,
+			mode === 'browser' ? appSharedDepAliasPlugin() : null,
 			nodeResolve({
 				browser: mode === 'browser',
 				exportConditions: mode === 'node' ? ['node'] : [],
@@ -561,6 +563,18 @@ function getRollupOptions({
 			if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.ids?.every((id) => /\bnode_modules\b/.test(id))) return;
 
 			warn(warning);
+		},
+	};
+}
+
+// `external` matches exact names only, so bare `prosemirror-*` imports would be bundled
+function appSharedDepAliasPlugin(): Plugin {
+	return {
+		name: 'directus-app-shared-dep-aliases',
+		resolveId(source) {
+			const target = APP_SHARED_DEP_ALIASES[source];
+
+			return target ? { id: target, external: true } : null;
 		},
 	};
 }

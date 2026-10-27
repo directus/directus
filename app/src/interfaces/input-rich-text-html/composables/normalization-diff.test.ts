@@ -1,6 +1,8 @@
+import { mergeAttributes, Node } from '@tiptap/core';
 import { describe, expect, test } from 'vitest';
+import { buildFieldSchema } from '../extensions';
 import { buildCustomFormats } from '../extensions/custom-formats';
-import { comparisonSchema, computeNormalizationDiff, computeValueNormalizationDiff } from './normalization-diff';
+import { computeNormalizationDiff, computeValueNormalizationDiff } from './normalization-diff';
 
 function removedText(code: string): string {
 	const changes = computeNormalizationDiff(code);
@@ -26,6 +28,35 @@ describe('computeNormalizationDiff', () => {
 		expect(
 			computeNormalizationDiff('<p><span role="note" lang="fr" aria-label="Note" dir="rtl">text</span></p>'),
 		).toBeNull();
+	});
+
+	// attribute order has no meaning in HTML, so a reordered tag is not content loss
+	test('returns null when only the attribute order changes', () => {
+		expect(computeNormalizationDiff('<p><span dir="rtl" role="note" lang="fr">text</span></p>')).toBeNull();
+	});
+
+	test('still flags a dropped attribute in a reordered tag', () => {
+		expect(removedText('<p onclick="x()" dir="rtl">text</p>')).toContain('onclick');
+	});
+
+	// a re-parse keeps the static marker as a preserved attribute, which renders first
+	test('returns null for a contributed node written in the order a new node renders', () => {
+		const Card = Node.create({
+			name: 'card',
+			group: 'block',
+			content: 'inline*',
+			addAttributes: () => ({
+				tone: {
+					default: null,
+					parseHTML: (element) => element.getAttribute('data-tone'),
+					renderHTML: (attributes) => (attributes['tone'] ? { 'data-tone': attributes['tone'] } : {}),
+				},
+			}),
+			parseHTML: () => [{ tag: 'div[data-card]', priority: 60 }],
+			renderHTML: ({ HTMLAttributes }) => ['div', mergeAttributes(HTMLAttributes, { 'data-card': '' }), 0],
+		});
+
+		expect(computeNormalizationDiff('<div data-tone="warning" data-card="">Beta</div>', [Card])).toBeNull();
 	});
 
 	test('returns null for cosmetic-only reformatting', () => {
@@ -121,12 +152,12 @@ describe('computeValueNormalizationDiff', () => {
 	});
 });
 
-describe('comparisonSchema', () => {
+describe('comparison-mode schema', () => {
 	test('accepts the diff spans the comparison view feeds the editor', () => {
 		const value = '<p><span class="comparison-diff--added">a</span></p>';
-		const { extensions, schemaKey } = comparisonSchema(null);
+		const { extensions, key } = buildFieldSchema({ comparisonMode: true });
 
-		expect(computeValueNormalizationDiff(value, extensions, schemaKey)).toBeNull();
+		expect(computeValueNormalizationDiff(value, extensions, key)).toBeNull();
 		expect(computeValueNormalizationDiff(value)).not.toBeNull();
 	});
 });
