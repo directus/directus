@@ -5,7 +5,8 @@
 		gap: 1rem;
 	}
 
-	.choice-card:not(.custom) {
+	// Custom content must not increase specificity over the global focus-ring rule.
+	.choice-card:where(:not(.custom)) {
 		display: flex;
 		flex-direction: column;
 		gap: 0.75rem;
