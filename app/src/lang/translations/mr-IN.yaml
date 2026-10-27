@@ -1960,6 +1960,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: HTML सामग्री लिहिणारा रिच टेक्स्ट एडिटर
     toolbar: टूलबार
+    extensions: विस्तार
     custom_formats: कस्टम स्वरूप
     folder_note: अपलोड केलेल्या फायलींसाठी फोल्डर. विद्यमान फाइल्सवर परिणाम होत नाही.
     imageToken: स्थिर प्रवेश टोकन
