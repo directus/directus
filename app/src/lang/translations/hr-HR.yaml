@@ -1922,6 +1922,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Uređivač bogatog teksta koji piše HTML sadržaj
     toolbar: Alatna traka
+    extensions: Proširenja
     custom_formats: Prilagođeni formati
     folder_note: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
     imageToken: Statički pristupni token
