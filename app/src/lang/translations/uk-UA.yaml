@@ -2075,6 +2075,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Багатотекстовий редактор, що пише матеріал для HTML
     toolbar: Панель інструментів
+    extensions: Розширення
     custom_formats: Власне форматування
     folder_note: Тека для завантажених файлів. Не може вплинути на існуючі файли.
     imageToken: Статичний маркер доступу
