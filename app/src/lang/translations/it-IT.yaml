@@ -1974,6 +1974,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Un editor di testo formattato per scrivere contenuto HTML
     toolbar: Barra degli strumenti
+    extensions: Estensioni
     custom_formats: Formati personalizzati
     folder_note: Cartella per i file caricati. Non influisce sui file esistenti.
     imageToken: Token di accesso statico
