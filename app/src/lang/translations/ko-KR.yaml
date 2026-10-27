@@ -2038,6 +2038,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: HTML 형식으로 작성할 수 있는 리치텍스트 에디터
     toolbar: 툴바
+    extensions: 확장 기능
     custom_formats: 맞춤 형식
     folder_note: 업로드된 파일의 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     imageToken: 정적 액세스 토큰
