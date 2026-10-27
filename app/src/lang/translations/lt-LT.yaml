@@ -1962,6 +1962,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Formatuoto HTML teksto redaktorius
     toolbar: Įrankių juosta
+    extensions: Plėtiniai
     custom_formats: Kiti formatai
     folder_note: Katalogas įkeltiems failams. Esami failai bus nepakeisti.
     imageToken: Static Access Token
