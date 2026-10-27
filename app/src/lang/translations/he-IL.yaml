@@ -2550,6 +2550,7 @@ interfaces:
   input-rich-text-html:
     description: עורך טקסט עשיר לכתיבת תוכן HTML
     toolbar: סרגל כלים
+    extensions: הרחבות
     custom_formats: פורמטים מותאמים אישית
     folder_note: תיקייה לקבצים שהועלו. אינה משפיעה על קבצים קיימים.
     imageToken: אסימון גישה סטטי
