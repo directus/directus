@@ -317,17 +317,22 @@ export class ExtensionManager {
 	 * Unregister all extensions from the current process
 	 */
 	private async unload(): Promise<void> {
+		const logger = useLogger();
+
+		try {
+			emitter.emitAction('extensions.unload', {
+				extensions: this.extensions,
+			});
+		} catch (error) {
+			logger.warn('An error was thrown while executing action "extensions.unload"');
+			logger.warn(error);
+		}
+
 		await this.unregisterApiExtensions();
 
 		this.localEmitter.offAll();
 
 		this.isLoaded = false;
-
-		emitter.emitAction('extensions.unload', {
-			extensions: this.extensions,
-		});
-
-		const logger = useLogger();
 
 		logger.info('Extensions unloaded');
 	}
