@@ -1964,6 +1964,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Bohatý textový editor, který píše HTML obsah
     toolbar: Nástrojová lišta
+    extensions: Rozšíření
     custom_formats: Vlastní formáty
     folder_note: Složka pro nahrané soubory. Nemá vliv na existující soubory.
     imageToken: Statický přístupový token
