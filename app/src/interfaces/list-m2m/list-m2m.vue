@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ContentVersion, Filter } from '@directus/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+import { deepMap, getFieldsFromTemplate, mergeFilters } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, merge, set } from 'lodash-es';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
@@ -27,6 +27,7 @@ import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
+import { getSearchFilter } from '@/utils/get-search-filter';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
@@ -166,7 +167,18 @@ const query = computed<RelationQueryMultiple>(() => {
 	}
 
 	if (search.value) {
-		q.search = search.value;
+		// The API's search only covers the junction's own fields, which are rarely the ones on display
+		const displayedFieldsFilter = getSearchFilter(
+			relationInfo.value.junctionCollection.collection,
+			fields.value,
+			search.value,
+		);
+
+		if (displayedFieldsFilter) {
+			q.filter = mergeFilters(q.filter ?? null, displayedFieldsFilter) ?? undefined;
+		} else {
+			q.search = search.value;
+		}
 	}
 
 	if (sort.value) {
