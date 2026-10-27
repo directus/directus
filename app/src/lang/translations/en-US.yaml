@@ -1681,6 +1681,8 @@ settings_ai: AI
 model_context_protocol: Model Context Protocol
 ai_assistant: AI Assistant
 ai_disabled_by_env: AI Assistant features have been disabled via environment variable.
+ai_allowed_models_default_note:
+  Using the recommended models, which update with new Directus releases. Changing this list saves your own selection.
 mcp_disabled_by_env: MCP features have been disabled via environment variable.
 mcp_oauth_disabled_by_env: MCP OAuth is disabled by the MCP_OAUTH_ENABLED environment variable.
 mcp_oauth_dcr_disabled_by_env:
