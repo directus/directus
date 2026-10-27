@@ -14,9 +14,5 @@ export function useCardSearch<T extends string | number>(choices: Ref<Choice<T>[
 		return choices.value.filter((choice) => (choice.text ?? '').toLowerCase().includes(query));
 	});
 
-	function clearSearch() {
-		searchQuery.value = '';
-	}
-
-	return { searchQuery, showSearch, filteredChoices, clearSearch };
+	return { searchQuery, showSearch, filteredChoices };
 }

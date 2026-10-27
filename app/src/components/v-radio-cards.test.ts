@@ -101,22 +101,6 @@ test('item-level disabled disables only that card', () => {
 	expect(cards[1]!.attributes('disabled')).toBeUndefined();
 });
 
-test('accepts numeric values', async () => {
-	const numericItems: ChoiceCardItem[] = [
-		{ value: 1, label: 'One' },
-		{ value: 2, label: 'Two' },
-	];
-
-	const wrapper = mount(VRadioCards, {
-		props: { items: numericItems },
-		global,
-	});
-
-	await wrapper.findAll('.v-radio-card')[0]!.trigger('click');
-
-	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([1]);
-});
-
 test('keeps numeric and string values distinct', async () => {
 	const wrapper = mount(VRadioCards, {
 		props: {
@@ -134,6 +118,9 @@ test('keeps numeric and string values distinct', async () => {
 	expect(cards[1]!.attributes('aria-checked')).toBe('false');
 	await cards[1]!.trigger('click');
 	expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['0']);
+	await wrapper.setProps({ modelValue: '0' });
+	await cards[0]!.trigger('click');
+	expect(wrapper.emitted('update:modelValue')?.[1]).toEqual([0]);
 });
 
 test('custom card content receives selection and accessible label IDs', async () => {

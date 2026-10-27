@@ -5,11 +5,8 @@ import CardContent from './v-choice-cards/card-content.vue';
 import type { ChoiceCardItem } from './v-choice-cards/types';
 
 interface Props {
-	/** List of card options to display */
 	items: ChoiceCardItem<T>[];
-	/** The currently selected values */
 	modelValue?: T[] | null;
-	/** Disable all cards */
 	disabled?: boolean;
 }
 

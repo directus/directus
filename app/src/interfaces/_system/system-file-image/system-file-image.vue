@@ -18,7 +18,6 @@ const props = withDefaults(
 	defineProps<{
 		value?: string | null;
 		disabled?: boolean;
-		folder?: string;
 	}>(),
 	{
 		value: null,
@@ -35,7 +34,6 @@ const { t } = useI18n();
 const loading = ref(false);
 const imageError = ref(false);
 const file = ref<FileInfo | null>(null);
-const imageAccept = 'image/*';
 const imageFilter = { type: { _starts_with: 'image/' } };
 
 const src = computed(() => {
@@ -136,15 +134,7 @@ watch(
 			</div>
 		</div>
 
-		<VUpload
-			v-else
-			:disabled="disabled"
-			from-library
-			:folder="folder"
-			:accept="imageAccept"
-			:filter="imageFilter"
-			@input="setFile"
-		/>
+		<VUpload v-else :disabled="disabled" from-library accept="image/*" :filter="imageFilter" @input="setFile" />
 	</div>
 </template>
 

@@ -1,26 +1,7 @@
-import { mount, shallowMount } from '@vue/test-utils';
-import { describe, expect, test } from 'vitest';
+import { mount } from '@vue/test-utils';
+import { expect, test } from 'vitest';
 import SelectCardCheckbox from './select-card-checkbox.vue';
 import { i18n } from '@/lang';
-
-const global = {
-	plugins: [i18n],
-	renderStubDefaultSlot: true,
-	stubs: {
-		VNotice: { template: '<div class="notice"><slot /></div>' },
-	},
-};
-
-describe('SelectCardCheckbox', () => {
-	test('shows an empty state when no choices are configured', () => {
-		const wrapper = shallowMount(SelectCardCheckbox, {
-			props: { value: [], choices: [] },
-			global,
-		});
-
-		expect(wrapper.find('.notice').text()).toBe('No options available');
-	});
-});
 
 test('keeps selections when searching and follows external values', async () => {
 	const wrapper = mount(SelectCardCheckbox, {
@@ -32,6 +13,7 @@ test('keeps selections when searching and follows external values', async () => 
 			plugins: [i18n],
 			stubs: {
 				VIcon: true,
+				VNotice: { template: '<div class="notice"><slot /></div>' },
 				VInput: {
 					props: ['modelValue'],
 					emits: ['update:modelValue'],
@@ -52,4 +34,7 @@ test('keeps selections when searching and follows external values', async () => 
 	await wrapper.setProps({ disabled: true });
 	await wrapper.find('[role="checkbox"]').trigger('click');
 	expect(wrapper.emitted('input')).toHaveLength(2);
+	await wrapper.find('input').setValue('');
+	await wrapper.setProps({ choices: [] });
+	expect(wrapper.find('.notice').text()).toBe('No options available');
 });
