@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T extends string | number = string | number">
 import { CheckboxGroupRoot, CheckboxRoot } from 'reka-ui';
-import { shallowRef, useId, watch } from 'vue';
+import { computed, useId } from 'vue';
 import CardContent from './v-choice-cards/card-content.vue';
 import type { ChoiceCardItem } from './v-choice-cards/types';
 
@@ -23,29 +23,17 @@ const emit = defineEmits<{
 }>();
 
 const groupId = useId();
-const selectedValues = shallowRef<T[]>([...(props.modelValue ?? [])]);
-
-watch(
-	() => props.modelValue,
-	(value) => {
-		selectedValues.value = [...(value ?? [])];
-	},
-);
-
-function updateValue(value: T[]) {
-	selectedValues.value = [...value];
-	emit('update:modelValue', [...value]);
-}
+const selectedValues = computed(() => props.modelValue ?? []);
 </script>
 
 <template>
 	<CheckboxGroupRoot
-		loop
+		:roving-focus="false"
 		role="group"
 		class="v-checkbox-cards choice-cards"
 		:model-value="selectedValues"
 		:disabled="disabled"
-		@update:model-value="updateValue($event as T[])"
+		@update:model-value="emit('update:modelValue', $event as T[])"
 	>
 		<CheckboxRoot
 			v-for="(item, index) in items"

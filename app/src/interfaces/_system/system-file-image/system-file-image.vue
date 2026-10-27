@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { File } from '@directus/types';
+import { VisuallyHidden } from 'reka-ui';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
@@ -10,12 +12,7 @@ import VUpload from '@/components/v-upload.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-interface FileInfo {
-	id: string;
-	type: string;
-	title?: string;
-	filename_download: string;
-}
+type FileInfo = Pick<File, 'id' | 'type' | 'title' | 'filename_download'>;
 
 const props = withDefaults(
 	defineProps<{
@@ -36,6 +33,7 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 const loading = ref(false);
+const imageError = ref(false);
 const file = ref<FileInfo | null>(null);
 const imageAccept = 'image/*';
 const imageFilter = { type: { _starts_with: 'image/' } };
@@ -55,8 +53,6 @@ const src = computed(() => {
 });
 
 async function fetchFile(id: string) {
-	if (!id) return;
-
 	loading.value = true;
 
 	try {
@@ -84,13 +80,14 @@ async function fetchFile(id: string) {
 	}
 }
 
-function setFile(data: Record<string, any> | Record<string, any>[] | null) {
+function setFile(data: File | File[] | null) {
 	if (!data) return;
 
 	const fileData = Array.isArray(data) ? data[0] : data;
 	if (!fileData) return;
 
-	file.value = fileData as FileInfo;
+	imageError.value = false;
+	file.value = fileData;
 	emit('input', fileData.id);
 }
 
@@ -101,8 +98,8 @@ function deselect() {
 
 watch(
 	() => props.value,
-	(newValue, oldValue) => {
-		if (newValue === oldValue) return;
+	(newValue) => {
+		imageError.value = false;
 
 		if (newValue) {
 			fetchFile(newValue);
@@ -119,12 +116,22 @@ watch(
 	<div class="system-file-image">
 		<VSkeletonLoader v-if="loading" type="input-tall" />
 
-		<div v-else-if="file && src" class="image-preview">
-			<VImage :src="src" :alt="file.title || file.filename_download" />
+		<div v-else-if="value || file" class="image-preview">
+			<VImage
+				v-if="file && src && !imageError"
+				:src="src"
+				:alt="file.title || file.filename_download"
+				@error="imageError = true"
+			/>
+			<div v-else class="image-error">
+				<VIcon name="hide_image" />
+				<span>{{ t('interfaces.system-file-image.image_unavailable') }}</span>
+			</div>
 
 			<div v-if="!disabled" class="actions">
-				<VButton v-tooltip="t('deselect')" icon rounded x-small @click="deselect">
-					<VIcon name="close" />
+				<VButton v-tooltip="t('deselect')" icon x-small @click="deselect">
+					<VisuallyHidden :aria-hidden="false">{{ t('deselect') }}</VisuallyHidden>
+					<VIcon name="close" aria-hidden="true" />
 				</VButton>
 			</div>
 		</div>
@@ -161,6 +168,15 @@ watch(
 	}
 }
 
+.image-error {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	block-size: 100%;
+	color: var(--theme--foreground-subdued);
+}
+
 .actions {
 	position: absolute;
 	inset-block-start: 0.5rem;
@@ -176,7 +192,8 @@ watch(
 }
 
 .image-preview:hover .actions,
-.image-preview:focus-within .actions {
+.image-preview:focus-within .actions,
+.image-preview:has(.image-error) .actions {
 	opacity: 1;
 }
 </style>

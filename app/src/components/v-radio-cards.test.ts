@@ -156,3 +156,43 @@ test('custom card content receives selection and accessible label IDs', async ()
 	await wrapper.setProps({ modelValue: 'licensed' });
 	expect(card.find('.selected').text()).toBe('false');
 });
+
+test('keeps the current selection when the parent rejects an update', async () => {
+	const wrapper = mount(VRadioCards, { props: { items, modelValue: 'core' }, global });
+	const cards = wrapper.findAll('[role="radio"]');
+	await cards[1]!.trigger('click');
+	expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['licensed']);
+	expect(cards[0]!.attributes('aria-checked')).toBe('true');
+	expect(cards[1]!.attributes('aria-checked')).toBe('false');
+});
+
+test('stays controlled when initially empty and follows accepted values and resets', async () => {
+	const wrapper = mount(VRadioCards, { props: { items, modelValue: null }, global });
+	const cards = wrapper.findAll('[role="radio"]');
+	await cards[0]!.trigger('click');
+	expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['core']);
+	expect(cards.every((card) => card.attributes('aria-checked') === 'false')).toBe(true);
+	await wrapper.setProps({ modelValue: 'core' });
+	expect(cards[0]!.attributes('aria-checked')).toBe('true');
+	await wrapper.setProps({ modelValue: null });
+	expect(cards.every((card) => card.attributes('aria-checked') === 'false')).toBe(true);
+});
+
+test('keeps a Tab entry point when a loading form becomes enabled', async () => {
+	const wrapper = mount(VRadioCards, { props: { items, modelValue: 'core', disabled: true }, global });
+	expect(wrapper.find('[role="radiogroup"]').attributes('tabindex')).toBe('-1');
+	await wrapper.setProps({ disabled: false });
+	expect(wrapper.find('[role="radiogroup"]').attributes('tabindex')).toBe('0');
+});
+
+test('keeps a Tab entry point when individual choices become enabled', async () => {
+	const wrapper = mount(VRadioCards, {
+		props: { items: items.map((item) => ({ ...item, disabled: true })) },
+		global,
+	});
+
+	await wrapper.setProps({ items });
+	expect(wrapper.find('[role="radiogroup"]').attributes('tabindex')).toBe('0');
+	await wrapper.setProps({ items: items.map((item) => ({ ...item, disabled: true })) });
+	expect(wrapper.find('[role="radiogroup"]').attributes('tabindex')).toBe('-1');
+});

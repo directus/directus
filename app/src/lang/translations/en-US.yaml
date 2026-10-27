@@ -2801,6 +2801,7 @@ interfaces:
     icon_type: Icon Type
     description_note: Short text displayed below the card label
   system-file-image:
+    image_unavailable: Image unavailable
     image: Image
     description: Select an image file
   list:

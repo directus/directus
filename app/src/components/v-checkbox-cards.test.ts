@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
+import { nextTick, reactive } from 'vue';
 import VCheckboxCards from './v-checkbox-cards.vue';
 
 const items = [
@@ -15,6 +16,7 @@ test('toggles multiple cards without mutating the input array', async () => {
 	const cards = wrapper.findAll('[role="checkbox"]');
 	await cards[1]!.trigger('click');
 	expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([['a', 'b']]);
+	await wrapper.setProps({ modelValue: ['a', 'b'] });
 	expect(cards[0]!.attributes('aria-checked')).toBe('true');
 	expect(cards[1]!.attributes('aria-checked')).toBe('true');
 	await cards[0]!.trigger('click');
@@ -44,6 +46,7 @@ test('preserves numeric values and distinguishes them from strings', async () =>
 
 	const cards = wrapper.findAll('[role="checkbox"]');
 	await cards[0]!.trigger('click');
+	await wrapper.setProps({ modelValue: [0] });
 	await cards[1]!.trigger('click');
 	expect(wrapper.emitted('update:modelValue')?.[1]).toEqual([[0, '0']]);
 });
@@ -79,6 +82,42 @@ test('custom content receives selection state and label IDs', async () => {
 	const card = wrapper.find('[role="checkbox"]');
 	expect(card.find('.icon-box').exists()).toBe(false);
 	await card.trigger('click');
+	await wrapper.setProps({ modelValue: ['a'] });
 	expect(card.find('.selected').text()).toBe('true');
 	expect(card.find(`[id="${card.attributes('aria-labelledby')}"]`).text()).toBe('Article');
+});
+
+test('keeps the current selection when the parent rejects an update', async () => {
+	const wrapper = mount(VCheckboxCards, { props: { items, modelValue: ['a'] }, global });
+	const cards = wrapper.findAll('[role="checkbox"]');
+	await cards[1]!.trigger('click');
+	expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([['a', 'b']]);
+	expect(cards[1]!.attributes('aria-checked')).toBe('false');
+	await cards[0]!.trigger('click');
+	expect(wrapper.emitted('update:modelValue')?.[1]).toEqual([[]]);
+});
+
+test('follows in-place changes to the parent selection array', async () => {
+	const modelValue = reactive(['a']);
+	const wrapper = mount(VCheckboxCards, { props: { items, modelValue }, global });
+	const cards = wrapper.findAll('[role="checkbox"]');
+	modelValue.push('b');
+	await nextTick();
+	expect(cards[1]!.attributes('aria-checked')).toBe('true');
+	modelValue.splice(0, 1);
+	await nextTick();
+	expect(cards[0]!.attributes('aria-checked')).toBe('false');
+	await cards[1]!.trigger('click');
+	expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([[]]);
+	expect(modelValue).toEqual(['b']);
+});
+
+test('keeps every enabled checkbox in the Tab order, including selected cards', async () => {
+	const wrapper = mount(VCheckboxCards, { props: { items, modelValue: ['a'], disabled: true }, global });
+	await wrapper.setProps({ disabled: false });
+
+	for (const card of wrapper.findAll<HTMLButtonElement>('[role="checkbox"]')) {
+		expect(card.element.tabIndex).toBe(0);
+		expect(card.element.disabled).toBe(false);
+	}
 });

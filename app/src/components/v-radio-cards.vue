@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RadioGroupItem, RadioGroupRoot } from 'reka-ui';
-import { ref, useId, watch } from 'vue';
+import { computed, useId } from 'vue';
 import CardContent from './v-choice-cards/card-content.vue';
 import type { ChoiceCardItem } from './v-choice-cards/types';
 
@@ -23,27 +23,17 @@ const emit = defineEmits<{
 }>();
 
 const groupId = useId();
-const selectedValue = ref(props.modelValue);
-
-watch(
-	() => props.modelValue,
-	(value) => {
-		selectedValue.value = value;
-	},
-);
-
-function updateValue(value: string | number) {
-	selectedValue.value = value;
-	emit('update:modelValue', value);
-}
+// Reka only counts focusable items on mount, so disabled changes must remount the group.
+const focusabilityKey = computed(() => props.items.map((item) => Number(!(props.disabled || item.disabled))).join(''));
 </script>
 
 <template>
 	<RadioGroupRoot
+		:key="focusabilityKey"
 		class="v-radio-cards choice-cards"
-		:model-value="selectedValue ?? undefined"
+		:model-value="modelValue"
 		:disabled="disabled"
-		@update:model-value="updateValue($event as string | number)"
+		@update:model-value="emit('update:modelValue', $event as string | number)"
 	>
 		<RadioGroupItem
 			v-for="(item, index) in items"
@@ -59,7 +49,7 @@ function updateValue(value: string | number) {
 				name="item"
 				:item="item"
 				:index="index"
-				:selected="selectedValue === item.value"
+				:selected="modelValue === item.value"
 				:label-id="`${groupId}-${index}-label`"
 				:description-id="`${groupId}-${index}-description`"
 			>
