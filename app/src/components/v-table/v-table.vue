@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/types';
 import { clone, forEach, isEqual, pick } from 'lodash-es';
-import { computed, ref, useSlots } from 'vue';
+import { computed, onBeforeUpdate, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
 import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
@@ -134,9 +134,20 @@ const internalSort = computed<Sort>(
 
 const reordering = ref<boolean>(false);
 
-const hasHeaderAppendSlot = computed(() => slots['header-append'] !== undefined);
-const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !== undefined);
-const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
+// `slots` isn't reactive, so a computed over it never updates. Re-check before each render instead, so a slot
+// the parent adds or removes later still shows up (rows only re-render when their own props change).
+const hasHeaderAppendSlot = ref(false);
+const hasHeaderContextMenuSlot = ref(false);
+const hasItemAppendSlot = ref(false);
+
+function readSlots() {
+	hasHeaderAppendSlot.value = slots['header-append'] !== undefined;
+	hasHeaderContextMenuSlot.value = slots['header-context-menu'] !== undefined;
+	hasItemAppendSlot.value = slots['item-append'] !== undefined;
+}
+
+readSlots();
+onBeforeUpdate(readSlots);
 
 const fullColSpan = computed<string>(() => {
 	let length = internalHeaders.value.length + 1; // +1 account for spacer
@@ -351,6 +362,7 @@ function updateSort(newSort: Sort) {
 						:has-click-listener="!disabled && clickable"
 						:height="rowHeight"
 						:item-slots="slots"
+						:has-item-append-slot="hasItemAppendSlot"
 						@click="!disabled && clickable ? $emit('click:row', { item: element, event: $event }) : null"
 						@item-selected="
 							onItemSelected({

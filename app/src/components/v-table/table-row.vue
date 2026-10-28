@@ -19,6 +19,7 @@ const props = withDefaults(
 		hasClickListener?: boolean;
 		height?: number;
 		itemSlots?: Slots;
+		hasItemAppendSlot?: boolean;
 	}>(),
 	{
 		showSelect: 'none',
@@ -29,6 +30,7 @@ const props = withDefaults(
 		hasClickListener: false,
 		height: 48,
 		itemSlots: () => ({}),
+		hasItemAppendSlot: false,
 	},
 );
 
@@ -93,7 +95,7 @@ function onClick(event: MouseEvent) {
 		</td>
 
 		<td class="spacer cell" />
-		<td v-if="itemSlots['item-append']" class="append cell" data-row-action>
+		<td v-if="hasItemAppendSlot" class="append cell" data-row-action>
 			<component :is="renderSlot(itemSlots, 'item-append', { item })" />
 		</td>
 	</tr>

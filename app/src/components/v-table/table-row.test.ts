@@ -28,6 +28,7 @@ function mountTableRow(attachTo: Element = document.body) {
 			showSelect: 'multiple' as const,
 			showManualSort: true,
 			hasClickListener: true,
+			hasItemAppendSlot: true,
 			itemSlots: {
 				'item-append': () => [h('button', { class: 'ctx-toggle' }, 'More')],
 			},

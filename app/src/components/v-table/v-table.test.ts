@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, test, vi } from 'vitest';
-import { Comment, h } from 'vue';
+import { Comment, defineComponent, h, nextTick, ref } from 'vue';
 import type { HeaderRaw } from './types';
 import VTable from './v-table.vue';
 import { Tooltip } from '@/__utils__/tooltip';
@@ -95,5 +95,51 @@ describe('VTable', () => {
 
 		expect(renderCell).toHaveBeenCalledTimes(1);
 		expect(wrapper.findAll('tbody tr')[1]!.find('.custom').text()).toBe('Hopper');
+	});
+
+	test('shows item-append in rows when the parent adds it later', async () => {
+		const showAppend = ref(false);
+
+		const Parent = defineComponent(
+			() => () =>
+				h(
+					VTable,
+					{ headers, items },
+					{
+						...(showAppend.value && {
+							'item-append': ({ item }: { item: Record<string, any> }) =>
+								h('button', { class: 'append-button' }, item.id),
+						}),
+					},
+				),
+		);
+
+		const wrapper = mount(Parent, { global });
+		expect(wrapper.find('td.append').exists()).toBe(false);
+
+		showAppend.value = true;
+		await nextTick();
+
+		expect(wrapper.findAll('tbody td.append .append-button')).toHaveLength(2);
+	});
+
+	test('updates cells when an item slot reads reactive state from outside the row', async () => {
+		const highlighted = ref<number | null>(null);
+
+		const wrapper = mount(VTable, {
+			props: { headers, items },
+			slots: {
+				'item.name': ({ item }: { item: Record<string, any> }) =>
+					h('span', { class: { custom: true, highlighted: highlighted.value === item.id } }, item.name),
+			},
+			global,
+		});
+
+		highlighted.value = 2;
+		await nextTick();
+
+		const rows = wrapper.findAll('tbody tr');
+		expect(rows[0]!.find('.highlighted').exists()).toBe(false);
+		expect(rows[1]!.find('.highlighted').exists()).toBe(true);
 	});
 });
