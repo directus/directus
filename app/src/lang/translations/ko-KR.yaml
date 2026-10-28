@@ -20,6 +20,9 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 앱 정보
+contact_support: 지원팀에 문의
+setup_welcome: Directus에 오신 것을 환영합니다
+setup_info: 관리자 계정을 만들고 프로젝트를 시작해 보세요.
 continue: 계속
 first_name: 이름/별명
 last_name: 성
