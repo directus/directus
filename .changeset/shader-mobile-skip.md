@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed the public page shader background downloading and rendering on narrow screens where it's hidden
+Added a check to prevent the public page shader and video backgrounds from downloading and rendering on narrow screens when they are hidden.
