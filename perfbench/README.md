@@ -60,3 +60,38 @@ Needs Node 24+ (the API depends on `isolated-vm`).
    `cp -R app/dist /tmp/perfbench-dists/<variant>`, then `git checkout app packages`.
 4. `cd perfbench && npm install && ./run-all.sh` (and `./run-extra.sh` for the select bench and screenshots). Output
    goes to `/tmp/perfbench-results/`. `node summ.mjs /tmp/perfbench-results/*-x1.json` prints medians per variant.
+
+---
+
+# Other benches
+
+Each folder below is its own harness for a later perf PR. They share the API and seed data above.
+
+## Form typing (`form/`), #28439
+
+Item edit page, typing 20 characters into a text input, keydown to the next frame. Seeds a 52-field collection (inputs, selects, toggles, datetime, M2O, JSON, 3 detail groups and an accordion) plus a copy with 5 fields that have conditions.
+
+1. `cp api/bench.db /tmp/perfbench-form/bench.db`, then start the API on 8165 against it (`CONFIG_PATH` with your own env, `PORT=8165`) and run `node form/seed-form.mjs`.
+2. Build each variant's app into `/tmp/perfbench-dists/<variant>` (see "Running it" above).
+3. `cd form && npm install && ./session.sh [--seed] baseline <variant>`. Results go to `/tmp/perfbench-form/results`. `node summ-form.mjs` prints medians. `vis-form.mjs` takes the screenshots.
+
+## Field lookups (`fields/`), field store indexing PR
+
+The tabular bench and an item form bench, run on a "big" project as well as the stock one. `seed-extra.mjs` adds 22 collections × ~100 fields and 30 more relations to a copy of `bench.db`, about 2.7k fields total. The unlicensed API caps a project at 25 collections, so it's fewer, wider collections.
+
+- Local: put an env file at `/tmp/perfbench-fields/api.env` (`PORT=8175`, sqlite, admin `admin@example.com` / `benchpass`), then `./measure-ab.sh <tag> <db> <throttle> <rounds> baseline <variant>`. It runs the variants interleaved (A B A B) so machine load hits each one equally.
+- Quiet machine: `box/` is the same thing for a Linux box. `setup.sh` clones the repo, builds `main` and `main` + the PR (`FM_REF=<branch>`), and migrates the DBs. `runs.sh` runs everything. Set `CHROME` to a Chrome binary.
+
+Results in `fields/results/` are from an idle 16-core Linux box, `main` vs `main` + the PR, 1000 rows, median of 5 (3 at 4x CPU):
+
+| 1000 rows       | Normal project (~490 fields) | Big project (~2.7k fields) |
+| --------------- | ---------------------------- | -------------------------- |
+| Load            | 3.5s → 2.3s                  | 5.7s → 2.3s                |
+| Load, 4x CPU    | 13.8s → 9.2s                 | 32.4s → 9.2s               |
+| Memory after GC | 296 → 181 MB                 | 496 → 184 MB               |
+
+## Selection check (`selection/`), #28438
+
+`node selection/micro.mjs` times just the per-row selection check for 1000 rows with 1000 selected: about 5ms per render with the old array scan, 0.03ms with a `Set`. The end-to-end numbers in #28438 come from the main tabular bench above.
+
+Row redraw (#28437) also uses the main tabular bench.
