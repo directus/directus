@@ -1331,6 +1331,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Tekstiredaktor HTML sisu loomiseks
     toolbar: Tööriistariba
+    extensions: Laiendused
     custom_formats: Kohandatud vormingud
     folder_note: Üles laetud failide kaust. Ei mõjuta olemasolevaid faile.
   input-block-editor:
