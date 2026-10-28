@@ -645,4 +645,72 @@ describe('VForm', () => {
 			expect(emitted?.[0]?.[0]).toEqual({ toggle: true, conditional_readonly: 'preserved', grouped_field: 'new' });
 		});
 	});
+
+	describe('field identity across value changes', () => {
+		function getFieldProps(wrapper: ReturnType<typeof mount>) {
+			return Object.fromEntries(
+				wrapper
+					.findAllComponents(FormField)
+					.map((formField) => [formField.props('field').field, formField.props('field')]),
+			);
+		}
+
+		it('keeps field objects when values change and no field has conditions', async () => {
+			const title = createField({ field: 'title', meta: { ...createField().meta!, field: 'title', width: 'half' } });
+			const body = createField({ field: 'body', meta: { ...createField().meta!, field: 'body', width: 'half' } });
+
+			const wrapper = mount(VForm, {
+				props: { fields: [title, body], modelValue: { title: 'a' }, primaryKey: '+' },
+				global,
+			});
+
+			const before = getFieldProps(wrapper);
+
+			await wrapper.setProps({ modelValue: { title: 'ab' } });
+
+			const after = getFieldProps(wrapper);
+
+			expect(after['title']).toBe(before['title']);
+			expect(after['body']).toBe(before['body']);
+			expect(after['body']!.meta?.width).toBe('half-right');
+		});
+
+		it('applies conditions on value changes and keeps unaffected field objects', async () => {
+			const toggle = createField({
+				field: 'toggle',
+				type: 'boolean',
+				meta: { ...createField().meta!, field: 'toggle' },
+			});
+
+			const other = createField({ field: 'other', meta: { ...createField().meta!, field: 'other' } });
+
+			const conditional = createField({
+				field: 'conditional',
+				meta: {
+					...createField().meta!,
+					field: 'conditional',
+					conditions: [
+						{ name: 'Readonly', rule: { toggle: { _eq: true } }, readonly: true, hidden: false, options: {} },
+					],
+				},
+			});
+
+			const wrapper = mount(VForm, {
+				props: { fields: [toggle, other, conditional], modelValue: { toggle: false }, primaryKey: '+' },
+				global,
+			});
+
+			const before = getFieldProps(wrapper);
+			expect(before['conditional']!.meta?.readonly).toBe(false);
+
+			await wrapper.setProps({ modelValue: { toggle: true } });
+
+			const after = getFieldProps(wrapper);
+
+			expect(after['conditional']!.meta?.readonly).toBe(true);
+			expect(after['conditional']).not.toBe(before['conditional']);
+			expect(after['other']).toBe(before['other']);
+			expect(after['toggle']).toBe(before['toggle']);
+		});
+	});
 });
