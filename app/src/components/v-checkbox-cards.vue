@@ -21,11 +21,13 @@ const emit = defineEmits<{
 
 const groupId = useId();
 const selectedValues = computed(() => props.modelValue ?? []);
+// Reka only counts focusable items on mount, so disabled changes must remount the group.
+const focusabilityKey = computed(() => props.items.map((item) => Number(!(props.disabled || item.disabled))).join(''));
 </script>
 
 <template>
 	<CheckboxGroupRoot
-		:roving-focus="false"
+		:key="focusabilityKey"
 		role="group"
 		class="v-checkbox-cards choice-cards"
 		:model-value="selectedValues"

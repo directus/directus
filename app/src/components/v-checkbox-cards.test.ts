@@ -50,8 +50,9 @@ test('supports disabled items and disabling the entire group', async () => {
 	await cards[0]!.trigger('click');
 	expect(wrapper.emitted('update:modelValue')).toBeUndefined();
 	await wrapper.setProps({ disabled: true });
-	await cards[1]!.trigger('click');
-	expect(cards.every((card) => card.attributes('disabled') !== undefined)).toBe(true);
+	const disabledCards = wrapper.findAll('[role="checkbox"]');
+	await disabledCards[1]!.trigger('click');
+	expect(disabledCards.every((card) => card.attributes('disabled') !== undefined)).toBe(true);
 	expect(wrapper.emitted('update:modelValue')).toBeUndefined();
 });
 
@@ -105,12 +106,42 @@ test('follows in-place changes to the parent selection array', async () => {
 	expect(modelValue).toEqual(['b']);
 });
 
-test('keeps every enabled checkbox in the Tab order, including selected cards', async () => {
+test('keeps a Tab entry point when a loading form becomes enabled', async () => {
 	const wrapper = mount(VCheckboxCards, { props: { items, modelValue: ['a'], disabled: true }, global });
+	expect(wrapper.find('[role="group"]').attributes('tabindex')).toBe('-1');
 	await wrapper.setProps({ disabled: false });
+	expect(wrapper.find('[role="group"]').attributes('tabindex')).toBe('0');
+});
 
-	for (const card of wrapper.findAll<HTMLButtonElement>('[role="checkbox"]')) {
-		expect(card.element.tabIndex).toBe(0);
-		expect(card.element.disabled).toBe(false);
+test('moves focus with all arrow keys without selecting or stopping on disabled cards', async () => {
+	const wrapper = mount(VCheckboxCards, {
+		attachTo: document.body,
+		props: {
+			items: [items[0]!, { value: 'disabled', label: 'Disabled', disabled: true }, items[1]!],
+			modelValue: ['a'],
+		},
+		global,
+	});
+
+	try {
+		await nextTick();
+		const cards = wrapper.findAll<HTMLButtonElement>('[role="checkbox"]');
+		cards[0]!.element.focus();
+
+		for (const [key, from, to] of [
+			['ArrowRight', 0, 2],
+			['ArrowLeft', 2, 0],
+			['ArrowDown', 0, 2],
+			['ArrowUp', 2, 0],
+		] as const) {
+			await cards[from]!.trigger('keydown', { key });
+			expect(document.activeElement).toBe(cards[to]!.element);
+		}
+
+		expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+		expect(cards[0]!.attributes('aria-checked')).toBe('true');
+		expect(cards[2]!.attributes('aria-checked')).toBe('false');
+	} finally {
+		wrapper.unmount();
 	}
 });
