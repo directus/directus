@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/types';
-import { clone, forEach, pick } from 'lodash-es';
+import { clone, forEach, isEqual, pick } from 'lodash-es';
 import { computed, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
 import TableHeader from './table-header.vue';
@@ -109,6 +109,17 @@ const internalHeaders = computed({
 			}),
 		);
 	},
+});
+
+// Rows don't read column widths (the grid template applies them), so keep the same array while only
+// widths change. Otherwise every row re-renders on each mousemove of a column resize.
+const rowHeaders = computed<Header[]>((previous) => {
+	const headers = internalHeaders.value;
+	const withoutWidth = (header: Header) => ({ ...header, width: null });
+
+	if (previous && isEqual(previous.map(withoutWidth), headers.map(withoutWidth))) return previous;
+
+	return headers;
 });
 
 // In case the sort prop isn't used, we'll use this local sort state as a fallback.
@@ -330,7 +341,7 @@ function updateSort(newSort: Sort) {
 			>
 				<template #item="{ element }">
 					<TableRow
-						:headers="internalHeaders"
+						:headers="rowHeaders"
 						:item="element"
 						:show-select="disabled ? 'none' : showSelect"
 						:show-manual-sort="!disabled && showManualSort"
@@ -339,6 +350,7 @@ function updateSort(newSort: Sort) {
 						:sorted-manually="internalSort.by === manualSortKey"
 						:has-click-listener="!disabled && clickable"
 						:height="rowHeight"
+						:item-slots="slots"
 						@click="!disabled && clickable ? $emit('click:row', { item: element, event: $event }) : null"
 						@item-selected="
 							onItemSelected({
@@ -346,15 +358,7 @@ function updateSort(newSort: Sort) {
 								value: !getSelectedState(element),
 							})
 						"
-					>
-						<template v-for="header in internalHeaders" #[`item.${header.value}`]>
-							<slot :item="element" :name="`item.${header.value}`" />
-						</template>
-
-						<template v-if="hasItemAppendSlot" #item-append>
-							<slot name="item-append" :item="element" />
-						</template>
-					</TableRow>
+					/>
 				</template>
 			</Draggable>
 		</table>
