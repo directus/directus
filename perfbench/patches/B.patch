@@ -1,0 +1,58 @@
+commit db93dea067d7445457ddbb3683df5b300b20e23a
+Author: bryantgillespie <hey@bryantgillespie.com>
+Date:   Wed Oct 28 06:20:46 2026 -0400
+
+    Replace per-instance CSS v-bind() with inline styles
+
+diff --git a/app/src/components/v-table/table-row.vue b/app/src/components/v-table/table-row.vue
+index d39df8b354..abd1e16fd4 100644
+--- a/app/src/components/v-table/table-row.vue
++++ b/app/src/components/v-table/table-row.vue
+@@ -32,12 +32,11 @@ const props = withDefaults(
+ 
+ const emit = defineEmits(['click', 'item-selected']);
+ 
+-const cssHeight = computed(() => {
+-	return {
+-		tableRow: props.height + 2 + 'px',
+-		renderTemplateImage: props.height - 16 + 'px',
+-	};
+-});
++// Inline vars instead of CSS v-bind(): v-bind() adds a MutationObserver and a document-wide query per row
++const rowStyle = computed(() => ({
++	'--table-row-height': props.height + 2 + 'px',
++	'--table-row-image-height': props.height - 16 + 'px',
++}));
+ 
+ function onKeydown(e: KeyboardEvent) {
+ 	if (e.metaKey) return;
+@@ -59,6 +58,7 @@ function onClick(event: MouseEvent) {
+ 	<tr
+ 		class="table-row"
+ 		:class="{ subdued: subdued, clickable: hasClickListener }"
++		:style="rowStyle"
+ 		:tabindex="hasClickListener ? 0 : undefined"
+ 		@click="onClick"
+ 		@keydown="onKeydown"
+@@ -105,7 +105,7 @@ function onClick(event: MouseEvent) {
+ .table-row {
+ 	--focus-ring-offset: var(--focus-ring-offset-invert);
+ 
+-	block-size: v-bind('cssHeight.tableRow');
++	block-size: var(--table-row-height);
+ 
+ 	.cell {
+ 		display: flex;
+@@ -155,10 +155,10 @@ function onClick(event: MouseEvent) {
+ 	}
+ 
+ 	:deep(.render-template) {
+-		block-size: v-bind('cssHeight.tableRow');
++		block-size: var(--table-row-height);
+ 
+ 		img {
+-			block-size: v-bind('cssHeight.renderTemplateImage');
++			block-size: var(--table-row-image-height);
+ 		}
+ 	}
+ }

@@ -1,0 +1,22 @@
+diff --git a/packages/composables/src/use-items.ts b/packages/composables/src/use-items.ts
+index 2d958d7aeb..9dc66cc905 100644
+--- a/packages/composables/src/use-items.ts
++++ b/packages/composables/src/use-items.ts
+@@ -4,7 +4,7 @@ import { useMemoize } from '@vueuse/core';
+ import axios from 'axios';
+ import { isEmpty, isEqual, throttle } from 'lodash-es';
+ import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
+-import { computed, ref, toRef, unref, watch } from 'vue';
++import { computed, ref, shallowRef, toRef, unref, watch } from 'vue';
+ import { useCollection } from './use-collection.js';
+ import { useApi } from './use-system.js';
+ 
+@@ -69,7 +69,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery):
+ 		return getEndpoint(collection.value);
+ 	});
+ 
+-	const items = ref<Item[]>([]);
++	const items = shallowRef<Item[]>([]);
+ 	const loading = ref(false);
+ 	const loadingItemCount = ref(false);
+ 	const error = ref<any>(null);
