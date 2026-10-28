@@ -92,7 +92,7 @@ const logoURL = computed<string | null>(() => {
 		<div class="art" :style="artStyles">
 			<ShaderBackground v-if="!hasCustomBackground && artVisible" :project-color="info?.project?.project_color" />
 
-			<video v-else-if="customBackgroundIsVideo" :src="customBackgroundUrl" autoplay muted loop />
+			<video v-else-if="customBackgroundIsVideo && artVisible" :src="customBackgroundUrl" autoplay muted loop />
 
 			<Transition name="scale">
 				<VImage v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="info?.project?.project_name" />
