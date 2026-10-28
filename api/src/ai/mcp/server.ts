@@ -303,7 +303,11 @@ export class DirectusMCP {
 
 		if (!result || typeof result.data === 'undefined' || result.data === null) return response;
 
-		if (result.type === 'text') {
+		// Registry results keep the JSON text, which mirrors their structured content
+		if (result.type === 'text' && mode === 'legacy' && typeof result.data === 'string') {
+			response.content.push({ type: 'text', text: result.data });
+			if (result.url) response.content.push({ type: 'text', text: `URL: ${result.url}` });
+		} else if (result.type === 'text') {
 			response.content.push({
 				type: 'text',
 				text: JSON.stringify(
