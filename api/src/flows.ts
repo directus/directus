@@ -7,6 +7,7 @@ import type {
 	ActionHandler,
 	FilterHandler,
 	Flow,
+	FlowRaw,
 	Operation,
 	OperationHandler,
 	PrimaryKey,
@@ -87,8 +88,9 @@ class FlowManager {
 			if (event.type === 'reload') {
 				this.reloadQueue.add(async () => {
 					if (this.isLoaded) {
+						const flows = await this.fetchFlows();
 						await this.unload();
-						await this.load();
+						this.register(flows);
 					} else {
 						logger.warn('Flows have to be loaded before they can be reloaded');
 					}
@@ -156,15 +158,21 @@ class FlowManager {
 	}
 
 	private async load(): Promise<void> {
-		const logger = useLogger();
+		this.register(await this.fetchFlows());
+	}
 
+	private async fetchFlows(): Promise<FlowRaw[]> {
 		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
-		const flows = await flowsService.readByQuery({
+		return flowsService.readByQuery({
 			filter: { status: { _eq: 'active' } },
 			fields: ['*', 'operations.*'],
 			limit: -1,
-		});
+		}) as Promise<FlowRaw[]>;
+	}
+
+	private register(flows: FlowRaw[]): void {
+		const logger = useLogger();
 
 		const flowTrees = flows.map((flow) => constructFlowTree(flow));
 
