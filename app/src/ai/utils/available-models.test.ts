@@ -1,3 +1,4 @@
+import { DEFAULT_ALLOWED_MODELS } from '@directus/ai';
 import { describe, expect, test } from 'vitest';
 import { getAvailableModels, getModelKey, getProviderIcon, resolveModelByKey } from './available-models';
 
@@ -29,6 +30,14 @@ describe('available-models', () => {
 		const models = getAvailableModels(settings, ['openai']);
 
 		expect(models.map((model) => getModelKey(model))).toEqual(['openai:gpt-5-nano', 'openai:gpt-5']);
+	});
+
+	test('falls back to default allowed models when the setting is null, but not when empty', () => {
+		const settings = createSettings({ ai_anthropic_allowed_models: [] });
+
+		const models = getAvailableModels(settings, ['openai', 'anthropic']);
+
+		expect(models.map((model) => model.model)).toEqual(DEFAULT_ALLOWED_MODELS.openai);
 	});
 
 	test('only includes models for providers in the available list', () => {

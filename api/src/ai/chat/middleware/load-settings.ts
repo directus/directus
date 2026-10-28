@@ -1,3 +1,4 @@
+import { DEFAULT_ALLOWED_MODELS } from '@directus/ai';
 import type { RequestHandler } from 'express';
 import { SettingsService } from '../../../services/settings.js';
 import { getSchema } from '../../../utils/get-schema.js';
@@ -37,9 +38,9 @@ export const loadSettings: RequestHandler = async (_req, res, next) => {
 		openaiCompatibleName: settings['ai_openai_compatible_name'] ?? null,
 		openaiCompatibleModels: settings['ai_openai_compatible_models'] ?? null,
 		openaiCompatibleHeaders: settings['ai_openai_compatible_headers'] ?? null,
-		openaiAllowedModels: settings['ai_openai_allowed_models'] ?? null,
-		anthropicAllowedModels: settings['ai_anthropic_allowed_models'] ?? null,
-		googleAllowedModels: settings['ai_google_allowed_models'] ?? null,
+		openaiAllowedModels: settings['ai_openai_allowed_models'] ?? DEFAULT_ALLOWED_MODELS.openai,
+		anthropicAllowedModels: settings['ai_anthropic_allowed_models'] ?? DEFAULT_ALLOWED_MODELS.anthropic,
+		googleAllowedModels: settings['ai_google_allowed_models'] ?? DEFAULT_ALLOWED_MODELS.google,
 		openrouterModels: settings['ai_openrouter_models'] ?? null,
 		systemPrompt: settings['ai_system_prompt'] ?? null,
 	};
