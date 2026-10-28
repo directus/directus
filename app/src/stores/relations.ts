@@ -2,7 +2,7 @@ import { DeepPartial, Relation } from '@directus/types';
 import { getRelations, getRelationType } from '@directus/utils';
 import { isEqual } from 'lodash-es';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, shallowRef } from 'vue';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
@@ -16,7 +16,30 @@ export const useRelationsStore = defineStore('relations', () => {
 		}
 	});
 
-	const relations = ref<Relation[]>([]);
+	// Every write replaces the array, so a shallow ref is enough and keeps relations as plain objects
+	const relations = shallowRef<Relation[]>([]);
+
+	// Relations keyed by both their many (collection) and one (related_collection) side
+	const relationsByCollection = computed(() => {
+		const byCollection = new Map<string, Relation[]>();
+
+		const add = (collection: string, relation: Relation) => {
+			const collectionRelations = byCollection.get(collection);
+
+			if (collectionRelations) collectionRelations.push(relation);
+			else byCollection.set(collection, [relation]);
+		};
+
+		for (const relation of relations.value) {
+			add(relation.collection, relation);
+
+			if (relation.related_collection && relation.related_collection !== relation.collection) {
+				add(relation.related_collection, relation);
+			}
+		}
+
+		return byCollection;
+	});
 
 	const hydrate = async () => {
 		const response = await api.get(`/relations`);
@@ -28,9 +51,8 @@ export const useRelationsStore = defineStore('relations', () => {
 	};
 
 	const getRelationsForCollection = (collection: string) => {
-		return relations.value.filter((relation) => {
-			return relation.collection === collection || relation.related_collection === collection;
-		});
+		// Copy so callers can mutate the result without touching the cached array
+		return [...(relationsByCollection.value.get(collection) ?? [])];
 	};
 
 	const upsertRelation = async (collection: string, field: string, values: DeepPartial<Relation>) => {
@@ -64,7 +86,7 @@ export const useRelationsStore = defineStore('relations', () => {
 
 		if (!fieldInfo) return [];
 
-		const scopedRelations = getRelations(getRelationsForCollection(collection), collection, field);
+		const scopedRelations = getRelations(relationsByCollection.value.get(collection) ?? [], collection, field);
 
 		if (scopedRelations.length > 0) {
 			const firstRelation = scopedRelations[0] as Relation;
@@ -75,7 +97,7 @@ export const useRelationsStore = defineStore('relations', () => {
 			// we also want to return the secondary relationship (from the jt to the related)
 			// so any ui elements (interfaces) can utilize the full relationship
 			if (isM2M) {
-				const secondaryRelation = relations.value.find((relation) => {
+				const secondaryRelation = relationsByCollection.value.get(firstRelation.collection)?.find((relation) => {
 					return (
 						relation.collection === firstRelation.collection &&
 						relation.field === firstRelation.meta?.junction_field &&
@@ -99,8 +121,11 @@ export const useRelationsStore = defineStore('relations', () => {
 
 		if (!fieldInfo) return null;
 
-		const relations = getRelationsForCollection(collection);
-		return relations.find((relation) => relation.collection === collection && relation.field === field) ?? null;
+		return (
+			relationsByCollection.value
+				.get(collection)
+				?.find((relation) => relation.collection === collection && relation.field === field) ?? null
+		);
 	};
 
 	return {
