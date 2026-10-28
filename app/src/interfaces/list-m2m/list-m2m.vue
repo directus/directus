@@ -120,20 +120,38 @@ const templateWithDefaults = computed(() => {
 	return `{{${relationInfo.value.relation.field}.${relationInfo.value.relatedPrimaryKeyField.field}}}`;
 });
 
-const fields = computed(() => {
+const displayFields = computed(() => {
 	if (!relationInfo.value) return [];
-	let displayFields: string[] = [];
 
 	if (props.layout === LAYOUTS.TABLE) {
-		displayFields = adjustFieldsForDisplays(props.fields, relationInfo.value.junctionCollection.collection);
-	} else {
-		displayFields = adjustFieldsForDisplays(
-			getFieldsFromTemplate(templateWithDefaults.value),
-			relationInfo.value.junctionCollection.collection,
-		);
+		return adjustFieldsForDisplays(props.fields, relationInfo.value.junctionCollection.collection);
 	}
 
-	return addRelatedPrimaryKeyToFields(relationInfo.value.junctionCollection.collection, displayFields);
+	return adjustFieldsForDisplays(
+		getFieldsFromTemplate(templateWithDefaults.value),
+		relationInfo.value.junctionCollection.collection,
+	);
+});
+
+const queryFields = computed(() => {
+	if (!relationInfo.value) return [];
+
+	return addRelatedPrimaryKeyToFields(relationInfo.value.junctionCollection.collection, displayFields.value);
+});
+
+// Hidden junction text fields stay searchable, unlike hidden keys and numbers that would match for no visible reason
+const searchFields = computed(() => {
+	if (!relationInfo.value) return [];
+
+	const { junctionCollection, junctionPrimaryKeyField, junctionField, reverseJunctionField } = relationInfo.value;
+	const keyFields = [junctionPrimaryKeyField.field, junctionField.field, reverseJunctionField.field];
+
+	const junctionTextFields = fieldsStore
+		.getFieldsForCollection(junctionCollection.collection)
+		.filter((field) => (field.type === 'string' || field.type === 'text') && !keyFields.includes(field.field))
+		.map((field) => field.field);
+
+	return [...new Set([...displayFields.value, ...junctionTextFields])];
 });
 
 const limit = ref(props.limit);
@@ -147,7 +165,7 @@ const query = computed<RelationQueryMultiple>(() => {
 	const q: RelationQueryMultiple = {
 		limit: limit.value,
 		page: page.value,
-		fields: fields.value || ['id'],
+		fields: queryFields.value || ['id'],
 	};
 
 	if (!relationInfo.value) {
@@ -168,14 +186,14 @@ const query = computed<RelationQueryMultiple>(() => {
 
 	if (search.value) {
 		// The API's search only covers the junction's own fields, which are rarely the ones on display
-		const displayedFieldsFilter = getSearchFilter(
+		const searchFieldsFilter = getSearchFilter(
 			relationInfo.value.junctionCollection.collection,
-			fields.value,
+			searchFields.value,
 			search.value,
 		);
 
-		if (displayedFieldsFilter) {
-			q.filter = mergeFilters(q.filter ?? null, displayedFieldsFilter) ?? undefined;
+		if (searchFieldsFilter) {
+			q.filter = mergeFilters(q.filter ?? null, searchFieldsFilter) ?? undefined;
 		} else {
 			q.search = search.value;
 		}
