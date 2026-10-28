@@ -520,6 +520,7 @@ function usePopper(
 						tabindex="-1"
 						class="v-menu-content"
 						:class="{ seamless }"
+						:style="{ maxBlockSize: maxHeight ?? undefined }"
 						v-on="{
 							...(closeOnContentClick ? { click: onContentClick } : {}),
 							...(trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}),
@@ -675,7 +676,6 @@ function usePopper(
 }
 
 .v-menu-content {
-	max-block-size: v-bind(maxHeight);
 	padding: 0 0.25rem;
 	overflow: hidden auto;
 	color: var(--theme--popover--menu--foreground);
