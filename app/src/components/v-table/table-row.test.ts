@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { h } from 'vue';
 import TableRow from './table-row.vue';
 import type { Header } from './types';
 import type { GlobalMountOptions } from '@/__utils__/types';
@@ -27,9 +28,10 @@ function mountTableRow(attachTo: Element = document.body) {
 			showSelect: 'multiple' as const,
 			showManualSort: true,
 			hasClickListener: true,
-		},
-		slots: {
-			'item-append': '<button class="ctx-toggle">More</button>',
+			hasItemAppendSlot: true,
+			itemSlots: {
+				'item-append': () => [h('button', { class: 'ctx-toggle' }, 'More')],
+			},
 		},
 		attachTo,
 		global,
