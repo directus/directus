@@ -4,6 +4,7 @@ import { mergeFilters } from '@directus/utils';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { isAdmin } from '../utils/is-admin.js';
+import { transaction } from '../utils/transaction.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { ItemsService } from './items.js';
 
@@ -103,7 +104,23 @@ export class FoldersService extends ItemsService<Folder> {
 			opts.preMutationError = err;
 		}
 
-		return super.deleteMany(keys, opts);
+		if (keys.length === 0) return super.deleteMany(keys, opts);
+
+		return transaction(this.knex, async (trx) => {
+			/**
+			 * MSSQL doesn't allow a second SET NULL foreign key from directus_settings to directus_folders,
+			 * so default_exports_folder has to be cleared manually before the folder can be deleted
+			 */
+			await trx('directus_settings').update({ default_exports_folder: null }).whereIn('default_exports_folder', keys);
+
+			const service = new ItemsService<Folder>('directus_folders', {
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
+
+			return service.deleteMany(keys, opts);
+		});
 	}
 
 	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Folder[]> {

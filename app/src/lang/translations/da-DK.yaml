@@ -1687,6 +1687,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: En brødtekst redigeringsværktøj som skriver HTML-indhold
     toolbar: Værktøjslinje
+    extensions: Udvidelser
     custom_formats: Brugerdefinerede formater
     folder_note: Mappe for uploadede filer. Påvirker ikke eksisterende filer.
     imageToken: Statisk Adgangstoken
