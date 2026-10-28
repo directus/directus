@@ -1920,6 +1920,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: HTML içeriği yazmak için zengin bir metin editörü
     toolbar: Araç Çubuğu
+    extensions: Eklentiler
     custom_formats: Özel Biçimler
     folder_note: Yüklenen dosyalar için bir klasör. Varolan dosyaları etkilemez.
     imageToken: Statik Erişim Anahtarı

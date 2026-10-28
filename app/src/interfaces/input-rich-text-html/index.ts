@@ -1,10 +1,13 @@
 import { defineInterface } from '@directus/extensions';
-import type { AppField, DeepPartial } from '@directus/types';
+import type { AppField, DeepPartial, Field } from '@directus/types';
 import { defineAsyncComponent } from 'vue';
 import PreviewSVG from './preview.svg?raw';
 import toolbarDefault from './toolbar-default';
+import { configurableRichTexts, contributedKey, enabledRichTexts, useRichTexts } from '@/rich-text/register';
 
 const InterfaceWYSIWYG = defineAsyncComponent(() => import('./input-rich-text-html.vue'));
+
+const enabledIds = (field: DeepPartial<Field>) => field.meta?.options?.['extensions'] as string[] | undefined;
 
 export default defineInterface({
 	id: 'input-rich-text-html',
@@ -17,6 +20,30 @@ export default defineInterface({
 	preview: PreviewSVG,
 	options: ({ field }) => ({
 		standard: [
+			// Only rendered when something is installed: an empty multi-select would confuse every
+			// other project.
+			...(useRichTexts().value.length > 0
+				? [
+						{
+							field: 'extensions',
+							name: '$t:interfaces.input-rich-text-html.extensions',
+							type: 'json',
+							schema: {
+								// nothing is on by default: installing an extension must not change an existing field
+								default_value: [],
+							},
+							meta: {
+								width: 'half',
+								interface: 'select-multiple-dropdown',
+								note: '$t:interfaces.input-rich-text-html.extensions_note',
+								options: {
+									choices: useRichTexts().value.map(({ id, name }) => ({ value: id, text: name })),
+									placeholder: '$t:interfaces.input-rich-text-html.extensions_placeholder',
+								},
+							},
+						} satisfies DeepPartial<AppField>,
+					]
+				: []),
 			{
 				field: 'toolbar',
 				name: '$t:interfaces.input-rich-text-html.toolbar',
@@ -222,10 +249,33 @@ export default defineInterface({
 								value: 'code',
 								text: '$t:wysiwyg_options.source_code',
 							},
+							// Only the extensions this field switched on: a button whose node is not in
+							// the field's schema would do nothing. `options` is a function the app
+							// re-runs as the admin edits, so this list follows the picker above.
+							...enabledRichTexts(enabledIds(field), field.meta?.options?.['extensionOptions']).flatMap((config) =>
+								config.buttons.map((button) => ({
+									value: contributedKey(config, button),
+									text: button.label,
+								})),
+							),
 						],
 					},
 				},
 			},
+			...(configurableRichTexts(enabledIds(field)).length > 0
+				? [
+						{
+							field: 'extensionOptions',
+							name: '$t:interfaces.input-rich-text-html.extension_options',
+							type: 'json',
+							meta: {
+								width: 'full',
+								interface: 'system-richtext-extension-options',
+								options: { extensions: enabledIds(field) },
+							},
+						} satisfies DeepPartial<AppField>,
+					]
+				: []),
 			{
 				field: 'font',
 				name: '$t:font',

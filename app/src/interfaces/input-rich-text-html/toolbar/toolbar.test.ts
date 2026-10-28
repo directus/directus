@@ -1,17 +1,24 @@
+import type { RichTextToolbarButton } from '@directus/extensions';
 import TextAlign from '@tiptap/extension-text-align';
 import StarterKit from '@tiptap/starter-kit';
 import { Editor } from '@tiptap/vue-3';
 import { mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
 import { createI18n } from 'vue-i18n';
 import { createMemoryHistory, createRouter } from 'vue-router';
+import { buildFieldSchema } from '../extensions';
 import { buildCustomFormats, type CustomFormat } from '../extensions/custom-formats';
 import Toolbar from './toolbar.vue';
+import { registerRichTexts } from '@/rich-text/register';
 
 let editor: Editor;
 
-function mountToolbar(toolbar: string[], customFormats: CustomFormat[] = []) {
+function mountToolbar(
+	toolbar: string[],
+	customFormats: CustomFormat[] = [],
+	contributedButtons: RichTextToolbarButton[] = [],
+) {
 	editor = new Editor({
 		extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
 		content: '<p>x</p>',
@@ -25,10 +32,26 @@ function mountToolbar(toolbar: string[], customFormats: CustomFormat[] = []) {
 		routes: [{ path: '/', component: { template: '<div />' } }],
 	});
 
-	return mount(Toolbar, { props: { editor, toolbar, customFormats }, global: { plugins: [pinia, i18n, router] } });
+	return mount(Toolbar, {
+		props: { editor, toolbar, customFormats, contributedButtons },
+		global: { plugins: [pinia, i18n, router] },
+	});
 }
 
-afterEach(() => editor?.destroy());
+afterEach(() => {
+	editor?.destroy();
+	registerRichTexts([]);
+	vi.restoreAllMocks();
+});
+
+// the buttons exactly as the interface hands them to the toolbar, keys prefixed by extension id
+function fieldButtons(configs: { id: string; buttons: RichTextToolbarButton[] }[]) {
+	registerRichTexts(configs.map((config) => ({ ...config, name: config.id })));
+	return buildFieldSchema({ extensions: configs.map((config) => config.id) }).buttons;
+}
+
+const iconsOf = (wrapper: ReturnType<typeof mountToolbar>) =>
+	wrapper.findAll('.toolbar-button .v-icon i').map((icon) => icon.attributes('data-icon'));
 
 describe('Toolbar', () => {
 	// initial availableWidth is Infinity, so everything is visible (no ResizeObserver fired)
@@ -82,5 +105,142 @@ describe('Toolbar', () => {
 	test('no styles dropdown when customFormats is empty', () => {
 		const wrapper = mountToolbar(['bold']);
 		expect(wrapper.find('.style-list-button').exists()).toBe(false);
+	});
+});
+
+describe('contributed buttons', () => {
+	const callout: RichTextToolbarButton = { key: 'callout', icon: 'info', label: 'Callout', command: () => {} };
+
+	test('renders a richtext extension button when the field selects its key', () => {
+		const wrapper = mountToolbar(['bold', 'callout'], [], [callout]);
+		expect(wrapper.findAll('.toolbar-button')).toHaveLength(2);
+	});
+
+	// the button only exists once the field opts the extension in, so an unknown key is dropped
+	test('drops the key when the field enabled no extension that contributes it', () => {
+		const wrapper = mountToolbar(['bold', 'callout']);
+		expect(wrapper.findAll('.toolbar-button')).toHaveLength(1);
+	});
+
+	// this is the case the user hits: extension enabled, but the field never opted the key in
+	test('renders nothing when the field does not select the key', () => {
+		const wrapper = mountToolbar(['bold'], [], [callout]);
+		expect(wrapper.findAll('.toolbar-button')).toHaveLength(1);
+	});
+
+	test('renders a contribution with a core key next to the core button', () => {
+		const buttons = fieldButtons([
+			{ id: 'ext', buttons: [{ key: 'bold', icon: 'star', label: 'Star', command: () => {} }] },
+		]);
+
+		const wrapper = mountToolbar(['bold', 'ext:bold'], [], buttons);
+		expect(iconsOf(wrapper)).toEqual(['format_bold', 'star']);
+	});
+
+	// the toolbar still refuses a bare core key if a contribution ever skips the prefix
+	test('keeps the core button when a contribution arrives with a bare core key', () => {
+		const bold: RichTextToolbarButton = { key: 'bold', icon: 'star', label: 'Star', command: () => {} };
+		const wrapper = mountToolbar(['bold'], [], [bold]);
+
+		expect(iconsOf(wrapper)).toEqual(['format_bold']);
+	});
+
+	test('disables a contributed button when its isDisabled returns true', () => {
+		const wrapper = mountToolbar(['callout'], [], [{ ...callout, isDisabled: () => true }]);
+		expect(wrapper.find('.toolbar-button button').attributes('disabled')).toBeDefined();
+	});
+
+	test('passes the editor to isDisabled', () => {
+		const wrapper = mountToolbar(['callout'], [], [{ ...callout, isDisabled: (e) => !e.isActive('bold') }]);
+		expect(wrapper.find('.toolbar-button button').attributes('disabled')).toBeDefined();
+	});
+
+	// the locked and disabled field states reach the toolbar only through its `disabled` prop
+	test('disables a contributed button when the toolbar is disabled', async () => {
+		const wrapper = mountToolbar(['callout'], [], [callout]);
+		await wrapper.setProps({ disabled: true });
+		expect(wrapper.find('.toolbar-button button').attributes('disabled')).toBeDefined();
+	});
+
+	test('keeps a contributed button disabled in a disabled toolbar when isDisabled returns false', async () => {
+		const wrapper = mountToolbar(['callout'], [], [{ ...callout, isDisabled: () => false }]);
+		await wrapper.setProps({ disabled: true });
+		expect(wrapper.find('.toolbar-button button').attributes('disabled')).toBeDefined();
+	});
+
+	test('renders a menu button as a dropdown trigger', () => {
+		const tone: RichTextToolbarButton = {
+			key: 'tone',
+			icon: 'palette',
+			label: 'Tone',
+			items: [{ key: 'info', label: 'Info', command: () => {} }],
+		};
+
+		const wrapper = mountToolbar(['bold', 'tone'], [], [tone]);
+
+		expect(wrapper.findAll('.toolbar-popover')).toHaveLength(1);
+		expect(iconsOf(wrapper)).toEqual(['format_bold', 'palette', 'expand_more']);
+	});
+
+	test('renders one button per extension when two use the same key', () => {
+		const buttons = fieldButtons([
+			{ id: 'ext-a', buttons: [{ key: 'callout', icon: 'info', label: 'A', command: () => {} }] },
+			{ id: 'ext-b', buttons: [{ key: 'callout', icon: 'star', label: 'B', command: () => {} }] },
+		]);
+
+		const wrapper = mountToolbar(['ext-a:callout', 'ext-b:callout'], [], buttons);
+		expect(iconsOf(wrapper)).toEqual(['info', 'star']);
+	});
+});
+
+describe('contributed button isolation', () => {
+	let error: MockInstance<typeof console.error>;
+
+	beforeEach(() => {
+		error = vi.spyOn(console, 'error').mockImplementation(() => {});
+	});
+
+	const boom = () => {
+		throw new Error('boom');
+	};
+
+	const failing = (overrides: Partial<RichTextToolbarButton>) =>
+		fieldButtons([
+			{ id: 'ext', buttons: [{ key: 'callout', icon: 'info', label: 'Callout', command: () => {}, ...overrides }] },
+		]);
+
+	const buttonOf = (wrapper: ReturnType<typeof mountToolbar>, icon: string) =>
+		wrapper.findAll('.toolbar-button button').find((button) => button.find(`[data-icon="${icon}"]`).exists())!;
+
+	test('disables a button whose command throws and keeps the core buttons working', async () => {
+		const wrapper = mountToolbar(['bold', 'ext:callout'], [], failing({ command: boom }));
+
+		await buttonOf(wrapper, 'info').trigger('click');
+
+		expect(error).toHaveBeenCalledOnce();
+		expect(error.mock.calls[0]!.join(' ')).toContain('"ext:callout"');
+		expect(buttonOf(wrapper, 'info').attributes('disabled')).toBeDefined();
+
+		editor.commands.selectAll();
+		await buttonOf(wrapper, 'format_bold').trigger('click');
+		expect(editor.isActive('bold')).toBe(true);
+	});
+
+	test('renders a button whose isActive throws as inactive and disabled', () => {
+		const wrapper = mountToolbar(['ext:callout'], [], failing({ isActive: boom }));
+
+		expect(error).toHaveBeenCalledOnce();
+		expect(buttonOf(wrapper, 'info').classes()).not.toContain('active');
+		expect(buttonOf(wrapper, 'info').attributes('disabled')).toBeDefined();
+	});
+
+	test('logs a failing button once', async () => {
+		const wrapper = mountToolbar(['bold', 'ext:callout'], [], failing({ isActive: boom }));
+
+		editor.commands.selectAll();
+		await buttonOf(wrapper, 'format_bold').trigger('click');
+		await wrapper.vm.$nextTick();
+
+		expect(error).toHaveBeenCalledOnce();
 	});
 });

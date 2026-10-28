@@ -9,6 +9,9 @@ import type {
 	HybridExtension,
 } from '../../shared/types/index.js';
 
+// one throwing module would fail a static import graph as a whole, so each extension loads on its own
+export const LOAD_HELPER = `const load = async (name, importer) => { try { return await importer(); } catch (error) { console.error('Skipped extension ' + name + ' because it threw while loading:', error); return null; } };`;
+
 export function generateExtensionsEntrypoint(
 	extensionMaps: { local: Map<string, Extension>; registry: Map<string, Extension>; module: Map<string, Extension> },
 	settings: ExtensionSettings[],
@@ -52,43 +55,50 @@ export function generateExtensionsEntrypoint(
 		}
 	}
 
-	const appOrHybridExtensionImports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].flatMap((type) =>
+	const extensionLoads = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].flatMap((type) =>
 		appOrHybridExtensions
 			.filter((extension) => extension.type === type)
-			.map(
-				(extension, i) =>
-					`import ${type}${i} from './${pathToRelativeUrl(
-						path.resolve(
-							extension.path,
-							isTypeIn(extension, HYBRID_EXTENSION_TYPES) ? extension.entrypoint.app : extension.entrypoint,
-						),
-					)}';`,
-			),
+			.map((extension, i) => ({
+				type,
+				variable: `${type}${i}`,
+				name: extension.name,
+				url: pathToRelativeUrl(
+					path.resolve(
+						extension.path,
+						isTypeIn(extension, HYBRID_EXTENSION_TYPES) ? extension.entrypoint.app : extension.entrypoint,
+					),
+				),
+			})),
 	);
 
-	const bundleExtensionImports = bundleExtensions.map((extension, i) =>
-		extension.entries.length > 0
-			? `import {${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
-					.filter((type) => extension.entries.some((entry) => entry.type === type))
-					.map((type) => `${pluralize(type)} as ${type}Bundle${i}`)
-					.join(',')}} from './${pathToRelativeUrl(path.resolve(extension.path, extension.entrypoint.app))}';`
-			: '',
-	);
+	const bundleLoads = bundleExtensions.map((extension, i) => ({
+		types: new Set(extension.entries.map((entry) => entry.type)),
+		variable: `bundle${i}`,
+		name: extension.name,
+		url: pathToRelativeUrl(path.resolve(extension.path, extension.entrypoint.app)),
+	}));
 
-	const extensionExports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].map(
-		(type) =>
-			`export const ${pluralize(type)} = [${appOrHybridExtensions
-				.filter((extension) => extension.type === type)
-				.map((_, i) => `${type}${i}`)
-				.concat(
-					bundleExtensions
-						.map((extension, i) =>
-							extension.entries.some((entry) => entry.type === type) ? `...${type}Bundle${i}` : null,
-						)
-						.filter((e): e is string => e !== null),
-				)
-				.join(',')}];`,
-	);
+	const loads = [...extensionLoads, ...bundleLoads];
 
-	return `${appOrHybridExtensionImports.join('')}${bundleExtensionImports.join('')}${extensionExports.join('')}`;
+	const loadStatement =
+		loads.length > 0
+			? `${LOAD_HELPER}const [${loads.map((load) => load.variable).join(',')}] = await Promise.all([${loads
+					.map((load) => `load(${JSON.stringify(load.name)}, () => import('./${load.url}'))`)
+					.join(',')}]);`
+			: '';
+
+	const extensionExports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].map((type) => {
+		const defaults = extensionLoads.filter((load) => load.type === type).map((load) => `${load.variable}?.default`);
+
+		const spreads = bundleLoads
+			.filter((load) => load.types.has(type))
+			.map((load) => `...(${load.variable}?.${pluralize(type)} ?? [])`);
+
+		// a skipped extension leaves an undefined default behind, a skipped bundle already spreads to nothing
+		const filter = defaults.length > 0 ? '.filter(Boolean)' : '';
+
+		return `export const ${pluralize(type)} = [${[...defaults, ...spreads].join(',')}]${filter};`;
+	});
+
+	return `${loadStatement}${extensionExports.join('')}`;
 }
