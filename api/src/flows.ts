@@ -88,9 +88,13 @@ class FlowManager {
 			if (event.type === 'reload') {
 				this.reloadQueue.add(async () => {
 					if (this.isLoaded) {
-						const flows = await this.fetchFlows();
-						await this.unload();
-						this.register(flows);
+						try {
+							const flows = await this.fetchFlows();
+							await this.unload();
+							this.register(flows);
+						} catch (error) {
+							logger.error(error, 'Failed to reload flows');
+						}
 					} else {
 						logger.warn('Flows have to be loaded before they can be reloaded');
 					}
