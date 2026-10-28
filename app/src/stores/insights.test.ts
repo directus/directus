@@ -7,10 +7,11 @@ import { useInsightsStore } from './insights';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-const { apiPost, apiPatch, apiDelete } = vi.hoisted(() => ({
+const { apiPost, apiPatch, apiDelete, panelTypes } = vi.hoisted(() => ({
 	apiPost: vi.fn(),
 	apiPatch: vi.fn(),
 	apiDelete: vi.fn(),
+	panelTypes: { value: [] as Record<string, any>[] },
 }));
 
 vi.mock('@/api', () => {
@@ -34,7 +35,7 @@ vi.mock('@/stores/permissions', () => {
 vi.mock('@/extensions', () => {
 	return {
 		useExtensions: () => ({
-			panels: ref([]),
+			panels: ref(panelTypes.value),
 		}),
 	};
 });
@@ -62,6 +63,7 @@ beforeEach(() => {
 
 afterEach(() => {
 	vi.clearAllMocks();
+	panelTypes.value = [];
 });
 
 describe('saveChanges action', () => {
@@ -184,5 +186,42 @@ describe('saveChanges action', () => {
 		expect(apiPost).not.toHaveBeenCalled();
 		expect(apiPatch).not.toHaveBeenCalled();
 		expect(apiDelete).not.toHaveBeenCalled();
+	});
+});
+
+describe('refresh action', () => {
+	test('should keep multi-query panel results in query order regardless of response key order', async () => {
+		panelTypes.value = [
+			{
+				id: 'multi-query',
+				query: () => [
+					{ collection: 'first', query: { fields: ['id'] } },
+					{ collection: 'second', query: { fields: ['id'] } },
+				],
+			},
+		];
+
+		const insightsStore = useInsightsStore();
+
+		(fetchAll as ReturnType<typeof vi.fn>)
+			.mockResolvedValueOnce([{ id: 'dashboard-1' }])
+			.mockResolvedValueOnce([{ id: 'panel-1', dashboard: 'dashboard-1', type: 'multi-query', options: {} }]);
+
+		await insightsStore.hydrate();
+
+		apiPost.mockImplementation(async (_url: string, { query }: { query: string }) => {
+			const keys = [...query.matchAll(/query_(\w+)/g)].map(([, key]) => key);
+
+			// Return the aliases in reverse order; once the store strips the `query_` prefix, all-digit hashes sort first, so key order can't be trusted
+			const data = Object.fromEntries(keys.reverse().map((key) => [`query_${key}`, [{ key }]]));
+
+			return { data: { data } };
+		});
+
+		await insightsStore.refresh('dashboard-1');
+
+		const sentKeys = [...apiPost.mock.calls[0]![1].query.matchAll(/query_(\w+)/g)].map(([, key]) => key);
+
+		expect(insightsStore.data['panel-1']).toEqual([[{ key: sentKeys[0] }], [{ key: sentKeys[1] }]]);
 	});
 });
