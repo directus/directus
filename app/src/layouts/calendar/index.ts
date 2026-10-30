@@ -9,6 +9,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import Color from 'color';
 import { format, formatISO, isValid, parse } from 'date-fns';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -70,6 +71,10 @@ export default defineLayout<LayoutOptions>({
 			}),
 		);
 
+		const colorFields = computed(() =>
+			fieldsInCollection.value.filter((field: Field) => field.meta?.interface === 'select-color'),
+		);
+
 		const calendarFilter = computed(() => {
 			if (!calendar.value || !startDateField.value) {
 				return null;
@@ -110,6 +115,8 @@ export default defineLayout<LayoutOptions>({
 			return fieldsInCollection.value.find((field: Field) => field.field === endDateField.value);
 		});
 
+		const colorField = syncRefProperty(layoutOptions, 'colorField', undefined);
+
 		const firstDay = syncRefProperty(layoutOptions, 'firstDay', undefined);
 
 		const queryFields = computed(() => {
@@ -119,6 +126,7 @@ export default defineLayout<LayoutOptions>({
 			if (template.value) fields.push(...getFieldsFromTemplate(template.value));
 			if (startDateField.value) fields.push(startDateField.value);
 			if (endDateField.value) fields.push(endDateField.value);
+			if (colorField.value) fields.push(colorField.value);
 
 			return [...fields, ...adjustFieldsForDisplays(fields, collection.value!)];
 		});
@@ -172,6 +180,7 @@ export default defineLayout<LayoutOptions>({
 					center: 'title',
 					right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek',
 				},
+				eventDisplay: 'block',
 				views: {
 					dayGridMonth: {
 						displayEventTime,
@@ -286,8 +295,10 @@ export default defineLayout<LayoutOptions>({
 			filterWithCalendarView,
 			template,
 			dateFields,
+			colorFields,
 			startDateField,
 			endDateField,
+			colorField,
 			firstDay,
 			showingCount,
 			createCalendar,
@@ -376,6 +387,7 @@ export default defineLayout<LayoutOptions>({
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,
+				...getEventStyling(item, colorField.value),
 				className: selection.value.includes(eventId) ? 'selected' : undefined,
 			};
 		}
@@ -398,3 +410,19 @@ export default defineLayout<LayoutOptions>({
 		}
 	},
 });
+
+export function getEventStyling(item: Record<string, any>, colorField?: string | null) {
+	const color: string | undefined = (colorField && item[colorField]) || undefined;
+
+	let textColor: string | undefined;
+
+	if (color) {
+		try {
+			textColor = Color(color).isDark() ? '#ffffff' : '#000000';
+		} catch {
+			// unparseable color: keep the default text color
+		}
+	}
+
+	return { color, textColor, display: 'block' as const };
+}
