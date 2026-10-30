@@ -1,4 +1,4 @@
-import { ForbiddenError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { FailedValidationError } from '@directus/validation';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { z } from 'zod';
@@ -228,6 +228,29 @@ describe('ToolRegistry', () => {
 				message:
 					'Validation failed for field "title". Value is required. Validation failed for field "slug". Value is required.',
 				recoverable: false,
+			},
+		});
+	});
+
+	test('keeps recovery guidance when every thrown error is recoverable', async () => {
+		const registry = new ToolRegistry([
+			createTool({
+				name: 'failing',
+				description: 'Failing',
+				handler: async () => {
+					throw [new InvalidPayloadError({ reason: 'First' }), new InvalidPayloadError({ reason: 'Second' })];
+				},
+				readOnly: true,
+			}),
+		]);
+
+		await expect(registry.mount({ schema }).execute('failing', {})).resolves.toMatchObject({
+			ok: false,
+			error: {
+				code: 'INVALID_PAYLOAD',
+				message: 'Invalid payload. First. Invalid payload. Second.',
+				recoverable: true,
+				next: { tool: 'search', input: { names: ['failing'] } },
 			},
 		});
 	});
