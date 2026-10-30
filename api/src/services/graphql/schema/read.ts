@@ -62,6 +62,12 @@ export async function getReadableTypes(
 			_neq: {
 				type: GraphQLID,
 			},
+			_ieq: {
+				type: GraphQLID,
+			},
+			_nieq: {
+				type: GraphQLID,
+			},
 			_contains: {
 				type: GraphQLID,
 			},
@@ -69,6 +75,9 @@ export async function getReadableTypes(
 				type: GraphQLID,
 			},
 			_ncontains: {
+				type: GraphQLID,
+			},
+			_nicontains: {
 				type: GraphQLID,
 			},
 			_starts_with: {
@@ -125,6 +134,12 @@ export async function getReadableTypes(
 			_neq: {
 				type: GraphQLString,
 			},
+			_ieq: {
+				type: GraphQLString,
+			},
+			_nieq: {
+				type: GraphQLString,
+			},
 			_contains: {
 				type: GraphQLString,
 			},
@@ -132,6 +147,9 @@ export async function getReadableTypes(
 				type: GraphQLString,
 			},
 			_ncontains: {
+				type: GraphQLString,
+			},
+			_nicontains: {
 				type: GraphQLString,
 			},
 			_starts_with: {
