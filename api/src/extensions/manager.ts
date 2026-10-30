@@ -685,7 +685,7 @@ export class ExtensionManager {
 				await Promise.all(
 					Array.from(extensions.entries()).map(async ([folder, extension]) => {
 						const { id, enabled } = this.extensionsSettings.find(
-							(settings) => settings.source === source && settings.folder === folder,
+							(settings) => settings.source === source && settings.folder === folder && settings.bundle === null,
 						) ?? { enabled: false };
 
 						if (!enabled) return;
