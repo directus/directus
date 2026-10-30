@@ -8,6 +8,7 @@ import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 import { Collection } from '@/types/collections';
 import { LAYOUTS } from '@/types/interfaces';
+import SearchInput from '@/views/private/components/search-input.vue';
 
 vi.mock('@/composables/use-relation-m2m', () => ({
 	useRelationM2M: () => ({
@@ -51,6 +52,9 @@ vi.mock('@/composables/use-relation-permissions', () => ({
 }));
 
 const mockGetField = vi.hoisted(() => vi.fn(() => null as any));
+const mockGetFieldsForCollection = vi.hoisted(() => vi.fn(() => [] as any[]));
+const relationQuery = vi.hoisted(() => ({ current: null as any }));
+const mockTotalItemCount = vi.hoisted(() => ({ value: 1 }));
 const mockGetWidth = vi.hoisted(() => vi.fn((_key: string, defaultWidth: number) => defaultWidth));
 const mockUpdateWidths = vi.hoisted(() => vi.fn());
 
@@ -58,38 +62,46 @@ vi.mock('@/composables/use-column-widths', () => ({
 	useColumnWidths: () => ({ getWidth: mockGetWidth, updateWidths: mockUpdateWidths }),
 }));
 
+vi.mock('@/utils/adjust-fields-for-displays', () => ({
+	adjustFieldsForDisplays: (fields: readonly string[]) => [...fields],
+}));
+
 vi.mock('@/stores/fields', () => ({
 	useFieldsStore: () => ({
-		getFieldsForCollection: vi.fn(() => []),
+		getFieldsForCollection: mockGetFieldsForCollection,
 		getField: mockGetField,
 		getPrimaryKeyFieldForCollection: vi.fn(() => ({ field: 'id' })),
 	}),
 }));
 
 vi.mock('@/composables/use-relation-multiple', () => ({
-	useRelationMultiple: () => ({
-		create: vi.fn(),
-		update: vi.fn(),
-		remove: vi.fn(),
-		select: vi.fn(),
-		displayItems: ref([{ id: '1', related_id: { id: '10' }, $type: 'existingItem', $index: 0, $edits: 0 }]),
-		totalItemCount: ref(1),
-		loading: ref(false),
-		selected: ref([]),
-		fetchedSelectItems: ref([]),
-		fetchedItems: ref([]),
-		useActions: vi.fn(() => ({
+	useRelationMultiple: (_value: unknown, query: unknown) => {
+		relationQuery.current = query;
+
+		return {
+			create: vi.fn(),
+			update: vi.fn(),
+			remove: vi.fn(),
+			select: vi.fn(),
+			displayItems: ref([{ id: '1', related_id: { id: '10' }, $type: 'existingItem', $index: 0, $edits: 0 }]),
+			totalItemCount: ref(mockTotalItemCount.value),
+			loading: ref(false),
+			selected: ref([]),
+			fetchedSelectItems: ref([]),
+			fetchedItems: ref([]),
+			useActions: vi.fn(() => ({
+				cleanItem: vi.fn((item: any) => item),
+				getPage: vi.fn(),
+				isLocalItem: vi.fn(() => false),
+				getItemEdits: vi.fn(() => ({})),
+				isEmpty: vi.fn(() => false),
+			})),
 			cleanItem: vi.fn((item: any) => item),
-			getPage: vi.fn(),
+			isItemSelected: vi.fn(() => false),
 			isLocalItem: vi.fn(() => false),
 			getItemEdits: vi.fn(() => ({})),
-			isEmpty: vi.fn(() => false),
-		})),
-		cleanItem: vi.fn((item: any) => item),
-		isItemSelected: vi.fn(() => false),
-		isLocalItem: vi.fn(() => false),
-		getItemEdits: vi.fn(() => ({})),
-	}),
+		};
+	},
 }));
 
 afterEach(() => {
@@ -379,6 +391,89 @@ describe('list-m2m', () => {
 				const headers = vTable.props('headers') as Array<{ value: string; width: number }>;
 				expect(headers?.find((h) => h.value === 'name')?.width).toBe(300);
 			});
+		});
+	});
+
+	describe('search', () => {
+		const fields: Record<string, any> = {
+			'junction-collection': {
+				id: { collection: 'junction-collection', field: 'id', type: 'integer' },
+				related_id: { collection: 'junction-collection', field: 'related_id', type: 'integer' },
+				item_id: { collection: 'junction-collection', field: 'item_id', type: 'integer' },
+				note: { collection: 'junction-collection', field: 'note', type: 'text' },
+				sort: { collection: 'junction-collection', field: 'sort', type: 'integer' },
+				'related_id.id': { collection: 'related-collection', field: 'id', type: 'integer' },
+				'related_id.name': { collection: 'related-collection', field: 'name', type: 'string' },
+				'related_id.data': { collection: 'related-collection', field: 'data', type: 'json' },
+			},
+		};
+
+		beforeEach(() => {
+			mockTotalItemCount.value = 11;
+
+			mockGetField.mockImplementation(
+				((collection: string, field: string) => fields[collection]?.[field] ?? null) as any,
+			);
+
+			mockGetFieldsForCollection.mockReturnValue(
+				['id', 'related_id', 'item_id', 'note', 'sort'].map((field) => fields['junction-collection'][field]),
+			);
+		});
+
+		afterEach(() => {
+			mockTotalItemCount.value = 1;
+			mockGetField.mockReset();
+			mockGetFieldsForCollection.mockReset();
+		});
+
+		async function searchFor(term: string, props: Record<string, unknown> = {}) {
+			const wrapper = mount(ListM2M, {
+				props: { ...listProps, layout: LAYOUTS.TABLE, enableSearchFilter: true, ...props },
+				global: tableGlobal,
+			});
+
+			await wrapper.findComponent(SearchInput).vm.$emit('update:modelValue', term);
+
+			return relationQuery.current.value;
+		}
+
+		it('should search displayed related fields and hidden junction text fields', async () => {
+			const query = await searchFor('Banana', { fields: ['related_id.name'] });
+
+			expect(query.search).toBeUndefined();
+
+			expect(query.filter).toEqual({
+				_or: [{ related_id: { name: { _icontains: 'Banana' } } }, { note: { _icontains: 'Banana' } }],
+			});
+		});
+
+		it('should not match hidden keys or hidden number fields', async () => {
+			const query = await searchFor('2', { fields: ['related_id.name'] });
+
+			expect(query.filter).toEqual({
+				_or: [{ related_id: { name: { _icontains: '2' } } }, { note: { _icontains: '2' } }],
+			});
+		});
+
+		it('should keep the junction filter alongside the search', async () => {
+			const junctionFilter = { sort: { _lt: 12 } };
+			const query = await searchFor('Banana', { fields: ['related_id.name'], junctionFilter });
+
+			expect(query.filter).toEqual({
+				_and: [
+					junctionFilter,
+					{ _or: [{ related_id: { name: { _icontains: 'Banana' } } }, { note: { _icontains: 'Banana' } }] },
+				],
+			});
+		});
+
+		it('should match no rows when no field can be searched', async () => {
+			mockGetFieldsForCollection.mockReturnValue([]);
+
+			const query = await searchFor('Banana', { fields: ['related_id.data'] });
+
+			expect(query.filter).toEqual({ id: { _null: true } });
+			expect(query.search).toBeUndefined();
 		});
 	});
 });

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ContentVersion, Filter } from '@directus/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+import { deepMap, getFieldsFromTemplate, mergeFilters } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, merge, set } from 'lodash-es';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
@@ -27,6 +27,7 @@ import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
+import { getSearchFilter } from '@/utils/get-search-filter';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
@@ -119,20 +120,38 @@ const templateWithDefaults = computed(() => {
 	return `{{${relationInfo.value.relation.field}.${relationInfo.value.relatedPrimaryKeyField.field}}}`;
 });
 
-const fields = computed(() => {
+const displayFields = computed(() => {
 	if (!relationInfo.value) return [];
-	let displayFields: string[] = [];
 
 	if (props.layout === LAYOUTS.TABLE) {
-		displayFields = adjustFieldsForDisplays(props.fields, relationInfo.value.junctionCollection.collection);
-	} else {
-		displayFields = adjustFieldsForDisplays(
-			getFieldsFromTemplate(templateWithDefaults.value),
-			relationInfo.value.junctionCollection.collection,
-		);
+		return adjustFieldsForDisplays(props.fields, relationInfo.value.junctionCollection.collection);
 	}
 
-	return addRelatedPrimaryKeyToFields(relationInfo.value.junctionCollection.collection, displayFields);
+	return adjustFieldsForDisplays(
+		getFieldsFromTemplate(templateWithDefaults.value),
+		relationInfo.value.junctionCollection.collection,
+	);
+});
+
+const queryFields = computed(() => {
+	if (!relationInfo.value) return [];
+
+	return addRelatedPrimaryKeyToFields(relationInfo.value.junctionCollection.collection, displayFields.value);
+});
+
+// Hidden junction text fields stay searchable, unlike hidden keys and numbers that would match for no visible reason
+const searchFields = computed(() => {
+	if (!relationInfo.value) return [];
+
+	const { junctionCollection, junctionPrimaryKeyField, junctionField, reverseJunctionField } = relationInfo.value;
+	const keyFields = [junctionPrimaryKeyField.field, junctionField.field, reverseJunctionField.field];
+
+	const junctionTextFields = fieldsStore
+		.getFieldsForCollection(junctionCollection.collection)
+		.filter((field) => (field.type === 'string' || field.type === 'text') && !keyFields.includes(field.field))
+		.map((field) => field.field);
+
+	return [...new Set([...displayFields.value, ...junctionTextFields])];
 });
 
 const limit = ref(props.limit);
@@ -146,7 +165,7 @@ const query = computed<RelationQueryMultiple>(() => {
 	const q: RelationQueryMultiple = {
 		limit: limit.value,
 		page: page.value,
-		fields: fields.value || ['id'],
+		fields: queryFields.value || ['id'],
 	};
 
 	if (!relationInfo.value) {
@@ -166,7 +185,18 @@ const query = computed<RelationQueryMultiple>(() => {
 	}
 
 	if (search.value) {
-		q.search = search.value;
+		// The API's search only covers the junction's own fields, which are rarely the ones on display
+		const searchFieldsFilter = getSearchFilter(
+			relationInfo.value.junctionCollection.collection,
+			searchFields.value,
+			search.value,
+		);
+
+		// Primary keys are never null, so nothing matches when no displayed field can be searched
+		const junctionPrimaryKeyField = relationInfo.value.junctionPrimaryKeyField.field;
+		const noMatchFilter: Filter = { [junctionPrimaryKeyField]: { _null: true } };
+
+		q.filter = mergeFilters(q.filter ?? null, searchFieldsFilter ?? noMatchFilter) ?? undefined;
 	}
 
 	if (sort.value) {

@@ -1,9 +1,14 @@
 import { MAX_SAFE_INT32, MAX_SAFE_INT64, MIN_SAFE_INT32, MIN_SAFE_INT64 } from '@directus/constants';
-import type { NumericValue } from '@directus/types';
-import type { NumberInfo } from '../types.js';
+import type { NumericType, NumericValue } from '@directus/types';
 import { calculateDecimalLimit } from './decimal-limit.js';
 
-export function numberInRange(value: NumericValue, info: NumberInfo) {
+export type NumberInfo = {
+	type: NumericType;
+	precision: number | null;
+	scale: number | null;
+};
+
+export function numberInRange(value: NumericValue, info: NumberInfo): boolean {
 	switch (info.type) {
 		case 'bigInteger':
 			return value >= MIN_SAFE_INT64 && value <= MAX_SAFE_INT64;
