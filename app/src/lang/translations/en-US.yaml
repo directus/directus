@@ -875,6 +875,8 @@ file_moved: File Moved
 collection_created: Collection Created
 modified_on: Modified On
 card_size: Card Size
+small: Small
+large: Large
 sort_field: Sort Field
 add_sort_field: Add Sort Field
 add_to_ai_context: Add to AI Context
@@ -2475,6 +2477,7 @@ forgot_password: Forgot Password
 hidden: Hidden
 hidden_in_group: Hidden in {group}
 icon: Icon
+image: Image
 info: Info
 normal: Normal
 success: Success
@@ -2787,6 +2790,20 @@ interfaces:
   select-radio:
     radio-buttons: Radio Buttons
     description: Select one of multiple choices
+  select-card-radio:
+    card-select: Card Select
+    description: Select a single item using visual cards
+    icon_type: Icon Type
+    description_note: Short text displayed below the card label
+  select-card-checkbox:
+    card-select-multiple: Card Select (Multiple)
+    description: Select multiple items using visual cards
+    icon_type: Icon Type
+    description_note: Short text displayed below the card label
+  system-file-image:
+    image_unavailable: Image unavailable
+    image: Image
+    description: Select an image file
   list:
     repeater: Repeater
     description: Create multiple entries of the same structure

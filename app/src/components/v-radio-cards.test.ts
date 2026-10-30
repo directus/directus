@@ -1,13 +1,14 @@
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
-import VRadioCards, { type RadioCardItem } from './v-radio-cards.vue';
+import type { ChoiceCardItem } from './v-choice-cards/types';
+import VRadioCards from './v-radio-cards.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],
 };
 
-const items: RadioCardItem[] = [
+const items: ChoiceCardItem[] = [
 	{ value: 'core', label: "I'm using Core", description: 'Free, no key required', icon: 'deployed_code' },
 	{ value: 'licensed', label: 'I have a license key', description: 'OIG, Team, or Enterprise plan', icon: 'key' },
 ];
@@ -85,7 +86,7 @@ test('disabled prop disables all cards', () => {
 });
 
 test('item-level disabled disables only that card', () => {
-	const mixedItems: RadioCardItem[] = [
+	const mixedItems: ChoiceCardItem[] = [
 		{ value: 'a', label: 'A', disabled: true },
 		{ value: 'b', label: 'B' },
 	];
@@ -100,18 +101,85 @@ test('item-level disabled disables only that card', () => {
 	expect(cards[1]!.attributes('disabled')).toBeUndefined();
 });
 
-test('accepts numeric values', async () => {
-	const numericItems: RadioCardItem[] = [
-		{ value: 1, label: 'One' },
-		{ value: 2, label: 'Two' },
-	];
-
+test('keeps numeric and string values distinct', async () => {
 	const wrapper = mount(VRadioCards, {
-		props: { items: numericItems },
+		props: {
+			items: [
+				{ value: 0, label: 'Number' },
+				{ value: '0', label: 'String' },
+			],
+			modelValue: 0,
+		},
 		global,
 	});
 
-	await wrapper.findAll('.v-radio-card')[0]!.trigger('click');
+	const cards = wrapper.findAll('[role="radio"]');
+	expect(cards[0]!.attributes('aria-checked')).toBe('true');
+	expect(cards[1]!.attributes('aria-checked')).toBe('false');
+	await cards[1]!.trigger('click');
+	expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['0']);
+	await wrapper.setProps({ modelValue: '0' });
+	await cards[0]!.trigger('click');
+	expect(wrapper.emitted('update:modelValue')?.[1]).toEqual([0]);
+});
 
-	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['1']);
+test('custom card content receives selection and accessible label IDs', async () => {
+	const wrapper = mount(VRadioCards, {
+		props: { items, modelValue: 'core' },
+		global,
+		slots: {
+			item: `<template #item="{ item, selected, labelId, descriptionId }">
+				<span :id="labelId">{{ item.label }}</span>
+				<span :id="descriptionId">{{ item.description }}</span>
+				<span class="selected">{{ selected }}</span>
+			</template>`,
+		},
+	});
+
+	const card = wrapper.find('[role="radio"]');
+	expect(card.find('.selected').text()).toBe('true');
+	expect(card.find(`[id="${card.attributes('aria-labelledby')}"]`).text()).toBe(items[0]!.label);
+	expect(card.find(`[id="${card.attributes('aria-describedby')}"]`).text()).toBe(items[0]!.description);
+	await wrapper.setProps({ modelValue: 'licensed' });
+	expect(card.find('.selected').text()).toBe('false');
+});
+
+test('keeps the current selection when the parent rejects an update', async () => {
+	const wrapper = mount(VRadioCards, { props: { items, modelValue: 'core' }, global });
+	const cards = wrapper.findAll('[role="radio"]');
+	await cards[1]!.trigger('click');
+	expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['licensed']);
+	expect(cards[0]!.attributes('aria-checked')).toBe('true');
+	expect(cards[1]!.attributes('aria-checked')).toBe('false');
+});
+
+test('stays controlled when initially empty and follows accepted values and resets', async () => {
+	const wrapper = mount(VRadioCards, { props: { items, modelValue: null }, global });
+	const cards = wrapper.findAll('[role="radio"]');
+	await cards[0]!.trigger('click');
+	expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['core']);
+	expect(cards.every((card) => card.attributes('aria-checked') === 'false')).toBe(true);
+	await wrapper.setProps({ modelValue: 'core' });
+	expect(cards[0]!.attributes('aria-checked')).toBe('true');
+	await wrapper.setProps({ modelValue: null });
+	expect(cards.every((card) => card.attributes('aria-checked') === 'false')).toBe(true);
+});
+
+test('keeps a Tab entry point when a loading form becomes enabled', async () => {
+	const wrapper = mount(VRadioCards, { props: { items, modelValue: 'core', disabled: true }, global });
+	expect(wrapper.find('[role="radiogroup"]').attributes('tabindex')).toBe('-1');
+	await wrapper.setProps({ disabled: false });
+	expect(wrapper.find('[role="radiogroup"]').attributes('tabindex')).toBe('0');
+});
+
+test('keeps a Tab entry point when individual choices become enabled', async () => {
+	const wrapper = mount(VRadioCards, {
+		props: { items: items.map((item) => ({ ...item, disabled: true })) },
+		global,
+	});
+
+	await wrapper.setProps({ items });
+	expect(wrapper.find('[role="radiogroup"]').attributes('tabindex')).toBe('0');
+	await wrapper.setProps({ items: items.map((item) => ({ ...item, disabled: true })) });
+	expect(wrapper.find('[role="radiogroup"]').attributes('tabindex')).toBe('-1');
 });

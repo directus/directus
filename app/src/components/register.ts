@@ -12,6 +12,7 @@ import VCardSubtitle from './v-card-subtitle.vue';
 import VCardText from './v-card-text.vue';
 import VCardTitle from './v-card-title.vue';
 import VCard from './v-card.vue';
+import VCheckboxCards from './v-checkbox-cards.vue';
 import VCheckboxTree from './v-checkbox-tree/v-checkbox-tree.vue';
 import VCheckbox from './v-checkbox.vue';
 import VChip from './v-chip.vue';
@@ -90,6 +91,7 @@ export function registerComponents(app: App): void {
 	app.component('VCardTitle', VCardTitle);
 	app.component('VCard', VCard);
 	app.component('VCheckbox', VCheckbox);
+	app.component('VCheckboxCards', VCheckboxCards);
 	app.component('VCheckboxTree', VCheckboxTree);
 	app.component('VChip', VChip);
 	app.component('VDetail', VDetail);
