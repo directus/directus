@@ -1,18 +1,22 @@
 import { API_INJECT, EXTENSIONS_INJECT, SDK_INJECT, STORES_INJECT } from '@directus/constants';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { inject } from 'vue';
+import type { App } from 'vue';
+import { hasInjectionContext, inject } from 'vue';
 import { useApi, useExtensions, useSdk, useStores } from './use-system.js';
 
 // Mock Vue's inject function
 vi.mock('vue', () => ({
 	inject: vi.fn(),
+	hasInjectionContext: vi.fn(),
 }));
 
 const mockInject = vi.mocked(inject);
+const mockHasInjectionContext = vi.mocked(hasInjectionContext);
 
 describe('use-system', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		mockHasInjectionContext.mockReturnValue(true);
 	});
 
 	describe('useStores', () => {
@@ -423,6 +427,117 @@ describe('use-system', () => {
 			expect(stores).toBe(mockStores);
 
 			expect(() => useApi()).toThrow('[useApi]: The api could not be found.');
+		});
+	});
+
+	describe('provideSystem', () => {
+		// provideSystem keeps module-level state, so every test gets a fresh copy of the module
+		async function importFresh() {
+			vi.resetModules();
+			return await import('./use-system.js');
+		}
+
+		function createMockApp() {
+			return { provide: vi.fn() } as unknown as App;
+		}
+
+		it('should provide the value to the app', async () => {
+			const { provideSystem } = await importFresh();
+			const app = createMockApp();
+			const mockStores = { useUserStore: vi.fn() };
+
+			provideSystem(app, STORES_INJECT, mockStores);
+
+			expect(app.provide).toHaveBeenCalledWith(STORES_INJECT, mockStores);
+		});
+
+		it('should resolve provided values outside of an injection context', async () => {
+			const { provideSystem, useStores, useApi, useSdk, useExtensions } = await importFresh();
+			const app = createMockApp();
+			const mockStores = { useUserStore: vi.fn() };
+			const mockApi = { get: vi.fn() };
+			const mockSdk = { request: vi.fn() };
+			const mockExtensions = { displays: {} };
+
+			provideSystem(app, STORES_INJECT, mockStores);
+			provideSystem(app, API_INJECT, mockApi);
+			provideSystem(app, SDK_INJECT, mockSdk);
+			provideSystem(app, EXTENSIONS_INJECT, mockExtensions);
+
+			mockHasInjectionContext.mockReturnValue(false);
+
+			expect(useStores()).toBe(mockStores);
+			expect(useApi()).toBe(mockApi);
+			expect(useSdk()).toBe(mockSdk);
+			expect(useExtensions()).toBe(mockExtensions);
+			expect(mockInject).not.toHaveBeenCalled();
+		});
+
+		it('should prefer the injected value inside an injection context', async () => {
+			const { provideSystem, useStores } = await importFresh();
+			const injectedStores = { useUserStore: vi.fn() };
+
+			provideSystem(createMockApp(), STORES_INJECT, { useUserStore: vi.fn() });
+			mockInject.mockReturnValue(injectedStores);
+
+			expect(useStores()).toBe(injectedStores);
+		});
+
+		it('should fall back to the provided value when nothing is injected', async () => {
+			const { provideSystem, useStores } = await importFresh();
+			const mockStores = { useUserStore: vi.fn() };
+
+			provideSystem(createMockApp(), STORES_INJECT, mockStores);
+			mockInject.mockReturnValue(undefined);
+
+			expect(useStores()).toBe(mockStores);
+		});
+
+		it('should throw outside of an injection context when nothing was provided', async () => {
+			const { useStores } = await importFresh();
+
+			mockHasInjectionContext.mockReturnValue(false);
+
+			expect(() => useStores()).toThrow('[useStores]: The stores could not be found.');
+			expect(mockInject).not.toHaveBeenCalled();
+		});
+
+		// https://github.com/directus/directus/issues/25410
+		it('should resolve stores in a computed re-evaluated by a watcher', async () => {
+			const vue = await vi.importActual<typeof import('vue')>('vue');
+			mockInject.mockImplementation(vue.inject);
+			mockHasInjectionContext.mockImplementation(vue.hasInjectionContext);
+
+			const { provideSystem, useStores } = await importFresh();
+			const mockStores = { useUserStore: vi.fn() };
+			const collection = vue.ref('articles');
+			const errors: unknown[] = [];
+
+			const app = vue.createApp({
+				setup() {
+					// like a display's `fields()` function used by a layout
+					const fields = vue.computed(() => {
+						useStores();
+						return [`${collection.value}.id`];
+					});
+
+					// like the watcher in useItems
+					vue.watch(fields, () => {});
+
+					return () => null;
+				},
+			});
+
+			app.config.errorHandler = (err) => errors.push(err);
+			provideSystem(app, STORES_INJECT, mockStores);
+			app.mount(document.createElement('div'));
+
+			collection.value = 'authors';
+			await vue.nextTick();
+
+			app.unmount();
+
+			expect(errors).toEqual([]);
 		});
 	});
 });

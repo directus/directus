@@ -2,7 +2,33 @@ import { API_INJECT, EXTENSIONS_INJECT, SDK_INJECT, STORES_INJECT } from '@direc
 import type { DirectusClient, RestClient } from '@directus/sdk';
 import type { AppExtensionConfigs, RefRecord } from '@directus/types';
 import type { AxiosInstance } from 'axios';
-import { inject } from 'vue';
+import { type App, hasInjectionContext, inject } from 'vue';
+
+type SystemKey = typeof STORES_INJECT | typeof API_INJECT | typeof SDK_INJECT | typeof EXTENSIONS_INJECT;
+
+const systemContext = new Map<SystemKey, unknown>();
+
+/**
+ * Provides a system value (stores, api, sdk, extensions) to the given app.
+ *
+ * The value is also kept outside of Vue's injection context, so the `use*` composables below keep
+ * working when called where `inject()` isn't available, like a computed that is re-evaluated by a
+ * watcher, or a display's `fields()` function.
+ *
+ * @param app - The Vue app instance to provide the value to
+ * @param key - The injection key of the system value
+ * @param value - The value to provide
+ */
+export function provideSystem(app: App, key: SystemKey, value: unknown): void {
+	app.provide(key, value);
+	systemContext.set(key, value);
+}
+
+function injectSystem<T>(key: SystemKey): T | undefined {
+	const value = hasInjectionContext() ? inject<T>(key) : undefined;
+
+	return value ?? (systemContext.get(key) as T | undefined);
+}
 
 /**
  * Vue composable that provides access to the global Directus stores through dependency injection.
@@ -11,7 +37,7 @@ import { inject } from 'vue';
  * the Directus application, including user store, permissions store, collections store, etc.
  *
  * @returns The injected stores object containing all application stores
- * @throws Error if the stores could not be found in the injection context
+ * @throws Error if the stores haven't been provided
  *
  * @example
  * ```typescript
@@ -61,7 +87,7 @@ import { inject } from 'vue';
  * ```
  */
 export function useStores(): Record<string, any> {
-	const stores = inject<Record<string, any>>(STORES_INJECT);
+	const stores = injectSystem<Record<string, any>>(STORES_INJECT);
 
 	if (!stores) throw new Error('[useStores]: The stores could not be found.');
 
@@ -76,7 +102,7 @@ export function useStores(): Record<string, any> {
  * Directus API. It provides a convenient way to make HTTP requests from components and composables.
  *
  * @returns The injected Axios instance configured for Directus API communication
- * @throws Error if the API instance could not be found in the injection context
+ * @throws Error if the API instance hasn't been provided
  *
  * @example
  * ```typescript
@@ -136,7 +162,7 @@ export function useStores(): Record<string, any> {
  * ```
  */
 export function useApi(): AxiosInstance {
-	const api = inject<AxiosInstance>(API_INJECT);
+	const api = injectSystem<AxiosInstance>(API_INJECT);
 
 	if (!api) throw new Error('[useApi]: The api could not be found.');
 
@@ -152,7 +178,7 @@ export function useApi(): AxiosInstance {
  *
  * @template Schema - The TypeScript schema type for your Directus instance, defaults to `any`
  * @returns The injected Directus SDK client with REST client capabilities
- * @throws Error if the SDK instance could not be found in the injection context
+ * @throws Error if the SDK instance hasn't been provided
  *
  * @example
  * ```typescript
@@ -233,7 +259,7 @@ export function useApi(): AxiosInstance {
  * ```
  */
 export function useSdk<Schema extends object = any>(): DirectusClient<Schema> & RestClient<Schema> {
-	const sdk = inject<DirectusClient<Schema> & RestClient<Schema>>(SDK_INJECT);
+	const sdk = injectSystem<DirectusClient<Schema> & RestClient<Schema>>(SDK_INJECT);
 
 	if (!sdk) throw new Error('[useSdk]: The sdk could not be found.');
 
@@ -249,7 +275,7 @@ export function useSdk<Schema extends object = any>(): DirectusClient<Schema> & 
  * and utilize custom functionality within the Directus application.
  *
  * @returns A reactive record of extension configurations organized by extension type
- * @throws Error if the extensions could not be found in the injection context
+ * @throws Error if the extensions haven't been provided
  *
  * @example
  * ```typescript
@@ -325,7 +351,7 @@ export function useSdk<Schema extends object = any>(): DirectusClient<Schema> & 
  * ```
  */
 export function useExtensions(): RefRecord<AppExtensionConfigs> {
-	const extensions = inject<RefRecord<AppExtensionConfigs>>(EXTENSIONS_INJECT);
+	const extensions = injectSystem<RefRecord<AppExtensionConfigs>>(EXTENSIONS_INJECT);
 
 	if (!extensions) throw new Error('[useExtensions]: The extensions could not be found.');
 
