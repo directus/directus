@@ -32,6 +32,12 @@ describe('buildCustomModels', () => {
 		expect(result[0]?.limit).toEqual({ context: 32_000, output: 4_000 });
 	});
 
+	it('assigns the given provider', () => {
+		const result = buildCustomModels([{ id: 'anthropic/claude-haiku-4.5', name: 'Claude Haiku 4.5' }], 'openrouter');
+
+		expect(result[0]?.provider).toBe('openrouter');
+	});
+
 	it('uses provided attachment and reasoning flags', () => {
 		const result = buildCustomModels([{ id: 'custom', name: 'Custom', attachment: true, reasoning: true }]);
 

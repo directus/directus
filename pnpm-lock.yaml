@@ -335,6 +335,9 @@ catalogs:
     '@npm/types':
       specifier: 2.1.0
       version: 2.1.0
+    '@openrouter/ai-sdk-provider':
+      specifier: 2.10.0
+      version: 2.10.0
     '@opentelemetry/sdk-trace-node':
       specifier: 2.11.0
       version: 2.11.0
@@ -1307,6 +1310,9 @@ importers:
       '@netlify/api':
         specifier: 'catalog:'
         version: 14.0.14
+      '@openrouter/ai-sdk-provider':
+        specifier: 'catalog:'
+        version: 2.10.0(ai@6.0.116(zod@4.1.12))(zod@4.1.12)
       '@opentelemetry/sdk-trace-node':
         specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
@@ -5539,6 +5545,13 @@ packages:
 
   '@one-ini/wasm@0.2.1':
     resolution: {integrity: sha512-TUqERXGNTifZ9y2g3wPxQrw3HpHv/02DsW3D90T9x0hhonrL1ZqpSmNrU2XkoIq0fP1N6gZfVQzy2Fw1ZvGBNg==}
+
+  '@openrouter/ai-sdk-provider@2.10.0':
+    resolution: {integrity: sha512-FMsAEjLUt5pWuRE2LDC/LCvVrFjLlrEzUITH5+5SZtfq7KZ2wrOHjQVxzz92sju8S9ltpzW87CLW8/b0oBXVCw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      ai: ^6.0.0
+      zod: ^3.25.0 || ^4.0.0
 
   '@opentelemetry/api-logs@0.202.0':
     resolution: {integrity: sha512-fTBjMqKCfotFWfLzaKyhjLvyEyq5vDKTTFfBmx21btv3gvy8Lq6N5Dh2OzqeuN4DjtpSvNT1uNVfg08eD2Rfxw==}
@@ -15955,6 +15968,11 @@ snapshots:
   '@npm/types@2.1.0': {}
 
   '@one-ini/wasm@0.2.1': {}
+
+  '@openrouter/ai-sdk-provider@2.10.0(ai@6.0.116(zod@4.1.12))(zod@4.1.12)':
+    dependencies:
+      ai: 6.0.116(zod@4.1.12)
+      zod: 4.1.12
 
   '@opentelemetry/api-logs@0.202.0':
     dependencies:

@@ -5,6 +5,7 @@ export const ProviderTypeSchema = z.enum([
 	'openai',
 	'anthropic',
 	'google',
+	'openrouter',
 	'openai-compatible',
 ]) satisfies z.ZodType<ProviderType>;
 
@@ -20,6 +21,11 @@ export const ProviderAnthropic = z.object({
 
 export const ProviderGoogle = z.object({
 	provider: z.literal('google'),
+	model: z.string(),
+});
+
+export const ProviderOpenRouter = z.object({
+	provider: z.literal('openrouter'),
 	model: z.string(),
 });
 

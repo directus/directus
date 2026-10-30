@@ -121,7 +121,9 @@ export const useAiStore = defineStore('ai-store', () => {
 		return resolveModelByKey(selectedModelId.value, models.value) ?? defaultModel.value ?? null;
 	});
 
-	const supportsFileUpload = computed(() => selectedModel.value?.provider !== 'openai-compatible');
+	const supportsFileUpload = computed(
+		() => selectedModel.value?.provider !== 'openai-compatible' && selectedModel.value?.provider !== 'openrouter',
+	);
 
 	const selectModel = (modelDefinition: AppModelDefinition) => {
 		if (isProviderLocked.value && modelDefinition.provider !== selectedModel.value?.provider) {

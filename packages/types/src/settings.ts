@@ -75,6 +75,7 @@ export type Settings = {
 	ai_openai_api_key: '**********' | null;
 	ai_anthropic_api_key: '**********' | null;
 	ai_google_api_key: '**********' | null;
+	ai_openrouter_api_key: '**********' | null;
 	ai_openai_compatible_api_key: '**********' | null;
 	ai_openai_compatible_base_url: string | null;
 	ai_openai_compatible_name: string | null;
@@ -83,6 +84,7 @@ export type Settings = {
 	ai_openai_allowed_models: string[] | null;
 	ai_anthropic_allowed_models: string[] | null;
 	ai_google_allowed_models: string[] | null;
+	ai_openrouter_models: OpenAICompatibleModel[] | null;
 	ai_system_prompt: string | null;
 	ai_translation_default_model: string | null;
 	ai_translation_glossary: Array<{ term: string; translation_note?: string }> | null;

@@ -99,6 +99,7 @@ describe('resolveResources', () => {
 					'ai_openai_api_key',
 					'ai_anthropic_api_key',
 					'ai_google_api_key',
+					'ai_openrouter_api_key',
 					'ai_openai_compatible_api_key',
 					'ai_openai_compatible_headers',
 				],

@@ -1,6 +1,6 @@
 import { DEFAULT_ALLOWED_MODELS } from '@directus/ai';
 import { describe, expect, test } from 'vitest';
-import { getAvailableModels, getModelKey, resolveModelByKey } from './available-models';
+import { getAvailableModels, getModelKey, getProviderIcon, resolveModelByKey } from './available-models';
 
 type AIModelSettings = NonNullable<Parameters<typeof getAvailableModels>[0]>;
 
@@ -15,6 +15,7 @@ function createSettings(overrides: Record<string, unknown> = {}): AIModelSetting
 		ai_openai_allowed_models: null,
 		ai_anthropic_allowed_models: null,
 		ai_google_allowed_models: null,
+		ai_openrouter_models: null,
 		...overrides,
 	} as AIModelSettings;
 }
@@ -81,6 +82,29 @@ describe('available-models', () => {
 		]);
 
 		expect(models[1]?.name).toBe('gemini-9-pro-experimental');
+	});
+
+	test('lists saved openrouter models with their names and limits', () => {
+		const settings = createSettings({
+			ai_openrouter_models: [
+				{ id: 'anthropic/claude-haiku-4.5', name: 'Claude Haiku 4.5', context: 200_000, output: 64_000 },
+				{ id: 'acme/model:free', name: 'Model (Free)' },
+			],
+		});
+
+		expect(getAvailableModels(settings, [])).toEqual([]);
+
+		const models = getAvailableModels(settings, ['openrouter']);
+
+		expect(models[0]).toMatchObject({
+			provider: 'openrouter',
+			model: 'anthropic/claude-haiku-4.5',
+			name: 'Claude Haiku 4.5',
+			limit: { context: 200_000, output: 64_000 },
+		});
+
+		expect(models[1]).toMatchObject({ model: 'acme/model:free', limit: { context: 128_000, output: 16_000 } });
+		expect(getProviderIcon(models[0]!.provider)).toBe('logo_openrouter');
 	});
 
 	test('resolves model keys and supports model ids containing colons', () => {
