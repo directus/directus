@@ -32,7 +32,7 @@ export const updateSingleton =
 		Item = Schema[Collection],
 	>(
 		collection: Collection,
-		item: NestedPartial<Item>,
+		item: NestedPartial<NoInfer<Item>>,
 		query?: TQuery,
 	): RestCommand<UpdateSingletonOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
