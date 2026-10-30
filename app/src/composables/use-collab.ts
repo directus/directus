@@ -296,25 +296,34 @@ export function useCollab(
 		}),
 	);
 
+	// Cached so v-form gets the same context on every render and doesn't re-render each field
+	const fieldContexts = new Map<string, CollabFieldContext>();
+
 	const collabContext: CollabContext = {
 		update,
 		get focusedFields() {
 			return Object.values(focused.value);
 		},
 		registerField(field: string) {
+			const cached = fieldContexts.get(field);
+			if (cached) return cached;
+
 			const focusedBy = computed(() => {
 				const focusedBy = Object.entries(focused.value).find(([cid, f]) => cid !== connectionId.value && f === field);
 				if (!focusedBy) return;
 				return users.value.find((user) => user.connection === focusedBy[0]);
 			});
 
-			return {
+			const context = {
 				onFieldUpdate: (value: unknown) => onFieldUpdate(field, value),
 				onFieldUnset: () => onFieldUnset(field),
 				onBlur: () => onFocus(null),
 				focusedBy,
 				onFocus: () => onFocus(field),
 			};
+
+			fieldContexts.set(field, context);
+			return context;
 		},
 	};
 
