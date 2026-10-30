@@ -2897,7 +2897,8 @@ interfaces:
     link_protocols: Allowed Link Protocols
     link_protocols_note:
       Extra URL schemes that links may use, such as `myapp` for `myapp://` deep links. Standard schemes such as `http`,
-      `https`, `mailto` and `tel` are always allowed. Only add schemes you trust.
+      `https`, `mailto` and `tel` are always allowed. Script schemes such as `javascript` are never allowed. Only add
+      schemes you trust.
     link_protocols_placeholder: Add a scheme and press Enter...
     link_protocol_not_allowed:
       This link type is not allowed. Add its scheme to the Allowed Link Protocols option of this field.

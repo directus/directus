@@ -373,7 +373,7 @@ describe('link protocols', () => {
 		expect(editor.value.getHTML()).toBe('<a href="myapp://some/route"><img src="/assets/abc"></a><p>y</p>');
 	});
 
-	test('saveLink stores a link with an allowed scheme that linkify cannot autolink', () => {
+	test('saveLink stores a link with an allowed dotted scheme', () => {
 		const { editor, linkSelection, linkUrlDisallowed, saveLink } = setup('<p></p>', ['com.example.app']);
 
 		linkSelection.value = { ...CUSTOM, url: 'com.example.app://some/route' };

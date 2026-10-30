@@ -61,7 +61,7 @@ describe('buildLinkProtocols', () => {
 		expect(buildLinkProtocols(['a', 'b']).key).toBe(buildLinkProtocols(['b', 'a']).key);
 	});
 
-	test('mounts an editor with schemes linkify cannot register and keeps their links', async () => {
+	test('mounts an editor with dotted and plus schemes and keeps their links', async () => {
 		const { extensions } = buildLinkProtocols(['com.example.app', 'web+app']);
 		const editor = await mounted(extensions);
 		const html = '<p><a href="com.example.app://x">a</a> <a href="web+app:y">b</a></p>';
@@ -70,14 +70,15 @@ describe('buildLinkProtocols', () => {
 		expect(roundTrip(html, extensions)).toBe(html);
 	});
 
-	test('keeps autolinking an allowed custom scheme after a round-trip check', async () => {
-		const { extensions } = buildLinkProtocols(['myapp']);
-		const editor = await mounted(extensions);
+	test('never allows script schemes', () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const { extensions, protocols } = buildLinkProtocols(['JavaScript:', 'vbscript', 'data', 'myapp']);
 
-		roundTrip(TEXT_LINK, extensions);
-		editor.commands.insertContent('myapp://some/route ');
+		expect(protocols).toEqual(['myapp']);
+		expect(roundTrip('<p><a href="javascript:alert(1)">open</a></p>', extensions)).toBe('<p>open</p>');
+		expect(warn).toHaveBeenCalledTimes(3);
 
-		expect(editor.getHTML()).toContain('<a href="myapp://some/route">');
+		warn.mockRestore();
 	});
 
 	test('accepts the option as a comma-separated string', () => {
