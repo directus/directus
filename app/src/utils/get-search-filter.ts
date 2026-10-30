@@ -64,6 +64,7 @@ function getOperator(field: Field, search: string): Record<string, string | numb
 
 /**
  * The app can't know the database vendor, so apply the strictest of the API's per-vendor checks
+ * in `api/src/database/helpers/number/dialects/`; keep in sync if those change
  */
 function isNumberValid(number: NumericValue, info: NumberInfo): boolean {
 	if (!numberInRange(number, info)) {
