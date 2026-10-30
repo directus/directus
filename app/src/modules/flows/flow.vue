@@ -463,7 +463,7 @@ async function deletePanel(id: string) {
 	}
 
 	if (flow.value.operation === id) {
-		stagedFlow.value = { operation: null };
+		stagedFlow.value = { ...stagedFlow.value, operation: null };
 	} else {
 		const parent = parentPanels.value[id];
 
@@ -550,7 +550,7 @@ function arrowStop() {
 
 	if (currentlyConnected) {
 		if (currentlyConnected.id === '$trigger') {
-			flow.value = merge({}, flow.value, { operation: null });
+			stagedFlow.value = { ...stagedFlow.value, operation: null };
 		} else {
 			stageOperationEdits({
 				edits: {
@@ -562,7 +562,7 @@ function arrowStop() {
 	}
 
 	if (arrowInfo.value.id === '$trigger') {
-		flow.value = merge({}, flow.value, { operation: nearPanel ?? null });
+		stagedFlow.value = { ...stagedFlow.value, operation: nearPanel ?? null };
 	} else {
 		stageOperationEdits({
 			edits: {
@@ -601,7 +601,9 @@ function getNearAttachment(pos: Vector2) {
 
 // ------------- Navigation Guard ------------- //
 
-const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
+const hasEdits = computed(
+	() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0 || !isEmpty(stagedFlow.value),
+);
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, {
 	ignorePrefix: computed(() => `/flows/${props.primaryKey}`),
