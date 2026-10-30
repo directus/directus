@@ -473,6 +473,18 @@ describe('Integration Tests', () => {
 				expect(tracker.history.insert).toHaveLength(0);
 			});
 
+			it('should reject the refresh when the session was deleted by a concurrent logout', async () => {
+				tracker.on.select('directus_sessions').responseOnce([{ ...mockSessionRecord, oauth_client: null }]);
+				tracker.on.update('directus_sessions').responseOnce(0);
+				tracker.on.select('directus_sessions').responseOnce([]);
+
+				await expect(service.refresh('regular-token', { session: true })).rejects.toBeInstanceOf(
+					InvalidCredentialsError,
+				);
+
+				expect(tracker.history.insert).toHaveLength(0);
+			});
+
 			it('should reject refresh tokens from OAuth sessions', async () => {
 				tracker.on.select('directus_sessions').responseOnce([]);
 

@@ -521,12 +521,17 @@ export class AuthenticationService {
 
 		if (updatedCount === 0) {
 			// Don't create a new session record, we already have a "next_token" reference
-			const { next_token } = await this.knex('directus_sessions')
+			const session = await this.knex('directus_sessions')
 				.select('next_token')
 				.where({ token: oldSessionToken })
 				.first();
 
-			return next_token;
+			// The session was deleted (e.g. by a logout) after it was read
+			if (!session?.next_token) {
+				throw new InvalidCredentialsError();
+			}
+
+			return session.next_token;
 		}
 
 		// Instead of updating the current session record with a new token,
