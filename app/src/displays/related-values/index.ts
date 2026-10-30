@@ -5,6 +5,7 @@ import { getFieldsFromTemplate } from '@directus/utils';
 import { get, set } from 'lodash-es';
 import DisplayRelatedValues from './related-values.vue';
 import { useExtension } from '@/composables/use-extension';
+import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -126,13 +127,62 @@ export default defineDisplay({
 
 		if (fieldStoreField?.meta?.special?.includes('m2a')) {
 			const relationsStore = useRelationsStore();
+			const collectionsStore = useCollectionsStore();
 			const relations = relationsStore.getRelationsForField(collection, field);
 
-			const collectionField = relations.find((relation) => relation.meta?.one_collection_field)?.meta
-				?.one_collection_field;
+			const junctionRelation = relations.find(
+				(relation) =>
+					relation.related_collection === collection &&
+					relation.meta?.one_field === field &&
+					relation.meta.junction_field,
+			);
 
-			if (collectionField && !fields.find((field) => field === collectionField)) {
+			const m2oRelation =
+				relations.find(
+					(relation) =>
+						relation.collection === junctionRelation?.collection &&
+						relation.field === junctionRelation?.meta?.junction_field,
+				) ?? relations.find((relation) => relation.meta?.one_collection_field);
+
+			const collectionField = m2oRelation?.meta?.one_collection_field;
+
+			if (collectionField && !fields.includes(collectionField)) {
 				fields.push(collectionField);
+			}
+
+			if (!options?.template && m2oRelation) {
+				const junctionField = junctionRelation?.meta?.junction_field ?? m2oRelation.field;
+				const allowedCollections = m2oRelation.meta?.one_allowed_collections ?? [];
+
+				for (const allowedCollection of allowedCollections) {
+					const allowedCollectionInfo = collectionsStore.getCollection(allowedCollection);
+					if (allowedCollectionInfo?.meta?.singleton) continue;
+
+					const allowedPkField = fieldsStore.getPrimaryKeyFieldForCollection(allowedCollection);
+
+					const template =
+						allowedCollectionInfo?.meta?.display_template || (allowedPkField ? `{{${allowedPkField.field}}}` : '');
+
+					if (template) {
+						const displayFields = adjustFieldsForDisplays(getFieldsFromTemplate(template), allowedCollection).map(
+							(f) => `${junctionField}:${allowedCollection}.${f}`,
+						);
+
+						for (const f of displayFields) {
+							if (!fields.includes(f)) {
+								fields.push(f);
+							}
+						}
+					}
+
+					if (allowedPkField) {
+						const pkPath = `${junctionField}:${allowedCollection}.${allowedPkField.field}`;
+
+						if (!fields.includes(pkPath)) {
+							fields.push(pkPath);
+						}
+					}
+				}
 			}
 		}
 

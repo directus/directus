@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import { get } from 'lodash-es';
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -10,6 +10,8 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
+import { useRelationM2A } from '@/composables/use-relation-m2a';
+import { useCollectionsStore } from '@/stores/collections';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { getItemRoute } from '@/utils/get-route';
@@ -24,17 +26,19 @@ const props = defineProps<{
 }>();
 
 const { t, te } = useI18n();
+const collectionsStore = useCollectionsStore();
+const { relationInfo } = useRelationM2A(toRef(props, 'collection'), toRef(props, 'field'));
 
 const relatedCollectionData = computed(() => {
 	return getRelatedCollection(props.collection, props.field);
 });
 
 const relatedCollection = computed(() => {
-	return relatedCollectionData.value!.relatedCollection;
+	return relatedCollectionData.value?.relatedCollection ?? null;
 });
 
 const junctionCollection = computed(() => {
-	return relatedCollectionData.value!.junctionCollection;
+	return relatedCollectionData.value?.junctionCollection;
 });
 
 const localType = computed(() => {
@@ -44,8 +48,9 @@ const localType = computed(() => {
 const { primaryKeyField } = useCollection(relatedCollection);
 
 const primaryKeyFieldPath = computed(() => {
-	return relatedCollectionData.value!.path
-		? [...relatedCollectionData.value!.path, primaryKeyField.value?.field].join('.')
+	if (!relatedCollectionData.value) return undefined;
+	return relatedCollectionData.value.path
+		? [...relatedCollectionData.value.path, primaryKeyField.value?.field].join('.')
 		: primaryKeyField.value?.field;
 });
 
@@ -53,16 +58,52 @@ const internalTemplate = computed(() => {
 	return props.template || `{{ ${primaryKeyFieldPath.value!} }}`;
 });
 
+function getM2ACollection(item: any): string | undefined {
+	if (!relationInfo.value) return undefined;
+	return item[relationInfo.value.collectionField.field];
+}
+
+function getM2AItem(item: any): Record<string, any> | undefined {
+	if (!relationInfo.value) return undefined;
+	const junctionVal = item[relationInfo.value.junctionField.field];
+
+	if (typeof junctionVal === 'object' && junctionVal !== null) {
+		return junctionVal;
+	}
+
+	const itemCollection = getM2ACollection(item);
+	const pk = itemCollection ? relationInfo.value.relationPrimaryKeyFields[itemCollection]?.field : undefined;
+	return pk ? { [pk]: junctionVal } : {};
+}
+
+function getM2ATemplate(item: any): string {
+	const itemCollection = getM2ACollection(item);
+	if (!itemCollection || !relationInfo.value) return '';
+
+	const collectionData = collectionsStore.getCollection(itemCollection);
+	const pk = relationInfo.value.relationPrimaryKeyFields[itemCollection]?.field;
+	return collectionData?.meta?.display_template || (pk ? `{{ ${pk} }}` : '');
+}
+
+function getItemKey(item: any, index: number | string) {
+	if (primaryKeyFieldPath.value) {
+		const key = get(item, primaryKeyFieldPath.value);
+		if (key !== undefined && key !== null) return key;
+	}
+
+	return index;
+}
+
 const unit = computed(() => {
 	if (Array.isArray(props.value)) {
 		if (props.value.length === 1) {
-			if (te(`collection_names_singular.${relatedCollection.value}`)) {
+			if (relatedCollection.value && te(`collection_names_singular.${relatedCollection.value}`)) {
 				return t(`collection_names_singular.${relatedCollection.value}`);
 			} else {
 				return t('item');
 			}
 		} else {
-			if (te(`collection_names_plural.${relatedCollection.value}`)) {
+			if (relatedCollection.value && te(`collection_names_plural.${relatedCollection.value}`)) {
 				return t(`collection_names_plural.${relatedCollection.value}`);
 			} else {
 				return t('items');
@@ -74,10 +115,26 @@ const unit = computed(() => {
 });
 
 function getLinkForItem(item: any) {
+	if (localType.value === 'm2a' && relationInfo.value) {
+		const itemCollection = getM2ACollection(item);
+		if (!itemCollection) return null;
+
+		const junctionVal = item[relationInfo.value.junctionField.field];
+		const pkField = relationInfo.value.relationPrimaryKeyFields[itemCollection]?.field;
+
+		let pk = junctionVal;
+
+		if (typeof junctionVal === 'object' && junctionVal !== null) {
+			pk = pkField ? junctionVal[pkField] : undefined;
+		}
+
+		return pk ? getItemRoute(itemCollection, pk) : null;
+	}
+
 	if (!relatedCollectionData.value || !primaryKeyFieldPath.value) return null;
 	const primaryKey = get(item, primaryKeyFieldPath.value);
 
-	return getItemRoute(relatedCollection.value, primaryKey);
+	return getItemRoute(relatedCollection.value!, primaryKey);
 }
 </script>
 
@@ -99,21 +156,41 @@ function getLinkForItem(item: any) {
 		</template>
 
 		<VList class="links">
-			<VListItem v-for="item in value" :key="item[primaryKeyFieldPath!]">
+			<VListItem v-for="(item, index) in value" :key="getItemKey(item, index)">
 				<VListItemContent>
 					<RenderTemplate
+						v-if="localType === 'm2a' && !template"
+						:template="getM2ATemplate(item)"
+						:item="getM2AItem(item)"
+						:collection="getM2ACollection(item)"
+						show-collection-name
+					/>
+					<RenderTemplate
+						v-else
 						:template="internalTemplate"
 						:item="item"
 						:collection="junctionCollection ?? relatedCollection"
 					/>
 				</VListItemContent>
-				<VListItemIcon>
+				<VListItemIcon v-if="getLinkForItem(item)">
 					<RouterLink :to="getLinkForItem(item)!"><VIcon name="launch" small /></RouterLink>
 				</VListItemIcon>
 			</VListItem>
 		</VList>
 	</VMenu>
-	<RenderTemplate v-else :template="internalTemplate" :item="value" :collection="relatedCollection" />
+	<RenderTemplate
+		v-else-if="localType === 'm2a' && !template"
+		:template="getM2ATemplate(value)"
+		:item="getM2AItem(value)"
+		:collection="getM2ACollection(value)"
+		show-collection-name
+	/>
+	<RenderTemplate
+		v-else
+		:template="internalTemplate"
+		:item="value && !Array.isArray(value) ? value : undefined"
+		:collection="relatedCollection"
+	/>
 </template>
 
 <style lang="scss" scoped>
