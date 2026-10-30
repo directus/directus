@@ -460,6 +460,31 @@ describe('Integration Tests', () => {
 				});
 			});
 
+			it('should return the existing next token when a concurrent refresh already rotated the session', async () => {
+				tracker.on.select('directus_sessions').responseOnce([{ ...mockSessionRecord, oauth_client: null }]);
+				tracker.on.update('directus_sessions').responseOnce(0);
+				tracker.on.select('directus_sessions').responseOnce([{ next_token: 'existing-next-token' }]);
+				tracker.on.update('directus_users').responseOnce([1]);
+				tracker.on.delete('directus_sessions').responseOnce(1);
+
+				const result = await service.refresh('regular-token', { session: true });
+
+				expect(result.refreshToken).toBe('existing-next-token');
+				expect(tracker.history.insert).toHaveLength(0);
+			});
+
+			it('should reject the refresh when the session was deleted by a concurrent logout', async () => {
+				tracker.on.select('directus_sessions').responseOnce([{ ...mockSessionRecord, oauth_client: null }]);
+				tracker.on.update('directus_sessions').responseOnce(0);
+				tracker.on.select('directus_sessions').responseOnce([]);
+
+				await expect(service.refresh('regular-token', { session: true })).rejects.toBeInstanceOf(
+					InvalidCredentialsError,
+				);
+
+				expect(tracker.history.insert).toHaveLength(0);
+			});
+
 			it('should reject refresh tokens from OAuth sessions', async () => {
 				tracker.on.select('directus_sessions').responseOnce([]);
 
