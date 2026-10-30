@@ -116,6 +116,31 @@ export default typescriptEslint.config(
 		},
 	},
 
+	// Require runtime imports of published packages to be declared as (peer) dependencies.
+	// Production installs drop devDependencies, so an import that only resolves via a devDependency
+	// either gets inlined by the bundler or falls back to whatever version pnpm happens to hoist
+	// (see https://github.com/directus/directus/issues/25766). Type-only imports are allowed.
+	{
+		files: ['api/**/*.{js,ts}', 'packages/**/*.{js,ts}', 'sdk/**/*.{js,ts}'],
+		ignores: [
+			'**/*.test.{js,ts}',
+			'**/*.test-d.ts',
+			'**/*test-support.ts',
+			'**/__setup__/**',
+			'**/__mocks__/**',
+			'**/test-utils/**',
+			'**/test/**',
+			'**/tests/**',
+			'**/*.config.{js,ts}',
+			'api/src/database/run-ast/lib/apply-query/mock.ts',
+			// Intentionally inlines '@directus/utils' into its bundle (see its tsdown config)
+			'packages/visual-editing/**',
+		],
+		rules: {
+			'import/no-extraneous-dependencies': ['error', { devDependencies: false }],
+		},
+	},
+
 	// Enable TypeScript plugin and recommended rules for TypeScript files
 	...typescriptEslint.configs.recommended,
 

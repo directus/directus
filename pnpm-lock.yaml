@@ -1289,6 +1289,9 @@ importers:
       '@directus/system-data':
         specifier: workspace:*
         version: link:../packages/system-data
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../packages/types
       '@directus/utils':
         specifier: workspace:*
         version: link:../packages/utils
@@ -1596,9 +1599,6 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 4.0.0
-      '@directus/types':
-        specifier: workspace:*
-        version: link:../packages/types
       '@ngneat/falso':
         specifier: 'catalog:'
         version: 8.0.2
@@ -3127,6 +3127,9 @@ importers:
 
   packages/themes:
     dependencies:
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
@@ -3146,9 +3149,6 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 4.0.0
-      '@directus/types':
-        specifier: workspace:*
-        version: link:../types
       '@types/lodash-es':
         specifier: 'catalog:'
         version: 4.17.12
@@ -3307,6 +3307,9 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../constants
+      '@directus/errors':
+        specifier: workspace:*
+        version: link:../errors
       '@directus/system-data':
         specifier: workspace:*
         version: link:../system-data
@@ -3332,9 +3335,6 @@ importers:
         specifier: 'catalog:'
         version: 8.0.3
     devDependencies:
-      '@directus/errors':
-        specifier: workspace:*
-        version: link:../errors
       '@directus/schema-builder':
         specifier: workspace:*
         version: link:../schema-builder
