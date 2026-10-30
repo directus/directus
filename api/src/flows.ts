@@ -7,6 +7,7 @@ import type {
 	ActionHandler,
 	FilterHandler,
 	Flow,
+	FlowRaw,
 	Operation,
 	OperationHandler,
 	PrimaryKey,
@@ -58,6 +59,8 @@ const ACCOUNTABILITY_KEY = '$accountability';
 const LAST_KEY = '$last';
 const ENV_KEY = '$env';
 
+const RELOAD_RETRY_DELAYS = [1000, 5000, 30000];
+
 interface FlowMessage {
 	type: 'reload';
 }
@@ -73,6 +76,7 @@ class FlowManager {
 	private webhookFlowHandlers: Record<string, any> = {};
 
 	private reloadQueue = new PQueue({ concurrency: 1 });
+	private reloadId = 0;
 	private envs: Record<string, any>;
 
 	constructor() {
@@ -81,18 +85,44 @@ class FlowManager {
 		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'] as string)) : {};
 
 		const messenger = useBus();
-		const logger = useLogger();
 
 		messenger.subscribe<FlowMessage>('flows', (event) => {
 			if (event.type === 'reload') {
-				this.reloadQueue.add(async () => {
-					if (this.isLoaded) {
-						await this.unload();
-						await this.load();
-					} else {
-						logger.warn('Flows have to be loaded before they can be reloaded');
-					}
-				});
+				this.reloadId++;
+				this.queueReload(this.reloadId);
+			}
+		});
+	}
+
+	private queueReload(reloadId: number, attempt = 0): void {
+		const logger = useLogger();
+
+		this.reloadQueue.add(async () => {
+			if (!this.isLoaded) {
+				logger.warn('Flows have to be loaded before they can be reloaded');
+				return;
+			}
+
+			try {
+				const flows = await this.fetchFlows();
+				await this.unload();
+				this.register(flows);
+			} catch (error) {
+				const delay = RELOAD_RETRY_DELAYS[attempt];
+
+				if (delay === undefined) {
+					logger.error(error, 'Failed to reload flows');
+					return;
+				}
+
+				logger.error(error, `Failed to reload flows, retrying in ${delay}ms`);
+
+				setTimeout(() => {
+					// A newer reload has been requested in the meantime and supersedes this retry
+					if (reloadId !== this.reloadId) return;
+
+					this.queueReload(reloadId, attempt + 1);
+				}, delay).unref();
 			}
 		});
 	}
@@ -156,15 +186,21 @@ class FlowManager {
 	}
 
 	private async load(): Promise<void> {
-		const logger = useLogger();
+		this.register(await this.fetchFlows());
+	}
 
+	private async fetchFlows(): Promise<FlowRaw[]> {
 		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
-		const flows = await flowsService.readByQuery({
+		return flowsService.readByQuery({
 			filter: { status: { _eq: 'active' } },
 			fields: ['*', 'operations.*'],
 			limit: -1,
-		});
+		}) as Promise<FlowRaw[]>;
+	}
+
+	private register(flows: FlowRaw[]): void {
+		const logger = useLogger();
 
 		const flowTrees = flows.map((flow) => constructFlowTree(flow));
 

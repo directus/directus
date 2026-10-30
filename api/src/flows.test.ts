@@ -148,6 +148,118 @@ describe('FlowManager', () => {
 		expect(manager.getFlow('test-flow-id')).toEqual(mockFlow);
 	});
 
+	describe('reload', () => {
+		const flowA = {
+			id: 'flow-a',
+			name: 'Flow A',
+			status: 'active',
+			trigger: 'manual',
+			operations: [],
+			options: {},
+		} as unknown as Flow;
+
+		const flowB = { ...flowA, id: 'flow-b', name: 'Flow B' } as unknown as Flow;
+
+		const readByQuery = vi.fn();
+
+		beforeEach(async () => {
+			const { FlowsService } = await import('./services/flows.js');
+
+			vi.mocked(FlowsService).mockImplementation(function () {
+				return { readByQuery } as any;
+			});
+
+			readByQuery.mockReset();
+			readByQuery.mockResolvedValueOnce([flowA]);
+		});
+
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		async function setup() {
+			const { useBus } = await import('./bus/index.js');
+			const { useLogger } = await import('./logger/index.js');
+
+			const manager = getFlowManager();
+			await manager.initialize();
+
+			const handler = vi.mocked(useBus().subscribe).mock.calls.at(-1)![1] as (event: { type: string }) => void;
+
+			const triggerReload = async () => {
+				handler({ type: 'reload' });
+				await (manager as any).reloadQueue.onIdle();
+			};
+
+			return { manager, triggerReload, logger: useLogger() };
+		}
+
+		test('keeps current flows and logs the error when fetching flows fails', async () => {
+			// Arrange
+			const { manager, triggerReload, logger } = await setup();
+			readByQuery.mockRejectedValueOnce(new Error('Timeout acquiring a connection'));
+
+			// Act
+			await triggerReload();
+
+			// Assert
+			expect(logger.error).toHaveBeenCalledWith(expect.any(Error), expect.stringContaining('Failed to reload flows'));
+			expect(manager.getFlow('flow-a')).toEqual(flowA);
+		});
+
+		test('retries a failed reload', async () => {
+			// Arrange
+			vi.useFakeTimers();
+			const { manager, triggerReload } = await setup();
+			readByQuery.mockRejectedValueOnce(new Error('Timeout acquiring a connection'));
+			readByQuery.mockResolvedValueOnce([flowB]);
+
+			// Act
+			await triggerReload();
+			await vi.advanceTimersByTimeAsync(1000);
+			await (manager as any).reloadQueue.onIdle();
+
+			// Assert
+			expect(manager.getFlow('flow-a')).toBeUndefined();
+			expect(manager.getFlow('flow-b')).toEqual(flowB);
+		});
+
+		test('stops retrying after all attempts fail', async () => {
+			// Arrange
+			vi.useFakeTimers();
+			const { manager, triggerReload, logger } = await setup();
+			readByQuery.mockRejectedValue(new Error('Timeout acquiring a connection'));
+
+			// Act
+			await triggerReload();
+			await vi.advanceTimersByTimeAsync(60000);
+			await (manager as any).reloadQueue.onIdle();
+
+			// Assert
+			expect(readByQuery).toHaveBeenCalledTimes(5);
+			expect(logger.error).toHaveBeenLastCalledWith(expect.any(Error), 'Failed to reload flows');
+			expect(manager.getFlow('flow-a')).toEqual(flowA);
+		});
+
+		test('drops a pending retry when a newer reload is requested', async () => {
+			// Arrange
+			vi.useFakeTimers();
+			const { manager, triggerReload } = await setup();
+			readByQuery.mockRejectedValueOnce(new Error('Timeout acquiring a connection'));
+			readByQuery.mockResolvedValueOnce([flowB]);
+
+			// Act
+			await triggerReload();
+			await triggerReload();
+			await vi.advanceTimersByTimeAsync(60000);
+			await (manager as any).reloadQueue.onIdle();
+
+			// Assert
+			expect(readByQuery).toHaveBeenCalledTimes(3);
+			expect(manager.getFlow('flow-b')).toEqual(flowB);
+		});
+	});
+
 	describe('runWebhookFlow manual trigger authentication', () => {
 		const manualFlow = {
 			id: 'manual-flow-id',
