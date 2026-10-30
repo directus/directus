@@ -3,7 +3,7 @@ import { DeepPartial, Field, FieldRaw, Relation } from '@directus/types';
 import { isEmpty, isEqual, isNil, merge, omit, orderBy } from 'lodash-es';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, shallowRef } from 'vue';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import { i18n } from '@/lang';
@@ -77,7 +77,54 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		}
 	});
 
-	const fields = ref<Field[]>([]);
+	// Every write replaces the array, so a shallow ref is enough and keeps fields as plain objects
+	const fields = shallowRef<Field[]>([]);
+
+	const fieldsByCollection = computed(() => {
+		const byCollection = new Map<string, Field[]>();
+
+		for (const field of fields.value) {
+			const collectionFields = byCollection.get(field.collection);
+
+			if (collectionFields) collectionFields.push(field);
+			else byCollection.set(field.collection, [field]);
+		}
+
+		return byCollection;
+	});
+
+	const fieldsByKey = computed(() => {
+		const byKey = new Map<string, Map<string, Field>>();
+
+		for (const [collection, collectionFields] of fieldsByCollection.value) {
+			const byField = new Map<string, Field>();
+
+			for (const field of collectionFields) {
+				if (!byField.has(field.field)) byField.set(field.field, field);
+			}
+
+			byKey.set(collection, byField);
+		}
+
+		return byKey;
+	});
+
+	const orderedFieldsByCollection = computed(() => {
+		const ordered = new Map<string, Field[]>();
+
+		for (const [collection, collectionFields] of fieldsByCollection.value) {
+			ordered.set(
+				collection,
+				orderBy(
+					collectionFields,
+					[(field) => field.meta?.system === true, (field) => (field.meta?.sort ? Number(field.meta?.sort) : null)],
+					['desc', 'asc'],
+				),
+			);
+		}
+
+		return ordered;
+	});
 
 	return {
 		fields,
@@ -327,19 +374,16 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	}
 
 	function getPrimaryKeyFieldForCollection(collection: string): Field | null {
-		const primaryKeyField = fields.value.find(
-			(field) => field.collection === collection && field.schema?.is_primary_key === true,
-		);
+		const primaryKeyField = fieldsByCollection.value
+			.get(collection)
+			?.find((field) => field.schema?.is_primary_key === true);
 
 		return primaryKeyField ?? null;
 	}
 
 	function getFieldsForCollection(collection: string): Field[] {
-		return orderBy(
-			fields.value.filter((field) => field.collection === collection),
-			[(field) => field.meta?.system === true, (field) => (field.meta?.sort ? Number(field.meta?.sort) : null)],
-			['desc', 'asc'],
-		);
+		// Copy so callers can sort or mutate the result without touching the cached array
+		return [...(orderedFieldsByCollection.value.get(collection) ?? [])];
 	}
 
 	function getFieldsForCollectionAlphabetical(collection: string): Field[] {
@@ -355,10 +399,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	 * fields inside groups starts their sort number from 1 to N again.
 	 */
 	function getFieldsForCollectionSorted(collection: string): Field[] {
-		const fieldsSorted = orderBy(
-			fields.value.filter((field) => field.collection === collection),
-			'meta.sort',
-		);
+		const fieldsSorted = orderBy(fieldsByCollection.value.get(collection) ?? [], 'meta.sort');
 
 		const nonGroupFields = fieldsSorted.filter((field: Field) => !field.meta?.group);
 
@@ -380,7 +421,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		if (fieldKey.includes('.')) {
 			return getRelationalField(collection, fieldKey) || null;
 		} else {
-			return fields.value.find((field) => field.collection === collection && field.field === fieldKey) || null;
+			return fieldsByKey.value.get(collection)?.get(fieldKey) ?? null;
 		}
 	}
 
@@ -388,7 +429,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	 * Retrieve nested fields for a given group field
 	 */
 	function getFieldGroupChildren(collection: string, fieldKey: string): Field[] | null {
-		return fields.value.filter((field) => field.collection === collection && field.meta?.group === fieldKey) || null;
+		return (fieldsByCollection.value.get(collection) ?? []).filter((field) => field.meta?.group === fieldKey);
 	}
 
 	/**

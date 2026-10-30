@@ -4,7 +4,7 @@ import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/types
 import { getCollectionType } from '@directus/utils';
 import { isEqual, isNil, omit } from 'lodash-es';
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, shallowRef } from 'vue';
 import { useLicenseStore } from './license';
 import { useRelationsStore } from './relations';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
@@ -26,7 +26,18 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 		}
 	});
 
-	const collections = ref<Collection[]>([]);
+	// Every write replaces the array, so a shallow ref is enough and keeps collections as plain objects
+	const collections = shallowRef<Collection[]>([]);
+
+	const collectionsByKey = computed(() => {
+		const byKey = new Map<string, Collection>();
+
+		for (const collection of collections.value) {
+			if (!byKey.has(collection.collection)) byKey.set(collection.collection, collection);
+		}
+
+		return byKey;
+	});
 
 	const sortedCollections = computed(() => flattenGroupedCollections(collections.value));
 
@@ -160,7 +171,7 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 	function translateCollections() {
 		collections.value = collections.value.map((collection) => {
 			if (i18n.global.te(`collection_names.${collection.collection}`)) {
-				collection.name = i18n.global.t(`collection_names.${collection.collection}`);
+				return { ...collection, name: i18n.global.t(`collection_names.${collection.collection}`) };
 			}
 
 			return collection;
@@ -225,6 +236,6 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 	}
 
 	function getCollection(collectionKey: string): Collection | null {
-		return collections.value.find((collection) => collection.collection === collectionKey) || null;
+		return collectionsByKey.value.get(collectionKey) ?? null;
 	}
 });
