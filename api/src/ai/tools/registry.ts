@@ -1,10 +1,11 @@
 import { useEnv } from '@directus/env';
-import { InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { InvalidPayloadError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { isObject, toArray } from '@directus/utils';
 import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 import { Url } from '../../utils/url.js';
+import { normalizeMcpErrors } from '../mcp/utils.js';
 import { schema as schemaTool } from './schema/index.js';
 import { getToolTypeStrings } from './schema-to-type-string.js';
 import { createSearchIndex, type ToolSearchResults } from './search-index.js';
@@ -378,46 +379,20 @@ function buildURL(tool: ToolConfig<any>, input: unknown, data: unknown): string 
 }
 
 function toRegistryError(error: unknown, tool?: ToolConfig<any>): RegistryError {
-	if (isDirectusError(error)) {
-		return {
-			code: error.code,
-			message: error.message || 'Unknown error',
-			recoverable: error instanceof InvalidPayloadError,
-			...(error instanceof InvalidPayloadError && tool && tool.exposure !== 'root'
-				? {
-						next: {
-							tool: 'search',
-							input: { names: [tool.name] },
-						},
-					}
-				: {}),
-		};
-	}
-
-	const code =
-		typeof error === 'object' && error !== null && 'code' in error && error.code
-			? String(error.code)
-			: 'TOOL_EXECUTION_FAILED';
-
-	if (error instanceof Error) {
-		return {
-			code,
-			message: error.message,
-			recoverable: false,
-		};
-	}
-
-	if (typeof error === 'object' && error !== null) {
-		return {
-			code,
-			message: 'message' in error ? String(error.message) : 'An unknown error occurred.',
-			recoverable: false,
-		};
-	}
+	const errors = normalizeMcpErrors(error);
+	const recoverable = errors.every((entry) => entry.recoverable);
 
 	return {
-		code,
-		message: typeof error === 'string' ? error : 'An unknown error occurred.',
-		recoverable: false,
+		code: errors[0]?.code ?? 'TOOL_EXECUTION_FAILED',
+		message: errors.map(({ message }) => message).join(' '),
+		recoverable,
+		...(recoverable && tool && tool.exposure !== 'root'
+			? {
+					next: {
+						tool: 'search',
+						input: { names: [tool.name] },
+					},
+				}
+			: {}),
 	};
 }
