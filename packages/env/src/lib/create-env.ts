@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { toArray } from '@directus/utils';
 import { DEFAULTS } from '../constants/defaults.js';
 import type { Env } from '../types/env.js';
 import { getConfigPath } from '../utils/get-config-path.js';
@@ -25,25 +26,38 @@ export const createEnv = (): Env => {
 
 	for (let [key, value] of Object.entries(rawConfiguration)) {
 		if (isFileKey(key) && isDirectusVariable(key) && typeof value === 'string') {
-			try {
-				// get the path to the file
-				const castFlag = getCastFlag(value);
-				const castPrefix = castFlag ? castFlag + ':' : '';
-				const filePath = castFlag ? value.replace(castPrefix, '') : value;
-
-				// read file content
-				const fileContent = readFileSync(filePath, { encoding: 'utf8' });
-
-				// override key value pair
-				key = removeFileSuffix(key);
-				value = castPrefix + fileContent;
-			} catch {
-				throw new Error(`Failed to read value from file "${value}", defined in environment variable "${key}".`);
-			}
+			value = readFileValue(key, value);
+			key = removeFileSuffix(key);
 		}
 
 		output[key] = cast(value, key);
 	}
 
+	const flowEnvAllowList = output['FLOWS_ENV_ALLOW_LIST'] ? toArray(output['FLOWS_ENV_ALLOW_LIST']) : [];
+
+	for (const [key, value] of Object.entries(rawConfiguration)) {
+		if (!isFileKey(key) || isDirectusVariable(key) || typeof value !== 'string') continue;
+
+		const name = removeFileSuffix(key);
+
+		if (!flowEnvAllowList.includes(name)) continue;
+
+		output[name] = cast(readFileValue(key, value), name);
+		delete output[key];
+	}
+
 	return output;
 };
+
+function readFileValue(key: string, value: string): string {
+	try {
+		const castFlag = getCastFlag(value);
+		const castPrefix = castFlag ? castFlag + ':' : '';
+		const filePath = castFlag ? value.slice(castPrefix.length) : value;
+		const fileContent = readFileSync(filePath, { encoding: 'utf8' });
+
+		return castPrefix + fileContent;
+	} catch {
+		throw new Error(`Failed to read value from file "${value}", defined in environment variable "${key}".`);
+	}
+}
