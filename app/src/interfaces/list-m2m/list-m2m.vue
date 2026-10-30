@@ -192,11 +192,11 @@ const query = computed<RelationQueryMultiple>(() => {
 			search.value,
 		);
 
-		if (searchFieldsFilter) {
-			q.filter = mergeFilters(q.filter ?? null, searchFieldsFilter) ?? undefined;
-		} else {
-			q.search = search.value;
-		}
+		// Primary keys are never null, so nothing matches when no displayed field can be searched
+		const junctionPrimaryKeyField = relationInfo.value.junctionPrimaryKeyField.field;
+		const noMatchFilter: Filter = { [junctionPrimaryKeyField]: { _null: true } };
+
+		q.filter = mergeFilters(q.filter ?? null, searchFieldsFilter ?? noMatchFilter) ?? undefined;
 	}
 
 	if (sort.value) {

@@ -467,13 +467,13 @@ describe('list-m2m', () => {
 			});
 		});
 
-		it('should fall back to the API search when no field can be searched', async () => {
+		it('should match no rows when no field can be searched', async () => {
 			mockGetFieldsForCollection.mockReturnValue([]);
 
 			const query = await searchFor('Banana', { fields: ['related_id.data'] });
 
-			expect(query.filter).toBeUndefined();
-			expect(query.search).toBe('Banana');
+			expect(query.filter).toEqual({ id: { _null: true } });
+			expect(query.search).toBeUndefined();
 		});
 	});
 });
