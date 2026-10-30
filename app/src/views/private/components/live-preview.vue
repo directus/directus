@@ -156,13 +156,13 @@ function toggleFullscreen() {
 }
 
 function refresh(url: string | null) {
-	if (!frameEl.value || isRefreshing.value) return;
+	if (!frameEl.value?.contentWindow || isRefreshing.value) return;
 
+	const newSrc = new URL(url || frameEl.value.src, frameEl.value.baseURI).href;
 	isRefreshing.value = true;
 
-	// this is technically a self-assignment, but it works to refresh the iframe
-	const newSrc = url || frameEl.value.src;
-	frameEl.value.src = newSrc;
+	// Refreshing must not add an entry to the editor's browser history.
+	frameEl.value.contentWindow.location.replace(newSrc);
 }
 
 function onIframeLoad() {
