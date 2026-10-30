@@ -442,7 +442,7 @@ describe('ToolRegistry', () => {
 			type: 'object',
 			additionalProperties: false,
 			properties: {
-				query: { anyOf: [{ type: 'string' }, { type: 'null' }] },
+				query: { type: ['string', 'null'] },
 				names: { type: 'array', items: { type: 'string' } },
 			},
 		});
