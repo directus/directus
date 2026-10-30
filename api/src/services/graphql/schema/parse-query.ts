@@ -101,7 +101,7 @@ export async function getQuery(
 							setDeep(
 								query.deep as Record<string, any>,
 								path,
-								merge({}, get(query.deep, parent), { _alias: { [selection.alias!.value]: selection.name.value } }),
+								merge({}, get(query.deep, path), { _alias: { [selection.alias!.value]: selection.name.value } }),
 							);
 						}
 					}

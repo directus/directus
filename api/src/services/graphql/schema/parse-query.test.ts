@@ -467,6 +467,50 @@ describe('parseFields', () => {
 		expect(query.fields).toContain('parent:child.id');
 		expect(query.fields).toContain('parentAlias:child.id');
 	});
+
+	test('should keep every alias and sibling deep query of relational fields inside an M2A InlineFragment', async () => {
+		const selections = contentItem([
+			buildInlineFragment('ComponentText', [
+				buildField('translations', { args: [buildArgument('limit', 1)], children: [buildField('id')] }),
+				buildField('cover_image', { alias: 'coverImage', children: [buildField('id')] }),
+				buildField('cover_video', { alias: 'coverVideo', children: [buildField('id')] }),
+			]),
+		]);
+
+		const query = await getQuery({}, pageM2ASchema, selections, mockVariableValues, mockAccountability, 'Page');
+
+		expect(query.fields).toEqual([
+			'contents.item:ComponentText.translations.id',
+			'contents.item:ComponentText.coverImage.id',
+			'contents.item:ComponentText.coverVideo.id',
+		]);
+
+		expect(query.deep).toEqual({
+			contents: {
+				item__ComponentText: {
+					translations: { _limit: 1 },
+					_alias: { coverImage: 'cover_image', coverVideo: 'cover_video' },
+				},
+			},
+		});
+	});
+
+	test('should keep both aliases of the same relational field inside an M2A InlineFragment', async () => {
+		const selections = contentItem([
+			buildInlineFragment('ComponentText', [
+				buildField('cover_image', { alias: 'a', children: [buildField('id')] }),
+				buildField('cover_image', { alias: 'b', children: [buildField('id')] }),
+			]),
+		]);
+
+		const query = await getQuery({}, pageM2ASchema, selections, mockVariableValues, mockAccountability, 'Page');
+
+		expect(query.fields).toEqual(['contents.item:ComponentText.a.id', 'contents.item:ComponentText.b.id']);
+
+		expect(query.deep).toEqual({
+			contents: { item__ComponentText: { _alias: { a: 'cover_image', b: 'cover_image' } } },
+		});
+	});
 });
 
 /**
