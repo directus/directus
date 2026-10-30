@@ -20,9 +20,56 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 앱 정보
+directus_mscl: Directus MSCL-1.0-GPL
+data_processing_agreement: 데이터 처리 계약
+contact_support: 지원팀에 문의
+setup_welcome: Directus에 오신 것을 환영합니다
+setup_info: 관리자 계정을 만들고 프로젝트를 시작해 보세요.
+setup_license_key_notice: >
+  라이선스 키가 있다면 아래에 입력하여 요금제의 모든 기능을 이용하세요. 연 매출이 $5M 미만이고 자격 요건을 충족하는 기업은 {oig} 지원 대상이 될 수 있습니다.
+setup_save_accept_license: >
+  저장을 누르면 {directusMscl} 및 {privacyPolicy}의 약관에 동의하게 됩니다.
+setup_license_invalid: >
+  라이선스가 유효하지 않습니다. 이 문제를 해결하려면 {contactSupport}하세요.
+setup_license_invalid_format: 라이선스 키 형식이 올바르지 않습니다.
+setup_accept_license: '{directusMscl} 및 {privacyPolicy}의 약관에 동의합니다'
+setup_marketing_emails: 제품 업데이트와 릴리스 노트 받기
+setup_launch: Directus 시작
+setup_license_title: 라이선스 설정
+license_onboarding_title: 라이선스 키가 있으신가요?
+license_onboarding_desc: >
+  아래에 입력하여 요금제의 모든 기능을 이용하세요. 연 매출이 $5M 미만이고 자격 요건을 충족하는 기업은 {oig} 지원 대상이 될 수 있습니다.
+project_usage: Directus를 어떤 용도로 사용하시나요?
+project_usage_personal: 개인 / 사이드 프로젝트
+project_usage_commercial: 비즈니스 / 상업용
+project_usage_community: 오픈 소스 / 커뮤니티
+org_name: 조직 이름
+org_name_placeholder: Acme Inc.
+license_key_option: 라이선스 키가 있습니다
+license_key_option_desc: 'OIG, Team 또는 Enterprise 요금제'
+core_option: Core 요금제를 사용합니다
+core_option_desc: 무료, 키 필요 없음
+remind_later: 나중에 알림
+remind_next_login: 다음 로그인 시 다시 알려드립니다
+open_innovation_grant: Open Innovation Grant
+setup_project: 프로젝트 설정
+enter_license_key: 라이선스 키 입력
+license_valid: 유효한 라이선스
+plan_prefix: '요금제: {plan}'
+license_key: 라이선스 키
+no_license_key: 라이선스 키가 없으신가요?
+get_license_key: 라이선스 키 받기
+expires_on: 만료일
+environment: 환경
+production: 프로덕션
+non_production: 비프로덕션
+skip: 건너뛰기
 continue: 계속
 first_name: 이름/별명
 last_name: 성
+admin_email: 관리자 이메일
+owner_email: 소유자 이메일
+email_address: 이메일 주소
 identifier: 식별자
 avatar: 아바타
 application: 애플리케이션
@@ -31,6 +78,7 @@ method: 방식
 published: 발행됨
 draft: 초안
 archived: 보관됨
+not_archived: 보관되지 않음
 marketplace: 마켓플레이스
 extensions: 확장 기능
 skip_link_nav: 탐색으로 건너뛰기
@@ -50,11 +98,23 @@ collection_names_are_case_sensitive: 컬렉션 이름은 대소문자를 구분�
 condition_rules: 조건식
 input: 입력
 invalid_input: 잘못된 입력
+invalid_file_type: 잘못된 파일 형식
+invalid_files_selected: '잘못된 파일 없음 | 잘못된 파일 선택됨 | 잘못된 파일 {count}개 선택됨'
+files_wrong_type: '{files} 파일의 형식이 올바르지 않습니다. {expected} 형식이어야 합니다.'
+files_are_empty: '다음 파일은 비어 있어 업로드할 수 없습니다: {files}'
 not_a_number: 숫자가 아닙니다
+invalid_range_min: 값이 최솟값 {value}보다 작습니다
+invalid_range_max: 값이 최댓값 {value}보다 큽니다
 maps: 지도
 switch_user: 사용자 전환
+item_deleted: 편집 중이던 항목이 삭제되었습니다.
 item_creation: 추가
 item_revision: 수정
+previous_revision: 이전 수정 내역
+latest_revision: 최신 수정 내역
+comparing_to: 비교 대상
+compare_to_latest_to_restore: 이 수정 내역을 복원할지 결정하려면 최신 수정 내역과 비교하세요
+select_earlier_revision_to_restore: 이전 수정 내역을 선택하여 복원할지 검토하세요
 enter_a_name: 이름 입력...
 duplicate_field: 중복 필드
 half_width: 1/2 폭
@@ -62,6 +122,9 @@ full_width: 전체 폭
 group: 그룹
 popular: 인기 있는
 recent: 최근
+previous: 이전
+latest: 최신
+updated: 업데이트됨
 export_items: 내보내기
 and: 그리고
 or: 또는
@@ -74,6 +137,7 @@ extension_layout: 표시 방법
 extension_module: 모듈
 extension_panel: 패널
 extension_theme: 테마
+extension_richtext: 서식 있는 텍스트
 extension_hook: 후크
 extension_endpoint: 엔드포인트
 extension_operation: 작업
@@ -84,6 +148,7 @@ extension_layouts: 레이아웃
 extension_modules: 모듈
 extension_panels: 패널
 extension_themes: 테마
+extension_richtexts: 서식 있는 텍스트
 extension_hooks: 훅
 extension_endpoints: 엔드포인트
 extension_operations: 작업
@@ -106,6 +171,11 @@ report_an_issue: 문제 보고
 website: 웹사이트
 github: 깃허브
 beta: 베타
+collab_collision: 편집하는 동안 항목이 변경되었습니다. 유지할 변경 사항을 선택하세요.
+collab_disconnected: 공동 편집 연결 끊김
+collab_editing_field: '“{field}” 필드 편집 중'
+collab_currently_viewing: 현재 보는 중
+you: 나
 n_downloads: '{n} 다운로드'
 downloads: 다운로드
 compatibility_not_guaranteed: 호환성 보장되지 않음
@@ -162,6 +232,7 @@ connection_good: 연결 상태 좋음
 connection_fair: 연결 상태 보통
 connection_poor: 연결 상태 불량
 primary: 기본
+download_folder: 폴더 다운로드
 rename_folder: 폴더 이름 변경
 delete_folder: 폴더 삭제
 prefix: 접두사
@@ -170,15 +241,28 @@ keep: 유지
 version: 버전
 version_key: 버전 키
 version_name: 버전 이름
+your_version: 내 버전
 switch_version: 버전 전환
 switch_version_copy: '"{version}" 버전으로 전환하시겠습니까? 저장되지 않은 변경 사항은 손실됩니다.'
 create_version: 버전 생성
 rename_version: 버전 이름 변경
+reserved_version_key: '"{key}" 버전 키는 예약되어 있어 사용할 수 없습니다.'
 compare_version: 버전 비교
 save_version: 버전 저장
+publish: 발행
+version_create_item_less: 초안 버전을 발행한 후에만 버전을 만들 수 있습니다
+apply: 적용
+discard: 버리기
+select_all_differences: 모든 차이점 선택
+show_differences_only: 차이점만 표시
+published_updated_notice: 이 버전이 만들어진 이후 발행된 항목이 업데이트되었습니다.
 delete_version: 버전 삭제
 delete_version_copy: >-
   "{version}" 버전을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
+auto_save_failed: 자동 저장 실패
+auto_save_failed_copy: 다시 시도하는 동안 이 페이지를 열어 두세요!
+auto_save_enabled: 자동 저장 활성화됨
+content_edited: 콘텐츠 편집됨
 reset_bookmark: 북마크 초기화
 update_bookmark: 북마크 업데이트
 delete_bookmark: 북마크 삭제
@@ -209,7 +293,16 @@ recommended_defaults: 권장 기본값
 unarchive: 보관 해제(사용)
 unarchive_confirm: 이 항목을 보관 해제하여 다시 사용하시겠습니까?
 nested_files_folders_will_be_moved: 포함된 파일과 폴더는 모두 상위 폴더로 옮겨집니다.
+delete_folder_dialog:
+  move_content: 콘텐츠를 한 단계 위로 이동
+  delete_content: 모든 콘텐츠 삭제
+  content_behavior: 폴더의 콘텐츠를 어떻게 처리할까요?
+delete_flow_folder_dialog:
+  content_behavior: 이 폴더의 하위 폴더를 어떻게 처리할까요? 플로우는 삭제되지 않습니다.
+  move_content: 이 폴더만 삭제
+  delete_content: 이 폴더와 하위 폴더 삭제
 validation_errors_notice: '입력값이 유효하지 않은 필드:'
+validation_value_is_invalid: 값이 유효하지 않습니다
 validationError:
   eq: 값은 {valid}여야 합니다.
   neq: 값은 {invalid}일 수 없습니다.
@@ -237,6 +330,9 @@ validationError:
   iends_with: 값은 {substring}(으)로 끝나야 합니다.
   nends_with: 값은 {substring}(으)로 끝날 수 없습니다.
   niends_with: 값은 {substring}(으)로 끝날 수 없습니다.
+  confirm_password: 비밀번호가 일치하지 않습니다
+  org_name: 조직 이름을 입력하세요
+  unsafe: 값이 안전한 범위의 숫자가 아닙니다
 all_access: 모든 액세스
 no_access: 접근 불가
 use_custom: 직접 설정
@@ -417,6 +513,8 @@ precision_scale: 정밀도 및 확장성
 readonly: 읽기 전용
 unique: 고유
 index: 색인
+searchable: 검색 가능
+field_searchable: 검색 쿼리에 필드 포함
 updated_on: 수정일
 updated_by: 수정자
 primary_key: 기본키
@@ -461,6 +559,7 @@ revision_delta_reverted: 되돌림
 revision_delta_update_message: 이 필드는 업데이트되었지만 보안상의 이유로 해당 값이 숨겨져 있습니다.
 revision_delta_other: 리비전
 revision_delta_by: '{user}의 {date}'
+differences_count: '차이점 없음 | 차이점 1개 | 차이점 {count}개'
 presentation_text_values_cannot_be_reimported: '프레젠테이션 텍스트를 사용합니다. 값을 다시 가져올 수 없습니다.'
 download_page_as_csv: '페이지를 CSV로 다운로드'
 download_page_as_csv_unsupported: 이 레이아웃은 현재 페이지 다운로드를 지원하지 않습니다.
@@ -479,13 +578,47 @@ related_collection: 관계 컬렉션
 related_collections: 관계 컬렉션
 translations_collection: 번역 컬렉션
 languages_collection: 언어 컬렉션
+enable_translations: 번역 활성화
+manage_translation_fields: 번역 필드 추가
+fields_to_translate: 번역할 필드
+fields_to_add_to_translations: 번역에 추가할 필드
+translations_collection_name: 번역 컬렉션 이름
+translations_already_enabled: 번역 활성화됨
+translations_manage_helper_description: 이 컬렉션에서 번역할 필드를 더 추가할 수 있습니다.
+translations_copy_data_note: 필드가 번역 컬렉션으로 복사됩니다. 기존 데이터는 이전되지 않습니다.
+add_fields: 필드 추가
+show_advanced_options: 관계 세부 정보 표시
+hide_advanced_options: 관계 세부 정보 숨기기
+translations_field_name_required: 모든 번역 필드의 이름을 입력해야 합니다.
+translations_foreign_key_name_conflict: 상위 항목의 외래 키와 언어 외래 키의 이름은 서로 달라야 합니다.
+translations_duplicate_field_names: 번역 필드 이름은 고유해야 합니다.
+translation_configuration: 번역 구성
+translations_invalid_config_warning: '번역 구성 {count}개를 확인할 수 없어 읽기 전용으로 유지됩니다 | 번역 구성 {count}개를 확인할 수 없어 읽기 전용으로 유지됩니다'
+translations_collection_already_exists: 이 번역 컬렉션은 이미 존재하므로 재사용됩니다
+translations_fields_up_to_date: 추가 가능한 모든 필드가 이미 번역 컬렉션에 있습니다.
 translations_preview_collections: 컬렉션
 translations_preview_fields: 필드
+translations_preview_relations: 관계
+ungrouped: 그룹에 속하지 않음
+translations_enable_helper_description: 콘텐츠를 여러 언어로 번역하세요.
 import_data_input_placeholder: CSV 또는 JSON...
 import_data_button: 가져오기 시작
+import_background: 백그라운드에서 가져오기
 import_data_indeterminate: 데이터를 가져오는 중...
 import_data_success: '{filename}에서 데이터를 성공적으로 가져왔습니다.'
+import_upload_success: '{filename} 업로드가 완료되었습니다. 백그라운드에서 데이터를 가져오는 중입니다.'
+import_data_errors: 가져오기 오류
 import_data_error: 이 파일의 데이터 구조가 컬렉션과 일치하지 않습니다.
+import_data_validation_errors_notice: '다음 행에 유효하지 않은 값이 있습니다:'
+import_data_error_row: '{rows}행{field}:'
+export_flow: 플로우 내보내기
+export_flows: 플로우 내보내기
+flow_import_input_placeholder: JSON...
+flow_import_success: 플로우를 가져왔습니다.
+flow_import_failed: 플로우를 가져오지 못했습니다
+flow_import_not_json: 이 파일은 유효한 JSON이 아닙니다.
+flow_import_invalid_file: 이 파일은 내보낸 플로우 파일이 아닙니다.
+flow_import_foreign_operation: 이 파일에는 다른 플로우에 속한 작업이 포함되어 있습니다.
 snapshot:
   export: 스키마 내보내기
   download: 스냅샷 다운로드(JSON)
@@ -507,6 +640,7 @@ system: 시스템
 add_field_related: 관계형 컬렉션에 필드 추가
 interface_label: 인터페이스
 display_label: 표시하다
+x_axis_display_field: X축 표시 필드
 today: 오늘
 yesterday: 어제
 delete_comment: 댓글 삭제
@@ -595,12 +729,18 @@ download_file: 파일 다운로드
 open_file_in_tab: 새 탭에서 파일 열기
 start_export: 내보내기 시작
 not_available_for_local_downloads: 로컬 다운로드에 사용할 수 없음
+exporting_folder_not_selectable: 파일이 프로젝트의 기본 폴더에 저장됩니다
+exporting_folder_root: 파일이 파일 관리의 루트 폴더에 저장됩니다
 exporting_all_items_in_collection: '{collection}의 전체 데이터({total}개 항목) 내보내기 '
 exporting_limited_items_in_collection: '{collection} 내의 {total}개 중 {count}개의 항목이 내보내집니다.'
 exporting_no_items_to_export: 내보낼 항목이 없습니다. 내보내기 구성을 조정하거나 컬렉션에 항목을 추가하세요.
 exporting_download_hint: '{format} 파일이 생성되면 장치에 다운로드됩니다.'
 exporting_library_hint: '{format} 파일이 생성되면 파일 라이브러리에 저장됩니다.'
 exporting_library_hint_forced: 이 내보내기는 일괄 처리되어야 합니다. 완료되면 {format} 파일이 파일 라이브러리에 저장됩니다.
+exporting_too_large_to_download: >-
+  내보낼 데이터가 너무 커서 직접 다운로드할 수 없으므로 파일 관리에 저장해야 하지만, 저장 권한이 없습니다. 한도를 낮추거나 필터를 조정하거나 관리자에게 문의하세요.
+exporting_library_access_warning: >-
+  파일 읽기 권한이 있는 모든 사용자가 내보낸 파일을 보고 다운로드할 수 있습니다. 공개 정책에서 허용하는 경우 인증되지 않은 사용자도 포함됩니다. 자세한 내용은 {docs}를 참조하세요.
 collection_key: 컬렉션 키
 name: 이름
 primary_key_field: 기본키 필드
@@ -617,7 +757,13 @@ manual_string: 수동으로 입력한 문자열
 save_and_create_new: 저장하고 새로 만들기
 save_and_stay: 저장 및 유지
 save_and_quit: 저장하고 종료
+default_save_action_note: 항목을 편집할 때 저장 버튼이 기본적으로 수행하는 동작입니다.
+publish_and_quit: 발행 후 종료
+publish_without_review: 검토 없이 발행
+publish_anyway: 그래도 발행
+save_and_return_to_published: 저장 후 발행된 버전으로 돌아가기
 save_as_copy: 사본으로 저장
+save_as_new_file: 새 파일로 저장
 add_existing: 데이터 선택
 creating_items: 데이터 추가
 enable_create_button: 만들기 버튼 활성화
@@ -649,20 +795,28 @@ list-m2a: 빌더 (M2A)
 item_count: '데이터 없음 | 1개 항목 | {count}개 항목'
 filtered_item_count: '필터링된 항목 없음 | 필터링된 항목 하나 | 필터링된 항목 {count}'
 no_items_copy: 이 목록에는 등록된 내용이 없습니다.
+no_versions: '"{version}" 버전 없음'
+no_versions_copy: '이 컬렉션에는 아직 "{version}" 버전이 없습니다.'
 file_count: '파일 없음 | 파일 1개 | 파일 {count}개'
 no_files_copy: 표시할 파일이 없습니다.
 user_count: '사용자 없음 | 한명의 사용자 | {count}명의 사용자'
 no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
+no_active_users: 활성 사용자 없음
+no_suspended_users: 정지된 사용자 없음
+no_invited_users: 초대된 사용자 없음
+no_status_users_copy: '{status} 상태의 사용자가 없습니다.'
 no_notifications: 알림 없음
 no_notifications_copy: 모든 알림을 확인하셨습니다!
 activity_log: 활동 기록
 all_items: 전체 내용
 any: 모두
 csv: CSV
+csv_utf8: CSV Excel (UTF-8)
 no_collections: 컬렉션 없음
 create_collection: 목록 생성
 no_collections_copy_admin: 아직 컬렉션이 없습니다. 시작하려면 아래 버튼을 클릭하세요.
 no_collections_copy: 아직 컬렉션이 없습니다. 시스템 관리자에게 문의하십시오.
+relationship_not_setup: 관계가 올바르게 구성되지 않았거나 접근 권한이 없습니다
 no_singleton_relations: 싱글톤과의 관계는 지원되지 않습니다
 display_template_not_setup: 표시 템플릿 옵션이 잘못 구성됨
 collection_field_not_setup: 컬렉션 필드 옵션이 잘못 구성되었습니다.
@@ -703,6 +857,7 @@ modified_on: 변경 일자
 card_size: 카드형식 크기
 sort_field: 정렬 기준
 add_sort_field: 정렬 필드 추가
+add_to_ai_context: AI 컨텍스트에 추가
 sort: 정렬
 status: 상태
 remove: 제거
@@ -729,6 +884,7 @@ account_created_successfully: 계정이 추가되었습니다.
 auto_fill: 자동 채우기
 corresponding_field: 해당하는 필드
 errors:
+  COLLECTION_INACTIVE: 컬렉션이 비활성 상태입니다
   COLLECTION_NOT_FOUND: "목록이 존재하지 않습니다."
   CONTAINS_NULL_VALUES: 필드에 null 값이 포함되어 있습니다.
   CONTENT_TOO_LARGE: 제출한 항목/파일이 너무 큽니다.
@@ -741,21 +897,26 @@ errors:
   INVALID_CONFIG: 잘못된 구성
   INVALID_CREDENTIALS: 이메일이나 비밀번호가 올바르지 않습니다.
   INVALID_FOREIGN_KEY: 잘못된 외래 키
+  INVALID_INVITE: 이 초대는 더 이상 유효하지 않습니다
   INVALID_IP: 허용되지 않는 IP 주소
   INVALID_OTP: 일회용 비밀번호가 맞지 않습니다.
   INVALID_PAYLOAD: 내용이나 형식이 맞지 않습니다.
   INVALID_PROVIDER: 사용자가 다른 인증 공급자에 속해 있습니다.
+  INVALID_PROVIDER_CONFIG: 제공업체 구성이 올바르지 않습니다
   INVALID_QUERY: 잘못된 쿼리
   INVALID_TOKEN: 잘못된 토큰
   INVALID_USER: 사용자 인증에 실패하였습니다.
   ITEM_LIMIT_REACHED: 항목 한도 도달
   ITEM_NOT_FOUND: 항목을 찾을 수 없음
+  LICENSE_INVALID: 라이선스 키를 적용할 수 없습니다
   LIMIT_EXCEEDED: '제한 한도 초과'
   METHOD_NOT_ALLOWED: 허가되지 않은 메소드
   NOT_NULL_VIOLATION: 값은 비어 있을 수 없습니다.
+  PROJECT_LOCKED: 프로젝트가 잠겼습니다. 문제를 해결하려면 관리자에게 문의하세요.
   RANGE_NOT_SATISFIABLE: 잘못된 범위
   RECORD_NOT_UNIQUE: 중복 값 감지됨
   REQUESTS_EXCEEDED: 요청 한도 도달
+  RESOURCE_RESTRICTED: 리소스가 제한되었습니다
   ROUTE_NOT_FOUND: 찾을 수 없음
   SERVICE_UNAVAILABLE: 서비스 불가
   TOKEN_EXPIRED: 토큰 만료
@@ -767,12 +928,14 @@ errors:
   VALUE_OUT_OF_RANGE: 값이 범위를 벗어났습니다.
   VALUE_TOO_LONG: 값이 너무 깁니다.
 security: 보안
+value_securely_stored: 값이 안전하게 저장됨
 bookmark_name: 북마크 이름...
 create_bookmark: 북마크 만들기
 edit_bookmark: 북마크 편집
 edit_personal_bookmark: 개인 북마크 편집
 edit_role_bookmark: 역할 북마크 편집
 edit_global_bookmark: 글로벌 북마크 편집
+cannot_edit_personal_bookmarks: 개인 북마크를 편집할 수 없음
 cannot_edit_role_bookmarks: 역할 북마크를 편집할 수 없음
 cannot_edit_global_bookmarks: 글로벌 북마크를 편집할 수 없음
 bookmarks: 북마크
@@ -782,6 +945,7 @@ unexpected_error_copy: 예기치 않은 오류가 발생했습니다. 다시 시
 copy_details: 세부정보 복사
 no_app_access: 앱 액세스 없음
 no_app_access_copy: 이 사용자는 관리 앱을 사용할 수 없습니다.
+password_reset_sent: 계정이 존재하고 비밀번호 재설정을 지원하는 경우 이메일로 보안 링크를 보냈습니다
 password_reset_successful: 비밀번호가 성공적으로 재설정되었습니다.
 back: 뒤로
 filter: 필터
@@ -794,7 +958,13 @@ flip_vertical: 상하 반전
 aspect_ratio: 종횡비
 rotate: 회전
 all_users: 전체 사용자
+active_users: 활성 사용자
+suspended_users: 정지된 사용자
+invited_users: 초대된 사용자
 delete_collection: 컬렉션 삭제
+activate_collection: 컬렉션 활성화
+deactivate_collection: 컬렉션 비활성화
+deactivated_collections: 비활성화된 컬렉션
 update_collection_success: 업데이트된 컬렉션
 delete_collection_success: 삭제된 컬렉션
 make_collection_visible: 컬렉션을 보이게 만들기
@@ -879,6 +1049,7 @@ items: 항목
 upload_file: 파일 업로드
 upload_file_indeterminate: 파일 업로드 중...
 upload_file_success: 업로드된 파일
+upload_files_empty: 업로드할 파일 없음
 upload_files_indeterminate: '파일 업로드 {done}/{total}'
 upload_files_success: '업로드된 파일 {count}개'
 upload_pending: 업로드 대기 중
@@ -901,6 +1072,7 @@ translations_display_template: 번역 표시 템플릿
 n_items_selected: '선택한 항목 없음 | One Item Selected (한 항목 선택) | {n} 항목 선택됨'
 per_page: 페이지 당
 all_files: 전체 파일
+all_flows: 모든 플로우
 my_files: 내 파일
 recent_files: 최근 파일
 create_folder: 폴더 만들기
@@ -942,15 +1114,18 @@ label: 상표
 flows: 플로우
 flow: 플로우
 select_a_flow: 플로우 선택
+run_flow_confirm: 이 플로우를 실행하시겠습니까?
 run_flow_anyway: 어쨌든 플로우를 실행
 run_flow_on_current_collection: 현재 컬렉션에서 플로우 실행
 run_flow_on_current: 현재 항목에서 플로우 실행
+run_flow_on_current_edited_confirm: 이 플로우에 의해 이 항목이 업데이트될 수 있습니다. 실행하시겠습니까?
 run_flow_on_selected: 먼저 하나 이상의 항목 선택 | 선택한 항목 1개에서 플로우 실행 | {n} 선택한 항목에서 플로우 실행
 run_flow: 플로우 실행
 trigger_flow_success: 플로우 "{flow}"가 성공적으로 트리거되었습니다.
 field_name_placeholder: 필드 이름 입력...
 field_key_placeholder: 필드 키 입력...
 trigger: 방아쇠
+trigger_type: 트리거 유형
 trigger_options: 트리거 옵션
 view_trigger: 트리거 보기
 create_trigger: 트리거 생성
@@ -959,6 +1134,8 @@ change_trigger: 트리거 변경
 flow_delete_confirm: 플로우 "{flow}"을(를) 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
 set_flow_active: 플로우을 활성으로 설정
 set_flow_inactive: 플로우을 비활성으로 설정
+set_flows_active: 플로우를 활성 상태로 설정
+set_flows_inactive: 플로우를 비활성 상태로 설정
 edit_flow: 플로우 편집
 delete_flow: 플로우 삭제
 no_other_flows_copy: 아직 다른 플로우가 없습니다.
@@ -986,21 +1163,121 @@ operation_handle_resolve: '해결: 클릭하여 추가하거나 드래그하여 
 operation_handle_reject: '거부: 클릭하여 추가하거나 드래그하여 경로 변경'
 visual_editor: 비주얼 편집기
 toggle_navigation: 토글 내비게이션
+toggle_sidebar: 사이드바 표시 전환
 toggle_editable_elements: 편집 가능한 요소 토글
+editing_draft_version: 초안 버전 편집 중
 no_url: URL이 제공되지 않았습니다.
 no_url_copy: 설정에서 URL을 추가해 주세요.
 invalid_url: 잘못된 URL 주소
 invalid_url_copy: 지정된 URL이 설정에 지정된 URL과 일치하지 않습니다.
 insights: 현황판
+overview: 개요
 deployment:
+  deployment: 배포
+  overview:
+    overview: 개요
+    providers: 제공업체
+    configure: 설정
+    provider_description: Directus에서 {provider} 배포 실행
+    projects: '프로젝트 {count}개|프로젝트 {count}개'
   provider:
+    setup_title: '{provider} 설정'
+    credentials:
+      notice: 이 정보는 {provider} 계정 설정에서 확인할 수 있습니다.
+      link: '{provider} 설정 열기'
+    token:
+      label: 개인 액세스 토큰
+      placeholder: 액세스 토큰을 입력하세요...
+      encrypted_notice: 이 토큰은 암호화되어 Directus 구성에 안전하게 저장됩니다
     settings:
+      settings: '{provider} 구성'
+      edit_configuration: 구성 편집
+      delete: 구성 삭제
       delete_confirm: 이 작업은 영구적이며 취소할 수 없습니다. 계속하시겠습니까?
+      remove_projects_confirm: 프로젝트({projects})를 제거하면 해당 프로젝트의 모든 배포 기록이 Directus에서 영구적으로 삭제됩니다. (이 작업은 되돌릴 수 없습니다.) 계속하시겠습니까?
+    vercel:
+      name: Vercel
+      settings_warning: 인증 정보나 팀 ID를 변경하면 새 구성으로 접근할 수 없게 되는 프로젝트에 영향을 줄 수 있습니다.
+      account_type:
+        label: 계정 유형
+        hint: 배포 링크에 팀 ID를 사용하려면 팀을, Vercel 사용자 이름을 사용하려면 개인 계정을 선택하세요.
+        team: 팀
+        personal: 개인 계정
+      team_id:
+        label: 팀 ID
+        hint: 팀 계정에 필요합니다. Vercel 팀 설정에서 확인하세요.
+        placeholder: team_xxxxxxxxxxxxx
+      username:
+        label: 사용자 이름
+        hint: 개인 계정의 Vercel 사용자 이름입니다. Vercel 계정 URL(vercel.com/username)에서 확인하세요.
+        placeholder: your-username
+    netlify:
+      name: Netlify
+      settings_warning: 인증 정보나 계정 슬러그를 변경하면 새 구성으로 접근할 수 없게 되는 프로젝트에 영향을 줄 수 있습니다.
+      account_slug:
+        label: 계정 슬러그
+        hint: 선택 사항입니다. 특정 계정의 사이트만 표시합니다. 비워 두면 접근 가능한 모든 사이트가 표시됩니다.
+        placeholder: your-account-slug
+    projects: 프로젝트
+    select_projects: 프로젝트 선택
+    select_projects_hint: Directus에서 관리할 프로젝트를 선택하세요
+    project:
+      not_deployable: Directus에서 배포할 수 없는 프로젝트입니다. 자세한 내용은 문서를 참조하세요.
+    runs:
+      runs: 배포 실행 기록
+      id: 배포 ID
+      started: 시작됨
+      author: 작성자
+      refresh: 새로고침
+      deploy_preview: 미리보기 배포
+      empty: 배포 실행 기록 없음
+      empty_copy: 이 프로젝트에는 아직 배포 기록이 없습니다.
+      external_user: 외부 사용자
     run:
+      title: '{project}: 배포 세부 정보'
+      id: 배포 ID
+      currently_deploying: 배포 중...
+      stop: 배포 중지
       cancel_confirm: 이 작업은 영구적이며 취소할 수 없습니다. 계속하시겠습니까?
       log_all: 모든 로그 수준
+      search_logs: 로그 검색...
+      no_logs: 로그 없음
+      download_logs: 로그 다운로드
+      open_deployment: 방문
+      open_in_provider: '{provider}에서 열기'
+  no_providers: 배포 제공업체 없음
+  no_providers_copy: 시작하려면 설정에서 배포 제공업체를 구성하세요.
+  no_providers_copy_nonadmin: 이 계정에서 사용할 수 있는 배포 제공업체가 없습니다. 관리자에게 문의하세요.
+  select_provider: 제공업체 선택
+  select_provider_copy: 프로젝트를 보려면 사이드바에서 배포 제공업체를 선택하세요.
+  no_projects: 프로젝트 없음
+  no_projects_copy: 이 제공업체에서 선택한 프로젝트가 없습니다.
+  no_runs: 배포 실행 기록 없음
+  no_runs_copy: 이 프로젝트에는 아직 배포 기록이 없습니다.
+  deploy: 배포
+  target: 대상
   target_value:
+    production: 프로덕션
     preview: 미리보기
+  runs_status:
+    ready: 준비됨
+    building: 빌드 중
+    error: 실패
+    canceled: 취소됨
+  dashboard:
+    projects: 프로젝트 ({count})
+    deployed: 배포됨
+    total_projects: '전체 프로젝트: {count} | 전체 프로젝트: {count}'
+    active_deployments: '활성 배포: {count} | 활성 배포: {count}'
+    failed_builds: '실패한 빌드: {count} | 실패한 빌드: {count}'
+    successful_builds: '성공한 빌드: {count} | 성공한 빌드: {count}'
+    total_deployments: '배포: {count} | 배포: {count}'
+    average_build_time: '평균 빌드 시간: {value}'
+    success_rate: '성공률: {value}%'
+  range:
+    1d: 지난 24시간
+    7d: 지난 7일
+    30d: 지난 30일
 dashboard: 대쉬보드
 panel: 패널
 panel_options: 패널 옵션
@@ -1050,6 +1327,7 @@ right_align: 오른쪽 정렬
 fit_to_screen: 화면크기에 맞추기
 image_url: 이미지 URL
 alt_text: 대체 텍스트
+caption: 캡션
 media: 미디어
 quality: 품질
 width: 가로(폭)
@@ -1071,6 +1349,7 @@ unlimited: 제한 없는
 open_link_in: 링크 열기
 new_tab: 새 탭
 save_image: 이미지를 저장
+save_link: 링크 저장
 save_media: 미디어 저장
 wysiwyg_options:
   aligncenter: 센터 정렬
@@ -1091,8 +1370,12 @@ wysiwyg_options:
   bullist: 글머리기호 목록
   numlist: 번호 매기기 목록
   hr: 가로줄
+  pagebreak: 페이지 나누기
+  insertdatetime: 날짜/시간 삽입
   insertdatetime_date: 날짜형
   insertdatetime_time: 시간
+  insertdatetime_datetime: 날짜 및 시간
+  insertdatetime_locale: 지역 형식
   link: 링크 추가/편집
   unlink: 링크 제거
   media: 미디어 추가/편집
@@ -1111,6 +1394,7 @@ wysiwyg_options:
   pre: 사전 서식화
   fontselect: 글꼴 선택
   fontsizeselect: 글꼴 크기 선택
+  styles: 서식
   indent: 톱니 모양
   outdent: 내어쓰기
   undo: 실행 취소
@@ -1119,8 +1403,45 @@ wysiwyg_options:
   removeformat: 형식 제거
   selectall: 모두 선택
   table: 테이블
+  table_cell: 셀
+  table_row: 행
+  table_column: 열
+  table_insert: 표 삽입
+  table_insert_size: '{cols} × {rows}'
+  table_add_row_before: 위에 행 추가
+  table_add_row_after: 아래에 행 추가
+  table_add_column_before: 왼쪽에 열 추가
+  table_add_column_after: 오른쪽에 열 추가
+  table_delete_row: 행 삭제
+  table_delete_column: 열 삭제
+  table_toggle_header_row: 머리글 행 설정/해제
+  table_toggle_header_column: 머리글 열 설정/해제
+  table_merge_cells: 셀 병합
+  table_split_cell: 셀 분할
+  table_delete: 표 삭제
   visualaid: 보이지 않는 요소 보기
   source_code: 소스 코드 편집
+  source_code_normalization_notice: 편집기에서 표현할 수 없는 마크업은 저장 시 정규화됩니다.
+  source_code_normalize_title: 일부 마크업이 제거됩니다
+  source_code_normalize_body: 강조 표시된 마크업은 편집기에서 표현할 수 없으므로 저장 시 제거됩니다.
+  save_anyway: 그래도 저장
+  normalization_warning_title: 일부 서식이 지원되지 않습니다
+  normalization_warning_body: 이 콘텐츠에는 새 편집기에서 지원하지 않는 항목이 포함되어 있어 현재 이 필드는 읽기 전용입니다. 그래도 편집하면 저장 시 해당 항목이 제거됩니다. 저장된 HTML을 정확히 그대로 유지하려면 대신 원본 HTML을 편집하세요. 지원되지 않는 항목이 없어지면 이 경고도 사라집니다. 이미 해당 항목을 제거한 상태로 저장했다면 수정 내역에서 원래 콘텐츠를 복원할 수 있습니다.
+  normalization_warning_view_changes: 변경 사항 보기
+  normalization_warning_keep_readonly: 읽기 전용 유지
+  normalization_warning_edit_anyway: 그래도 편집
+  normalization_warning_edit_raw: 원본 HTML 편집
+  normalization_locked_notice: 이 필드에는 새 편집기에서 지원하지 않는 서식이 포함되어 있어 읽기 전용입니다. 필드를 선택하여 편집 방법을 지정하세요.
+  normalization_locked_learn_more: 변경된 내용 알아보기
+  paste_warning_notice: 붙여넣은 내용에서 지원되지 않는 마크업을 제거했습니다. 일부 앱은 복사한 콘텐츠에 이 편집기에서 지원하지 않는 추가 마크업을 덧붙입니다.
+  paste_warning_see_removed: 제거된 내용 보기
+  paste_warning_title: 붙여넣은 내용에서 지원되지 않는 마크업이 제거되었습니다
+  paste_warning_body: 정리된 붙여넣기 내용에서는 텍스트와 서식이 유지됩니다. 붙여넣기 취소를 선택하면 붙여넣은 내용이 제거됩니다. 원본 붙여넣기는 복사한 HTML을 그대로 유지하고 이 필드를 원본 HTML 편집기로 전환합니다.
+  paste_warning_body_kept: 정리된 붙여넣기 내용에서는 텍스트와 서식이 유지됩니다. 붙여넣기 이후 콘텐츠가 변경되어 여기서는 더 이상 취소할 수 없습니다.
+  paste_warning_undo: 붙여넣기 취소
+  paste_warning_paste_raw: 원본 붙여넣기
+  paste_warning_keep: 정리된 내용 유지
+  normalization_comparison_notice: 이 버전에는 편집기에서 표시할 수 없는 서식이 포함되어 있어 저장된 HTML이 그대로 표시됩니다. 적용하면 콘텐츠가 변경 없이 복원됩니다.
   fullscreen: 전체화면
   directionality: 방향성
   ltr: 왼쪽에서 오른쪽으로
@@ -1140,7 +1461,10 @@ appearance_light: 밝음
 appearance_dark: 어두움
 other: 기타
 adding_user: 사용자 추가
+more_users: 클릭하여 더 보기
 unknown_user: 알 수 없는 사용자
+unknown_version: 알 수 없는 버전
+unknown_revision: 알 수 없는 수정 내역
 creating_in: '{collection} 데이터 추가'
 editing_in: '{collection} 편집'
 viewing_in: '{collection} 조회'
@@ -1152,20 +1476,134 @@ settings_data_model: 데이터 모델
 settings_roles: 사용자 역할
 settings_permissions: 액세스 정책
 settings_project: 설정
+settings_license: 라이선스
 licensing:
+  unlicensed: 라이선스 없음
+  current_plan: 현재 요금제
+  expires_on: '{date}에 만료'
+  renews_on: '{date}에 갱신'
+  add: 라이선스 추가
+  manage: 라이선스 관리
+  upgrade_plan: 요금제 업그레이드
+  included: 포함됨
+  not_included: 포함되지 않음
   unlimited: 제한 없는
+  plan_usage: 요금제 사용량
+  addons: 추가 패키지
+  addon_purchase: 구매
   addon_manage: 관리
+  contact_sales: 영업팀에 문의
+  addon_purchase_dialog_title: '{name} 추가 구매'
+  addon_summary_purchase: '총 {new}개.'
+  addon_summary_active: '현재 {active}개'
+  addon_summary_pending: '현재 {active}개 → 다음 갱신({date}) 시 {effective}개로 적용됩니다. 수량을 늘리면 예약된 비활성화가 취소됩니다.'
+  addon_summary_upgrade: '(현재 {active}개) + {difference}개 = (총 {new}개)'
+  addon_summary_downgrade: '(현재 {active}개) - {difference}개 = (총 {new}개)'
+  addon_price_summary: '{ new } x ${ unitPrice }/단위/{ interval } = ${ total }/{ interval }'
+  addon_prorated_notice: '확인하면 {renewalDate}부터 ${total}/{interval}의 요금이 청구되는 데 동의하게 됩니다. 현재 청구 기간의 잔여 기간에 비례하여 계산된 ${adjustedTotal}의 요금이 다음 청구서에 추가됩니다.'
+  addon_renewal_notice_date: '변경 사항은 다음 갱신({date}) 시 적용됩니다.'
   addon_update: 수정
+  addon_confirm_purchase: 구매 확인
+  deactivate: 라이선스 비활성화
+  deactivate_confirm_title: 라이선스를 비활성화할까요?
+  deactivate_confirm_body: 라이선스를 비활성화하시겠습니까? 인스턴스가 Core 요금제로 다운그레이드됩니다.
+  resolve_title_manual: 라이선스 비활성화
+  resolve_title_locked: 라이선스 한도 초과 해결
+  resolve_title_expired: 라이선스 만료
+  resolve_title_suspended: 라이선스 정지
+  resolve_title_canceled: 라이선스 취소됨
+  resolve_title_invalid_key: 유효하지 않은 라이선스 키
+  resolve_title_activation_limit: 활성화 한도 도달
+  resolve_title_binding_mismatch: 다른 곳에 등록된 라이선스
+  resolve_title_verification: 라이선스를 검증할 수 없음
+  resolve_title_unavailable: 라이선스를 확인할 수 없음
+  resolve_title_env_removed: 라이선스 제거됨
+  resolve_title_grace: 라이선스 한도 초과 해결
+  resolve_title_no_resolution: 비활성 라이선스
+  resolve_subtitle: 라이선스 키를 업데이트해야 하는 경우 환경 변수에서 변경할 수 있습니다.
+  resolve_notice_grace: 프로젝트 사용량이 요금제 한도를 초과했습니다. 유예 기간이 끝나기 전에 한도 초과를 해결하지 않으면 프로젝트가 잠깁니다. 비활성화된 항목은 Directus에 저장된 상태로 유지되지만 잠기며, 사용자 지정 접근 규칙도 잠깁니다.
+  resolve_countdown: '{days}일 남음 ({date}까지) | {days}일 남음 ({date}까지)'
+  resolve_notice_manual: 프로젝트를 비활성화하려면 먼저 Core 요금제의 한도를 충족해야 합니다. Core 한도를 초과하여 조정이 필요한 항목이 아래에 표시됩니다.
+  resolve_notice_locked: 프로젝트가 요금제 한도를 초과하여 잠겼습니다. 한도를 초과하여 조정이 필요한 항목이 아래에 표시됩니다.
+  resolve_notice_env_removed: 프로젝트에 더 이상 활성 라이선스 키가 없습니다. Core 한도를 초과하여 조정이 필요한 항목이 아래에 표시됩니다.
+  resolve_notice_no_resolution: 라이선스가 더 이상 활성 상태가 아니며 프로젝트가 Core 요금제로 다운그레이드되었습니다. 일부 기능을 더 이상 사용할 수 없을 수 있으며, Core 요금제 한도를 초과하는 항목은 Directus에 저장된 상태로 유지되지만 잠깁니다. 전체 접근 권한을 복원하려면 새 라이선스 키를 추가하세요.
+  resolve_notice_expired: 라이선스가 만료되어 프로젝트가 Core 요금제로 다운그레이드되었습니다. 일부 기능을 더 이상 사용할 수 없을 수 있으며, Core 요금제 한도를 초과하는 항목은 Directus에 저장된 상태로 유지되지만 잠깁니다. 전체 접근 권한을 복원하려면 라이선스를 갱신하거나 새 라이선스 키를 추가하세요.
+  resolve_notice_canceled: 구독이 취소되어 프로젝트가 Core 요금제로 다운그레이드되었습니다. 일부 기능을 더 이상 사용할 수 없을 수 있으며, Core 요금제 한도를 초과하는 항목은 Directus에 저장된 상태로 유지되지만 잠깁니다. 전체 접근 권한을 복원하려면 새 라이선스 키를 추가하세요.
+  resolve_notice_suspended: 라이선스가 정지되어 프로젝트가 Core 요금제로 다운그레이드되었습니다. 일부 기능을 더 이상 사용할 수 없을 수 있으며, Core 요금제 한도를 초과하는 항목은 Directus에 저장된 상태로 유지되지만 잠깁니다. 라이선스를 복원하려면 지원팀에 문의하세요.
+  resolve_notice_invalid_key: 라이선스 키가 승인되지 않아 프로젝트가 Core 요금제로 다운그레이드되었습니다. 일부 기능을 더 이상 사용할 수 없을 수 있으며, Core 요금제 한도를 초과하는 항목은 Directus에 저장된 상태로 유지되지만 잠깁니다. 키에 오타가 없는지 확인하거나 새 라이선스 키를 추가하세요.
+  resolve_notice_activation_limit: 라이선스 키의 남은 활성화 횟수가 없어 프로젝트가 Core 요금제로 다운그레이드되었습니다. 더 이상 사용하지 않는 프로젝트에서 라이선스를 비활성화한 후 여기에 키를 다시 추가하세요.
+  resolve_notice_binding_mismatch: 라이선스 키가 다른 프로젝트 또는 URL에 등록되어 있어 프로젝트가 Core 요금제로 다운그레이드되었습니다. 프로젝트 URL이 키를 활성화할 때 사용한 URL과 일치하는지 확인하거나 새 라이선스 키를 추가하세요.
+  resolve_notice_verification: 저장된 라이선스를 검증할 수 없어 프로젝트가 Core 요금제로 다운그레이드되었습니다. 라이선스 키는 변경되지 않았으며 프로젝트가 다시 시작될 때 재확인됩니다.
+  resolve_notice_unavailable: 라이선스 서비스에 연결할 수 없어 라이선스를 확인하지 못했으므로 프로젝트가 Core 요금제로 다운그레이드되었습니다. 라이선스 자체는 여전히 유효할 수 있으며 프로젝트가 다시 시작될 때 재확인됩니다.
   resolve_continue: 계속
+  resolve_acknowledge: 확인
+  resolve_submit: 선택한 항목 비활성화
   resolve_show_n_more: '{count}개 더 보기'
+  resolve_available: 사용 가능
+  resolve_section_collections: 데이터 컬렉션
+  resolve_section_seats: 사용자 라이선스
   resolve_section_flows: 플로우
+  resolve_section_collections_caption: 비활성화할 대상 선택(컬렉션)
+  resolve_section_seats_users_caption: 비활성화할 대상 선택(사용자 라이선스)
+  resolve_section_seats_admins_caption: 비활성화할 대상 선택(관리자)
+  resolve_section_flows_caption: 비활성화할 대상 선택(플로우)
+  resolve_section_sso: SSO 비활성화
+  resolve_sso_confirm: SSO 비활성화 확인
+  resolve_sso_caption: 이 변경 사항을 적용하면 SSO 전용 사용자가 비활성화됩니다. 접근 권한을 복원하려면 해당 사용자를 다시 활성화하고 사용자 목록에서 이메일과 비밀번호를 설정해야 합니다.
+  resolve_sso_admin_title: SSO 관리자 정보 확인
+  resolve_sso_admin_description: 이메일과 비밀번호가 올바른지 확인하세요. SSO를 비활성화한 후 다시 로그인하려면 둘 다 필요합니다.
+  resolve_sso_admin_description_email_only: 이메일이 올바른지 확인하세요. SSO를 비활성화한 후 다시 로그인하려면 이메일이 필요합니다.
+  resolve_sso_admin_email: 이메일 주소
   resolve_sso_admin_password: 비밀번호
+  resolve_sso_admin_password_placeholder: 비밀번호 설정...
+  resolve_sso_admin_confirm: 확인
+  resolve_section_custom_llms: 사용자 지정 LLM
+  resolve_custom_llms_confirm: 사용자 지정 LLM 비활성화 확인
+  resolve_custom_llms_caption: 이 변경 사항을 적용하면 사용자 지정 LLM 구성이 비활성화됩니다.
+  resolve_section_custom_permissions: 사용자 지정 액세스 정책
+  resolve_custom_permissions_confirm: 사용자 지정 액세스 규칙 비활성화 확인
+  resolve_custom_permissions_caption: 사용자 지정 규칙이 적용된 모든 액세스 정책 및 권한이 “접근 불가”로 변경됩니다.
+  resolve_section_ai_translations: AI 번역
+  resolve_ai_translations_confirm: AI 번역 비활성화 확인
+  resolve_ai_translations_caption: AI 번역이 비활성화되며 번역 설정이 더 이상 사용되지 않습니다.
+  env_managed: 라이선스 키가 환경 변수로 관리되므로 여기에서 변경할 수 없습니다.
+  manage_license_disabled: 환경 설정에 의해 라이선스 키 관리가 비활성화되어 있습니다.
+  key_management: 라이선스 키 관리
+  key: 라이선스 키
   entitlements:
     collections: 컬렉션
+    seats: 사용자 라이선스
     flows: 플로우
+    activity_historical_timeframe: 활동 기록
+    revisions_historical_timeframe: 수정 내역
+    sso_enabled: SSO
+    offline_enabled: 오프라인 모드
+    telemetry_opt_out: 원격 측정 거부
+    custom_llms_enabled: 사용자 지정 LLM
+    custom_permission_rules_enabled: 사용자 지정 규칙(액세스 정책)
+    ai_translations_enabled: AI 번역
+    display_powered_by: Powered By 표시
+    production_enabled: 프로덕션
+  badge:
+    directus: Powered by Directus
+    oig: Open Innovation Grant
+    non_prod: 비프로덕션
+danger_zone: 위험 구역
 settings_appearance: 외관
 settings_ai: AI
 model_context_protocol: 모델 컨텍스트 프로토콜
+ai_assistant: AI 도우미
+ai_disabled_by_env: 환경 변수에 의해 AI 도우미 기능이 비활성화되었습니다.
+ai_allowed_models_default_note: 새 Directus 릴리스에 맞춰 업데이트되는 권장 모델을 사용 중입니다. 이 목록을 변경하면 직접 선택한 모델이 저장됩니다.
+mcp_disabled_by_env: 환경 변수에 의해 MCP 기능이 비활성화되었습니다.
+mcp_oauth_disabled_by_env: MCP_OAUTH_ENABLED 환경 변수에 의해 MCP OAuth가 비활성화되어 있습니다.
+mcp_oauth_dcr_disabled_by_env: MCP_OAUTH_DCR_ENABLED 환경 변수에 의해 동적 클라이언트 등록이 비활성화되어 있습니다.
+mcp_oauth_cimd_disabled_by_env: MCP_OAUTH_CIMD_ENABLED 환경 변수에 의해 클라이언트 ID 메타데이터 문서가 비활성화되어 있습니다.
+mcp_oauth_clients: 'MCP OAuth 클라이언트'
+manage_registered_clients: '등록된 클라이언트 관리'
+no_oauth_clients: '등록된 OAuth 클라이언트가 아직 없습니다.'
+revoke_client: '클라이언트 승인 취소'
+revoke_client_confirm: '이 클라이언트의 승인을 취소하시겠습니까? 관련된 모든 토큰과 세션이 삭제됩니다.'
 settings_system_logs: 시스템 로그
 settings_presets: 북마크
 settings_translations: 번역
@@ -1186,9 +1624,16 @@ data: 데이터
 theme-overrides: 테마 재정의
 unsaved_changes: 변경 내용이 저장되지 않았습니다
 unsaved_changes_copy: 이 페이지에서 나가시겠습니까?
+unsaved_changes_collab: 저장하지 않은 공동 편집 변경 사항
+unsaved_changes_copy_collab: 이 항목을 다른 사용자와 함께 편집하고 있습니다. 변경 사항은 현재 공동 편집 세션에 유지되지만 아무도 저장하지 않으면 사라질 수 있습니다.
+leave_page: 페이지 나가기
+cancel_anyway: 그래도 취소
 discard_changes: 변경 내용 취소
 discard_all_changes: 모든 변경 사항 취소
 discard_changes_copy: 모든 변경 사항을 취소하시겠습니까?
+published_item_has_changed: 발행된 항목이 변경되었습니다
+published_item_has_changed_copy: 이 버전이 생성된 이후 발행된 항목이 업데이트되었습니다. 지금 발행하면 해당 변경 사항을 덮어씁니다.
+discard_changes_copy_collab: 이 항목을 다른 사용자와 함께 편집하고 있습니다. 변경 사항을 버리면 이 공동 편집 세션에 참여한 모든 사용자의 저장하지 않은 편집 내용이 지워집니다.
 show_x_axis: X축 표시
 show_y_axis: Y축 표시
 keep_editing: 계속 수정
@@ -1201,6 +1646,60 @@ no_layout_collection_selected_yet: 아직 선택한 레이아웃/컬렉션이 �
 batch_delete_confirm: >-
   선택한 항목이 없습니다. | 선택한 항목을 삭제하시겠습니까? 한번 삭제하면 복구할 수 없습니다. | 선택한 {count}개 항목을 을 삭제하시겠습니까? 한번 삭제하면 복구할 수 없습니다.
 cancel: 취소
+license:
+  seats_limit:
+    title: 사용자는 생성되지만 비활성 상태로 설정됩니다.
+    body_admin: >-
+      요금제에서 허용하는 최대 한도에 도달했습니다. 추가 기능을 구매하거나 업그레이드해야 합니다.
+    body_member: >-
+      요금제에서 허용하는 최대 한도에 도달했습니다. 관리자에게 문의하여 추가 기능을 구매하거나 업그레이드하세요.
+  collections_limit:
+    title: 컬렉션 한도에 도달했습니다
+    body: >-
+      요금제에서 허용하는 최대 한도에 도달했습니다. 추가 기능을 구매하거나 업그레이드해야 합니다.
+  max_capacity:
+    label: 최대 사용 한도
+    alert_danger_prefix: 최대 사용 한도에 도달했습니다.
+    alert_danger_suffix: 페이지에서 사용 한도를 늘리세요.
+    alert_warning: '{count}개 남았습니다. 사용 한도를 늘리려면 요금제를 업그레이드하세요.'
+  manage_plan: 요금제 관리
+  collections_remaining: '컬렉션 {n}개 남음 | 컬렉션 {n}개 남음'
+  flows_limit:
+    title: 플로우 한도에 도달했습니다
+    body: >-
+      요금제에서 허용하는 최대 한도에 도달했습니다. 추가 기능을 구매하거나 업그레이드해야 합니다.
+  flows_remaining: '플로우 {n}개 남음 | 플로우 {n}개 남음'
+  contact_sales: 영업팀에 문의
+  upgrade_to_unlock: 이 기능을 사용하려면 요금제를 업그레이드하세요.
+  activity_history_notice: '현재 요금제에는 {timeframe} 동안의 활동 기록이 포함됩니다.'
+  revisions_history_notice: '현재 요금제에는 {timeframe} 동안의 수정 내역이 포함됩니다.'
+  status_notice:
+    grace_period: 'Core 요금제의 리소스 한도가 적용되기까지 {daysLeft} 남았습니다.'
+    grace_days: '{days}일 | {days}일'
+  unlicensed_status_notice:
+    grace_period: '유예 기간: {daysLeft} — {date}까지. 이후에는 Core 요금제의 리소스 한도가 적용됩니다. 한도를 늘리려면 {retrieveLicenseKey} 또는 {upgrade}를 진행하세요.'
+    grace_days_left: '{days}일 남음 | {days}일 남음'
+    retrieve_license_key: 라이선스 키 조회
+    upgrade: 업그레이드
+    oig_eligible: '{oig} 지원 대상일 수 있습니다. 신청하여 Directus의 모든 기능을 무료로 사용하세요.'
+  locked_status_notice: 'Directus 인스턴스가 잠겼습니다. 라이선스를 관리하거나 {contactSupport}하여 해결하세요.'
+  warning_status_notice:
+    generic: 라이선스의 활성 상태를 갱신하지 못했습니다. {date}까지 활성 상태가 유지된 후 프로젝트가 Core 요금제로 전환됩니다. 설정 > 라이선스에서 라이선스 키를 확인하세요.
+    invalid_key: 라이선스 키가 더 이상 유효하지 않습니다. {date}까지 활성 상태가 유지된 후 프로젝트가 Core 요금제로 전환됩니다. 설정 > 라이선스에서 키를 확인하거나 새 키를 추가하세요.
+    activation_limit: 라이선스가 활성화 한도에 도달하여 이 프로젝트에서 활성화하지 못했습니다. {date}까지 활성 상태가 유지된 후 프로젝트가 Core 요금제로 전환됩니다. 더 이상 사용하지 않는 프로젝트에서 이 라이선스를 비활성화한 후 이 프로젝트에서 다시 활성화하세요.
+    binding_mismatch: 라이선스가 다른 프로젝트 또는 URL에 연결되어 있어 활성 상태를 갱신하지 못했습니다. {date}까지 활성 상태가 유지된 후 프로젝트가 Core 요금제로 전환됩니다. 프로젝트 URL이 키를 활성화한 URL과 일치하는지 확인하세요.
+    unavailable: 라이선스 서비스에 연결할 수 없어 라이선스 상태를 갱신하지 못했습니다. 주기적으로 계속 재시도합니다. 라이선스는 {date}까지 활성 상태로 유지되며, 그때까지 활성 상태를 갱신하지 못하면 프로젝트가 Core 요금제로 전환됩니다.
+  pinned_status_notice:
+    grace_period_title: '유예 기간({days}일 남음)'
+    grace_period_body: 설정 > 라이선스에서 라이선스 키를 관리하세요.
+    warning_title:
+      generic: '라이선스 확인 실패({days}일 남음)'
+      invalid_key: '유효하지 않은 라이선스 키({days}일 남음)'
+      activation_limit: '활성화 한도 도달({days}일 남음)'
+      binding_mismatch: '라이선스 URL 불일치({days}일 남음)'
+      unavailable: '라이선스 서비스 연결 불가({days}일 남음)'
+  unlicensed_pinned_status_notice:
+    grace_period_title: '유예 기간({days}일 남음)'
 no_upscale: 이미지를 확대하지 마세요.
 no_extensions: 확장 기능 없음
 no_extensions_copy: 아직 설치된 확장 기능이 없습니다.
@@ -1215,6 +1714,8 @@ source_local: 로컬
 source_module: 노드 모듈
 collection: 컬렉션
 collections: 컬렉션
+collection_inactive: 이 컬렉션은 비활성 상태입니다
+collection_inactive_copy: 이 보기는 비활성 상태인 {collection} 컬렉션을 참조합니다.
 content: 데이터 및 컨텐츠 관리
 singleton: 싱글턴 패턴
 singleton_label: 단일 객체로 취급
@@ -1227,6 +1728,7 @@ directus_collection:
   directus_dashboards: Insights 모듈 내의 대시보드
   directus_fields: 추가 필드 구성 및 메타데이터
   directus_files: 관리되는 모든 파일 자산의 메타데이터
+  directus_flows: 자동화 플로우
   directus_folders: 파일을 위한 가상 디렉터리 제공
   directus_migrations: 사용 중인 데이터베이스 버전
   directus_notifications: 사용자에게 전송된 알림
@@ -1245,6 +1747,10 @@ directus_collection:
   directus_translations: 사용자 정의 번역 생성
   directus_versions: 항목의 콘텐츠 버전
   directus_extensions: 확장 기능 구성
+  directus_oauth_clients: 등록된 OAuth 클라이언트 애플리케이션
+  directus_oauth_codes: OAuth 흐름의 인가 코드
+  directus_oauth_consents: OAuth 클라이언트에 대한 사용자 동의 승인
+  directus_oauth_tokens: OAuth 클라이언트의 액세스 토큰 및 갱신 토큰
 fields:
   directus_activity:
     item: 기본키
@@ -1273,6 +1779,7 @@ fields:
     sort_field: 정렬 기준
     accountability: 활동 및 개정 추적
     versioning: 버전 관리
+    autosave_revision_interval: 수정 내역 자동 저장 간격
     archive_field: 아카이브 필드
     item_duplication_fields: 항목 중복 필드
   directus_files:
@@ -1323,6 +1830,7 @@ fields:
     status_active: 활성화
     status_suspended: 정지됨
     status_archived: 보관됨
+    status_inactive_license_exceeded: 비활성(라이선스 한도 초과)
     role: 역할
     token: 접속 인증 토큰
     provider: 외부 인증 제공사
@@ -1359,6 +1867,7 @@ fields:
     project_color: 테마컬러
     project_logo: 로고
     default_language: 기본 언어 설정
+    project_owner: 프로젝트 소유자
     branding: 브랜딩
     public_foreground: 공개화면 전경(foreground)
     public_background: 공개화면 배경(background)
@@ -1371,6 +1880,8 @@ fields:
     auth_login_attempts: 로그인 시도 횟수 제한
     files_and_thumbnails: 파일 및 저장폴더
     storage_default_folder: 기본 폴더
+    default_exports_folder: 기본 내보내기 폴더
+    default_exports_folder_note: 폴더를 지정하지 않고 파일 관리에 저장하는 내보내기 파일의 기본 폴더입니다. 지정하지 않으면 기본 폴더를 사용합니다.
     storage_asset_presets: 파일 변환 설정
     storage_asset_transform: 변환 허용 파일
     overrides: App 오버라이드
@@ -1391,16 +1902,68 @@ fields:
     public_registration_email_filter_note: 이 필터와 일치하는 이메일 주소만 등록할 수 있습니다.
     public_registration_verify_email: 이메일 인증
     public_registration_verify_email_note: 등록하는 사용자에게 로그인하기 전에 인증 링크를 클릭하도록 요청하는 이메일을 보냅니다.
+    live_preview: 라이브 미리보기
+    preview_base_url: 미리보기 기본 URL
+    preview_base_url_note: 컬렉션의 미리보기 URL에서 동적 미리보기 기본 URL 변수로 선택할 수 있어 환경별로 다른 호스트를 사용할 수 있습니다.
     visual_editor_urls: 비주얼 에디터 URL
+    report_feature_url: 기능 제안 URL
+    report_bug_url: 버그 신고 URL
+    report_error_url: 오류 신고 URL
+    collaborative_editing: 공동 편집
+    collaborative_editing_enabled: 공동 편집 활성화
+    collaborative_editing_note: 공동 편집을 사용하려면 WebSockets가 필요합니다.
+    ai_notice: 'AI 도우미는 LLM과 대화할 수 있는 앱 내 사이드바를 제공합니다. 활성화한 후 도구 모음에서 AI 사이드바를 열어 질문하거나 콘텐츠를 생성하고 프로젝트 작업에 도움을 받을 수 있습니다. <a href="https://directus.com/docs/guides/ai/assistant" target="_blank">AI 도우미 설정 및 사용 방법을 자세히 알아보세요.</a>'
     mcp_enabled: MCP 서버
+    mcp_enabled_note: '<a href="https://directus.com/docs/guides/ai/mcp" target="_blank">Model Context Protocol(MCP)</a>을 통해 AI/LLM 도구를 Directus 프로젝트에 연결하세요. AI 도우미가 Directus 데이터를 안전하게 읽고 데이터와 상호작용할 수 있습니다.'
+    mcp_notice: 'Model Context Protocol은 LLM을 Directus와 같은 애플리케이션에 연결하기 위한 표준입니다. 활성화하면 `/mcp`에서 Directus MCP 서버를 사용할 수 있습니다. <a href="https://directus.com/docs/guides/ai/mcp" target="_blank">MCP 및 연결 방법을 자세히 알아보세요.</a>'
     mcp_allow_deletes: 삭제 허용
     mcp_allow_deletes_note:
       - 데이터 손실이 발생할 수 있습니다. 안전을 위해 기본적으로 비활성화되어 있습니다.
     mcp_prompts_collection: AI 프롬프트 컬렉션
+    mcp_prompts_collection_note: 'AI와의 상호작용에 사용할 <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">재사용 가능한 프롬프트 템플릿</a>을 저장할 컬렉션을 선택하세요.'
     mcp_system_prompt_divider: 시스템 프롬프트 구성
     mcp_system_prompt_enabled: 시스템 프롬프트 사용
+    mcp_system_prompt_enabled_note: "<a href='https://directus.com/docs/guides/ai/mcp#system-prompt' target='_blank'>기본 시스템 프롬프트</a>로 LLM의 동작을 안내합니다. 비활성화하여 제거하거나 아래에서 직접 작성한 프롬프트로 대체할 수 있습니다."
     mcp_system_prompt: 사용자 정의 시스템 프롬프트
     mcp_system_prompt_note: '기본값을 대체할 사용자 지정 시스템 프롬프트입니다. 기본값을 사용하려면 비워 두세요(위에서 활성화한 경우).'
+    mcp_oauth_enabled: 'OAuth 활성화'
+    mcp_oauth_enabled_note: 'MCP 클라이언트가 OAuth 2.1로 인증하도록 허용'
+    mcp_oauth_dcr_enabled: '동적 클라이언트 등록'
+    mcp_oauth_cimd_enabled: '클라이언트 ID 메타데이터 문서'
+    ai_system_prompt: AI 시스템 프롬프트
+    ai_system_prompt_note: 'AI 도우미와 상호작용할 때 LLM의 동작을 안내하는 사용자 지정 AI 시스템 프롬프트입니다. 비워 두면 기본값을 사용합니다.'
+    ai_translation_default_model: 번역 기본 모델
+    ai_translation_default_model_note: 'AI 번역에 사용할 기본 모델을 선택하세요. 위 설정에서 활성화한 모델만 사용할 수 있습니다.'
+    ai_glossary_term: 용어
+    ai_glossary_term_placeholder: Directus Flows
+    ai_glossary_note: 번역 참고 사항
+    ai_glossary_note_placeholder: 번역하지 말고 원문 그대로 유지
+    ai_translation_glossary: 번역 용어집
+    ai_translation_glossary_note: '각 언어의 주요 용어와 승인된 번역을 정의하세요. 콘텐츠 전반에서 제품명, UI 레이블 및 기타 중요한 문구를 일관되게 유지할 수 있습니다.'
+    ai_translation_style_guide: 번역 스타일 가이드
+    ai_translation_style_guide_note: '어조, 격식 수준, 서식 규칙 등 콘텐츠를 번역할 방식을 설명하세요. AI가 브랜드 어조를 일관되게 유지할 수 있도록 비즈니스, 제품, 대상 독자에 관한 정보를 포함하세요.'
+    ai_translation_style_guide_placeholder: "자신감 있고 친근한 어조로 번역하세요. 비격식 이인칭 표현을 사용하고 속어는 피하며 용어를 일관되게 유지하세요."
+    ai_openai_api_key: OpenAI API 키
+    ai_openai_allowed_models: OpenAI 허용 모델
+    ai_anthropic_api_key: Anthropic API 키
+    ai_anthropic_allowed_models: Anthropic 허용 모델
+    ai_google_api_key: Google API 키
+    ai_google_allowed_models: Google 허용 모델
+    ai_openai_compatible: OpenAI 호환 제공업체
+    ai_translations_notice: 현재 요금제에는 AI 번역이 포함되지 않습니다. 사용하려면 업그레이드하세요.
+    ai_openai_compatible_notice: 현재 요금제에는 사용자 지정 LLM이 포함되지 않습니다. 사용하려면 업그레이드하세요.
+    ai_openai_compatible_name: 제공업체 이름
+    ai_openai_compatible_base_url: 기본 URL
+    ai_openai_compatible_api_key: API 키
+    ai_openai_compatible_models: 모델
+    ai_openai_compatible_headers: 사용자 지정 헤더
+    ai_model_id: 모델 ID
+    ai_context_limit: 컨텍스트 한도
+    ai_output_limit: 출력 한도
+    ai_supports_attachments: 첨부 파일 지원
+    ai_supports_reasoning: 추론 지원
+    ai_provider_options: 제공업체 옵션
+    ai_provider_options_note: AI 엔드포인트에 전달할 제공업체별 옵션입니다.
     ai_header_name: 머리글
   directus_shares:
     name: 이름
@@ -1425,6 +1988,7 @@ fields:
     users: 이 역할의 사용자 목록
     parent: 상위 역할
     children: 하위 역할
+    policies: 정책
   directus_policies:
     name: 정책 이름
     description: 설명
@@ -1465,14 +2029,19 @@ field_options:
     overrides_divider_title: App 오버라이드
   directus_activity:
     login: 로그인
+    logout: 로그아웃
     create: 작성
     update: 업데이트
     delete: 삭제
+  directus_oauth_clients:
+    registration_type_dcr: DCR
+    registration_type_cimd: CIMD
   directus_collections:
     track_activity_revisions: 활동 및 개정 추적
     only_track_activity: 활동만 추적
     do_not_track_anything: 아무것도 추적하지 마십시오
     collection_setup: 컬렉션 설정
+    collection_naming_translations_note: "사용자의 언어에 따라 앱에 표시되는 컬렉션 이름을 변경합니다."
     note_placeholder: 이 컬렉션에 대한 설명...
     hidden_label: 앱 내에서 숨기기
     singleton: 단일 객체로 취급
@@ -1492,8 +2061,11 @@ field_options:
     accountability_divider: 책임
     duplication_divider: 복제
     preview_divider: 미리보기
+    content_translations_divider: 콘텐츠 번역
     content_versioning_divider: 콘텐츠 버전 관리
     enable_versioning: 버전 관리 활성화
+    interval_default: '기본값({minutes}분)'
+    interval_default_seconds: '기본값({seconds}초)'
   directus_files:
     title: 고유한 제목...
     description: 선택적 설명...
@@ -1556,22 +2128,99 @@ live_preview:
   toggle_3d: 토글 3D
   iframe_title: 라이브 웹사이트 미리보기
   display_options: 디스플레이 옵션
+  exit_full_width: 전체 너비 해제
+  open_in_visual_editor: 비주얼 편집기에서 열기
 shares: 공유
 unlimited_usage: 무제한 사용
 uses_left: 남은 용도 없음 | 1회 사용 남음 | {n} 왼쪽 사용
 no_shares: 표시할 공유가 없습니다.
 new_share: 새 공유
+show_more: 더 보기
+show_less: 간략히 보기
+retry: 다시 시도
 ai:
+  thinking: 생각 중...
   input: 입력
+  output: 출력
+  streaming: 스트리밍 중...
+  ready: 준비됨
+  complete: 완료
+  error: 오류
+  error_message: 오류가 발생했습니다
+  unknown_error: 알 수 없는 오류
   unknown: 알 수 없음
+  approval_requested: 승인 요청됨
+  approve: 승인
+  always_allow: 항상 허용
+  deny: 거부
+  approve_tool_execution: 도구 실행을 승인하시겠습니까?
+  prompt_input_placeholder: 여기에 메시지를 입력하세요...
+  clear_conversation: 대화 지우기
+  build_with_assistant: AI 도우미로 만들기
+  responses_may_be_inaccurate: AI 응답은 부정확할 수 있습니다
+  add_content: 콘텐츠 추가
+  prompt: 프롬프트
+  prompts: 프롬프트
   items: 항목
   content: 데이터 및 컨텐츠 관리
+  insert_prompt: 프롬프트 삽입
+  insert_reusable_prompt: 재사용 가능한 프롬프트 템플릿 삽입
+  insert_item_context: 항목 컨텍스트 삽입
+  coming_soon: 출시 예정
+  failed_to_load_prompts: 프롬프트를 불러오지 못했습니다
+  failed_to_load_items: 항목을 불러오지 못했습니다
+  some_context_failed: '컨텍스트 항목({count}개)을 불러오지 못했습니다'
+  prompt_inserted: 프롬프트 삽입됨
+  prompt_staged: 프롬프트 준비됨
+  items_staged: 항목 준비됨
+  some_items_staged: '항목({count}개) 준비됨(한도 도달)'
+  files_staged: 파일 준비됨
+  some_files_staged: '파일({count}개) 준비됨(한도 도달)'
+  attach_file_subtitle: 기존 파일 첨부
+  upload_file_subtitle: 로컬 파일 업로드
+  file_upload_failed: '{name} 업로드 실패'
+  file_upload_not_supported: 이 제공업체는 파일 업로드를 지원하지 않습니다
+  unsupported_file_type: 지원하지 않는 파일 형식
+  provider_locked_tooltip: 파일을 업로드한 후에는 제공업체를 변경할 수 없습니다. 전환하려면 기존 대화를 지우세요.
+  image_preview: 이미지 미리보기
+  item_staged: 항목 준비됨
+  invalid_collection: 유효하지 않은 컬렉션
+  element_already_staged: 이미 준비된 요소
+  max_elements_reached: 최대 요소 수에 도달했습니다
+  element_staged: 요소 준비됨
+  failed_to_insert_prompt: 프롬프트를 삽입하지 못했습니다
+  go_to_settings: 설정으로 이동
+  setup_ai_assistant: AI 도우미 설정
+  setup_ai_assistant_admin_description: AI 도우미를 활성화하려면 설정에서 AI 제공업체의 API 키를 추가하세요.
+  setup_ai_assistant_user_description: AI 도우미를 활성화하려면 관리자에게 문의하세요.
   settings: 설정
   tool_approval:
+    always: 항상 허용됨
+    ask: 승인 필요
     disabled: 비활성화 됨
+  enabled_tools: 활성화된 도구
+  disabled_tools: 비활성화된 도구
   ask_user_submit: 확인
   ask_user_next: 다음
+  ask_user_skip: 건너뛰기
+  ask_user_chat_about_this: 이 내용으로 대화
+  ask_user_type_answer: 답변을 입력하세요...
+  ask_user_skipped: 건너뜀
+  tool_descriptions:
+    items: 콘텐츠 생성, 읽기, 수정 및 삭제
+    files: 파일 검색 및 관리
+    folders: 폴더 생성 및 정리
+    flows: 플로우 생성 및 수정
+    trigger-flow: 수동으로 트리거하는 플로우 실행
+    operations: 플로우 내 작업 관리
+    schema: 데이터베이스 스키마 정보 가져오기
+    collections: 컬렉션 생성 및 관리
+    fields: 컬렉션 필드 생성 및 설정
+    relations: 컬렉션 간 관계 설정
 ai_tools:
+  ask_user: 사용자에게 질문
+  update_form_values: 양식 값 수정
+  read_form_values: 양식 값 읽기
   items: 항목
   files: 파일
   folders: 폴더
@@ -1581,6 +2230,7 @@ ai_tools:
   schema: 개요
   collections: 컬렉션
   fields: 필드
+  relations: 관계
 mcp_prompts_collection:
   no_collection_selected: 선택된 컬렉션이 없습니다
   no_collection_selected_copy: 재사용 가능한 프롬프트 템플릿을 활성화하려면 컬렉션을 선택하세요.
@@ -1604,6 +2254,7 @@ mcp_prompts_collection_schema:
   messages_role_user: 사용자
   messages_role_assistant: 어시스턴트
   messages_role_note: 이 메시지에서 말하는 사람은 누구입니까?
+  meta_prompts_notice: '프롬프트는 Directus MCP 서버, 플로우 또는 다른 AI 애플리케이션을 통해 LLM과 함께 사용할 수 있는 재사용 가능한 템플릿입니다. <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">효과적인 프롬프트를 만드는 방법을 자세히 알아보세요.</a>'
 expired: 만료됨
 upcoming: 다가오는
 share: 공유하다
@@ -1637,10 +2288,20 @@ continue_as: >-
   현재 {name}으로 인증되었습니다. 이 계정으로 계속하려면 계속을 누르세요.
 editing_role: '{role} 역할'
 editing_policy: '{policy} 정책'
+public_policy_warning: >-
+  여기에서 변경하는 사항은 인증되지 않은 사용자와 역할이 없는 사용자가 접근할 수 있는 대상 및 수행할 수 있는 작업에 영향을 줍니다. 자세한 내용은 {docs}를 참조하세요.
+public_policy_warning_docs_link: 보안 모범 사례 문서
+public_policy_dialog:
+  title: 시스템 컬렉션의 공개 접근 권한을 변경하시겠습니까?
+  copy: >-
+    다음 시스템 컬렉션의 공개 권한을 변경하려고 합니다. 인증되지 않은 사용자와 역할이 없는 사용자가 다음 작업을 수행할 수 있게 됩니다:
+  unfiltered_read_warning: 필터 없이 읽기 권한을 부여하면 컬렉션의 모든 레코드가 노출됩니다.
+  best_practices: 자세한 내용은 {docs}를 참조하세요.
 no_permissions: 권한 없음
 permission_add_collection: 컬렉션 추가
 default_label: 기본
 delete_label: 삭제
+discard_label: 버리기
 delete_are_you_sure: >-
   이 작업은 영구적이며 취소할 수 없습니다. 계속하시겠습니까?
 delete_field_are_you_sure: >-
@@ -1677,6 +2338,7 @@ colors:
 junction_collection: 정션 컬렉션
 latency: 지연 시간
 login: 로그인
+logout: 로그아웃
 my_activity: 내 활동
 not_authenticated: 인증되지 않음
 authenticated: 인증됨
@@ -1772,14 +2434,20 @@ interfaces:
     accordion_mode: 아코디언 모드
     max_one_section_open: 최대 1개 섹션 열기
   group-tabs:
+    name: 탭
+    description: 필드 또는 그룹을 탭으로 표시
+    overwrite_group_width: 그룹 너비 재정의
     fill_width: 전체 폭
+    fill_width_note: 이 그룹이 페이지 전체 너비를 채우도록 허용합니다.
   presentation-links:
     presentation-links: 버튼
+    description: 동적 URL을 열거나 플로우를 트리거하는 구성 가능한 링크 버튼
     style: 스타일
     primary: 기본
     link: 연결
     button: 버튼
     error: 작업을 수행할 수 없습니다.
+    action_type: 작업 유형
     select_manual_flow_note: 이 데이터 수집을 위해서는 수동 트리거를 사용하여 흐름을 구성해야 합니다
   select-multiple-checkbox:
     checkboxes: 확인란
@@ -1804,6 +2472,11 @@ interfaces:
     collection: 컬렉션
     description: 기존 컬렉션 중에서 선택
     include_system_collections: 시스템 컬렉션 포함
+  system-owner:
+    update: 프로젝트 소유자 변경
+    edit: 프로젝트 소유자 편집
+    system-owner: 시스템 소유자
+    description: 시스템 소유자 인터페이스
   system-collections:
     collections: 컬렉션
     description: 기존 컬렉션 중에서 선택
@@ -1856,6 +2529,9 @@ interfaces:
   file:
     file: 파일
     description: 파일 선택 또는 업로드
+    allowed_mime_types: 허용된 MIME 유형
+    mime_types_placeholder: 허용할 MIME 유형을 선택하거나 추가하세요...
+    mime_types_note: 환경에 정의된 전역 FILES_MIME_TYPE_ALLOW_LIST가 위 선택보다 우선 적용됩니다.
   files:
     files: 파일
     description: 여러 파일 선택 또는 업로드
@@ -1902,6 +2578,7 @@ interfaces:
     collection-item-dropdown: 컬렉션 항목 드롭다운
     description: JSON 형식의 컬렉션에서 항목 선택
   collection-item-multiple-dropdown:
+    collection-item-multiple-dropdown: 컬렉션 항목 드롭다운(다중)
     description: JSON 형식의 컬렉션에서 여러 항목을 선택하세요
   input-rich-text-md:
     markdown: 마크다운
@@ -1965,7 +2642,10 @@ interfaces:
     incompatible_data: 현재 데이터는 리피터 레이아웃과 호환되지 않으며 리피터 레이아웃에 항목을 추가할 때 재정의됩니다.
     interface_group: 인터페이스 옵션
     display_group: 디스플레이 옵션
+    edit_mode: 편집 모드
+    edit_mode_drawer: 드로어
     edit_mode_inline: 인라인
+    confirm_remove: 항목 제거 확인
   slider:
     slider: 슬라이더
     description: 슬라이더를 사용하여 숫자 선택
@@ -2023,6 +2703,29 @@ interfaces:
     default_language: 기본 설정 언어
     language_field: 언어 표시 필드
     language_direction_field: 언어 방향 필드
+    ai_translate: AI로 번역
+    ai_translate_short: 번역
+    ai_translate_tooltip: AI로 콘텐츠를 자동 번역
+    model: 모델
+    source_language: 원문 언어
+    target_languages: 대상 언어
+    translate_n_languages: '{count}개 언어 번역 | {count}개 언어 번역'
+    no_source_content: 선택한 원문 필드에 번역할 콘텐츠가 없습니다.
+    no_additional_languages: 추가로 설정된 언어가 없습니다.
+    no_translation_models: 현재 사용할 수 있는 번역 모델이 없습니다.
+    translation_error: 이 언어로 번역하지 못했습니다.
+    translation_not_allowed: 이 언어로 번역할 권한이 없습니다.
+    translation_pending_delete: 이 언어는 삭제 대기 중이므로 번역할 수 없습니다.
+    permission_check_failed: 이 언어에 대한 권한을 확인하지 못했습니다. 다시 시도하세요.
+    empty: (비어 있음)
+    field_empty_tooltip: 이 필드에 번역할 원문 콘텐츠가 없습니다
+    ai_translating: 번역 중...
+    ai_translating_progress: '{total}개 언어 중 {done}개 번역 중...'
+    translation_has_errors: 일부 번역이 실패했습니다.
+    translation_complete: 번역을 완료했습니다.
+    translation_complete_with_warnings: 번역을 완료했지만 일부 필드가 불완전할 수 있습니다.
+    partial_translation: '{total}개 필드 중 {count}개만 번역되었습니다.'
+    rate_limited: AI 제공업체에서 요청 빈도를 제한하고 있습니다. 잠시 기다린 후 다시 시도하세요.
   list-o2m-tree-view:
     description: 중첩 재귀 일대다 항목의 트리 보기
     recursive_only: 트리 보기 인터페이스는 재귀 관계에서만 작동합니다.
@@ -2039,11 +2742,20 @@ interfaces:
     description: HTML 형식으로 작성할 수 있는 리치텍스트 에디터
     toolbar: 툴바
     extensions: 확장 기능
+    extensions_placeholder: 확장 기능 선택...
+    extensions_note: 이 필드에서 사용할 수 있는 확장 기능입니다. 선택하지 않은 확장 기능의 마크업은 저장 시 제거됩니다.
+    extension_options: 확장 기능 옵션
+    extension_options_for: '{extension} 옵션'
     custom_formats: 맞춤 형식
+    custom_formats_note: 사용자 지정 서식 목록입니다. 각 항목에는 `title`과 함께 `inline` 태그, `block` 태그, 블록 태그의 `selector` 또는 항목을 하위 메뉴로 묶는 `items` 중 하나가 필요합니다. 선택적으로 `classes`, `styles`, `attributes`도 추가할 수 있습니다. 설정하면 도구 모음에 서식 드롭다운이 추가됩니다. `block`을 사용하는 서식은 단락과 제목 사이의 변환만 지원하며, `wrapper` 항목은 지원하지 않습니다.
+    options_override: 옵션 재정의(사용 중단)
+    options_override_note: 사용 중단된 기존 TinyMCE 재정의 설정입니다. 편집기에서 더 이상 적용되지 않으며 참조용으로만 유지됩니다. 대신 사용자 지정 서식과 같은 다른 인터페이스 옵션을 사용하세요.
     folder_note: 업로드된 파일의 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     imageToken: 정적 액세스 토큰
     imageToken_label: 정적 액세스 토큰이 자산의 URL에 추가됩니다.
     media_preview_iframe_title: 미디어 미리보기
+    embed_invalid: 삽입 마크업을 미디어(동영상, 오디오 또는 iframe)로 해석하지 못했습니다
+    auto_height: 자동 높이
   input-block-editor:
     input-block-editor: 블록 편집기
     description: Editor.js를 사용하여 리치 미디어 스토리를 위한 블록 스타일 편집기, JSON 형식의 깨끗한 데이터를 출력합니다.
@@ -2092,26 +2804,39 @@ interfaces:
     generate: 토큰 생성
     regenerate: 토큰 재생성
     regenerate_confirm_title: 토큰 재생성
+    regenerate_confirm_body: 현재 토큰은 즉시 무효화됩니다. 이 작업은 되돌릴 수 없습니다.
     remove_token: 토큰 제거
     remove_confirm_title: 토큰 제거
+    remove_confirm_body: 이 토큰을 사용하는 모든 API 접근이 즉시 중단됩니다.
+    new_user_disabled_notice: 토큰을 생성하기 전에 이 사용자를 저장하세요.
+    token_saved_notice: 토큰을 저장했습니다.
+    token_saved_copy: 지금 이 토큰을 복사해 두세요. 보안상 다시 표시되지 않습니다.
   system-raw-editor:
     system-raw-editor: RAW 편집기
     description: RAW 또는 콧수염 템플릿 값 입력 허용
   input-password:
     input-password: 비밀번호 입력
     description: 값을 숨기기 위해 토글을 사용한 비밀번호 입력
+  flow-select:
+    flow-select: 플로우 선택
   header:
     header: 머리글
     description: 사용자가 Flow를 탐색하거나 실행하는 데 도움이 되도록 제목, 부제목, 도움말 정보 및/또는 링크가 포함된 헤더를 만드세요.
     links: 연결
+    action_type: 작업 유형
     help:
+      title: 도움말
       note: 사용자가 도움말 정보를 켜고 끌 수 있도록 제공합니다.
     help_display_mode:
+      title: 도움말 표시 모드
       note: 도움말 정보의 표시 모드를 선택하십시오.
     enable_help_translations:
+      title: 도움말 번역 활성화
       note: 이 기능을 활성화하면 도움말 필드가 도움말 번역 문자열 필드의 값으로 덮어쓰여집니다.
     help_translations_string:
+      title: 도움말 번역 문자열
       note: 지원하려는 각 언어에 대해 번역된 콘텐츠를 사용하여 프로젝트의 번역 설정에서 해당 키에 대한 번역 값을 생성해야 합니다.
+    collapse: 도움말 접기
 displays:
   translations:
     translations: 번역
@@ -2160,6 +2885,8 @@ displays:
     down: 아래에
     nearest: 가장 가까운
     up: 위로
+    timezone: 시간대
+    timezone_note: 'IANA 시간대 식별자입니다(예: ''America/New_York'', ''UTC''). 비워 두면 현지 시간대를 사용합니다.'
   file:
     file: 파일
     description: 파일 표시
@@ -2281,6 +3008,7 @@ layouts:
     group_field_placeholder: 그룹화할 필드...
     group_title: 그룹 제목
     group_title_placeholder: 그룹 제목 입력란...
+    group_collection_inactive: 이 보드가 그룹화 기준으로 사용하는 컬렉션이 비활성 상태입니다
     title: 카드 제목
     title_placeholder: 선택적 제목 필드...
     text: 카드 텍스트
@@ -2415,6 +3143,7 @@ triggers:
     collection_and_item: 컬렉션 및 항목 페이지
     collection_only: 컬렉션 페이지만
     item_only: 항목 페이지만
+    hidden: 없음(숨김)
     collection_page: 컬렉션 페이지
     require_selection: 선택 필요
 a_flow_uuid: 트리거할 플로우 선택...
@@ -2424,6 +3153,7 @@ operation_variables_note: Flow 데이터는 **{'{'}{'{'}$last{'}'}{'}'}**, **{'{
 operations:
   condition:
     name: 상태
+    description: If / Else 논리에 따라 플로우 경로 지정
   exec:
     name: 스크립트 실행
     description: 임의의 코드를 실행하여 페이로드 수정
@@ -2474,6 +3204,8 @@ operations:
   mail:
     name: 이메일 전송
     description: 한 명 이상의 사람에게 이메일 보내기
+    from_name: 발신자 이름
+    from_name_placeholder: 기본값은 프로젝트 이름입니다
     to: 에게
     to_placeholder: 이메일 주소를 추가하고 Enter 키를 누릅니다...
     body: 본문
@@ -2531,6 +3263,9 @@ operations:
     batch: 일괄
     batch_size: 배치 크기
     cache: 캐시
+    cache_query: 캐시 쿼리 매개변수
+    cache_query_placeholder: 허용된 쿼리 매개변수...
+    cache_query_description: 이 쿼리 매개변수도 캐시 키에 추가로 사용됩니다.
 unit: 단위
 standard: 표준
 scientific: 과학적
@@ -2569,6 +3304,8 @@ series_grouping: 시리즈 그룹화
 date_precision: 날짜 정밀도
 export_dashboard: 대시보드 내보내기
 duplicate_dashboard: 대시보드 복제
+duplicate_policy: 정책 복제
+duplicate_flow: 플로우 복제
 search_dashboard: 대시보드 검색...
 search_flow: 흐름 검색...
 percent: 퍼센트
@@ -2576,8 +3313,21 @@ show_password: 비밀번호 보이기
 hide_password: 비밀번호 숨기기
 license_grace_key_modal:
   optional: 선택 과목
+  get_license_key: 라이선스 키 받기
+  over_limit_warning_lead: Core 요금제의 허용 사용량을 초과했습니다.
+  over_limit_warning_tail: '{lead} 현재 접근 권한을 유지하려면 {date}({days}일 후) 이전에 {licenseKey}를 추가하세요.'
+  over_limit_customer_help: 이미 고객이신가요? 키를 조회하려면 {email}로 이메일을 보내세요.
+  license_key_link_label: 라이선스 키
+license_banner:
+  title: 프로젝트 소유자를 설정하지 않았습니다.
+  license: MSCL-1.0-GPL 라이선스 준수 여부를 확인하려면 이 정보가 필요합니다. 프로젝트를 책임지는 주 연락 담당자로 지정해야 합니다.
+  set_owner: 소유자 설정
+  remind_later: 나중에 알림
+  remind_next_login: 다음 로그인 시 다시 알려드리겠습니다.
 accepted: 수락됨
 text_direction_auto: 자동(일치 언어)
 text_direction_ltr: 왼쪽에서 오른쪽으로(LTR)
 text_direction_rtl: 오른쪽에서 왼쪽(RTL)
 set_to_now: 현재로 설정
+aria:
+  more_options: 추가 옵션
