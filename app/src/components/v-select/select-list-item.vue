@@ -48,6 +48,7 @@ const isActive = computed(() => {
 	<VListItem
 		v-else
 		v-show="!item.hidden"
+		:style="{ '--select-list-item-font-family': itemLabelFontFamily }"
 		:active="isActive"
 		:disabled="item.disabled"
 		:value="item.value"
@@ -83,7 +84,7 @@ const isActive = computed(() => {
 <style scoped>
 .item-text,
 .checkbox :deep(.type-text) {
-	font-family: v-bind('itemLabelFontFamily');
+	font-family: var(--select-list-item-font-family);
 }
 
 .item-text-margin {
