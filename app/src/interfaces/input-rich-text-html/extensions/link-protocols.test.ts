@@ -2,7 +2,7 @@ import { type AnyExtension, Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { roundTrip } from '../composables/normalization-diff';
 import { buildLinkProtocolSchema } from './link-protocols';
-import { mergeEditorExtensions } from '.';
+import { fieldEditorExtensions } from '.';
 
 const TEXT_LINK = '<p><a href="myapp://some/route">open</a></p>';
 // a block after the image keeps StarterKit's trailing-node paragraph out of the expected HTML
@@ -16,7 +16,7 @@ afterEach(() => {
 
 // roundTrip destroys its editor before Tiptap's create tick, so only a mounted editor runs onCreate
 async function mounted(extensions: AnyExtension[]): Promise<Editor> {
-	const editor = new Editor({ extensions: mergeEditorExtensions(extensions) });
+	const editor = new Editor({ extensions: fieldEditorExtensions(extensions) });
 	editors.push(editor);
 	await new Promise((resolve) => setTimeout(resolve));
 	return editor;
