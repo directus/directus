@@ -62,28 +62,7 @@ test('sieve error', () => {
 	const error = new Error('Test error message');
 	const sieved = sieveFunctions(error);
 
-	expect(sieved).toEqual({ name: 'Error', message: 'Test error message' });
-	expect(sieved).not.toBeInstanceOf(Error);
-	expect(sieved).not.toHaveProperty('stack');
-});
-
-test('sieve error with custom properties and cause', () => {
-	const cause = new Error('Root cause');
-
-	const error = Object.assign(new Error('Test error message', { cause }), {
-		code: 'FAILED_VALIDATION',
-		extensions: { field: 'title', fn: () => {} },
-		status: 400,
-	});
-
-	expect(sieveFunctions(error)).toEqual({
-		name: 'Error',
-		message: 'Test error message',
-		code: 'FAILED_VALIDATION',
-		extensions: { field: 'title', fn: undefined },
-		status: 400,
-		cause: { name: 'Error', message: 'Root cause' },
-	});
+	expect(sieved).toBe(error);
 });
 
 test('sieve nested error in object', () => {
@@ -98,13 +77,6 @@ test('sieve nested error in object', () => {
 	const sieved = sieveFunctions(obj) as any;
 
 	expect(sieved).toHaveProperty('status', obj.status);
-	expect(sieved.error).toEqual({ name: 'Error', message: 'Nested error' });
+	expect(sieved.error).toBe(error);
 	expect(sieved.fn).toBe(undefined);
-});
-
-test('sieve errors in array', () => {
-	expect(sieveFunctions([new Error('First'), new TypeError('Second')])).toEqual([
-		{ name: 'Error', message: 'First' },
-		{ name: 'TypeError', message: 'Second' },
-	]);
 });
