@@ -8,6 +8,7 @@ import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 import { Collection } from '@/types/collections';
 import { LAYOUTS } from '@/types/interfaces';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 
 vi.mock('@/composables/use-relation-m2m', () => ({
@@ -52,7 +53,7 @@ vi.mock('@/composables/use-relation-permissions', () => ({
 }));
 
 const mockGetField = vi.hoisted(() => vi.fn(() => null as any));
-const mockGetFieldsForCollection = vi.hoisted(() => vi.fn(() => [] as any[]));
+const mockGetFieldsForCollection = vi.hoisted(() => vi.fn((_collection?: string) => [] as any[]));
 const relationQuery = vi.hoisted(() => ({ current: null as any }));
 const mockTotalItemCount = vi.hoisted(() => ({ value: 1 }));
 const mockGetWidth = vi.hoisted(() => vi.fn((_key: string, defaultWidth: number) => defaultWidth));
@@ -82,7 +83,7 @@ vi.mock('@/composables/use-relation-multiple', () => ({
 
 		return {
 			create: vi.fn(),
-			update: vi.fn(),
+			update: mockUpdate,
 			remove: vi.fn(),
 			select: vi.fn(),
 			displayItems: ref([{ id: '1', related_id: { id: '10' }, $type: 'existingItem', $index: 0, $edits: 0 }]),
