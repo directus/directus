@@ -17,9 +17,10 @@ import { database, port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { afterAll, describe, expect, test } from 'vitest';
 import type { Schema } from './schema.js';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 const [us, mal] = await api.request(
 	createItems(collections.country, [
@@ -248,11 +249,14 @@ describe('/fields on a system collection', () => {
 
 	test('a user created field can be added to, updated on and removed from a system collection', async () => {
 		const created = await api.request(
-			createField('directus_users', {
-				field: userField,
-				type: 'string',
-				meta: { interface: 'input', special: null },
-			} as any),
+			createField(
+				'directus_users' as any,
+				{
+					field: userField,
+					type: 'string',
+					meta: { interface: 'input', special: null },
+				} as any,
+			),
 		);
 
 		expect(created).toMatchObject({ collection: 'directus_users', field: userField, type: 'string' });

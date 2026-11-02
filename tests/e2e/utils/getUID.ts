@@ -1,4 +1,3 @@
-import { join } from 'path';
 import { getCallSites } from 'util';
 
 /**
@@ -16,18 +15,4 @@ export function getUID(offset = 0) {
 	const uid = [...parentParts.slice(currentParts.length, -1), parentParts.at(-1)?.slice(0, -8)].join('_');
 
 	return uid.replaceAll('.sb', '');
-}
-
-/**
- * Returns the tests folder, used mainly for finding the snapshot file of a test.
- */
-export function getCallerFolder(offset = 0) {
-	const parent = getCallSites()[1 + offset]!.scriptName;
-
-	const parentParts = parent.split(/[/\\]/g);
-	const currentParts = [...import.meta.dirname.split(/[/\\]/g).slice(0, -1)];
-
-	const folder = join(...parentParts.slice(currentParts.length, -1));
-
-	return folder;
 }

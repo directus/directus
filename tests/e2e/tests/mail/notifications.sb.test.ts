@@ -15,7 +15,9 @@ const directus = await useSandbox(database, {
 	docker: { suffix: getUID() },
 });
 
-const api = createDirectus<any>(`http://localhost:${directus.apis[0]!.port}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<unknown>(`http://localhost:${directus.apis[0]!.port}`)
+	.with(rest())
+	.with(staticToken('admin'));
 
 const maildev = `http://127.0.0.1:${directus.env.MAILDEV_WEBUI}`;
 

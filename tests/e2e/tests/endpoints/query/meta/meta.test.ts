@@ -4,9 +4,10 @@ import { useSnapshot } from '@utils/use-snapshot.js';
 import { range } from 'lodash-es';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 /** `meta` is not exposed through the SDK item readers, so these go through the REST endpoint directly. */
 async function readWithMeta(collection: string, params: Record<string, unknown>) {

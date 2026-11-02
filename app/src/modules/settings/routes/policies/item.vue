@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { useShortcut } from '@directus/composables';
-import { DIRECTUS_SECURITY_BEST_PRACTICES_URL, PUBLIC_POLICY_ID } from '@directus/constants';
 import { Policy } from '@directus/types';
-import { groupBy } from 'lodash-es';
-import { computed, ref, toRefs } from 'vue';
-import { I18nT } from 'vue-i18n';
+import { ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import { getSystemPermissionChanges } from './get-system-permission-changes';
 import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
+import PublicPolicyNotice from './public-policy-notice.vue';
+import SystemPermissionsDialog from './system-permissions-dialog.vue';
+import { useIsAttachedToPublicRole } from './use-is-attached-to-public-role';
+import { useSystemPermissionsGuard } from './use-system-permissions-guard';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -16,7 +17,6 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
-import VNotice from '@/components/v-notice.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useUserStore } from '@/stores/user';
@@ -42,10 +42,17 @@ const { edits, hasEdits, item, saving, loading, save, remove, deleting, validati
 	primaryKey,
 );
 
-const isPublicPolicy = computed(() => primaryKey.value === PUBLIC_POLICY_ID);
+const isAttachedToPublicRole = useIsAttachedToPublicRole(primaryKey);
 
-const { confirmSystemPermissions, systemPermissionActions, hasUnfilteredRead, guardSave, confirmSave } =
-	useSystemPermissionsGuard();
+const {
+	confirmSystemPermissions,
+	changes: systemPermissionChanges,
+	guardSave,
+	confirmSave,
+} = useSystemPermissionsGuard(
+	() => (isAttachedToPublicRole.value !== false ? getSystemPermissionChanges(edits.value.permissions) : []),
+	saving,
+);
 
 const confirmDelete = ref(false);
 
@@ -119,56 +126,6 @@ function discardAndStay() {
 	edits.value = {};
 	confirmLeave.value = false;
 }
-
-function useSystemPermissionsGuard() {
-	const pendingSave = ref<(() => Promise<void>) | null>(null);
-
-	const confirmSystemPermissions = computed({
-		get: () => pendingSave.value !== null,
-		set: (value) => {
-			if (!value) {
-				pendingSave.value = null;
-			}
-		},
-	});
-
-	const systemPermissionChanges = computed(() =>
-		isPublicPolicy.value ? getSystemPermissionChanges(edits.value.permissions) : [],
-	);
-
-	const systemPermissionActions = computed(() =>
-		Object.entries(groupBy(systemPermissionChanges.value, 'collection')).map(([collection, changes]) => ({
-			collection,
-			actions: changes.map(({ action }) => action),
-		})),
-	);
-
-	const hasUnfilteredRead = computed(() => systemPermissionChanges.value.some(({ unfilteredRead }) => unfilteredRead));
-
-	return { confirmSystemPermissions, systemPermissionActions, hasUnfilteredRead, guardSave, confirmSave };
-
-	function guardSave(saveFn: () => Promise<void>) {
-		if (saving.value) {
-			return;
-		}
-
-		if (systemPermissionChanges.value.length === 0) {
-			saveFn();
-			return;
-		}
-
-		pendingSave.value = saveFn;
-	}
-
-	async function confirmSave() {
-		if (saving.value) {
-			return;
-		}
-
-		await pendingSave.value?.();
-		pendingSave.value = null;
-	}
-}
 </script>
 
 <template>
@@ -229,15 +186,7 @@ function useSystemPermissionsGuard() {
 		</template>
 
 		<div class="content">
-			<VNotice v-if="isPublicPolicy" class="public-policy-notice" type="warning">
-				<I18nT keypath="public_policy_warning" tag="span">
-					<template #docs>
-						<a :href="DIRECTUS_SECURITY_BEST_PRACTICES_URL" target="_blank" rel="noopener noreferrer">
-							{{ $t('public_policy_warning_docs_link') }}
-						</a>
-					</template>
-				</I18nT>
-			</VNotice>
+			<PublicPolicyNotice v-if="isAttachedToPublicRole" />
 
 			<VForm
 				v-model="edits"
@@ -258,49 +207,12 @@ function useSystemPermissionsGuard() {
 			/>
 		</template>
 
-		<VDialog v-model="confirmSystemPermissions" @esc="confirmSystemPermissions = false" @apply="confirmSave">
-			<VCard class="system-permissions-card">
-				<VCardTitle>{{ $t('public_policy_dialog.title') }}</VCardTitle>
-				<VCardText class="system-permissions-confirm">
-					<p>{{ $t('public_policy_dialog.copy') }}</p>
-
-					<table class="system-permissions-table">
-						<thead>
-							<tr>
-								<th scope="col">{{ $t('collection') }}</th>
-								<th scope="col">{{ $t('actions') }}</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="{ collection, actions } in systemPermissionActions" :key="collection">
-								<td class="collection">{{ collection }}</td>
-								<td class="actions">{{ actions.map((action) => $t(action)).join(', ') }}</td>
-							</tr>
-						</tbody>
-					</table>
-
-					<VNotice v-if="hasUnfilteredRead" type="danger">
-						{{ $t('public_policy_dialog.unfiltered_read_warning') }}
-					</VNotice>
-
-					<I18nT keypath="public_policy_dialog.best_practices" tag="p">
-						<template #docs>
-							<a :href="DIRECTUS_SECURITY_BEST_PRACTICES_URL" target="_blank" rel="noopener noreferrer">
-								{{ $t('public_policy_warning_docs_link') }}
-							</a>
-						</template>
-					</I18nT>
-				</VCardText>
-				<VCardActions>
-					<VButton secondary @click="confirmSystemPermissions = false">
-						{{ $t('cancel') }}
-					</VButton>
-					<VButton :loading="saving" @click="confirmSave">
-						{{ $t('save') }}
-					</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
+		<SystemPermissionsDialog
+			v-model="confirmSystemPermissions"
+			:changes="systemPermissionChanges"
+			:saving
+			@confirm="confirmSave"
+		/>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<VCard>
@@ -331,71 +243,5 @@ function useSystemPermissionsGuard() {
 	display: flex;
 	flex-direction: column;
 	row-gap: var(--theme--form--row-gap);
-}
-
-.system-permissions-card {
-	max-inline-size: unset;
-	inline-size: min(39rem, calc(100vw - 2.25rem));
-}
-
-.system-permissions-confirm {
-	display: flex;
-	flex-direction: column;
-	gap: 0.75rem;
-
-	a {
-		text-decoration: underline;
-		color: var(--theme--primary);
-	}
-}
-
-.system-permissions-table {
-	inline-size: 100%;
-	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: var(--theme--border-radius);
-	border-spacing: 0;
-
-	th,
-	td {
-		padding: 0.5rem 0.6875rem;
-		text-align: start;
-		vertical-align: top;
-	}
-
-	th {
-		font-weight: 600;
-		background-color: var(--theme--form--field--input--background);
-		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
-
-		&:first-child {
-			border-start-start-radius: var(--theme--border-radius);
-		}
-
-		&:last-child {
-			border-start-end-radius: var(--theme--border-radius);
-		}
-	}
-
-	tr + tr td {
-		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
-	}
-
-	.collection {
-		font-family: var(--theme--fonts--monospace--font-family);
-		overflow-wrap: break-word;
-	}
-
-	.actions {
-		color: var(--theme--foreground-subdued);
-	}
-}
-
-.public-policy-notice {
-	max-inline-size: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
-
-	a {
-		text-decoration: underline;
-		color: var(--theme--primary);
-	}
 }
 </style>

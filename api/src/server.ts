@@ -1,7 +1,6 @@
 import * as http from 'http';
 import * as https from 'https';
 import type { ListenOptions } from 'net';
-import url from 'url';
 import { useEnv } from '@directus/env';
 import { getNodeEnv } from '@directus/utils/node';
 import type { TerminusOptions } from '@godaddy/terminus';
@@ -18,6 +17,7 @@ import { terminateAllBufferedCounters } from './telemetry/counter/use-buffered-c
 import { getAddress } from './utils/get-address.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getIPFromReq } from './utils/get-ip-from-req.js';
+import { parseRequestUrl } from './utils/parse-request-url.js';
 import {
 	createLogsController,
 	createSubscriptionController,
@@ -62,9 +62,9 @@ export async function createServer(): Promise<http.Server> {
 			// Compatibility when supporting serving with certificates
 			const protocol = server instanceof https.Server ? 'https' : 'http';
 
-			// Rely on url.parse for path extraction
-			// Doesn't break on illegal URLs
-			const urlInfo = url.parse(req.originalUrl || req.url);
+			// Must not throw on illegal URLs, this runs outside of the Express error handling
+			const requestUrl = req.originalUrl || req.url;
+			const urlInfo = parseRequestUrl(requestUrl);
 
 			const info = {
 				finished,
@@ -72,7 +72,7 @@ export async function createServer(): Promise<http.Server> {
 					aborted: req.aborted,
 					completed: req.complete,
 					method: req.method,
-					url: urlInfo.href,
+					url: requestUrl,
 					path: urlInfo.pathname,
 					protocol,
 					host: req.headers.host,

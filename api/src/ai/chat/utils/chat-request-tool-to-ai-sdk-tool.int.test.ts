@@ -27,7 +27,7 @@ describe('chatRequestToolsToAiSdkTools integration', () => {
 		expect((tools['search'] as any).inputSchema.jsonSchema).toMatchObject({
 			type: 'object',
 			properties: {
-				query: { anyOf: [{ type: 'string' }, { type: 'null' }] },
+				query: { type: ['string', 'null'] },
 				names: { type: 'array', items: { type: 'string' } },
 			},
 		});

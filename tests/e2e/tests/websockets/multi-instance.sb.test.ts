@@ -63,7 +63,7 @@ test('an item created on one node reaches a subscriber on the other', async () =
 			(message) => message.type === 'subscription' && message.event === 'create' && message.uid === 'cross',
 		);
 
-		expect(message.data).toEqual([expect.objectContaining({ id: created.id, name })]);
+		expect(message.data).toEqual([expect.objectContaining({ id: created['id'], name })]);
 	}
 
 	for (const socket of sockets) socket.close();
@@ -88,7 +88,7 @@ test('a graphql subscriber on the other node sees the same event', async () => {
 
 	expect(message.payload.data[`${COLLECTION}_mutated`]).toEqual({
 		event: 'create',
-		data: { id: String(created.id), name },
+		data: { id: String(created['id']), name },
 	});
 
 	socket.close();

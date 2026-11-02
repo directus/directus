@@ -15,7 +15,7 @@ import {
 import { port } from '@utils/constants.js';
 import { afterAll, expect, test } from 'vitest';
 
-const api = createDirectus<any>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<Record<string, unknown>>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 
 const collection = `case_when_${randomUUID().replaceAll('-', '')}`;
 const token = randomUUID();
