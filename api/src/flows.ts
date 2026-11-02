@@ -35,7 +35,6 @@ import { isUnauthenticated } from './utils/is-unauthenticated.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 import { getCollectionFromSchema } from './utils/schema/get-collection-from-schema.js';
-import { serializeErrors } from './utils/serialize-errors.js';
 
 let flowManager: FlowManager | undefined;
 
@@ -581,13 +580,16 @@ class FlowManager {
 		} catch (error) {
 			let data;
 
-			if (typeof error === 'string') {
+			if (error instanceof Error) {
+				// Don't expose the stack trace to the next operation
+				delete error.stack;
+				data = error;
+			} else if (typeof error === 'string') {
 				// If the error is a JSON string, parse it and use that as the error data
 				data = isValidJSON(error) ? parseJSON(error) : error;
 			} else {
-				// Convert errors (e.g. the list of validation errors thrown by a condition) to plain objects,
-				// so they can be safely passed to the next operation without exposing stack traces or sensitive data
-				data = serializeErrors(error) ?? null;
+				// If error is plain object, use this as the error data and otherwise fallback to null
+				data = error ?? null;
 			}
 
 			return {

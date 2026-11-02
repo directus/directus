@@ -1,4 +1,4 @@
-import { ForbiddenError } from '@directus/errors';
+import { createError, ForbiddenError } from '@directus/errors';
 import { FailedValidationError } from '@directus/validation';
 import { expect, test } from 'vitest';
 import { serializeErrors } from './serialize-errors.js';
@@ -66,5 +66,18 @@ test('Serializes error causes and handles circular causes', () => {
 	expect(serializeErrors(new Error('Outer', { cause: { secret: 'value' } }))).toEqual({
 		name: 'Error',
 		message: 'Outer',
+	});
+});
+
+test('Serializes errors nested in Directus error extensions', () => {
+	const NestedError = createError<{ error: Error }>('NESTED', 'Nested error', 500);
+	const inner = Object.assign(new Error('Inner'), { config: { headers: { Authorization: 'Bearer secret' } } });
+
+	expect(serializeErrors(new NestedError({ error: inner }))).toEqual({
+		name: 'DirectusError',
+		message: 'Nested error',
+		code: 'NESTED',
+		status: 500,
+		extensions: { error: { name: 'Error', message: 'Inner' } },
 	});
 });

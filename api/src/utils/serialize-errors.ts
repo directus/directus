@@ -6,29 +6,30 @@ import { deepMap } from '@directus/utils';
  * Only a known set of properties is kept, so that sensitive data attached to errors
  * (e.g. the request config of an AxiosError) isn't passed on.
  */
-export function serializeErrors(value: unknown): unknown {
-	if (value instanceof Error) return serializeError(value);
+export function serializeErrors(value: unknown, ancestors = new Set<Error>()): unknown {
+	if (!(value instanceof Error)) {
+		return deepMap(value, (item) => (item instanceof Error ? serializeErrors(item, ancestors) : item));
+	}
 
-	return deepMap(value, (item) => (item instanceof Error ? serializeError(item) : item));
-}
+	// Drop circular references to errors that are already being serialized
+	if (ancestors.has(value)) return undefined;
 
-function serializeError(error: Error, seen = new Set<Error>()): Record<string, unknown> {
-	seen.add(error);
+	ancestors = new Set(ancestors).add(value);
 
-	const serialized: Record<string, unknown> = { name: error.name, message: error.message };
+	const serialized: Record<string, unknown> = { name: value.name, message: value.message };
 
 	for (const key of ['code', 'status'] as const) {
-		const property = (error as Partial<Record<typeof key, unknown>>)[key];
+		const property = (value as Partial<Record<typeof key, unknown>>)[key];
 
 		if (typeof property === 'string' || typeof property === 'number') serialized[key] = property;
 	}
 
-	if (isDirectusError(error) && error.extensions !== undefined) {
-		serialized['extensions'] = error.extensions;
+	if (isDirectusError(value) && value.extensions !== undefined) {
+		serialized['extensions'] = serializeErrors(value.extensions, ancestors);
 	}
 
-	if (error.cause instanceof Error && !seen.has(error.cause)) {
-		serialized['cause'] = serializeError(error.cause, seen);
+	if (value.cause instanceof Error && !ancestors.has(value.cause)) {
+		serialized['cause'] = serializeErrors(value.cause, ancestors);
 	}
 
 	return serialized;
