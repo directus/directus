@@ -61,6 +61,12 @@ describe('link drawer', () => {
 		expect(notice.text()).toBe('interfaces.input-rich-text-html.link_protocol_blocked');
 	});
 
+	test.each(['not_allowed', 'blocked'] as const)('shows the %s error for an image link too', (error) => {
+		const notice = mountDrawer(true, error).find('.v-notice');
+
+		expect(notice.text()).toBe(`interfaces.input-rich-text-html.link_protocol_${error}`);
+	});
+
 	test('shows no error for an allowed url', () => {
 		expect(mountDrawer(false).find('.v-notice').exists()).toBe(false);
 	});

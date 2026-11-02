@@ -37,6 +37,17 @@ describe('buildLinkProtocolSchema', () => {
 		expect(roundTrip(IMAGE_LINK, extensions)).toBe(IMAGE_LINK);
 	});
 
+	test('drops the link of an image with a custom scheme that is not allowed and keeps the image', () => {
+		expect(roundTrip(IMAGE_LINK)).toBe('<img src="/assets/abc"><p>y</p>');
+	});
+
+	test('drops the link of an image with a script scheme even when other schemes are allowed', () => {
+		const { extensions } = buildLinkProtocolSchema(['myapp']);
+		const html = '<a href="javascript:alert(1)"><img src="/assets/abc"></a><p>y</p>';
+
+		expect(roundTrip(html, extensions)).toBe('<img src="/assets/abc"><p>y</p>');
+	});
+
 	test('still keeps links with the default schemes', () => {
 		const { extensions } = buildLinkProtocolSchema(['myapp']);
 		const html = '<p><a href="https://directus.io">a</a> <a href="mailto:a@b.c">b</a></p>';

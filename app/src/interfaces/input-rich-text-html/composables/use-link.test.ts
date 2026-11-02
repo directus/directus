@@ -373,6 +373,23 @@ describe('link protocols', () => {
 		expect(editor.value.getHTML()).toBe('<a href="myapp://some/route"><img src="/assets/abc"></a><p>y</p>');
 	});
 
+	test.each([
+		['myapp://some/route', 'not_allowed'],
+		['javascript:alert(1)', 'blocked'],
+	] as const)('an image link to %s is flagged as %s and saveLink leaves the image unlinked', (url, error) => {
+		const content = '<img src="/assets/abc"><p>y</p>';
+		const { editor, linkSelection, linkUrlError, isLinkSaveable, openLinkDrawer, saveLink } = setup(content);
+		selectNode(editor.value, 'image');
+		openLinkDrawer();
+
+		linkSelection.value = { ...linkSelection.value, url };
+
+		expect(linkUrlError.value).toBe(error);
+		expect(isLinkSaveable.value).toBe(false);
+		saveLink();
+		expect(editor.value.getHTML()).toBe(content);
+	});
+
 	test('saveLink stores a link with an allowed dotted scheme', () => {
 		const { editor, linkSelection, linkUrlError, saveLink } = setup('<p></p>', ['com.example.app']);
 
