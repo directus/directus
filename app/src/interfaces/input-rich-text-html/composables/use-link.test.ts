@@ -335,11 +335,11 @@ describe('link protocols', () => {
 	const CUSTOM = { url: 'myapp://some/route', displayText: 'Open', title: null, newTab: false };
 
 	test('a url with a custom scheme that is not allowed is flagged and not saveable', () => {
-		const { linkSelection, isLinkSaveable, linkUrlDisallowed } = setup();
+		const { linkSelection, isLinkSaveable, linkUrlError } = setup();
 
 		linkSelection.value = CUSTOM;
 
-		expect(linkUrlDisallowed.value).toBe(true);
+		expect(linkUrlError.value).toBe('not_allowed');
 		expect(isLinkSaveable.value).toBe(false);
 	});
 
@@ -353,11 +353,11 @@ describe('link protocols', () => {
 	});
 
 	test('saveLink stores a link with an allowed custom scheme', () => {
-		const { editor, linkSelection, linkUrlDisallowed, saveLink } = setup('<p></p>', ['myapp']);
+		const { editor, linkSelection, linkUrlError, saveLink } = setup('<p></p>', ['myapp']);
 
 		linkSelection.value = CUSTOM;
 
-		expect(linkUrlDisallowed.value).toBe(false);
+		expect(linkUrlError.value).toBeNull();
 		saveLink();
 		expect(editor.value.getHTML()).toBe('<p><a href="myapp://some/route">Open</a></p>');
 	});
@@ -374,26 +374,29 @@ describe('link protocols', () => {
 	});
 
 	test('saveLink stores a link with an allowed dotted scheme', () => {
-		const { editor, linkSelection, linkUrlDisallowed, saveLink } = setup('<p></p>', ['com.example.app']);
+		const { editor, linkSelection, linkUrlError, saveLink } = setup('<p></p>', ['com.example.app']);
 
 		linkSelection.value = { ...CUSTOM, url: 'com.example.app://some/route' };
 
-		expect(linkUrlDisallowed.value).toBe(false);
+		expect(linkUrlError.value).toBeNull();
 		saveLink();
 		expect(editor.value.getHTML()).toBe('<p><a href="com.example.app://some/route">Open</a></p>');
 	});
 
-	test('a url with a script scheme is flagged', () => {
-		const { linkSelection, linkUrlDisallowed } = setup();
+	test.each(['javascript:alert(1)', ' JavaScript://x', 'data:text/html,hi', 'vbscript:x'])(
+		'a url with a script scheme is flagged as blocked: %s',
+		(url) => {
+			const { linkSelection, linkUrlError } = setup('<p></p>', ['myapp']);
 
-		linkSelection.value = { ...CUSTOM, url: 'javascript:alert(1)' };
+			linkSelection.value = { ...CUSTOM, url };
 
-		expect(linkUrlDisallowed.value).toBe(true);
-	});
+			expect(linkUrlError.value).toBe('blocked');
+		},
+	);
 
 	test('an empty url is not flagged', () => {
-		const { linkUrlDisallowed } = setup();
+		const { linkUrlError } = setup();
 
-		expect(linkUrlDisallowed.value).toBe(false);
+		expect(linkUrlError.value).toBeNull();
 	});
 });

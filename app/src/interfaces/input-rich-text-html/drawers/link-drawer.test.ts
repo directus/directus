@@ -1,9 +1,10 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, test } from 'vitest';
 import { createI18n } from 'vue-i18n';
+import type { LinkUrlError } from '../composables/use-link';
 import LinkDrawer from './link-drawer.vue';
 
-function mountDrawer(targetsImage: boolean, urlDisallowed = false) {
+function mountDrawer(targetsImage: boolean, urlError: LinkUrlError | null = null) {
 	const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
 
 	return mount(LinkDrawer, {
@@ -13,7 +14,7 @@ function mountDrawer(targetsImage: boolean, urlDisallowed = false) {
 			editing: false,
 			saveable: false,
 			targetsImage,
-			urlDisallowed,
+			urlError,
 		},
 		global: {
 			plugins: [i18n],
@@ -49,10 +50,15 @@ describe('link drawer', () => {
 	});
 
 	test('shows an error for a url with a scheme that is not allowed', () => {
-		const notice = mountDrawer(false, true).find('.v-notice');
+		const notice = mountDrawer(false, 'not_allowed').find('.v-notice');
 
-		expect(notice.exists()).toBe(true);
 		expect(notice.text()).toBe('interfaces.input-rich-text-html.link_protocol_not_allowed');
+	});
+
+	test('does not suggest the option for a script url, which no option can allow', () => {
+		const notice = mountDrawer(false, 'blocked').find('.v-notice');
+
+		expect(notice.text()).toBe('interfaces.input-rich-text-html.link_protocol_blocked');
 	});
 
 	test('shows no error for an allowed url', () => {

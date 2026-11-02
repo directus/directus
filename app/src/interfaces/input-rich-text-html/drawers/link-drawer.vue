@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { LinkSelection } from '../composables/use-link';
+import type { LinkSelection, LinkUrlError } from '../composables/use-link';
 import VButton from '@/components/v-button.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDrawer from '@/components/v-drawer.vue';
@@ -13,7 +13,7 @@ defineProps<{
 	saveable: boolean;
 	/** The link targets a selected image, which has no display text to edit. */
 	targetsImage?: boolean;
-	urlDisallowed?: boolean;
+	urlError?: LinkUrlError | null;
 }>();
 
 const emit = defineEmits<{ save: []; cancel: []; unlink: [] }>();
@@ -40,7 +40,10 @@ const selection = defineModel<LinkSelection>('linkSelection', { required: true }
 						autofocus
 						@update:model-value="selection.url = $event || null"
 					/>
-					<VNotice v-if="urlDisallowed" type="danger">
+					<VNotice v-if="urlError === 'blocked'" type="danger">
+						{{ $t('interfaces.input-rich-text-html.link_protocol_blocked') }}
+					</VNotice>
+					<VNotice v-else-if="urlError === 'not_allowed'" type="danger">
 						{{ $t('interfaces.input-rich-text-html.link_protocol_not_allowed') }}
 					</VNotice>
 				</div>

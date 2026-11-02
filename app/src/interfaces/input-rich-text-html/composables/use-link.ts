@@ -2,6 +2,10 @@ import { isAllowedUri } from '@tiptap/extension-link';
 import { type Editor, getMarkRange } from '@tiptap/vue-3';
 import { computed, ComputedRef, Ref, ref } from 'vue';
 import { isImageLinkActive } from '../extensions/image';
+import { hasBlockedScheme } from '../extensions/link-scheme';
+
+/** Why the editor would strip the url: a script scheme, or a scheme that is not a Tiptap default nor in `linkProtocols`. */
+export type LinkUrlError = 'blocked' | 'not_allowed';
 
 export type LinkSelection = {
 	url: string | null;
@@ -16,8 +20,7 @@ type UsableLink = {
 	isEditingLink: Ref<boolean>;
 	/** The drawer targets a selected image (linked or not) instead of text. */
 	targetsImage: Ref<boolean>;
-	/** The url uses a scheme the editor would strip (not a Tiptap default nor in `linkProtocols`). */
-	linkUrlDisallowed: ComputedRef<boolean>;
+	linkUrlError: ComputedRef<LinkUrlError | null>;
 	isLinkSaveable: ComputedRef<boolean>;
 	openLinkDrawer: () => void;
 	closeLinkDrawer: () => void;
@@ -51,19 +54,20 @@ export function useLink(editor: Ref<Editor>, linkProtocols: string[] = []): Usab
 	// the link's rel when the drawer opened, so saveLink can preserve author tokens (nofollow, etc.)
 	const originalRel = ref('');
 
-	const linkUrlDisallowed = computed(() => {
+	const linkUrlError = computed<LinkUrlError | null>(() => {
 		const { url } = linkSelection.value;
-		return Boolean(url) && !isAllowedUri(url!, linkProtocols);
+		if (!url || isAllowedUri(url, linkProtocols)) return null;
+		return hasBlockedScheme(url) ? 'blocked' : 'not_allowed';
 	});
 
-	const isLinkSaveable = computed(() => Boolean(linkSelection.value.url) && !linkUrlDisallowed.value);
+	const isLinkSaveable = computed(() => Boolean(linkSelection.value.url) && !linkUrlError.value);
 
 	return {
 		linkDrawerOpen,
 		linkSelection,
 		isEditingLink,
 		targetsImage,
-		linkUrlDisallowed,
+		linkUrlError,
 		isLinkSaveable,
 		openLinkDrawer,
 		closeLinkDrawer,

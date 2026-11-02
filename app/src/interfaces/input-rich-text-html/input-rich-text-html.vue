@@ -296,7 +296,7 @@ const {
 	linkSelection,
 	isEditingLink,
 	targetsImage,
-	linkUrlDisallowed,
+	linkUrlError,
 	isLinkSaveable,
 	openLinkDrawer,
 	closeLinkDrawer,
@@ -459,7 +459,7 @@ onKeyStroke('Escape', () => {
 			v-model:link-selection="linkSelection"
 			:editing="isEditingLink"
 			:targets-image="targetsImage"
-			:url-disallowed="linkUrlDisallowed"
+			:url-error="linkUrlError"
 			:saveable="isLinkSaveable"
 			@save="saveLink"
 			@unlink="unlink"

@@ -336,7 +336,7 @@ export default defineInterface({
 				type: 'csv',
 				meta: {
 					width: 'full',
-					interface: 'tags',
+					interface: 'system-link-protocols',
 					note: '$t:interfaces.input-rich-text-html.link_protocols_note',
 					options: {
 						placeholder: '$t:interfaces.input-rich-text-html.link_protocols_placeholder',

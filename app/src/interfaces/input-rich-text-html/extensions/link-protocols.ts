@@ -1,9 +1,7 @@
 import { isAllowedUri, Link, type LinkOptions } from '@tiptap/extension-link';
 import type { AnyExtension } from '@tiptap/vue-3';
 import { CustomImage } from './image';
-
-const SCHEME = /^[a-z][a-z0-9+.-]*$/;
-const BLOCKED_SCHEMES = new Set(['javascript', 'vbscript', 'data']);
+import { checkLinkScheme } from './link-scheme';
 
 // Link's default HTMLAttributes force target/rel on every link, rewriting same-tab links on round-trip
 const LINK_OPTIONS: Partial<LinkOptions> = {
@@ -39,12 +37,11 @@ function parseProtocols(raw: unknown): string[] {
 	const protocols: string[] = [];
 
 	for (const entry of raw) {
-		if (typeof entry !== 'string') continue;
+		if (typeof entry !== 'string' || entry.trim() === '') continue;
 
-		const scheme = entry.trim().toLowerCase().replace(/:\/*$/, '');
-		if (scheme === '') continue;
+		const { scheme, problem } = checkLinkScheme(entry);
 
-		if (SCHEME.test(scheme) && !BLOCKED_SCHEMES.has(scheme)) protocols.push(scheme);
+		if (!problem) protocols.push(scheme);
 		// eslint-disable-next-line no-console
 		else console.warn('[wysiwyg] Ignored a linkProtocols entry that is not an allowed URL scheme:', entry);
 	}
