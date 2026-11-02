@@ -174,6 +174,37 @@ describe('FlowDrawer - update', () => {
 		expect(api.patch).toHaveBeenCalledWith('/flows/flow-1', { trigger: 'webhook', options: {} }, expect.anything());
 	});
 
+	test('shows and saves the status staged in the editor', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		api.patch.mockResolvedValue({ data: { data: { id: 'flow-2' } } });
+
+		const wrapper = mount(FlowDrawer, { global, props: { active: false, primaryKey: 'flow-2' } });
+
+		await wrapper.setProps({ status: 'active', active: true });
+
+		expect((wrapper.vm as any).values.status).toBe('active');
+
+		await (wrapper.vm as any).save();
+
+		expect(api.patch).toHaveBeenCalledWith('/flows/flow-2', { status: 'active' }, expect.anything());
+	});
+
+	test('discards unsaved edits when reopened', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+
+		const wrapper = mount(FlowDrawer, { global, props: { active: true, primaryKey: 'flow-1' } });
+
+		(wrapper.vm as any).values.status = 'inactive';
+		(wrapper.vm as any).values.trigger = 'webhook';
+		await nextTick();
+
+		await wrapper.setProps({ active: false });
+		await wrapper.setProps({ active: true });
+		await (wrapper.vm as any).save();
+
+		expect(api.patch).not.toHaveBeenCalled();
+	});
+
 	test('closes without saving when nothing changes', async () => {
 		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
 
