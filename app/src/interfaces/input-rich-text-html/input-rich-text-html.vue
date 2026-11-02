@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { RICHTEXT_EDITABLE_INJECT } from '@directus/constants';
 import type { SettingsStorageAssetPreset } from '@directus/types';
 import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
-import { computed, nextTick, ref, type Ref, toRefs, watch } from 'vue';
+import { computed, nextTick, provide, ref, type Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { comparisonSchema } from './composables/normalization-diff';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
 import { useMedia } from './composables/use-media';
@@ -17,11 +17,10 @@ import MediaDrawer from './drawers/media-drawer.vue';
 import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
 import PasteWarningDialog from './drawers/paste-warning-dialog.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
-import { mergeEditorExtensions } from './extensions';
-import { ComparisonDiff } from './extensions/comparison-diff';
-import { buildInstanceSchema } from './extensions/instance-schema';
+import { buildFieldSchema, fieldEditorExtensions } from './extensions';
 import { LinkShortcut } from './extensions/link-shortcut';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
+import ContributedBubbleMenu from './toolbar/menus/contributed-bubble-menu.vue';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
@@ -29,6 +28,7 @@ import VNotice from '@/components/v-notice.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
 import { parseGlobalMimeTypeAllowList, useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
+import type { StoredExtensionOptions } from '@/rich-text/register';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
@@ -45,6 +45,10 @@ const props = withDefaults(
 		folder?: string;
 		/** Legacy TinyMCE `customFormats` option (array or JSON string); see extensions/custom-formats.ts. */
 		customFormats?: unknown;
+		/** Field `extensions` option: ids of the registered richtext extensions this field opted into. */
+		extensions?: string[];
+		/** Field `extensionOptions` option: per-extension values, keyed by extension id. */
+		extensionOptions?: StoredExtensionOptions;
 		/** Extra URL schemes links may use (e.g. `myapp`), on top of Tiptap's defaults. */
 		linkProtocols?: string[] | null;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
@@ -82,13 +86,15 @@ if (
 	);
 }
 
-// built once at init: these options are design-time config, not reactive
-const {
-	extensions: instanceExtensions,
-	formats: customFormatList,
-	linkProtocols,
-	key: instanceSchemaKey,
-} = buildInstanceSchema(props);
+// built once: the schema is frozen when the editor is constructed, so a field options change needs a remount
+// In comparison mode ComparisonDiff joins the schema, so precomputed diff spans don't read as loss.
+const fieldSchema = buildFieldSchema({
+	customFormats: props.customFormats,
+	extensions: props.extensions,
+	extensionOptions: props.extensionOptions,
+	linkProtocols: props.linkProtocols,
+	comparisonMode: props.comparisonMode,
+});
 
 const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
 
@@ -98,11 +104,6 @@ const fontFamily = computed(() => {
 	return `var(--theme--fonts--${token}--font-family)`;
 });
 
-// in comparison mode ComparisonDiff joins the check, so precomputed diff spans don't read as loss
-const { extensions: normalizationExtensions, schemaKey: normalizationSchemaKey } = props.comparisonMode
-	? comparisonSchema(props)
-	: { extensions: instanceExtensions, schemaKey: instanceSchemaKey };
-
 const {
 	normalizationLocked,
 	normalizationWarningOpen,
@@ -111,7 +112,7 @@ const {
 	onLockedClick,
 	confirmNormalizationWarning,
 	cancelNormalizationWarning,
-} = useNormalizationWarning(value, normalizationExtensions, normalizationSchemaKey);
+} = useNormalizationWarning(value, fieldSchema.extensions, fieldSchema.key);
 
 // comparison runs it to pick the source fallback below; plain read-only display has nothing to act on
 if (!props.nonEditable || props.comparisonMode) checkValue();
@@ -125,6 +126,9 @@ watch(normalizationLocked, (locked) => emit('readonly', locked), { immediate: tr
 const isEditable = computed(
 	() => !props.disabled && !props.nonEditable && !props.comparisonMode && !normalizationLocked.value,
 );
+
+// `editor.isEditable` is not reactive, so node views inject this to follow a later lock
+provide(RICHTEXT_EDITABLE_INJECT, isEditable);
 
 const editorDir = computed(() => (props.direction === 'rtl' ? 'rtl' : 'ltr'));
 
@@ -151,16 +155,17 @@ function updateCount(instance: Editor) {
 const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
 const editor = useEditor({
-	// LinkShortcut is per-instance (its Mod-K handler opens this editor's drawer); ComparisonDiff only
-	// joins the schema in comparison mode, so normal editing keeps stripping diff spans
-	extensions: mergeEditorExtensions([
-		...instanceExtensions,
+	// LinkShortcut is per-instance (its Mod-K handler opens this editor's drawer), so it stays out of
+	// the shared field schema the normalization checks re-parse with
+	extensions: [
+		...fieldEditorExtensions(fieldSchema.extensions),
 		LinkShortcut.configure({ onTrigger: () => openLinkDrawer() }),
-		...(props.comparisonMode ? [ComparisonDiff] : []),
-	]),
+	],
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
+		// public styling hook: richtext extensions scope their CSS under it, so never rename it
+		attributes: { class: 'richtext-content' },
 		// media nodes handle dblclick themselves in their node view
 		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
 			if (node.type.name === 'image') {
@@ -213,7 +218,7 @@ const {
 	undoPaste,
 	takeRawPaste,
 	dismissPasteWarning,
-} = usePasteWarning(editor, instanceExtensions);
+} = usePasteWarning(editor, fieldSchema.extensions);
 
 function onEditorClick() {
 	if (props.disabled || props.nonEditable || props.comparisonMode) return;
@@ -297,7 +302,7 @@ const {
 	closeLinkDrawer,
 	saveLink,
 	unlink,
-} = useLink(editor as Ref<Editor>, linkProtocols);
+} = useLink(editor as Ref<Editor>, fieldSchema.linkProtocols);
 
 const {
 	mediaDrawerOpen,
@@ -321,7 +326,7 @@ const {
 	saveSourceCode,
 	confirmSaveSourceCode,
 	cancelNormalize,
-} = useSourceCode(editor as Ref<Editor>, instanceExtensions);
+} = useSourceCode(editor as Ref<Editor>, fieldSchema.extensions);
 
 // pause the surrounding view's focus trap while a drawer is open so its inputs stay reachable
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
@@ -389,7 +394,8 @@ onKeyStroke('Escape', () => {
 			:editor="editor"
 			:toolbar="toolbar"
 			:font="font"
-			:custom-formats="customFormatList"
+			:custom-formats="fieldSchema.formats"
+			:contributed-buttons="fieldSchema.buttons"
 			:disabled="disabled || normalizationLocked"
 			:fullscreen="fullscreen"
 			:visualaid="visualaid"
@@ -428,7 +434,13 @@ onKeyStroke('Escape', () => {
 			{{ softLength - count }}
 		</span>
 
-		<TableBubbleMenu v-if="!nonEditable && !comparisonMode && !normalizationLocked" :editor="editor" />
+		<!-- `isEditable`, not `shouldShow`: a lock flip changes no selection, so an open menu would stay usable -->
+		<TableBubbleMenu v-if="isEditable" :editor="editor" />
+		<ContributedBubbleMenu
+			v-if="fieldSchema.bubbleMenus.length > 0 && isEditable"
+			:editor="editor"
+			:menus="fieldSchema.bubbleMenus"
+		/>
 
 		<ImageDrawer
 			v-model="imageDrawerOpen"
@@ -570,7 +582,8 @@ onKeyStroke('Escape', () => {
 }
 
 /* Content styles, scoped to the ProseMirror container so they neither leak into the app nor inherit app styles. */
-.wysiwyg :deep(.ProseMirror) {
+/* :where() keeps these at `.ProseMirror p` specificity, so extension rules scoped under .richtext-content can override them. */
+:where(.wysiwyg) :deep(.ProseMirror) {
 	min-block-size: var(--input-height-tall);
 	padding: 1.125rem;
 	outline: none;
@@ -808,8 +821,10 @@ onKeyStroke('Escape', () => {
 		margin-block-start: 0.1875rem;
 		text-align: center;
 	}
+}
 
-	// content versioning / revision diff highlights (comparison mode)
+/* Outside the :where() block so extension styles cannot hide the diff highlights. */
+.wysiwyg :deep(.ProseMirror) {
 	.comparison-diff--added {
 		color: var(--theme--success);
 		background-color: var(--theme--success-background);

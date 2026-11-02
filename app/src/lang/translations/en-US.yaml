@@ -139,6 +139,7 @@ extension_layout: Layout
 extension_module: Module
 extension_panel: Panel
 extension_theme: Theme
+extension_richtext: Rich Text
 extension_hook: Hook
 extension_endpoint: Endpoint
 extension_operation: Operation
@@ -149,6 +150,7 @@ extension_layouts: Layouts
 extension_modules: Modules
 extension_panels: Panels
 extension_themes: Themes
+extension_richtexts: Rich Text
 extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operations
@@ -744,6 +746,8 @@ download_file: Download File
 open_file_in_tab: Open File in New Tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
+exporting_folder_not_selectable: The file will be saved to the project's default folder
+exporting_folder_root: The file will be saved to the root of the File Library
 exporting_all_items_in_collection: Exporting all items ({total}) within {collection}.
 exporting_limited_items_in_collection: '{count} out of {total} items within {collection} will be exported.'
 exporting_no_items_to_export: No items to export. Adjust the exporting configuration and/or add items to the collection.
@@ -751,6 +755,12 @@ exporting_download_hint: Once the {format} file is created, it will be downloade
 exporting_library_hint: Once the {format} file is created, it will be saved to the File Library.
 exporting_library_hint_forced:
   This export must be processed in batches. Once completed, the {format} file will be saved to the File Library.
+exporting_too_large_to_download: >-
+  This export is too large to download directly and must be saved to the File Library, which you don't have permission
+  to do. Lower the limit or adjust the filter, or contact an administrator.
+exporting_library_access_warning: >-
+  Anyone with read access to files, including unauthenticated users if the Public policy allows it, will be able to view
+  and download the exported file. Refer to the {docs} for more information.
 collection_key: Collection Key
 name: Name
 primary_key_field: Primary Key Field
@@ -1671,6 +1681,8 @@ settings_ai: AI
 model_context_protocol: Model Context Protocol
 ai_assistant: AI Assistant
 ai_disabled_by_env: AI Assistant features have been disabled via environment variable.
+ai_allowed_models_default_note:
+  Using the recommended models, which update with new Directus releases. Changing this list saves your own selection.
 mcp_disabled_by_env: MCP features have been disabled via environment variable.
 mcp_oauth_disabled_by_env: MCP OAuth is disabled by the MCP_OAUTH_ENABLED environment variable.
 mcp_oauth_dcr_disabled_by_env:
@@ -1776,21 +1788,28 @@ license:
       the Core plan. Check your license key in Settings > License.
     invalid_key:
       Your license key is no longer valid. It remains active until {date}, then your project moves to the Core plan.
-      Check your key in Settings > License or add a new one.
+      Check your key in Settings > License or add a new one.
     activation_limit:
       Your license has reached its activation limit and could not be activated for this project. It remains active until
       {date}, then your project moves to the Core plan. Deactivate this license on a project you no longer use before
-      retrying to activate on this project.
+      retrying to activate it for this project.
     binding_mismatch:
-      Your license is linked to a different project or URL and it's active status could not be refreshed. It remains
+      Your license is linked to a different project or URL and its active status could not be refreshed. It remains
       active until {date}, then your project moves to the Core plan. Check that your project URL matches the URL where
       the key was activated.
     unavailable:
-      We couldn't reach the licensing service to refreshe your license's status. We'll keep trying automatically. Your
-      license remains active until {date}, then your project moves to the Core plan if it's active cannot be refreshed.
+      We couldn't reach the licensing service to refresh your license's status. We'll keep trying periodically. Your
+      license remains active until {date}, then your project moves to the Core plan if its active status cannot be
+      refreshed.
   pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
     grace_period_body: Manage your license key in Settings > License.
+    warning_title:
+      generic: 'License Check Failed ({days}d left)'
+      invalid_key: 'Invalid License Key ({days}d left)'
+      activation_limit: 'Activation Limit Reached ({days}d left)'
+      binding_mismatch: 'License URL Mismatch ({days}d left)'
+      unavailable: 'License Service Unreachable ({days}d left)'
   unlicensed_pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
 no_upscale: Don't upscale images
@@ -1974,6 +1993,9 @@ fields:
     auth_login_attempts: Auth Login Attempts
     files_and_thumbnails: Files & Storage
     storage_default_folder: Default Folder
+    default_exports_folder: Default Exports Folder
+    default_exports_folder_note:
+      Default folder for exports saved to the File Library without a folder specified. Falls back to the Default Folder.
     storage_asset_presets: Transformation Presets
     storage_asset_transform: Allowed Transformations
     overrides: App Overrides
@@ -2879,6 +2901,11 @@ interfaces:
     wysiwyg: WYSIWYG
     description: A rich-text editor writing HTML content
     toolbar: Toolbar
+    extensions: Extensions
+    extensions_placeholder: Select extensions...
+    extensions_note: Extensions this field can use. Markup from unselected extensions is removed on save.
+    extension_options: Extension Options
+    extension_options_for: '{extension} Options'
     custom_formats: Custom Formats
     custom_formats_note:
       A list of custom formats. Each entry needs a `title` plus either an `inline` tag, a `block` tag, a `selector` of
