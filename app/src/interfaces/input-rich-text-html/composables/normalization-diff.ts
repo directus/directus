@@ -6,9 +6,7 @@ import { buildInstanceSchema, type InstanceSchemaOptions } from '../extensions/i
 import { decodePageBreaks, encodePageBreaks } from '../extensions/page-break';
 import { formatHtml } from './format-html';
 
-// Re-parse through the schema exactly as saveSourceCode will, so the diff compares against what
-// actually gets stored. `extraExtensions` carries the field's extensions (buildInstanceSchema) the live
-// editor was built with — without them their markup reads as dropped and falsely trips the warning.
+// Re-parse as saveSourceCode will; without the field's own extensions their markup reads as dropped
 export function roundTrip(html: string, extraExtensions: AnyExtension[] = []): string {
 	const editor = new Editor({ extensions: mergeEditorExtensions(extraExtensions), content: html });
 	const out = editor.getHTML();

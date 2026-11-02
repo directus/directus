@@ -2,7 +2,7 @@ import { Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test } from 'vitest';
 import { shallowRef } from 'vue';
 import { mergeEditorExtensions } from '../extensions';
-import { buildLinkProtocols } from '../extensions/link-protocols';
+import { buildLinkProtocolSchema } from '../extensions/link-protocols';
 import { selectNode } from '../test-utils';
 import { useLink } from './use-link';
 
@@ -13,7 +13,7 @@ afterEach(() => {
 });
 
 function setup(content = '<p></p>', linkProtocols: string[] = []) {
-	const { extensions, protocols } = buildLinkProtocols(linkProtocols);
+	const { extensions, protocols } = buildLinkProtocolSchema(linkProtocols);
 	const editor = shallowRef(new Editor({ extensions: mergeEditorExtensions(extensions), content }));
 	editors.push(editor.value);
 	const usable = useLink(editor, protocols);

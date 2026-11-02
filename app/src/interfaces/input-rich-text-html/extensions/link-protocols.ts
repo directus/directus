@@ -14,13 +14,17 @@ const LINK_OPTIONS: Partial<LinkOptions> = {
 
 export const BaseLink = Link.configure(LINK_OPTIONS);
 
-/** Extra URL schemes for text and image links, on top of Tiptap's defaults (http, https, mailto, ...). */
-export function buildLinkProtocols(raw: unknown): { extensions: AnyExtension[]; protocols: string[]; key: string } {
+/** Link and image extensions that also allow the field's extra URL schemes, on top of Tiptap's defaults. */
+export function buildLinkProtocolSchema(raw: unknown): {
+	extensions: AnyExtension[];
+	protocols: string[];
+	key: string;
+} {
 	const protocols = parseProtocols(raw);
 	if (protocols.length === 0) return { extensions: [], protocols: [], key: '' };
 
 	// not passed as `protocols`, which would register them with linkify for autolink
-	const link = Link.configure({ ...LINK_OPTIONS, isAllowedUri: (url) => isLinkAllowed(url, protocols) });
+	const link = Link.configure({ ...LINK_OPTIONS, isAllowedUri: (url) => Boolean(isAllowedUri(url, protocols)) });
 
 	return {
 		extensions: [link, CustomImage.configure({ linkProtocols: protocols })],
@@ -29,18 +33,12 @@ export function buildLinkProtocols(raw: unknown): { extensions: AnyExtension[]; 
 	};
 }
 
-export function isLinkAllowed(url: string, protocols: string[]): boolean {
-	return Boolean(isAllowedUri(url, protocols));
-}
-
-/** The `csv` option is stored as an array, but a value set through the API may be a comma-separated string. */
 function parseProtocols(raw: unknown): string[] {
-	const entries: unknown[] = typeof raw === 'string' ? raw.split(',') : [];
-	if (Array.isArray(raw)) entries.push(...raw);
+	if (!Array.isArray(raw)) return [];
 
 	const protocols: string[] = [];
 
-	for (const entry of entries) {
+	for (const entry of raw) {
 		if (typeof entry !== 'string') continue;
 
 		const scheme = entry.trim().toLowerCase().replace(/:\/*$/, '');

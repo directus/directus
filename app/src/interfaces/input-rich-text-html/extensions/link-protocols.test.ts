@@ -1,7 +1,7 @@
 import { type AnyExtension, Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { roundTrip } from '../composables/normalization-diff';
-import { buildLinkProtocols } from './link-protocols';
+import { buildLinkProtocolSchema } from './link-protocols';
 import { mergeEditorExtensions } from '.';
 
 const TEXT_LINK = '<p><a href="myapp://some/route">open</a></p>';
@@ -22,47 +22,47 @@ async function mounted(extensions: AnyExtension[]): Promise<Editor> {
 	return editor;
 }
 
-describe('buildLinkProtocols', () => {
+describe('buildLinkProtocolSchema', () => {
 	test('drops a text link with a custom scheme that is not allowed', () => {
 		expect(roundTrip(TEXT_LINK)).toBe('<p>open</p>');
 	});
 
 	test('keeps a text link with an allowed custom scheme', () => {
-		const { extensions } = buildLinkProtocols(['myapp']);
+		const { extensions } = buildLinkProtocolSchema(['myapp']);
 		expect(roundTrip(TEXT_LINK, extensions)).toBe(TEXT_LINK);
 	});
 
 	test('keeps an image link with an allowed custom scheme', () => {
-		const { extensions } = buildLinkProtocols(['myapp']);
+		const { extensions } = buildLinkProtocolSchema(['myapp']);
 		expect(roundTrip(IMAGE_LINK, extensions)).toBe(IMAGE_LINK);
 	});
 
 	test('still keeps links with the default schemes', () => {
-		const { extensions } = buildLinkProtocols(['myapp']);
+		const { extensions } = buildLinkProtocolSchema(['myapp']);
 		const html = '<p><a href="https://directus.io">a</a> <a href="mailto:a@b.c">b</a></p>';
 		expect(roundTrip(html, extensions)).toBe(html);
 	});
 
 	test('accepts schemes entered with a trailing colon or slashes and in any case', () => {
-		const { extensions } = buildLinkProtocols([' MyApp:// ', 'other:']);
+		const { extensions } = buildLinkProtocolSchema([' MyApp:// ', 'other:']);
 		const html = '<p><a href="myapp://x">a</a> <a href="other:y">b</a></p>';
 		expect(roundTrip(html, extensions)).toBe(html);
 	});
 
 	test('keys an empty or missing list as the base schema', () => {
 		const empty = { extensions: [], protocols: [], key: '' };
-		expect(buildLinkProtocols([])).toEqual(empty);
-		expect(buildLinkProtocols(null)).toEqual(empty);
-		expect(buildLinkProtocols(['', '  '])).toEqual(empty);
+		expect(buildLinkProtocolSchema([])).toEqual(empty);
+		expect(buildLinkProtocolSchema(null)).toEqual(empty);
+		expect(buildLinkProtocolSchema(['', '  '])).toEqual(empty);
 	});
 
 	test('keys two lists apart and the same list in any order alike', () => {
-		expect(buildLinkProtocols(['myapp']).key).not.toBe(buildLinkProtocols(['other']).key);
-		expect(buildLinkProtocols(['a', 'b']).key).toBe(buildLinkProtocols(['b', 'a']).key);
+		expect(buildLinkProtocolSchema(['myapp']).key).not.toBe(buildLinkProtocolSchema(['other']).key);
+		expect(buildLinkProtocolSchema(['a', 'b']).key).toBe(buildLinkProtocolSchema(['b', 'a']).key);
 	});
 
 	test('mounts an editor with dotted and plus schemes and keeps their links', async () => {
-		const { extensions } = buildLinkProtocols(['com.example.app', 'web+app']);
+		const { extensions } = buildLinkProtocolSchema(['com.example.app', 'web+app']);
 		const editor = await mounted(extensions);
 		const html = '<p><a href="com.example.app://x">a</a> <a href="web+app:y">b</a></p>';
 
@@ -72,7 +72,7 @@ describe('buildLinkProtocols', () => {
 
 	test('never allows script schemes', () => {
 		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-		const { extensions, protocols } = buildLinkProtocols(['JavaScript:', 'vbscript', 'data', 'myapp']);
+		const { extensions, protocols } = buildLinkProtocolSchema(['JavaScript:', 'vbscript', 'data', 'myapp']);
 
 		expect(protocols).toEqual(['myapp']);
 		expect(roundTrip('<p><a href="javascript:alert(1)">open</a></p>', extensions)).toBe('<p>open</p>');
@@ -81,14 +81,10 @@ describe('buildLinkProtocols', () => {
 		warn.mockRestore();
 	});
 
-	test('accepts the option as a comma-separated string', () => {
-		expect(buildLinkProtocols('myapp, other').protocols).toEqual(['myapp', 'other']);
-	});
-
 	test('warns about entries that are not URL schemes', () => {
 		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-		expect(buildLinkProtocols(['myapp', '1bad', 'no spaces']).protocols).toEqual(['myapp']);
+		expect(buildLinkProtocolSchema(['myapp', '1bad', 'no spaces']).protocols).toEqual(['myapp']);
 		expect(warn).toHaveBeenCalledTimes(2);
 
 		warn.mockRestore();

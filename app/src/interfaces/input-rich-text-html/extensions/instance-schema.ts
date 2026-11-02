@@ -1,6 +1,6 @@
 import type { AnyExtension } from '@tiptap/vue-3';
 import { buildCustomFormats, type CustomFormat } from './custom-formats';
-import { buildLinkProtocols } from './link-protocols';
+import { buildLinkProtocolSchema } from './link-protocols';
 
 export type InstanceSchemaOptions = { customFormats?: unknown; linkProtocols?: unknown };
 
@@ -12,7 +12,7 @@ export function buildInstanceSchema(options: InstanceSchemaOptions): {
 	key: string;
 } {
 	const formats = buildCustomFormats(options.customFormats);
-	const links = buildLinkProtocols(options.linkProtocols);
+	const links = buildLinkProtocolSchema(options.linkProtocols);
 
 	return {
 		extensions: [...formats.extensions, ...links.extensions],

@@ -1,7 +1,7 @@
+import { isAllowedUri } from '@tiptap/extension-link';
 import { type Editor, getMarkRange } from '@tiptap/vue-3';
 import { computed, ComputedRef, Ref, ref } from 'vue';
 import { isImageLinkActive } from '../extensions/image';
-import { isLinkAllowed } from '../extensions/link-protocols';
 
 export type LinkSelection = {
 	url: string | null;
@@ -53,7 +53,7 @@ export function useLink(editor: Ref<Editor>, linkProtocols: string[] = []): Usab
 
 	const linkUrlDisallowed = computed(() => {
 		const { url } = linkSelection.value;
-		return Boolean(url) && !isLinkAllowed(url!, linkProtocols);
+		return Boolean(url) && !isAllowedUri(url!, linkProtocols);
 	});
 
 	const isLinkSaveable = computed(() => Boolean(linkSelection.value.url) && !linkUrlDisallowed.value);

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { buildCustomFormats } from '../extensions/custom-formats';
-import { buildLinkProtocols } from '../extensions/link-protocols';
+import { buildLinkProtocolSchema } from '../extensions/link-protocols';
 import { comparisonSchema, computeNormalizationDiff, computeValueNormalizationDiff } from './normalization-diff';
 
 function removedText(code: string): string {
@@ -115,8 +115,8 @@ describe('computeValueNormalizationDiff', () => {
 	});
 
 	test('keeps the verdicts of two link-protocol schemas apart', () => {
-		const myapp = buildLinkProtocols(['myapp']);
-		const other = buildLinkProtocols(['other']);
+		const myapp = buildLinkProtocolSchema(['myapp']);
+		const other = buildLinkProtocolSchema(['other']);
 		const value = '<p><a href="myapp://some/route">open</a></p>';
 
 		expect(computeValueNormalizationDiff(value, myapp.extensions, myapp.key)).toBeNull();

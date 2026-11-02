@@ -25,7 +25,7 @@ export const editorExtensions = [
 	StarterKit.configure({
 		// replaced by DropCursor, which draws a vertical indicator between same-row inline-block nodes
 		dropcursor: false,
-		// standalone so buildLinkProtocols can swap it for a per-field configured Link
+		// standalone so buildLinkProtocolSchema can swap it for a per-field configured Link
 		link: false,
 	}),
 	BaseLink,
