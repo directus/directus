@@ -123,8 +123,8 @@ export const DEFAULTS = {
 	MARKETPLACE_TRUST: 'sandbox',
 
 	TELEMETRY: true,
-	TELEMETRY_URL: `https://telemetry.${DIRECTUS_DOMAIN}`,
-	COMPLIANCE_URL: `https://telemetry.${DIRECTUS_DOMAIN}`,
+	TELEMETRY_URL: `https://telemetry.${DIRECTUS_DOMAIN}` as string,
+	COMPLIANCE_URL: `https://telemetry.${DIRECTUS_DOMAIN}` as string,
 
 	ASSETS_CACHE_TTL: '30d',
 	ASSETS_CACHE_REVALIDATE: false,
