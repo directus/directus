@@ -77,12 +77,8 @@ describe('planVersionTables', () => {
 			['mirror', 'name'],
 		]);
 
-		expect(shadow!.foreignKeys).toContainEqual({
-			column: 'id',
-			foreign_key_table: 'authors',
-			foreign_key_column: 'id',
-			on_delete: 'SET NULL',
-		});
+		// Archived versions keep the id of their removed live item, so the primary key isn't constrained
+		expect(shadow!.foreignKeys.map((foreignKey) => foreignKey.column)).not.toContain('id');
 	});
 
 	test('keeps relational constraints and references versions of versioned related collections', () => {

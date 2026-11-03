@@ -1,3 +1,5 @@
+import type { SchemaOverview } from '@directus/types';
+
 // Prefixes are still TBD in the spec, keep every naming decision in this file so they can be changed in one place
 export const SHADOW_TABLE_PREFIX = 'directus_shadow_';
 export const LINK_TABLE_PREFIX = 'directus_link_';
@@ -28,6 +30,13 @@ export function getLinkTableName(collection: string) {
  */
 export function getVersionReferenceField(field: string) {
 	return `${VERSION_REFERENCE_PREFIX}${field}`;
+}
+
+/**
+ * A collection is versioned as long as its shadow table exists, which keeps this in sync with the database
+ */
+export function isVersionedCollection(schema: SchemaOverview, collection: string) {
+	return getShadowTableName(collection) in schema.collections;
 }
 
 export function isVersionTable(table: string) {

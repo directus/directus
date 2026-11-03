@@ -115,17 +115,9 @@ function planShadowTable(
 		reserveName(field.field, field.field);
 		shadow.columns.push({ kind: 'mirror', name: field.field, source });
 
-		// The live primary key becomes a reference to the live item, which is null until the version is published
-		if (field.field === primary) {
-			shadow.foreignKeys.push({
-				column: field.field,
-				foreign_key_table: collection,
-				foreign_key_column: primary,
-				on_delete: 'SET NULL',
-			});
-
-			continue;
-		}
+		// The live primary key references the live item and is null until the version is published. It has no foreign
+		// key, so archived versions keep the id of their item after the live item is removed
+		if (field.field === primary) continue;
 
 		const relation = relations.find((relation) => relation.collection === collection && relation.field === field.field);
 

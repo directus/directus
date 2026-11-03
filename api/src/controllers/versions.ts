@@ -1,4 +1,4 @@
-import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
 import { assign } from 'lodash-es';
@@ -9,6 +9,7 @@ import { MetaService } from '../services/meta.js';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { pickFields, VersionedItemsService } from '../versioning/service.js';
 
 const router = express.Router();
 
@@ -270,6 +271,147 @@ router.post(
 		});
 
 		res.locals['payload'] = { data: updatedItemKey || null };
+
+		return next();
+	}),
+	respond,
+);
+
+/**
+ * Versions stored in the shadow table of a versioned collection
+ */
+
+function getVersionId(req: express.Request) {
+	const versionId = Number(req.params['id']);
+
+	if (!Number.isInteger(versionId)) {
+		throw new InvalidPayloadError({ reason: `"${req.params['id']}" isn't a valid version id` });
+	}
+
+	return versionId;
+}
+
+async function respondWithVersion(
+	service: VersionedItemsService,
+	versionId: number,
+	req: express.Request,
+	res: express.Response,
+) {
+	try {
+		res.locals['payload'] = { data: await service.readOne(versionId, req.sanitizedQuery) };
+	} catch (error: any) {
+		if (!isDirectusError(error, ErrorCode.Forbidden)) throw error;
+	}
+}
+
+router.post(
+	'/:collection',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const versionId = await service.createOne(req.body);
+
+		await respondWithVersion(service, versionId, req, res);
+
+		return next();
+	}),
+	respond,
+);
+
+router.patch(
+	'/:collection/:id',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const versionId = await service.updateOne(getVersionId(req), req.body);
+
+		await respondWithVersion(service, versionId, req, res);
+
+		return next();
+	}),
+	respond,
+);
+
+router.delete(
+	'/:collection/:id',
+	asyncHandler(async (req, _res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.deleteOne(getVersionId(req));
+
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/:collection/:id/publish',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const versionId = getVersionId(req);
+		const deleteVersion = req.body?.['delete_references'] === true;
+
+		const liveKey = await service.publish(versionId, { deleteVersion });
+
+		if (deleteVersion) {
+			const { primary } = req.schema.collections[service.collection]!;
+
+			res.locals['payload'] = {
+				data: pickFields(
+					{ [primary]: liveKey, directus_version: { id: null, type: 'published' } },
+					req.sanitizedQuery.fields,
+				),
+			};
+		} else {
+			await respondWithVersion(service, versionId, req, res);
+		}
+
+		return next();
+	}),
+	respond,
+);
+
+router.delete(
+	'/:collection/:id/publish',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const versionId = await service.unpublish(getVersionId(req));
+
+		await respondWithVersion(service, versionId, req, res);
+
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/:collection/:id/archive',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const versionId = await service.archive(getVersionId(req));
+
+		await respondWithVersion(service, versionId, req, res);
 
 		return next();
 	}),

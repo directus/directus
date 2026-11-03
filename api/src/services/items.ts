@@ -38,6 +38,7 @@ import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { captureSeatCount, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { handleVersion } from '../utils/versioning/handle-version.js';
+import { getShadowTableName } from '../versioning/constants.js';
 import { PayloadService } from './payload.js';
 
 export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
@@ -1154,6 +1155,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		await transaction(this.knex, async (trx) => {
 			const previousSeatCount = await captureSeatCount(trx, opts.userIntegrityCheckFlags);
+
+			// Versions of an item are deleted along with it
+			const shadowTable = getShadowTableName(this.collection);
+
+			if (shadowTable in this.schema.collections) {
+				await trx(shadowTable).whereIn(primaryKeyField, keysAfterHooks).delete();
+			}
 
 			await trx(this.collection).whereIn(primaryKeyField, keysAfterHooks).delete();
 
