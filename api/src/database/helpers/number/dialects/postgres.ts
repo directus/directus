@@ -1,6 +1,6 @@
 import type { NumericValue } from '@directus/types';
-import { NumberDatabaseHelper, type NumberInfo } from '../types.js';
-import { numberInRange } from '../utils/number-in-range.js';
+import { type NumberInfo, numberInRange } from '@directus/utils';
+import { NumberDatabaseHelper } from '../types.js';
 
 export class NumberHelperPostgres extends NumberDatabaseHelper {
 	override isNumberValid(value: NumericValue, info: NumberInfo): boolean {
