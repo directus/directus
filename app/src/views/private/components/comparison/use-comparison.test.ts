@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mergeAttributes, Node } from '@tiptap/core';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
+import { registerRichTexts } from '@/rich-text/register';
 import { useComparison } from '@/views/private/components/comparison/use-comparison';
 
 // Mock API
@@ -281,6 +283,65 @@ describe('useComparison', () => {
 
 			expect(comparisonData.value?.displayBase?.body).toBe(withEmbed);
 			expect(comparisonData.value?.displayIncoming?.body).toContain('<iframe src="https://example.com"></iframe>');
+		});
+
+		describe('with a contributed richtext node', () => {
+			const Callout = Node.create({
+				name: 'callout',
+				group: 'block',
+				content: 'block+',
+				parseHTML: () => [{ tag: 'div[data-callout]' }],
+				renderHTML: ({ HTMLAttributes }) => ['div', mergeAttributes(HTMLAttributes, { 'data-callout': '' }), 0],
+			});
+
+			function withBodyExtensions(extensions: string[]) {
+				mockFieldsStore.getFieldsForCollection.mockImplementation(() =>
+					getFieldData().map((field) =>
+						field.field === 'body' ? { ...field, meta: { ...field.meta, options: { extensions } } } : field,
+					),
+				);
+			}
+
+			beforeEach(() => registerRichTexts([{ id: 'test-callout', name: 'Callout', extensions: [Callout] }]));
+			afterEach(() => registerRichTexts([]));
+
+			it('should diff-mark inside the node when the field enabled the extension', async () => {
+				withBodyExtensions(['test-callout']);
+
+				const testCase = getRichTextTestCase(
+					'<div data-callout=""><p>hello there</p></div>',
+					'<div data-callout=""><p>hello world</p></div>',
+				);
+
+				mockApi.get.mockImplementation(testCase.mockApiGet);
+
+				const { comparisonData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+				await fetchComparisonData();
+
+				expect(comparisonData.value?.displayBase?.body).toMatch(
+					/^<div data-callout=""><p>hello <span class="comparison-diff--removed">there<\/span><\/p><\/div>$/,
+				);
+
+				expect(comparisonData.value?.displayIncoming?.body).toMatch(
+					/^<div data-callout=""><p>hello <span class="comparison-diff--added">world<\/span><\/p><\/div>$/,
+				);
+			});
+
+			// without the node in its schema the editor would drop it, so the value is left unmarked
+			it('should not diff-mark the node when the field did not enable the extension', async () => {
+				withBodyExtensions([]);
+
+				const base = '<div data-callout=""><p>hello there</p></div>';
+				const testCase = getRichTextTestCase(base, '<div data-callout=""><p>hello world</p></div>');
+				mockApi.get.mockImplementation(testCase.mockApiGet);
+
+				const { comparisonData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+				await fetchComparisonData();
+
+				expect(comparisonData.value?.displayBase?.body).toBe(base);
+			});
 		});
 
 		it('should list the field as different when only the unsupported markup was removed', async () => {
