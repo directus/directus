@@ -43,6 +43,7 @@ import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
+import { syncVersionTables } from '../versioning/sync-version-tables.js';
 import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
@@ -427,6 +428,8 @@ export class FieldsService {
 								attemptConcurrentIndex,
 							});
 						});
+
+						await syncVersionTables(trx);
 					}
 				}
 
@@ -571,6 +574,8 @@ export class FieldsService {
 									attemptConcurrentIndex,
 								});
 							});
+
+							await syncVersionTables(trx);
 						});
 
 						// concurrent index creation cannot be done inside the transaction
@@ -776,6 +781,8 @@ export class FieldsService {
 					await trx.schema.table(collection, (table) => {
 						table.dropColumn(field);
 					});
+
+					await syncVersionTables(trx);
 				}
 
 				const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(

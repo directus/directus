@@ -32,6 +32,8 @@ import type { Collection } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
+import { isVersionTable } from '../versioning/constants.js';
+import { syncVersionTables } from '../versioning/sync-version-tables.js';
 import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
@@ -97,6 +99,7 @@ export class CollectionsService {
 		payload.collection = await this.helpers.schema.parseCollectionName(payload.collection);
 
 		const nestedActionEvents: ActionEventParams[] = [];
+		const runPostColumnChange = payload.meta?.versioning ? await this.helpers.schema.preColumnChange() : false;
 
 		try {
 			const existingCollections: string[] = [
@@ -237,6 +240,10 @@ export class CollectionsService {
 					);
 				}
 
+				if (payload.meta?.versioning) {
+					await syncVersionTables(trx);
+				}
+
 				return payload.collection;
 			});
 
@@ -255,6 +262,10 @@ export class CollectionsService {
 
 			return payload.collection;
 		} finally {
+			if (runPostColumnChange) {
+				await this.helpers.schema.postColumnChange();
+			}
+
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
@@ -339,7 +350,8 @@ export class CollectionsService {
 			accountability: this.accountability,
 		});
 
-		let tablesInDatabase = await this.schemaInspector.tableInfo();
+		// Shadow and link tables are managed by versioning and shouldn't be exposed as collections
+		let tablesInDatabase = (await this.schemaInspector.tableInfo()).filter((table) => !isVersionTable(table.name));
 
 		let meta = (await collectionsItemsService.readByQuery({
 			limit: -1,
@@ -464,14 +476,9 @@ export class CollectionsService {
 		}
 
 		const nestedActionEvents: ActionEventParams[] = [];
+		let runPostColumnChange = false;
 
 		try {
-			const collectionsItemsService = new ItemsService('directus_collections', {
-				knex: this.knex,
-				accountability: this.accountability,
-				schema: this.schema,
-			});
-
 			if (!payload.meta) {
 				return collectionKey;
 			}
@@ -486,25 +493,48 @@ export class CollectionsService {
 				.where({ collection: collectionKey })
 				.first());
 
-			if (exists) {
-				await collectionsItemsService.updateOne(collectionKey, payload.meta, {
-					...opts,
-					bypassEmitAction: (params) =>
-						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+			// Toggling versioning creates / drops the shadow and link tables
+			const versioningChanged = 'versioning' in payload.meta;
+
+			if (versioningChanged) {
+				runPostColumnChange = await this.helpers.schema.preColumnChange();
+			}
+
+			await transaction(this.knex, async (trx) => {
+				const collectionsItemsService = new ItemsService('directus_collections', {
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
 				});
-			} else {
-				await collectionsItemsService.createOne(
-					{ ...payload.meta, collection: collectionKey },
-					{
+
+				if (exists) {
+					await collectionsItemsService.updateOne(collectionKey, payload.meta!, {
 						...opts,
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-					},
-				);
-			}
+					});
+				} else {
+					await collectionsItemsService.createOne(
+						{ ...payload.meta, collection: collectionKey },
+						{
+							...opts,
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+						},
+					);
+				}
+
+				if (versioningChanged) {
+					await syncVersionTables(trx);
+				}
+			});
 
 			return collectionKey;
 		} finally {
+			if (runPostColumnChange) {
+				await this.helpers.schema.postColumnChange();
+			}
+
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
@@ -645,6 +675,7 @@ export class CollectionsService {
 			throw new ForbiddenError();
 		}
 
+		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
@@ -658,6 +689,9 @@ export class CollectionsService {
 
 			await transaction(this.knex, async (trx) => {
 				if (collectionToBeDeleted!.schema) {
+					// Version tables reference the live table, so they need to be cleaned up before it can be dropped
+					await syncVersionTables(trx, { exclude: [collectionKey] });
+
 					await trx.schema.dropTable(collectionKey);
 				}
 
@@ -758,6 +792,9 @@ export class CollectionsService {
 					}
 
 					const relations = this.schema.relations.filter((relation) => {
+						// Version tables have already been cleaned up above
+						if (isVersionTable(relation.collection)) return false;
+
 						return relation.collection === collectionKey || relation.related_collection === collectionKey;
 					});
 
@@ -801,6 +838,10 @@ export class CollectionsService {
 
 			return collectionKey;
 		} finally {
+			if (runPostColumnChange) {
+				await this.helpers.schema.postColumnChange();
+			}
+
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
