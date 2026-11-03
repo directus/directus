@@ -27,6 +27,7 @@ overrides:
   zod: 4.6.7
   happy-dom: 21.0.4
   '@azure/identity>@azure/msal-node': 7.1.1
+  '@ai-sdk/devtools>@hono/node-server': 2.1.6
 
 allowBuilds:
   '@fortawesome/fontawesome-common-types': true
