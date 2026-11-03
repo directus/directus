@@ -7,6 +7,7 @@ import type {
 	Accountability,
 	ActionEventParams,
 	Item as AnyItem,
+	Filter,
 	MutationOptions,
 	MutationTracker,
 	PermissionsAction,
@@ -38,7 +39,8 @@ import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { captureSeatCount, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { handleVersion } from '../utils/versioning/handle-version.js';
-import { getShadowTableName } from '../versioning/constants.js';
+import { getShadowTableName, isVersionedCollection } from '../versioning/constants.js';
+import { isVersionedQuery, readVersionedItems } from '../versioning/read.js';
 import { PayloadService } from './payload.js';
 
 export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
@@ -516,6 +518,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
 		await this.assertCollectionActive('read');
 
+		// `version=true` on collections with shadow tables reads live items and versions together
+		if (isVersionedQuery(query) && isVersionedCollection(this.schema, this.collection)) {
+			return (await readVersionedItems(this.collection, query, {
+				knex: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			})) as Item[];
+		}
+
 		if (query.version && !isPublishedVersionKey(query.version)) {
 			return (await handleVersion(this, opts?.key ?? null, query, opts)) as Item[];
 		}
@@ -611,6 +622,24 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 
 		validateKeys(this.schema, this.collection, primaryKeyField, key);
+
+		// With versions, a key refers to the live item, or its latest archived version once the item is gone. Never drafts
+		if (isVersionedQuery(query) && isVersionedCollection(this.schema, this.collection)) {
+			const filter = {
+				_and: [
+					{ [primaryKeyField]: { _eq: key } },
+					{ directus_version: { type: { _in: ['published', 'archived'] } } },
+					...(query.filter ? [query.filter] : []),
+				],
+			} as Filter;
+
+			const sort = ['-directus_version.type', '-directus_version.id'];
+			const [result] = await this.readByQuery({ ...query, filter, sort, limit: 1 }, { ...opts, key });
+
+			if (!result) throw new ForbiddenError();
+
+			return result;
+		}
 
 		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
 		const queryWithKey = assign({}, query, { filter: filterWithKey });

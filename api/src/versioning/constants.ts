@@ -15,6 +15,19 @@ export const VERSION_META_FIELDS = {
 	userUpdated: 'version_user_updated',
 } as const;
 
+/**
+ * Keys of the `directus_version` object in the API, mapped to the shadow table columns
+ */
+export const VERSION_META_KEYS: Record<string, string> = {
+	id: VERSION_META_FIELDS.id,
+	name: VERSION_META_FIELDS.name,
+	type: VERSION_META_FIELDS.type,
+	date_created: VERSION_META_FIELDS.dateCreated,
+	date_updated: VERSION_META_FIELDS.dateUpdated,
+	user_created: VERSION_META_FIELDS.userCreated,
+	user_updated: VERSION_META_FIELDS.userUpdated,
+};
+
 export const VERSION_TYPES = ['draft', 'published', 'archived'] as const;
 
 export function getShadowTableName(collection: string) {

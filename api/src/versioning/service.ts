@@ -24,6 +24,7 @@ import {
 	isVersionTable,
 	VERSION_META_FIELDS,
 } from './constants.js';
+import { validateLinkAccess } from './link-access.js';
 
 export type VersionMeta = {
 	id: number | null;
@@ -85,9 +86,7 @@ export class VersionedItemsService {
 
 	async deleteOne(versionId: number): Promise<number> {
 		await transaction(this.knex, async (trx) => {
-			await this.readVersionRow(trx, this.collection, versionId, 'delete');
-
-			await trx(getShadowTableName(this.collection)).where(VERSION_META_FIELDS.id, versionId).delete();
+			await this.getShadowService(trx, this.collection).deleteOne(versionId);
 		});
 
 		return versionId;
@@ -214,18 +213,10 @@ export class VersionedItemsService {
 
 		const { directus_version: meta, ...values } = data;
 		const { primary, fields } = this.schema.collections[collection]!;
-		const shadowTable = getShadowTableName(collection);
 
 		versionId ??= meta?.id ?? null;
 
 		const existing = versionId !== null ? await this.readVersionRow(trx, collection, versionId, 'update') : null;
-
-		if (!existing && this.accountability) {
-			await validateAccess(
-				{ accountability: this.accountability, action: 'create', collection: shadowTable },
-				{ knex: trx, schema: this.schema },
-			);
-		}
 
 		const record: Item = {};
 		const plainValues: Item = {};
@@ -272,20 +263,18 @@ export class VersionedItemsService {
 			record[VERSION_META_FIELDS.name] = meta.name ?? null;
 		}
 
+		// Writes go through the shadow collection, so its permissions, validation and presets apply as usual
+		const shadowService = this.getShadowService(trx, collection);
+
 		if (existing) {
-			record[VERSION_META_FIELDS.dateUpdated] = trx.fn.now();
+			record[VERSION_META_FIELDS.dateUpdated] = new Date();
 			record[VERSION_META_FIELDS.userUpdated] = this.accountability?.user ?? null;
 
-			await trx(shadowTable).update(record).where(VERSION_META_FIELDS.id, versionId);
+			await shadowService.updateOne(versionId!, record);
 		} else {
 			record[VERSION_META_FIELDS.userCreated] = this.accountability?.user ?? null;
 
-			const result = await trx(shadowTable)
-				.insert(record)
-				.returning(VERSION_META_FIELDS.id)
-				.then((result) => result[0]);
-
-			versionId = Number(typeof result === 'object' ? result[VERSION_META_FIELDS.id] : result);
+			versionId = Number(await shadowService.createOne(record));
 		}
 
 		for (const [relation, value] of o2mValues) {
@@ -394,13 +383,10 @@ export class VersionedItemsService {
 				continue;
 			}
 
-			// Linking changes which item the live item belongs to, so requires update access to it
-			if (this.accountability) {
-				await validateAccess(
-					{ accountability: this.accountability, action: 'update', collection: relatedCollection, primaryKeys: [key] },
-					{ knex: trx, schema: this.schema },
-				);
-			}
+			await validateLinkAccess(
+				{ collection: relatedCollection, action: 'update', keys: [key], accountability: this.accountability },
+				{ knex: trx, schema: this.schema },
+			);
 
 			const updated = await trx(linkTable)
 				.update({ [relation.field]: versionId })
@@ -433,26 +419,41 @@ export class VersionedItemsService {
 		const relatedShadowTable = getShadowTableName(relatedCollection);
 		const referenceField = getVersionReferenceField(relation.field);
 
-		const linkQuery = trx(linkTable)
-			.update({ [relation.field]: null })
-			.where(relation.field, versionId);
+		const linkQuery = trx(linkTable).select(primary).where(relation.field, versionId);
 
-		await (options.except ? linkQuery.whereNotIn(primary, items.keys) : linkQuery.whereIn(primary, items.keys));
+		const unlinkedKeys = (
+			await (options.except ? linkQuery.whereNotIn(primary, items.keys) : linkQuery.whereIn(primary, items.keys))
+		).map((row) => row[primary]);
+
+		if (unlinkedKeys.length > 0) {
+			await validateLinkAccess(
+				{ collection: relatedCollection, action: 'update', keys: unlinkedKeys, accountability: this.accountability },
+				{ knex: trx, schema: this.schema },
+			);
+
+			await trx(linkTable)
+				.update({ [relation.field]: null })
+				.whereIn(primary, unlinkedKeys);
+		}
 
 		if (!this.schema.collections[relatedShadowTable]?.fields[referenceField]) return;
 
-		const versionQuery = trx(relatedShadowTable).where(referenceField, versionId);
+		const versionQuery = trx(relatedShadowTable).select(VERSION_META_FIELDS.id).where(referenceField, versionId);
 
-		if (options.except) {
-			versionQuery.whereNotIn(VERSION_META_FIELDS.id, items.versionIds);
-		} else {
-			versionQuery.whereIn(VERSION_META_FIELDS.id, items.versionIds);
-		}
+		const unlinkedVersionIds = (
+			await (options.except
+				? versionQuery.whereNotIn(VERSION_META_FIELDS.id, items.versionIds)
+				: versionQuery.whereIn(VERSION_META_FIELDS.id, items.versionIds))
+		).map((row) => row[VERSION_META_FIELDS.id]);
+
+		if (unlinkedVersionIds.length === 0) return;
+
+		const relatedShadowService = this.getShadowService(trx, relatedCollection);
 
 		if (relation.meta?.one_deselect_action === 'delete') {
-			await versionQuery.delete();
+			await relatedShadowService.deleteMany(unlinkedVersionIds);
 		} else {
-			await versionQuery.update({ [referenceField]: null });
+			await relatedShadowService.updateMany(unlinkedVersionIds, { [referenceField]: null });
 		}
 	}
 
@@ -714,6 +715,14 @@ export class VersionedItemsService {
 				.update({ [primary]: liveKey })
 				.whereIn(VERSION_META_FIELDS.id, versionIds);
 		}
+	}
+
+	private getShadowService(knex: Knex, collection: string) {
+		return new ItemsService(getShadowTableName(collection), {
+			knex,
+			schema: this.schema,
+			accountability: this.accountability,
+		});
 	}
 
 	private async readVersionRow(knex: Knex, collection: string, versionId: number, action: PermissionsAction) {
