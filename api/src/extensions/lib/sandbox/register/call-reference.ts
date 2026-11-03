@@ -15,7 +15,7 @@ export async function callReference<T extends (...args: any[]) => unknown | Prom
 
 	const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
 
-	// Errors can't be copied into the isolate.
+	// Outside the try-catch so a stack overflow doesnt get logged as out of memory limit.
 	const copyableArgs = args.map((arg) => serializeErrors(arg)) as Args<T>;
 
 	try {
