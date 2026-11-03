@@ -15,7 +15,7 @@ savePrefix: ''
 overrides:
   tar: 7.5.22
   js-beautify>editorconfig: 3.0.2
-  js-beautify>glob: 11.1.0
+  js-beautify>glob: 14.0.3
   js-yaml@4: 4.3.2
   js-yaml@3: 3.15.2
   unplugin-yaml>yaml: 2.9.0
@@ -321,7 +321,6 @@ catalog:
   qs: 6.16.1
   rate-limiter-flexible: 7.2.0
   reka-ui: 2.8.2
-  rimraf: 6.1.0
   rolldown: 1.0.0-beta.31
   rollup: 4.59.0
   rollup-plugin-esbuild: 6.2.1
