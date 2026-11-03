@@ -60,8 +60,11 @@ function parseValue(key: string, value: unknown): unknown {
 		return false;
 	}
 
-	// An empty value is treated as not configured, so the default applies
-	if (value === '') return key in DEFAULTS ? undefined : cast(value, key);
+	if (value === '') {
+		// An empty string or list is a meaningful value, for other types the default applies
+		const keepEmpty = ['string', 'array', 'string-array'].includes(getDefaultType(key) ?? 'string');
+		return key in DEFAULTS && !keepEmpty ? undefined : cast(value, key);
+	}
 
 	const castValue = cast(value, key);
 

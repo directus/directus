@@ -40,14 +40,14 @@ if (env.RATE_LIMITER_GLOBAL_ENABLED) {
 export default checkRateLimit;
 
 function validateConfiguration() {
-	if (env['RATE_LIMITER_ENABLED'] !== true) {
+	if (env.RATE_LIMITER_ENABLED !== true) {
 		logger.error(`The IP based rate limiter needs to be enabled when using the global rate limiter.`);
 		process.exit(1);
 	}
 
 	const globalPointsPerSec = env.RATE_LIMITER_GLOBAL_POINTS / Math.max(env.RATE_LIMITER_GLOBAL_DURATION, 1);
 
-	const regularPointsPerSec = Number(env['RATE_LIMITER_POINTS']) / Math.max(Number(env['RATE_LIMITER_DURATION']), 1);
+	const regularPointsPerSec = env.RATE_LIMITER_POINTS / Math.max(env.RATE_LIMITER_DURATION, 1);
 
 	if (globalPointsPerSec <= regularPointsPerSec) {
 		logger.error(`The global rate limiter needs to allow more requests per second than the IP based rate limiter.`);

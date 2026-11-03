@@ -1,6 +1,6 @@
 import { URL } from 'node:url';
 import { useEnv } from '@directus/env';
-import { REDACTED_TEXT, toArray, toBoolean } from '@directus/utils';
+import { REDACTED_TEXT, toArray } from '@directus/utils';
 import type { Request, RequestHandler } from 'express';
 import { merge } from 'lodash-es';
 import { type Logger, type LoggerOptions, pino } from 'pino';
@@ -204,7 +204,7 @@ export const createExpressLogger = () => {
 	}
 
 	// WebSocket Logs
-	if (toBoolean(env.WEBSOCKETS_LOGS_ENABLED)) {
+	if (env.WEBSOCKETS_LOGS_ENABLED) {
 		const wsLevel = env.WEBSOCKETS_LOGS_LEVEL;
 
 		if (getLoggerLevelValue(wsLevel) < getLoggerLevelValue(mergedHttpOptions.level!)) {

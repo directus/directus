@@ -160,7 +160,7 @@ export default async function createApp(): Promise<express.Application> {
 	if (env.PRESSURE_LIMITER_ENABLED) {
 		const sampleInterval = env.PRESSURE_LIMITER_SAMPLE_INTERVAL;
 
-		if (Number.isNaN(sampleInterval) === true || Number.isFinite(sampleInterval) === false) {
+		if (Number.isFinite(sampleInterval) === false) {
 			throw new Error(`Invalid value for PRESSURE_LIMITER_SAMPLE_INTERVAL environment variable`);
 		}
 

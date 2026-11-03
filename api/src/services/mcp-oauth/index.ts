@@ -440,14 +440,13 @@ export class McpOAuthService {
 		}
 
 		// Policy: global client cap to bound table growth from unauthenticated DCR (0 disables)
-		const maxClients = Number.isNaN(env.MCP_OAUTH_MAX_CLIENTS) ? 10_000 : env.MCP_OAUTH_MAX_CLIENTS;
 
-		if (maxClients > 0) {
+		if (env.MCP_OAUTH_MAX_CLIENTS > 0) {
 			const [{ count }] = (await this.knex('directus_oauth_clients').count('* as count')) as [
 				{ count: number | string },
 			];
 
-			if (Number(count) >= maxClients) {
+			if (Number(count) >= env.MCP_OAUTH_MAX_CLIENTS) {
 				rejectRegistration('invalid_client_metadata', 'Maximum number of registered clients reached');
 			}
 		}
@@ -1735,15 +1734,12 @@ export class McpOAuthService {
 
 		const logger = useLogger();
 
-		// Gate: Max clients cap (shared with DCR)
-		const maxClients = Number.isNaN(env.MCP_OAUTH_MAX_CLIENTS) ? 10_000 : env.MCP_OAUTH_MAX_CLIENTS;
-
-		if (maxClients > 0) {
+		if (env.MCP_OAUTH_MAX_CLIENTS > 0) {
 			const [{ count }] = (await this.knex('directus_oauth_clients').count('* as count')) as [
 				{ count: number | string },
 			];
 
-			if (Number(count) >= maxClients) {
+			if (Number(count) >= env.MCP_OAUTH_MAX_CLIENTS) {
 				throw new OAuthError(400, 'invalid_client', 'Maximum number of registered clients reached');
 			}
 		}

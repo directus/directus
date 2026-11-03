@@ -212,13 +212,30 @@ test('Casts regular values', () => {
 });
 
 describe('Empty values', () => {
-	test('Uses the default for empty values of variables with a default', () => {
-		processConfig['DEFAULT'] = '';
+	test.each(['number', 'boolean', 'milliseconds', 'bytes', 'json'] as const)(
+		'Uses the default for empty values of %s variables with a default',
+		(type) => {
+			vi.mocked(getDefaultType).mockReturnValue(type);
+			processConfig['DEFAULT'] = '';
 
-		const env = createEnv();
+			const env = createEnv();
 
-		expect(env['DEFAULT']).toBe('test-default');
-	});
+			expect(env['DEFAULT']).toBe('test-default');
+		},
+	);
+
+	test.each(['string', 'array', 'string-array', null] as const)(
+		'Keeps empty values of %s variables with a default',
+		(type) => {
+			vi.mocked(getDefaultType).mockReturnValue(type);
+			vi.mocked(cast).mockImplementation((value, key) => (key === 'DEFAULT' && type?.includes('array') ? [] : value));
+			processConfig['DEFAULT'] = '';
+
+			const env = createEnv();
+
+			expect(env['DEFAULT']).toEqual(type?.includes('array') ? [] : '');
+		},
+	);
 
 	test('Keeps empty values of variables without a default', () => {
 		processConfig['PROCESS'] = '';
