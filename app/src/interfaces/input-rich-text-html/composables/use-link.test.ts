@@ -1,7 +1,8 @@
 import { Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test } from 'vitest';
 import { shallowRef } from 'vue';
-import { editorExtensions } from '../extensions';
+import { fieldEditorExtensions } from '../extensions';
+import { buildLinkProtocolSchema } from '../extensions/link-protocols';
 import { selectNode } from '../test-utils';
 import { useLink } from './use-link';
 
@@ -11,10 +12,11 @@ afterEach(() => {
 	while (editors.length) editors.pop()!.destroy();
 });
 
-function setup(content = '<p></p>') {
-	const editor = shallowRef(new Editor({ extensions: editorExtensions, content }));
+function setup(content = '<p></p>', linkProtocols: string[] = []) {
+	const { extensions, protocols } = buildLinkProtocolSchema(linkProtocols);
+	const editor = shallowRef(new Editor({ extensions: fieldEditorExtensions(extensions), content }));
 	editors.push(editor.value);
-	const usable = useLink(editor);
+	const usable = useLink(editor, protocols);
 	return { editor, ...usable };
 }
 
@@ -327,4 +329,91 @@ test('isLinkSaveable reflects whether a url is present', () => {
 
 	linkSelection.value = { url: 'https://directus.io', displayText: null, title: null, newTab: true };
 	expect(isLinkSaveable.value).toBe(true);
+});
+
+describe('link protocols', () => {
+	const CUSTOM = { url: 'myapp://some/route', displayText: 'Open', title: null, newTab: false };
+
+	test('a url with a custom scheme that is not allowed is flagged and not saveable', () => {
+		const { linkSelection, isLinkSaveable, linkUrlError } = setup();
+
+		linkSelection.value = CUSTOM;
+
+		expect(linkUrlError.value).toBe('not_allowed');
+		expect(isLinkSaveable.value).toBe(false);
+	});
+
+	test('saveLink does not store an empty href for a custom scheme that is not allowed', () => {
+		const { editor, linkSelection, saveLink } = setup('<p></p>');
+
+		linkSelection.value = CUSTOM;
+		saveLink();
+
+		expect(editor.value.getHTML()).not.toContain('<a');
+	});
+
+	test('saveLink stores a link with an allowed custom scheme', () => {
+		const { editor, linkSelection, linkUrlError, saveLink } = setup('<p></p>', ['myapp']);
+
+		linkSelection.value = CUSTOM;
+
+		expect(linkUrlError.value).toBeNull();
+		saveLink();
+		expect(editor.value.getHTML()).toBe('<p><a href="myapp://some/route">Open</a></p>');
+	});
+
+	test('saveLink on an image stores a link with an allowed custom scheme', () => {
+		const { editor, linkSelection, openLinkDrawer, saveLink } = setup('<img src="/assets/abc"><p>y</p>', ['myapp']);
+		selectNode(editor.value, 'image');
+		openLinkDrawer();
+
+		linkSelection.value = { ...linkSelection.value, url: 'myapp://some/route', newTab: false };
+		saveLink();
+
+		expect(editor.value.getHTML()).toBe('<a href="myapp://some/route"><img src="/assets/abc"></a><p>y</p>');
+	});
+
+	test.each([
+		['myapp://some/route', 'not_allowed'],
+		['javascript:alert(1)', 'blocked'],
+	] as const)('an image link to %s is flagged as %s and saveLink leaves the image unlinked', (url, error) => {
+		const content = '<img src="/assets/abc"><p>y</p>';
+		const { editor, linkSelection, linkUrlError, isLinkSaveable, openLinkDrawer, saveLink } = setup(content);
+		selectNode(editor.value, 'image');
+		openLinkDrawer();
+
+		linkSelection.value = { ...linkSelection.value, url };
+
+		expect(linkUrlError.value).toBe(error);
+		expect(isLinkSaveable.value).toBe(false);
+		saveLink();
+		expect(editor.value.getHTML()).toBe(content);
+	});
+
+	test('saveLink stores a link with an allowed dotted scheme', () => {
+		const { editor, linkSelection, linkUrlError, saveLink } = setup('<p></p>', ['com.example.app']);
+
+		linkSelection.value = { ...CUSTOM, url: 'com.example.app://some/route' };
+
+		expect(linkUrlError.value).toBeNull();
+		saveLink();
+		expect(editor.value.getHTML()).toBe('<p><a href="com.example.app://some/route">Open</a></p>');
+	});
+
+	test.each(['javascript:alert(1)', ' JavaScript://x', 'data:text/html,hi', 'vbscript:x'])(
+		'a url with a script scheme is flagged as blocked: %s',
+		(url) => {
+			const { linkSelection, linkUrlError } = setup('<p></p>', ['myapp']);
+
+			linkSelection.value = { ...CUSTOM, url };
+
+			expect(linkUrlError.value).toBe('blocked');
+		},
+	);
+
+	test('an empty url is not flagged', () => {
+		const { linkUrlError } = setup();
+
+		expect(linkUrlError.value).toBeNull();
+	});
 });
