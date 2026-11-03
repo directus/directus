@@ -1,8 +1,20 @@
 ---
 '@directus/pressure': patch
 '@directus/types': patch
-'@directus/env': patch
-'@directus/api': patch
+'@directus/env': major
+'@directus/api': major
 ---
 
-Improved typing of `@directus/env` to contain known env vars
+Improved typing of `@directus/env` to contain known env vars. Custom env vars can be typed by extending the `Env`
+interface
+
+::: notice
+
+Env vars are now cast more strictly:
+
+- Booleans only accept `true`, `false`, `1` and `0` (eg `TRUE` is now `false`)
+- Plain number durations (eg `ACCESS_TOKEN_TTL=900`) are read as milliseconds, use a unit to be explicit (eg `15m`)
+- Invalid or empty values fall back to the default, invalid ones log a warning
+- `useEnv` returns parsed values: durations and sizes are numbers, lists are arrays
+
+:::

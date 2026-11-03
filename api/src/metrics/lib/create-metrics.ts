@@ -22,7 +22,7 @@ export function createMetrics() {
 	const env = useEnv();
 	const logger = useLogger();
 
-	const services: MetricService[] = (env.METRICS_SERVICES as MetricService[] | undefined) ?? [];
+	const services: MetricService[] = env.METRICS_SERVICES as MetricService[];
 	const metricNamePrefix = env.METRICS_NAME_PREFIX;
 	const metricsHealthCheckPrefix = env.METRICS_HEALTH_CHECK_PREFIX;
 	const aggregates = new Map();

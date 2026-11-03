@@ -172,7 +172,7 @@ export default async function createApp(): Promise<express.Application> {
 				maxMemoryRss: env.PRESSURE_LIMITER_MAX_MEMORY_RSS,
 				maxMemoryHeapUsed: env.PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED,
 				error: new ServiceUnavailableError({ service: 'api', reason: 'Under pressure' }),
-				retryAfter: env.PRESSURE_LIMITER_RETRY_AFTER,
+				retryAfter: env.PRESSURE_LIMITER_RETRY_AFTER || undefined,
 			}),
 		);
 	}

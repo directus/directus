@@ -52,7 +52,7 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 		path: '/files/tus',
 		datastore: store,
 		locker: getTusLocker(),
-		...(FILE_UPLOADS.MAX_SIZE !== null && { maxSize: FILE_UPLOADS.MAX_SIZE }),
+		...(FILE_UPLOADS.MAX_SIZE !== undefined && { maxSize: FILE_UPLOADS.MAX_SIZE }),
 		async onUploadFinish(_req: any, upload) {
 			const schema = await getSchema();
 

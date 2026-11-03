@@ -1,4 +1,5 @@
 import type { DEFAULTS } from '../constants/defaults.js';
+import type { DISABLEABLE_KEYS } from '../constants/type-map.js';
 import type { CastKey, DefaultKey, Value } from './env-type.js';
 
 /**
@@ -7,6 +8,9 @@ import type { CastKey, DefaultKey, Value } from './env-type.js';
  */
 type DefaultValue<Key extends DefaultKey & CastKey> =
 	(typeof DEFAULTS)[Key] extends Value<Key> ? (typeof DEFAULTS)[Key] : never;
+
+/** `false` for variables that can be turned off, see `DISABLEABLE_KEYS` */
+type DisabledValue<Key extends CastKey> = Key extends (typeof DISABLEABLE_KEYS)[number] ? false : never;
 
 /**
  * Keeps the literal default for editor suggestions, without collapsing the value type (`& Record<never, never>`
@@ -22,12 +26,16 @@ type RequiredValue<Key extends DefaultKey & CastKey> = [DefaultValue<Key>] exten
  * as `unknown`, as their default is used as-is while a configured value is cast based on its shape
  */
 type RequiredEnv = {
-	[Key in DefaultKey]: Key extends CastKey ? RequiredValue<Key> : unknown;
+	[Key in DefaultKey]: Key extends CastKey ? RequiredValue<Key> | DisabledValue<Key> : unknown;
 };
 
 /** Variables with a known type that are only present when they've been configured */
 type OptionalEnv = {
-	[Key in Exclude<CastKey, DefaultKey>]?: Value<Key>;
+	[Key in Exclude<CastKey, DefaultKey>]?: Value<Key> | DisabledValue<Key>;
 };
 
-export type Env = RequiredEnv & OptionalEnv & Record<string, unknown>;
+/**
+ * The loaded environment variables. Declared as an interface so that custom variables can be typed through
+ * declaration merging, eg `declare module '@directus/env' { interface Env { MY_VARIABLE: string } }`
+ */
+export interface Env extends RequiredEnv, OptionalEnv, Record<string, unknown> {}

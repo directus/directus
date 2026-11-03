@@ -21,10 +21,10 @@ vi.mock('@directus/env', async () => {
 
 	return mockUseEnv({
 		ACTIVITY_RETENTION: DAY,
-		FLOW_LOGS_RETENTION: undefined,
+		FLOW_LOGS_RETENTION: false,
 		RETENTION_BATCH: 100,
 		RETENTION_ENABLED: true,
-		REVISIONS_RETENTION: undefined,
+		REVISIONS_RETENTION: false,
 	});
 });
 
@@ -104,7 +104,7 @@ test.each([
 	})),
 	{
 		reason: 'no retention timeframes are set',
-		env: { ACTIVITY_RETENTION: undefined },
+		env: { ACTIVITY_RETENTION: false },
 		log: ['warn', 'No retention timeframes are set. Retention disabled.'],
 	},
 ] as { reason: string; env: Record<string, unknown>; validCron?: boolean; log?: ['error' | 'warn', string] }[])(
@@ -157,12 +157,12 @@ test.each([
 	{ reason: 'only activity retention is set', env: { ACTIVITY_RETENTION: DAY }, queries: [activityQuery] },
 	{
 		reason: 'only flow logs retention is set',
-		env: { ACTIVITY_RETENTION: undefined, FLOW_LOGS_RETENTION: DAY },
+		env: { ACTIVITY_RETENTION: false, FLOW_LOGS_RETENTION: DAY },
 		queries: [flowLogsQuery],
 	},
 	{
 		reason: 'activity retention is disabled',
-		env: { ACTIVITY_RETENTION: undefined, REVISIONS_RETENTION: 30 * DAY },
+		env: { ACTIVITY_RETENTION: false, REVISIONS_RETENTION: 30 * DAY },
 		queries: [revisionsQuery],
 	},
 	{

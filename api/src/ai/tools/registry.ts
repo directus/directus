@@ -367,7 +367,8 @@ const executeRootTool: RootTool = {
 function buildURL(tool: ToolConfig<any>, input: unknown, data: unknown): string | undefined {
 	const { PUBLIC_URL } = useEnv();
 
-	if (!tool.endpoint) return;
+	// PUBLIC_URL isn't required to be a full URL, in which case no meaningful URL can be built
+	if (!tool.endpoint || !new Url(PUBLIC_URL).isAbsolute()) return;
 
 	const path = tool.endpoint({ input, data });
 

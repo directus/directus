@@ -327,6 +327,17 @@ export const TYPE_MAP = {
 	'AUTH_.+_COOKIE_SECURE': 'boolean',
 } as const;
 
+/**
+ * Variables that can be turned off by configuring `false` (or an empty value). This is kept as `false` as-is instead of being cast to the
+ * variable's type, which would otherwise discard it and fall back to the default
+ */
+export const DISABLEABLE_KEYS = [
+	'ACTIVITY_RETENTION',
+	'REVISIONS_RETENTION',
+	'FLOW_LOGS_RETENTION',
+	'PRESSURE_LIMITER_RETRY_AFTER',
+] as const satisfies readonly (keyof typeof TYPE_MAP)[];
+
 export const TYPE_MAP_REGEX: [RegExp, EnvType][] = Object.entries(TYPE_MAP).map(([name, value]) => [
 	new RegExp(`^${name}$`),
 	value,

@@ -2,7 +2,7 @@ import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import type { PrimaryKey } from '@directus/types';
 import type { Knex } from 'knex';
-import { chunk, isNil } from 'lodash-es';
+import { chunk } from 'lodash-es';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
@@ -125,7 +125,7 @@ export default async function schedule(): Promise<boolean> {
 
 	const tasks: RetentionTask[] = [];
 
-	if (!isNil(activityTimeframe)) {
+	if (activityTimeframe !== false) {
 		tasks.push({
 			collection: 'directus_activity',
 			where: ['directus_activity.action', '!=', Action.RUN],
@@ -133,7 +133,7 @@ export default async function schedule(): Promise<boolean> {
 		});
 	}
 
-	if (!isNil(flowLogsTimeframe)) {
+	if (flowLogsTimeframe !== false) {
 		tasks.push({
 			collection: 'directus_activity',
 			where: ['directus_activity.action', '=', Action.RUN],
@@ -142,7 +142,7 @@ export default async function schedule(): Promise<boolean> {
 	}
 
 	// revisions are deleted along with their activity, only required if they expire sooner
-	if (!isNil(revisionsTimeframe) && (isNil(activityTimeframe) || activityTimeframe > revisionsTimeframe)) {
+	if (revisionsTimeframe !== false && (activityTimeframe === false || activityTimeframe > revisionsTimeframe)) {
 		tasks.push({
 			collection: 'directus_revisions',
 			join: ['directus_activity', 'directus_revisions.activity', 'directus_activity.id'],

@@ -210,3 +210,61 @@ test('Casts regular values', () => {
 		DEFAULT_ARRAY: 'one,two,three',
 	});
 });
+
+describe('Empty values', () => {
+	test('Uses the default for empty values of variables with a default', () => {
+		processConfig['DEFAULT'] = '';
+
+		const env = createEnv();
+
+		expect(env['DEFAULT']).toBe('test-default');
+	});
+
+	test('Keeps empty values of variables without a default', () => {
+		processConfig['PROCESS'] = '';
+
+		const env = createEnv();
+
+		expect(env['PROCESS']).toBe('');
+	});
+});
+
+describe('Disableable variables', () => {
+	test.each([false, 'false', ''])('Keeps %j as false without casting', (value) => {
+		fileConfig['ACTIVITY_RETENTION'] = value;
+
+		const env = createEnv();
+
+		expect(env['ACTIVITY_RETENTION']).toBe(false);
+		expect(cast).not.toHaveBeenCalledWith(value, 'ACTIVITY_RETENTION');
+	});
+});
+
+describe('Invalid values', () => {
+	test.each([undefined, NaN])('Ignores values that are cast to %s and warns', (castValue) => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+		processConfig['DEFAULT'] = 'invalid';
+
+		vi.mocked(cast).mockImplementation((value, key) => (key === 'DEFAULT' && value === 'invalid' ? castValue : value));
+
+		const env = createEnv();
+
+		expect(env['DEFAULT']).toBe('test-default');
+
+		expect(warn).toHaveBeenCalledWith('Environment variable "DEFAULT" has an invalid value "invalid" and is ignored.');
+	});
+
+	test('Does not warn about empty values that are cast to undefined', () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+		processConfig['PROCESS'] = '';
+
+		vi.mocked(cast).mockImplementation((value) => (value === '' ? undefined : value));
+
+		const env = createEnv();
+
+		expect(env['PROCESS']).toBeUndefined();
+		expect(warn).not.toHaveBeenCalled();
+	});
+});
