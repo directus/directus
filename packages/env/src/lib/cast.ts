@@ -7,7 +7,7 @@ import { toBytes } from '../utils/to-bytes.js';
 import { toMilliseconds } from '../utils/to-milliseconds.js';
 import { tryJson } from '../utils/try-json.js';
 
-export const cast = (value: unknown, key?: string): unknown => {
+export function cast(value: unknown, key?: string): unknown {
 	const castFlag = getCastFlag(value);
 
 	const type = castFlag ?? getDefaultType(key) ?? guessType(value);
@@ -40,4 +40,4 @@ export const cast = (value: unknown, key?: string): unknown => {
 		case 'bytes':
 			return toBytes(value);
 	}
-};
+}

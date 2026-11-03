@@ -15,7 +15,7 @@ import { readConfigurationFromFile } from './read-configuration-from-file.js';
 /**
  * Loads the environment variables from the process and the env file.
  */
-export const createEnv = (): Env => {
+export function createEnv(): Env {
 	const rawConfiguration = { ...readConfigurationFromProcess(), ...readConfigurationFromFile(getConfigPath()) };
 
 	const output: Record<string, unknown> = {};
@@ -33,7 +33,7 @@ export const createEnv = (): Env => {
 	}
 
 	return output as Env;
-};
+}
 
 /**
  * Replaces `*_FILE` variables with the content of the file they point to, keeping the cast prefix if present
