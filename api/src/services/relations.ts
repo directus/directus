@@ -484,7 +484,8 @@ export class RelationsService {
 
 		try {
 			await transaction(this.knex, async (trx) => {
-				const existingConstraints = await this.foreignKeys();
+				// Read through the transaction, SQLite only has a single connection which the transaction holds
+				const existingConstraints = await createInspector(trx).foreignKeys();
 				const constraintNames = existingConstraints.map((key) => key.constraint_name);
 
 				if (

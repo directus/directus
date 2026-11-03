@@ -437,7 +437,7 @@ function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 				// Never matches, as the primary key can't be null
 				conditions.push({ [level.schema.collections[level.collection]!.primary]: { _null: true } } as Filter);
 			}
-		} else if (key.startsWith('_') || !isPlainObject(value)) {
+		} else if (key.startsWith('_') || !isPlainObject(value) || isFieldCondition(value as Record<string, unknown>)) {
 			result[key] = value;
 		} else {
 			const m2o = getM2ORelation(level.schema, level.collection, key);
@@ -490,6 +490,13 @@ function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 	if (conditions.length === 0) return result as Filter;
 
 	return { _and: [...(Object.keys(result).length > 0 ? [result as Filter] : []), ...conditions] } as Filter;
+}
+
+/**
+ * Operators directly on a field, like `author: { _null: true }`, as opposed to a filter on the related item
+ */
+function isFieldCondition(value: Record<string, unknown>) {
+	return Object.keys(value).every((key) => key.startsWith('_') && !['_and', '_or', '_some', '_none'].includes(key));
 }
 
 const PUBLISHED_META: Record<string, unknown> = {
