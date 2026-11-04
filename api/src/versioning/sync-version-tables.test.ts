@@ -448,15 +448,61 @@ describe('dialects', () => {
 		`);
 	});
 
-	// TODO: `int unsigned` maps to the `integer` type, so the mirrored column is created as a signed `int`. MySQL doesn't
-	// accept foreign keys from `int` to `int unsigned`, so adding the foreign key of `author` fails
-	test.fails('keeps unsigned integers on mysql, so foreign keys to unsigned keys can be added', async () => {
-		// The MySQL inspector reports the full column type, keys created by Directus are unsigned
-		const live = LIVE_COLUMNS.map((live) => (live.data_type === 'integer' ? { ...live, data_type: 'int unsigned' } : live));
+	// MySQL doesn't accept foreign keys between signed and unsigned integers, keys created by Directus are unsigned
+	const UNSIGNED_COLUMNS = LIVE_COLUMNS.map((live) =>
+		live.data_type === 'integer' ? { ...live, data_type: 'int unsigned' } : live,
+	);
 
-		const { sql } = await sync({ client: 'mysql', versioned: ['articles'], live });
+	test('keeps unsigned integers on mysql, so foreign keys to unsigned keys can be added', async () => {
+		const { sql } = await sync({ client: 'mysql', versioned: ['articles'], live: UNSIGNED_COLUMNS });
 
-		expect(sql).toContain('`author` int unsigned null');
+		expect(sql).toMatchInlineSnapshot(`
+			"create table \`directus_shadow_articles\` (
+			  \`version_id\` int unsigned not null auto_increment primary key,
+			  \`version_name\` varchar(255) null,
+			  \`version_type\` varchar(16) not null default 'draft',
+			  \`version_date_created\` timestamp default CURRENT_TIMESTAMP,
+			  \`version_date_updated\` timestamp null,
+			  \`version_user_created\` char(36) null,
+			  \`version_user_updated\` char(36) null,
+			  \`id\` int unsigned null,
+			  \`title\` varchar(255) null,
+			  \`author\` int unsigned null
+			);
+
+			alter table \`directus_shadow_articles\`
+			add constraint \`directus_shadow_articles_version_user_created_foreign\` foreign key (\`version_user_created\`) references \`directus_users\` (\`id\`) on delete SET NULL;
+
+			alter table \`directus_shadow_articles\`
+			add constraint \`directus_shadow_articles_version_user_updated_foreign\` foreign key (\`version_user_updated\`) references \`directus_users\` (\`id\`) on delete SET NULL;
+
+			alter table \`directus_shadow_articles\`
+			add constraint \`directus_shadow_articles_author_foreign\` foreign key (\`author\`) references \`authors\` (\`id\`) on delete SET NULL"
+		`);
+	});
+
+	test('alters signed mirrors of unsigned integers on mysql', async () => {
+		const { sql } = await sync({
+			client: 'mysql',
+			versioned: ['articles'],
+			live: UNSIGNED_COLUMNS,
+			existing: {
+				...ARTICLES_SHADOW,
+				columns: ARTICLES_SHADOW.columns.map((column) =>
+					column.data_type === 'integer' ? { ...column, data_type: 'int' } : column,
+				),
+				foreignKeys: ARTICLES_SHADOW.foreignKeys.filter((foreignKey) => foreignKey.column !== 'author'),
+			},
+		});
+
+		expect(sql).toMatchInlineSnapshot(`
+			"alter table \`directus_shadow_articles\`
+			modify \`id\` int unsigned null,
+			modify \`author\` int unsigned null;
+
+			alter table \`directus_shadow_articles\`
+			add constraint \`directus_shadow_articles_author_foreign\` foreign key (\`author\`) references \`authors\` (\`id\`) on delete SET NULL"
+		`);
 	});
 
 	test('mssql', async () => {

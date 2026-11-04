@@ -187,8 +187,7 @@ function addColumn(
 	const { source } = column;
 	const type = getLocalType(source);
 
-	// Types like MySQL's `int unsigned` don't map to a Directus type, but have to match exactly for foreign keys
-	if (type === 'unknown' || type === 'alias') {
+	if (requiresExactType(source)) {
 		const columnBuilder = builder.specificType(column.name, source.data_type);
 
 		if (column.primary) {
@@ -246,11 +245,25 @@ function addMetaColumn(knex: Knex, builder: Knex.CreateTableBuilder, name: strin
 	}
 }
 
+/**
+ * Columns that are created with their database type instead of the Directus type. That's the case for types that don't
+ * map to a Directus type, and for MySQL's unsigned integers, which map to `integer` but are created as signed integers
+ * from it. MySQL doesn't accept foreign keys between signed and unsigned integers, so they have to match exactly.
+ */
+function requiresExactType(column: Column) {
+	const type = getLocalType(column);
+
+	return type === 'unknown' || type === 'alias' || column.data_type.toLowerCase().includes('unsigned');
+}
+
 function hasTypeChanged(source: Column, existing: Column) {
 	const sourceType = getLocalType(source);
 
 	if (sourceType !== getLocalType(existing)) return true;
-	if (sourceType === 'unknown') return source.data_type !== existing.data_type;
+
+	if (requiresExactType(source) || requiresExactType(existing)) {
+		return source.data_type.toLowerCase() !== existing.data_type.toLowerCase();
+	}
 
 	return (
 		source.max_length !== existing.max_length ||
