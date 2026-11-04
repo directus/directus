@@ -126,6 +126,24 @@ const gridClass = computed<string | null>(() => {
 // Only read by scrollToField, so it doesn't need to be reactive
 const formFieldEls: Record<string, any> = {};
 
+// Group interfaces get every prop compared, so a new ref function or `{}` on each render would re-render them
+const fieldElSetters = new Map<string, (el: any) => void>();
+const emptyValues = {};
+
+function setFieldEl(fieldName: string) {
+	let setter = fieldElSetters.get(fieldName);
+
+	if (!setter) {
+		setter = (el) => {
+			formFieldEls[fieldName] = el;
+		};
+
+		fieldElSetters.set(fieldName, setter);
+	}
+
+	return setter;
+}
+
 const {
 	fields: finalFields,
 	fieldNames,
@@ -218,11 +236,18 @@ function useForm() {
 		updateSystemDivider(fields, isFieldVisible);
 		updateFieldWidths(fields, isFieldVisible);
 
-		if (!previous || previous.length !== fields.length) return fields;
+		if (!previous) return fields;
 
-		fields = fields.map((field, index) => (isEqual(field, previous[index]) ? previous[index]! : field));
+		const previousByName = new Map(previous.map((field) => [field.field, field]));
 
-		return fields.every((field, index) => field === previous[index]) ? previous : fields;
+		fields = fields.map((field) => {
+			const previousField = previousByName.get(field.field);
+			return previousField && isEqual(field, previousField) ? previousField : field;
+		});
+
+		return fields.length === previous.length && fields.every((field, index) => field === previous[index])
+			? previous
+			: fields;
 	});
 
 	const fieldsMap = computed<Record<string, TFormField | undefined>>(() => {
@@ -498,11 +523,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 						fieldsMap[fieldName]!.meta?.special?.includes('group') &&
 						isGroupFieldVisible(fieldsMap[fieldName]!, fieldsForGroup[index] || [])
 					"
-					:ref="
-						(el: Element) => {
-							formFieldEls[fieldName] = el;
-						}
-					"
+					:ref="setFieldEl(fieldName)"
 					:class="[
 						fieldsMap[fieldName]!.meta?.width || 'full',
 						getFirstVisibleFieldClass(index),
@@ -510,8 +531,8 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					]"
 					:field="fieldsMap[fieldName]"
 					:fields="fieldsForGroup[index] || []"
-					:values="modelValue || {}"
-					:initial-values="initialValues || {}"
+					:values="modelValue || emptyValues"
+					:initial-values="initialValues || emptyValues"
 					:disabled="disabled || nonEditable"
 					:non-editable="nonEditable"
 					:batch-mode="batchMode"
@@ -531,11 +552,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 
 				<FormField
 					v-else-if="isFieldVisible(fieldsMap[fieldName])"
-					:ref="
-						(el) => {
-							formFieldEls[fieldName] = el;
-						}
-					"
+					:ref="setFieldEl(fieldName)"
 					:class="[getFirstVisibleFieldClass(index), getComparisonIndicatorClasses(fieldsMap[fieldName]!)]"
 					:field="fieldsMap[fieldName]!"
 					:autofocus="index === firstEditableFieldIndex && autofocus"

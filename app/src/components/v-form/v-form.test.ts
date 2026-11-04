@@ -3,7 +3,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { nextTick } from 'vue';
+import { defineComponent, h, nextTick, onUpdated } from 'vue';
 import FormField from './components/form-field.vue';
 import VForm from './v-form.vue';
 import { ClickOutside } from '@/__utils__/click-outside';
@@ -675,6 +675,27 @@ describe('VForm', () => {
 			expect(after['body']!.meta?.width).toBe('half-right');
 		});
 
+		it('keeps field objects for existing fields when a field is added', async () => {
+			const title = createField({ field: 'title', meta: { ...createField().meta!, field: 'title', sort: 1 } });
+			const body = createField({ field: 'body', meta: { ...createField().meta!, field: 'body', sort: 3 } });
+			const added = createField({ field: 'added', meta: { ...createField().meta!, field: 'added', sort: 2 } });
+
+			const wrapper = mount(VForm, {
+				props: { fields: [title, body], modelValue: {}, primaryKey: '+' },
+				global,
+			});
+
+			const before = getFieldProps(wrapper);
+
+			await wrapper.setProps({ fields: [title, added, body] });
+
+			const after = getFieldProps(wrapper);
+
+			expect(after['added']).toBeDefined();
+			expect(after['title']).toBe(before['title']);
+			expect(after['body']).toBe(before['body']);
+		});
+
 		it('applies conditions on value changes and keeps unaffected field objects', async () => {
 			const toggle = createField({
 				field: 'toggle',
@@ -711,6 +732,46 @@ describe('VForm', () => {
 			expect(after['conditional']).not.toBe(before['conditional']);
 			expect(after['other']).toBe(before['other']);
 			expect(after['toggle']).toBe(before['toggle']);
+		});
+	});
+
+	describe('group fields', () => {
+		it('does not re-render groups when the form re-renders for something they do not use', async () => {
+			const onGroupUpdated = vi.fn();
+
+			// The form swaps unknown interfaces for the type default, which is `input` for alias fields
+			const InterfaceStub = defineComponent({
+				inheritAttrs: false,
+				setup(_, { attrs }) {
+					onUpdated(() => onGroupUpdated((attrs['field'] as Field).field));
+					return () => h('div', { class: `interface-stub-${(attrs['field'] as Field).field}` });
+				},
+			});
+
+			const group = createField({
+				field: 'group',
+				type: 'alias',
+				meta: {
+					...createField().meta!,
+					field: 'group',
+					special: ['alias', 'no-data', 'group'],
+					interface: 'group-detail',
+				},
+			});
+
+			const child = createField({ field: 'child', meta: { ...createField().meta!, field: 'child', group: 'group' } });
+			const title = createField({ field: 'title', meta: { ...createField().meta!, field: 'title' } });
+
+			const wrapper = mount(VForm, {
+				props: { fields: [title, group, child], modelValue: null, initialValues: null, primaryKey: '+' },
+				global: { ...global, components: { 'interface-input': InterfaceStub } },
+			});
+
+			expect(wrapper.find('.interface-stub-group').exists()).toBe(true);
+
+			await wrapper.setProps({ autofocus: true });
+
+			expect(onGroupUpdated).not.toHaveBeenCalledWith('group');
 		});
 	});
 
