@@ -216,6 +216,25 @@ expect(formatSql(query!.sql)).toMatchInlineSnapshot(`
 expect(query!.bindings).toEqual(['published']);
 ```
 
+#### `createMockDialectKnex(vendor)`
+
+Creates a knex instance that compiles queries, including schema changes, with the real dialect of a vendor (`postgres`,
+`mysql`, `mssql`, `sqlite` or `oracle`) and runs them against a knex-mock-client tracker. The client keeps the class
+name of the real dialect, so `getDatabaseClient` and the database helpers behave as for that vendor. Also returns the
+`formatSql` language of the vendor.
+
+**Example:**
+
+```typescript
+const { db, tracker, language } = createMockDialectKnex('mysql');
+
+tracker.on.any(() => true).response([]);
+
+await db.schema.createTable('articles', (table) => table.increments('id'));
+
+expect(formatSql(tracker.history.all[0]!.sql, language)).toMatchInlineSnapshot();
+```
+
 ---
 
 ### database.ts
