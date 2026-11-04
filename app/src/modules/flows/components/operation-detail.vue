@@ -104,7 +104,7 @@ const generatedKey = computed(() =>
 
 const { operations } = useExtensions();
 
-const AI_OPERATIONS = ['ai-text'];
+const AI_OPERATIONS = ['ai-text', 'ai-image'];
 
 const displayOperations = computed(() =>
 	operations.value.map((operation) => ({
