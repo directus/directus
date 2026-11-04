@@ -88,15 +88,16 @@ describe('TableRow', () => {
 		}
 	});
 
-	test('renders 0 and false, and a placeholder for missing values', () => {
+	test('renders 0 and false, and a placeholder for missing and empty values', () => {
 		const wrapper = mount(TableRow, {
 			props: {
 				headers: [
 					{ ...headers[0]!, value: 'count' },
 					{ ...headers[0]!, value: 'active' },
 					{ ...headers[0]!, value: 'author.name' },
+					{ ...headers[0]!, value: 'note' },
 				],
-				item: { id: 1, count: 0, active: false, author: null },
+				item: { id: 1, count: 0, active: false, author: null, note: '' },
 			},
 			global,
 		});
@@ -106,6 +107,7 @@ describe('TableRow', () => {
 		expect(cells[0]!.find('v-text-overflow-stub').attributes('text')).toBe('0');
 		expect(cells[1]!.find('v-text-overflow-stub').attributes('text')).toBe('false');
 		expect(cells[2]!.find('.null').text()).toBe('--');
+		expect(cells[3]!.find('.null').text()).toBe('--');
 	});
 
 	test('does not read header widths, so rows can keep headers across column resizes', () => {

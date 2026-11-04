@@ -52,7 +52,7 @@ const hasItemAppendSlot = computed(() => props.slotNames.split(',').includes('it
 function renderCell(header: Header) {
 	return renderSlot(props.itemSlots, `item.${header.value}`, { item: props.item }, () => {
 		const value = header.value.split('.').reduce((acc, val) => acc?.[val], props.item);
-		return [isNil(value) ? h(ValueNull) : h(VTextOverflow, { text: value })];
+		return [isNil(value) || value === '' ? h(ValueNull) : h(VTextOverflow, { text: value })];
 	});
 }
 
