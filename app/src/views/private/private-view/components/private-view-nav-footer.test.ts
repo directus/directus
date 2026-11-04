@@ -3,8 +3,11 @@ import { mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import PrivateViewNavFooter from './private-view-nav-footer.vue';
+import { mockedStore } from '@/__utils__/store';
 import type { GlobalMountOptions } from '@/__utils__/types';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
 
 let pinia: ReturnType<typeof createTestingPinia>;
 let global: GlobalMountOptions;
@@ -46,6 +49,18 @@ describe('private-view-nav-footer', () => {
 		const wrapper = mount(PrivateViewNavFooter, { global });
 
 		expect(wrapper.find('.wrapper').exists()).toBe(false);
+	});
+
+	it('renders wrapper for admins with a pinned notice when the badge is hidden', () => {
+		useServerStore().info.license = { source: null, entitlements: { display_powered_by: 'HIDDEN' } };
+		mockedStore(useLicenseStore()).hasPinnedNotice = true;
+		const userStore = mockedStore(useUserStore());
+
+		userStore.isAdmin = false;
+		expect(mount(PrivateViewNavFooter, { global }).find('.wrapper').exists()).toBe(false);
+
+		userStore.isAdmin = true;
+		expect(mount(PrivateViewNavFooter, { global }).find('.wrapper').exists()).toBe(true);
 	});
 
 	it('renders wrapper when display_powered_by is DIRECTUS', () => {
