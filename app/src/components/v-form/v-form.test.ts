@@ -713,4 +713,32 @@ describe('VForm', () => {
 			expect(after['toggle']).toBe(before['toggle']);
 		});
 	});
+
+	describe('initial values', () => {
+		it('shows the original value again after an edit that mutated it in place is undone', async () => {
+			const comments = createField({
+				field: 'comments',
+				type: 'alias',
+				meta: { ...createField().meta!, field: 'comments', special: ['o2m'] },
+			});
+
+			const initialValues = { comments: { create: [{ text: 'one' }], update: [], delete: [] } };
+
+			const wrapper = mount(VForm, {
+				props: { fields: [comments], initialValues, modelValue: {}, primaryKey: '+' },
+				global,
+			});
+
+			const commentsValue = () => wrapper.findComponent(FormField).props('modelValue');
+
+			// Relational interfaces push into the value they were given before emitting a copy
+			const value = commentsValue();
+			value.create.push({ text: 'two' });
+			await wrapper.setProps({ modelValue: { comments: structuredClone(value) } });
+
+			await wrapper.setProps({ modelValue: {} });
+
+			expect(commentsValue()).toEqual(initialValues.comments);
+		});
+	});
 });

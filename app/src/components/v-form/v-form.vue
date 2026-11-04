@@ -89,7 +89,19 @@ const fieldDefinitionsMap = computed<Record<string, Field | undefined>>(() => {
 	return Object.fromEntries(fieldDefinitions.value.map((field) => [field.field, field]));
 });
 
-const clonedInitialValues = computed(() => selectiveClone(props.initialValues, fieldDefinitionsMap.value));
+const editedFieldKeys = computed(() =>
+	Object.keys(props.modelValue ?? {})
+		.sort()
+		.join(','),
+);
+
+// Relational interfaces push into the value they get before emitting a copy, which changes this clone. Re-clone when
+// a field joins or leaves the edits, so undoing an edit shows the original value. Re-cloning on every keystroke
+// would re-render every object-valued field.
+const clonedInitialValues = computed(() => {
+	void editedFieldKeys.value;
+	return selectiveClone(props.initialValues, fieldDefinitionsMap.value);
+});
 
 const values = computed(() => {
 	return Object.assign({}, clonedInitialValues.value, selectiveClone(props.modelValue, fieldDefinitionsMap.value));
