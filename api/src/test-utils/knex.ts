@@ -6,6 +6,7 @@
 import { systemCollectionNames } from '@directus/system-data';
 import knex from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
+import { format, type SqlLanguage } from 'sql-formatter';
 import { vi } from 'vitest';
 
 /**
@@ -285,4 +286,28 @@ export function mockSchemaTable() {
 		callback(createMockTableBuilder());
 		return Promise.resolve();
 	});
+}
+
+/**
+ * Formats SQL captured by the knex-mock-client tracker, so snapshots of queries are readable. Clauses and columns get
+ * their own line and subqueries are indented. Only whitespace is changed, so the snapshot still shows the exact query.
+ *
+ * Mock clients always quote identifiers with double quotes, whichever database they stand in for, so the PostgreSQL
+ * dialect is used by default.
+ *
+ * @example
+ * ```typescript
+ * await db.select('id').from('articles').where('status', 'published');
+ *
+ * expect(formatSql(tracker.history.select[0]!.sql)).toMatchInlineSnapshot();
+ * ```
+ */
+export function formatSql(sql: string, language: SqlLanguage = 'postgresql') {
+	const formatted = format(sql, { language, paramTypes: { positional: true }, keywordCase: 'preserve', tabWidth: 2 });
+
+	if (formatted.replace(/\s+/g, '') !== sql.replace(/\s+/g, '')) {
+		throw new Error(`Formatting changed more than whitespace of the SQL: ${sql}`);
+	}
+
+	return formatted;
 }
