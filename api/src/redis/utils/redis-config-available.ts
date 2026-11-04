@@ -1,19 +1,4 @@
-import { useEnv } from '@directus/env';
-
-/**
- * Environment variables that start with `REDIS_` but don't configure a connection. These have
- * defaults, so they're always present and can't be used to infer that Redis is configured.
- *
- * Kept as an explicit list rather than checking against `DEFAULTS`, as many tests mock `@directus/env` without it.
- * Drift is caught by the tests, which run against the actual defaults.
- */
-const NON_CONNECTION_KEYS = new Set([
-	'REDIS_ENABLED',
-	'REDIS_BUS_NAMESPACE',
-	'REDIS_LOCK_NAMESPACE',
-	'REDIS_PERMISSIONS_NAMESPACE',
-	'REDIS_COUNTERS_NAMESPACE',
-]);
+import { DEFAULTS, useEnv } from '@directus/env';
 
 /**
  * Check if Redis configuration exists in the current project's environment configuration
@@ -21,9 +6,15 @@ const NON_CONNECTION_KEYS = new Set([
 export const redisConfigAvailable = () => {
 	const env = useEnv();
 
-	if (env.REDIS_ENABLED !== undefined) {
-		return env.REDIS_ENABLED;
+	if ('REDIS_ENABLED' in env) {
+		return env['REDIS_ENABLED'] === true;
 	}
 
-	return 'REDIS' in env || Object.keys(env).some((key) => key.startsWith('REDIS_') && !NON_CONNECTION_KEYS.has(key));
+	return (
+		'REDIS' in env ||
+		Object.entries(env).some(
+			([key, value]) =>
+				key.startsWith('REDIS_') && (!(key in DEFAULTS) || value !== DEFAULTS[key as keyof typeof DEFAULTS]),
+		)
+	);
 };

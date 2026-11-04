@@ -55,3 +55,23 @@ test('Returns false if no Redis environment variables exist', () => {
 
 	expect(redisConfigAvailable()).toBe(false);
 });
+
+test('Returns false if REDIS_ variables only have their default values', () => {
+	vi.mocked(useEnv).mockReturnValue(
+		mockEnv({
+			REDIS_BUS_NAMESPACE: 'directus:bus',
+		}),
+	);
+
+	expect(redisConfigAvailable()).toBe(false);
+});
+
+test('Returns true if a defaulted REDIS_ variable is changed from its default', () => {
+	vi.mocked(useEnv).mockReturnValue(
+		mockEnv({
+			REDIS_BUS_NAMESPACE: 'custom:bus',
+		}),
+	);
+
+	expect(redisConfigAvailable()).toBe(true);
+});
