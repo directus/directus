@@ -2283,6 +2283,19 @@ show_more: Show More
 show_less: Show Less
 retry: Retry
 ai:
+  flow_operations:
+    model: Model
+    model_placeholder: Select a model or type provider:model-id
+    start_from: 'Start from:'
+    start_over: Start over
+    replace_marker:
+      Replace **{marker}** with flow data, like `{'{'}{'{'} $trigger.payload.your_field {'}'}{'}'}` or `{'{'}{'{'}
+      step_key.your_field {'}'}{'}'}`. Otherwise the model gets it as written. See the [data chain
+      docs](https://directus.com/docs/guides/flows/data-chain) for what each flow has.
+    choose_files: Choose from library
+    permissions_trigger: From Trigger
+    permissions_public: Public Role
+    permissions_full: Full Access
   thinking: Thinking...
   input: Input
   output: Output
@@ -3339,6 +3352,97 @@ operation_variables_note:
   **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using
   **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  ai-text:
+    name: AI Text
+    model_note: 'Models from the providers set up in Settings → AI. To use another model, type provider:model-id.'
+    prompt_note:
+      What you want the model to do. Insert flow data with {'{'}{'{'} … {'}'}{'}'}, from the trigger or an earlier step.
+      See the [data chain](https://directus.com/docs/guides/flows/data-chain) and
+      [triggers](https://directus.com/docs/guides/flows/triggers) docs for what each flow has.
+    system_note: Optional. Standing rules for every run, like tone, audience, or language.
+    files_note:
+      Images, PDFs, and text files the model can read. On a file upload trigger, {'{'}{'{'}$trigger.key{'}'}{'}'} is the
+      uploaded file.
+    permissions_note:
+      Whose access is used to read the files. With Full Access, any file id in the flow data can be sent to the AI
+      provider.
+    output_note:
+      Text returns one string. Object returns named values that later steps can use, like
+      {'{'}{'{'}step_key.output.alt{'}'}{'}'}.
+    max_output_tokens_note:
+      Caps the length and cost of each run. Models that reason count that too, so a low limit can end a run before the
+      answer. Leave empty to use the model default.
+    fields_note: Each field becomes a value in the output. Clear descriptions get better results.
+    description: Generate text or structured data with an AI model
+    no_providers: No AI providers configured. Add an API key in Settings → AI.
+    prompt_placeholder: Describe what the model should do with your flow data
+    system: System Prompt
+    system_placeholder: You write for developers. Be concise and friendly.
+    files: Files
+    files_placeholder: File IDs or {'{'}{'{'}$trigger.key{'}'}{'}'}
+    output: Output
+    object: Object
+    returns: Returns
+    max_output_tokens: Max Output Tokens
+    max_output_tokens_placeholder: Model default
+    fields: Output Fields
+    type_text: Text
+    type_number: Number
+    type_integer: Whole Number
+    type_boolean: True/False
+    type_strings: List of Text
+    type_numbers: List of Numbers
+    type_object: Object
+    type_objects: List of Objects
+    nested_fields: Fields Inside
+    choices_note: Optional. The model can only answer with one of these.
+    choices_placeholder: Add a choice and press enter
+    required_label: Always return a value
+    required_note: When off, the model can return null if the value isn't there.
+    output_schema: Output Schema
+    view_fields: Fields
+    view_json: JSON
+    schema_unsupported:
+      This schema uses features the field editor can't show, like $ref, a field with more than one type, or a list of
+      lists. Edit it as JSON.
+    schema_note: Fields and JSON edit the same schema. Changes in one show up in the other.
+    paste_example: Paste an example
+    generate_schema: Generate with AI
+    generate_disabled: Needs a model allowed in Settings → AI
+    generate_placeholder: 'Alt text, a mood (calm, busy, or dark), and the focal point as x and y'
+    generate_note: Describe the values you want back. The AI turns this into fields. Uses {model}.
+    regenerate: Try Again
+    generate_incomplete: The AI's answer was cut off. Try again.
+    row_error: "{error} This change isn't saved until you fix it."
+    schema_errors:
+      unknown_type: Output field "{name}" has an unknown type, "{type}".
+      empty_fields: Output field "{name}" needs at least one field inside it.
+      duplicate_name: Two output fields are named "{name}". Names must be different.
+      reserved_name: '"{name}" can''t be an output field name.'
+      example_null: '"{path}" is null. Use a sample value so its type is clear.'
+    generate_failed: 'Generating fields failed ({status}). Try again.'
+    generate_empty: The AI didn't suggest any fields. Try describing the values in more detail.
+    suggested_fields: Suggested Fields
+    generate_replaces: Using these replaces the current schema.
+    use_fields: Use These Fields
+    optional: optional
+    example: Example Result
+    example_note:
+      A sample of what you want back. Text values become instructions for the model, numbers and true/false set the
+      type, and the first item of a list sets the type of every item. This replaces the current schema.
+    example_invalid: Paste a JSON object with at least one key.
+    use_example: Use Example
+    field_description_note: What should go here? The model reads this.
+    schema: JSON Schema
+    choose_files_disabled: 'Files come from flow data. Clear the value to pick files from the library.'
+    starting_points:
+      describe_image: Alt text & focal point
+      summarize: Summarize
+      translate: Translate
+      improve: Improve writing
+      seo_description: SEO description
+      categorize: Categorize
+      moderate: Moderate
   condition:
     name: Condition
     description: Route a Flow based on If / Else logic

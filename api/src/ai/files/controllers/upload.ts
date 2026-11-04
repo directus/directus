@@ -1,14 +1,12 @@
 import type { IncomingHttpHeaders } from 'node:http';
 import type { StandardProviderType } from '@directus/ai';
-import { AI_ALLOWED_MIME_TYPES } from '@directus/ai';
+import { AI_ALLOWED_MIME_TYPES, AI_MAX_FILE_SIZE } from '@directus/ai';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
 import { useLogger } from '../../../logger/index.js';
 import { uploadToProvider } from '../lib/upload-to-provider.js';
 import type { UploadedFile } from '../types.js';
-
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 const ALLOWED_MIME_TYPES: Set<string> = new Set(AI_ALLOWED_MIME_TYPES);
 
@@ -43,7 +41,7 @@ async function parseMultipart(headers: IncomingHttpHeaders, stream: NodeJS.Reada
 
 		const bb = Busboy({
 			headers: headers as Record<string, string>,
-			limits: { fileSize: MAX_FILE_SIZE, files: 1 },
+			limits: { fileSize: AI_MAX_FILE_SIZE, files: 1 },
 		});
 
 		bb.on('file', (_name, fileStream, info) => {
@@ -57,7 +55,7 @@ async function parseMultipart(headers: IncomingHttpHeaders, stream: NodeJS.Reada
 				fileStream.destroy();
 
 				safeReject(
-					new InvalidPayloadError({ reason: `File exceeds maximum size of ${MAX_FILE_SIZE / (1024 * 1024)}MB` }),
+					new InvalidPayloadError({ reason: `File exceeds maximum size of ${AI_MAX_FILE_SIZE / (1024 * 1024)}MB` }),
 				);
 			});
 
