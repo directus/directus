@@ -7,7 +7,7 @@ export type Preset = {
 	color?: string | null;
 	user: string | null;
 	role: string | null;
-	collection: string;
+	collection: string | null;
 	search: string | null;
 	filter: Filter | null;
 	layout: string | null;

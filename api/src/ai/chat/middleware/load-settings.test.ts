@@ -1,3 +1,4 @@
+import { DEFAULT_ALLOWED_MODELS } from '@directus/ai';
 import type { Request, Response } from 'express';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { loadSettings } from './load-settings.js';
@@ -9,9 +10,11 @@ vi.mock('../../../utils/get-schema.js');
 const mockReadSingleton = vi.fn();
 const mockGetSchema = vi.fn();
 
-vi.mocked(await import('../../../services/settings.js')).SettingsService = vi.fn().mockImplementation(() => ({
-	readSingleton: mockReadSingleton,
-}));
+vi.mocked(await import('../../../services/settings.js')).SettingsService = vi.fn().mockImplementation(function () {
+	return {
+		readSingleton: mockReadSingleton,
+	};
+});
 
 vi.mocked(await import('../../../utils/get-schema.js')).getSchema = mockGetSchema;
 
@@ -81,7 +84,7 @@ describe('loadSettings', () => {
 					openaiCompatibleHeaders: [{ header: 'X-Custom', value: 'value' }],
 					openaiAllowedModels: ['gpt-5'],
 					anthropicAllowedModels: ['claude-sonnet-4-5'],
-					googleAllowedModels: null,
+					googleAllowedModels: DEFAULT_ALLOWED_MODELS.google,
 					systemPrompt: 'You are Directus.',
 				},
 				systemPrompt: 'You are Directus.',
@@ -89,6 +92,15 @@ describe('loadSettings', () => {
 		});
 
 		expect(nextFunction).toHaveBeenCalledTimes(1);
+	});
+
+	test('should keep an empty allowed models list instead of falling back to defaults', async () => {
+		mockReadSingleton.mockResolvedValue({ ai_openai_allowed_models: [] });
+
+		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
+
+		expect(mockResponse.locals!['ai'].settings.openaiAllowedModels).toEqual([]);
+		expect(mockResponse.locals!['ai'].settings.anthropicAllowedModels).toEqual(DEFAULT_ALLOWED_MODELS.anthropic);
 	});
 
 	test('should handle missing settings with null defaults', async () => {
@@ -120,9 +132,9 @@ describe('loadSettings', () => {
 					openaiCompatibleName: null,
 					openaiCompatibleModels: null,
 					openaiCompatibleHeaders: null,
-					openaiAllowedModels: null,
-					anthropicAllowedModels: null,
-					googleAllowedModels: null,
+					openaiAllowedModels: DEFAULT_ALLOWED_MODELS.openai,
+					anthropicAllowedModels: DEFAULT_ALLOWED_MODELS.anthropic,
+					googleAllowedModels: DEFAULT_ALLOWED_MODELS.google,
 					systemPrompt: null,
 				},
 				systemPrompt: undefined,
@@ -161,9 +173,9 @@ describe('loadSettings', () => {
 					openaiCompatibleName: null,
 					openaiCompatibleModels: null,
 					openaiCompatibleHeaders: null,
-					openaiAllowedModels: null,
-					anthropicAllowedModels: null,
-					googleAllowedModels: null,
+					openaiAllowedModels: DEFAULT_ALLOWED_MODELS.openai,
+					anthropicAllowedModels: DEFAULT_ALLOWED_MODELS.anthropic,
+					googleAllowedModels: DEFAULT_ALLOWED_MODELS.google,
 					systemPrompt: 'System prompt here',
 				},
 				systemPrompt: 'System prompt here',
@@ -202,9 +214,9 @@ describe('loadSettings', () => {
 					openaiCompatibleName: 'Ollama',
 					openaiCompatibleModels: [{ id: 'llama3', name: 'Llama 3', context: 8192 }],
 					openaiCompatibleHeaders: null,
-					openaiAllowedModels: null,
-					anthropicAllowedModels: null,
-					googleAllowedModels: null,
+					openaiAllowedModels: DEFAULT_ALLOWED_MODELS.openai,
+					anthropicAllowedModels: DEFAULT_ALLOWED_MODELS.anthropic,
+					googleAllowedModels: DEFAULT_ALLOWED_MODELS.google,
 					systemPrompt: null,
 				},
 				systemPrompt: null,
@@ -283,9 +295,9 @@ describe('loadSettings', () => {
 					openaiCompatibleName: null,
 					openaiCompatibleModels: null,
 					openaiCompatibleHeaders: null,
-					openaiAllowedModels: null,
-					anthropicAllowedModels: null,
-					googleAllowedModels: null,
+					openaiAllowedModels: DEFAULT_ALLOWED_MODELS.openai,
+					anthropicAllowedModels: DEFAULT_ALLOWED_MODELS.anthropic,
+					googleAllowedModels: DEFAULT_ALLOWED_MODELS.google,
 					systemPrompt: null,
 				},
 				systemPrompt: null,
@@ -324,9 +336,9 @@ describe('loadSettings', () => {
 					openaiCompatibleName: '',
 					openaiCompatibleModels: null,
 					openaiCompatibleHeaders: null,
-					openaiAllowedModels: null,
-					anthropicAllowedModels: null,
-					googleAllowedModels: null,
+					openaiAllowedModels: DEFAULT_ALLOWED_MODELS.openai,
+					anthropicAllowedModels: DEFAULT_ALLOWED_MODELS.anthropic,
+					googleAllowedModels: DEFAULT_ALLOWED_MODELS.google,
 					systemPrompt: '',
 				},
 				systemPrompt: '',

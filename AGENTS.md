@@ -17,8 +17,8 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 ## Requirements
 
-- Node.js 22
-- pnpm >=10 <11
+- Node.js 26
+- pnpm >=12 <13
 
 ## Common Commands
 
@@ -47,9 +47,9 @@ pnpm --filter @directus/api test    # Test specific package
 cd api && pnpm test:watch           # Watch mode in package
 pnpm test:coverage                  # Coverage report
 
-# Blackbox/E2E tests (requires building first)
-pnpm test:blackbox
-TEST_DB=postgres pnpm test:blackbox  # Against specific database
+# End to end tests (requires building first, and Docker running)
+cd tests/e2e && pnpm test              # Against sqlite
+cd tests/e2e && pnpm vitest --project postgres   # Against a specific database
 ```
 
 ## Architecture

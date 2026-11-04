@@ -53,6 +53,14 @@ const mockFlows = [
 		trigger: 'manual',
 		status: 'active',
 	},
+	{
+		id: 'test-flow-5',
+		name: 'test-flow-5',
+		description: 'test-description-5',
+		options: { collections: ['test-collection'], location: 'hidden' },
+		trigger: 'manual',
+		status: 'active',
+	},
 ];
 
 const mountOptions = {
@@ -100,7 +108,7 @@ test('computes flows items correctly', () => {
 	const flowsItems = (wrapper.vm as any).flows;
 
 	expect(flowsItems).toBeInstanceOf(Array);
-	expect(flowsItems).toHaveLength(2);
+	expect(flowsItems).toHaveLength(3);
 
 	expect(flowsItems[0]).toHaveProperty('value');
 	expect(flowsItems[0]).toHaveProperty('text');
@@ -113,6 +121,10 @@ test('computes flows items correctly', () => {
 		{
 			value: 'test-flow-2',
 			text: 'test-flow-2: test-description-2 (inactive)',
+		},
+		{
+			value: 'test-flow-5',
+			text: 'test-flow-5: test-description-5',
 		},
 	]);
 });

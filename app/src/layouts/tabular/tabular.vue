@@ -152,6 +152,7 @@ function removeField(fieldKey: string) {
 			>
 				<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 					<RenderDisplay
+						:class="{ inactive: header.inactive }"
 						:value="getFromAliasedItem(item, header.value)"
 						:display="header.field.display"
 						:options="header.field.displayOptions"
@@ -299,6 +300,11 @@ function removeField(fieldKey: string) {
 	padding-block-start: var(--content-padding-top-table);
 	inline-size: max-content;
 	min-inline-size: 100%;
+}
+
+/* Columns of an inactive collection stay readable, but are muted and can't be sorted on */
+.inactive {
+	color: var(--theme--foreground-subdued);
 }
 
 .v-table {

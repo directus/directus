@@ -442,7 +442,7 @@ describe('sanitizePayload', () => {
 			test('filters fields on multiple related collections', async () => {
 				vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection) => {
 					if (collection === 'articles') return ['id', 'a2o_items'];
-					if (collection === 'articles_builder') return ['*'];
+					if (collection === 'articles_a2o_items') return ['*'];
 					if (collection === 'authors') return ['name'];
 					if (collection === 'a2o_collection') return ['id'];
 					return [];

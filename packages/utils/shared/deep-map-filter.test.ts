@@ -236,9 +236,9 @@ test('map m2a filter', () => {
 						},
 					},
 					context: {
-						collection: schema.collections['articles_builder'],
-						field: schema.collections['articles_builder']!.fields['item'],
-						relation: getRelation(schema.relations, 'articles_builder', 'item'),
+						collection: schema.collections['articles_sections'],
+						field: schema.collections['articles_sections']!.fields['item'],
+						relation: getRelation(schema.relations, 'articles_sections', 'item'),
 						relationType: 'a2o',
 						leaf: false,
 						path: ['sections'],

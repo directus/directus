@@ -6,6 +6,7 @@ export const DIRECTUS_PRICING_URL: string = `https://${DIRECTUS_DOMAIN}/pricing`
 export const DIRECTUS_SALES_URL: string = `https://${DIRECTUS_DOMAIN}/sales`;
 export const DIRECTUS_SUPPORT_URL: string = `https://${DIRECTUS_DOMAIN}/support`;
 export const DIRECTUS_LICENSING_DOCS_URL: string = `https://${DIRECTUS_DOMAIN}/docs/licensing/overview`;
+export const DIRECTUS_SECURITY_BEST_PRACTICES_URL: string = `https://${DIRECTUS_DOMAIN}/docs/guides/security/best-practices`;
 export const DIRECTUS_MSCL_URL: string = `https://${DIRECTUS_DOMAIN}/mscl`;
 export const DIRECTUS_PRIVACY_URL: string = `https://${DIRECTUS_DOMAIN}/privacy`;
 export const DIRECTUS_DPA_URL: string = `https://${DIRECTUS_DOMAIN}/dpa`;

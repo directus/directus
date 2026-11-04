@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/types';
-import { clone, forEach, pick } from 'lodash';
+import { clone, forEach, pick } from 'lodash-es';
 import { computed, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
 import TableHeader from './table-header.vue';
@@ -15,6 +15,7 @@ const HeaderDefaults: Header = {
 	align: 'left',
 	sortable: true,
 	width: null,
+	flex: null,
 	description: null,
 };
 
@@ -159,16 +160,21 @@ const columnStyle = computed<{ header: string; rows: string }>(() => {
 	};
 
 	function generate(useVal?: 'auto') {
+		const hasFlexColumn = internalHeaders.value.some((header) => header.flex);
+
 		let gridTemplateColumns = internalHeaders.value
 			.map((header) => {
-				return header.width ? (useVal ?? `${header.width}px`) : '8.125rem';
+				// Flex columns share the remaining space and shrink before the table overflows
+				if (header.flex) return `minmax(100px, ${header.flex}fr)`;
+				if (!header.width) return '8.125rem';
+				return useVal ?? `${header.width}px`;
 			})
 			.reduce((acc, val) => (acc += ' ' + val), '');
 
 		if (props.showSelect !== 'none') gridTemplateColumns = '2rem ' + gridTemplateColumns;
 		if (props.showManualSort) gridTemplateColumns = '2rem ' + gridTemplateColumns;
 
-		gridTemplateColumns = gridTemplateColumns + ' 1fr';
+		gridTemplateColumns += hasFlexColumn ? ' auto' : ' 1fr';
 
 		if (hasItemAppendSlot.value || hasHeaderAppendSlot.value) gridTemplateColumns += ' min-content';
 
@@ -214,15 +220,18 @@ function onItemSelected(event: ItemSelectEvent) {
 	emit('update:modelValue', selection);
 }
 
+const selectedKeys = computed(
+	() => new Set(props.selectionUseKeys ? props.modelValue : props.modelValue.map((item) => item[props.itemKey])),
+);
+
+const selectedIndexes = computed(() => new Set(props.modelValue.map((item) => item.$index)));
+
 function getSelectedState(item: Item) {
 	if (!props.selectionUseKeys && itemHasNoKeyYet(item)) {
-		const selectedKeys = props.modelValue.map((item) => item.$index);
-		return selectedKeys.includes(item.$index);
+		return selectedIndexes.value.has(item.$index);
 	}
 
-	const selectedKeys = props.selectionUseKeys ? props.modelValue : props.modelValue.map((item) => item[props.itemKey]);
-
-	return selectedKeys.includes(item[props.itemKey]);
+	return selectedKeys.value.has(item[props.itemKey]);
 }
 
 function onToggleSelectAll(value: boolean) {

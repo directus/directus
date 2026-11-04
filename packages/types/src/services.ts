@@ -212,7 +212,7 @@ interface FieldsService {
  */
 interface FoldersService {
 	/**
-	 * Builds a full folder tree starting from a given root folder.
+	 * Builds a full folder tree starting from a given root folder. Covers file-library folders only.
 	 */
 	buildTree(root: string): Promise<Map<string, string>>;
 }

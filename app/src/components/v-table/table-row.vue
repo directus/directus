@@ -32,16 +32,25 @@ const props = withDefaults(
 
 const emit = defineEmits(['click', 'item-selected']);
 
-const cssHeight = computed(() => {
-	return {
-		tableRow: props.height + 2 + 'px',
-		renderTemplateImage: props.height - 16 + 'px',
-	};
-});
+// Inline vars instead of CSS v-bind(): v-bind() adds a MutationObserver and a document-wide query per row
+const rowStyle = computed(() => ({
+	'--table-row-height': props.height + 2 + 'px',
+	'--table-row-image-height': props.height - 16 + 'px',
+}));
 
 function onKeydown(e: KeyboardEvent) {
 	if (e.metaKey) return;
 	if ((e.target as HTMLElement)?.tagName === 'TR' && ['Enter', ' '].includes(e.key)) emit('click', e);
+}
+
+function onClick(event: MouseEvent) {
+	const rowAction = (event.target as HTMLElement | null)?.closest('[data-row-action]');
+
+	if (rowAction && (event.currentTarget as HTMLElement).contains(rowAction)) {
+		return;
+	}
+
+	emit('click', event);
 }
 </script>
 
@@ -49,15 +58,16 @@ function onKeydown(e: KeyboardEvent) {
 	<tr
 		class="table-row"
 		:class="{ subdued: subdued, clickable: hasClickListener }"
+		:style="rowStyle"
 		:tabindex="hasClickListener ? 0 : undefined"
-		@click="$emit('click', $event)"
+		@click="onClick"
 		@keydown="onKeydown"
 	>
-		<td v-if="showManualSort" class="manual cell" @click.stop>
+		<td v-if="showManualSort" class="manual cell" data-row-action>
 			<VIcon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
 
-		<td v-if="showSelect !== 'none'" class="select cell" @click.stop>
+		<td v-if="showSelect !== 'none'" class="select cell" data-row-action>
 			<VCheckbox
 				:icon-on="showSelect === 'one' ? 'radio_button_checked' : undefined"
 				:icon-off="showSelect === 'one' ? 'radio_button_unchecked' : undefined"
@@ -85,7 +95,7 @@ function onKeydown(e: KeyboardEvent) {
 		</td>
 
 		<td class="spacer cell" />
-		<td v-if="$slots['item-append']" class="append cell" @click.stop>
+		<td v-if="$slots['item-append']" class="append cell" data-row-action>
 			<slot name="item-append" />
 		</td>
 	</tr>
@@ -95,7 +105,7 @@ function onKeydown(e: KeyboardEvent) {
 .table-row {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
 
-	block-size: v-bind('cssHeight.tableRow');
+	block-size: var(--table-row-height);
 
 	.cell {
 		display: flex;
@@ -145,10 +155,10 @@ function onKeydown(e: KeyboardEvent) {
 	}
 
 	:deep(.render-template) {
-		block-size: v-bind('cssHeight.tableRow');
+		block-size: var(--table-row-height);
 
 		img {
-			block-size: v-bind('cssHeight.renderTemplateImage');
+			block-size: var(--table-row-image-height);
 		}
 	}
 }

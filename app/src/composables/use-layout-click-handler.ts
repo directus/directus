@@ -1,7 +1,7 @@
 import { isPublishedVersionKey } from '@directus/constants';
 import { LayoutProps } from '@directus/extensions';
 import { Field, PrimaryKey } from '@directus/types';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { Ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Item } from '@/components/v-table/types';

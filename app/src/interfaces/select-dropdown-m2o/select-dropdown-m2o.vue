@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
 import { RouterLink } from 'vue-router';

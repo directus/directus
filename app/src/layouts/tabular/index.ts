@@ -2,7 +2,7 @@ import { useCollection, useItems, useSync } from '@directus/composables';
 import { isPublishedVersionKey } from '@directus/constants';
 import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
-import { debounce, flatten } from 'lodash';
+import { debounce, flatten } from 'lodash-es';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import TabularActions from './actions.vue';
@@ -16,6 +16,7 @@ import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { useVersionQuery } from '@/composables/use-version-query';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { isFieldCollectionInactive } from '@/utils/collection-status';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
@@ -286,11 +287,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 						const width = localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || 144;
 
+						const inactive = isFieldCollectionInactive(field);
+
 						return {
 							text: field.name,
 							value: field.key,
 							description,
 							width,
+							inactive,
 							align: layoutOptions.value?.align?.[field.key] || 'left',
 							field: {
 								display: field.meta?.display || getDefaultDisplayForType(field.type),
@@ -301,7 +305,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 								field: field.field,
 								collection: field.collection,
 							},
-							sortable: ['json', 'alias', 'presentation', 'translations'].includes(field.type) === false,
+							sortable:
+								inactive === false && ['json', 'alias', 'presentation', 'translations'].includes(field.type) === false,
 						} as HeaderRaw;
 					});
 				},

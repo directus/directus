@@ -30,7 +30,7 @@ export class WebSocketController extends SocketController {
 				message = WebSocketMessage.parse(await emitter.emitFilter('websocket.message', message, { client }));
 				emitter.emitAction('websocket.message', { message, client });
 			} catch (error) {
-				handleWebSocketError(client, error, 'server');
+				handleWebSocketError(client, error, { type: 'server' });
 				return;
 			}
 		});

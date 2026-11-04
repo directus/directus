@@ -1,4 +1,5 @@
 import type { AbstractServiceOptions, Accountability, Permission, Query, SchemaOverview } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isArray } from 'lodash-es';
 import getDatabase from '../database/index.js';
@@ -7,6 +8,7 @@ import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { getCases } from '../permissions/modules/process-ast/lib/get-cases.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { isAdmin } from '../utils/is-admin.js';
 
 export class MetaService {
 	knex: Knex;
@@ -45,7 +47,9 @@ export class MetaService {
 	async filterCount(collection: string, query: Query): Promise<number> {
 		let permissions: Permission[] = [];
 
-		if (this.accountability && this.accountability.admin !== true) {
+		let filter = query.filter ?? null;
+
+		if (!isAdmin(this.accountability)) {
 			const context = { knex: this.knex, schema: this.schema };
 
 			await validateAccess(
@@ -60,6 +64,10 @@ export class MetaService {
 			const policies = await fetchPolicies(this.accountability, context);
 
 			permissions = await fetchPermissions({ action: 'read', accountability: this.accountability, policies }, context);
+
+			if (collection === 'directus_folders') {
+				filter = mergeFilters(filter, { type: { _neq: 'flows' } });
+			}
 		}
 
 		const { cases } = getCases(collection, permissions, []);
@@ -69,7 +77,7 @@ export class MetaService {
 			collection,
 			this.knex(collection),
 			{
-				filter: query.filter ?? null,
+				filter,
 				search: query.search ?? null,
 			},
 			this.schema,

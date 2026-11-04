@@ -37,7 +37,9 @@ describe('trigger flow tool', () => {
 				() => mockFlowManager as unknown as ReturnType<typeof getFlowManager>,
 			);
 
-			vi.mocked(FlowsService).mockImplementation(() => mockFlowsService as unknown as FlowsService);
+			vi.mocked(FlowsService).mockImplementation(function () {
+				return mockFlowsService as unknown as FlowsService;
+			});
 		});
 
 		test('should trigger a flow with minimal parameters', async () => {
@@ -100,7 +102,9 @@ describe('trigger flow tool', () => {
 				() => mockFlowManager as unknown as ReturnType<typeof getFlowManager>,
 			);
 
-			vi.mocked(FlowsService).mockImplementation(() => mockFlowsService as unknown as FlowsService);
+			vi.mocked(FlowsService).mockImplementation(function () {
+				return mockFlowsService as unknown as FlowsService;
+			});
 		});
 
 		test('should propagate error from flowService', async () => {

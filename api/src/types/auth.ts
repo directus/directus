@@ -43,7 +43,7 @@ export type ShareData = {
 	share_id: string;
 	share_start: Date;
 	share_end: Date;
-	share_times_used: number;
+	share_times_used: number | null;
 	share_max_uses?: number;
 	share_password?: string;
 };
