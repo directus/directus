@@ -154,7 +154,7 @@ describe('aiObjectPostHandler', () => {
 	describe('provider configuration', () => {
 		it('should throw ServiceUnavailableError when provider has no API key', async () => {
 			vi.mocked(resolveLanguageModel).mockImplementation(() => {
-				throw new ServiceUnavailableError({ service: 'openai', reason: 'No API key configured for LLM provider' });
+				throw new ServiceUnavailableError({ service: 'openai', reason: 'No API key configured for AI provider' });
 			});
 
 			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(
