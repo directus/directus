@@ -49,6 +49,8 @@ const props = withDefaults(
 		extensions?: string[];
 		/** Field `extensionOptions` option: per-extension values, keyed by extension id. */
 		extensionOptions?: StoredExtensionOptions;
+		/** Extra URL schemes links may use (e.g. `myapp`), on top of Tiptap's defaults. */
+		linkProtocols?: string[] | null;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -90,6 +92,7 @@ const fieldSchema = buildFieldSchema({
 	customFormats: props.customFormats,
 	extensions: props.extensions,
 	extensionOptions: props.extensionOptions,
+	linkProtocols: props.linkProtocols,
 	comparisonMode: props.comparisonMode,
 });
 
@@ -293,12 +296,13 @@ const {
 	linkSelection,
 	isEditingLink,
 	targetsImage,
+	linkUrlError,
 	isLinkSaveable,
 	openLinkDrawer,
 	closeLinkDrawer,
 	saveLink,
 	unlink,
-} = useLink(editor as Ref<Editor>);
+} = useLink(editor as Ref<Editor>, fieldSchema.linkProtocols);
 
 const {
 	mediaDrawerOpen,
@@ -455,6 +459,7 @@ onKeyStroke('Escape', () => {
 			v-model:link-selection="linkSelection"
 			:editing="isEditingLink"
 			:targets-image="targetsImage"
+			:url-error="linkUrlError"
 			:saveable="isLinkSaveable"
 			@save="saveLink"
 			@unlink="unlink"
