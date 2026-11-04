@@ -1,4 +1,4 @@
-import type { EnvType } from '../types/env-type.js';
+import type { TypeMapEntry } from '../types/env-type.js';
 
 /**
  * Environment variables that we expect to be in a certain type. Will set the default casting of
@@ -11,6 +11,11 @@ import type { EnvType } from '../types/env-type.js';
  * - `CORS_ORIGIN`: `true` to reflect the request origin, or the allowed origin(s)
  * - `IP_TRUST_PROXY`: a boolean, hop count, or comma separated list of trusted addresses
  * - `IP_CUSTOM_HEADER`: `false` to disable, or the name of the header to read the IP from
+ *
+ * Variables that accept multiple types list them as an array, of which the first type is used for casting. Including
+ * `'false'` (eg `['milliseconds', 'false']`) marks variables that can be turned off by configuring `false` (or an
+ * empty value). This is kept as `false` as-is instead of being cast to the variable's type, which would
+ * otherwise discard it and fall back to the default
  */
 export const TYPE_MAP = {
 	LOG_LEVEL: 'string',
@@ -92,7 +97,7 @@ export const TYPE_MAP = {
 	PRESSURE_LIMITER_SAMPLE_INTERVAL: 'number',
 	PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION: 'number',
 	PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY: 'number',
-	PRESSURE_LIMITER_RETRY_AFTER: 'string',
+	PRESSURE_LIMITER_RETRY_AFTER: ['string', 'false'],
 	PRESSURE_LIMITER_MAX_MEMORY_RSS: 'number',
 	PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED: 'number',
 
@@ -224,9 +229,9 @@ export const TYPE_MAP = {
 	RETENTION_ENABLED: 'boolean',
 	RETENTION_BATCH: 'number',
 	RETENTION_SCHEDULE: 'string',
-	ACTIVITY_RETENTION: 'milliseconds',
-	REVISIONS_RETENTION: 'milliseconds',
-	FLOW_LOGS_RETENTION: 'milliseconds',
+	ACTIVITY_RETENTION: ['milliseconds', 'false'],
+	REVISIONS_RETENTION: ['milliseconds', 'false'],
+	FLOW_LOGS_RETENTION: ['milliseconds', 'false'],
 	AUTOSAVE_REVISION_INTERVAL: 'number',
 
 	OPENAPI_ENABLED: 'boolean',
@@ -325,20 +330,9 @@ export const TYPE_MAP = {
 	'AUTH_.+_GROUP_DN': 'string',
 	'AUTH_.+_BIND_PASSWORD': 'string',
 	'AUTH_.+_COOKIE_SECURE': 'boolean',
-} as const;
+} as const satisfies Record<string, TypeMapEntry>;
 
-/**
- * Variables that can be turned off by configuring `false` (or an empty value). This is kept as `false` as-is instead of being cast to the
- * variable's type, which would otherwise discard it and fall back to the default
- */
-export const DISABLEABLE_KEYS = [
-	'ACTIVITY_RETENTION',
-	'REVISIONS_RETENTION',
-	'FLOW_LOGS_RETENTION',
-	'PRESSURE_LIMITER_RETRY_AFTER',
-] as const satisfies readonly (keyof typeof TYPE_MAP)[];
-
-export const TYPE_MAP_REGEX: [RegExp, EnvType][] = Object.entries(TYPE_MAP).map(([name, value]) => [
+export const TYPE_MAP_REGEX: [RegExp, TypeMapEntry][] = Object.entries(TYPE_MAP).map(([name, value]) => [
 	new RegExp(`^${name}$`),
 	value,
 ]);

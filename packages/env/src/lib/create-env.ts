@@ -1,9 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { DEFAULTS } from '../constants/defaults.js';
-import { DISABLEABLE_KEYS } from '../constants/type-map.js';
 import type { Env } from '../types/env.js';
 import { getConfigPath } from '../utils/get-config-path.js';
-import { getDefaultType } from '../utils/get-default-type.js';
+import { getDefaultType, getTypeMapEntry } from '../utils/get-type-map-entry.js';
 import { getCastFlag } from '../utils/has-cast-prefix.js';
 import { isDirectusVariable } from '../utils/is-directus-variable.js';
 import { isFileKey } from '../utils/is-file-key.js';
@@ -56,14 +55,23 @@ function resolveFileValue(key: string, value: unknown): [string, unknown] {
  * Casts a configured value. Returns `undefined` for values that should fall back to the default
  */
 function parseValue(key: string, value: unknown): unknown {
-	if ((DISABLEABLE_KEYS as readonly string[]).includes(key) && (value === false || value === 'false' || value === '')) {
+	const entry = getTypeMapEntry(key);
+
+	const isDisableable = Array.isArray(entry) && entry.includes('false');
+
+	if (isDisableable && (value === false || value === 'false' || value === '')) {
 		return false;
 	}
 
 	if (value === '') {
-		// An empty string or list is a meaningful value, for other types the default applies
-		const keepEmpty = ['string', 'array', 'string-array'].includes(getDefaultType(key) ?? 'string');
-		return key in DEFAULTS && !keepEmpty ? undefined : cast(value, key);
+		const type = getDefaultType(key);
+
+		// An empty list is a meaningful value
+		if (type === 'array' || type === 'string-array') return cast(value, key);
+
+		// For other known variables, an empty value is treated as not configured so that the default applies (or the
+		// variable is left out), instead of being cast to eg `0`. Unknown variables keep the empty string as-is
+		return type !== null || key in DEFAULTS ? undefined : value;
 	}
 
 	const castValue = cast(value, key);

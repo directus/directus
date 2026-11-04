@@ -26,6 +26,7 @@ import { ItemsService } from './items.js';
 
 const env = useEnv();
 const SYNC_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
+const DEPLOYMENT_CACHE_TTL = env.CACHE_DEPLOYMENT_TTL || 5000; // `0` falls back to 5s
 
 export class DeploymentService extends ItemsService<DeploymentConfig> {
 	constructor(options: AbstractServiceOptions) {
@@ -322,10 +323,10 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const projects = await driver.listProjects();
 
 		// Store in cache
-		await setCacheValueWithExpiry(deploymentCache, cacheKey, projects, env.CACHE_DEPLOYMENT_TTL);
+		await setCacheValueWithExpiry(deploymentCache, cacheKey, projects, DEPLOYMENT_CACHE_TTL);
 
 		// Return with full TTL (just cached)
-		return { data: projects, remainingTTL: env.CACHE_DEPLOYMENT_TTL };
+		return { data: projects, remainingTTL: DEPLOYMENT_CACHE_TTL };
 	}
 
 	/**
@@ -347,10 +348,10 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const project = await driver.getProject(projectId);
 
 		// Store in cache
-		await setCacheValueWithExpiry(deploymentCache, cacheKey, project, env.CACHE_DEPLOYMENT_TTL);
+		await setCacheValueWithExpiry(deploymentCache, cacheKey, project, DEPLOYMENT_CACHE_TTL);
 
 		// Return with full TTL (just cached)
-		return { data: project, remainingTTL: env.CACHE_DEPLOYMENT_TTL };
+		return { data: project, remainingTTL: DEPLOYMENT_CACHE_TTL };
 	}
 
 	/**

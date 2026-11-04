@@ -17,23 +17,27 @@ describe('Email Rate Limiter', () => {
 	});
 
 	describe('useEmailRateLimiterQueue', () => {
-		test('should resolve to undefined when rate limiter is not enabled', async () => {
+		test('should not limit when rate limiter is not enabled', async () => {
 			vi.mocked(useEnv).mockReturnValue(
 				mockEnv({
-					RATE_LIMITER_EMAIL_ENABLED: 'false',
+					RATE_LIMITER_EMAIL_ENABLED: false,
+					RATE_LIMITER_EMAIL_POINTS: 1,
+					RATE_LIMITER_EMAIL_DURATION: 10,
+					RATE_LIMITER_EMAIL_QUEUE_SIZE: 0,
 				}),
 			);
 
 			// dynamic import because useEnv is accessed in the file root
 			const { useEmailRateLimiterQueue } = await import('./rate-limiter.js');
 
-			await expect(useEmailRateLimiterQueue()).resolves.toBeUndefined();
+			// consume more points than available, which would throw if the rate limiter was enabled
+			await expect(Promise.all([useEmailRateLimiterQueue(), useEmailRateLimiterQueue()])).resolves.not.toThrowError();
 		});
 
 		test('should be able to consume all points without error', async () => {
 			vi.mocked(useEnv).mockReturnValue(
 				mockEnv({
-					RATE_LIMITER_EMAIL_ENABLED: 'true',
+					RATE_LIMITER_EMAIL_ENABLED: true,
 					RATE_LIMITER_EMAIL_POINTS: 3,
 					RATE_LIMITER_EMAIL_DURATION: 10,
 					RATE_LIMITER_EMAIL_QUEUE_SIZE: 0,
@@ -52,7 +56,7 @@ describe('Email Rate Limiter', () => {
 		test('should throw an error after all points have been consumed', async () => {
 			vi.mocked(useEnv).mockReturnValue(
 				mockEnv({
-					RATE_LIMITER_EMAIL_ENABLED: 'true',
+					RATE_LIMITER_EMAIL_ENABLED: true,
 					RATE_LIMITER_EMAIL_POINTS: 3,
 					RATE_LIMITER_EMAIL_DURATION: 10,
 					RATE_LIMITER_EMAIL_QUEUE_SIZE: 0,
@@ -76,7 +80,7 @@ describe('Email Rate Limiter', () => {
 		test('should be able to fill the queue without error', async () => {
 			vi.mocked(useEnv).mockReturnValue(
 				mockEnv({
-					RATE_LIMITER_EMAIL_ENABLED: 'true',
+					RATE_LIMITER_EMAIL_ENABLED: true,
 					RATE_LIMITER_EMAIL_POINTS: 1,
 					RATE_LIMITER_EMAIL_DURATION: 0.02, // 20ms keep this low for test speed
 					RATE_LIMITER_EMAIL_QUEUE_SIZE: 2,
@@ -95,7 +99,7 @@ describe('Email Rate Limiter', () => {
 		test('should throw an error after the queue is full', async () => {
 			vi.mocked(useEnv).mockReturnValue(
 				mockEnv({
-					RATE_LIMITER_EMAIL_ENABLED: 'true',
+					RATE_LIMITER_EMAIL_ENABLED: true,
 					RATE_LIMITER_EMAIL_POINTS: 1,
 					RATE_LIMITER_EMAIL_DURATION: 1,
 					RATE_LIMITER_EMAIL_QUEUE_SIZE: 2,
@@ -119,7 +123,7 @@ describe('Email Rate Limiter', () => {
 		test('should include a custom message in the error', async () => {
 			vi.mocked(useEnv).mockReturnValue(
 				mockEnv({
-					RATE_LIMITER_EMAIL_ENABLED: 'true',
+					RATE_LIMITER_EMAIL_ENABLED: true,
 					RATE_LIMITER_EMAIL_POINTS: 1,
 					RATE_LIMITER_EMAIL_DURATION: 1,
 					RATE_LIMITER_EMAIL_QUEUE_SIZE: 0,

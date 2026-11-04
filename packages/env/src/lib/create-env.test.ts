@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getConfigPath } from '../utils/get-config-path.js';
-import { getDefaultType } from '../utils/get-default-type.js';
+import { getDefaultType } from '../utils/get-type-map-entry.js';
 import { isDirectusVariable } from '../utils/is-directus-variable.js';
 import { isFileKey } from '../utils/is-file-key.js';
 import { readConfigurationFromProcess } from '../utils/read-configuration-from-process.js';
@@ -212,7 +212,7 @@ test('Casts regular values', () => {
 });
 
 describe('Empty values', () => {
-	test.each(['number', 'boolean', 'milliseconds', 'bytes', 'json'] as const)(
+	test.each(['string', 'number', 'boolean', 'milliseconds', 'bytes', 'json', null] as const)(
 		'Uses the default for empty values of %s variables with a default',
 		(type) => {
 			vi.mocked(getDefaultType).mockReturnValue(type);
@@ -224,20 +224,30 @@ describe('Empty values', () => {
 		},
 	);
 
-	test.each(['string', 'array', 'string-array', null] as const)(
-		'Keeps empty values of %s variables with a default',
+	test.each(['string', 'number', 'boolean', 'milliseconds', 'bytes', 'json'] as const)(
+		'Leaves out empty values of %s variables without a default',
 		(type) => {
-			vi.mocked(getDefaultType).mockReturnValue(type);
-			vi.mocked(cast).mockImplementation((value, key) => (key === 'DEFAULT' && type?.includes('array') ? [] : value));
-			processConfig['DEFAULT'] = '';
+			vi.mocked(getDefaultType).mockImplementation((key) => (key === 'PROCESS' ? type : null));
+			processConfig['PROCESS'] = '';
 
 			const env = createEnv();
 
-			expect(env['DEFAULT']).toEqual(type?.includes('array') ? [] : '');
+			expect(env).not.toHaveProperty('PROCESS');
 		},
 	);
 
-	test('Keeps empty values of variables without a default', () => {
+	test.each(['array', 'string-array'] as const)('Keeps empty values of %s variables with a default', (type) => {
+		vi.mocked(getDefaultType).mockReturnValue(type);
+		vi.mocked(cast).mockImplementation((value, key) => (key === 'DEFAULT' ? [] : value));
+		processConfig['DEFAULT'] = '';
+
+		const env = createEnv();
+
+		expect(env['DEFAULT']).toEqual([]);
+	});
+
+	test('Keeps empty values of unknown variables without a default', () => {
+		vi.mocked(getDefaultType).mockReturnValue(null);
 		processConfig['PROCESS'] = '';
 
 		const env = createEnv();
