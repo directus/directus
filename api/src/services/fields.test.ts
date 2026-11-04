@@ -21,6 +21,8 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
+vi.mock('../versioning/sync-version-tables.js', () => ({ syncVersionTables: vi.fn() }));
+
 vi.mock('../../src/database/index', async () => {
 	const { mockDatabase } = await import('../test-utils/database.js');
 	return mockDatabase();

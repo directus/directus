@@ -28,6 +28,7 @@ import { validateAccess } from '../permissions/modules/validate-access/validate-
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
+import { syncVersionTables } from '../versioning/sync-version-tables.js';
 import { ItemsService } from './items.js';
 
 const env = useEnv();
@@ -285,6 +286,8 @@ export class RelationsService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 				});
+
+				await syncVersionTables(trx);
 			});
 		} finally {
 			if (runPostColumnChange) {
@@ -427,6 +430,8 @@ export class RelationsService {
 						);
 					}
 				}
+
+				await syncVersionTables(trx);
 			});
 		} finally {
 			if (runPostColumnChange) {
@@ -479,7 +484,8 @@ export class RelationsService {
 
 		try {
 			await transaction(this.knex, async (trx) => {
-				const existingConstraints = await this.foreignKeys();
+				// Read through the transaction, SQLite only has a single connection which the transaction holds
+				const existingConstraints = await createInspector(trx).foreignKeys();
 				const constraintNames = existingConstraints.map((key) => key.constraint_name);
 
 				if (
@@ -494,6 +500,8 @@ export class RelationsService {
 				if (existingRelation.meta) {
 					await trx('directus_relations').delete().where({ many_collection: collection, many_field: field });
 				}
+
+				await syncVersionTables(trx);
 
 				const actionEvent = {
 					event: 'relations.delete',

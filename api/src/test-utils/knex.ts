@@ -3,10 +3,14 @@
  * Provides mock knex instances, table builders, and tracker utilities
  */
 
+import { createRequire } from 'node:module';
 import { systemCollectionNames } from '@directus/system-data';
 import knex from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
+import { format, type SqlLanguage } from 'sql-formatter';
 import { vi } from 'vitest';
+
+const require = createRequire(import.meta.url);
 
 /**
  * Creates a mocked knex instance with tracker and schema builder support
@@ -285,4 +289,78 @@ export function mockSchemaTable() {
 		callback(createMockTableBuilder());
 		return Promise.resolve();
 	});
+}
+
+/**
+ * Formats SQL captured by the knex-mock-client tracker, so snapshots of queries are readable. Clauses and columns get
+ * their own line and subqueries are indented. Only whitespace is changed, so the snapshot still shows the exact query.
+ *
+ * Mock clients always quote identifiers with double quotes, whichever database they stand in for, so the PostgreSQL
+ * dialect is used by default.
+ *
+ * @example
+ * ```typescript
+ * await db.select('id').from('articles').where('status', 'published');
+ *
+ * expect(formatSql(tracker.history.select[0]!.sql)).toMatchInlineSnapshot();
+ * ```
+ */
+export function formatSql(sql: string, language: SqlLanguage = 'postgresql') {
+	const formatted = format(sql, { language, paramTypes: { positional: true }, keywordCase: 'preserve', tabWidth: 2 });
+
+	if (formatted.replace(/\s+/g, '') !== sql.replace(/\s+/g, '')) {
+		throw new Error(`Formatting changed more than whitespace of the SQL: ${sql}`);
+	}
+
+	return formatted;
+}
+
+const DIALECTS = {
+	postgres: { dialect: 'postgres', language: 'postgresql' },
+	mysql: { dialect: 'mysql2', language: 'mysql' },
+	mssql: { dialect: 'mssql', language: 'transactsql' },
+	sqlite: { dialect: 'sqlite3', language: 'sqlite' },
+	oracle: { dialect: 'oracledb', language: 'plsql' },
+} as const satisfies Record<string, { dialect: string; language: SqlLanguage }>;
+
+/**
+ * Creates a knex instance that compiles queries, including schema changes, with the real dialect of a vendor, but runs
+ * them against a knex-mock-client tracker. The client keeps the class name of the real dialect (like `Client_PG`), so
+ * `getDatabaseClient` and the database helpers work as for the real vendor. Also returns the `formatSql` language of
+ * the vendor.
+ *
+ * knex-mock-client's own `dialect` option swaps the prototype of the client class, which breaks the class name and
+ * leaks between tests using different dialects.
+ *
+ * @example
+ * ```typescript
+ * const { db, tracker } = createMockDialectKnex('mysql');
+ *
+ * tracker.on.any(() => true).response([]);
+ *
+ * await db.schema.createTable('articles', (table) => table.increments('id'));
+ *
+ * expect(tracker.history.all[0]!.sql).toBe('create table `articles` (`id` int unsigned not null auto_increment primary key)');
+ * ```
+ */
+export function createMockDialectKnex(vendor: keyof typeof DIALECTS) {
+	const Dialect = require(`knex/lib/dialects/${DIALECTS[vendor].dialect}/index.js`) as typeof knex.Client;
+
+	const Client = class extends Dialect {};
+
+	Object.defineProperty(Client, 'name', { value: Dialect.name });
+
+	for (const key of Object.getOwnPropertyNames(MockClient.prototype)) {
+		if (key === 'constructor' || key === '_attachDialectQueryCompiler') continue;
+
+		Object.defineProperty(Client.prototype, key, Object.getOwnPropertyDescriptor(MockClient.prototype, key)!);
+	}
+
+	Object.defineProperty(Client.prototype, 'isMock', { value: true });
+
+	// Oracle names the sequences and triggers of auto increments based on the version
+	const db = knex.default({ client: Client, useNullAsDefault: true, ...(vendor === 'oracle' ? { version: '19.0' } : {}) });
+	const tracker = createTracker(db);
+
+	return { db, tracker, language: DIALECTS[vendor].language as SqlLanguage };
 }
