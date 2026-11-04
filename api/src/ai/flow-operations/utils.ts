@@ -116,8 +116,6 @@ export async function getOperationAccountability(
 	return getAccountabilityForRole(permissions, context);
 }
 
-const ALLOWED_TYPES: ReadonlySet<string> = new Set(AI_ALLOWED_MIME_TYPES);
-
 /** Ids can come from flow data, so the number of reads is capped too, not just their size */
 const MAX_FILES = 20;
 
@@ -127,10 +125,16 @@ export interface ModelFile {
 	data: Buffer;
 	mediaType: string;
 	filename: string | null;
+	width: number | null;
+	height: number | null;
 }
 
 /** Reads files one at a time, stopping once they add up to more than the AI file size limit. */
-export async function readFilesForModel(assets: AssetsService, ids: string[]): Promise<ModelFile[]> {
+export async function readFilesForModel(
+	assets: AssetsService,
+	ids: string[],
+	allowedTypes: readonly string[] = AI_ALLOWED_MIME_TYPES,
+): Promise<ModelFile[]> {
 	if (ids.length > MAX_FILES) {
 		throw new InvalidPayloadError({ reason: `Send at most ${MAX_FILES} files to the model` });
 	}
@@ -139,7 +143,7 @@ export async function readFilesForModel(assets: AssetsService, ids: string[]): P
 	let remaining = AI_MAX_FILE_SIZE;
 
 	for (const id of ids) {
-		const file = await readFileForModel(assets, id, remaining);
+		const file = await readFileForModel(assets, id, allowedTypes, remaining);
 		remaining -= file.data.length;
 		files.push(file);
 	}
@@ -147,10 +151,15 @@ export async function readFilesForModel(assets: AssetsService, ids: string[]): P
 	return files;
 }
 
-async function readFileForModel(assets: AssetsService, id: string, limit: number): Promise<ModelFile> {
+async function readFileForModel(
+	assets: AssetsService,
+	id: string,
+	allowedTypes: readonly string[],
+	limit: number,
+): Promise<ModelFile> {
 	const { stream, file } = await assets.getAsset(id);
 
-	if (!ALLOWED_TYPES.has(file.type)) {
+	if (!allowedTypes.includes(file.type)) {
 		stream.destroy();
 		throw new InvalidPayloadError({ reason: `File "${id}" has type "${file.type}", which isn't supported here` });
 	}
@@ -178,5 +187,11 @@ async function readFileForModel(assets: AssetsService, id: string, limit: number
 		chunks.push(Buffer.from(chunk));
 	}
 
-	return { data: Buffer.concat(chunks), mediaType: file.type, filename: file.filename_download ?? null };
+	return {
+		data: Buffer.concat(chunks),
+		mediaType: file.type,
+		filename: file.filename_download ?? null,
+		width: file.width ?? null,
+		height: file.height ?? null,
+	};
 }
