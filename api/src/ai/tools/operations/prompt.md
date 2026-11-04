@@ -63,6 +63,7 @@ Omit `position_x`/`position_y` - positions are handled automatically (see Positi
 
 <available_operations> Core operations available in Directus:
 
+- **ai-text** - Generate text or structured data with a configured AI provider
 - **condition** - Evaluate filter rules to determine execution path
 - **exec** - Execute custom JavaScript/TypeScript code in sandboxed environment
 - **item-create** - Create items in a collection
@@ -163,7 +164,20 @@ same row, `reject` one row down. Wiring up the chain is all it takes to keep the
 Explicit positions are applied as-is (no layout pass) and re-derived on the next link change. Grid: 14x14 panels,
 columns every 18 units, rows every 16, first operation at (19,1). </positioning_system>
 
-<operation_examples> **condition** - Evaluates filter rules
+<operation_examples> **ai-text** - Generate text or structured data. `model` is `provider:model-id` and the provider
+needs an API key in AI settings. Returns `{ text }`, or `{ output }` when `output` is `object`.
+
+```json
+{
+	"type": "ai-text",
+	"options": { "model": "anthropic:claude-sonnet-5-5", "prompt": "Summarize: {{ $trigger.payload.body }}" }
+}
+// Object: "output": "object", "schema": {"type": "object", "properties": {"tags": {"type": "array", "items": {"type": "string"}}}, "required": ["tags"]} -> {{ op_key.output.tags }}
+// Keys left out of "required" are sent as nullable, so later steps always see every key (null when missing).
+// Optional: "system", "files" (file ids), "maxOutputTokens", "permissions"
+```
+
+**condition** - Evaluates filter rules
 
 ```json
 { "type": "condition", "options": { "filter": { "$trigger": { "payload": { "status": { "_eq": "published" } } } } } }
