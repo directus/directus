@@ -238,62 +238,59 @@ export class RelationsService {
 			});
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		this.helpers.schema.preRelationChange(relation);
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			const metaRow = {
-				...(relation.meta || {}),
-				many_collection: relation.collection,
-				many_field: relation.field,
-				one_collection: relation.related_collection || null,
-			};
+			return await this.helpers.schema.withForeignKeysDisabled(async () => {
+				const metaRow = {
+					...(relation.meta || {}),
+					many_collection: relation.collection,
+					many_field: relation.field,
+					one_collection: relation.related_collection || null,
+				};
 
-			await transaction(this.knex, async (trx) => {
-				if (relation.related_collection) {
-					await trx.schema.alterTable(relation.collection!, (table) => {
-						this.alterType(table, relation, fieldSchema.nullable);
+				await transaction(this.knex, async (trx) => {
+					if (relation.related_collection) {
+						await trx.schema.alterTable(relation.collection!, (table) => {
+							this.alterType(table, relation, fieldSchema.nullable);
 
-						const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
+							const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
 
-						const builder = table
-							.foreign(relation.field!, constraintName)
-							.references(
-								`${relation.related_collection!}.${this.schema.collections[relation.related_collection!]!.primary}`,
-							);
+							const builder = table
+								.foreign(relation.field!, constraintName)
+								.references(
+									`${relation.related_collection!}.${this.schema.collections[relation.related_collection!]!.primary}`,
+								);
 
-						if (relation.schema?.on_delete) {
-							builder.onDelete(relation.schema.on_delete);
-						}
+							if (relation.schema?.on_delete) {
+								builder.onDelete(relation.schema.on_delete);
+							}
 
-						if (relation.schema?.on_update) {
-							builder.onUpdate(relation.schema.on_update);
-						}
+							if (relation.schema?.on_update) {
+								builder.onUpdate(relation.schema.on_update);
+							}
+						});
+					}
+
+					const relationsItemService = new ItemsService('directus_relations', {
+						knex: trx,
+						schema: this.schema,
+						// We don't set accountability here. If you have read access to certain fields, you are
+						// allowed to extract the relations regardless of permissions to directus_relations. This
+						// happens in `filterForbidden` down below
 					});
-				}
 
-				const relationsItemService = new ItemsService('directus_relations', {
-					knex: trx,
-					schema: this.schema,
-					// We don't set accountability here. If you have read access to certain fields, you are
-					// allowed to extract the relations regardless of permissions to directus_relations. This
-					// happens in `filterForbidden` down below
+					await relationsItemService.createOne(metaRow, {
+						bypassEmitAction: (params) =>
+							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+					});
+
+					await syncVersionTables(trx);
 				});
-
-				await relationsItemService.createOne(metaRow, {
-					bypassEmitAction: (params) =>
-						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-				});
-
-				await syncVersionTables(trx);
 			});
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
@@ -347,8 +344,6 @@ export class RelationsService {
 			});
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
-
 		const updatedSchema = relation.schema ? { ...existingRelation.schema, ...relation.schema } : null;
 
 		const updatedRelation: Partial<Relation> = {
@@ -364,80 +359,78 @@ export class RelationsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await transaction(this.knex, async (trx) => {
-				if (updatedSchema && existingRelation.related_collection) {
-					await trx.schema.alterTable(collection, (table) => {
-						let constraintName: string = getDefaultIndexName('foreign', collection, field);
+			return await this.helpers.schema.withForeignKeysDisabled(async () => {
+				await transaction(this.knex, async (trx) => {
+					if (updatedSchema && existingRelation.related_collection) {
+						await trx.schema.alterTable(collection, (table) => {
+							let constraintName: string = getDefaultIndexName('foreign', collection, field);
 
-						// If the FK already exists in the DB, drop it first
-						if (existingRelation?.schema) {
-							constraintName = existingRelation.schema.constraint_name || constraintName;
-							table.dropForeign(field, constraintName);
+							// If the FK already exists in the DB, drop it first
+							if (existingRelation?.schema) {
+								constraintName = existingRelation.schema.constraint_name || constraintName;
+								table.dropForeign(field, constraintName);
 
-							constraintName = this.helpers.schema.constraintName(constraintName);
-						}
+								constraintName = this.helpers.schema.constraintName(constraintName);
+							}
 
-						this.alterType(table, existingRelation, fieldSchema.nullable);
+							this.alterType(table, existingRelation, fieldSchema.nullable);
 
-						const builder = table
-							.foreign(field, constraintName || undefined)
-							.references(
-								`${existingRelation.related_collection!}.${
-									this.schema.collections[existingRelation.related_collection!]!.primary
-								}`,
-							);
+							const builder = table
+								.foreign(field, constraintName || undefined)
+								.references(
+									`${existingRelation.related_collection!}.${
+										this.schema.collections[existingRelation.related_collection!]!.primary
+									}`,
+								);
 
-						/**
-						 * Delete/update handlers must be set on every request when applicable, excluding them
-						 * from a partial update will cause them to revert to no action.
-						 */
-						if (updatedSchema.on_delete) {
-							builder.onDelete(updatedSchema.on_delete);
-						}
+							/**
+							 * Delete/update handlers must be set on every request when applicable, excluding them
+							 * from a partial update will cause them to revert to no action.
+							 */
+							if (updatedSchema.on_delete) {
+								builder.onDelete(updatedSchema.on_delete);
+							}
 
-						if (updatedSchema.on_update) {
-							builder.onUpdate(updatedSchema.on_update);
-						}
-					});
-				}
-
-				const relationsItemService = new ItemsService('directus_relations', {
-					knex: trx,
-					schema: this.schema,
-					// We don't set accountability here. If you have read access to certain fields, you are
-					// allowed to extract the relations regardless of permissions to directus_relations. This
-					// happens in `filterForbidden` down below
-				});
-
-				if (relation.meta) {
-					if (existingRelation?.meta) {
-						await relationsItemService.updateOne(existingRelation.meta.id, relation.meta, {
-							bypassEmitAction: (params) =>
-								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							if (updatedSchema.on_update) {
+								builder.onUpdate(updatedSchema.on_update);
+							}
 						});
-					} else {
-						await relationsItemService.createOne(
-							{
-								...(relation.meta || {}),
-								many_collection: collection,
-								many_field: field,
-								one_collection: existingRelation.related_collection || null,
-							},
-							{
+					}
+
+					const relationsItemService = new ItemsService('directus_relations', {
+						knex: trx,
+						schema: this.schema,
+						// We don't set accountability here. If you have read access to certain fields, you are
+						// allowed to extract the relations regardless of permissions to directus_relations. This
+						// happens in `filterForbidden` down below
+					});
+
+					if (relation.meta) {
+						if (existingRelation?.meta) {
+							await relationsItemService.updateOne(existingRelation.meta.id, relation.meta, {
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							},
-						);
+							});
+						} else {
+							await relationsItemService.createOne(
+								{
+									...(relation.meta || {}),
+									many_collection: collection,
+									many_field: field,
+									one_collection: existingRelation.related_collection || null,
+								},
+								{
+									bypassEmitAction: (params) =>
+										opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+								},
+							);
+						}
 					}
-				}
 
-				await syncVersionTables(trx);
+					await syncVersionTables(trx);
+				});
 			});
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
@@ -479,54 +472,51 @@ export class RelationsService {
 			});
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await transaction(this.knex, async (trx) => {
-				// Read through the transaction, SQLite only has a single connection which the transaction holds
-				const existingConstraints = await createInspector(trx).foreignKeys();
-				const constraintNames = existingConstraints.map((key) => key.constraint_name);
+			return await this.helpers.schema.withForeignKeysDisabled(async () => {
+				await transaction(this.knex, async (trx) => {
+					// Read through the transaction, SQLite only has a single connection which the transaction holds
+					const existingConstraints = await createInspector(trx).foreignKeys();
+					const constraintNames = existingConstraints.map((key) => key.constraint_name);
 
-				if (
-					existingRelation.schema?.constraint_name &&
-					constraintNames.includes(existingRelation.schema.constraint_name)
-				) {
-					await trx.schema.alterTable(existingRelation.collection, (table) => {
-						table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
-					});
-				}
+					if (
+						existingRelation.schema?.constraint_name &&
+						constraintNames.includes(existingRelation.schema.constraint_name)
+					) {
+						await trx.schema.alterTable(existingRelation.collection, (table) => {
+							table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
+						});
+					}
 
-				if (existingRelation.meta) {
-					await trx('directus_relations').delete().where({ many_collection: collection, many_field: field });
-				}
+					if (existingRelation.meta) {
+						await trx('directus_relations').delete().where({ many_collection: collection, many_field: field });
+					}
 
-				await syncVersionTables(trx);
+					await syncVersionTables(trx);
 
-				const actionEvent = {
-					event: 'relations.delete',
-					meta: {
-						payload: [field],
-						collection: collection,
-					},
-					context: {
-						database: this.knex,
-						schema: this.schema,
-						accountability: this.accountability,
-					},
-				};
+					const actionEvent = {
+						event: 'relations.delete',
+						meta: {
+							payload: [field],
+							collection: collection,
+						},
+						context: {
+							database: this.knex,
+							schema: this.schema,
+							accountability: this.accountability,
+						},
+					};
 
-				if (opts?.bypassEmitAction) {
-					opts.bypassEmitAction(actionEvent);
-				} else {
-					nestedActionEvents.push(actionEvent);
-				}
+					if (opts?.bypassEmitAction) {
+						opts.bypassEmitAction(actionEvent);
+					} else {
+						nestedActionEvents.push(actionEvent);
+					}
+				});
 			});
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}

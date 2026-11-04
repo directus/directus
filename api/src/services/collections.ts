@@ -99,7 +99,6 @@ export class CollectionsService {
 		payload.collection = await this.helpers.schema.parseCollectionName(payload.collection);
 
 		const nestedActionEvents: ActionEventParams[] = [];
-		const runPostColumnChange = payload.meta?.versioning ? await this.helpers.schema.preColumnChange() : false;
 
 		try {
 			const existingCollections: string[] = [
@@ -117,135 +116,145 @@ export class CollectionsService {
 			// Create the collection/fields in a transaction so it'll be reverted in case of errors or
 			// permission problems. This might not work reliably in MySQL, as it doesn't support DDL in
 			// transactions.
-			await transaction(this.knex, async (trx) => {
-				if (payload.schema) {
-					if ('fields' in payload && !Array.isArray(payload.fields)) {
-						throw new InvalidPayloadError({ reason: `"fields" must be an array` });
-					}
-
-					/**
-					 * Directus heavily relies on the primary key of a collection, so we have to make sure that
-					 * every collection that is created has a primary key. If no primary key field is created
-					 * while making the collection, we default to an auto incremented id named `id`
-					 */
-
-					const injectedPrimaryKeyField: RawField = {
-						field: 'id',
-						type: 'integer',
-						meta: {
-							hidden: true,
-							interface: 'numeric',
-							readonly: true,
-						},
-						schema: {
-							is_primary_key: true,
-							has_auto_increment: true,
-						},
-					};
-
-					if (!payload.fields || payload.fields.length === 0) {
-						payload.fields = [injectedPrimaryKeyField];
-					} else if (
-						!payload.fields.some((f) => f.schema?.is_primary_key === true || f.schema?.has_auto_increment === true)
-					) {
-						payload.fields = [injectedPrimaryKeyField, ...payload.fields];
-					}
-
-					// Ensure that every field meta has the field/collection fields filled correctly
-					payload.fields = payload.fields.map((field) => {
-						if (field.meta) {
-							field.meta = {
-								...field.meta,
-								field: field.field,
-								collection: payload.collection!,
-							};
+			const createInTransaction = () =>
+				transaction(this.knex, async (trx) => {
+					if (payload.schema) {
+						if ('fields' in payload && !Array.isArray(payload.fields)) {
+							throw new InvalidPayloadError({ reason: `"fields" must be an array` });
 						}
 
-						// Add flag for specific database type overrides
-						const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+						/**
+						 * Directus heavily relies on the primary key of a collection, so we have to make sure that
+						 * every collection that is created has a primary key. If no primary key field is created
+						 * while making the collection, we default to an auto incremented id named `id`
+						 */
 
-						if (flagToAdd) {
-							addFieldFlag(field, flagToAdd);
+						const injectedPrimaryKeyField: RawField = {
+							field: 'id',
+							type: 'integer',
+							meta: {
+								hidden: true,
+								interface: 'numeric',
+								readonly: true,
+							},
+							schema: {
+								is_primary_key: true,
+								has_auto_increment: true,
+							},
+						};
+
+						if (!payload.fields || payload.fields.length === 0) {
+							payload.fields = [injectedPrimaryKeyField];
+						} else if (
+							!payload.fields.some((f) => f.schema?.is_primary_key === true || f.schema?.has_auto_increment === true)
+						) {
+							payload.fields = [injectedPrimaryKeyField, ...payload.fields];
 						}
 
-						return field;
-					});
+						// Ensure that every field meta has the field/collection fields filled correctly
+						payload.fields = payload.fields.map((field) => {
+							if (field.meta) {
+								field.meta = {
+									...field.meta,
+									field: field.field,
+									collection: payload.collection!,
+								};
+							}
 
-					const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
+							// Add flag for specific database type overrides
+							const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
 
-					await trx.schema.createTable(payload.collection, (table) => {
-						for (const field of payload.fields!) {
-							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-								fieldsService.addColumnToTable(table, payload.collection, field, {
-									attemptConcurrentIndex,
-								});
+							if (flagToAdd) {
+								addFieldFlag(field, flagToAdd);
+							}
+
+							return field;
+						});
+
+						const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
+
+						await trx.schema.createTable(payload.collection, (table) => {
+							for (const field of payload.fields!) {
+								if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+									fieldsService.addColumnToTable(table, payload.collection, field, {
+										attemptConcurrentIndex,
+									});
+								}
+							}
+						});
+
+						const fieldItemsService = new ItemsService('directus_fields', {
+							knex: trx,
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						const fieldPayloads = payload
+							.fields!.filter((field) => field.meta)
+							.map((field) => field.meta) as FieldMeta[];
+
+						// Sort new fields that does not have any group defined, in ascending order.
+						// Lodash merge is used so that the "sort" can be overridden if defined.
+						let sortedFieldPayloads = fieldPayloads
+							.filter((field) => field?.group === undefined || field?.group === null)
+							.map((field, index) => merge({ sort: index + 1 }, field));
+
+						// Sort remaining new fields with group defined, if any, in ascending order.
+						// sortedFieldPayloads will be less than fieldPayloads if it filtered out any fields with group defined.
+						if (sortedFieldPayloads.length < fieldPayloads.length) {
+							const fieldsWithGroups = groupBy(
+								fieldPayloads.filter((field) => field?.group),
+								(field) => field?.group,
+							);
+
+							// The sort order is restarted from 1 for fields in each group and appended to sortedFieldPayloads.
+							// Lodash merge is used so that the "sort" can be overridden if defined.
+							for (const [_group, fields] of Object.entries(fieldsWithGroups)) {
+								sortedFieldPayloads = sortedFieldPayloads.concat(
+									fields.map((field, index) => merge({ sort: index + 1 }, field)),
+								);
 							}
 						}
-					});
 
-					const fieldItemsService = new ItemsService('directus_fields', {
-						knex: trx,
-						accountability: this.accountability,
-						schema: this.schema,
-					});
-
-					const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
-
-					// Sort new fields that does not have any group defined, in ascending order.
-					// Lodash merge is used so that the "sort" can be overridden if defined.
-					let sortedFieldPayloads = fieldPayloads
-						.filter((field) => field?.group === undefined || field?.group === null)
-						.map((field, index) => merge({ sort: index + 1 }, field));
-
-					// Sort remaining new fields with group defined, if any, in ascending order.
-					// sortedFieldPayloads will be less than fieldPayloads if it filtered out any fields with group defined.
-					if (sortedFieldPayloads.length < fieldPayloads.length) {
-						const fieldsWithGroups = groupBy(
-							fieldPayloads.filter((field) => field?.group),
-							(field) => field?.group,
-						);
-
-						// The sort order is restarted from 1 for fields in each group and appended to sortedFieldPayloads.
-						// Lodash merge is used so that the "sort" can be overridden if defined.
-						for (const [_group, fields] of Object.entries(fieldsWithGroups)) {
-							sortedFieldPayloads = sortedFieldPayloads.concat(
-								fields.map((field, index) => merge({ sort: index + 1 }, field)),
-							);
-						}
-					}
-
-					await fieldItemsService.createMany(sortedFieldPayloads, {
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						bypassLimits: true,
-					});
-				}
-
-				if (payload.meta) {
-					const collectionsItemsService = new ItemsService('directus_collections', {
-						knex: trx,
-						accountability: this.accountability,
-						schema: this.schema,
-					});
-
-					await collectionsItemsService.createOne(
-						{
-							...payload.meta,
-							collection: payload.collection,
-						},
-						{
+						await fieldItemsService.createMany(sortedFieldPayloads, {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						},
-					);
-				}
+							bypassLimits: true,
+						});
+					}
 
-				if (payload.meta?.versioning) {
-					await syncVersionTables(trx);
-				}
+					if (payload.meta) {
+						const collectionsItemsService = new ItemsService('directus_collections', {
+							knex: trx,
+							accountability: this.accountability,
+							schema: this.schema,
+						});
 
-				return payload.collection;
-			});
+						await collectionsItemsService.createOne(
+							{
+								...payload.meta,
+								collection: payload.collection,
+							},
+							{
+								bypassEmitAction: (params) =>
+									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							},
+						);
+					}
+
+					if (payload.meta?.versioning) {
+						await syncVersionTables(trx);
+					}
+
+					return payload.collection;
+				});
+
+			// Creating version tables alters the existing shadow and link tables of related collections
+			if (payload.meta?.versioning) {
+				await this.helpers.schema.withForeignKeysDisabled(createInTransaction);
+			} else {
+				await createInTransaction();
+			}
 
 			// concurrent index creation cannot be done inside the transaction
 			if (attemptConcurrentIndex && payload.schema && Array.isArray(payload.fields)) {
@@ -262,10 +271,6 @@ export class CollectionsService {
 
 			return payload.collection;
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
@@ -476,7 +481,6 @@ export class CollectionsService {
 		}
 
 		const nestedActionEvents: ActionEventParams[] = [];
-		let runPostColumnChange = false;
 
 		try {
 			if (!payload.meta) {
@@ -496,45 +500,44 @@ export class CollectionsService {
 			// Toggling versioning creates / drops the shadow and link tables
 			const versioningChanged = 'versioning' in payload.meta;
 
-			if (versioningChanged) {
-				runPostColumnChange = await this.helpers.schema.preColumnChange();
-			}
-
-			await transaction(this.knex, async (trx) => {
-				const collectionsItemsService = new ItemsService('directus_collections', {
-					knex: trx,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-
-				if (exists) {
-					await collectionsItemsService.updateOne(collectionKey, payload.meta!, {
-						...opts,
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+			const updateInTransaction = () =>
+				transaction(this.knex, async (trx) => {
+					const collectionsItemsService = new ItemsService('directus_collections', {
+						knex: trx,
+						accountability: this.accountability,
+						schema: this.schema,
 					});
-				} else {
-					await collectionsItemsService.createOne(
-						{ ...payload.meta, collection: collectionKey },
-						{
+
+					if (exists) {
+						await collectionsItemsService.updateOne(collectionKey, payload.meta!, {
 							...opts,
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						},
-					);
-				}
+						});
+					} else {
+						await collectionsItemsService.createOne(
+							{ ...payload.meta, collection: collectionKey },
+							{
+								...opts,
+								bypassEmitAction: (params) =>
+									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							},
+						);
+					}
 
-				if (versioningChanged) {
-					await syncVersionTables(trx);
-				}
-			});
+					if (versioningChanged) {
+						await syncVersionTables(trx);
+					}
+				});
+
+			if (versioningChanged) {
+				await this.helpers.schema.withForeignKeysDisabled(updateInTransaction);
+			} else {
+				await updateInTransaction();
+			}
 
 			return collectionKey;
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
@@ -675,173 +678,170 @@ export class CollectionsService {
 			throw new ForbiddenError();
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			const collections = await this.readByQuery();
+			return await this.helpers.schema.withForeignKeysDisabled(async () => {
+				const collections = await this.readByQuery();
 
-			const collectionToBeDeleted = collections.find((collection) => collection.collection === collectionKey);
+				const collectionToBeDeleted = collections.find((collection) => collection.collection === collectionKey);
 
-			if (!!collectionToBeDeleted === false) {
-				throw new ForbiddenError();
-			}
-
-			await transaction(this.knex, async (trx) => {
-				if (collectionToBeDeleted!.schema) {
-					// Version tables reference the live table, so they need to be cleaned up before it can be dropped
-					await syncVersionTables(trx, { exclude: [collectionKey] });
-
-					await trx.schema.dropTable(collectionKey);
+				if (!!collectionToBeDeleted === false) {
+					throw new ForbiddenError();
 				}
 
-				// Make sure this collection isn't used as a group in any other collections
-				await trx('directus_collections').update({ group: null }).where({ group: collectionKey });
+				await transaction(this.knex, async (trx) => {
+					if (collectionToBeDeleted!.schema) {
+						// Version tables reference the live table, so they need to be cleaned up before it can be dropped
+						await syncVersionTables(trx, { exclude: [collectionKey] });
 
-				if (collectionToBeDeleted!.meta) {
-					const collectionsItemsService = new ItemsService('directus_collections', {
-						knex: trx,
-						accountability: this.accountability,
-						schema: this.schema,
-					});
+						await trx.schema.dropTable(collectionKey);
+					}
 
-					await collectionsItemsService.deleteOne(collectionKey, {
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-					});
-				}
+					// Make sure this collection isn't used as a group in any other collections
+					await trx('directus_collections').update({ group: null }).where({ group: collectionKey });
 
-				if (collectionToBeDeleted!.schema) {
-					const fieldsService = new FieldsService({
-						knex: trx,
-						accountability: this.accountability,
-						schema: this.schema,
-					});
+					if (collectionToBeDeleted!.meta) {
+						const collectionsItemsService = new ItemsService('directus_collections', {
+							knex: trx,
+							accountability: this.accountability,
+							schema: this.schema,
+						});
 
-					const fieldItemsService = new ItemsService('directus_fields', {
-						knex: trx,
-						accountability: this.accountability,
-						schema: this.schema,
-					});
-
-					await fieldItemsService.deleteByQuery(
-						{
-							filter: {
-								collection: { _eq: collectionKey },
-							},
-						},
-						{
+						await collectionsItemsService.deleteOne(collectionKey, {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						},
-					);
-
-					await trx('directus_presets').delete().where('collection', '=', collectionKey);
-
-					const revisionsToDelete = await trx
-						.select('id')
-						.from('directus_revisions')
-						.where({ collection: collectionKey });
-
-					if (revisionsToDelete.length > 0) {
-						const chunks = chunk(
-							revisionsToDelete.map((record) => record.id),
-							10000,
-						);
-
-						for (const keys of chunks) {
-							await trx('directus_revisions').update({ parent: null }).whereIn('parent', keys);
-						}
+						});
 					}
 
-					await trx('directus_revisions').delete().where('collection', '=', collectionKey);
+					if (collectionToBeDeleted!.schema) {
+						const fieldsService = new FieldsService({
+							knex: trx,
+							accountability: this.accountability,
+							schema: this.schema,
+						});
 
-					await trx('directus_activity').delete().where('collection', '=', collectionKey);
-					await trx('directus_permissions').delete().where('collection', '=', collectionKey);
-					await trx('directus_relations').delete().where({ many_collection: collectionKey });
+						const fieldItemsService = new ItemsService('directus_fields', {
+							knex: trx,
+							accountability: this.accountability,
+							schema: this.schema,
+						});
 
-					const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(
-						this.schema.relations,
-					);
-
-					const collectionRelationList = getCollectionRelationList(collectionKey, collectionRelationTree);
-
-					// only process duplication fields if related collections have them
-					if (collectionRelationList.size !== 0) {
-						const collectionMetas = await trx
-							.select('collection', 'archive_field', 'sort_field', 'item_duplication_fields')
-							.from('directus_collections')
-							.whereIn('collection', Array.from(collectionRelationList))
-							.whereNotNull('item_duplication_fields');
-
-						await Promise.all(
-							Object.keys(this.schema.collections[collectionKey]?.fields ?? {}).map(async (fieldKey) => {
-								const collectionMetaUpdates = getCollectionMetaUpdates(
-									collectionKey,
-									fieldKey,
-									collectionMetas,
-									this.schema.collections,
-									fieldToCollectionList,
-								);
-
-								for (const meta of collectionMetaUpdates) {
-									await trx('directus_collections').update(meta.updates).where({ collection: meta.collection });
-								}
-							}),
-						);
-					}
-
-					const relations = this.schema.relations.filter((relation) => {
-						// Version tables have already been cleaned up above
-						if (isVersionTable(relation.collection)) return false;
-
-						return relation.collection === collectionKey || relation.related_collection === collectionKey;
-					});
-
-					for (const relation of relations) {
-						// Delete related o2m fields that point to current collection
-						if (relation.related_collection && relation.meta?.one_field) {
-							await fieldsService.deleteField(relation.related_collection, relation.meta.one_field, {
-								autoPurgeCache: false,
-								autoPurgeSystemCache: false,
+						await fieldItemsService.deleteByQuery(
+							{
+								filter: {
+									collection: { _eq: collectionKey },
+								},
+							},
+							{
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							});
+							},
+						);
+
+						await trx('directus_presets').delete().where('collection', '=', collectionKey);
+
+						const revisionsToDelete = await trx
+							.select('id')
+							.from('directus_revisions')
+							.where({ collection: collectionKey });
+
+						if (revisionsToDelete.length > 0) {
+							const chunks = chunk(
+								revisionsToDelete.map((record) => record.id),
+								10000,
+							);
+
+							for (const keys of chunks) {
+								await trx('directus_revisions').update({ parent: null }).whereIn('parent', keys);
+							}
 						}
 
-						// Delete related m2o fields that point to current collection
-						if (relation.related_collection === collectionKey) {
-							await fieldsService.deleteField(relation.collection, relation.field, {
-								autoPurgeCache: false,
-								autoPurgeSystemCache: false,
-								bypassEmitAction: (params) =>
-									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							});
+						await trx('directus_revisions').delete().where('collection', '=', collectionKey);
+
+						await trx('directus_activity').delete().where('collection', '=', collectionKey);
+						await trx('directus_permissions').delete().where('collection', '=', collectionKey);
+						await trx('directus_relations').delete().where({ many_collection: collectionKey });
+
+						const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(
+							this.schema.relations,
+						);
+
+						const collectionRelationList = getCollectionRelationList(collectionKey, collectionRelationTree);
+
+						// only process duplication fields if related collections have them
+						if (collectionRelationList.size !== 0) {
+							const collectionMetas = await trx
+								.select('collection', 'archive_field', 'sort_field', 'item_duplication_fields')
+								.from('directus_collections')
+								.whereIn('collection', Array.from(collectionRelationList))
+								.whereNotNull('item_duplication_fields');
+
+							await Promise.all(
+								Object.keys(this.schema.collections[collectionKey]?.fields ?? {}).map(async (fieldKey) => {
+									const collectionMetaUpdates = getCollectionMetaUpdates(
+										collectionKey,
+										fieldKey,
+										collectionMetas,
+										this.schema.collections,
+										fieldToCollectionList,
+									);
+
+									for (const meta of collectionMetaUpdates) {
+										await trx('directus_collections').update(meta.updates).where({ collection: meta.collection });
+									}
+								}),
+							);
+						}
+
+						const relations = this.schema.relations.filter((relation) => {
+							// Version tables have already been cleaned up above
+							if (isVersionTable(relation.collection)) return false;
+
+							return relation.collection === collectionKey || relation.related_collection === collectionKey;
+						});
+
+						for (const relation of relations) {
+							// Delete related o2m fields that point to current collection
+							if (relation.related_collection && relation.meta?.one_field) {
+								await fieldsService.deleteField(relation.related_collection, relation.meta.one_field, {
+									autoPurgeCache: false,
+									autoPurgeSystemCache: false,
+									bypassEmitAction: (params) =>
+										opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+								});
+							}
+
+							// Delete related m2o fields that point to current collection
+							if (relation.related_collection === collectionKey) {
+								await fieldsService.deleteField(relation.collection, relation.field, {
+									autoPurgeCache: false,
+									autoPurgeSystemCache: false,
+									bypassEmitAction: (params) =>
+										opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+								});
+							}
+						}
+
+						const a2oRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
+							return relation.meta?.one_allowed_collections?.includes(collectionKey);
+						});
+
+						for (const relation of a2oRelationsThatIncludeThisCollection) {
+							const newAllowedCollections = relation
+								.meta!.one_allowed_collections!.filter((collection) => collectionKey !== collection)
+								.join(',');
+
+							await trx('directus_relations')
+								.update({ one_allowed_collections: newAllowedCollections })
+								.where({ id: relation.meta!.id });
 						}
 					}
+				});
 
-					const a2oRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
-						return relation.meta?.one_allowed_collections?.includes(collectionKey);
-					});
-
-					for (const relation of a2oRelationsThatIncludeThisCollection) {
-						const newAllowedCollections = relation
-							.meta!.one_allowed_collections!.filter((collection) => collectionKey !== collection)
-							.join(',');
-
-						await trx('directus_relations')
-							.update({ one_allowed_collections: newAllowedCollections })
-							.where({ id: relation.meta!.id });
-					}
-				}
+				return collectionKey;
 			});
-
-			return collectionKey;
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}

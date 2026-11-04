@@ -138,12 +138,12 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		}
 	}
 
-	async preColumnChange(): Promise<boolean> {
-		return false;
-	}
-
-	async postColumnChange(): Promise<void> {
-		return;
+	/**
+	 * Run schema changes with foreign key enforcement disabled, for vendors that rebuild tables to alter them.
+	 * Must be called outside of a transaction, as some vendors ignore toggling the enforcement within one.
+	 */
+	async withForeignKeysDisabled<T>(fn: () => Promise<T>): Promise<T> {
+		return fn();
 	}
 
 	preRelationChange(_relation: Partial<Relation>): void {

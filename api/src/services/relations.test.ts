@@ -50,7 +50,7 @@ vi.mock('../utils/get-schema.js', () => ({
 vi.mock('../database/helpers/index.js', () => ({
 	getHelpers: vi.fn(() => ({
 		schema: {
-			preColumnChange: vi.fn().mockResolvedValue(false),
+			withForeignKeysDisabled: vi.fn((fn) => fn()),
 			preRelationChange: vi.fn(),
 			constraintName: vi.fn((name) => name),
 		},
