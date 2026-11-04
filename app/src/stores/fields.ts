@@ -10,7 +10,6 @@ import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
 import { useRelationsStore } from '@/stores/relations';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
-import { groupIntoMap } from '@/utils/group-into-map';
 import { translate as translateLiteral } from '@/utils/translate-literal';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -81,19 +80,19 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	// Every write replaces the array, so a shallow ref is enough and keeps fields as plain objects
 	const fields = shallowRef<Field[]>([]);
 
-	const fieldsByCollection = computed(() => groupIntoMap(fields.value, (field) => field.collection));
-
+	// Fields per collection, keyed by field name. The values keep the store order, so lists come from here too.
 	const fieldsByKey = computed(() => {
 		const byKey = new Map<string, Map<string, Field>>();
 
-		for (const [collection, collectionFields] of fieldsByCollection.value) {
-			const byField = new Map<string, Field>();
+		for (const field of fields.value) {
+			let byField = byKey.get(field.collection);
 
-			for (const field of collectionFields) {
-				if (!byField.has(field.field)) byField.set(field.field, field);
+			if (!byField) {
+				byField = new Map();
+				byKey.set(field.collection, byField);
 			}
 
-			byKey.set(collection, byField);
+			if (!byField.has(field.field)) byField.set(field.field, field);
 		}
 
 		return byKey;
@@ -102,11 +101,11 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	const orderedFieldsByCollection = computed(() => {
 		const ordered = new Map<string, Field[]>();
 
-		for (const [collection, collectionFields] of fieldsByCollection.value) {
+		for (const [collection, byField] of fieldsByKey.value) {
 			ordered.set(
 				collection,
 				orderBy(
-					collectionFields,
+					[...byField.values()],
 					[
 						(field) => field.meta?.system === true,
 						(field) => (isNil(field.meta?.sort) ? null : Number(field.meta?.sort)),
@@ -122,9 +121,13 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	const primaryKeyFieldByCollection = computed(() => {
 		const byCollection = new Map<string, Field>();
 
-		for (const [collection, collectionFields] of fieldsByCollection.value) {
-			const primaryKeyField = collectionFields.find((field) => field.schema?.is_primary_key === true);
-			if (primaryKeyField) byCollection.set(collection, primaryKeyField);
+		for (const [collection, byField] of fieldsByKey.value) {
+			for (const field of byField.values()) {
+				if (field.schema?.is_primary_key !== true) continue;
+
+				byCollection.set(collection, field);
+				break;
+			}
 		}
 
 		return byCollection;
@@ -399,7 +402,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	 * fields inside groups starts their sort number from 1 to N again.
 	 */
 	function getFieldsForCollectionSorted(collection: string): Field[] {
-		const fieldsSorted = orderBy(fieldsByCollection.value.get(collection) ?? [], 'meta.sort');
+		const fieldsSorted = orderBy([...(fieldsByKey.value.get(collection)?.values() ?? [])], 'meta.sort');
 
 		const nonGroupFields = fieldsSorted.filter((field: Field) => !field.meta?.group);
 
@@ -429,7 +432,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	 * Retrieve nested fields for a given group field
 	 */
 	function getFieldGroupChildren(collection: string, fieldKey: string): Field[] {
-		return (fieldsByCollection.value.get(collection) ?? []).filter((field) => field.meta?.group === fieldKey);
+		return [...(fieldsByKey.value.get(collection)?.values() ?? [])].filter((field) => field.meta?.group === fieldKey);
 	}
 
 	/**
