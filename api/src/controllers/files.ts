@@ -74,7 +74,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 			return busboy.emit('error', new InvalidPayloadError({ reason: `File is missing filename` }));
 		}
 
-		if (isMimeTypeAllowed(mimeType, env.FILES_MIME_TYPE_ALLOW_LIST as string[]) === false) {
+		if (isMimeTypeAllowed(mimeType, env.FILES_MIME_TYPE_ALLOW_LIST) === false) {
 			return busboy.emit('error', new InvalidPayloadError({ reason: `File is of invalid content type` }));
 		}
 

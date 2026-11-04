@@ -95,7 +95,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 	const collections: (BaseCollectionMeta & Partial<CollectionMeta>)[] = [...allCollections, ...systemCollectionRows];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
-		if ((env.DB_EXCLUDE_TABLES as string[]).includes(collection)) {
+		if (env.DB_EXCLUDE_TABLES.includes(collection)) {
 			logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
 			continue;
 		}

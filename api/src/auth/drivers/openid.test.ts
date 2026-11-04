@@ -1261,7 +1261,6 @@ describe('createOpenIDAuthRouter', () => {
 	test('sets secure cookie option to true when AUTH_TEST_COOKIE_SECURE is true', async () => {
 		vi.mocked(useEnv).mockReturnValue(
 			mockEnv({
-				EMAIL_TEMPLATES_PATH: './templates',
 				AUTH_TEST_COOKIE_SECURE: true,
 			}),
 		);
@@ -1290,7 +1289,6 @@ describe('createOpenIDAuthRouter', () => {
 	test('sets secure cookie option to false when AUTH_TEST_COOKIE_SECURE is false', async () => {
 		vi.mocked(useEnv).mockReturnValue(
 			mockEnv({
-				EMAIL_TEMPLATES_PATH: './templates',
 				AUTH_TEST_COOKIE_SECURE: false,
 			}),
 		);

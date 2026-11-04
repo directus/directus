@@ -298,7 +298,7 @@ export class FilesService extends ItemsService<File> {
 			mimeType = fileResponse.headers['content-type']?.split(';')[0]?.trim() || 'application/octet-stream';
 
 			// Check against global MIME type allow list from env
-			if (isMimeTypeAllowed(mimeType, env.FILES_MIME_TYPE_ALLOW_LIST as string[]) === false) {
+			if (isMimeTypeAllowed(mimeType, env.FILES_MIME_TYPE_ALLOW_LIST) === false) {
 				throw new InvalidPayloadError({
 					reason: `File content type "${mimeType}" is not allowed for upload by your global file type restrictions`,
 				});

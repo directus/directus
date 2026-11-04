@@ -409,9 +409,7 @@ export class CollectionsService {
 		}
 
 		if (DB_EXCLUDE_TABLES.length > 0) {
-			return collections.filter(
-				(collection) => (DB_EXCLUDE_TABLES as string[]).includes(collection.collection) === false,
-			);
+			return collections.filter((collection) => DB_EXCLUDE_TABLES.includes(collection.collection) === false);
 		}
 
 		return collections;

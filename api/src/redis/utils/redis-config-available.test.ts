@@ -52,4 +52,6 @@ test('Returns true if one or more environment variables start with REDIS_', () =
 
 test('Returns false if no Redis environment variables exist', () => {
 	vi.mocked(useEnv).mockReturnValue(mockEnv({}));
+
+	expect(redisConfigAvailable()).toBe(false);
 });

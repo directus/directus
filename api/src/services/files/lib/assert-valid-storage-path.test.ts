@@ -59,6 +59,13 @@ describe('assertValidStoragePath', () => {
 				error: false,
 			},
 			{
+				name: 'trims the default STORAGE_LOCATIONS entry',
+				filepath: 'extensions/x.jpg',
+				storage: undefined,
+				env: { STORAGE_LOCATIONS: [' local '] },
+				error: false,
+			},
+			{
 				name: 'rejects a storage location that does not exist',
 				filepath: 'extensions/x.jpg',
 				storage: 'invalid',

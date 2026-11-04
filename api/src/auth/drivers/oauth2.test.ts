@@ -214,7 +214,6 @@ describe('OAuth2AuthDriver', () => {
 			test('passes clientOptionsOverrides from env to Client constructor', () => {
 				vi.mocked(useEnv).mockReturnValue(
 					mockEnv({
-						EMAIL_TEMPLATES_PATH: './templates',
 						AUTH_GITHUB_CLIENT_TEST: 'test',
 					}),
 				);
@@ -1327,7 +1326,6 @@ describe('createOAuth2AuthRouter', () => {
 	test('sets secure cookie option to true when AUTH_TEST_COOKIE_SECURE is true', () => {
 		vi.mocked(useEnv).mockReturnValue(
 			mockEnv({
-				EMAIL_TEMPLATES_PATH: './templates',
 				AUTH_TEST_COOKIE_SECURE: true,
 			}),
 		);
@@ -1356,7 +1354,6 @@ describe('createOAuth2AuthRouter', () => {
 	test('sets secure cookie option to false when AUTH_TEST_COOKIE_SECURE is false', () => {
 		vi.mocked(useEnv).mockReturnValue(
 			mockEnv({
-				EMAIL_TEMPLATES_PATH: './templates',
 				AUTH_TEST_COOKIE_SECURE: false,
 			}),
 		);

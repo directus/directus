@@ -52,7 +52,7 @@ export function getCache(): {
 	localSchemaCache: Keyv;
 	lockCache: Keyv;
 } {
-	const store = env.CACHE_STORE;
+	const store = env.CACHE_STORE as Store;
 
 	if (env.CACHE_ENABLED && cache === null) {
 		cache = getKeyvInstance(store, env.CACHE_TTL);
@@ -197,7 +197,7 @@ export async function getCacheValueWithTTL(
 	return { data: value, remainingTTL };
 }
 
-function getKeyvInstance(store: Store | (string & {}), ttl: number | undefined, namespaceSuffix?: string): Keyv {
+function getKeyvInstance(store: Store, ttl: number | undefined, namespaceSuffix?: string): Keyv {
 	switch (store) {
 		case 'redis':
 			return new Keyv(getConfig('redis', ttl, namespaceSuffix));

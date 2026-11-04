@@ -74,7 +74,7 @@ export class TusDataStore extends DataStore {
 		const mimeType = upload.metadata['type'];
 		const { FILES_MIME_TYPE_ALLOW_LIST } = useEnv();
 
-		if (isMimeTypeAllowed(mimeType, FILES_MIME_TYPE_ALLOW_LIST as string[]) === false) {
+		if (isMimeTypeAllowed(mimeType, FILES_MIME_TYPE_ALLOW_LIST) === false) {
 			throw new UnsupportedMediaTypeError({ mediaType: mimeType, where: 'tus upload' });
 		}
 

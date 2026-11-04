@@ -3,6 +3,9 @@ import { useEnv } from '@directus/env';
 /**
  * Environment variables that start with `REDIS_` but don't configure a connection. These have
  * defaults, so they're always present and can't be used to infer that Redis is configured.
+ *
+ * Kept as an explicit list rather than checking against `DEFAULTS`, as many tests mock `@directus/env` without it.
+ * Drift is caught by the tests, which run against the actual defaults.
  */
 const NON_CONNECTION_KEYS = new Set([
 	'REDIS_ENABLED',

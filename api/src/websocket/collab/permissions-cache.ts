@@ -6,9 +6,6 @@ import { IRRELEVANT_COLLECTIONS } from './constants.js';
 
 const env = useEnv();
 
-/** Mirrors the `WEBSOCKETS_COLLAB_PERMISSIONS_CACHE_CAPACITY` default */
-const DEFAULT_CACHE_CAPACITY = 2000;
-
 type CacheKey = string; // user:collection:item:action
 type Tag = string;
 
@@ -24,7 +21,7 @@ export class PermissionCache {
 	private bus = useBus();
 	private invalidationCount = 0;
 
-	constructor(maxSize: number = DEFAULT_CACHE_CAPACITY) {
+	constructor(maxSize: number) {
 		this.cache = new LRUMapWithDelete(maxSize);
 
 		this.bus.subscribe('websocket.event', (event: any) => {

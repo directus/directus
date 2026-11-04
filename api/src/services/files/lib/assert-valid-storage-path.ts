@@ -15,7 +15,7 @@ import { sanitizeFilepath } from './sanitize-filepath.js';
  */
 export function assertValidStoragePath(filepath: string, storage?: string): void {
 	const env = useEnv();
-	const location = storage || env.STORAGE_LOCATIONS[0]!;
+	const location = storage || env.STORAGE_LOCATIONS[0]!.trim();
 
 	assertValidStorageLocation(location);
 
