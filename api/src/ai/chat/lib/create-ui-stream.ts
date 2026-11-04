@@ -1,22 +1,7 @@
 import type { ProviderType } from '@directus/ai';
-import { ServiceUnavailableError } from '@directus/errors';
-import {
-	convertToModelMessages,
-	stepCountIs,
-	streamText,
-	type StreamTextResult,
-	type Tool,
-	type UIMessage,
-	wrapLanguageModel,
-} from 'ai';
+import { convertToModelMessages, stepCountIs, streamText, type StreamTextResult, type Tool, type UIMessage } from 'ai';
 import { useLogger } from '../../../logger/index.js';
-import { getDevToolsMiddleware } from '../../devtools/index.js';
-import {
-	type AISettings,
-	buildProviderConfigs,
-	createAIProviderRegistry,
-	getProviderOptions,
-} from '../../providers/index.js';
+import { type AISettings, resolveLanguageModel } from '../../providers/index.js';
 import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 import type { ChatContext } from '../models/chat-request.js';
@@ -36,7 +21,7 @@ export interface CreateUiStreamOptions {
 	model: string;
 	tools: { [x: string]: Tool };
 	aiSettings: AISettings;
-	systemPrompt?: string;
+	systemPrompt?: string | null;
 	userId?: string | null;
 	role?: string | null;
 	context?: ChatContext;
@@ -47,27 +32,10 @@ export const createUiStream = async (
 	messages: UIMessage[],
 	{ provider, model, tools, aiSettings, systemPrompt, userId, role, context, onUsage }: CreateUiStreamOptions,
 ): Promise<StreamTextResult<Record<string, Tool<any, any>>, any>> => {
-	const configs = buildProviderConfigs(aiSettings);
-	const providerConfig = configs.find((c) => c.type === provider);
-
-	if (!providerConfig) {
-		throw new ServiceUnavailableError({ service: provider, reason: 'No API key configured for LLM provider' });
-	}
-
-	const registry = createAIProviderRegistry(configs, aiSettings);
+	const { model: languageModel, providerOptions } = resolveLanguageModel(provider, model, aiSettings);
 
 	const baseSystemPrompt = systemPrompt || SYSTEM_PROMPT;
 	const contextBlock = context ? formatContextForSystemPrompt(context) : null;
-	const providerOptions = getProviderOptions(provider, model, aiSettings);
-	let languageModel = registry.languageModel(`${provider}:${model}`);
-	const devToolsMiddleware = getDevToolsMiddleware();
-
-	if (devToolsMiddleware) {
-		languageModel = wrapLanguageModel({
-			model: languageModel,
-			middleware: devToolsMiddleware,
-		});
-	}
 
 	// For Anthropic, keep `system` as the stable base prompt only (so the tools+system prefix
 	// caches across page changes) and inject context after a cache breakpoint on the last
