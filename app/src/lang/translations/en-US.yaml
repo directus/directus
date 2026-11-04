@@ -2938,6 +2938,19 @@ interfaces:
     imageToken_label: Static access token is appended to the assets' URL
     media_preview_iframe_title: Media Preview
     embed_invalid: The embed markup could not be parsed as media (video, audio, or iframe)
+    link_protocols: Allowed Link Protocols
+    link_protocols_note:
+      Extra URL schemes that links may use, such as `myapp` for `myapp://` deep links. Standard schemes such as `http`,
+      `https`, `mailto` and `tel` are always allowed. Script schemes such as `javascript` are never allowed. Only add
+      schemes you trust.
+    link_protocols_placeholder: Add a scheme and press Enter...
+    link_protocols_blocked:
+      '"{scheme}" was not added. Links with this scheme can run potentially malicious code, so it is never allowed.'
+    link_protocols_invalid:
+      '"{scheme}" was not added. A scheme starts with a letter and contains only letters, digits, `+`, `-` and `.`.'
+    link_protocol_not_allowed:
+      This link type is not allowed. Add its scheme to the Allowed Link Protocols option of this field.
+    link_protocol_blocked: Script links such as `javascript:` are never allowed.
     auto_height: Auto height
   input-block-editor:
     input-block-editor: Block Editor

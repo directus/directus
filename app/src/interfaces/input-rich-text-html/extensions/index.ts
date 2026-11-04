@@ -8,6 +8,7 @@ import { Direction } from './direction';
 import { DropCursor } from './drop-cursor';
 import { figureExtensions } from './figure';
 import { CustomImage } from './image';
+import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
@@ -22,19 +23,16 @@ import { contributedKey, enabledRichTexts } from '@/rich-text/register';
 
 /**
  * The editor's extension set, shared by input-rich-text-html.vue and the round-trip tests so the
- * two never drift. Link's default HTMLAttributes force `target="_blank"`/`rel` on every link, which
- * would rewrite same-tab links on round-trip — nulling them lets both parse from the source.
+ * two never drift.
  */
 export const editorExtensions = [
 	StarterKit.configure({
 		// replaced by DropCursor, which draws a vertical indicator between same-row inline-block nodes
 		dropcursor: false,
-		link: {
-			defaultProtocol: 'https',
-			openOnClick: false,
-			HTMLAttributes: { target: null, rel: null },
-		},
+		// standalone so buildLinkProtocolSchema can swap it for a per-field configured Link
+		link: false,
 	}),
+	BaseLink,
 	DropCursor,
 	CustomImage,
 	Media,
@@ -57,15 +55,19 @@ export const editorExtensions = [
  * The complete extension list for a field's editor: `editorExtensions` plus the field's additions,
  * with PreservedAttributes told about every other attribute so a `data-*` or `aria-*` name that
  * another attribute parses has one owner. Every site that builds a field editor must use this.
+ * An addition with a base extension's name replaces it in place.
  */
 export function fieldEditorExtensions(additions: AnyExtension[]): AnyExtension[] {
-	const others = [...editorExtensions.filter((extension) => extension !== PreservedAttributes), ...additions];
+	const byName = new Map(additions.map((extension) => [extension.name, extension]));
+	const base = editorExtensions.map((extension) => byName.get(extension.name) ?? extension);
+	const appended = additions.filter((extension) => !base.includes(extension));
+	const others = [...base.filter((extension) => extension !== PreservedAttributes), ...appended];
 
 	return [
-		...editorExtensions.map((extension) =>
+		...base.map((extension) =>
 			extension === PreservedAttributes ? PreservedAttributes.configure({ extensions: others }) : extension,
 		),
-		...additions,
+		...appended,
 	];
 }
 
@@ -76,6 +78,8 @@ export interface FieldSchemaOptions {
 	extensions?: string[] | null;
 	/** Field `extensionOptions` option: per-extension values, keyed by extension id. */
 	extensionOptions?: unknown;
+	/** Field `linkProtocols` option: extra URL schemes links and image links may use. */
+	linkProtocols?: unknown;
 	comparisonMode?: boolean;
 }
 
@@ -85,33 +89,38 @@ export interface FieldSchema {
 	/** Tells this field's schema apart from others in the normalization verdict cache. */
 	key: string;
 	formats: CustomFormat[];
+	linkProtocols: string[];
 	buttons: RichTextToolbarButton[];
 	bubbleMenus: RichTextBubbleMenu[];
 }
 
 /**
  * The one place a field's schema additions are assembled: the richtext extensions the field opted
- * into, its custom formats, and the comparison-diff mark in comparison mode. The live editor, the
- * save-time round-trip check, the source-code drawer and the comparison view all build from this
- * result. A site that composed the list by hand could miss a contribution and report its markup as
+ * into, its custom formats, its link protocols, and the comparison-diff mark in comparison mode. The
+ * live editor, the save-time round-trip check, the source-code drawer and the comparison view all
+ * build from this result. A site that composed the list by hand could miss a contribution and report its markup as
  * dropped even though the editor renders it.
  */
 export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema {
 	const customFormats = buildCustomFormats(options.customFormats);
 	const contributed = enabledRichTexts(options.extensions, options.extensionOptions);
+	const links = buildLinkProtocolSchema(options.linkProtocols);
 
 	return {
 		extensions: [
 			...contributed.flatMap((config) => config.extensions),
 			...customFormats.extensions,
+			...links.extensions,
 			...(options.comparisonMode ? [ComparisonDiff] : []),
 		],
 		key: [
 			options.comparisonMode ? 'comparison' : '',
 			customFormats.key,
+			links.key,
 			contributed.map((config) => config.key).join('\u0000'),
 		].join('\u0000'),
 		formats: customFormats.formats,
+		linkProtocols: links.protocols,
 		buttons: contributed.flatMap((config) =>
 			config.buttons.map((button) => ({ ...button, key: contributedKey(config, button) })),
 		),
