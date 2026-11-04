@@ -1,28 +1,22 @@
 import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
-import { jsonSchema, streamObject, wrapLanguageModel } from 'ai';
+import { jsonSchema, streamObject } from 'ai';
+import { MockLanguageModelV3 } from 'ai/test';
 import type { Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { getDevToolsMiddleware } from '../../devtools/index.js';
-import { buildProviderConfigs, createAIProviderRegistry, getProviderOptions } from '../../providers/index.js';
+import { resolveLanguageModel } from '../../providers/index.js';
 import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { aiObjectPostHandler } from './object.post.js';
 
 const mockPipeTextStreamToResponse = vi.fn();
+const mockModel = new MockLanguageModelV3();
 
 vi.mock('ai', () => ({
 	streamObject: vi.fn(() => ({ pipeTextStreamToResponse: mockPipeTextStreamToResponse })),
 	jsonSchema: vi.fn((schema: unknown) => schema),
-	wrapLanguageModel: vi.fn(({ model }: { model: unknown }) => model),
 }));
 
 vi.mock('../../providers/index.js', () => ({
-	buildProviderConfigs: vi.fn(),
-	createAIProviderRegistry: vi.fn(),
-	getProviderOptions: vi.fn(),
-}));
-
-vi.mock('../../devtools/index.js', () => ({
-	getDevToolsMiddleware: vi.fn(),
+	resolveLanguageModel: vi.fn(),
 }));
 
 vi.mock('../../telemetry/index.js', () => ({
@@ -75,13 +69,7 @@ describe('aiObjectPostHandler', () => {
 			},
 		} as any;
 
-		vi.mocked(buildProviderConfigs).mockReturnValue([{ type: 'openai', apiKey: 'test-key' }]);
-
-		vi.mocked(createAIProviderRegistry).mockReturnValue({
-			languageModel: vi.fn(() => 'mock-model'),
-		} as any);
-
-		vi.mocked(getProviderOptions).mockReturnValue({});
+		vi.mocked(resolveLanguageModel).mockReturnValue({ model: mockModel, providerOptions: {} });
 	});
 
 	afterEach(() => {
@@ -133,6 +121,7 @@ describe('aiObjectPostHandler', () => {
 			mockReq.body = { ...validBody, model: 'not-allowed' };
 
 			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
+			expect(resolveLanguageModel).not.toHaveBeenCalled();
 		});
 
 		it('should throw ForbiddenError when allowedModels is null', async () => {
@@ -148,21 +137,25 @@ describe('aiObjectPostHandler', () => {
 		});
 
 		it('should not validate openai-compatible models', async () => {
-			vi.mocked(buildProviderConfigs).mockReturnValue([
-				{ type: 'openai-compatible', apiKey: 'test', baseUrl: 'http://localhost' },
-			]);
-
 			mockReq.body = { ...validBody, provider: 'openai-compatible', model: 'any-model' };
 
 			await aiObjectPostHandler(mockReq as Request, mockRes as Response);
 
 			expect(mockPipeTextStreamToResponse).toHaveBeenCalledWith(mockRes);
+
+			expect(resolveLanguageModel).toHaveBeenCalledWith(
+				'openai-compatible',
+				'any-model',
+				mockRes.locals!['ai'].settings,
+			);
 		});
 	});
 
 	describe('provider configuration', () => {
 		it('should throw ServiceUnavailableError when provider has no API key', async () => {
-			vi.mocked(buildProviderConfigs).mockReturnValue([]);
+			vi.mocked(resolveLanguageModel).mockImplementation(() => {
+				throw new ServiceUnavailableError({ service: 'openai', reason: 'No API key configured for LLM provider' });
+			});
 
 			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(
 				ServiceUnavailableError,
@@ -174,9 +167,11 @@ describe('aiObjectPostHandler', () => {
 		it('should call streamObject with correct parameters', async () => {
 			await aiObjectPostHandler(mockReq as Request, mockRes as Response);
 
+			expect(resolveLanguageModel).toHaveBeenCalledWith('openai', 'gpt-5', mockRes.locals!['ai'].settings);
+
 			expect(vi.mocked(streamObject)).toHaveBeenCalledWith(
 				expect.objectContaining({
-					model: 'mock-model',
+					model: mockModel,
 					prompt: validBody.prompt,
 					providerOptions: {},
 				}),
@@ -200,26 +195,6 @@ describe('aiObjectPostHandler', () => {
 
 			const schemaArg = vi.mocked(jsonSchema).mock.calls[0]![0] as Record<string, unknown>;
 			expect(schemaArg).toHaveProperty('additionalProperties', false);
-		});
-
-		it('should wrap model with devtools middleware when available', async () => {
-			const mockMiddleware = { wrapGenerate: vi.fn() };
-			vi.mocked(getDevToolsMiddleware).mockReturnValue(mockMiddleware as any);
-
-			await aiObjectPostHandler(mockReq as Request, mockRes as Response);
-
-			expect(vi.mocked(wrapLanguageModel)).toHaveBeenCalledWith({
-				model: 'mock-model',
-				middleware: mockMiddleware,
-			});
-		});
-
-		it('should not wrap model when devtools middleware is not available', async () => {
-			vi.mocked(getDevToolsMiddleware).mockReturnValue(null);
-
-			await aiObjectPostHandler(mockReq as Request, mockRes as Response);
-
-			expect(vi.mocked(wrapLanguageModel)).not.toHaveBeenCalled();
 		});
 
 		it('should pass experimental_telemetry when telemetry is configured', async () => {

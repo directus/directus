@@ -1,15 +1,9 @@
 import type { StandardProviderType } from '@directus/ai';
-import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
-import { jsonSchema, streamObject, wrapLanguageModel } from 'ai';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { jsonSchema, streamObject } from 'ai';
 import type { RequestHandler } from 'express';
 import { fromZodError } from 'zod-validation-error';
-import { getDevToolsMiddleware } from '../../devtools/index.js';
-import {
-	type AISettings,
-	buildProviderConfigs,
-	createAIProviderRegistry,
-	getProviderOptions,
-} from '../../providers/index.js';
+import { type AISettings, resolveLanguageModel } from '../../providers/index.js';
 import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { ObjectRequest } from '../models/object-request.js';
 import { addAdditionalPropertiesToJsonSchema } from '../utils/add-additional-properties-to-json-schema.js';
@@ -43,22 +37,7 @@ export const aiObjectPostHandler: RequestHandler = async (req, res) => {
 		}
 	}
 
-	const configs = buildProviderConfigs(aiSettings);
-	const providerConfig = configs.find((c) => c.type === provider);
-
-	if (!providerConfig) {
-		throw new ServiceUnavailableError({ service: provider, reason: 'No API key configured for LLM provider' });
-	}
-
-	const registry = createAIProviderRegistry(configs, aiSettings);
-	const providerOptions = getProviderOptions(provider, model, aiSettings);
-
-	let languageModel = registry.languageModel(`${provider}:${model}`);
-	const devToolsMiddleware = getDevToolsMiddleware();
-
-	if (devToolsMiddleware) {
-		languageModel = wrapLanguageModel({ model: languageModel, middleware: devToolsMiddleware });
-	}
+	const { model: languageModel, providerOptions } = resolveLanguageModel(provider, model, aiSettings);
 
 	const telemetryConfig = getAITelemetryConfig(
 		{ provider, model, userId: req.accountability?.user, role: req.accountability?.role },
