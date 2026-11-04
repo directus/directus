@@ -220,15 +220,18 @@ function onItemSelected(event: ItemSelectEvent) {
 	emit('update:modelValue', selection);
 }
 
+const selectedKeys = computed(
+	() => new Set(props.selectionUseKeys ? props.modelValue : props.modelValue.map((item) => item[props.itemKey])),
+);
+
+const selectedIndexes = computed(() => new Set(props.modelValue.map((item) => item.$index)));
+
 function getSelectedState(item: Item) {
 	if (!props.selectionUseKeys && itemHasNoKeyYet(item)) {
-		const selectedKeys = props.modelValue.map((item) => item.$index);
-		return selectedKeys.includes(item.$index);
+		return selectedIndexes.value.has(item.$index);
 	}
 
-	const selectedKeys = props.selectionUseKeys ? props.modelValue : props.modelValue.map((item) => item[props.itemKey]);
-
-	return selectedKeys.includes(item[props.itemKey]);
+	return selectedKeys.value.has(item[props.itemKey]);
 }
 
 function onToggleSelectAll(value: boolean) {
