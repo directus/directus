@@ -47,4 +47,23 @@ describe('Adjust a given date by a given change in duration.', () => {
 		const adjustedDate = new Date('2021-09-20T21:06:51.516Z');
 		expect(adjustDate(date, '-1.0ms')).toStrictEqual(adjustedDate);
 	});
+
+	describe('fractional days and weeks', () => {
+		it.each([
+			['0.5d', '2021-09-21T09:06:51.517Z'],
+			['-0.5d', '2021-09-20T09:06:51.517Z'],
+			['1.5d', '2021-09-22T09:06:51.517Z'],
+			['-1.5d', '2021-09-19T09:06:51.517Z'],
+			['2.25d', '2021-09-23T03:06:51.517Z'],
+			['0.5w', '2021-09-24T09:06:51.517Z'],
+			['-0.5w', '2021-09-17T09:06:51.517Z'],
+		])('adjusts the date by %s', (adjustment, expected) => {
+			expect(adjustDate(date, adjustment)).toStrictEqual(new Date(expected));
+		});
+
+		it('keeps adjusting by whole days and weeks as before', () => {
+			expect(adjustDate(date, '2d')).toStrictEqual(new Date('2021-09-22T21:06:51.517Z'));
+			expect(adjustDate(date, '-1w')).toStrictEqual(new Date('2021-09-13T21:06:51.517Z'));
+		});
+	});
 });
