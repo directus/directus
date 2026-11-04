@@ -715,6 +715,38 @@ describe('VForm', () => {
 	});
 
 	describe('initial values', () => {
+		it('keeps unedited object values when typing in another field', async () => {
+			const title = createField({ field: 'title', meta: { ...createField().meta!, field: 'title' } });
+
+			const data = createField({
+				field: 'data',
+				type: 'json',
+				meta: { ...createField().meta!, field: 'data', interface: 'input-code' },
+			});
+
+			const wrapper = mount(VForm, {
+				props: {
+					fields: [title, data],
+					initialValues: { data: { a: 1 } },
+					modelValue: { title: 'a' },
+					primaryKey: '+',
+				},
+				global,
+			});
+
+			const dataValue = () =>
+				wrapper
+					.findAllComponents(FormField)
+					.find((formField) => formField.props('field').field === 'data')!
+					.props('modelValue');
+
+			const before = dataValue();
+
+			await wrapper.setProps({ modelValue: { title: 'ab' } });
+
+			expect(dataValue()).toBe(before);
+		});
+
 		it('shows the original value again after an edit that mutated it in place is undone', async () => {
 			const comments = createField({
 				field: 'comments',
