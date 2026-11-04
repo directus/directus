@@ -10,6 +10,7 @@ import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
 import { useRelationsStore } from '@/stores/relations';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
+import { groupIntoMap } from '@/utils/group-into-map';
 import { translate as translateLiteral } from '@/utils/translate-literal';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -80,18 +81,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	// Every write replaces the array, so a shallow ref is enough and keeps fields as plain objects
 	const fields = shallowRef<Field[]>([]);
 
-	const fieldsByCollection = computed(() => {
-		const byCollection = new Map<string, Field[]>();
-
-		for (const field of fields.value) {
-			const collectionFields = byCollection.get(field.collection);
-
-			if (collectionFields) collectionFields.push(field);
-			else byCollection.set(field.collection, [field]);
-		}
-
-		return byCollection;
-	});
+	const fieldsByCollection = computed(() => groupIntoMap(fields.value, (field) => field.collection));
 
 	const fieldsByKey = computed(() => {
 		const byKey = new Map<string, Map<string, Field>>();
@@ -117,13 +107,27 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 				collection,
 				orderBy(
 					collectionFields,
-					[(field) => field.meta?.system === true, (field) => (field.meta?.sort ? Number(field.meta?.sort) : null)],
+					[
+						(field) => field.meta?.system === true,
+						(field) => (isNil(field.meta?.sort) ? null : Number(field.meta?.sort)),
+					],
 					['desc', 'asc'],
 				),
 			);
 		}
 
 		return ordered;
+	});
+
+	const primaryKeyFieldByCollection = computed(() => {
+		const byCollection = new Map<string, Field>();
+
+		for (const [collection, collectionFields] of fieldsByCollection.value) {
+			const primaryKeyField = collectionFields.find((field) => field.schema?.is_primary_key === true);
+			if (primaryKeyField) byCollection.set(collection, primaryKeyField);
+		}
+
+		return byCollection;
 	});
 
 	return {
@@ -374,11 +378,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	}
 
 	function getPrimaryKeyFieldForCollection(collection: string): Field | null {
-		const primaryKeyField = fieldsByCollection.value
-			.get(collection)
-			?.find((field) => field.schema?.is_primary_key === true);
-
-		return primaryKeyField ?? null;
+		return primaryKeyFieldByCollection.value.get(collection) ?? null;
 	}
 
 	function getFieldsForCollection(collection: string): Field[] {
@@ -428,7 +428,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	/**
 	 * Retrieve nested fields for a given group field
 	 */
-	function getFieldGroupChildren(collection: string, fieldKey: string): Field[] | null {
+	function getFieldGroupChildren(collection: string, fieldKey: string): Field[] {
 		return (fieldsByCollection.value.get(collection) ?? []).filter((field) => field.meta?.group === fieldKey);
 	}
 

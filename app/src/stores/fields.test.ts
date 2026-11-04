@@ -195,6 +195,11 @@ describe('lookups', () => {
 
 		expect(fieldsStore.getPrimaryKeyFieldForCollection('a')).toBe(id);
 		expect(fieldsStore.getPrimaryKeyFieldForCollection('missing')).toBeNull();
+
+		const uuid = makeField('a', 'uuid', {}, { is_primary_key: true });
+		fieldsStore.fields = [makeField('a', 'title'), uuid];
+
+		expect(fieldsStore.getPrimaryKeyFieldForCollection('a')).toBe(uuid);
 	});
 
 	test('getFieldsForCollection puts system fields first, then orders by sort', () => {
@@ -207,10 +212,12 @@ describe('lookups', () => {
 			makeField('a', 'first', { sort: 1 }),
 			makeField('a', 'system', { system: true, sort: 5 }),
 			makeField('a', 'second', { sort: 2 }),
+			makeField('a', 'zero', { sort: 0 }),
 		];
 
 		expect(fieldsStore.getFieldsForCollection('a').map(({ field }) => field)).toEqual([
 			'system',
+			'zero',
 			'first',
 			'second',
 			'third',
@@ -218,6 +225,7 @@ describe('lookups', () => {
 		]);
 
 		expect(fieldsStore.getFieldsForCollection('missing')).toEqual([]);
+		expect(fieldsStore.getFieldsForCollection('constructor')).toEqual([]);
 	});
 
 	test('mutating a returned field list does not affect later lookups', () => {

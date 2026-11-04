@@ -6,6 +6,7 @@ import { computed, shallowRef } from 'vue';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
+import { groupIntoMap } from '@/utils/group-into-map';
 
 export const useRelationsStore = defineStore('relations', () => {
 	const toolsStore = useAiToolsStore();
@@ -20,26 +21,11 @@ export const useRelationsStore = defineStore('relations', () => {
 	const relations = shallowRef<Relation[]>([]);
 
 	// Relations keyed by both their many (collection) and one (related_collection) side
-	const relationsByCollection = computed(() => {
-		const byCollection = new Map<string, Relation[]>();
-
-		const add = (collection: string, relation: Relation) => {
-			const collectionRelations = byCollection.get(collection);
-
-			if (collectionRelations) collectionRelations.push(relation);
-			else byCollection.set(collection, [relation]);
-		};
-
-		for (const relation of relations.value) {
-			add(relation.collection, relation);
-
-			if (relation.related_collection && relation.related_collection !== relation.collection) {
-				add(relation.related_collection, relation);
-			}
-		}
-
-		return byCollection;
-	});
+	const relationsByCollection = computed(() =>
+		groupIntoMap(relations.value, (relation) =>
+			relation.related_collection ? [relation.collection, relation.related_collection] : relation.collection,
+		),
+	);
 
 	const hydrate = async () => {
 		const response = await api.get(`/relations`);
