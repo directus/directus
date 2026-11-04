@@ -434,8 +434,9 @@ function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 					result[getMetaColumn(metaKey)] = condition;
 				}
 			} else if (!matchesPublishedMeta(value as Record<string, Record<string, unknown>>)) {
-				// Never matches, as the primary key can't be null
-				conditions.push({ [level.schema.collections[level.collection]!.primary]: { _null: true } } as Filter);
+				// Never matches, as an empty `_in` compiles to `1 = 0`. A `_null` check on the primary key would still match
+				// rows without a related item, as relations are left joined
+				conditions.push({ [level.schema.collections[level.collection]!.primary]: { _in: [] } } as Filter);
 			}
 		} else if (key.startsWith('_') || !isPlainObject(value) || isFieldCondition(value as Record<string, unknown>)) {
 			result[key] = value;
@@ -456,7 +457,7 @@ function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 
 				// A relation filter that's left without conditions still requires the related item to exist
 				const orExists = (field: string, filter: Filter) =>
-					Object.keys(filter).length > 0 ? { [field]: filter } : { [field]: { _nnull: true } };
+					Object.keys(filter).length > 0 ? nestFilter(field, filter) : ({ [field]: { _nnull: true } } as Filter);
 
 				if (reference?.related_collection) {
 					level.shadows.add(reference.related_collection);
@@ -472,7 +473,13 @@ function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 						_or: [orExists(key, live), { _and: [{ [key]: { _null: true } }, orExists(referenceField, version)] }],
 					} as Filter);
 				} else {
-					Object.assign(result, orExists(key, live));
+					const nested = orExists(key, live);
+
+					if ('_and' in nested || '_or' in nested) {
+						conditions.push(nested);
+					} else {
+						Object.assign(result, nested);
+					}
 				}
 			} else if (o2m) {
 				result[key] = rewriteFilter(value as Filter, {
@@ -490,6 +497,23 @@ function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 	if (conditions.length === 0) return result as Filter;
 
 	return { _and: [...(Object.keys(result).length > 0 ? [result as Filter] : []), ...conditions] } as Filter;
+}
+
+/**
+ * Nest a filter on the related item under an m2o field. The filter engine only follows the first key of a nested
+ * filter and doesn't support logical operators below a relation, so those are moved above the field instead, which
+ * is equivalent for m2o relations: `{ author: { _and: [a, b] } }` becomes `{ _and: [{ author: a }, { author: b }] }`.
+ */
+function nestFilter(field: string, filter: Filter): Filter {
+	const parts = Object.entries(filter).map(([key, value]): Filter => {
+		if ((key === '_and' || key === '_or') && Array.isArray(value)) {
+			return { [key]: value.map((nested: Filter) => nestFilter(field, nested)) } as Filter;
+		}
+
+		return { [field]: { [key]: value } } as Filter;
+	});
+
+	return parts.length === 1 ? parts[0]! : ({ _and: parts } as Filter);
 }
 
 /**
