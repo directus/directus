@@ -1,5 +1,5 @@
 import { type Editor, mergeAttributes } from '@tiptap/core';
-import { Image } from '@tiptap/extension-image';
+import { Image, type ImageOptions } from '@tiptap/extension-image';
 import { isAllowedUri } from '@tiptap/extension-link';
 import type { DOMOutputSpec } from '@tiptap/pm/model';
 
@@ -35,7 +35,7 @@ export function isImageLinkActive(editor: Editor): boolean {
  * The link of an anchor whose only content is `img`. An anchor that also wraps text stays a text
  * link (Link mark), so the image is not linked twice.
  */
-function wrappingLink(img: HTMLElement): ImageLink | null {
+function wrappingLink(img: HTMLElement, protocols: string[]): ImageLink | null {
 	const anchor = img.parentElement;
 	if (!anchor || anchor.tagName !== 'A') return null;
 
@@ -45,21 +45,25 @@ function wrappingLink(img: HTMLElement): ImageLink | null {
 
 	const href = anchor.getAttribute('href');
 	// same allow-list as the Link mark, so an image link cannot smuggle in what a text link rejects
-	if (!onlyImage || !href || !isAllowedUri(href)) return null;
+	if (!onlyImage || !href || !isAllowedUri(href, protocols)) return null;
 
 	return { href, target: anchor.getAttribute('target') || null, rel: anchor.getAttribute('rel') || null };
 }
 
 /** The anchor's attributes render on the wrapper `<a>` in `renderHTML`, never on the `<img>` itself. */
-function linkAttribute(name: keyof ImageLink) {
+function linkAttribute(name: keyof ImageLink, protocols: string[]) {
 	return {
 		default: null,
-		parseHTML: (element: HTMLElement) => wrappingLink(element)?.[name] ?? null,
+		parseHTML: (element: HTMLElement) => wrappingLink(element, protocols)?.[name] ?? null,
 		renderHTML: () => ({}),
 	};
 }
 
-export const CustomImage = Image.extend({
+export const CustomImage = Image.extend<ImageOptions & { linkProtocols: string[] }>({
+	addOptions() {
+		return { ...this.parent!(), linkProtocols: [] };
+	},
+
 	addAttributes() {
 		return {
 			...this.parent?.(),
@@ -68,9 +72,9 @@ export const CustomImage = Image.extend({
 				parseHTML: (element) => element.getAttribute('loading'),
 				renderHTML: (attributes) => (attributes.loading ? { loading: attributes.loading } : {}),
 			},
-			href: linkAttribute('href'),
-			target: linkAttribute('target'),
-			rel: linkAttribute('rel'),
+			href: linkAttribute('href', this.options.linkProtocols),
+			target: linkAttribute('target', this.options.linkProtocols),
+			rel: linkAttribute('rel', this.options.linkProtocols),
 		};
 	},
 
@@ -90,7 +94,7 @@ export const CustomImage = Image.extend({
 				(attrs) =>
 				({ commands }) => {
 					// same guard as parsing, so the drawer cannot store what a load would drop
-					if (!isAllowedUri(attrs.href)) return false;
+					if (!isAllowedUri(attrs.href, this.options.linkProtocols)) return false;
 					return commands.updateAttributes(this.name, attrs);
 				},
 			unsetImageLink:
