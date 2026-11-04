@@ -28,7 +28,7 @@ function mountTableRow(attachTo: Element = document.body) {
 			showSelect: 'multiple' as const,
 			showManualSort: true,
 			hasClickListener: true,
-			hasItemAppendSlot: true,
+			slotNames: 'item-append',
 			itemSlots: {
 				'item-append': () => [h('button', { class: 'ctx-toggle' }, 'More')],
 			},
@@ -86,5 +86,42 @@ describe('TableRow', () => {
 		} finally {
 			document.documentElement.removeEventListener('click', onDocumentClick);
 		}
+	});
+
+	test('renders 0 and false, and a placeholder for missing values', () => {
+		const wrapper = mount(TableRow, {
+			props: {
+				headers: [
+					{ ...headers[0]!, value: 'count' },
+					{ ...headers[0]!, value: 'active' },
+					{ ...headers[0]!, value: 'author.name' },
+				],
+				item: { id: 1, count: 0, active: false, author: null },
+			},
+			global,
+		});
+
+		const cells = wrapper.findAll('td.cell:not(.spacer)');
+
+		expect(cells[0]!.find('v-text-overflow-stub').attributes('text')).toBe('0');
+		expect(cells[1]!.find('v-text-overflow-stub').attributes('text')).toBe('false');
+		expect(cells[2]!.find('.null').text()).toBe('--');
+	});
+
+	test('does not read header widths, so rows can keep headers across column resizes', () => {
+		const reads = new Set<PropertyKey>();
+
+		const header = new Proxy(headers[0]!, {
+			get(target, key, receiver) {
+				reads.add(key);
+				return Reflect.get(target, key, receiver);
+			},
+		});
+
+		// Mount through a wrapper: test-utils walks every key of props passed to mount, which would read width
+		mount(() => h(TableRow, { headers: [header], item: { id: 1, name: 'Flow A' } }), { global });
+
+		expect(reads).toContain('value');
+		expect(reads).not.toContain('width');
 	});
 });

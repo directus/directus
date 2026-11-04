@@ -135,15 +135,22 @@ const internalSort = computed<Sort>(
 const reordering = ref<boolean>(false);
 
 // `slots` isn't reactive, so a computed over it never updates. Re-check before each render instead, so a slot
-// the parent adds or removes later still shows up (rows only re-render when their own props change).
+// the parent adds or removes later still shows up. Rows only re-render when their own props change, so they get
+// the row slot names as a prop to pick up added or removed cell slots.
 const hasHeaderAppendSlot = ref(false);
 const hasHeaderContextMenuSlot = ref(false);
 const hasItemAppendSlot = ref(false);
+const rowSlotNames = ref('');
 
 function readSlots() {
 	hasHeaderAppendSlot.value = slots['header-append'] !== undefined;
 	hasHeaderContextMenuSlot.value = slots['header-context-menu'] !== undefined;
 	hasItemAppendSlot.value = slots['item-append'] !== undefined;
+
+	rowSlotNames.value = Object.keys(slots)
+		.filter((name) => name.startsWith('item.') || name === 'item-append')
+		.sort()
+		.join();
 }
 
 readSlots();
@@ -365,7 +372,7 @@ function updateSort(newSort: Sort) {
 						:has-click-listener="!disabled && clickable"
 						:height="rowHeight"
 						:item-slots="slots"
-						:has-item-append-slot="hasItemAppendSlot"
+						:slot-names="rowSlotNames"
 						@click="!disabled && clickable ? $emit('click:row', { item: element, event: $event }) : null"
 						@item-selected="
 							onItemSelected({

@@ -124,6 +124,32 @@ describe('VTable', () => {
 		expect(wrapper.findAll('tbody td.append .append-button')).toHaveLength(2);
 	});
 
+	test('uses an item slot the parent adds later', async () => {
+		const showCustomEmail = ref(false);
+
+		const Parent = defineComponent(
+			() => () =>
+				h(
+					VTable,
+					{ headers, items },
+					{
+						...(showCustomEmail.value && {
+							'item.email': ({ item }: { item: Record<string, any> }) =>
+								h('span', { class: 'custom-email' }, item.email),
+						}),
+					},
+				),
+		);
+
+		const wrapper = mount(Parent, { global });
+		expect(wrapper.find('.custom-email').exists()).toBe(false);
+
+		showCustomEmail.value = true;
+		await nextTick();
+
+		expect(wrapper.findAll('tbody .custom-email')).toHaveLength(2);
+	});
+
 	test('updates cells when an item slot reads reactive state from outside the row', async () => {
 		const highlighted = ref<number | null>(null);
 

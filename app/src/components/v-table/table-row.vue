@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/types';
+import { isNil } from 'lodash-es';
 import { computed, h, renderSlot, type Slots } from 'vue';
 import type { Header, Item } from './types';
 import VCheckbox from '@/components/v-checkbox.vue';
@@ -19,7 +20,8 @@ const props = withDefaults(
 		hasClickListener?: boolean;
 		height?: number;
 		itemSlots?: Slots;
-		hasItemAppendSlot?: boolean;
+		/** Comma-separated names of the slots in `itemSlots`, so the row re-renders when they change */
+		slotNames?: string;
 	}>(),
 	{
 		showSelect: 'none',
@@ -30,7 +32,7 @@ const props = withDefaults(
 		hasClickListener: false,
 		height: 48,
 		itemSlots: () => ({}),
-		hasItemAppendSlot: false,
+		slotNames: '',
 	},
 );
 
@@ -42,13 +44,15 @@ const rowStyle = computed(() => ({
 	'--table-row-image-height': props.height - 16 + 'px',
 }));
 
+const hasItemAppendSlot = computed(() => props.slotNames.split(',').includes('item-append'));
+
 // The table's item slots come in as a prop rather than as slots on this component. vuedraggable renders
 // rows with plain render functions, so Vue re-renders any row that receives slots whenever the list
 // re-renders. Without slots, a row only re-renders when its own props change.
 function renderCell(header: Header) {
 	return renderSlot(props.itemSlots, `item.${header.value}`, { item: props.item }, () => {
-		const value = header.value.split('.').reduce((acc, val) => acc[val], props.item);
-		return [value ? h(VTextOverflow, { text: value }) : h(ValueNull)];
+		const value = header.value.split('.').reduce((acc, val) => acc?.[val], props.item);
+		return [isNil(value) ? h(ValueNull) : h(VTextOverflow, { text: value })];
 	});
 }
 
