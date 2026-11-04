@@ -9,6 +9,8 @@ import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { getCases } from '../permissions/modules/process-ast/lib/get-cases.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { isAdmin } from '../utils/is-admin.js';
+import { isVersionedCollection } from '../versioning/constants.js';
+import { countVersionedItems, isVersionedQuery } from '../versioning/read.js';
 
 export class MetaService {
 	knex: Knex;
@@ -26,6 +28,13 @@ export class MetaService {
 
 		const results = await Promise.all(
 			query.meta.map((metaVal: string) => {
+				if (isVersionedQuery(query) && isVersionedCollection(this.schema, collection)) {
+					const context = { knex: this.knex, schema: this.schema, accountability: this.accountability };
+
+					if (metaVal === 'total_count') return countVersionedItems(collection, {}, context);
+					if (metaVal === 'filter_count') return countVersionedItems(collection, query, context);
+				}
+
 				if (metaVal === 'total_count') return this.totalCount(collection);
 				if (metaVal === 'filter_count') return this.filterCount(collection, query);
 				return undefined;

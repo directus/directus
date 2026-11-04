@@ -1,3 +1,5 @@
+import type { SchemaOverview } from '@directus/types';
+
 // Prefixes are still TBD in the spec, keep every naming decision in this file so they can be changed in one place
 export const SHADOW_TABLE_PREFIX = 'directus_shadow_';
 export const LINK_TABLE_PREFIX = 'directus_link_';
@@ -12,6 +14,19 @@ export const VERSION_META_FIELDS = {
 	userCreated: 'version_user_created',
 	userUpdated: 'version_user_updated',
 } as const;
+
+/**
+ * Keys of the `directus_version` object in the API, mapped to the shadow table columns
+ */
+export const VERSION_META_KEYS: Record<string, string> = {
+	id: VERSION_META_FIELDS.id,
+	name: VERSION_META_FIELDS.name,
+	type: VERSION_META_FIELDS.type,
+	date_created: VERSION_META_FIELDS.dateCreated,
+	date_updated: VERSION_META_FIELDS.dateUpdated,
+	user_created: VERSION_META_FIELDS.userCreated,
+	user_updated: VERSION_META_FIELDS.userUpdated,
+};
 
 export const VERSION_TYPES = ['draft', 'published', 'archived'] as const;
 
@@ -28,6 +43,13 @@ export function getLinkTableName(collection: string) {
  */
 export function getVersionReferenceField(field: string) {
 	return `${VERSION_REFERENCE_PREFIX}${field}`;
+}
+
+/**
+ * A collection is versioned as long as its shadow table exists, which keeps this in sync with the database
+ */
+export function isVersionedCollection(schema: SchemaOverview, collection: string) {
+	return getShadowTableName(collection) in schema.collections;
 }
 
 export function isVersionTable(table: string) {
