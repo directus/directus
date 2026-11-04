@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { RadioGroupItem, RadioGroupRoot } from 'reka-ui';
-import { computed, useId } from 'vue';
+import { useId } from 'vue';
 import CardContent from './v-choice-cards/card-content.vue';
+import { focusAdjacentCard } from './v-choice-cards/focus-adjacent-card';
 import type { ChoiceCardItem } from './v-choice-cards/types';
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 	disabled?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
 	modelValue: null,
 	disabled: false,
 });
@@ -19,28 +19,31 @@ const emit = defineEmits<{
 	'update:modelValue': [value: string | number];
 }>();
 
+// Plain buttons instead of Reka RadioGroup, which selects on arrow focus and collapses the group to one Tab stop.
 const groupId = useId();
-// Reka only counts focusable items on mount, so disabled changes must remount the group.
-const focusabilityKey = computed(() => props.items.map((item) => Number(!(props.disabled || item.disabled))).join(''));
 </script>
 
 <template>
-	<RadioGroupRoot
-		:key="focusabilityKey"
+	<div
+		role="radiogroup"
 		class="v-radio-cards choice-cards"
-		:model-value="modelValue"
-		:disabled="disabled"
-		@update:model-value="emit('update:modelValue', $event as string | number)"
+		:aria-disabled="disabled || undefined"
+		@keydown="focusAdjacentCard"
 	>
-		<RadioGroupItem
+		<button
 			v-for="(item, index) in items"
 			:key="item.value"
+			type="button"
+			role="radio"
 			:value="item.value"
-			:disabled="item.disabled || disabled"
 			class="v-radio-card choice-card"
 			:class="{ custom: $slots.item }"
+			:aria-checked="modelValue === item.value"
+			:data-state="modelValue === item.value ? 'checked' : 'unchecked'"
+			:disabled="item.disabled || disabled"
 			:aria-labelledby="item.label ? `${groupId}-${index}-label` : undefined"
 			:aria-describedby="item.description ? `${groupId}-${index}-description` : undefined"
+			@click="emit('update:modelValue', item.value)"
 		>
 			<slot
 				name="item"
@@ -56,8 +59,8 @@ const focusabilityKey = computed(() => props.items.map((item) => Number(!(props.
 					:description-id="`${groupId}-${index}-description`"
 				/>
 			</slot>
-		</RadioGroupItem>
-	</RadioGroupRoot>
+		</button>
+	</div>
 </template>
 
 <style lang="scss" scoped>

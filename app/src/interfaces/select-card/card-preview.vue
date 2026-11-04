@@ -92,13 +92,8 @@ watch(
 		justify-content: center;
 		padding: var(--preview-padding);
 		color: var(--theme--primary);
-		font-size: 1.5rem;
 		user-select: none;
 		-webkit-user-drag: none;
-
-		.v-icon {
-			font-size: 3rem;
-		}
 	}
 
 	img {

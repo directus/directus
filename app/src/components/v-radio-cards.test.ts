@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
+import { nextTick } from 'vue';
 import type { ChoiceCardItem } from './v-choice-cards/types';
 import VRadioCards from './v-radio-cards.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
@@ -165,21 +166,42 @@ test('stays controlled when initially empty and follows accepted values and rese
 	expect(cards.every((card) => card.attributes('aria-checked') === 'false')).toBe(true);
 });
 
-test('keeps a Tab entry point when a loading form becomes enabled', async () => {
-	const wrapper = mount(VRadioCards, { props: { items, modelValue: 'core', disabled: true }, global });
-	expect(wrapper.find('[role="radiogroup"]').attributes('tabindex')).toBe('-1');
-	await wrapper.setProps({ disabled: false });
-	expect(wrapper.find('[role="radiogroup"]').attributes('tabindex')).toBe('0');
+test('makes every enabled card its own Tab stop', () => {
+	const wrapper = mount(VRadioCards, { props: { items, modelValue: 'core' }, global });
+	const cards = wrapper.findAll('[role="radio"]');
+	expect(cards.every((card) => card.attributes('tabindex') === undefined)).toBe(true);
+	expect(wrapper.find('[role="radiogroup"]').attributes('tabindex')).toBeUndefined();
 });
 
-test('keeps a Tab entry point when individual choices become enabled', async () => {
+test('moves focus with all arrow keys without selecting or stopping on disabled cards', async () => {
 	const wrapper = mount(VRadioCards, {
-		props: { items: items.map((item) => ({ ...item, disabled: true })) },
+		attachTo: document.body,
+		props: {
+			items: [items[0]!, { value: 'disabled', label: 'Disabled', disabled: true }, items[1]!],
+			modelValue: 'core',
+		},
 		global,
 	});
 
-	await wrapper.setProps({ items });
-	expect(wrapper.find('[role="radiogroup"]').attributes('tabindex')).toBe('0');
-	await wrapper.setProps({ items: items.map((item) => ({ ...item, disabled: true })) });
-	expect(wrapper.find('[role="radiogroup"]').attributes('tabindex')).toBe('-1');
+	try {
+		await nextTick();
+		const cards = wrapper.findAll<HTMLButtonElement>('[role="radio"]');
+		cards[0]!.element.focus();
+
+		for (const [key, from, to] of [
+			['ArrowRight', 0, 2],
+			['ArrowLeft', 2, 0],
+			['ArrowDown', 0, 2],
+			['ArrowUp', 2, 0],
+		] as const) {
+			await cards[from]!.trigger('keydown', { key });
+			expect(document.activeElement).toBe(cards[to]!.element);
+		}
+
+		expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+		expect(cards[0]!.attributes('aria-checked')).toBe('true');
+		expect(cards[2]!.attributes('aria-checked')).toBe('false');
+	} finally {
+		wrapper.unmount();
+	}
 });

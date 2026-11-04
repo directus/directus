@@ -2,6 +2,7 @@
 import { CheckboxGroupRoot, CheckboxRoot } from 'reka-ui';
 import { computed, useId } from 'vue';
 import CardContent from './v-choice-cards/card-content.vue';
+import { focusAdjacentCard } from './v-choice-cards/focus-adjacent-card';
 import type { ChoiceCardItem } from './v-choice-cards/types';
 
 interface Props {
@@ -21,17 +22,16 @@ const emit = defineEmits<{
 
 const groupId = useId();
 const selectedValues = computed(() => props.modelValue ?? []);
-// Reka only counts focusable items on mount, so disabled changes must remount the group.
-const focusabilityKey = computed(() => props.items.map((item) => Number(!(props.disabled || item.disabled))).join(''));
 </script>
 
 <template>
 	<CheckboxGroupRoot
-		:key="focusabilityKey"
 		role="group"
 		class="v-checkbox-cards choice-cards"
 		:model-value="selectedValues"
 		:disabled="disabled"
+		:roving-focus="false"
+		@keydown="focusAdjacentCard"
 		@update:model-value="emit('update:modelValue', $event as T[])"
 	>
 		<CheckboxRoot

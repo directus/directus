@@ -106,11 +106,11 @@ test('follows in-place changes to the parent selection array', async () => {
 	expect(modelValue).toEqual(['b']);
 });
 
-test('keeps a Tab entry point when a loading form becomes enabled', async () => {
-	const wrapper = mount(VCheckboxCards, { props: { items, modelValue: ['a'], disabled: true }, global });
-	expect(wrapper.find('[role="group"]').attributes('tabindex')).toBe('-1');
-	await wrapper.setProps({ disabled: false });
-	expect(wrapper.find('[role="group"]').attributes('tabindex')).toBe('0');
+test('makes every enabled card its own Tab stop', () => {
+	const wrapper = mount(VCheckboxCards, { props: { items, modelValue: ['a'] }, global });
+	const cards = wrapper.findAll('[role="checkbox"]');
+	expect(cards.every((card) => card.attributes('tabindex') === undefined)).toBe(true);
+	expect(wrapper.find('[role="group"]').attributes('tabindex')).toBeUndefined();
 });
 
 test('moves focus with all arrow keys without selecting or stopping on disabled cards', async () => {
