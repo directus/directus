@@ -150,6 +150,33 @@ describe('VTable', () => {
 		expect(wrapper.findAll('tbody .custom-email')).toHaveLength(2);
 	});
 
+	test('falls back to the raw value when the parent removes an item slot', async () => {
+		const showCustomEmail = ref(true);
+
+		const Parent = defineComponent(
+			() => () =>
+				h(
+					VTable,
+					{ headers, items },
+					showCustomEmail.value
+						? {
+								'item.email': ({ item }: { item: Record<string, any> }) =>
+									h('span', { class: 'custom-email' }, item.email),
+							}
+						: {},
+				),
+		);
+
+		const wrapper = mount(Parent, { global });
+		expect(wrapper.findAll('tbody .custom-email')).toHaveLength(2);
+
+		showCustomEmail.value = false;
+		await nextTick();
+
+		expect(wrapper.find('.custom-email').exists()).toBe(false);
+		expect(wrapper.findAll('tbody tr')[0]!.findAll('td')[1]!.text()).toBe('ada@example.com');
+	});
+
 	test('updates cells when an item slot reads reactive state from outside the row', async () => {
 		const highlighted = ref<number | null>(null);
 
