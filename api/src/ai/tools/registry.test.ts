@@ -1,4 +1,5 @@
 import { ForbiddenError } from '@directus/errors';
+import { FailedValidationError } from '@directus/validation';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { z } from 'zod';
 import { defineTool } from './define-tool.js';
@@ -174,6 +175,29 @@ describe('ToolRegistry', () => {
 		await expect(mounted.execute('forbidden', {})).resolves.toMatchObject({
 			ok: false,
 			error: { code: 'FORBIDDEN', recoverable: false },
+		});
+	});
+
+	test('joins the messages of an error array, like payload validation throws', async () => {
+		const field = (name: string) => new FailedValidationError({ field: name, type: 'nnull', path: [] });
+
+		const registry = new ToolRegistry([
+			createTool({
+				name: 'failing',
+				description: 'Failing',
+				handler: async () => {
+					throw [field('post'), field('author')];
+				},
+				readOnly: true,
+			}),
+		]);
+
+		await expect(registry.mount({ schema }).execute('failing', {})).resolves.toMatchObject({
+			ok: false,
+			error: {
+				code: 'FAILED_VALIDATION',
+				message: `Validation failed for field "post". Value can't be null.\nValidation failed for field "author". Value can't be null.`,
+			},
 		});
 	});
 
