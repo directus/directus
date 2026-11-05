@@ -463,7 +463,7 @@ describe('non-admin users', () => {
 			}
 		});
 
-		it('should not apply store field restrictions for versions regardless of field policy', () => {
+		it('should lock fields outside the update field list for versions, even when main item fails custom rule', () => {
 			const allowedFields = ['id', 'start_date'];
 
 			const permissionsStore = mockedStore(usePermissionsStore());
@@ -478,6 +478,35 @@ describe('non-admin users', () => {
 				delete: { access: false },
 				share: { access: false },
 			}));
+
+			const fields = getFields(sample.collection, false, fetchedItemPermissions, true);
+
+			for (const field of fields.value) {
+				const locked = !allowedFields.includes(field.field);
+				expect(!!field.meta?.readonly).toBe(locked);
+				expect(!!(field as FormField).meta?.non_editable).toBe(locked);
+			}
+		});
+
+		it('should lock fields outside the create field list for versions of new items', () => {
+			const permissionsStore = mockedStore(usePermissionsStore());
+
+			permissionsStore.getPermission.mockImplementation((_, action) => {
+				if (action === 'create') return { access: 'full', fields: ['id', 'name'] };
+				if (action === 'update') return { access: 'full', fields: ['*'] };
+				return null;
+			});
+
+			const fields = getFields(sample.collection, true, fetchedItemPermissions, true);
+
+			for (const field of fields.value) {
+				expect(!!field.meta?.readonly).toBe(!['id', 'name'].includes(field.field));
+			}
+		});
+
+		it('should not lock any fields for versions when user has no update permission', () => {
+			const permissionsStore = mockedStore(usePermissionsStore());
+			permissionsStore.getPermission.mockReturnValue(null);
 
 			const fields = getFields(sample.collection, false, fetchedItemPermissions, true);
 
