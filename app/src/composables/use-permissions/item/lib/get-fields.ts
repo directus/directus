@@ -33,8 +33,7 @@ export function getFields(
 			fields = fields.filter((field) => readableFields.includes(field.field));
 		}
 
-		// Versions skip item-level rules, which are checked at promote time because the version can change the values
-		// they depend on. Field lists don't depend on the item, so lock fields the user can't write when promoting.
+		// Item-level rules are checked at promote time, since the version can change the values they depend on.
 		// Without any create/update permission nothing is locked, so users can still draft changes for a reviewer.
 		if (unref(isVersion)) {
 			const versionPermission = getPermission(collectionValue, unref(isNew) ? 'create' : 'update');
