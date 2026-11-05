@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import type { LinkSelection } from '../composables/use-link';
+import type { LinkSelection, LinkUrlError } from '../composables/use-link';
 import VButton from '@/components/v-button.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
 defineProps<{
@@ -12,6 +13,7 @@ defineProps<{
 	saveable: boolean;
 	/** The link targets a selected image, which has no display text to edit. */
 	targetsImage?: boolean;
+	urlError?: LinkUrlError | null;
 }>();
 
 const emit = defineEmits<{ save: []; cancel: []; unlink: [] }>();
@@ -38,6 +40,12 @@ const selection = defineModel<LinkSelection>('linkSelection', { required: true }
 						autofocus
 						@update:model-value="selection.url = $event || null"
 					/>
+					<VNotice v-if="urlError === 'blocked'" type="danger">
+						{{ $t('interfaces.input-rich-text-html.link_protocol_blocked') }}
+					</VNotice>
+					<VNotice v-else-if="urlError === 'not_allowed'" type="danger">
+						{{ $t('interfaces.input-rich-text-html.link_protocol_not_allowed') }}
+					</VNotice>
 				</div>
 				<div v-if="!targetsImage" class="field full">
 					<div class="type-label">{{ $t('display_text') }}</div>
@@ -89,5 +97,9 @@ const selection = defineModel<LinkSelection>('linkSelection', { required: true }
 .content {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding);
+}
+
+.v-notice {
+	margin-block-start: 0.5rem;
 }
 </style>
