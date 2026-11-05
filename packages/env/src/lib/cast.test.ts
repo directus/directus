@@ -11,7 +11,7 @@ import { cast } from './cast.js';
 
 vi.mock('@directus/utils');
 vi.mock('lodash-es');
-vi.mock('../utils/get-default-type.js');
+vi.mock('../utils/get-type-map-entry.js');
 vi.mock('../utils/guess-type.js');
 vi.mock('../utils/has-cast-prefix.js');
 vi.mock('../utils/to-bytes.js');

@@ -66,8 +66,9 @@ function parseValue(key: string, value: unknown): unknown {
 	if (value === '') {
 		const type = getDefaultType(key);
 
-		// An empty list is a meaningful value
-		if (type === 'array' || type === 'string-array') return cast(value, key);
+		// An empty string or list is a meaningful value, eg an empty password. Variables that should be treated as not
+		// configured are left out entirely (`KEY=` in a .env file)
+		if (type === 'string' || type === 'array' || type === 'string-array') return cast(value, key);
 
 		// For other known variables, an empty value is treated as not configured so that the default applies (or the
 		// variable is left out), instead of being cast to eg `0`. Unknown variables keep the empty string as-is

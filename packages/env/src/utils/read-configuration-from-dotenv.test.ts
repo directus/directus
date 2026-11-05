@@ -1,9 +1,7 @@
 import { readFileSync } from 'node:fs';
-import { parse } from 'dotenv';
 import { afterEach, expect, test, vi } from 'vitest';
 import { readConfigurationFromDotEnv } from './read-configuration-from-dotenv.js';
 
-vi.mock('dotenv');
 vi.mock('node:fs');
 
 afterEach(() => {
@@ -11,17 +9,33 @@ afterEach(() => {
 });
 
 test('Reads file contents of path synchronously', () => {
+	vi.mocked(readFileSync).mockReturnValue('');
 	readConfigurationFromDotEnv('./test/path');
 	expect(readFileSync).toHaveBeenCalledWith('./test/path');
 });
 
-test('Parses file contents with dotenv', () => {
-	vi.mocked(readFileSync).mockReturnValue('dotenv-file-contents');
-	readConfigurationFromDotEnv('./test/path');
-	expect(parse).toHaveBeenCalledWith('dotenv-file-contents');
+test('Returns parsed dotenv config', () => {
+	vi.mocked(readFileSync).mockReturnValue('HELLO=world\n# comment\nexport QUOTED="a # b"\nMULTI="one\ntwo"');
+
+	expect(readConfigurationFromDotEnv('./test/path')).toEqual({
+		HELLO: 'world',
+		QUOTED: 'a # b',
+		MULTI: 'one\ntwo',
+	});
 });
 
-test('Returns parsed dotenv config', () => {
-	vi.mocked(parse).mockReturnValue({ hello: 'world' });
-	expect(readConfigurationFromDotEnv('./test/path')).toEqual({ hello: 'world' });
+test.each([
+	['KEY=', {}],
+	['KEY= ', {}],
+	['KEY= # comment', {}],
+	['export KEY=', {}],
+	['KEY=""', { KEY: '' }],
+	["KEY=''", { KEY: '' }],
+	['KEY=value\nKEY=', {}],
+	['KEY=\nKEY=""', { KEY: '' }],
+	['KEY=value', { KEY: 'value' }],
+])('Leaves out variables without a value in %j', (contents, expected) => {
+	vi.mocked(readFileSync).mockReturnValue(contents);
+
+	expect(readConfigurationFromDotEnv('./test/path')).toEqual(expected);
 });
