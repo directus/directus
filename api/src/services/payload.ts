@@ -228,7 +228,9 @@ export class PayloadService {
 
 		let specialFields: [string, FieldOverview][] = [];
 
-		for (const [name, field] of fieldEntries) {
+		for (const [name, schemaField] of fieldEntries) {
+			const field = withBooleanCast(schemaField);
+
 			if (field.special && field.special.length > 0) {
 				specialFields.push([name, field]);
 
@@ -1104,4 +1106,15 @@ export class PayloadService {
 
 		return payload;
 	}
+}
+
+/**
+ * SQLite and MySQL store booleans as 0 and 1. The app adds `cast-boolean` to boolean fields it creates, but fields
+ * created through the API, MCP, or a schema snapshot, and columns without a `directus_fields` row, can lack it and
+ * would be read back as numbers.
+ */
+function withBooleanCast(field: FieldOverview): FieldOverview {
+	if (field.type !== 'boolean' || field.special.includes('cast-boolean')) return field;
+
+	return { ...field, special: [...field.special, 'cast-boolean'] };
 }

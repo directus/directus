@@ -583,6 +583,35 @@ describe('Integration Tests', () => {
 				expect(result).toMatchObject({ string: 'not-redacted', hidden: REDACT_STR });
 			});
 
+			test('casts booleans read as 0 and 1, even without cast-boolean', async () => {
+				const booleanSchema = new SchemaBuilder()
+					.collection('test', (c) => {
+						c.field('id').id();
+						c.field('flagged').boolean().options({ special: [] });
+						c.field('active').boolean();
+					})
+					.build();
+
+				const booleanService = new PayloadService('test', { knex: db, schema: booleanSchema });
+
+				const result = await booleanService.processValues(
+					'read',
+					[
+						{ flagged: 1, active: 0, renamed: 1 },
+						{ flagged: 0, active: 1, renamed: 0 },
+						{ flagged: null, active: true, renamed: false },
+					],
+					{ renamed: 'flagged' },
+					{},
+				);
+
+				expect(result).toEqual([
+					{ flagged: true, active: false, renamed: true },
+					{ flagged: false, active: true, renamed: false },
+					{ flagged: null, active: true, renamed: false },
+				]);
+			});
+
 			test('processing aliassed special fields', async () => {
 				const result = await service.processValues(
 					'read',
