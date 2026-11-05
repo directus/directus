@@ -3,10 +3,12 @@ import { defineDisplay } from '@directus/extensions';
 import type { Field } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { get, set } from 'lodash-es';
+import { ref } from 'vue';
+import { getM2AFields } from './m2a';
 import DisplayRelatedValues from './related-values.vue';
 import { useExtension } from '@/composables/use-extension';
+import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
@@ -106,6 +108,11 @@ export default defineDisplay({
 
 		const fieldsStore = useFieldsStore();
 
+		if (fieldsStore.getField(collection, field)?.meta?.special?.includes('m2a')) {
+			const { relationInfo } = useRelationM2A(ref(collection), ref(field));
+			return relationInfo.value ? getM2AFields(relationInfo.value, options?.template) : [];
+		}
+
 		const { junctionCollection, relatedCollection, path } = relatedCollectionData;
 
 		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection);
@@ -119,20 +126,6 @@ export default defineDisplay({
 
 			if (!fields.includes(primaryKeyFieldValue)) {
 				fields.push(primaryKeyFieldValue);
-			}
-		}
-
-		const fieldStoreField = fieldsStore.getField(collection, field);
-
-		if (fieldStoreField?.meta?.special?.includes('m2a')) {
-			const relationsStore = useRelationsStore();
-			const relations = relationsStore.getRelationsForField(collection, field);
-
-			const collectionField = relations.find((relation) => relation.meta?.one_collection_field)?.meta
-				?.one_collection_field;
-
-			if (collectionField && !fields.find((field) => field === collectionField)) {
-				fields.push(collectionField);
 			}
 		}
 

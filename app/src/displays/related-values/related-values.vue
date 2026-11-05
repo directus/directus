@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import { get } from 'lodash-es';
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
+import { getM2ACollectionTemplates, getM2AJunctionTemplate } from './m2a';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
+import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { getItemRoute } from '@/utils/get-route';
@@ -49,8 +51,20 @@ const primaryKeyFieldPath = computed(() => {
 		: primaryKeyField.value?.field;
 });
 
+const { relationInfo } = useRelationM2A(toRef(props, 'collection'), toRef(props, 'field'));
+
+const m2aInfo = computed(() => (localType.value === 'm2a' ? relationInfo.value : undefined));
+
+const m2aJunctionTemplate = computed(() =>
+	m2aInfo.value ? getM2AJunctionTemplate(m2aInfo.value, props.template) : null,
+);
+
+const m2aCollectionTemplates = computed(() =>
+	m2aInfo.value && !m2aJunctionTemplate.value ? getM2ACollectionTemplates(m2aInfo.value) : null,
+);
+
 const internalTemplate = computed(() => {
-	return props.template || `{{ ${primaryKeyFieldPath.value!} }}`;
+	return m2aJunctionTemplate.value || props.template || `{{ ${primaryKeyFieldPath.value!} }}`;
 });
 
 const unit = computed(() => {
@@ -73,7 +87,22 @@ const unit = computed(() => {
 	return null;
 });
 
+function getM2ACollectionName(collection: string) {
+	if (te(`collection_names_singular.${collection}`)) return t(`collection_names_singular.${collection}`);
+	if (te(`collection_names_plural.${collection}`)) return t(`collection_names_plural.${collection}`);
+
+	return m2aInfo.value?.allowedCollections.find((allowed) => allowed.collection === collection)?.name ?? collection;
+}
+
 function getLinkForItem(item: any) {
+	if (m2aInfo.value) {
+		const collection = item[m2aInfo.value.collectionField.field];
+		const primaryKeyField = m2aInfo.value.relationPrimaryKeyFields[collection]?.field;
+		const primaryKey = primaryKeyField ? get(item, [m2aInfo.value.junctionField.field, primaryKeyField]) : null;
+
+		return primaryKey === null || primaryKey === undefined ? null : getItemRoute(collection, primaryKey);
+	}
+
 	if (!relatedCollectionData.value || !primaryKeyFieldPath.value) return null;
 	const primaryKey = get(item, primaryKeyFieldPath.value);
 
@@ -101,13 +130,22 @@ function getLinkForItem(item: any) {
 		<VList class="links">
 			<VListItem v-for="item in value" :key="item[primaryKeyFieldPath!]">
 				<VListItemContent>
+					<div v-if="m2aInfo && m2aCollectionTemplates" class="m2a-item">
+						<span class="collection">{{ getM2ACollectionName(item[m2aInfo.collectionField.field]) }}:</span>
+						<RenderTemplate
+							:template="m2aCollectionTemplates[item[m2aInfo.collectionField.field]]!"
+							:item="item[m2aInfo.junctionField.field]"
+							:collection="item[m2aInfo.collectionField.field]"
+						/>
+					</div>
 					<RenderTemplate
+						v-else
 						:template="internalTemplate"
 						:item="item"
 						:collection="junctionCollection ?? relatedCollection"
 					/>
 				</VListItemContent>
-				<VListItemIcon>
+				<VListItemIcon v-if="getLinkForItem(item)">
 					<RouterLink :to="getLinkForItem(item)!"><VIcon name="launch" small /></RouterLink>
 				</VListItemIcon>
 			</VListItem>
@@ -167,6 +205,18 @@ function getLinkForItem(item: any) {
 .links {
 	.v-list-item-content {
 		block-size: var(--v-list-item-min-height, 1.8125rem);
+	}
+
+	.m2a-item {
+		display: flex;
+		align-items: center;
+		min-inline-size: 0;
+	}
+
+	.collection {
+		color: var(--theme--primary);
+		white-space: nowrap;
+		margin-inline-end: 1ch;
 	}
 }
 </style>
