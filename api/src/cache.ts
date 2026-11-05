@@ -214,7 +214,7 @@ function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSu
 
 	if (store === 'redis') {
 		const { default: KeyvRedis } = require('@keyv/redis');
-		config.store = new KeyvRedis(env['REDIS'] || getConfigFromEnv('REDIS'), { useRedisSets: false });
+		config.store = new KeyvRedis(env['REDIS'] || getConfigFromEnv('REDIS', { omitSuffix: '_NAMESPACE' }), { useRedisSets: false });
 	}
 
 	return config;

@@ -48,7 +48,7 @@ function getConfig(
 
 		const env = useEnv();
 
-		config.storeClient = new Redis(env[`REDIS`] || getConfigFromEnv(`REDIS_`));
+		config.storeClient = new Redis(env[`REDIS`] || getConfigFromEnv(`REDIS_`, { omitSuffix: '_NAMESPACE' }));
 	}
 
 	delete config.enabled;

@@ -46,7 +46,7 @@ describe('createRedis', () => {
 
 		const redis = createRedis();
 
-		expect(getConfigFromEnv).toHaveBeenCalledWith('REDIS');
+		expect(getConfigFromEnv).toHaveBeenCalledWith('REDIS', { omitSuffix: '_NAMESPACE' });
 		expect(Redis).toHaveBeenCalledWith(mockConfig);
 		expect(redis).toBe(mockRedis);
 	});

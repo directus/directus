@@ -21,6 +21,10 @@ beforeEach(() => {
 			OMIT_PREFIX_SECOND_KEY_VALUE: 'secondValue',
 			OMIT_KEY_FIRST_KEY: 'firstKey',
 			OMIT_KEY_FIRST_KEY_VALUE: 'firstValue',
+			OMIT_SUFFIX_HOST: 'localhost',
+			OMIT_SUFFIX_BUS_NAMESPACE: 'bus',
+			OMIT_SUFFIX_LOCK_NAMESPACE: 'lock',
+			OMIT_SUFFIX_LOCK_TTL: '10',
 		}),
 	);
 });
@@ -70,6 +74,17 @@ describe('get config from env', () => {
 
 		expect(getConfigFromEnv('OMIT_KEY_', { omitKey: ['OMIT_KEY_FIRST_KEY_VALUE'] })).toStrictEqual({
 			firstKey: 'firstKey',
+		});
+	});
+
+	test('Keys ending with the suffix(es) listed in omitSuffix should be omitted', () => {
+		expect(getConfigFromEnv('OMIT_SUFFIX_', { omitSuffix: '_NAMESPACE' })).toStrictEqual({
+			host: 'localhost',
+			lockTtl: '10',
+		});
+
+		expect(getConfigFromEnv('OMIT_SUFFIX_', { omitSuffix: ['_namespace', '_TTL'] })).toStrictEqual({
+			host: 'localhost',
 		});
 	});
 });
