@@ -1,6 +1,6 @@
 ---
 '@directus/pressure': patch
-'@directus/types': patch
+'@directus/types': major
 '@directus/utils': minor
 '@directus/env': major
 '@directus/api': major
@@ -20,5 +20,7 @@ Env vars are now cast more strictly:
 - Variables without a value in a `.env` file (eg `KEY=`) fall back to the default, while explicitly empty values (eg
   `KEY=""`) are kept as an empty string or list. Empty values of non-string and non-list vars fall back to the default
 - `useEnv` returns parsed values: durations and sizes are numbers, lists are arrays
+- The `env` passed to API extensions is typed as `Env` instead of `Record<string, any>`, so custom env vars are `unknown`
+  and need to be narrowed or typed by extending the `Env` interface
 
 :::
