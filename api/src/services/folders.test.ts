@@ -10,6 +10,11 @@ vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({
 	validateAccess: vi.fn(),
 }));
 
+vi.mock('../utils/transaction.js', async () => {
+	const { mockTransaction } = await import('../test-utils/database.js');
+	return mockTransaction();
+});
+
 vi.mock('./items.js', async () => {
 	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
@@ -252,6 +257,7 @@ describe('FoldersService', () => {
 
 		beforeEach(() => {
 			tracker.reset();
+			tracker.on.update('directus_settings').response(0);
 		});
 
 		test('blocks a non-admin creating a folder under a flows folder', async () => {
@@ -463,6 +469,23 @@ describe('FoldersService', () => {
 
 			expect(ItemsService.prototype.deleteMany).toHaveBeenCalledWith(
 				['folder-1'],
+				expect.not.objectContaining({ preMutationError: expect.anything() }),
+			);
+		});
+
+		test('clears default_exports_folder before deleting the folders', async () => {
+			tracker.on.select('directus_folders').response([]);
+
+			const service = new FoldersService({ schema: mockSchema, accountability: nonAdmin, knex: db });
+
+			await service.deleteMany(['folder-1', 'folder-2']);
+
+			expect(tracker.history.update).toHaveLength(1);
+			expect(tracker.history.update[0]!.sql).toContain('default_exports_folder');
+			expect(tracker.history.update[0]!.bindings).toEqual([null, 'folder-1', 'folder-2']);
+
+			expect(ItemsService.prototype.deleteMany).toHaveBeenCalledWith(
+				['folder-1', 'folder-2'],
 				expect.not.objectContaining({ preMutationError: expect.anything() }),
 			);
 		});
