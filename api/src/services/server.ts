@@ -182,7 +182,7 @@ export class ServerService {
 				info['websocket'].logs =
 					env.WEBSOCKETS_LOGS_ENABLED && this.accountability.admin
 						? {
-								allowedLogLevels: getAllowedLogLevels(env.WEBSOCKETS_LOGS_LEVEL),
+								allowedLogLevels: getAllowedLogLevels(env.WEBSOCKETS_LOGS_LEVEL || 'info'),
 							}
 						: false;
 			} else {

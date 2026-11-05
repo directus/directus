@@ -55,7 +55,7 @@ export const createLogger = () => {
 	const env = useEnv();
 
 	const pinoOptions: LoggerOptions = {
-		level: env.LOG_LEVEL,
+		level: env.LOG_LEVEL || 'info',
 		redact: {
 			paths: ['req.headers.authorization', 'req.headers.cookie'],
 			censor: REDACTED_TEXT,
@@ -103,7 +103,7 @@ export const createLogger = () => {
 
 	// WebSocket Logs
 	if (env.WEBSOCKETS_LOGS_ENABLED) {
-		const wsLevel = env.WEBSOCKETS_LOGS_LEVEL;
+		const wsLevel = env.WEBSOCKETS_LOGS_LEVEL || 'info';
 
 		if (getLoggerLevelValue(wsLevel) < getLoggerLevelValue(mergedOptions.level!)) {
 			mergedOptions.level = wsLevel;
@@ -125,7 +125,7 @@ export const createExpressLogger = () => {
 	const loggerEnvConfig = getConfigFromEnv('LOGGER_', { omitPrefix: 'LOGGER_HTTP' });
 
 	const httpLoggerOptions: LoggerOptions = {
-		level: env.LOG_LEVEL,
+		level: env.LOG_LEVEL || 'info',
 		redact: {
 			paths: ['req.headers.authorization', 'req.headers.cookie'],
 			censor: REDACTED_TEXT,
@@ -205,7 +205,7 @@ export const createExpressLogger = () => {
 
 	// WebSocket Logs
 	if (env.WEBSOCKETS_LOGS_ENABLED) {
-		const wsLevel = env.WEBSOCKETS_LOGS_LEVEL;
+		const wsLevel = env.WEBSOCKETS_LOGS_LEVEL || 'info';
 
 		if (getLoggerLevelValue(wsLevel) < getLoggerLevelValue(mergedHttpOptions.level!)) {
 			mergedHttpOptions.level = wsLevel;

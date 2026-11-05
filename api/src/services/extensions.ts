@@ -54,7 +54,10 @@ export class ExtensionsService {
 			throw new ForbiddenError();
 		}
 
-		if (env.EXTENSIONS_LIMIT !== undefined) {
+		// `0` means no limit
+		const limit = env.EXTENSIONS_LIMIT || null;
+
+		if (limit !== null) {
 			const currentlyInstalledCount = this.extensionsManager.extensions.length;
 
 			/**
@@ -66,7 +69,7 @@ export class ExtensionsService {
 
 			const afterInstallCount = currentlyInstalledCount + points;
 
-			if (afterInstallCount >= env.EXTENSIONS_LIMIT) {
+			if (afterInstallCount >= limit) {
 				throw new LimitExceededError({ category: 'Extensions' });
 			}
 		}

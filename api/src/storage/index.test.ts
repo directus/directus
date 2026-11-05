@@ -7,7 +7,6 @@ import { _cache, getStorage } from './index.js';
 vi.mock('@directus/storage');
 vi.mock('./register-drivers.js');
 vi.mock('./register-locations.js');
-vi.mock('../utils/validate-env.js');
 
 let mockStorage: StorageManager;
 
