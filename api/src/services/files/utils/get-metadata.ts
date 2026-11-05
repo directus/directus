@@ -16,7 +16,7 @@ export type Metadata = Partial<Pick<File, 'height' | 'width' | 'description' | '
 
 export async function getMetadata(
 	stream: Readable,
-	allowList: string | string[] = FILE_METADATA_ALLOW_LIST as string[],
+	allowList: string | string[] = FILE_METADATA_ALLOW_LIST,
 ): Promise<Metadata> {
 	const transformer = getSharpInstance();
 

@@ -43,7 +43,7 @@ export const TYPE_MAP = {
 	PROJECT_NAME: 'string',
 	PROJECT_OWNER: 'string',
 
-	ROOT_REDIRECT: 'string',
+	ROOT_REDIRECT: ['string', 'false'],
 
 	TEMP_PATH: 'string',
 	PACKAGE_FILE_LOCATION: 'string',
@@ -98,8 +98,8 @@ export const TYPE_MAP = {
 	PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION: 'number',
 	PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY: 'number',
 	PRESSURE_LIMITER_RETRY_AFTER: ['string', 'false'],
-	PRESSURE_LIMITER_MAX_MEMORY_RSS: 'number',
-	PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED: 'number',
+	PRESSURE_LIMITER_MAX_MEMORY_RSS: ['number', 'false'],
+	PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED: ['number', 'false'],
 
 	ACCESS_TOKEN_TTL: 'milliseconds',
 	EMAIL_VERIFICATION_TOKEN_TTL: 'milliseconds',
@@ -153,7 +153,7 @@ export const TYPE_MAP = {
 	CACHE_SCHEMA_SYNC_TIMEOUT: 'number',
 	CACHE_SCHEMA_FREEZE_ENABLED: 'boolean',
 	CACHE_SKIP_ALLOWED: 'boolean',
-	CACHE_VALUE_MAX_SIZE: 'bytes',
+	CACHE_VALUE_MAX_SIZE: ['bytes', 'false'],
 	CACHE_DEPLOYMENT_TTL: 'milliseconds',
 
 	EXTENSIONS_PATH: 'string',
@@ -205,7 +205,7 @@ export const TYPE_MAP = {
 	IMPORT_MAX_FILE_SIZE: 'bytes',
 	IMPORT_EXPORT_NAMESPACE: 'string',
 
-	FILE_METADATA_ALLOW_LIST: 'array',
+	FILE_METADATA_ALLOW_LIST: 'string-array',
 	FILES_MIME_TYPE_ALLOW_LIST: 'string-array',
 	FILES_DELETE_ORIGINAL_ON_MOVE: 'boolean',
 	FILES_MAX_UPLOAD_CONCURRENCY: 'number',
@@ -304,7 +304,7 @@ export const TYPE_MAP = {
 	MCP_OAUTH_CIMD_ENABLED: 'boolean',
 	MCP_OAUTH_CIMD_ALLOW_HTTP: 'boolean',
 	MCP_OAUTH_CIMD_ALLOWED_DOMAINS: 'string-array',
-	MCP_OAUTH_CIMD_BLOCKED_TLDS: 'array',
+	MCP_OAUTH_CIMD_BLOCKED_TLDS: 'string-array',
 
 	AI_ENABLED: 'boolean',
 	AI_DEVTOOLS_ENABLED: 'boolean',

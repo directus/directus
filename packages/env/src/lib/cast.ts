@@ -1,10 +1,9 @@
-import { toArray, toBoolean } from '@directus/utils';
+import { toArray, toBoolean, toMilliseconds } from '@directus/utils';
 import { toNumber, toString } from 'lodash-es';
 import { getDefaultType } from '../utils/get-type-map-entry.js';
 import { guessType } from '../utils/guess-type.js';
 import { getCastFlag } from '../utils/has-cast-prefix.js';
 import { toBytes } from '../utils/to-bytes.js';
-import { toMilliseconds } from '../utils/to-milliseconds.js';
 import { tryJson } from '../utils/try-json.js';
 
 export function cast(value: unknown, key?: string): unknown {

@@ -7,7 +7,7 @@ import ms, { type StringValue } from 'ms';
 export function toMilliseconds(value: unknown): number | undefined {
 	if ((typeof value !== 'string' && typeof value !== 'number') || value === '') return undefined;
 
-	const milliseconds = ms(String(value) as StringValue);
+	const milliseconds: number | undefined = ms(String(value) as StringValue);
 
-	return Number.isNaN(milliseconds) ? undefined : milliseconds;
+	return milliseconds === undefined || Number.isNaN(milliseconds) ? undefined : milliseconds;
 }

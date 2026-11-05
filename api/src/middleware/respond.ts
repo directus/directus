@@ -24,7 +24,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 
 	let exceedsMaxSize = false;
 
-	if (env.CACHE_VALUE_MAX_SIZE !== undefined) {
+	if (env.CACHE_VALUE_MAX_SIZE !== undefined && env.CACHE_VALUE_MAX_SIZE !== false) {
 		const valueSize = res.locals['payload'] ? stringByteSize(JSON.stringify(res.locals['payload'])) : 0;
 		exceedsMaxSize = valueSize > env.CACHE_VALUE_MAX_SIZE;
 	}

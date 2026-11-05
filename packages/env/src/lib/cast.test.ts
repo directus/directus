@@ -1,11 +1,10 @@
-import { toArray, toBoolean } from '@directus/utils';
+import { toArray, toBoolean, toMilliseconds } from '@directus/utils';
 import { toNumber, toString } from 'lodash-es';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { getDefaultType } from '../utils/get-type-map-entry.js';
 import { guessType } from '../utils/guess-type.js';
 import { getCastFlag } from '../utils/has-cast-prefix.js';
 import { toBytes } from '../utils/to-bytes.js';
-import { toMilliseconds } from '../utils/to-milliseconds.js';
 import { tryJson } from '../utils/try-json.js';
 import { cast } from './cast.js';
 
@@ -15,7 +14,6 @@ vi.mock('../utils/get-type-map-entry.js');
 vi.mock('../utils/guess-type.js');
 vi.mock('../utils/has-cast-prefix.js');
 vi.mock('../utils/to-bytes.js');
-vi.mock('../utils/to-milliseconds.js');
 vi.mock('../utils/try-json.js');
 
 afterEach(() => {

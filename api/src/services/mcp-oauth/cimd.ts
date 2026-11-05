@@ -123,7 +123,7 @@ export function isValidCimdClientId(input: string): boolean {
 	}
 
 	// Blocked TLDs
-	const envTlds = env.MCP_OAUTH_CIMD_BLOCKED_TLDS as string[];
+	const envTlds = env.MCP_OAUTH_CIMD_BLOCKED_TLDS;
 	const tlds = envTlds.length > 0 ? envTlds : DEFAULT_BLOCKED_TLDS;
 	const suffixes = tlds.map((t) => `.${t.toLowerCase()}`);
 

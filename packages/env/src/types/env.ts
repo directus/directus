@@ -35,3 +35,11 @@ type OptionalEnv = {
  * declaration merging, eg `declare module '@directus/env' { interface Env { MY_VARIABLE: string } }`
  */
 export interface Env extends RequiredEnv, OptionalEnv, Record<string, unknown> {}
+
+/**
+ * The loaded environment variables as exposed to extensions. Known variables keep their type, while custom variables
+ * are typed as `any` for backwards compatibility with the previous `Record<string, any>` type
+ */
+export interface ExtensionEnv extends Env {
+	[key: string]: any;
+}
