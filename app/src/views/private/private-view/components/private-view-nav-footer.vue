@@ -6,7 +6,7 @@ import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 
 const serverStore = useServerStore();
-const { gracePeriodDaysRemaining, isLocked } = storeToRefs(useLicenseStore());
+const { hasPinnedNotice } = storeToRefs(useLicenseStore());
 const { isAdmin } = storeToRefs(useUserStore());
 
 const hasBadge = computed(() => {
@@ -14,9 +14,7 @@ const hasBadge = computed(() => {
 	return !!dpb && dpb !== 'HIDDEN';
 });
 
-const hasPinnedNotice = computed(() => isAdmin.value && gracePeriodDaysRemaining.value !== null && !isLocked.value);
-
-const visible = computed(() => hasBadge.value || hasPinnedNotice.value);
+const visible = computed(() => hasBadge.value || (isAdmin.value && hasPinnedNotice.value));
 </script>
 
 <template>

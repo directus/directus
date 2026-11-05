@@ -160,6 +160,7 @@ describe('mcp server', () => {
 				schema: {} as SchemaOverview,
 				token: null,
 				tokenSource: null,
+				method: 'POST',
 			};
 		});
 
@@ -170,6 +171,18 @@ describe('mcp server', () => {
 
 			expect(mockRes.status).toHaveBeenCalledWith(405);
 			expect(mockRes.send).toHaveBeenCalled();
+		});
+
+		test.each(['GET', 'HEAD'])('should return 405 for authenticated %s requests', async (method) => {
+			mockReq.method = method;
+			const connectSpy = vi.spyOn(directusMCP.server, 'connect');
+
+			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+
+			expect(mockRes.status).toHaveBeenCalledWith(405);
+			expect(mockRes.send).toHaveBeenCalled();
+			expect(mockRes.set).toHaveBeenCalledWith('Allow', 'POST');
+			expect(connectSpy).not.toHaveBeenCalled();
 		});
 
 		test('unauthenticated /mcp request returns 401 with WWW-Authenticate', () => {
@@ -214,6 +227,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false } as Accountability,
 				schema: {} as SchemaOverview,
+				method: 'POST',
 			};
 		});
 
@@ -285,6 +299,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false } as Accountability,
 				schema: {} as SchemaOverview,
+				method: 'POST',
 			};
 		});
 
@@ -302,6 +317,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false },
 				schema: {},
+				method: 'POST',
 			} as unknown as Request;
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
@@ -340,6 +356,7 @@ describe('mcp server', () => {
 				query: { tool_mode: 'registry' },
 				accountability: { user: 'user', admin: false },
 				schema: {},
+				method: 'POST',
 			} as unknown as Request;
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
@@ -376,6 +393,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false },
 				schema: {},
+				method: 'POST',
 			} as unknown as Request;
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
@@ -413,6 +431,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false },
 				schema: {},
+				method: 'POST',
 			} as unknown as Request;
 
 			directusMCP.handleRequest(mockReq, mockRes as Response);
@@ -470,6 +489,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false },
 				schema: {},
+				method: 'POST',
 			} as unknown as Request;
 
 			directusMCP = new DirectusMCP({ systemPromptEnabled: false });
@@ -509,6 +529,7 @@ describe('mcp server', () => {
 				},
 				accountability: { admin: true, user: 'user' }, // Admin user
 				schema: {},
+				method: 'POST',
 			} as unknown as Request;
 
 			directusMCP.handleRequest(mockReq, mockRes as Response);
@@ -545,6 +566,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false },
 				schema: {},
+				method: 'POST',
 			} as unknown as Request;
 
 			directusMCP.handleRequest(mockReq, mockRes as Response);
@@ -593,6 +615,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false } as Accountability,
 				schema: {} as SchemaOverview,
+				method: 'POST',
 			};
 
 			mockItemsService = {
@@ -799,6 +822,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false } as Accountability,
 				schema: {} as SchemaOverview,
+				method: 'POST',
 			};
 
 			mockItemsService = {
@@ -846,6 +870,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false },
 				schema: {},
+				method: 'POST',
 			} as unknown as Request;
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
@@ -882,6 +907,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false },
 				schema: {},
+				method: 'POST',
 			} as unknown as Request;
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
@@ -933,6 +959,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false },
 				schema: {},
+				method: 'POST',
 			} as unknown as Request;
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
@@ -990,6 +1017,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false },
 				schema: {},
+				method: 'POST',
 			} as unknown as Request;
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
@@ -1049,6 +1077,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false },
 				schema: {},
+				method: 'POST',
 			} as unknown as Request;
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
@@ -1105,6 +1134,7 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false },
 				schema: {},
+				method: 'POST',
 			} as unknown as Request;
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
@@ -1468,6 +1498,7 @@ describe('mcp server', () => {
 				schema: {} as SchemaOverview,
 				token: null,
 				tokenSource: null,
+				method: 'POST',
 				...overrides,
 			} as unknown as Request;
 		}

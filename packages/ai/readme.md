@@ -43,24 +43,8 @@ Add the model to the appropriate `ai_*_allowed_models` choices:
         value: gpt-6
 ```
 
-### 3. Database Migration (for default models)
+### 3. Default allowed models (optional)
 
-If the new model should be enabled by default for existing installations, create a migration in
-`api/src/database/migrations/`:
-
-```typescript
-// 20260115A-add-gpt6-to-defaults.ts
-export async function up(knex: Knex): Promise<void> {
-	// Add to existing allowed models arrays
-	const settings = await knex('directus_settings').first();
-	if (settings) {
-		const openaiModels = JSON.parse(settings.ai_openai_allowed_models || '[]');
-		if (!openaiModels.includes('gpt-6')) {
-			openaiModels.push('gpt-6');
-			await knex('directus_settings').update({
-				ai_openai_allowed_models: JSON.stringify(openaiModels),
-			});
-		}
-	}
-}
-```
+If the new model should be enabled by default, add it to `DEFAULT_ALLOWED_MODELS` in `packages/ai/src/models.ts`. This
+applies to every install whose `ai_*_allowed_models` setting is still `null` (never customized), so no migration is
+needed.
