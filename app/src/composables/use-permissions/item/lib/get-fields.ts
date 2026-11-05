@@ -57,22 +57,10 @@ export function getFields(
 
 		if (!permission || permission.access === false || permission.access === 'none') {
 			for (const field of fields) {
-				(field as FormField).meta = {
-					...(field.meta || {}),
-					readonly: true,
-					non_editable: true,
-				};
+				lockField(field);
 			}
-		} else if (permission.fields && !permission.fields.includes('*')) {
-			for (const field of fields) {
-				if (!permission.fields.includes(field.field)) {
-					(field as FormField).meta = {
-						...(field.meta || {}),
-						readonly: true,
-						non_editable: true,
-					};
-				}
-			}
+		} else {
+			lockFieldsOutside(fields, permission.fields);
 		}
 
 		const presets = permission?.presets;
@@ -90,4 +78,20 @@ export function getFields(
 
 		return fields;
 	});
+}
+
+function lockField(field: Field) {
+	(field as FormField).meta = {
+		...(field.meta || {}),
+		readonly: true,
+		non_editable: true,
+	};
+}
+
+function lockFieldsOutside(fields: Field[], allowedFields: string[] | null | undefined) {
+	if (!allowedFields || allowedFields.includes('*')) return;
+
+	for (const field of fields) {
+		if (!allowedFields.includes(field.field)) lockField(field);
+	}
 }
