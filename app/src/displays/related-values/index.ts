@@ -3,11 +3,10 @@ import { defineDisplay } from '@directus/extensions';
 import type { Field } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { get, set } from 'lodash-es';
-import { ref } from 'vue';
 import { getM2AFields } from './m2a';
 import DisplayRelatedValues from './related-values.vue';
 import { useExtension } from '@/composables/use-extension';
-import { useRelationM2A } from '@/composables/use-relation-m2a';
+import { getRelationM2A } from '@/composables/use-relation-m2a';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getRelatedCollection } from '@/utils/get-related-collection';
@@ -109,8 +108,8 @@ export default defineDisplay({
 		const fieldsStore = useFieldsStore();
 
 		if (fieldsStore.getField(collection, field)?.meta?.special?.includes('m2a')) {
-			const { relationInfo } = useRelationM2A(ref(collection), ref(field));
-			return relationInfo.value ? getM2AFields(relationInfo.value, options?.template) : [];
+			const relationInfo = getRelationM2A(collection, field);
+			return relationInfo ? getM2AFields(relationInfo, options?.template) : [];
 		}
 
 		const { junctionCollection, relatedCollection, path } = relatedCollectionData;

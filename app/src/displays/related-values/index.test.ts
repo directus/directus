@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { seedM2A } from './test-fixtures';
 import display from './index';
 import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 
 vi.mock('@/composables/use-extension', () => ({
 	useExtension: () => ({ value: null }),
@@ -28,6 +29,13 @@ describe('fields for an M2A field', () => {
 	test('skips inactive allowed collections when no template is set', () => {
 		seedM2A();
 		useCollectionsStore().getCollection('texts')!.meta!.status = 'inactive';
+
+		expect(getFields(null)).toEqual(['id', 'kind', 'target:headings.id', 'target:headings.text']);
+	});
+
+	test('skips allowed collections that have no primary key', () => {
+		seedM2A();
+		useFieldsStore().fields = useFieldsStore().fields.filter((field) => field.field !== 'uid');
 
 		expect(getFields(null)).toEqual(['id', 'kind', 'target:headings.id', 'target:headings.text']);
 	});

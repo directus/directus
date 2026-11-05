@@ -12,7 +12,9 @@ export function getM2ACollectionTemplates(relationInfo: RelationM2A): Record<str
 
 	for (const { collection, meta } of relationInfo.allowedCollections) {
 		const primaryKeyField = relationInfo.relationPrimaryKeyFields[collection];
-		templates[collection] = meta?.display_template || `{{${primaryKeyField?.field}}}`;
+		const template = meta?.display_template || (primaryKeyField ? `{{${primaryKeyField.field}}}` : null);
+
+		if (template) templates[collection] = template;
 	}
 
 	return templates;
@@ -32,15 +34,15 @@ export function getM2AFields(relationInfo: RelationM2A, template?: string | null
 	}
 
 	for (const [collection, collectionTemplate] of Object.entries(collectionTemplates)) {
-		if (isCollectionInactive(collection)) continue;
+		const primaryKeyField = relationInfo.relationPrimaryKeyFields[collection];
 
-		const primaryKeyField = relationInfo.relationPrimaryKeyFields[collection]!.field;
+		if (!primaryKeyField || isCollectionInactive(collection)) continue;
 
 		const collectionFields = junctionTemplate
 			? []
 			: adjustFieldsForDisplays(getFieldsFromTemplate(collectionTemplate), collection);
 
-		for (const field of [...collectionFields, primaryKeyField]) {
+		for (const field of [...collectionFields, primaryKeyField.field]) {
 			fields.add(`${relationInfo.junctionField.field}:${collection}.${field}`);
 		}
 	}

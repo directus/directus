@@ -105,4 +105,52 @@ describe('related-values display for an M2A field', () => {
 			link: '/content/headings/5',
 		});
 	});
+
+	test.each([
+		['has no collection', null],
+		['is not an allowed collection', 'others'],
+	])('renders a null value for a row that %s', (_, kind) => {
+		seedM2A();
+
+		const wrapper = mount(RelatedValues, {
+			props: { collection: 'pages', field: 'blocks', value: [{ id: 3, kind, target: { id: 7 } }] },
+			...mountOptions,
+		});
+
+		const row = wrapper.find('.v-list-item');
+
+		expect(row.find('.null').exists()).toBe(true);
+		expect(row.find('.render-template').exists()).toBe(false);
+		expect(row.find('a').exists()).toBe(false);
+	});
+
+	test('renders a null value for a row whose collection has no template and no primary key', () => {
+		seedM2A();
+		useFieldsStore().fields = useFieldsStore().fields.filter((field) => field.field !== 'uid');
+
+		const wrapper = mount(RelatedValues, {
+			props: { collection: 'pages', field: 'blocks', value: [value[1]] },
+			...mountOptions,
+		});
+
+		const row = wrapper.find('.v-list-item');
+
+		expect(row.find('.null').exists()).toBe(true);
+		expect(row.find('.render-template').exists()).toBe(false);
+	});
+
+	test('renders a row of an inactive collection with its name and no link', () => {
+		seedM2A();
+		useCollectionsStore().getCollection('texts')!.meta!.status = 'inactive';
+
+		const wrapper = mount(RelatedValues, {
+			props: { collection: 'pages', field: 'blocks', value: [{ id: 2, kind: 'texts', target: null }] },
+			...mountOptions,
+		});
+
+		const row = wrapper.find('.v-list-item');
+
+		expect(row.text()).toBe('Texts:');
+		expect(row.find('a').exists()).toBe(false);
+	});
 });
