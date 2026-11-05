@@ -3185,9 +3185,6 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../constants
-      '@directus/env':
-        specifier: workspace:*
-        version: link:../env
       '@directus/schema':
         specifier: workspace:*
         version: link:../schema

@@ -1,4 +1,5 @@
 import { createRequire } from 'node:module';
+import type { Env } from '@directus/env';
 import { defineOperationApi } from '@directus/extensions';
 import { sieveFunctions } from '@directus/utils';
 // eslint-disable-next-line import/order
@@ -23,8 +24,8 @@ export default defineOperationApi<Options>({
 	id: 'exec',
 	handler: async ({ code }, { data, env, logger }) => {
 		const allowedEnv = data['$env'] ?? {};
-		const isolateSizeMb = env.FLOWS_RUN_SCRIPT_MAX_MEMORY;
-		const scriptTimeoutMs = env.FLOWS_RUN_SCRIPT_TIMEOUT;
+		const isolateSizeMb = env['FLOWS_RUN_SCRIPT_MAX_MEMORY'] as Env['FLOWS_RUN_SCRIPT_MAX_MEMORY'];
+		const scriptTimeoutMs = env['FLOWS_RUN_SCRIPT_TIMEOUT'] as Env['FLOWS_RUN_SCRIPT_TIMEOUT'];
 
 		const isolate = new ivm.Isolate({ memoryLimit: isolateSizeMb });
 		const context = isolate.createContextSync();

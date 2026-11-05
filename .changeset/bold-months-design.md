@@ -24,7 +24,7 @@ Env vars are now cast more strictly:
   empty string or list instead of falling back to the default, eg an empty `EMAIL_SENDMAIL_PATH` is no longer replaced by
   `/usr/sbin/sendmail`. Empty values of other vars still fall back to the default
 - `useEnv` returns parsed values: durations and sizes are numbers, lists are arrays
-- The `env` passed to API extensions is typed as `Env` instead of `Record<string, any>`, so custom env vars are `unknown`
-  and need to be narrowed or typed by extending the `Env` interface
+- The `env` passed to API extensions is typed as `Record<string, unknown>` instead of `Record<string, any>`, so env vars
+  need to be narrowed before use
 
 :::
