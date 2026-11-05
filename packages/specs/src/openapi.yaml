@@ -317,6 +317,17 @@ components:
       $ref: './components/folder.yaml'
     Items:
       $ref: './components/item.yaml'
+    Metadata:
+      type: object
+      properties:
+        total_count:
+          description: Returns the total item count of the collection you're querying.
+          type: integer
+        filter_count:
+          description:
+            Returns the item count of the collection you're querying, taking the current filter/search parameters into
+            account.
+          type: integer
     Operations:
       $ref: './components/operation.yaml'
     Permissions:
@@ -339,17 +350,6 @@ components:
       $ref: './components/user.yaml'
     Versions:
       $ref: './components/version.yaml'
-    x-metadata:
-      type: object
-      properties:
-        total_count:
-          description: Returns the total item count of the collection you're querying.
-          type: integer
-        filter_count:
-          description:
-            Returns the item count of the collection you're querying, taking the current filter/search parameters into
-            account.
-          type: integer
   parameters:
     # All path parameters
     Id:

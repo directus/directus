@@ -465,6 +465,11 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 			}
 		}
 
+		// Personal presets are per-account state, not configuration.
+		if (resource.collection === 'directus_presets') {
+			rows = rows.filter((record) => record['user'] === null || record['user'] === undefined);
+		}
+
 		// The options must round-trip, so warn instead of stripping possible credentials.
 		if (resource.collection === 'directus_operations') {
 			const carriers: string[] = [];
