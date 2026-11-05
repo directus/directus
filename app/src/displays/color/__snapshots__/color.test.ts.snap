@@ -3,6 +3,6 @@
 exports[`Mount component 1`] = `
 "<div data-v-c234c7a7="" class="color-dot">
   <!--v-if-->
-  <div data-v-c234c7a7="" class="dot"></div>
+  <div data-v-c234c7a7="" class="dot" style="background-color: #FF0000;"></div>
 </div>"
 `;
