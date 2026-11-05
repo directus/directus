@@ -33,9 +33,14 @@ export function getFields(
 			fields = fields.filter((field) => readableFields.includes(field.field));
 		}
 
-		// Version editing bypasses underlying collection write permissions entirely.
-		// Field-level access is enforced by the backend at promote time.
-		if (unref(isVersion)) return fields;
+		// Versions skip item-level rules, which are checked at promote time because the version can change the values
+		// they depend on. Field lists don't depend on the item, so lock fields the user can't write when promoting.
+		// Without any create/update permission nothing is locked, so users can still draft changes for a reviewer.
+		if (unref(isVersion)) {
+			const versionPermission = getPermission(collectionValue, unref(isNew) ? 'create' : 'update');
+			if (versionPermission && versionPermission.access !== 'none') lockFieldsOutside(fields, versionPermission.fields);
+			return fields;
+		}
 
 		let permission;
 
