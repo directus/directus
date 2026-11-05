@@ -60,7 +60,7 @@ export const relations = defineTool<z.infer<typeof RelationsValidateSchema>, z.i
 	name: 'relations',
 	admin: true,
 	description:
-		'Reads and changes relationships between Directus collections. Use for many-to-one, one-to-many, many-to-many, and many-to-any relations.',
+		'Reads and changes relationships between Directus collections. Use for many-to-one, one-to-many, many-to-many, and many-to-any relations. Only change the schema when the user asks for a schema change. If a task needs a field or collection that is missing, tell the user instead of creating it.',
 	instructions: requireText(resolve(__dirname, './prompt.md')),
 	keywords: ['relationships', 'foreign keys', 'm2o', 'o2m', 'm2m', 'm2a', 'junction'],
 	annotations: {
