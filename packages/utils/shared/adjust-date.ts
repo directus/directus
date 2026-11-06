@@ -5,18 +5,27 @@ import {
 	addMinutes,
 	addMonths,
 	addSeconds,
-	addWeeks,
 	addYears,
-	subDays,
 	subHours,
 	subMilliseconds,
 	subMinutes,
 	subMonths,
 	subSeconds,
-	subWeeks,
 	subYears,
 } from 'date-fns';
 import { clone } from 'lodash-es';
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+/**
+ * `addDays` drops the fractional part of the amount (and rounds a negative fraction the wrong way), so the whole
+ * days are added as calendar days and the fraction is added as a fixed duration, like the hour and minute units.
+ */
+function addFractionalDays(date: Date, days: number): Date {
+	const wholeDays = Math.trunc(days);
+
+	return addMilliseconds(addDays(date, wholeDays), (days - wholeDays) * MS_PER_DAY);
+}
 
 /**
  * Adjust a given date by a given change in duration. The adjustment value uses the exact same syntax
@@ -60,11 +69,11 @@ export function adjustDate(date: Date, adjustment: string): Date | undefined {
 		case 'weeks':
 		case 'week':
 		case 'w':
-			return subtract ? subWeeks(date, amount) : addWeeks(date, amount);
+			return addFractionalDays(date, (subtract ? -amount : amount) * 7);
 		case 'days':
 		case 'day':
 		case 'd':
-			return subtract ? subDays(date, amount) : addDays(date, amount);
+			return addFractionalDays(date, subtract ? -amount : amount);
 		case 'hours':
 		case 'hour':
 		case 'hrs':
