@@ -1,3 +1,5 @@
+import { Agent as HttpAgent } from 'node:http';
+import { Agent as HttpsAgent } from 'node:https';
 import { basename, dirname, join } from 'node:path';
 import { Readable } from 'node:stream';
 import { ReadableStream } from 'node:stream/web';
@@ -15,13 +17,17 @@ import {
 	randGitShortSha as randUnique,
 } from '@ngneat/falso';
 import { StorageClient } from '@supabase/storage-js';
-import { fetch, Response } from 'undici';
+import { DefaultHttpStack, Upload } from 'tus-js-client';
+import { EnvHttpProxyAgent, fetch, Response } from 'undici';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverSupabaseConfig } from './index.js';
 import { DriverSupabase } from './index.js';
 
 vi.mock('@supabase/storage-js');
 vi.mock('undici');
+vi.mock('tus-js-client');
+vi.mock('node:http');
+vi.mock('node:https');
 
 let sample: {
 	config: Required<DriverSupabaseConfig>;
@@ -82,6 +88,7 @@ beforeEach(() => {
 
 afterEach(() => {
 	vi.resetAllMocks();
+	vi.unstubAllEnvs();
 });
 
 describe('#constructor', () => {
@@ -165,12 +172,31 @@ describe('#getClient', () => {
 	});
 
 	test('Creates storage client', () => {
-		expect(StorageClient).toHaveBeenCalledWith(`https://${sample.config.projectId}.supabase.co/storage/v1`, {
-			apikey: sample.config.serviceRole,
-			Authorization: `Bearer ${sample.config.serviceRole}`,
-		});
+		expect(StorageClient).toHaveBeenCalledWith(
+			`https://${sample.config.projectId}.supabase.co/storage/v1`,
+			{
+				apikey: sample.config.serviceRole,
+				Authorization: `Bearer ${sample.config.serviceRole}`,
+			},
+			expect.any(Function),
+		);
 
 		expect(driver['client']).toBeInstanceOf(StorageClient);
+	});
+
+	test('passes a fetch that dispatches through a proxy-aware dispatcher to the storage client', async () => {
+		vi.mocked(fetch).mockResolvedValue({} as unknown as Response);
+
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
+
+		const sdkFetch = vi.mocked(StorageClient).mock.calls.at(-1)![2] as typeof fetch;
+
+		await sdkFetch('https://example.supabase.co/storage/v1/object/list/bucket', { method: 'GET' });
+
+		expect(fetch).toHaveBeenCalledWith(
+			'https://example.supabase.co/storage/v1/object/list/bucket',
+			expect.objectContaining({ method: 'GET', dispatcher: expect.any(EnvHttpProxyAgent) }),
+		);
 	});
 });
 
@@ -247,6 +273,7 @@ describe('#read', () => {
 				Authorization: `Bearer ${sample.config.serviceRole}`,
 			},
 			method: 'GET',
+			dispatcher: expect.anything(),
 		});
 	});
 
@@ -262,6 +289,7 @@ describe('#read', () => {
 				Authorization: `Bearer ${sample.config.serviceRole}`,
 			},
 			method: 'GET',
+			dispatcher: expect.anything(),
 		});
 	});
 
@@ -274,6 +302,7 @@ describe('#read', () => {
 				Range: `bytes=${sample.range.start}-`,
 			},
 			method: 'GET',
+			dispatcher: expect.anything(),
 		});
 	});
 
@@ -286,6 +315,7 @@ describe('#read', () => {
 				Range: `bytes=-${sample.range.end}`,
 			},
 			method: 'GET',
+			dispatcher: expect.anything(),
 		});
 	});
 
@@ -298,6 +328,7 @@ describe('#read', () => {
 				Range: `bytes=${sample.range.start}-${sample.range.end}`,
 			},
 			method: 'GET',
+			dispatcher: expect.anything(),
 		});
 	});
 
@@ -342,6 +373,7 @@ describe('#read', () => {
 				Range: `bytes=${sample.range.start}-${sample.range.end}`,
 			},
 			method: 'GET',
+			dispatcher: expect.anything(),
 		});
 
 		expect(stream).toBeInstanceOf(Readable);
@@ -585,6 +617,18 @@ describe('#list', () => {
 		});
 	});
 
+	test('throws when the api returns an error instead of yielding nothing', async () => {
+		driver['bucket'] = {
+			list: vi.fn().mockResolvedValue({ data: null, error: { message: 'Network request failed' } }),
+		} as any;
+
+		await expect(async () => {
+			for await (const _filepath of driver.list(sample.path.input)) {
+				// Consume the generator so the error surfaces
+			}
+		}).rejects.toThrow(`Can't list for prefix "${sample.path.input}"`);
+	});
+
 	test('Yields file name omitting root if prefix is the full file path', async () => {
 		const sampleRoot = randDirectoryPath();
 		const sampleFile = randFileName();
@@ -769,5 +813,85 @@ describe('#list', () => {
 		}
 
 		expect(output.length).toBe(1256);
+	});
+});
+
+describe('#writeChunk', () => {
+	test('gives undici and the tus agents the same proxy settings', () => {
+		vi.stubEnv('HTTP_PROXY', undefined);
+		vi.stubEnv('http_proxy', undefined);
+		vi.stubEnv('HTTPS_PROXY', 'http://proxy:3128');
+		vi.stubEnv('NO_PROXY', 'example.local');
+
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
+
+		const agentOptions = {
+			proxyEnv: { HTTP_PROXY: undefined, HTTPS_PROXY: 'http://proxy:3128', NO_PROXY: 'example.local' },
+			keepAlive: true,
+			timeout: 5000,
+		};
+
+		expect(HttpAgent).toHaveBeenCalledWith(agentOptions);
+		expect(HttpsAgent).toHaveBeenCalledWith(agentOptions);
+
+		expect(EnvHttpProxyAgent).toHaveBeenCalledWith({
+			httpProxy: '',
+			httpsProxy: 'http://proxy:3128',
+			noProxy: 'example.local',
+		});
+	});
+
+	test('falls back to HTTP_PROXY for HTTPS requests, with uppercase taking precedence', () => {
+		vi.stubEnv('HTTP_PROXY', 'http://proxy:3128');
+		vi.stubEnv('http_proxy', 'http://other-proxy:3128');
+		vi.stubEnv('HTTPS_PROXY', undefined);
+		vi.stubEnv('https_proxy', undefined);
+
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
+
+		const [agentOptions] = vi.mocked(HttpsAgent).mock.calls.at(-1)!;
+
+		expect(agentOptions?.proxyEnv).toMatchObject({ HTTP_PROXY: 'http://proxy:3128', HTTPS_PROXY: 'http://proxy:3128' });
+
+		expect(EnvHttpProxyAgent).toHaveBeenLastCalledWith(
+			expect.objectContaining({ httpProxy: 'http://proxy:3128', httpsProxy: 'http://proxy:3128' }),
+		);
+	});
+
+	test('routes each tus request through the agent matching the url scheme', () => {
+		const localDriver = new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
+
+		const [httpStack, httpsStack] = vi
+			.mocked(DefaultHttpStack)
+			.mock.calls.slice(-2)
+			.map(([options]) => options);
+
+		expect(httpStack!.agent).toBeInstanceOf(HttpAgent);
+		expect(httpsStack!.agent).toBeInstanceOf(HttpsAgent);
+
+		const stack = localDriver['httpStack'];
+
+		stack.createRequest('POST', 'http://example.local/upload');
+		stack.createRequest('PATCH', 'https://example.local/upload');
+
+		const [httpInstance, httpsInstance] = vi.mocked(DefaultHttpStack).mock.instances.slice(-2);
+
+		expect(httpInstance!.createRequest).toHaveBeenCalledWith('POST', 'http://example.local/upload');
+		expect(httpsInstance!.createRequest).toHaveBeenCalledWith('PATCH', 'https://example.local/upload');
+	});
+
+	test('passes the proxy-aware http stack to the tus upload', async () => {
+		vi.mocked(Upload).mockImplementation(function (_content: any, options: any) {
+			return { url: null, start: () => options.onSuccess() } as any;
+		});
+
+		const localDriver = new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
+
+		await localDriver.writeChunk(sample.path.input, sample.stream, 0, { metadata: {} } as any);
+
+		expect(Upload).toHaveBeenCalledWith(
+			sample.stream,
+			expect.objectContaining({ httpStack: localDriver['httpStack'] }),
+		);
 	});
 });
