@@ -12,7 +12,7 @@ import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
-import { PreservedAttributes } from './preserved-attributes';
+import { PreservedAttributes, styleRules } from './preserved-attributes';
 import { RangeSelectedAtoms } from './range-selected-atoms';
 import { semanticHtml } from './semantic-html';
 import { StyleTag } from './style-tag';
@@ -65,8 +65,15 @@ export function fieldEditorExtensions(additions: AnyExtension[]): AnyExtension[]
 	const isPreserved = (extension: AnyExtension) => extension.name === PreservedAttributes.name;
 	const others = [...base.filter((extension) => !isPreserved(extension)), ...appended];
 
+	const isInlineTextStyle = (extension: AnyExtension) =>
+		extension.name === PreservingTextStyle.name && extension.options.inlineStyles;
+
 	return [
-		...base.map((extension) => (isPreserved(extension) ? extension.configure({ extensions: others }) : extension)),
+		...base.map((extension) => {
+			if (isPreserved(extension)) return extension.configure({ extensions: others });
+			if (isInlineTextStyle(extension)) return extension.configure({ styleRules: styleRules(others) });
+			return extension;
+		}),
 		...appended,
 	];
 }

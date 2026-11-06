@@ -1,6 +1,7 @@
 import { Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test } from 'vitest';
-import { buildFieldSchema, fieldEditorExtensions } from './index';
+import { roundTrip as schemaRoundTrip } from './composables/normalization-diff';
+import { buildFieldSchema, fieldEditorExtensions, type FieldSchemaOptions } from './extensions';
 
 let editor: Editor | null = null;
 
@@ -9,21 +10,16 @@ afterEach(() => {
 	editor = null;
 });
 
-function mount(html: string, keepInlineStyles = true): Editor {
-	const { extensions } = buildFieldSchema({ keepInlineStyles });
-	editor = new Editor({ extensions: fieldEditorExtensions(extensions), content: html });
+const withInlineStyles = (options: FieldSchemaOptions = {}) =>
+	buildFieldSchema({ keepInlineStyles: true, ...options }).extensions;
+
+function mount(html: string): Editor {
+	editor = new Editor({ extensions: fieldEditorExtensions(withInlineStyles()), content: html });
 	return editor;
 }
 
 function roundTrip(html: string, keepInlineStyles = true): string {
-	const instance = new Editor({
-		extensions: fieldEditorExtensions(buildFieldSchema({ keepInlineStyles }).extensions),
-		content: html,
-	});
-
-	const out = instance.getHTML();
-	instance.destroy();
-	return out;
+	return schemaRoundTrip(html, buildFieldSchema({ keepInlineStyles }).extensions);
 }
 
 describe('keepInlineStyles off', () => {
@@ -87,6 +83,31 @@ describe('keepInlineStyles on: style attribute', () => {
 		expect(out).toContain('white-space: pre-wrap');
 	});
 
+	test.each([
+		['bold', '<p><span style="font-weight: bold;">a</span></p>', '<p><strong>a</strong></p>'],
+		['italic', '<p style="font-style: italic; margin-left: 4px;">a</p>', '<p style="margin-left: 4px;"><em>a</em></p>'],
+		['underline', '<p><span style="text-decoration: underline;">a</span></p>', '<p><u>a</u></p>'],
+		[
+			'bold through a shorthand',
+			'<p><span style="font: bold 12px Arial;">a</span></p>',
+			'<p><span style="font-family: Arial; font-size: 12px;"><strong>a</strong></span></p>',
+		],
+	])('a %s declaration that becomes a mark is not kept as style too', (_name, html, expected) => {
+		expect(roundTrip(html)).toBe(expected);
+	});
+
+	test('a font weight that is not bold stays a style', () => {
+		const html = '<p><span style="font-weight: 300;">a</span></p>';
+		expect(roundTrip(html)).toBe(html);
+	});
+
+	test('removing a mark that came from a style removes the style too', () => {
+		const instance = mount('<p><span style="font-weight: bold; letter-spacing: 1px;">a</span></p>');
+		instance.chain().selectAll().unsetBold().run();
+
+		expect(instance.getHTML()).toBe('<p><span style="letter-spacing: 1px;">a</span></p>');
+	});
+
 	test('a second round trip changes nothing', () => {
 		const html =
 			'<h2 style="text-align: center; margin: 0 auto;">t</h2><p><span style="color: #ff0000; font-size: 18pt; line-height: 2;">a</span> <em style="color: blue;">b</em></p>';
@@ -116,13 +137,7 @@ describe('keepInlineStyles on: style attribute', () => {
 
 		const html = '<p><span class="wrapper" style="color: #00ff00; letter-spacing: 1px;">x</span></p>';
 
-		const instance = new Editor({
-			extensions: fieldEditorExtensions(buildFieldSchema({ keepInlineStyles: true, customFormats }).extensions),
-			content: html,
-		});
-
-		expect(instance.getHTML()).toBe(html);
-		instance.destroy();
+		expect(schemaRoundTrip(html, withInlineStyles({ customFormats }))).toBe(html);
 	});
 
 	test('nested styled spans merge into one without losing a declaration', () => {

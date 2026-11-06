@@ -112,7 +112,7 @@ describe('findMarkupLoss', () => {
 			expect(inlineLoss(html)).toEqual([]);
 		});
 
-		test('a shorthand longhand that only the owner keeps', () => {
+		test('reports the part of a shorthand that only its owner keeps as lost', () => {
 			expect(inlineLoss('<p><span style="background: yellow url(a.png)">x</span></p>')).toEqual([
 				expect.stringContaining('background-image'),
 			]);

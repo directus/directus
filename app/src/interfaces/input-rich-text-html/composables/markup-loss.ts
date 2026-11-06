@@ -4,6 +4,7 @@ import {
 	type StyleParseRule,
 	type TagParseRule,
 } from '@tiptap/pm/model';
+import { StyleTag } from '../extensions/style-tag';
 
 /**
  * What the schema drops from `input`, given `normalized` (the same HTML after a round trip). A
@@ -20,8 +21,8 @@ import {
  */
 export function findMarkupLoss(input: string, normalized: string, schema: Schema): string[] {
 	const rules = parseRules(schema);
-	// a schema that models <style> (keepInlineStyles) makes its CSS content
-	const nonContent = schema.nodes['styleTag'] ? NON_CONTENT_TAGS.filter((tag) => tag !== 'style') : NON_CONTENT_TAGS;
+	// a schema with a StyleTag node keeps <style>, so its CSS is content, not markup to drop
+	const nonContent = schema.nodes[StyleTag.name] ? NON_CONTENT_TAGS.filter((tag) => tag !== 'style') : NON_CONTENT_TAGS;
 	const before = parseBody(input, nonContent);
 	const after = parseBody(normalized, nonContent);
 

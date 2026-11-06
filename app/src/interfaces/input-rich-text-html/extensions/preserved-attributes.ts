@@ -5,7 +5,10 @@ import {
 	flattenExtensions,
 	fromString,
 	getAttributesFromExtensions,
+	getExtensionField,
 } from '@tiptap/core';
+import type { ParseRule, StyleParseRule } from '@tiptap/pm/model';
+import { StyleTag } from './style-tag';
 
 /**
  * Round-trips `class`, `id`, `title`, `role`, `lang`, `dir`, `data-*` and `aria-*` on every node and
@@ -20,9 +23,6 @@ import {
  * (comparisonDiff derives its class from its own `type` attribute).
  */
 const EXCLUDED_TYPES = new Set(['doc', 'text', 'pageBreak', 'comparisonDiff']);
-
-/** A `style` attribute on these types would style nothing the author wrote. */
-const NO_INLINE_STYLE_TYPES = new Set(['styleTag']);
 
 /** Types that already model `title` on their own attributes; a global `title` would double-render. */
 const OWN_TITLE_TYPES = new Set(['link', 'abbreviation']);
@@ -91,12 +91,10 @@ function ownerRenders(element: HTMLElement, owners: ExtensionAttribute[]): Recor
 	return renders;
 }
 
-/** HTML names that other attributes of the type parse from this element and render back. */
 function ownedNames(element: HTMLElement, owners: ExtensionAttribute[]): Set<string> {
 	return new Set(ownerRenders(element, owners).flatMap((rendered) => Object.keys(rendered)));
 }
 
-/** CSS properties that other attributes of the type parse from this element and render back. */
 function ownedStyleProperties(element: HTMLElement, owners: ExtensionAttribute[]): string[] {
 	return ownerRenders(element, owners).flatMap((rendered) =>
 		styleDeclarations(String(rendered['style'] ?? '')).map(([property]) => property),
@@ -139,17 +137,55 @@ function styleDeclarations(css: string): [property: string, value: string][] {
 	return declarations;
 }
 
-// a shorthand such as `background` also sets an owned longhand, so the browser's CSS parser decides
-function setsAnyProperty(property: string, value: string, properties: string[]): boolean {
-	if (properties.includes(property)) return true;
+export type StyleRule = Pick<StyleParseRule, 'style' | 'getAttrs'>;
 
+/** The schema's style parse rules: declarations the parser turns into marks (`font-weight` into bold, ...). */
+export function styleRules(extensions: AnyExtension[]): StyleRule[] {
+	return flattenExtensions(extensions)
+		.filter((extension) => extension.type === 'mark' || extension.type === 'node')
+		.flatMap((extension) => {
+			const parseHTML = getExtensionField<() => readonly ParseRule[] | undefined>(extension, 'parseHTML', {
+				name: extension.name,
+				options: extension.options,
+				storage: extension.storage,
+			});
+
+			return (parseHTML?.() ?? []).filter((rule): rule is StyleParseRule => 'style' in rule && !!rule.style);
+		});
+}
+
+function claimsDeclaration(rule: StyleRule, property: string, value: string): boolean {
+	const [ruleProperty, ruleValue] = rule.style.split('=');
+	if (ruleProperty !== property) return false;
+	if (ruleValue !== undefined && ruleValue !== value) return false;
+	return rule.getAttrs?.(value) !== false;
+}
+
+// a shorthand such as `background` or `font` also sets owned longhands, so the browser's CSS parser decides
+function isOwnedDeclaration(property: string, value: string, ownedProperties: string[], rules: StyleRule[]): boolean {
 	const probe = document.createElement('span');
 	probe.style.setProperty(property, value);
-	return properties.some((owned) => probe.style.getPropertyValue(owned) !== '');
+	const valueOf = (name: string) => (name === property ? value : probe.style.getPropertyValue(name));
+
+	return (
+		ownedProperties.some((owned) => valueOf(owned) !== '') ||
+		rules.some((rule) => {
+			const ruleProperty = rule.style.split('=')[0]!;
+			const ruleValue = valueOf(ruleProperty);
+			return ruleValue !== '' && claimsDeclaration(rule, ruleProperty, ruleValue);
+		})
+	);
+}
+
+/** True when the element has a declaration that no style rule turns into a mark. */
+export function hasUnclaimedDeclaration(element: HTMLElement, rules: StyleRule[]): boolean {
+	return styleDeclarations(element.getAttribute('style') ?? '').some(
+		([property, value]) => !isOwnedDeclaration(property, value, [], rules),
+	);
 }
 
 // owned declarations are left to their owner; a second copy here would win over its later changes
-function inlineStyleAttribute(owners: ExtensionAttribute[]) {
+function inlineStyleAttribute(owners: ExtensionAttribute[], rules: StyleRule[]) {
 	return {
 		default: null,
 		parseHTML: (element: HTMLElement) => {
@@ -158,7 +194,9 @@ function inlineStyleAttribute(owners: ExtensionAttribute[]) {
 
 			const owned = owners.length > 0 ? ownedStyleProperties(element, owners) : [];
 
-			const kept = styleDeclarations(raw).filter(([property, value]) => !setsAnyProperty(property, value, owned));
+			const kept = styleDeclarations(raw).filter(
+				([property, value]) => !isOwnedDeclaration(property, value, owned, rules),
+			);
 
 			return kept.length > 0 ? kept.map(([property, value]) => `${property}: ${value};`).join(' ') : null;
 		},
@@ -235,6 +273,7 @@ export const PreservedAttributes = Extension.create<PreservedAttributesOptions>(
 	addGlobalAttributes() {
 		const types = this.extensions.map((extension) => extension.name).filter((name) => !EXCLUDED_TYPES.has(name));
 		const owners = attributesByType(this.options.extensions);
+		const rules = this.options.inlineStyles ? styleRules(this.options.extensions) : [];
 
 		return [
 			{
@@ -256,8 +295,8 @@ export const PreservedAttributes = Extension.create<PreservedAttributesOptions>(
 				attributes: {
 					dataAttributes: wildcardAttribute('dataAttributes', 'data-', owners.get(type) ?? []),
 					ariaAttributes: wildcardAttribute('ariaAttributes', 'aria-', owners.get(type) ?? []),
-					...(this.options.inlineStyles && !NO_INLINE_STYLE_TYPES.has(type)
-						? { inlineStyle: inlineStyleAttribute(owners.get(type) ?? []) }
+					...(this.options.inlineStyles && type !== StyleTag.name
+						? { inlineStyle: inlineStyleAttribute(owners.get(type) ?? [], rules) }
 						: {}),
 				},
 			})),
