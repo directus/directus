@@ -782,7 +782,10 @@ function useResolvePrimaryKey() {
 
 	function resolvePrimaryKey(newItem: Item | null, newIsSingleton: boolean, newPrimaryKeyParam: PrimaryKey | null) {
 		if (newIsSingleton) {
-			if (!newItem) return;
+			if (!newItem) {
+				resolvedPrimaryKey.value = null;
+				return;
+			}
 			// Note: After fetching a singleton item, `newItem` will be `{ id: null }` if it hasn’t been created yet.
 
 			const pkField = primaryKeyField.value?.field;
