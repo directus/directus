@@ -2,6 +2,15 @@ export type ProviderType = 'openai' | 'anthropic' | 'google' | 'openrouter' | 'o
 
 export type StandardProviderType = Exclude<ProviderType, 'openai-compatible'>;
 
+/** Providers with a files API the chat can upload attachments to */
+export type FileUploadProviderType = Extract<ProviderType, 'openai' | 'anthropic' | 'google'>;
+
+export const FILE_UPLOAD_PROVIDER_TYPES: readonly FileUploadProviderType[] = ['openai', 'anthropic', 'google'];
+
+export function isFileUploadProviderType(value: unknown): value is FileUploadProviderType {
+	return (FILE_UPLOAD_PROVIDER_TYPES as readonly unknown[]).includes(value);
+}
+
 export type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string]: JSONValue };
 
 export type ToolApprovalMode = 'always' | 'ask' | 'disabled';
@@ -28,6 +37,8 @@ export interface OpenAICompatibleModel {
 	reasoning?: boolean;
 	providerOptions?: { [key: string]: JSONValue };
 }
+
+export type OpenRouterModel = Omit<OpenAICompatibleModel, 'providerOptions'>;
 
 export interface OpenAICompatibleHeader {
 	header: string;
@@ -79,7 +90,7 @@ export type ContextAttachment =
 	| { type: 'prompt'; data: PromptContextData; display: string; snapshot: Record<string, unknown> };
 
 export interface ProviderFileRef {
-	provider: StandardProviderType;
+	provider: FileUploadProviderType;
 	fileId: string;
 	filename: string;
 	mimeType: string;

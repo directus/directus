@@ -1,5 +1,5 @@
 import { Chat } from '@ai-sdk/vue';
-import { type ContextAttachment, type PrimaryKey, type SystemTool } from '@directus/ai';
+import { type ContextAttachment, isFileUploadProviderType, type PrimaryKey, type SystemTool } from '@directus/ai';
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
 import { DefaultChatTransport, type FileUIPart, lastAssistantMessageIsCompleteWithToolCalls, type UIMessage } from 'ai';
 import { defineStore } from 'pinia';
@@ -121,9 +121,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		return resolveModelByKey(selectedModelId.value, models.value) ?? defaultModel.value ?? null;
 	});
 
-	const supportsFileUpload = computed(
-		() => selectedModel.value?.provider !== 'openai-compatible' && selectedModel.value?.provider !== 'openrouter',
-	);
+	const supportsFileUpload = computed(() => isFileUploadProviderType(selectedModel.value?.provider));
 
 	const selectModel = (modelDefinition: AppModelDefinition) => {
 		if (isProviderLocked.value && modelDefinition.provider !== selectedModel.value?.provider) {

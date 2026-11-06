@@ -191,7 +191,7 @@ describe('aiFileUploadHandler', () => {
 			expect(mockNext).toHaveBeenCalledWith(expect.any(InvalidPayloadError));
 
 			const error = (mockNext as any).mock.calls[0][0];
-			expect(error.message).toContain('Unsupported provider');
+			expect(error.message).toContain('File uploads not supported for invalid-provider provider');
 		});
 
 		it('should throw InvalidPayloadError for openai-compatible provider', async () => {
