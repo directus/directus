@@ -13,15 +13,7 @@ vi.mock('@directus/env', () => ({
 
 vi.mock('./version-tables.js', () => ({
 	VersionTablesService: class {
-		createOneCollection = vi.fn();
-		updateOneCollection = vi.fn();
-		deleteOneCollection = vi.fn();
-		createField = vi.fn();
-		updateField = vi.fn();
-		deleteField = vi.fn();
-		createOneRelation = vi.fn();
-		updateOneRelation = vi.fn();
-		deleteOneRelation = vi.fn();
+		syncCollections = vi.fn();
 	},
 }));
 

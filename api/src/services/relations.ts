@@ -288,7 +288,7 @@ export class RelationsService {
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					});
 
-					await new VersionTablesService({ knex: trx, schema: this.schema }).createOneRelation(relation.collection!);
+					await new VersionTablesService({ knex: trx, schema: this.schema }).syncCollections([relation.collection!]);
 				});
 			});
 		} finally {
@@ -428,7 +428,7 @@ export class RelationsService {
 						}
 					}
 
-					await new VersionTablesService({ knex: trx, schema: this.schema }).updateOneRelation(collection);
+					await new VersionTablesService({ knex: trx, schema: this.schema }).syncCollections([collection]);
 				});
 			});
 		} finally {
@@ -495,7 +495,7 @@ export class RelationsService {
 						await trx('directus_relations').delete().where({ many_collection: collection, many_field: field });
 					}
 
-					await new VersionTablesService({ knex: trx, schema: this.schema }).deleteOneRelation(collection);
+					await new VersionTablesService({ knex: trx, schema: this.schema }).syncCollections([collection]);
 
 					const actionEvent = {
 						event: 'relations.delete',

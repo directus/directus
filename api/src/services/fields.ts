@@ -429,7 +429,7 @@ export class FieldsService {
 								});
 							});
 
-							await new VersionTablesService({ knex: trx, schema: this.schema }).createField(collection);
+							await new VersionTablesService({ knex: trx, schema: this.schema }).syncCollections([collection]);
 						}
 					}
 
@@ -578,7 +578,7 @@ export class FieldsService {
 									});
 								});
 
-								await new VersionTablesService({ knex: trx, schema: this.schema }).updateField(collection);
+								await new VersionTablesService({ knex: trx, schema: this.schema }).syncCollections([collection]);
 							});
 
 							// concurrent index creation cannot be done inside the transaction
@@ -782,7 +782,7 @@ export class FieldsService {
 							table.dropColumn(field);
 						});
 
-						await new VersionTablesService({ knex: trx, schema: this.schema }).deleteField(collection);
+						await new VersionTablesService({ knex: trx, schema: this.schema }).syncCollections([collection]);
 					}
 
 					const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(

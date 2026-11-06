@@ -243,7 +243,9 @@ export class CollectionsService {
 					}
 
 					if (payload.meta?.versioning) {
-						await new VersionTablesService({ knex: trx, schema: this.schema }).createOneCollection(payload.collection);
+						await new VersionTablesService({ knex: trx, schema: this.schema }).syncCollections([payload.collection], {
+							includeRelating: true,
+						});
 					}
 
 					return payload.collection;
@@ -526,7 +528,9 @@ export class CollectionsService {
 					}
 
 					if (versioningChanged) {
-						await new VersionTablesService({ knex: trx, schema: this.schema }).updateOneCollection(collectionKey);
+						await new VersionTablesService({ knex: trx, schema: this.schema }).syncCollections([collectionKey], {
+							includeRelating: true,
+						});
 					}
 				});
 
@@ -693,7 +697,10 @@ export class CollectionsService {
 				await transaction(this.knex, async (trx) => {
 					if (collectionToBeDeleted!.schema) {
 						// Version tables reference the live table, so they need to be cleaned up before it can be dropped
-						await new VersionTablesService({ knex: trx, schema: this.schema }).deleteOneCollection(collectionKey);
+						await new VersionTablesService({ knex: trx, schema: this.schema }).syncCollections([collectionKey], {
+							includeRelating: true,
+							exclude: [collectionKey],
+						});
 
 						await trx.schema.dropTable(collectionKey);
 					}

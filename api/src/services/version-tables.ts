@@ -47,13 +47,21 @@ type ExistingVersionTables = {
 };
 
 /**
+ * Collections to sync the version tables of, `'all'` inspects the whole database
+ */
+export type CollectionScope = string[] | 'all';
+
+export type SyncCollectionsOptions = {
+	includeRelating?: boolean;
+	exclude?: string[];
+};
+
+/**
  * Manages the shadow and link tables that back versioned collections.
  *
- * Every schema change made through the collections, fields and relations services calls the method with the same name
- * here, which only inspects and updates the version tables affected by that change. A full `sync` inspects the whole
- * database and is only meant to be run from migrations.
- *
- * All methods are meant to be run within the same transaction as the change to the live schema, after it was made.
+ * Schema changes made through the collections, fields and relations services sync only the version tables of the
+ * collections they affect. Syncing is meant to be run within the same transaction as the change to the live schema,
+ * after it was made.
  */
 export class VersionTablesService {
 	knex: Knex;
@@ -71,78 +79,34 @@ export class VersionTablesService {
 	}
 
 	/**
-	 * Create, alter and drop all shadow and link tables so they match the current schema and versioning settings.
-	 * Inspects the whole database, use the methods matching the schema change instead outside of migrations.
-	 */
-	async sync(): Promise<void> {
-		await this.syncCollections(null);
-	}
-
-	/**
-	 * Creating a collection with versioning enabled adds its shadow table, as well as version references to the
-	 * shadow and link tables of all collections relating to it
-	 */
-	async createOneCollection(collection: string): Promise<void> {
-		await this.syncCollections([collection, ...(await this.getRelatingCollections(collection))]);
-	}
-
-	/**
-	 * Toggling versioning creates / drops the shadow table, as well as the version references to it in the shadow and
-	 * link tables of all collections relating to it
-	 */
-	async updateOneCollection(collection: string): Promise<void> {
-		await this.syncCollections([collection, ...(await this.getRelatingCollections(collection))]);
-	}
-
-	/**
-	 * Drop the version tables of the collection and all references to it. Has to be run before the live table is
-	 * dropped, as version tables reference it.
-	 */
-	async deleteOneCollection(collection: string): Promise<void> {
-		await this.syncCollections([collection, ...(await this.getRelatingCollections(collection))], new Set([collection]));
-	}
-
-	async createField(collection: string): Promise<void> {
-		await this.syncCollections([collection]);
-	}
-
-	async updateField(collection: string): Promise<void> {
-		await this.syncCollections([collection]);
-	}
-
-	async deleteField(collection: string): Promise<void> {
-		await this.syncCollections([collection]);
-	}
-
-	/**
-	 * Relations only affect the version tables of their "many" collection
-	 */
-	async createOneRelation(collection: string): Promise<void> {
-		await this.syncCollections([collection]);
-	}
-
-	async updateOneRelation(collection: string): Promise<void> {
-		await this.syncCollections([collection]);
-	}
-
-	async deleteOneRelation(collection: string): Promise<void> {
-		await this.syncCollections([collection]);
-	}
-
-	/**
-	 * Create, alter and drop the version tables of the given collections, or of all collections when `null`
+	 * Create, alter and drop the version tables of the given collections so they match the current schema and
+	 * versioning settings. Passing `'all'` syncs the version tables of all collections, which inspects the whole database
+	 * and is only meant to be run from migrations.
 	 *
-	 * @param collections - Collections whose version tables to sync
-	 * @param exclude - Collections to treat as if they no longer exist
+	 * @param collections - Collections whose version tables to sync, or `'all'` for all collections
+	 * @param options.includeRelating - Also sync the collections with a m2o / a2o relation to the given collections.
+	 * Needed when versioning of a collection is toggled or the collection is removed, as the version tables of those
+	 * collections reference it.
+	 * @param options.exclude - Collections to treat as if they no longer exist, used to clean up version tables before
+	 * a live table is dropped
 	 */
-	private async syncCollections(collections: string[] | null, exclude = new Set<string>()): Promise<void> {
+	async syncCollections(collections: CollectionScope, options?: SyncCollectionsOptions): Promise<void> {
+		const exclude = new Set(options?.exclude ?? []);
+
+		if (collections !== 'all' && options?.includeRelating) {
+			const relating = await Promise.all(collections.map((collection) => this.getRelatingCollections(collection)));
+			collections = [...collections, ...relating.flat()];
+		}
+
 		const versioned = new Set<string>(
 			(await this.knex.select('collection').from('directus_collections').where('versioning', true))
 				.map(({ collection }) => collection)
 				.filter((collection) => !exclude.has(collection)),
 		);
 
-		const scope = collections ? [...new Set(collections)].filter((collection) => !isVersionTable(collection)) : null;
+		const scope: CollectionScope =
+			collections === 'all' ? 'all' : [...new Set(collections)].filter((collection) => !isVersionTable(collection));
+
 		const existing = await this.readVersionTables(scope);
 
 		// Prevents reading the live schema on every schema change for projects that don't use versioning
@@ -155,10 +119,10 @@ export class VersionTablesService {
 	}
 
 	/**
-	 * Read the version tables of the given collections, or all version tables when `null`
+	 * Read the version tables of the given collections, or all version tables for `'all'`
 	 */
-	private async readVersionTables(collections: string[] | null): Promise<ExistingVersionTables> {
-		if (collections === null) {
+	private async readVersionTables(collections: CollectionScope): Promise<ExistingVersionTables> {
+		if (collections === 'all') {
 			const tables = (await this.schemaInspector.tables()).filter(isVersionTable);
 
 			if (tables.length === 0) return { tables, columns: {}, foreignKeys: [] };
@@ -194,13 +158,13 @@ export class VersionTablesService {
 	}
 
 	/**
-	 * Read the columns and m2o / a2o relations of the given live collections, or all live collections when `null`
+	 * Read the columns and m2o / a2o relations of the given live collections, or all live collections for `'all'`
 	 */
-	private async readLiveCollections(collections: string[] | null, exclude: Set<string>): Promise<LiveCollection[]> {
+	private async readLiveCollections(collections: CollectionScope, exclude: Set<string>): Promise<LiveCollection[]> {
 		let columns: Column[];
 		let foreignKeys: ForeignKey[];
 
-		if (collections === null) {
+		if (collections === 'all') {
 			columns = (await this.schemaInspector.columnInfo()).filter((column) => !isVersionTable(column.table));
 
 			foreignKeys = (await this.schemaInspector.foreignKeys()).filter(
@@ -236,12 +200,12 @@ export class VersionTablesService {
 	}
 
 	/**
-	 * Read the relation meta rows of the given "many" collections, or all of them when `null`
+	 * Read the relation meta rows of the given "many" collections, or all of them for `'all'`
 	 */
-	private async readRelationsMeta(collections: string[] | null): Promise<RelationMeta[]> {
+	private async readRelationsMeta(collections: CollectionScope): Promise<RelationMeta[]> {
 		const query = this.knex.select('*').from('directus_relations');
 
-		if (collections) query.whereIn('many_collection', collections);
+		if (collections !== 'all') query.whereIn('many_collection', collections);
 
 		const rows = (await query).map(
 			(row: Record<string, any>): RelationMeta => ({
@@ -251,7 +215,7 @@ export class VersionTablesService {
 		);
 
 		const systemRows = systemRelationRows.filter(
-			(row) => !collections || collections.includes(row.many_collection),
+			(row) => collections === 'all' || collections.includes(row.many_collection),
 		) as RelationMeta[];
 
 		return [...rows, ...systemRows];

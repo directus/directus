@@ -11,7 +11,7 @@ import { getSchema } from '../../utils/get-schema.js';
 export async function up(knex: Knex): Promise<void> {
 	const schema = await getSchema({ database: knex, bypassCache: true });
 
-	await new VersionTablesService({ knex, schema }).sync();
+	await new VersionTablesService({ knex, schema }).syncCollections('all');
 }
 
 export async function down(knex: Knex): Promise<void> {

@@ -161,7 +161,7 @@ async function sync(options: Options = {}) {
 
 	const service = new VersionTablesService({ knex: db, schema });
 
-	await (options.run ?? ((service) => service.sync()))(service);
+	await (options.run ?? ((service) => service.syncCollections('all')))(service);
 
 	// Only the statements changing the schema, the reads of the versioning settings and relations are the same for every sync
 	const statements = tracker.history.all.filter(
@@ -180,7 +180,7 @@ async function sync(options: Options = {}) {
 	};
 }
 
-describe('VersionTablesService.sync', () => {
+describe('VersionTablesService.syncCollections', () => {
 	test('does nothing when no collection is versioned and no version tables exist', async () => {
 		const { sql } = await sync();
 
@@ -443,7 +443,7 @@ describe('scoped changes', () => {
 		const { sql, introspected } = await sync({
 			versioned: ['articles'],
 			existing: OUTDATED_ARTICLES_SHADOW,
-			run: (service) => service.createField('authors'),
+			run: (service) => service.syncCollections(['authors']),
 		});
 
 		// The outdated shadow table of articles is left alone, as it isn't affected by a change to authors
@@ -453,7 +453,7 @@ describe('scoped changes', () => {
 	});
 
 	test('does not read the live table when nothing is versioned', async () => {
-		const { introspected } = await sync({ run: (service) => service.createField('articles') });
+		const { introspected } = await sync({ run: (service) => service.syncCollections(['articles']) });
 
 		expect(introspected).toEqual(['directus_shadow_articles', 'directus_link_articles']);
 	});
@@ -462,7 +462,7 @@ describe('scoped changes', () => {
 		const { sql } = await sync({
 			versioned: ['articles'],
 			existing: OUTDATED_ARTICLES_SHADOW,
-			run: (service) => service.createField('articles'),
+			run: (service) => service.syncCollections(['articles']),
 		});
 
 		expect(sql).toMatchInlineSnapshot(`
@@ -475,7 +475,7 @@ describe('scoped changes', () => {
 		const { sql, introspected } = await sync({
 			versioned: ['articles', 'authors'],
 			existing: ARTICLES_SHADOW,
-			run: (service) => service.updateOneCollection('authors'),
+			run: (service) => service.syncCollections(['authors'], { includeRelating: true }),
 		});
 
 		expect(introspected).toEqual([
@@ -533,7 +533,7 @@ describe('scoped changes', () => {
 			relations: [
 				{ many_collection: 'comments', many_field: 'item', one_allowed_collections: 'articles,authors' as any },
 			],
-			run: (service) => service.updateOneCollection('authors'),
+			run: (service) => service.syncCollections(['authors'], { includeRelating: true }),
 		});
 
 		expect(introspected).toContain('comments');
@@ -543,7 +543,7 @@ describe('scoped changes', () => {
 		const { sql } = await sync({
 			versioned: ['articles'],
 			existing: ARTICLES_SHADOW,
-			run: (service) => service.deleteOneCollection('authors'),
+			run: (service) => service.syncCollections(['authors'], { includeRelating: true, exclude: ['authors'] }),
 		});
 
 		expect(sql).toMatchInlineSnapshot(`
@@ -557,7 +557,7 @@ describe('scoped changes', () => {
 			versioned: ['articles'],
 			existing: ARTICLES_SHADOW,
 			liveForeignKeys: [],
-			run: (service) => service.deleteOneRelation('articles'),
+			run: (service) => service.syncCollections(['articles']),
 		});
 
 		expect(sql).toMatchInlineSnapshot(`
