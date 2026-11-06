@@ -1,11 +1,14 @@
-import { isSystemCollection } from '@directus/system-data';
+import { HARDCODED_AUTH_REQUIREMENTS, isSystemCollection } from '@directus/system-data';
 import type { Alterations, Permission, PermissionsAction, PrimaryKey } from '@directus/types';
 import { isEmpty, isPlainObject } from 'lodash-es';
 
+/** A system collection permission that a policy applied to the public role would grant. */
 export interface SystemPermissionChange {
 	collection: string;
 	action: PermissionsAction;
 	unfilteredRead: boolean;
+	/** Gated on an authenticated user by `HARDCODED_AUTH_REQUIREMENTS`, so unauthenticated requests never get it. */
+	requiresUser: boolean;
 }
 
 /**
@@ -23,19 +26,30 @@ export function getSystemPermissionChanges(
 }
 
 /**
- * Returns the given permissions that target a system collection.
+ * Returns the given permissions that target a system collection, except the ones the API restricts to admins, which a
+ * public policy can never grant.
  */
 export function toSystemPermissionChanges(permissions: Partial<Permission>[]): SystemPermissionChange[] {
 	return permissions
 		.filter(
 			(permission): permission is Partial<Permission> & Pick<Permission, 'collection' | 'action'> =>
-				!!permission.collection && !!permission.action && isSystemCollection(permission.collection),
+				!!permission.collection &&
+				!!permission.action &&
+				isSystemCollection(permission.collection) &&
+				getRequiredAuth(permission.collection, permission.action) !== 'admin',
 		)
 		.map(({ collection, action, permissions: filter }) => ({
 			collection,
 			action,
 			unfilteredRead: action === 'read' && isEmpty(filter),
+			requiresUser: getRequiredAuth(collection, action) === 'user',
 		}));
+}
+
+function getRequiredAuth(collection: string, action: PermissionsAction) {
+	return HARDCODED_AUTH_REQUIREMENTS.find(
+		(requirement) => requirement.collection === collection && requirement.action === action,
+	)?.requiredAuth;
 }
 
 /**

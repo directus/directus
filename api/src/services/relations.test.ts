@@ -1,6 +1,7 @@
+import { ForbiddenError } from '@directus/errors';
 import type { ForeignKey } from '@directus/schema';
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { RelationMeta } from '@directus/types';
+import type { Accountability, RelationMeta } from '@directus/types';
 import { getRelation } from '@directus/utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { createMockKnex, createMockTableBuilder, resetKnexMocks } from '../test-utils/knex.js';
@@ -76,6 +77,32 @@ describe('Integration Tests', () => {
 	});
 
 	describe('Services / Relations', () => {
+		describe('createOne', () => {
+			test('should throw ForbiddenError for non-admin users', async () => {
+				const service = new RelationsService({
+					knex: db,
+					schema: buildSchema(),
+					accountability: { role: 'test', admin: false } as Accountability,
+				});
+
+				await expect(service.createOne({ collection: 'articles_authors', field: 'authors_id' })).rejects.toThrow(
+					ForbiddenError,
+				);
+			});
+		});
+
+		describe('deleteOne', () => {
+			test('should throw ForbiddenError for non-admin users', async () => {
+				const service = new RelationsService({
+					knex: db,
+					schema: buildSchema(),
+					accountability: { role: 'test', admin: false } as Accountability,
+				});
+
+				await expect(service.deleteOne('articles_authors', 'authors_id')).rejects.toThrow(ForbiddenError);
+			});
+		});
+
 		describe('updateOne', () => {
 			let schema: ReturnType<typeof buildSchema>;
 			let foreignKey: { onDelete: ReturnType<typeof vi.fn>; onUpdate: ReturnType<typeof vi.fn> };

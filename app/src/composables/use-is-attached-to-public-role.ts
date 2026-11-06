@@ -20,6 +20,12 @@ export function useIsAttachedToPublicRole(primaryKey: Ref<string>) {
 				stale = true;
 			});
 
+			// A policy that isn't saved yet can't be attached to anything
+			if (policy === '+') {
+				isAttachedToPublicRole.value = false;
+				return;
+			}
+
 			isAttachedToPublicRole.value = null;
 
 			try {

@@ -23,14 +23,36 @@ const emit = defineEmits<{
 
 const active = defineModel<boolean>({ required: true });
 
-const systemPermissionActions = computed(() =>
-	Object.entries(groupBy(props.changes, 'collection')).map(([collection, changes]) => ({
-		collection,
-		actions: uniq(changes.map(({ action }) => action)),
-	})),
-);
+const sections = computed(() => {
+	const publicChanges = props.changes.filter(({ requiresUser }) => !requiresUser);
+	const authenticatedChanges = props.changes.filter(({ requiresUser }) => requiresUser);
 
-const hasUnfilteredRead = computed(() => props.changes.some(({ unfilteredRead }) => unfilteredRead));
+	return [
+		{
+			key: 'public',
+			copy: 'public_policy_dialog.copy',
+			changes: publicChanges,
+		},
+		{
+			key: 'authenticated',
+			copy:
+				publicChanges.length > 0
+					? 'public_policy_dialog.copy_authenticated'
+					: 'public_policy_dialog.copy_authenticated_only',
+			changes: authenticatedChanges,
+		},
+	]
+		.filter(({ changes }) => changes.length > 0)
+		.map(({ key, copy, changes }) => ({
+			key,
+			copy,
+			rows: Object.entries(groupBy(changes, 'collection')).map(([collection, grouped]) => ({
+				collection,
+				actions: uniq(grouped.map(({ action }) => action)),
+			})),
+			hasUnfilteredRead: changes.some(({ unfilteredRead }) => unfilteredRead),
+		}));
+});
 </script>
 
 <template>
@@ -38,26 +60,28 @@ const hasUnfilteredRead = computed(() => props.changes.some(({ unfilteredRead })
 		<VCard class="system-permissions-card">
 			<VCardTitle>{{ $t('public_policy_dialog.title') }}</VCardTitle>
 			<VCardText class="system-permissions-confirm">
-				<p>{{ $t('public_policy_dialog.copy') }}</p>
+				<template v-for="{ key, copy, rows, hasUnfilteredRead } in sections" :key="key">
+					<p>{{ $t(copy) }}</p>
 
-				<table class="system-permissions-table">
-					<thead>
-						<tr>
-							<th scope="col">{{ $t('collection') }}</th>
-							<th scope="col">{{ $t('actions') }}</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="{ collection, actions } in systemPermissionActions" :key="collection">
-							<td class="collection">{{ collection }}</td>
-							<td class="actions">{{ actions.map((action) => $t(action)).join(', ') }}</td>
-						</tr>
-					</tbody>
-				</table>
+					<table class="system-permissions-table">
+						<thead>
+							<tr>
+								<th scope="col">{{ $t('collection') }}</th>
+								<th scope="col">{{ $t('actions') }}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="{ collection, actions } in rows" :key="collection">
+								<td class="collection">{{ collection }}</td>
+								<td class="actions">{{ actions.map((action) => $t(action)).join(', ') }}</td>
+							</tr>
+						</tbody>
+					</table>
 
-				<VNotice v-if="hasUnfilteredRead" type="danger">
-					{{ $t('public_policy_dialog.unfiltered_read_warning') }}
-				</VNotice>
+					<VNotice v-if="hasUnfilteredRead" type="danger">
+						{{ $t('public_policy_dialog.unfiltered_read_warning') }}
+					</VNotice>
+				</template>
 
 				<I18nT keypath="public_policy_dialog.best_practices" tag="p">
 					<template #docs>
@@ -101,6 +125,7 @@ const hasUnfilteredRead = computed(() => props.changes.some(({ unfilteredRead })
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	border-spacing: 0;
+	table-layout: fixed;
 
 	th,
 	td {
