@@ -42,14 +42,13 @@ import getLocalType from '../utils/get-local-type.js';
 import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
-import { transaction } from '../utils/transaction.js';
 import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
-import { VersionTablesService } from './version-tables.js';
+import { runSchemaChange } from './version-tables/run-schema-change.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const env = useEnv();
@@ -370,122 +369,114 @@ export class FieldsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			return await this.helpers.schema.withForeignKeysDisabled(async () => {
-				const exists =
-					field.field in this.schema.collections[collection]!.fields ||
-					isNil(
-						await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first(),
-					) === false;
+			const exists =
+				field.field in this.schema.collections[collection]!.fields ||
+				isNil(
+					await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first(),
+				) === false;
 
-				// Check if field already exists, either as a column, or as a row in directus_fields
-				if (exists) {
-					throw new InvalidPayloadError({
-						reason: `Field "${field.field}" already exists in collection "${collection}"`,
-					});
-				}
+			// Check if field already exists, either as a column, or as a row in directus_fields
+			if (exists) {
+				throw new InvalidPayloadError({
+					reason: `Field "${field.field}" already exists in collection "${collection}"`,
+				});
+			}
 
-				// Add flag for specific database type overrides
-				const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+			// Add flag for specific database type overrides
+			const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
 
-				if (flagToAdd) {
-					addFieldFlag(field, flagToAdd);
-				}
+			if (flagToAdd) {
+				addFieldFlag(field, flagToAdd);
+			}
 
-				let hookAdjustedField = field;
-				const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
+			let hookAdjustedField = field;
+			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
-				await transaction(this.knex, async (trx) => {
-					const itemsService = new ItemsService('directus_fields', {
-						knex: trx,
-						accountability: this.accountability,
-						schema: this.schema,
-					});
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
+				const itemsService = new ItemsService('directus_fields', {
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
 
-					hookAdjustedField =
-						opts?.emitEvents !== false
-							? await emitter.emitFilter(
-									`fields.create`,
-									field,
-									{
-										collection: collection,
-									},
-									{
-										database: trx,
-										schema: this.schema,
-										accountability: this.accountability,
-									},
-								)
-							: field;
+				hookAdjustedField =
+					opts?.emitEvents !== false
+						? await emitter.emitFilter(
+								`fields.create`,
+								field,
+								{
+									collection: collection,
+								},
+								{
+									database: trx,
+									schema: this.schema,
+									accountability: this.accountability,
+								},
+							)
+						: field;
 
-					if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
-						if (table) {
+				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
+					if (table) {
+						this.addColumnToTable(table, collection, hookAdjustedField as Field, {
+							attemptConcurrentIndex,
+						});
+					} else {
+						await trx.schema.alterTable(collection, (table) => {
 							this.addColumnToTable(table, collection, hookAdjustedField as Field, {
 								attemptConcurrentIndex,
 							});
-						} else {
-							await trx.schema.alterTable(collection, (table) => {
-								this.addColumnToTable(table, collection, hookAdjustedField as Field, {
-									attemptConcurrentIndex,
-								});
-							});
+						});
 
-							await new VersionTablesService({ knex: trx, schema: this.schema }).syncCollections([collection]);
-						}
+						change.sync([collection]);
 					}
+				}
 
-					if (hookAdjustedField.meta) {
-						const existingSortRecord: Record<'max', number | null> | undefined = await trx
-							.from('directus_fields')
-							.where(
-								hookAdjustedField.meta?.group ? { collection, group: hookAdjustedField.meta.group } : { collection },
-							)
-							.max('sort', { as: 'max' })
-							.first();
+				if (hookAdjustedField.meta) {
+					const existingSortRecord: Record<'max', number | null> | undefined = await trx
+						.from('directus_fields')
+						.where(hookAdjustedField.meta?.group ? { collection, group: hookAdjustedField.meta.group } : { collection })
+						.max('sort', { as: 'max' })
+						.first();
 
-						const newSortValue: number = existingSortRecord?.max ? existingSortRecord.max + 1 : 1;
+					const newSortValue: number = existingSortRecord?.max ? existingSortRecord.max + 1 : 1;
 
-						await itemsService.createOne(
-							{
-								...merge({ sort: newSortValue }, hookAdjustedField.meta),
-								collection: collection,
-								field: hookAdjustedField.field,
-							},
-							{ emitEvents: false },
-						);
-					}
-
-					const actionEvent = {
-						event: 'fields.create',
-						meta: {
-							payload: hookAdjustedField,
-							key: hookAdjustedField.field,
+					await itemsService.createOne(
+						{
+							...merge({ sort: newSortValue }, hookAdjustedField.meta),
 							collection: collection,
+							field: hookAdjustedField.field,
 						},
-						context: {
-							database: getDatabase(),
-							schema: this.schema,
-							accountability: this.accountability,
-						},
-					};
+						{ emitEvents: false },
+					);
+				}
 
-					if (opts?.bypassEmitAction) {
-						opts.bypassEmitAction(actionEvent);
-					} else {
-						nestedActionEvents.push(actionEvent);
-					}
-				});
+				const actionEvent = {
+					event: 'fields.create',
+					meta: {
+						payload: hookAdjustedField,
+						key: hookAdjustedField.field,
+						collection: collection,
+					},
+					context: {
+						database: getDatabase(),
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				};
 
-				// concurrent index creation cannot be done inside the transaction
-				if (
-					attemptConcurrentIndex &&
-					hookAdjustedField.type &&
-					ALIAS_TYPES.includes(hookAdjustedField.type) === false
-				) {
-					await this.addColumnIndex(collection, hookAdjustedField as Field, {
-						attemptConcurrentIndex,
-					});
+				if (opts?.bypassEmitAction) {
+					opts.bypassEmitAction(actionEvent);
+				} else {
+					nestedActionEvents.push(actionEvent);
 				}
 			});
+
+			// concurrent index creation cannot be done inside the transaction
+			if (attemptConcurrentIndex && hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
+				await this.addColumnIndex(collection, hookAdjustedField as Field, {
+					attemptConcurrentIndex,
+				});
+			}
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
@@ -520,126 +511,124 @@ export class FieldsService {
 		}
 
 		try {
-			return await this.helpers.schema.withForeignKeysDisabled(async () => {
-				const hookAdjustedField =
-					opts?.emitEvents !== false
-						? await emitter.emitFilter(
-								`fields.update`,
-								field,
-								{
-									keys: [field.field],
-									collection: collection,
-								},
-								{
-									database: this.knex,
-									schema: this.schema,
-									accountability: this.accountability,
-								},
-							)
-						: field;
+			const hookAdjustedField =
+				opts?.emitEvents !== false
+					? await emitter.emitFilter(
+							`fields.update`,
+							field,
+							{
+								keys: [field.field],
+								collection: collection,
+							},
+							{
+								database: this.knex,
+								schema: this.schema,
+								accountability: this.accountability,
+							},
+						)
+					: field;
 
-				const record = field.meta
-					? await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
-					: null;
+			const record = field.meta
+				? await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
+				: null;
 
-				if (
-					hookAdjustedField.type &&
-					(hookAdjustedField.type === 'alias' ||
-						this.schema.collections[collection]!.fields[field.field]?.type === 'alias') &&
-					hookAdjustedField.type !== (this.schema.collections[collection]!.fields[field.field]?.type ?? 'alias')
-				) {
-					throw new InvalidPayloadError({ reason: 'Alias type cannot be changed' });
+			if (
+				hookAdjustedField.type &&
+				(hookAdjustedField.type === 'alias' ||
+					this.schema.collections[collection]!.fields[field.field]?.type === 'alias') &&
+				hookAdjustedField.type !== (this.schema.collections[collection]!.fields[field.field]?.type ?? 'alias')
+			) {
+				throw new InvalidPayloadError({ reason: 'Alias type cannot be changed' });
+			}
+
+			if (hookAdjustedField.schema) {
+				const existingColumn = await this.columnInfo(collection, hookAdjustedField.field);
+
+				if (existingColumn.is_primary_key) {
+					if (hookAdjustedField.schema?.is_nullable === true) {
+						throw new InvalidPayloadError({ reason: 'Primary key cannot be null' });
+					}
 				}
 
-				if (hookAdjustedField.schema) {
-					const existingColumn = await this.columnInfo(collection, hookAdjustedField.field);
+				// Sanitize column only when applying snapshot diff as opts is only passed from /utils/schema/apply-diff.ts
+				const columnToCompare =
+					opts?.bypassLimits && opts.autoPurgeSystemCache === false ? sanitizeColumn(existingColumn) : existingColumn;
 
-					if (existingColumn.is_primary_key) {
-						if (hookAdjustedField.schema?.is_nullable === true) {
-							throw new InvalidPayloadError({ reason: 'Primary key cannot be null' });
-						}
-					}
+				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
+					try {
+						const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
-					// Sanitize column only when applying snapshot diff as opts is only passed from /utils/schema/apply-diff.ts
-					const columnToCompare =
-						opts?.bypassLimits && opts.autoPurgeSystemCache === false ? sanitizeColumn(existingColumn) : existingColumn;
+						await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
+							await trx.schema.alterTable(collection, (table) => {
+								if (!hookAdjustedField.schema) return;
 
-					if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
-						try {
-							const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
-
-							await transaction(this.knex, async (trx) => {
-								await trx.schema.alterTable(collection, (table) => {
-									if (!hookAdjustedField.schema) return;
-
-									this.addColumnToTable(table, collection, field, {
-										existing: existingColumn,
-										attemptConcurrentIndex,
-									});
-								});
-
-								await new VersionTablesService({ knex: trx, schema: this.schema }).syncCollections([collection]);
-							});
-
-							// concurrent index creation cannot be done inside the transaction
-							if (attemptConcurrentIndex) {
-								await this.addColumnIndex(collection, field, {
+								this.addColumnToTable(table, collection, field, {
 									existing: existingColumn,
 									attemptConcurrentIndex,
 								});
-							}
-						} catch (err: any) {
-							throw await translateDatabaseError(err, field);
+							});
+
+							change.sync([collection]);
+						});
+
+						// concurrent index creation cannot be done inside the transaction
+						if (attemptConcurrentIndex) {
+							await this.addColumnIndex(collection, field, {
+								existing: existingColumn,
+								attemptConcurrentIndex,
+							});
 						}
+					} catch (err: any) {
+						throw await translateDatabaseError(err, field);
 					}
 				}
+			}
 
-				// Only create/update a database record if this is not a system field
-				if (hookAdjustedField.meta && !isSystemField(collection, hookAdjustedField.field)) {
-					if (record) {
-						await this.itemsService.updateOne(
-							record.id,
-							{
-								...hookAdjustedField.meta,
-								collection: collection,
-								field: hookAdjustedField.field,
-							},
-							{ emitEvents: false },
-						);
-					} else {
-						await this.itemsService.createOne(
-							{
-								...hookAdjustedField.meta,
-								collection: collection,
-								field: hookAdjustedField.field,
-							},
-							{ emitEvents: false },
-						);
-					}
-				}
-
-				const actionEvent = {
-					event: 'fields.update',
-					meta: {
-						payload: hookAdjustedField,
-						keys: [hookAdjustedField.field],
-						collection: collection,
-					},
-					context: {
-						database: getDatabase(),
-						schema: this.schema,
-						accountability: this.accountability,
-					},
-				};
-
-				if (opts?.bypassEmitAction) {
-					opts.bypassEmitAction(actionEvent);
+			// Only create/update a database record if this is not a system field
+			if (hookAdjustedField.meta && !isSystemField(collection, hookAdjustedField.field)) {
+				if (record) {
+					await this.itemsService.updateOne(
+						record.id,
+						{
+							...hookAdjustedField.meta,
+							collection: collection,
+							field: hookAdjustedField.field,
+						},
+						{ emitEvents: false },
+					);
 				} else {
-					nestedActionEvents.push(actionEvent);
+					await this.itemsService.createOne(
+						{
+							...hookAdjustedField.meta,
+							collection: collection,
+							field: hookAdjustedField.field,
+						},
+						{ emitEvents: false },
+					);
 				}
+			}
 
-				return field.field;
-			});
+			const actionEvent = {
+				event: 'fields.update',
+				meta: {
+					payload: hookAdjustedField,
+					keys: [hookAdjustedField.field],
+					collection: collection,
+				},
+				context: {
+					database: getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				},
+			};
+
+			if (opts?.bypassEmitAction) {
+				opts.bypassEmitAction(actionEvent);
+			} else {
+				nestedActionEvents.push(actionEvent);
+			}
+
+			return field.field;
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
@@ -707,185 +696,183 @@ export class FieldsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			return await this.helpers.schema.withForeignKeysDisabled(async () => {
-				if (opts?.emitEvents !== false) {
-					await emitter.emitFilter(
-						'fields.delete',
-						[field],
-						{
-							collection: collection,
-						},
-						{
-							database: this.knex,
-							schema: this.schema,
-							accountability: this.accountability,
-						},
-					);
-				}
-
-				await transaction(this.knex, async (trx) => {
-					const relations = getRelations(this.schema.relations, collection, field);
-
-					const relationsService = new RelationsService({
-						knex: trx,
-						accountability: this.accountability,
-						schema: this.schema,
-					});
-
-					const fieldsService = new FieldsService({
-						knex: trx,
-						accountability: this.accountability,
-						schema: this.schema,
-					});
-
-					for (const relation of relations) {
-						const isM2O = relation.collection === collection && relation.field === field;
-
-						// If the current field is a m2o, delete the related o2m if it exists and remove the relationship
-						if (isM2O) {
-							await relationsService.deleteOne(collection, field, {
-								autoPurgeSystemCache: false,
-								bypassEmitAction: (params) =>
-									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							});
-
-							if (
-								relation.related_collection &&
-								relation.meta?.one_field &&
-								relation.related_collection !== collection &&
-								relation.meta.one_field !== field
-							) {
-								await fieldsService.deleteField(relation.related_collection, relation.meta.one_field, {
-									autoPurgeCache: false,
-									autoPurgeSystemCache: false,
-									bypassEmitAction: (params) =>
-										opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-								});
-							}
-						}
-
-						// If the current field is a o2m, just delete the one field config from the relation
-						if (!isM2O && relation.meta?.one_field) {
-							await trx('directus_relations')
-								.update({ one_field: null })
-								.where({ many_collection: relation.collection, many_field: relation.field });
-						}
-					}
-
-					// Delete field only after foreign key constraints are removed
-					if (
-						this.schema.collections[collection] &&
-						field in this.schema.collections[collection]!.fields &&
-						this.schema.collections[collection]!.fields[field]!.alias === false
-					) {
-						await trx.schema.table(collection, (table) => {
-							table.dropColumn(field);
-						});
-
-						await new VersionTablesService({ knex: trx, schema: this.schema }).syncCollections([collection]);
-					}
-
-					const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(
-						this.schema.relations,
-					);
-
-					const collectionRelationList = getCollectionRelationList(collection, collectionRelationTree);
-
-					const collectionMetaQuery = trx
-						.queryBuilder()
-						.select('collection', 'archive_field', 'sort_field', 'item_duplication_fields')
-						.from('directus_collections')
-						.where({ collection });
-
-					if (collectionRelationList.size !== 0) {
-						collectionMetaQuery.orWhere(function () {
-							this.whereIn('collection', Array.from(collectionRelationList)).whereNotNull('item_duplication_fields');
-						});
-					}
-
-					const collectionMetas = await collectionMetaQuery;
-
-					const collectionMetaUpdates = getCollectionMetaUpdates(
-						collection,
-						field,
-						collectionMetas,
-						this.schema.collections,
-						fieldToCollectionList,
-					);
-
-					for (const meta of collectionMetaUpdates) {
-						await trx('directus_collections').update(meta.updates).where({ collection: meta.collection });
-					}
-
-					// Cleanup directus_fields
-					const metaRow = await trx
-						.select('collection', 'field')
-						.from('directus_fields')
-						.where({ collection, field })
-						.first();
-
-					if (metaRow) {
-						// Handle recursive FK constraints
-						await trx('directus_fields')
-							.update({ group: null })
-							.where({ group: metaRow.field, collection: metaRow.collection });
-					}
-
-					const itemsService = new ItemsService('directus_fields', {
-						knex: trx,
-						accountability: this.accountability,
-						schema: this.schema,
-					});
-
-					await itemsService.deleteByQuery(
-						{
-							filter: {
-								collection: { _eq: collection },
-								field: { _eq: field },
-							},
-						},
-						{ emitEvents: false },
-					);
-
-					// cleanup permissions for deleted field
-					const permissionRows: { id: number; collection: string; fields: string }[] = await trx
-						.select('id', 'collection', 'fields')
-						.from('directus_permissions')
-						.whereRaw('?? = ? AND ?? LIKE ?', ['collection', collection, 'fields', '%' + field + '%']);
-
-					if (permissionRows.length > 0) {
-						for (const permissionRow of permissionRows) {
-							const newFields = permissionRow['fields']
-								.split(',')
-								.filter((v) => v !== field)
-								.join(',');
-
-							await trx('directus_permissions')
-								.update('fields', newFields.length > 0 ? newFields : null)
-								.where('id', '=', permissionRow['id']);
-						}
-					}
-				});
-
-				const actionEvent = {
-					event: 'fields.delete',
-					meta: {
-						payload: [field],
+			if (opts?.emitEvents !== false) {
+				await emitter.emitFilter(
+					'fields.delete',
+					[field],
+					{
 						collection: collection,
 					},
-					context: {
+					{
 						database: this.knex,
 						schema: this.schema,
 						accountability: this.accountability,
 					},
-				};
+				);
+			}
 
-				if (opts?.bypassEmitAction) {
-					opts.bypassEmitAction(actionEvent);
-				} else {
-					nestedActionEvents.push(actionEvent);
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
+				const relations = getRelations(this.schema.relations, collection, field);
+
+				const relationsService = new RelationsService({
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+
+				const fieldsService = new FieldsService({
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+
+				for (const relation of relations) {
+					const isM2O = relation.collection === collection && relation.field === field;
+
+					// If the current field is a m2o, delete the related o2m if it exists and remove the relationship
+					if (isM2O) {
+						await relationsService.deleteOne(collection, field, {
+							autoPurgeSystemCache: false,
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+						});
+
+						if (
+							relation.related_collection &&
+							relation.meta?.one_field &&
+							relation.related_collection !== collection &&
+							relation.meta.one_field !== field
+						) {
+							await fieldsService.deleteField(relation.related_collection, relation.meta.one_field, {
+								autoPurgeCache: false,
+								autoPurgeSystemCache: false,
+								bypassEmitAction: (params) =>
+									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							});
+						}
+					}
+
+					// If the current field is a o2m, just delete the one field config from the relation
+					if (!isM2O && relation.meta?.one_field) {
+						await trx('directus_relations')
+							.update({ one_field: null })
+							.where({ many_collection: relation.collection, many_field: relation.field });
+					}
+				}
+
+				// Delete field only after foreign key constraints are removed
+				if (
+					this.schema.collections[collection] &&
+					field in this.schema.collections[collection]!.fields &&
+					this.schema.collections[collection]!.fields[field]!.alias === false
+				) {
+					await trx.schema.table(collection, (table) => {
+						table.dropColumn(field);
+					});
+
+					change.sync([collection]);
+				}
+
+				const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(
+					this.schema.relations,
+				);
+
+				const collectionRelationList = getCollectionRelationList(collection, collectionRelationTree);
+
+				const collectionMetaQuery = trx
+					.queryBuilder()
+					.select('collection', 'archive_field', 'sort_field', 'item_duplication_fields')
+					.from('directus_collections')
+					.where({ collection });
+
+				if (collectionRelationList.size !== 0) {
+					collectionMetaQuery.orWhere(function () {
+						this.whereIn('collection', Array.from(collectionRelationList)).whereNotNull('item_duplication_fields');
+					});
+				}
+
+				const collectionMetas = await collectionMetaQuery;
+
+				const collectionMetaUpdates = getCollectionMetaUpdates(
+					collection,
+					field,
+					collectionMetas,
+					this.schema.collections,
+					fieldToCollectionList,
+				);
+
+				for (const meta of collectionMetaUpdates) {
+					await trx('directus_collections').update(meta.updates).where({ collection: meta.collection });
+				}
+
+				// Cleanup directus_fields
+				const metaRow = await trx
+					.select('collection', 'field')
+					.from('directus_fields')
+					.where({ collection, field })
+					.first();
+
+				if (metaRow) {
+					// Handle recursive FK constraints
+					await trx('directus_fields')
+						.update({ group: null })
+						.where({ group: metaRow.field, collection: metaRow.collection });
+				}
+
+				const itemsService = new ItemsService('directus_fields', {
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+
+				await itemsService.deleteByQuery(
+					{
+						filter: {
+							collection: { _eq: collection },
+							field: { _eq: field },
+						},
+					},
+					{ emitEvents: false },
+				);
+
+				// cleanup permissions for deleted field
+				const permissionRows: { id: number; collection: string; fields: string }[] = await trx
+					.select('id', 'collection', 'fields')
+					.from('directus_permissions')
+					.whereRaw('?? = ? AND ?? LIKE ?', ['collection', collection, 'fields', '%' + field + '%']);
+
+				if (permissionRows.length > 0) {
+					for (const permissionRow of permissionRows) {
+						const newFields = permissionRow['fields']
+							.split(',')
+							.filter((v) => v !== field)
+							.join(',');
+
+						await trx('directus_permissions')
+							.update('fields', newFields.length > 0 ? newFields : null)
+							.where('id', '=', permissionRow['id']);
+					}
 				}
 			});
+
+			const actionEvent = {
+				event: 'fields.delete',
+				meta: {
+					payload: [field],
+					collection: collection,
+				},
+				context: {
+					database: this.knex,
+					schema: this.schema,
+					accountability: this.accountability,
+				},
+			};
+
+			if (opts?.bypassEmitAction) {
+				opts.bypassEmitAction(actionEvent);
+			} else {
+				nestedActionEvents.push(actionEvent);
+			}
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
