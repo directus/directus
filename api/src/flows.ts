@@ -60,7 +60,7 @@ const LAST_KEY = '$last';
 const ENV_KEY = '$env';
 
 /** Log and the AI steps are often given whole trigger objects, so secrets are redacted before they're logged or sent out */
-const REDACTED_OPERATIONS = ['log', 'ai-text'];
+const REDACTED_OPERATIONS = ['log', 'ai-text', 'ai-image'];
 
 interface FlowMessage {
 	type: 'reload';

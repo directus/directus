@@ -183,13 +183,13 @@ describe('readFilesForModel', () => {
 	test('reads each file with its type and name', async () => {
 		const { assets } = mockAssets({
 			'file-1': {
-				file: { type: 'image/png', filename_download: 'cat.png' },
+				file: { type: 'image/png', filename_download: 'cat.png', width: 1600, height: 900 },
 				chunks: [Buffer.from('ca'), Buffer.from('t')],
 			},
 		});
 
 		expect(await readFilesForModel(assets, ['file-1'])).toEqual([
-			{ data: Buffer.from('cat'), mediaType: 'image/png', filename: 'cat.png' },
+			{ data: Buffer.from('cat'), mediaType: 'image/png', filename: 'cat.png', width: 1600, height: 900 },
 		]);
 	});
 
@@ -206,6 +206,12 @@ describe('readFilesForModel', () => {
 
 		await expect(readFilesForModel(assets, ids)).rejects.toThrow('at most 20 files');
 		expect(assets.getAsset).not.toHaveBeenCalled();
+	});
+
+	test('rejects types outside the allowed list', async () => {
+		const { assets } = mockAssets({ 'file-1': { file: { type: 'application/pdf' } } });
+
+		await expect(readFilesForModel(assets, ['file-1'], ['image/png'])).rejects.toThrow(InvalidPayloadError);
 	});
 
 	test('rejects files that add up to more than the size limit', async () => {
