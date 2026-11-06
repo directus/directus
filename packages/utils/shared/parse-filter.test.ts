@@ -151,6 +151,37 @@ describe('#parseFilter', () => {
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
 	});
 
+	it('preserves relation grouping for nested _some filters under _and', () => {
+		const mockFilter = {
+			agenda_items: {
+				_and: [
+					{
+						topic_matches: {
+							_some: {
+								topic_id: {
+									_eq: 'topic1',
+								},
+							},
+						},
+					},
+					{
+						topic_matches: {
+							_some: {
+								topic_id: {
+									_eq: 'topic2',
+								},
+							},
+						},
+					},
+				],
+			},
+		} as Filter;
+
+		const mockAccountability = { role: 'admin', user: null, roles: [] };
+
+		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockFilter);
+	});
+
 	it('properly shifts up nested implicit logical operators', () => {
 		const mockFilter = {
 			i_really_dont_know: {
