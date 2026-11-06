@@ -204,14 +204,12 @@ export class ExtensionManager {
 				return;
 			}
 
-			if (env['EXTENSIONS_LOCATION']) {
-				try {
-					await syncExtensions({ forceSync: true });
-				} catch (error) {
-					logger.error(`Failed to sync extensions`);
-					logger.error(error);
-					process.exit(1);
-				}
+			try {
+				await syncExtensions({ forceSync: true });
+			} catch (error) {
+				logger.error(`Failed to sync extensions`);
+				logger.error(error);
+				process.exit(1);
 			}
 
 			await this.load();
@@ -355,9 +353,7 @@ export class ExtensionManager {
 
 			try {
 				// Sync before unloading, so a failed sync happens before unload
-				if (env['EXTENSIONS_LOCATION']) {
-					await syncExtensions(options);
-				}
+				await syncExtensions(options);
 
 				const prevExtensions = clone(this.extensions);
 

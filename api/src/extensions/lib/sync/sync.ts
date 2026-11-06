@@ -26,6 +26,10 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 	if (options?.skipSync === true) return;
 
 	const env = useEnv();
+
+	// Extensions are only synced from a remote storage location
+	if (!env['EXTENSIONS_LOCATION']) return;
+
 	const lock = useLock();
 	const messenger = useBus();
 	const logger = useLogger();
