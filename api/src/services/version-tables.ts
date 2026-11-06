@@ -10,6 +10,7 @@ import type {
 	SchemaOverview,
 	Type,
 } from '@directus/types';
+import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { groupBy, intersection, keyBy, mapValues, sortBy } from 'lodash-es';
 import type { Helpers } from '../database/helpers/index.js';
@@ -135,7 +136,7 @@ export class VersionTablesService {
 		const rows = (await query).map(
 			(row: RelationMeta): RelationMeta => ({
 				...row,
-				one_allowed_collections: parseList(row.one_allowed_collections),
+				one_allowed_collections: row.one_allowed_collections ? toArray(row.one_allowed_collections) : null,
 			}),
 		);
 
@@ -508,12 +509,4 @@ function isSameForeignKey(existing: ForeignKey, desired: VersionTableForeignKey)
 /** Vendors report the default action differently, but they all behave the same */
 function normalizeOnDelete(onDelete: OnDelete) {
 	return onDelete === null || onDelete === 'RESTRICT' ? 'NO ACTION' : onDelete;
-}
-
-/** `one_allowed_collections` is stored as a comma separated list */
-function parseList(value: string | string[] | null | undefined): string[] | null {
-	if (!value) return null;
-	if (Array.isArray(value)) return value;
-
-	return value.split(',').filter(Boolean);
 }
