@@ -1,3 +1,5 @@
+import type { HasFieldMarker, MapInputFieldMarkers } from './output.js';
+
 /**
  * Makes types mutable
  */
@@ -53,7 +55,11 @@ type Primitive = null | undefined | string | number | boolean | bigint | symbol;
 type Builtin = Primitive | Date | RegExp;
 
 /**
- * Recursively make properties optional
+ * Recursively make properties optional.
+ *
+ * Fields typed with a literal marker (e.g. 'datetime', 'json') are mapped to the value accepted on
+ * write via MapInputFieldMarkers, so a create/update payload takes the same values a read returns
+ * (see issue #21599). Every other field recurses as usual.
  */
 export type NestedPartial<Item> = Item extends any[]
 	? UnpackList<Item> extends infer RawItem
@@ -62,7 +68,11 @@ export type NestedPartial<Item> = Item extends any[]
 	: Item extends Builtin
 		? Item
 		: Item extends object
-			? { [Key in keyof Item]?: NestedPartial<Item[Key]> }
+			? {
+					[Key in keyof Item]?: HasFieldMarker<Item[Key]> extends true
+						? MapInputFieldMarkers<Item[Key]>
+						: NestedPartial<Item[Key]>;
+				}
 			: Item;
 
 /**
