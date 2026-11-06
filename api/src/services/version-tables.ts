@@ -4,6 +4,7 @@ import { systemRelationRows } from '@directus/system-data';
 import type {
 	AbstractServiceOptions,
 	Accountability,
+	PrimaryKey,
 	Relation,
 	RelationMeta,
 	SchemaOverview,
@@ -315,9 +316,10 @@ export class VersionTablesService {
 	 * vendor supports every action
 	 */
 	private applyVendorForeignKeyRules(tables: VersionTable[]): VersionTable[] {
-		return tables.map((table) => ({
-			...table,
-			foreignKeys: table.foreignKeys.map((foreignKey) => {
+		const limitCascadePaths = this.helpers.schema.isOneOfClients(['mssql']);
+
+		return tables.map((table) => {
+			const foreignKeys = table.foreignKeys.map((foreignKey) => {
 				const relation = {
 					collection: table.table,
 					related_collection: foreignKey.foreign_key_table,
@@ -327,8 +329,36 @@ export class VersionTablesService {
 				this.helpers.schema.preRelationChange(relation);
 
 				return { ...foreignKey, on_delete: relation.schema!.on_delete };
-			}),
-		}));
+			});
+
+			return { ...table, foreignKeys: limitCascadePaths ? limitReferentialActions(foreignKeys) : foreignKeys };
+		});
+	}
+
+	/**
+	 * Remove references to the given users from the version meta fields of all shadow tables. Not every vendor allows
+	 * both user fields to have a referential action, so this is done manually before users are deleted, the same way
+	 * it's done for `directus_versions`.
+	 */
+	async clearUserReferences(keys: PrimaryKey[]): Promise<void> {
+		if (keys.length === 0) return;
+
+		const versioned: string[] = (
+			await this.knex.select('collection').from('directus_collections').where('versioning', true)
+		).map(({ collection }) => collection);
+
+		for (const collection of versioned) {
+			const table = getShadowTableName(collection);
+
+			// Versioned folders don't have a shadow table
+			if (!(await this.schemaInspector.hasTable(table))) continue;
+
+			for (const field of [VERSION_META_FIELDS.userCreated, VERSION_META_FIELDS.userUpdated]) {
+				await this.knex(table)
+					.update({ [field]: null })
+					.whereIn(field, keys);
+			}
+		}
 	}
 
 	private async dropForeignKeys(foreignKeys: ForeignKey[]) {
@@ -387,7 +417,12 @@ export class VersionTablesService {
 		const { source } = column;
 		const type = getLocalType(source);
 
-		if (requiresExactType(source)) {
+		// Strings without a length would be created with the default length of 255. MSSQL is handled by `addColumnToTable`,
+		// as the data type of `nvarchar(max)` can't be used as is
+		const isUnboundedString =
+			type === 'string' && source.max_length === null && !this.helpers.schema.isOneOfClients(['mssql']);
+
+		if (requiresExactType(source) || isUnboundedString) {
 			const columnBuilder = builder.specificType(column.name, source.data_type);
 
 			if (column.primary) {
@@ -496,6 +531,38 @@ function hasTypeChanged(source: Column, existing: Column) {
 		source.numeric_precision !== existing.numeric_precision ||
 		source.numeric_scale !== existing.numeric_scale
 	);
+}
+
+/**
+ * MSSQL rejects foreign keys that would cause multiple cascade paths, which is the case as soon as a table has more than
+ * one foreign key with a referential action to the same table. Only the first of those keeps its action, so the ones
+ * mirrored from the live table take precedence over the version meta fields, which are cleared manually instead.
+ */
+function limitReferentialActions(foreignKeys: VersionTableForeignKey[]): VersionTableForeignKey[] {
+	const metaFields: string[] = Object.values(VERSION_META_FIELDS);
+	const tablesWithAction = new Set<string>();
+
+	const prioritized = [
+		...foreignKeys.filter((foreignKey) => !metaFields.includes(foreignKey.column)),
+		...foreignKeys.filter((foreignKey) => metaFields.includes(foreignKey.column)),
+	];
+
+	const limited = new Map<VersionTableForeignKey, VersionTableForeignKey>();
+
+	for (const foreignKey of prioritized) {
+		const hasAction = normalizeOnDelete(foreignKey.on_delete) !== 'NO ACTION';
+
+		if (hasAction && tablesWithAction.has(foreignKey.foreign_key_table)) {
+			limited.set(foreignKey, { ...foreignKey, on_delete: null });
+			continue;
+		}
+
+		if (hasAction) tablesWithAction.add(foreignKey.foreign_key_table);
+
+		limited.set(foreignKey, foreignKey);
+	}
+
+	return foreignKeys.map((foreignKey) => limited.get(foreignKey)!);
 }
 
 function isSameForeignKey(existing: ForeignKey, desired: VersionTableForeignKey) {

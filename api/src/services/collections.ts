@@ -300,30 +300,36 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			const collections = await transaction(this.knex, async (trx) => {
-				const service = new CollectionsService({
-					schema: this.schema,
-					accountability: this.accountability,
-					knex: trx,
-				});
-
-				const collectionNames: string[] = [];
-
-				for (const payload of payloads) {
-					const name = await service.createOne(payload, {
-						autoPurgeCache: false,
-						autoPurgeSystemCache: false,
-						bypassEmitAction: (params) => nestedActionEvents.push(params),
-						attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
+			const createInTransaction = () =>
+				transaction(this.knex, async (trx) => {
+					const service = new CollectionsService({
+						schema: this.schema,
+						accountability: this.accountability,
+						knex: trx,
 					});
 
-					collectionNames.push(name);
-				}
+					const collectionNames: string[] = [];
 
-				return collectionNames;
-			});
+					for (const payload of payloads) {
+						const name = await service.createOne(payload, {
+							autoPurgeCache: false,
+							autoPurgeSystemCache: false,
+							bypassEmitAction: (params) => nestedActionEvents.push(params),
+							attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
+						});
 
-			return collections;
+						collectionNames.push(name);
+					}
+
+					return collectionNames;
+				});
+
+			// The foreign key enforcement can't be toggled by the nested calls, as they run within this transaction
+			if (payloads.some((payload) => payload.meta?.versioning)) {
+				return await this.helpers.schema.withForeignKeysDisabled(createInTransaction);
+			}
+
+			return await createInTransaction();
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
@@ -500,7 +506,7 @@ export class CollectionsService {
 				.first());
 
 			// Toggling versioning creates / drops the shadow and link tables
-			const versioningChanged = 'versioning' in payload.meta;
+			const versioningChanged = isVersioningChange(payload);
 
 			const updateInTransaction = () =>
 				transaction(this.knex, async (trx) => {
@@ -579,28 +585,36 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await transaction(this.knex, async (trx) => {
-				const collectionItemsService = new CollectionsService({
-					knex: trx,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-
-				for (const payload of data) {
-					if (!payload[collectionKey]) {
-						throw new InvalidPayloadError({ reason: `Collection in update misses collection key` });
-					}
-
-					await collectionItemsService.updateOne(payload[collectionKey], omit(payload, collectionKey), {
-						autoPurgeCache: false,
-						autoPurgeSystemCache: false,
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+			const updateInTransaction = () =>
+				transaction(this.knex, async (trx) => {
+					const collectionItemsService = new CollectionsService({
+						knex: trx,
+						accountability: this.accountability,
+						schema: this.schema,
 					});
 
-					collectionKeys.push(payload[collectionKey]);
-				}
-			});
+					for (const payload of data) {
+						if (!payload[collectionKey]) {
+							throw new InvalidPayloadError({ reason: `Collection in update misses collection key` });
+						}
+
+						await collectionItemsService.updateOne(payload[collectionKey], omit(payload, collectionKey), {
+							autoPurgeCache: false,
+							autoPurgeSystemCache: false,
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+						});
+
+						collectionKeys.push(payload[collectionKey]);
+					}
+				});
+
+			// The foreign key enforcement can't be toggled by the nested calls, as they run within this transaction
+			if (data.some((payload) => isVersioningChange(payload))) {
+				await this.helpers.schema.withForeignKeysDisabled(updateInTransaction);
+			} else {
+				await updateInTransaction();
+			}
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
@@ -635,21 +649,29 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await transaction(this.knex, async (trx) => {
-				const service = new CollectionsService({
-					schema: this.schema,
-					accountability: this.accountability,
-					knex: trx,
+			const updateInTransaction = () =>
+				transaction(this.knex, async (trx) => {
+					const service = new CollectionsService({
+						schema: this.schema,
+						accountability: this.accountability,
+						knex: trx,
+					});
+
+					for (const collectionKey of collectionKeys) {
+						await service.updateOne(collectionKey, data, {
+							autoPurgeCache: false,
+							autoPurgeSystemCache: false,
+							bypassEmitAction: (params) => nestedActionEvents.push(params),
+						});
+					}
 				});
 
-				for (const collectionKey of collectionKeys) {
-					await service.updateOne(collectionKey, data, {
-						autoPurgeCache: false,
-						autoPurgeSystemCache: false,
-						bypassEmitAction: (params) => nestedActionEvents.push(params),
-					});
-				}
-			});
+			// The foreign key enforcement can't be toggled by the nested calls, as they run within this transaction
+			if (isVersioningChange(data)) {
+				await this.helpers.schema.withForeignKeysDisabled(updateInTransaction);
+			} else {
+				await updateInTransaction();
+			}
 
 			return collectionKeys;
 		} finally {
@@ -917,4 +939,11 @@ export class CollectionsService {
 			}
 		}
 	}
+}
+
+/**
+ * Whether the collection update toggles versioning, which creates / drops the shadow and link tables
+ */
+function isVersioningChange(payload: DeepPartial<Collection>): boolean {
+	return !!payload.meta && 'versioning' in payload.meta;
 }

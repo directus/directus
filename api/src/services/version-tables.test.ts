@@ -674,7 +674,7 @@ describe('dialects', () => {
 			ADD CONSTRAINT [directus_shadow_articles_version_user_created_foreign] FOREIGN KEY ([version_user_created]) REFERENCES [directus_users] ([id]) ON DELETE SET NULL;
 
 			ALTER TABLE [directus_shadow_articles]
-			ADD CONSTRAINT [directus_shadow_articles_version_user_updated_foreign] FOREIGN KEY ([version_user_updated]) REFERENCES [directus_users] ([id]) ON DELETE SET NULL;
+			ADD CONSTRAINT [directus_shadow_articles_version_user_updated_foreign] FOREIGN KEY ([version_user_updated]) REFERENCES [directus_users] ([id]);
 
 			ALTER TABLE [directus_shadow_articles]
 			ADD CONSTRAINT [directus_shadow_articles_author_foreign] FOREIGN KEY ([author]) REFERENCES [authors] ([id]) ON DELETE SET NULL"

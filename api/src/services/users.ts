@@ -33,6 +33,7 @@ import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
+import { VersionTablesService } from './version-tables.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -395,6 +396,7 @@ export class UsersService extends ItemsService {
 		await this.knex('directus_comments').update({ user_updated: null }).whereIn('user_updated', keys);
 		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
 		await this.knex('directus_versions').update({ user_updated: null }).whereIn('user_updated', keys);
+		await new VersionTablesService({ knex: this.knex, schema: this.schema }).clearUserReferences(keys);
 
 		await super.deleteMany(keys, opts);
 		await this.clearUserSessions(keys);

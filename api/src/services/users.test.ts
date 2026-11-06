@@ -39,6 +39,12 @@ vi.mock('@directus/env', () => ({
 vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js');
 vi.mock('../permissions/modules/validate-access/validate-access.js');
 
+vi.mock('./version-tables.js', () => ({
+	VersionTablesService: class {
+		clearUserReferences = vi.fn();
+	},
+}));
+
 const { isEntitledMock } = vi.hoisted(() => ({ isEntitledMock: vi.fn() }));
 
 vi.mock('../license/index.js', () => ({
