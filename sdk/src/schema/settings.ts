@@ -69,15 +69,7 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 		ai_openai_compatible_api_key: string | null; // will be *'s
 		ai_openai_compatible_base_url: string | null;
 		ai_openai_compatible_name: string | null;
-		ai_openai_compatible_models: Array<{
-			id: string;
-			name: string;
-			context?: number;
-			output?: number;
-			attachment?: boolean;
-			reasoning?: boolean;
-			providerOptions?: Record<string, any>;
-		}> | null;
+		ai_openai_compatible_models: Record<string, any>[] | null;
 		ai_openai_compatible_headers: Record<string, any>[] | null;
 		ai_openai_allowed_models: string[] | null;
 		ai_anthropic_allowed_models: string[] | null;
