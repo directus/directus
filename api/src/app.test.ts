@@ -88,9 +88,9 @@ function mockAppEnv(overrides: Partial<ReturnType<typeof useEnv>> = {}) {
 	vi.mocked(useEnv).mockReturnValue(
 		mockEnv({
 			SECRET: 'abcdef',
-			SERVE_APP: 'true',
+			SERVE_APP: true,
 			PUBLIC_URL: 'http://localhost:8055/directus',
-			TELEMETRY: 'false',
+			TELEMETRY: false,
 			LOG_STYLE: 'raw',
 			ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 			ROOT_REDIRECT: './admin',

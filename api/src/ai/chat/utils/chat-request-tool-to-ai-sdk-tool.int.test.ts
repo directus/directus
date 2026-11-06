@@ -4,7 +4,7 @@ import { chatRequestToolsToAiSdkTools } from './chat-request-tool-to-ai-sdk-tool
 vi.mock('@directus/env', async () => {
 	const { mockUseEnv } = await import('../../../test-utils/env.js');
 	return mockUseEnv({
-		MAX_PAYLOAD_SIZE: '1mb',
+		MAX_PAYLOAD_SIZE: 1_048_576,
 		PUBLIC_URL: 'https://directus.example',
 		QUERY_LIMIT_DEFAULT: 100,
 	});

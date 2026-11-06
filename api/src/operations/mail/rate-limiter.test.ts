@@ -23,7 +23,7 @@ describe('Flows Email Operation Rate Limiter', () => {
 		test('should resolve to undefined when rate limiter is not enabled', async () => {
 			vi.mocked(useEnv).mockReturnValue(
 				mockEnv({
-					RATE_LIMITER_EMAIL_FLOWS_ENABLED: 'false',
+					RATE_LIMITER_EMAIL_FLOWS_ENABLED: false,
 				}),
 			);
 
@@ -36,7 +36,7 @@ describe('Flows Email Operation Rate Limiter', () => {
 		test('should be able to consume all points without error', async () => {
 			vi.mocked(useEnv).mockReturnValue(
 				mockEnv({
-					RATE_LIMITER_EMAIL_FLOWS_ENABLED: 'true',
+					RATE_LIMITER_EMAIL_FLOWS_ENABLED: true,
 					RATE_LIMITER_EMAIL_FLOWS_POINTS: 3,
 					RATE_LIMITER_EMAIL_FLOWS_DURATION: 10,
 				}),
@@ -58,7 +58,7 @@ describe('Flows Email Operation Rate Limiter', () => {
 		test('should throw an error after all points have been consumed', async () => {
 			vi.mocked(useEnv).mockReturnValue(
 				mockEnv({
-					RATE_LIMITER_EMAIL_FLOWS_ENABLED: 'true',
+					RATE_LIMITER_EMAIL_FLOWS_ENABLED: true,
 					RATE_LIMITER_EMAIL_FLOWS_POINTS: 3,
 					RATE_LIMITER_EMAIL_FLOWS_DURATION: 10,
 				}),
@@ -81,7 +81,7 @@ describe('Flows Email Operation Rate Limiter', () => {
 		test('should include a custom message in the error', async () => {
 			vi.mocked(useEnv).mockReturnValue(
 				mockEnv({
-					RATE_LIMITER_EMAIL_FLOWS_ENABLED: 'true',
+					RATE_LIMITER_EMAIL_FLOWS_ENABLED: true,
 					RATE_LIMITER_EMAIL_FLOWS_POINTS: 1,
 					RATE_LIMITER_EMAIL_FLOWS_DURATION: 1,
 					RATE_LIMITER_EMAIL_FLOWS_ERROR_MESSAGE: 'My custom message.',
@@ -100,7 +100,7 @@ describe('Flows Email Operation Rate Limiter', () => {
 		test('should be able to consume points from multiple flows without error', async () => {
 			vi.mocked(useEnv).mockReturnValue(
 				mockEnv({
-					RATE_LIMITER_EMAIL_FLOWS_ENABLED: 'true',
+					RATE_LIMITER_EMAIL_FLOWS_ENABLED: true,
 					RATE_LIMITER_EMAIL_FLOWS_POINTS: 2,
 					RATE_LIMITER_EMAIL_FLOWS_DURATION: 10,
 				}),

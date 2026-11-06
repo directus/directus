@@ -25,7 +25,7 @@ const scenarios: Scenario[] = [
 	{
 		name: 'when cache-Control header includes no-store',
 		input: {
-			env: { CACHE_SKIP_ALLOWED: 'true' },
+			env: { CACHE_SKIP_ALLOWED: true },
 			headers: { 'Cache-Control': 'no-store' },
 			accountability: null,
 			ttl: 5678910,
@@ -37,7 +37,7 @@ const scenarios: Scenario[] = [
 	{
 		name: 'when cache-Control header does not include no-store',
 		input: {
-			env: { CACHE_SKIP_ALLOWED: 'true' },
+			env: { CACHE_SKIP_ALLOWED: true },
 			headers: { other: 'value' },
 			accountability: null,
 			ttl: 5678910,
