@@ -344,6 +344,38 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'keepInlineStyles',
+				name: '$t:interfaces.input-rich-text-html.keep_inline_styles',
+				type: 'boolean',
+				meta: {
+					width: 'full',
+					interface: 'boolean',
+					note: '$t:interfaces.input-rich-text-html.keep_inline_styles_note',
+					options: {
+						label: '$t:interfaces.input-rich-text-html.keep_inline_styles_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'keepInlineStylesWarning',
+				type: 'alias',
+				meta: {
+					width: 'full',
+					interface: 'presentation-notice',
+					special: ['alias', 'no-data'],
+					options: {
+						color: 'warning',
+						icon: 'warning',
+						text: '$t:interfaces.input-rich-text-html.keep_inline_styles_warning',
+					},
+					hidden: true,
+					conditions: [{ rule: { keepInlineStyles: { _eq: true } }, hidden: false }],
+				},
+			},
+			{
 				field: 'customFormats',
 				name: '$t:interfaces.input-rich-text-html.custom_formats',
 				type: 'json',

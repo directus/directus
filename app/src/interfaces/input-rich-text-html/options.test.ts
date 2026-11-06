@@ -24,7 +24,15 @@ describe('options compat', () => {
 		const { standard, advanced } = resolveOptions({ tinymceOverrides: { font_size_formats: '8pt' } });
 
 		expect(fieldKeys(standard)).toEqual(['toolbar', 'font', 'folder', 'imageToken']);
-		expect(fieldKeys(advanced)).toEqual(['softLength', 'linkProtocols', 'customFormats', 'tinymceOverrides']);
+
+		expect(fieldKeys(advanced)).toEqual([
+			'softLength',
+			'linkProtocols',
+			'keepInlineStyles',
+			'keepInlineStylesWarning',
+			'customFormats',
+			'tinymceOverrides',
+		]);
 	});
 
 	test('keeps all legacy toolbar choice values', () => {
@@ -82,6 +90,25 @@ describe('options compat', () => {
 			'ltr rtl',
 			'code',
 		]);
+	});
+});
+
+describe('keepInlineStyles', () => {
+	test('is off by default', () => {
+		const option = resolveOptions().advanced.find((f) => f.field === 'keepInlineStyles');
+		expect(option?.schema?.default_value).toBe(false);
+	});
+
+	test('shows a warning only while the option is on', () => {
+		const warning = resolveOptions().advanced.find((f) => f.field === 'keepInlineStylesWarning');
+
+		expect(warning?.meta).toMatchObject({
+			interface: 'presentation-notice',
+			special: ['alias', 'no-data'],
+			options: { color: 'warning' },
+			hidden: true,
+			conditions: [{ rule: { keepInlineStyles: { _eq: true } }, hidden: false }],
+		});
 	});
 });
 

@@ -11,7 +11,8 @@ import {
  * Round-trips `class`, `id`, `title`, `role`, `lang`, `dir`, `data-*` and `aria-*` on every node and
  * mark type so stored HTML that relies on them (styling hooks, anchors, tooltips, accessibility,
  * i18n) survives edit + save. Each wildcard prefix is collected into one record attribute (tiptap
- * has no native wildcard support). Event handlers (`on*`) and `style` are never preserved.
+ * has no native wildcard support). With the `inlineStyles` option, `style` round-trips too, minus
+ * the declarations another extension owns. Event handlers (`on*`) are never preserved.
  */
 
 /**
@@ -19,6 +20,9 @@ import {
  * (comparisonDiff derives its class from its own `type` attribute).
  */
 const EXCLUDED_TYPES = new Set(['doc', 'text', 'pageBreak', 'comparisonDiff']);
+
+/** A `style` attribute on these types would style nothing the author wrote. */
+const NO_INLINE_STYLE_TYPES = new Set(['styleTag']);
 
 /** Types that already model `title` on their own attributes; a global `title` would double-render. */
 const OWN_TITLE_TYPES = new Set(['link', 'abbreviation']);
@@ -38,6 +42,7 @@ export const PRESERVED_ATTRIBUTE_KEYS: ReadonlySet<string> = new Set([
 	...PASSTHROUGH_NAMES,
 	'dataAttributes',
 	'ariaAttributes',
+	'inlineStyle',
 ]);
 
 /** True when PreservedAttributes round-trips an HTML attribute with this name. */
@@ -68,11 +73,11 @@ function passthroughAttribute(name: string) {
 }
 
 /**
- * HTML names that other attributes of the type parse from this element and render back. Probed per
- * element with the parsed value, since an attribute's rendered name can depend on it.
+ * What the other attributes of the type parse from this element and render back. Probed per element
+ * with the parsed value, since an attribute's rendered output can depend on it.
  */
-function ownedNames(element: HTMLElement, owners: ExtensionAttribute[]): Set<string> {
-	const owned = new Set<string>();
+function ownerRenders(element: HTMLElement, owners: ExtensionAttribute[]): Record<string, unknown>[] {
+	const renders: Record<string, unknown>[] = [];
 
 	for (const { name, attribute } of owners) {
 		if (!attribute.rendered) continue;
@@ -80,11 +85,86 @@ function ownedNames(element: HTMLElement, owners: ExtensionAttribute[]): Set<str
 		const value = attribute.parseHTML ? attribute.parseHTML(element) : fromString(element.getAttribute(name));
 		if (value === null || value === undefined) continue;
 
-		const rendered = attribute.renderHTML ? attribute.renderHTML({ [name]: value }) : { [name]: value };
-		for (const htmlName of Object.keys(rendered ?? {})) owned.add(htmlName);
+		renders.push(attribute.renderHTML ? (attribute.renderHTML({ [name]: value }) ?? {}) : { [name]: value });
 	}
 
-	return owned;
+	return renders;
+}
+
+/** HTML names that other attributes of the type parse from this element and render back. */
+function ownedNames(element: HTMLElement, owners: ExtensionAttribute[]): Set<string> {
+	return new Set(ownerRenders(element, owners).flatMap((rendered) => Object.keys(rendered)));
+}
+
+/** CSS properties that other attributes of the type parse from this element and render back. */
+function ownedStyleProperties(element: HTMLElement, owners: ExtensionAttribute[]): string[] {
+	return ownerRenders(element, owners).flatMap((rendered) =>
+		styleDeclarations(String(rendered['style'] ?? '')).map(([property]) => property),
+	);
+}
+
+/** Splits CSS declarations on `;`, except inside quotes or parentheses (`url(data:...;base64,...)`). */
+function styleDeclarations(css: string): [property: string, value: string][] {
+	const declarations: [string, string][] = [];
+	let quote: string | null = null;
+	let depth = 0;
+	let start = 0;
+
+	const push = (end: number) => {
+		const declaration = css.slice(start, end);
+		const colon = declaration.indexOf(':');
+		const property = declaration.slice(0, colon).trim().toLowerCase();
+		const value = declaration.slice(colon + 1).trim();
+		if (colon > 0 && property && value) declarations.push([property, value]);
+	};
+
+	for (let i = 0; i < css.length; i++) {
+		const char = css[i];
+
+		if (quote) {
+			if (char === quote) quote = null;
+		} else if (char === '"' || char === "'") {
+			quote = char;
+		} else if (char === '(') {
+			depth++;
+		} else if (char === ')' && depth > 0) {
+			depth--;
+		} else if (char === ';' && depth === 0) {
+			push(i);
+			start = i + 1;
+		}
+	}
+
+	push(css.length);
+	return declarations;
+}
+
+// a shorthand such as `background` also sets an owned longhand, so the browser's CSS parser decides
+function setsAnyProperty(property: string, value: string, properties: string[]): boolean {
+	if (properties.includes(property)) return true;
+
+	const probe = document.createElement('span');
+	probe.style.setProperty(property, value);
+	return properties.some((owned) => probe.style.getPropertyValue(owned) !== '');
+}
+
+// owned declarations are left to their owner; a second copy here would win over its later changes
+function inlineStyleAttribute(owners: ExtensionAttribute[]) {
+	return {
+		default: null,
+		parseHTML: (element: HTMLElement) => {
+			const raw = element.getAttribute('style');
+			if (!raw) return null;
+
+			const owned = owners.length > 0 ? ownedStyleProperties(element, owners) : [];
+
+			const kept = styleDeclarations(raw).filter(([property, value]) => !setsAnyProperty(property, value, owned));
+
+			return kept.length > 0 ? kept.map(([property, value]) => `${property}: ${value};`).join(' ') : null;
+		},
+		renderHTML: (attributes: Record<string, unknown>) =>
+			attributes['inlineStyle'] ? { style: attributes['inlineStyle'] } : {},
+	};
 }
 
 // an owned name is left to its owner; a second copy here would go stale once the owner changes it
@@ -129,6 +209,8 @@ export interface PreservedAttributesOptions {
 	 * extensions, so global attributes from plain extensions are visible only through this list.
 	 */
 	extensions: AnyExtension[];
+	/** Keep the `style` attribute, minus the declarations another extension owns. */
+	inlineStyles: boolean;
 }
 
 function attributesByType(extensions: AnyExtension[]): Map<string, ExtensionAttribute[]> {
@@ -147,7 +229,7 @@ export const PreservedAttributes = Extension.create<PreservedAttributesOptions>(
 	name: 'preservedAttributes',
 
 	addOptions() {
-		return { extensions: [] };
+		return { extensions: [], inlineStyles: false };
 	},
 
 	addGlobalAttributes() {
@@ -174,6 +256,9 @@ export const PreservedAttributes = Extension.create<PreservedAttributesOptions>(
 				attributes: {
 					dataAttributes: wildcardAttribute('dataAttributes', 'data-', owners.get(type) ?? []),
 					ariaAttributes: wildcardAttribute('ariaAttributes', 'aria-', owners.get(type) ?? []),
+					...(this.options.inlineStyles && !NO_INLINE_STYLE_TYPES.has(type)
+						? { inlineStyle: inlineStyleAttribute(owners.get(type) ?? []) }
+						: {}),
 				},
 			})),
 			{
