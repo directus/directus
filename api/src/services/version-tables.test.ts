@@ -2,6 +2,7 @@ import type { Column, ForeignKey } from '@directus/schema';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { RelationMeta } from '@directus/types';
 import { describe, expect, test, vi } from 'vitest';
+import { up as syncAllVersionTables } from '../database/migrations/20261106A-sync-version-tables.js';
 import { createMockDialectKnex, formatSql } from '../test-utils/knex.js';
 import { VersionTablesService } from './version-tables.js';
 
@@ -25,6 +26,8 @@ vi.mock('@directus/schema', async (importOriginal) => ({
 			table ? inspector.foreignKeys.filter((foreignKey) => foreignKey.table === table) : inspector.foreignKeys,
 	}),
 }));
+
+vi.mock('../utils/get-schema.js', () => ({ getSchema: async () => schema }));
 
 vi.mock('../cache.js', async () => {
 	const { mockCache } = await import('../test-utils/cache.js');
@@ -122,7 +125,7 @@ type Options = {
 	liveForeignKeys?: ForeignKey[];
 	/** Rows of `directus_relations` */
 	relations?: Partial<RelationMeta>[];
-	/** Method of the service to run, defaults to a full sync */
+	/** Method of the service to run, defaults to the migration syncing all version tables */
 	run?: (service: VersionTablesService) => Promise<void>;
 };
 
@@ -161,7 +164,11 @@ async function sync(options: Options = {}) {
 
 	const service = new VersionTablesService({ knex: db, schema });
 
-	await (options.run ?? ((service) => service.syncCollections('all')))(service);
+	if (options.run) {
+		await options.run(service);
+	} else {
+		await syncAllVersionTables(db);
+	}
 
 	// Only the statements changing the schema, the reads of the versioning settings and relations are the same for every sync
 	const statements = tracker.history.all.filter(

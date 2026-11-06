@@ -48,9 +48,12 @@ type ExistingVersionTables = {
 };
 
 /**
- * Collections to sync the version tables of, `'all'` inspects the whole database
+ * Columns and foreign keys of a set of tables, as read by the schema inspector
  */
-export type CollectionScope = string[] | 'all';
+export type InspectedTables = {
+	columns: Column[];
+	foreignKeys: ForeignKey[];
+};
 
 export type SyncCollectionsOptions = {
 	includeRelating?: boolean;
@@ -81,19 +84,49 @@ export class VersionTablesService {
 
 	/**
 	 * Create, alter and drop the version tables of the given collections so they match the current schema and
-	 * versioning settings. Passing `'all'` syncs the version tables of all collections, which inspects the whole database
-	 * and is only meant to be run from migrations.
+	 * versioning settings.
 	 *
-	 * @param collections - Collections whose version tables to sync, or `'all'` for all collections
 	 * @param options.includeRelating - Also sync the collections with a m2o / a2o relation to the given collections.
-	 * Needed when versioning of a collection is toggled or the collection is removed, as the version tables of those
-	 * collections reference it.
-	 * @param options.exclude - Collections to treat as if they no longer exist, used to clean up version tables before
-	 * a live table is dropped
+	 * @param options.exclude - Collections to treat as if they no longer exist
 	 */
-	async syncCollections(collections: CollectionScope, options?: SyncCollectionsOptions): Promise<void> {
+	async syncCollections(collections: string[], options?: SyncCollectionsOptions): Promise<void> {
 		const exclude = new Set(options?.exclude ?? []);
+		const state = await this.readVersioningState(exclude);
 
+		if (!state) return;
+
+		if (options?.includeRelating) {
+			const relating = await Promise.all(collections.map((collection) => this.getRelatingCollections(collection)));
+			collections = [...collections, ...relating.flat()];
+		}
+
+		const scope = [...new Set(collections)].filter((collection) => !isVersionTable(collection));
+
+		const versionTables = scope
+			.flatMap((collection) => [getShadowTableName(collection), getLinkTableName(collection)])
+			.filter((table) => state.versionTables.includes(table));
+
+		const existing = await this.inspectTables(versionTables);
+		const live = await this.inspectTables(scope.filter((collection) => !exclude.has(collection)));
+
+		await this.syncFromSchema({
+			versioned: state.versioned,
+			existing: { tables: versionTables, ...existing },
+			live,
+			relationsMeta: await this.readRelationsMeta(scope),
+			exclude,
+		});
+	}
+
+	/**
+	 * Read the versioned collections and the names of all existing version tables. Returns `null` if there is nothing
+	 * to sync, which prevents inspecting the schema on every schema change for projects that don't use versioning.
+	 *
+	 * @param exclude - Collections to treat as if they no longer exist
+	 */
+	async readVersioningState(
+		exclude: Set<string> = new Set(),
+	): Promise<{ versioned: Set<string>; versionTables: string[] } | null> {
 		const versioned = new Set<string>(
 			(await this.knex.select('collection').from('directus_collections').where('versioning', true))
 				.map(({ collection }) => collection)
@@ -102,114 +135,18 @@ export class VersionTablesService {
 
 		const versionTables = (await this.schemaInspector.tables()).filter(isVersionTable);
 
-		// Prevents inspecting the schema on every schema change for projects that don't use versioning
-		if (versioned.size === 0 && versionTables.length === 0) return;
+		if (versioned.size === 0 && versionTables.length === 0) return null;
 
-		if (collections !== 'all' && options?.includeRelating) {
-			const relating = await Promise.all(collections.map((collection) => this.getRelatingCollections(collection)));
-			collections = [...collections, ...relating.flat()];
-		}
-
-		const scope: CollectionScope =
-			collections === 'all' ? 'all' : [...new Set(collections)].filter((collection) => !isVersionTable(collection));
-
-		const existing = await this.readVersionTables(scope, versionTables);
-
-		const liveCollections = await this.readLiveCollections(scope, exclude);
-		const desiredTables = this.applyVendorForeignKeyRules(planVersionTables(liveCollections, versioned));
-
-		await this.applyChanges(desiredTables, existing);
+		return { versioned, versionTables };
 	}
 
 	/**
-	 * Read the version tables of the given collections, or all version tables for `'all'`
-	 *
-	 * @param versionTables - Names of all version tables that currently exist in the database
+	 * Read the relation meta rows of the given "many" collections, or all of them if none are given
 	 */
-	private async readVersionTables(
-		collections: CollectionScope,
-		versionTables: string[],
-	): Promise<ExistingVersionTables> {
-		if (collections === 'all') {
-			const tables = versionTables;
-
-			if (tables.length === 0) return { tables, columns: {}, foreignKeys: [] };
-
-			return {
-				tables,
-				columns: groupColumns(
-					(await this.schemaInspector.columnInfo()).filter((column) => isVersionTable(column.table)),
-				),
-				foreignKeys: (await this.schemaInspector.foreignKeys()).filter((foreignKey) =>
-					isVersionTable(foreignKey.table),
-				),
-			};
-		}
-
-		const existing: ExistingVersionTables = { tables: [], columns: {}, foreignKeys: [] };
-
-		const tables = collections
-			.flatMap((collection) => [getShadowTableName(collection), getLinkTableName(collection)])
-			.filter((table) => versionTables.includes(table));
-
-		for (const table of tables) {
-			existing.tables.push(table);
-			Object.assign(existing.columns, groupColumns(await this.schemaInspector.columnInfo(table)));
-			existing.foreignKeys.push(...(await this.schemaInspector.foreignKeys(table)));
-		}
-
-		return existing;
-	}
-
-	/**
-	 * Read the columns and m2o / a2o relations of the given live collections, or all live collections for `'all'`
-	 */
-	private async readLiveCollections(collections: CollectionScope, exclude: Set<string>): Promise<LiveCollection[]> {
-		let columns: Column[];
-		let foreignKeys: ForeignKey[];
-
-		if (collections === 'all') {
-			columns = (await this.schemaInspector.columnInfo()).filter((column) => !isVersionTable(column.table));
-
-			foreignKeys = (await this.schemaInspector.foreignKeys()).filter(
-				(foreignKey) => !isVersionTable(foreignKey.table),
-			);
-		} else {
-			columns = [];
-			foreignKeys = [];
-
-			for (const collection of collections) {
-				if (exclude.has(collection)) continue;
-
-				columns.push(...(await this.schemaInspector.columnInfo(collection)));
-				foreignKeys.push(...(await this.schemaInspector.foreignKeys(collection)));
-			}
-		}
-
-		const relations = stitchRelations(await this.readRelationsMeta(collections), foreignKeys).filter(
-			// Relations to removed collections are treated as if they don't exist
-			(relation) => !relation.related_collection || !exclude.has(relation.related_collection),
-		);
-
-		const columnsByTable = groupBy(columns, 'table');
-		const relationsByCollection = groupBy(relations, 'collection');
-
-		return Object.entries(columnsByTable)
-			.filter(([collection]) => !exclude.has(collection))
-			.map(([collection, columns]) => ({
-				collection,
-				columns,
-				relations: relationsByCollection[collection] ?? [],
-			}));
-	}
-
-	/**
-	 * Read the relation meta rows of the given "many" collections, or all of them for `'all'`
-	 */
-	private async readRelationsMeta(collections: CollectionScope): Promise<RelationMeta[]> {
+	async readRelationsMeta(collections?: string[]): Promise<RelationMeta[]> {
 		const query = this.knex.select('*').from('directus_relations');
 
-		if (collections !== 'all') query.whereIn('many_collection', collections);
+		if (collections) query.whereIn('many_collection', collections);
 
 		const rows = (await query).map(
 			(row: Record<string, any>): RelationMeta => ({
@@ -219,10 +156,67 @@ export class VersionTablesService {
 		);
 
 		const systemRows = systemRelationRows.filter(
-			(row) => collections === 'all' || collections.includes(row.many_collection),
+			(row) => !collections || collections.includes(row.many_collection),
 		) as RelationMeta[];
 
 		return [...rows, ...systemRows];
+	}
+
+	/**
+	 * Create, alter and drop version tables based on an already inspected schema
+	 *
+	 * @param input.versioned - Collections with versioning enabled
+	 * @param input.existing - Existing version tables to sync, any of them not planned anymore are dropped
+	 * @param input.live - Live tables whose version tables to sync
+	 * @param input.relationsMeta - Relation meta rows of the live tables
+	 * @param input.exclude - Collections to treat as if they no longer exist
+	 */
+	async syncFromSchema(input: {
+		versioned: Set<string>;
+		existing: { tables: string[] } & InspectedTables;
+		live: InspectedTables;
+		relationsMeta: RelationMeta[];
+		exclude?: Set<string>;
+	}): Promise<void> {
+		const exclude = input.exclude ?? new Set();
+
+		const relations = stitchRelations(input.relationsMeta, input.live.foreignKeys).filter(
+			// Relations to removed collections are treated as if they don't exist
+			(relation) => !relation.related_collection || !exclude.has(relation.related_collection),
+		);
+
+		const relationsByCollection = groupBy(relations, 'collection');
+
+		const liveCollections: LiveCollection[] = Object.entries(groupBy(input.live.columns, 'table'))
+			.filter(([collection]) => !exclude.has(collection))
+			.map(([collection, columns]) => ({
+				collection,
+				columns,
+				relations: relationsByCollection[collection] ?? [],
+			}));
+
+		const desiredTables = this.applyVendorForeignKeyRules(planVersionTables(liveCollections, input.versioned));
+
+		await this.applyChanges(desiredTables, {
+			tables: input.existing.tables,
+			columns: groupColumns(input.existing.columns),
+			foreignKeys: input.existing.foreignKeys,
+		});
+	}
+
+	/**
+	 * Read the columns and foreign keys of the given tables, one table at a time
+	 */
+	private async inspectTables(tables: string[]): Promise<InspectedTables> {
+		const columns: Column[] = [];
+		const foreignKeys: ForeignKey[] = [];
+
+		for (const table of tables) {
+			columns.push(...(await this.schemaInspector.columnInfo(table)));
+			foreignKeys.push(...(await this.schemaInspector.foreignKeys(table)));
+		}
+
+		return { columns, foreignKeys };
 	}
 
 	/**
