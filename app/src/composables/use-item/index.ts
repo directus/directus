@@ -113,6 +113,14 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
+	watch(
+		collection,
+		() => {
+			item.value = null;
+		},
+		{ flush: 'sync' },
+	);
+
 	watch([collection, primaryKey], refresh);
 
 	watch(query, () => {
