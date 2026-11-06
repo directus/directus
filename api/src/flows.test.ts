@@ -1,228 +1,335 @@
-import type { Flow } from '@directus/types';
+import type { FlowRaw } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { withResolvers } from './test-utils/async.js';
+import { createMockBus } from './test-utils/bus.js';
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
-		EMAIL_TEMPLATES_PATH: './templates',
-		STORAGE_LOCATIONS: ['local'],
-		REDIS_ENABLED: false,
-		EXTENSIONS_PATH: './extensions',
-	}),
+const { readByQuery, getSchema, scheduleSynchronizedJob } = vi.hoisted(() => ({
+	readByQuery: vi.fn(),
+	getSchema: vi.fn(),
+	scheduleSynchronizedJob: vi.fn(),
 }));
 
-vi.mock('./logger/index.js', () => ({
-	useLogger: vi.fn().mockReturnValue({
-		warn: vi.fn(),
-		info: vi.fn(),
-		debug: vi.fn(),
-		error: vi.fn(),
-	}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('./test-utils/env.js');
+	return mockEnv();
+});
 
-vi.mock('./bus/index.js', () => ({
-	useBus: vi.fn().mockReturnValue({
-		subscribe: vi.fn(),
-		publish: vi.fn(),
-	}),
-}));
+vi.mock('./logger/index.js', async () => {
+	const { createMockLogger } = await import('./test-utils/logger.js');
+	return { useLogger: () => createMockLogger() };
+});
 
-vi.mock('./database/index.js', () => ({
-	default: vi.fn(),
-}));
+vi.mock('./emitter.js', async () => {
+	const { mockEmitter } = await import('./test-utils/emitter.js');
+	return mockEmitter();
+});
 
-vi.mock('./utils/get-schema.js', () => ({
-	getSchema: vi.fn().mockResolvedValue({}),
-}));
+vi.mock('./database/index.js', async () => {
+	const { mockDatabase } = await import('./test-utils/database.js');
+	return mockDatabase();
+});
+
+vi.mock('./bus/index.js');
+vi.mock('./services/index.js', () => ({}));
+vi.mock('./permissions/lib/fetch-permissions.js', () => ({ fetchPermissions: vi.fn() }));
+vi.mock('./permissions/lib/fetch-policies.js', () => ({ fetchPolicies: vi.fn() }));
 
 vi.mock('./services/flows.js', () => ({
-	FlowsService: vi.fn().mockImplementation(function () {
-		return {
-			readByQuery: vi.fn().mockResolvedValue([]),
-		};
+	FlowsService: vi.fn(function () {
+		return { readByQuery };
 	}),
 }));
 
-vi.mock('./utils/schedule.js', () => ({
-	scheduleSynchronizedJob: vi.fn(),
-	validateCron: vi.fn().mockReturnValue(true),
-}));
+vi.mock('./utils/get-schema.js', () => ({ getSchema }));
+vi.mock('./utils/schedule.js', () => ({ scheduleSynchronizedJob, validateCron: () => true }));
 
-vi.mock('./emitter.js', () => ({
-	default: {
-		onAction: vi.fn(),
-		onFilter: vi.fn(),
-		offAction: vi.fn(),
-		offFilter: vi.fn(),
-	},
-}));
+function flushPromises() {
+	return new Promise((resolve) => setImmediate(resolve));
+}
 
-vi.mock('./cache.js', () => ({
-	getCache: vi.fn().mockReturnValue({ cache: null, systemCache: null, lockCache: null }),
-	getCacheValue: vi.fn(),
-	setCacheValue: vi.fn(),
-	clearSystemCache: vi.fn(),
-}));
-
-vi.mock('./redis/utils/redis-config-available.js', () => ({
-	redisConfigAvailable: vi.fn().mockReturnValue(false),
-}));
-
-vi.mock('./services/notifications.js', () => ({
-	NotificationsService: vi.fn(),
-}));
-
-vi.mock('./permissions/cache.js', () => ({
-	withCache: vi.fn((fn: any) => fn),
-}));
-
-vi.mock('./permissions/lib/fetch-permissions.js', () => ({
-	fetchPermissions: vi.fn().mockResolvedValue([]),
-}));
-
-vi.mock('./permissions/lib/fetch-policies.js', () => ({
-	fetchPolicies: vi.fn().mockResolvedValue([]),
-}));
-
-vi.mock('./services/activity.js', () => ({
-	ActivityService: vi.fn(),
-}));
-
-vi.mock('./services/revisions.js', () => ({
-	RevisionsService: vi.fn(),
-}));
-
-vi.mock('./services/index.js', () => ({}));
-
-vi.mock('./utils/get-service.js', () => ({
-	getService: vi.fn(),
-}));
-
-vi.mock('./utils/redact-object.js', () => ({
-	redactObject: vi.fn((obj: any) => obj),
-}));
-
-vi.mock('./utils/construct-flow-tree.js', () => ({
-	constructFlowTree: vi.fn((flow: Flow) => flow),
-}));
+function createFlow(id: string, trigger = 'operation', options: Record<string, unknown> = {}) {
+	return { id, trigger, options, operations: [], operation: null, accountability: null } as unknown as FlowRaw;
+}
 
 describe('FlowManager', () => {
 	let getFlowManager: typeof import('./flows.js').getFlowManager;
+	let testBus: ReturnType<typeof createMockBus>;
 
 	beforeEach(async () => {
 		vi.resetModules();
-		const module = await import('./flows.js');
-		getFlowManager = module.getFlowManager;
+
+		readByQuery.mockReset().mockResolvedValue([]);
+		getSchema.mockReset().mockResolvedValue({});
+		scheduleSynchronizedJob.mockReset().mockReturnValue({ stop: vi.fn().mockResolvedValue(undefined) });
+
+		// A fresh bus per test, so the managers of earlier tests don't receive its messages
+		const { useBus } = await import('./bus/index.js');
+		testBus = createMockBus();
+		vi.mocked(useBus).mockReturnValue(testBus.bus as any);
+
+		({ getFlowManager } = await import('./flows.js'));
 	});
 
 	afterEach(() => {
 		vi.clearAllMocks();
 	});
 
-	test('getFlow returns undefined when no flows are loaded', () => {
-		const manager = getFlowManager();
-		expect(manager.getFlow('nonexistent')).toBeUndefined();
-	});
-
-	test('getFlow returns flow after load populates it', async () => {
-		const mockFlow = {
-			id: 'test-flow-id',
-			name: 'Test Flow',
-			status: 'active',
-			trigger: 'manual',
-			operations: [],
-			options: {},
-		} as unknown as Flow;
-
-		const { FlowsService } = await import('./services/flows.js');
-
-		vi.mocked(FlowsService).mockImplementation(function () {
-			return {
-				readByQuery: vi.fn().mockResolvedValue([mockFlow]),
-			} as any;
-		});
+	async function initializeWith(flows: FlowRaw[]) {
+		readByQuery.mockResolvedValueOnce(flows);
 
 		const manager = getFlowManager();
-
 		await manager.initialize();
 
-		expect(manager.getFlow('test-flow-id')).toEqual(mockFlow);
+		return manager;
+	}
+
+	describe('initialize', () => {
+		test('should load the active flows', async () => {
+			const manager = await initializeWith([createFlow('flow-a')]);
+
+			expect(readByQuery).toHaveBeenCalledWith(expect.objectContaining({ filter: { status: { _eq: 'active' } } }));
+			expect(manager.getFlow('flow-a')).toBeDefined();
+		});
+
+		test('should queue a reload requested during the initial load', async () => {
+			const initialRead = withResolvers<FlowRaw[]>();
+			readByQuery.mockReturnValueOnce(initialRead.promise).mockResolvedValueOnce([createFlow('flow-b')]);
+
+			const manager = getFlowManager();
+			const initialize = manager.initialize();
+
+			await manager.reload();
+			initialRead.resolve([createFlow('flow-a')]);
+			await initialize;
+			await flushPromises();
+
+			expect(readByQuery).toHaveBeenCalledTimes(2);
+			expect(manager.getFlow('flow-b')).toBeDefined();
+		});
+
+		test('should reject when the initial load fails', async () => {
+			const error = new Error('Timeout acquiring a connection');
+			readByQuery.mockRejectedValueOnce(error);
+
+			await expect(getFlowManager().initialize()).rejects.toBe(error);
+		});
 	});
 
-	describe('runWebhookFlow manual trigger authentication', () => {
-		const manualFlow = {
-			id: 'manual-flow-id',
-			name: 'Manual Flow',
-			status: 'active',
-			trigger: 'manual',
-			operations: [],
-			operation: null,
-			accountability: null,
-			options: { collections: ['articles'], requireSelection: false },
-		} as unknown as Flow;
+	describe('getFlow', () => {
+		test('should return undefined for a flow that is not loaded', () => {
+			expect(getFlowManager().getFlow('missing-flow')).toBeUndefined();
+		});
+	});
 
-		const publicAccountability = {
-			role: null,
-			user: null,
-			roles: [],
-			admin: false,
-			app: false,
-		} as any;
+	describe('reload', () => {
+		test('should keep the loaded flows when reading the flows fails', async () => {
+			const manager = await initializeWith([createFlow('flow-a')]);
 
-		beforeEach(async () => {
-			const { FlowsService } = await import('./services/flows.js');
+			readByQuery.mockRejectedValueOnce(new Error('Timeout acquiring a connection'));
+			await manager.reload();
+			await flushPromises();
 
-			vi.mocked(FlowsService).mockImplementation(function () {
-				return {
-					readByQuery: vi.fn().mockResolvedValue([manualFlow]),
-				} as any;
+			expect(manager.getFlow('flow-a')).toBeDefined();
+		});
+
+		test('should load the latest flows on the next reload after reading the flows failed', async () => {
+			const manager = await initializeWith([createFlow('flow-a')]);
+
+			readByQuery.mockRejectedValueOnce(new Error('Timeout acquiring a connection'));
+			await manager.reload();
+			await flushPromises();
+
+			readByQuery.mockResolvedValueOnce([createFlow('flow-b')]);
+			await manager.reload();
+			await flushPromises();
+
+			expect(manager.getFlow('flow-a')).toBeUndefined();
+			expect(manager.getFlow('flow-b')).toBeDefined();
+		});
+
+		test('should load the latest flows on the next reload after loading the flows failed', async () => {
+			const emitter = vi.mocked((await import('./emitter.js')).default);
+			const manager = await initializeWith([]);
+
+			readByQuery.mockResolvedValueOnce([
+				createFlow('action-flow', 'event', { type: 'action', scope: ['items.create'], collections: ['articles'] }),
+				createFlow('schedule-flow', 'schedule', { cron: '* * * * *' }),
+			]);
+
+			scheduleSynchronizedJob.mockImplementationOnce(() => {
+				throw new Error('Failed to schedule');
+			});
+
+			await manager.reload();
+			await flushPromises();
+
+			const [event, partiallyLoadedHandler] = emitter.onAction.mock.calls[0]!;
+
+			readByQuery.mockResolvedValueOnce([createFlow('flow-b')]);
+			await manager.reload();
+			await flushPromises();
+
+			expect(emitter.offAction).toHaveBeenCalledWith(event, partiallyLoadedHandler);
+			expect(manager.getFlow('action-flow')).toBeUndefined();
+			expect(manager.getFlow('flow-b')).toBeDefined();
+		});
+
+		test('should skip the reload when the flows are not initialized yet', async () => {
+			await getFlowManager().reload();
+			await flushPromises();
+
+			expect(readByQuery).not.toHaveBeenCalled();
+		});
+
+		test('should skip a reload while another one is already waiting', async () => {
+			const manager = await initializeWith([createFlow('flow-a')]);
+
+			const runningRead = withResolvers<FlowRaw[]>();
+			readByQuery.mockReturnValueOnce(runningRead.promise).mockResolvedValueOnce([createFlow('flow-b')]);
+
+			await manager.reload();
+			await manager.reload();
+			await manager.reload();
+			await manager.reload();
+			runningRead.resolve([createFlow('flow-a')]);
+			await flushPromises();
+
+			expect(readByQuery).toHaveBeenCalledTimes(3);
+			expect(manager.getFlow('flow-b')).toBeDefined();
+		});
+
+		test('should finish the reload when stopping a schedule fails', async () => {
+			scheduleSynchronizedJob.mockReturnValueOnce({
+				stop: vi.fn().mockRejectedValue(new Error('Failed to reset clock')),
+			});
+
+			const manager = await initializeWith([createFlow('schedule-flow', 'schedule', { cron: '* * * * *' })]);
+
+			readByQuery.mockResolvedValueOnce([createFlow('flow-b')]);
+			await manager.reload();
+			await flushPromises();
+
+			expect(manager.getFlow('schedule-flow')).toBeUndefined();
+			expect(manager.getFlow('flow-b')).toBeDefined();
+		});
+
+		test('should reject when publishing the reload fails', async () => {
+			const error = new Error('Connection is closed.');
+			testBus.bus.publish.mockRejectedValueOnce(error);
+
+			await expect(getFlowManager().reload()).rejects.toBe(error);
+		});
+	});
+
+	describe('runWebhookFlow', () => {
+		test('should wait for a failing reload and run the flow that is still loaded', async () => {
+			const manager = await initializeWith([createFlow('webhook-flow', 'webhook', { method: 'GET' })]);
+
+			const failingRead = withResolvers<FlowRaw[]>();
+			readByQuery.mockReturnValueOnce(failingRead.promise);
+			await manager.reload();
+
+			const run = manager.runWebhookFlow('GET-webhook-flow', {}, { schema: {} as any, accountability: undefined });
+			failingRead.reject(new Error('Timeout acquiring a connection'));
+
+			await expect(run).resolves.toHaveProperty('result');
+		});
+
+		const ASYNC_FLOW_CASES = [
+			{
+				name: 'webhook',
+				flow: createFlow('async-webhook-flow', 'webhook', { method: 'GET', async: true }),
+				id: 'GET-async-webhook-flow',
+				data: {},
+				accountability: undefined,
+			},
+			{
+				name: 'manual',
+				flow: createFlow('async-manual-flow', 'manual', {
+					async: true,
+					collections: ['articles'],
+					requireSelection: false,
+				}),
+				id: 'POST-async-manual-flow',
+				data: { body: { collection: 'articles' } },
+				accountability: { role: null, user: 'user-id', roles: [], admin: true, app: false, ip: null },
+			},
+		];
+
+		test.each(ASYNC_FLOW_CASES)(
+			'should not leave errors of async $name flows unhandled',
+			async ({ flow, id, data, accountability }) => {
+				const manager = await initializeWith([flow]);
+
+				// Without a schema in the context, running the flow reads one, which fails like a saturated pool
+				getSchema.mockRejectedValueOnce(new Error('Timeout acquiring a connection'));
+
+				const run = manager.runWebhookFlow(id, data, { schema: undefined as any, accountability });
+
+				await expect(run).resolves.toEqual(expect.objectContaining({ result: undefined }));
+
+				// Lets an unhandled rejection surface and fail the run, as it would crash the process
+				await flushPromises();
+
+				expect(getSchema).toHaveBeenCalledTimes(2);
+			},
+		);
+
+		describe('manual trigger authentication', () => {
+			const REJECTED_CASES = [
+				{
+					name: 'public/unauthenticated accountability',
+					accountability: { role: null, user: null, roles: [], admin: false, app: false, ip: null },
+				},
+				{ name: 'undefined accountability', accountability: undefined },
+				{
+					name: 'share-only accountability',
+					accountability: { role: null, user: null, roles: [], admin: false, app: false, ip: null, share: 'share-id' },
+				},
+			];
+
+			const ALLOWED_CASES = [
+				{
+					name: 'authenticated user accountability',
+					accountability: { role: null, user: 'user-id', roles: [], admin: true, app: false, ip: null },
+				},
+				{
+					name: 'authenticated role-only accountability',
+					accountability: { role: 'role-id', user: null, roles: [], admin: true, app: false, ip: null },
+				},
+			];
+
+			const runManualFlow = async (accountability: any) => {
+				const manager = await initializeWith([
+					createFlow('manual-flow', 'manual', { collections: ['articles'], requireSelection: false }),
+				]);
+
+				return manager.runWebhookFlow(
+					'POST-manual-flow',
+					{ body: { collection: 'articles' } },
+					{ accountability, schema: {} as any },
+				);
+			};
+
+			test.each(REJECTED_CASES)('should throw ForbiddenError for $name', async ({ accountability }) => {
+				await expect(runManualFlow(accountability)).rejects.toMatchObject({ code: 'FORBIDDEN' });
+			});
+
+			test.each(ALLOWED_CASES)('should trigger the flow for $name', async ({ accountability }) => {
+				await expect(runManualFlow(accountability)).resolves.toHaveProperty('result');
 			});
 		});
+	});
 
-		const runArgs = (accountability: any) =>
-			['POST-manual-flow-id', { body: { collection: 'articles' } }, { accountability, schema: {} as any }] as const;
+	describe('getFlowManager', () => {
+		test('should not leave a failed subscription to flow messages unhandled', async () => {
+			// A plain function rather than a mock, as Vitest marks rejections returned by mocks as handled
+			testBus.bus.subscribe = (() => Promise.reject(new Error('Connection is closed.'))) as any;
 
-		const REJECTED_CASES = [
-			{ name: 'public/unauthenticated accountability', accountability: publicAccountability },
-			{ name: 'undefined accountability', accountability: undefined },
-			{
-				name: 'share-only accountability',
-				accountability: { ...publicAccountability, share: 'share-id' },
-			},
-		];
+			expect(() => getFlowManager()).not.toThrow();
 
-		const ALLOWED_CASES = [
-			{
-				name: 'authenticated user accountability',
-				accountability: { ...publicAccountability, user: 'user-id', admin: true },
-			},
-			{
-				name: 'authenticated role-only accountability',
-				accountability: { ...publicAccountability, role: 'role-id', admin: true },
-			},
-		];
-
-		test.each(REJECTED_CASES)('throws ForbiddenError for $name', async ({ accountability }) => {
-			// Arrange
-			const manager = getFlowManager();
-			await manager.initialize();
-
-			// Act
-			const trigger = manager.runWebhookFlow(...runArgs(accountability));
-
-			// Assert
-			await expect(trigger).rejects.toMatchObject({ code: 'FORBIDDEN' });
-		});
-
-		test.each(ALLOWED_CASES)('triggers the flow for $name', async ({ accountability }) => {
-			// Arrange
-			const manager = getFlowManager();
-			await manager.initialize();
-
-			// Act
-			const trigger = manager.runWebhookFlow(...runArgs(accountability));
-
-			// Assert
-			await expect(trigger).resolves.toHaveProperty('result');
+			// Lets an unhandled rejection surface and fail the run, as it would crash the process
+			await flushPromises();
 		});
 	});
 });
