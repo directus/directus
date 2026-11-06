@@ -180,7 +180,7 @@ describe('createAIProviderRegistry', () => {
 		expect(createOpenRouter).toHaveBeenCalledWith({
 			apiKey: 'sk-or-key',
 			appName: 'Directus',
-			appUrl: 'https://directus.io',
+			appUrl: 'https://directus.com',
 		});
 	});
 

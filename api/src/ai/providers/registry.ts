@@ -79,7 +79,7 @@ export function createAIProviderRegistry(configs: ProviderConfig[], settings?: A
 				providers['openrouter'] = createOpenRouter({
 					apiKey: config.apiKey,
 					appName: 'Directus',
-					appUrl: 'https://directus.io',
+					appUrl: 'https://directus.com',
 				});
 
 				break;
