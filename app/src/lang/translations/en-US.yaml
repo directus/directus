@@ -2934,6 +2934,15 @@ interfaces:
     link_protocol_not_allowed:
       This link type is not allowed. Add its scheme to the Allowed Link Protocols option of this field.
     link_protocol_blocked: Script links such as `javascript:` are never allowed.
+    keep_inline_styles: Inline Styles
+    keep_inline_styles_label: Keep style attributes and <style> tags
+    keep_inline_styles_note:
+      By default, the editor keeps only the color, font, font size, background color and text alignment styles, and
+      removes `<style>` tags. Enable this to keep all inline CSS in the content.
+    keep_inline_styles_warning:
+      Inline CSS can change the layout of any page that shows this content (for example, full-screen overlays), and it
+      can load files from other servers through `url()`. Directus does not filter this CSS. Only enable this option if
+      you trust everyone who can edit this field. You enable it at your own risk.
     auto_height: Auto height
   input-block-editor:
     input-block-editor: Block Editor

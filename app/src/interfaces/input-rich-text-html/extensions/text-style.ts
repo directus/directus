@@ -1,8 +1,8 @@
-import { TextStyle as BaseTextStyle, TextStyleKit } from '@tiptap/extension-text-style';
+import { TextStyle as BaseTextStyle, TextStyleKit, type TextStyleOptions } from '@tiptap/extension-text-style';
 import type { TagParseRule } from '@tiptap/pm/model';
 import type { AnyExtension } from '@tiptap/vue-3';
 import { COMPARISON_DIFF_CLASS_PREFIX } from './comparison-diff';
-import { hasPreservedAttributes } from './preserved-attributes';
+import { hasPreservedAttributes, hasUnclaimedDeclaration, type StyleRule } from './preserved-attributes';
 
 // style props the TextStyleKit below models; a span styled with anything else would parse to an
 // empty mark that renders `<span>` and gets unwrapped on the next load, so the value never settles
@@ -12,9 +12,20 @@ function hasTextStyleProperty(element: HTMLElement): boolean {
 	return TEXT_STYLE_PROPERTIES.some((property) => element.style.getPropertyValue(property));
 }
 
+interface PreservingTextStyleOptions extends TextStyleOptions {
+	/** Claim spans styled with any property, for PreservedAttributes' `inlineStyles` to keep. */
+	inlineStyles: boolean;
+	/** Set by fieldEditorExtensions; a span whose declarations all become marks would render empty. */
+	styleRules: StyleRule[];
+}
+
 // customFormats marks (priority 200) still consume their spans first; comparison diff spans stay
 // unclaimed so normal editing keeps stripping them
-const PreservingTextStyle = BaseTextStyle.extend({
+export const PreservingTextStyle = BaseTextStyle.extend<PreservingTextStyleOptions>({
+	addOptions() {
+		return { ...this.parent!(), inlineStyles: false, styleRules: [] };
+	},
+
 	parseHTML() {
 		const [styledSpan] = (this.parent?.() ?? []) as TagParseRule[];
 
@@ -22,7 +33,8 @@ const PreservingTextStyle = BaseTextStyle.extend({
 			...styledSpan,
 			tag: 'span',
 			getAttrs: (element) => {
-				if (!hasTextStyleProperty(element) && !hasPreservedAttributes(element)) return false;
+				const keepsStyle = this.options.inlineStyles && hasUnclaimedDeclaration(element, this.options.styleRules);
+				if (!keepsStyle && !hasTextStyleProperty(element) && !hasPreservedAttributes(element)) return false;
 				return styledSpan?.getAttrs?.(element) ?? {};
 			},
 		};

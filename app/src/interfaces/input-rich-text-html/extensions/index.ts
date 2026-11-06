@@ -12,13 +12,14 @@ import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
-import { PreservedAttributes } from './preserved-attributes';
+import { PreservedAttributes, styleRules } from './preserved-attributes';
 import { RangeSelectedAtoms } from './range-selected-atoms';
 import { semanticHtml } from './semantic-html';
+import { StyleTag } from './style-tag';
 import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { Table } from './table';
 import { TextAlignment } from './text-alignment';
-import { TextStyle } from './text-style';
+import { PreservingTextStyle, TextStyle } from './text-style';
 import { contributedKey, enabledRichTexts } from '@/rich-text/register';
 
 /**
@@ -61,12 +62,18 @@ export function fieldEditorExtensions(additions: AnyExtension[]): AnyExtension[]
 	const byName = new Map(additions.map((extension) => [extension.name, extension]));
 	const base = editorExtensions.map((extension) => byName.get(extension.name) ?? extension);
 	const appended = additions.filter((extension) => !base.includes(extension));
-	const others = [...base.filter((extension) => extension !== PreservedAttributes), ...appended];
+	const isPreserved = (extension: AnyExtension) => extension.name === PreservedAttributes.name;
+	const others = [...base.filter((extension) => !isPreserved(extension)), ...appended];
+
+	const isInlineTextStyle = (extension: AnyExtension) =>
+		extension.name === PreservingTextStyle.name && extension.options.inlineStyles;
 
 	return [
-		...base.map((extension) =>
-			extension === PreservedAttributes ? PreservedAttributes.configure({ extensions: others }) : extension,
-		),
+		...base.map((extension) => {
+			if (isPreserved(extension)) return extension.configure({ extensions: others });
+			if (isInlineTextStyle(extension)) return extension.configure({ styleRules: styleRules(others) });
+			return extension;
+		}),
 		...appended,
 	];
 }
@@ -80,6 +87,8 @@ export interface FieldSchemaOptions {
 	extensionOptions?: unknown;
 	/** Field `linkProtocols` option: extra URL schemes links and image links may use. */
 	linkProtocols?: unknown;
+	/** Field `keepInlineStyles` option: keep every `style` attribute and `<style>` tag. */
+	keepInlineStyles?: boolean;
 	comparisonMode?: boolean;
 }
 
@@ -111,10 +120,18 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			...contributed.flatMap((config) => config.extensions),
 			...customFormats.extensions,
 			...links.extensions,
+			...(options.keepInlineStyles
+				? [
+						PreservedAttributes.configure({ inlineStyles: true }),
+						PreservingTextStyle.configure({ inlineStyles: true }),
+						StyleTag,
+					]
+				: []),
 			...(options.comparisonMode ? [ComparisonDiff] : []),
 		],
 		key: [
 			options.comparisonMode ? 'comparison' : '',
+			options.keepInlineStyles ? 'inline-styles' : '',
 			customFormats.key,
 			links.key,
 			contributed.map((config) => config.key).join('\u0000'),

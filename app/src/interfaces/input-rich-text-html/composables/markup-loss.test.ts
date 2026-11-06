@@ -1,6 +1,6 @@
 import { getSchema } from '@tiptap/core';
 import { describe, expect, test } from 'vitest';
-import { editorExtensions } from '../extensions';
+import { buildFieldSchema, editorExtensions, fieldEditorExtensions } from '../extensions';
 import { buildCustomFormats } from '../extensions/custom-formats';
 import { findMarkupLoss } from './markup-loss';
 import { roundTrip } from './normalization-diff';
@@ -92,5 +92,34 @@ describe('findMarkupLoss', () => {
 		const withFormats = getSchema([...editorExtensions, ...extensions]);
 
 		expect(findMarkupLoss(html, roundTrip(html, extensions), withFormats)).toEqual([]);
+	});
+
+	describe('with keepInlineStyles', () => {
+		const { extensions } = buildFieldSchema({ keepInlineStyles: true });
+		const inlineSchema = getSchema(fieldEditorExtensions(extensions));
+		const inlineLoss = (html: string) => findMarkupLoss(html, roundTrip(html, extensions), inlineSchema);
+
+		test.each([
+			['a block style', '<p style="line-height:1.38;margin-top:0pt">gd</p>'],
+			['an inline style', '<p><span style="white-space: pre-wrap;" data-metadata="figma">Grass</span></p>'],
+			[
+				'styles mixed with owned ones',
+				'<p style="text-align:center;margin-left:40px"><span style="color:red;letter-spacing:1px">a</span></p>',
+			],
+			['a <style> tag', '<style type="text/css">p { color: red; }</style><p>s</p>'],
+			['a <style> tag inside a paragraph', '<p>a<style>p { color: red; }</style>b</p>'],
+		])('%s is kept', (_name, html) => {
+			expect(inlineLoss(html)).toEqual([]);
+		});
+
+		test('reports the part of a shorthand that only its owner keeps as lost', () => {
+			expect(inlineLoss('<p><span style="background: yellow url(a.png)">x</span></p>')).toEqual([
+				expect.stringContaining('background-image'),
+			]);
+		});
+
+		test('an attribute a <style> tag does not model', () => {
+			expect(inlineLoss('<style nonce="abc">p { color: red; }</style>')).toEqual(['<style nonce="abc">']);
+		});
 	});
 });
