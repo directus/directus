@@ -118,6 +118,24 @@ describe('FlowManager', () => {
 		vi.clearAllMocks();
 	});
 
+	test.each([
+		['log', true],
+		['ai-text', true],
+		['item-read', false],
+	])('redacts secrets from flow data before a %s step: %s', async (type, redacted) => {
+		const { redactObject } = await import('./utils/redact-object.js');
+		const { FLOW_SECRET_KEYS } = await import('./utils/flow-secret-keys.js');
+
+		const manager = getFlowManager();
+		manager.addOperation(type, vi.fn());
+
+		const operation = { type, options: {}, resolve: null, reject: null } as any;
+		await (manager as any).executeOperation(operation, { $trigger: {} });
+
+		const calls = vi.mocked(redactObject).mock.calls.filter(([, redact]) => redact.keys === FLOW_SECRET_KEYS);
+		expect(calls.length > 0).toBe(redacted);
+	});
+
 	test('getFlow returns undefined when no flows are loaded', () => {
 		const manager = getFlowManager();
 		expect(manager.getFlow('nonexistent')).toBeUndefined();

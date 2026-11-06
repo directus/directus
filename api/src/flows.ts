@@ -59,6 +59,9 @@ const ACCOUNTABILITY_KEY = '$accountability';
 const LAST_KEY = '$last';
 const ENV_KEY = '$env';
 
+/** Log and the AI steps are often given whole trigger objects, so secrets are redacted before they're logged or sent out */
+const REDACTED_OPERATIONS = ['log', 'ai-text'];
+
 interface FlowMessage {
 	type: 'reload';
 }
@@ -514,7 +517,7 @@ class FlowManager {
 
 		let optionData = keyedData;
 
-		if (operation.type === 'log') {
+		if (REDACTED_OPERATIONS.includes(operation.type)) {
 			optionData = redactObject(
 				keyedData,
 				{

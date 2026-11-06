@@ -104,12 +104,15 @@ const generatedKey = computed(() =>
 
 const { operations } = useExtensions();
 
+const AI_OPERATIONS = ['ai-text'];
+
 const displayOperations = computed(() =>
 	operations.value.map((operation) => ({
 		value: operation.id,
 		icon: operation.icon,
 		text: operation.name,
 		description: operation.description,
+		...(AI_OPERATIONS.includes(operation.id) ? { iconRight: 'ai_magic' } : {}),
 	})),
 );
 
