@@ -714,7 +714,7 @@ export const DEFAULT_ALLOWED_MODELS: Record<Exclude<StandardProviderType, 'openr
 
 export function buildCustomModels(
 	customModels: OpenAICompatibleModel[] | null,
-	provider: ProviderType = 'openai-compatible',
+	provider: 'openai-compatible' | 'openrouter' = 'openai-compatible',
 ): ModelDefinition[] {
 	if (!customModels) return [];
 

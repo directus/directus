@@ -32,7 +32,7 @@ export const AI_MODELS: AppModelDefinition[] = DEFAULT_AI_MODELS.map((m) => ({
 
 export function buildCustomModels(
 	customModels: OpenAICompatibleModel[] | null,
-	provider: ProviderType = 'openai-compatible',
+	provider: 'openai-compatible' | 'openrouter' = 'openai-compatible',
 ): AppModelDefinition[] {
 	return buildCustomModelsBase(customModels, provider).map((m) => ({
 		...m,
