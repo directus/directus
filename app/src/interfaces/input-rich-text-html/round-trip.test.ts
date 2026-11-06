@@ -1,6 +1,7 @@
 import { Editor } from '@tiptap/vue-3';
 import { describe, expect, test } from 'vitest';
-import { editorExtensions } from './extensions';
+import { computeValueNormalizationDiff } from './composables/normalization-diff';
+import { buildFieldSchema, editorExtensions, fieldEditorExtensions } from './extensions';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 
 /**
@@ -326,5 +327,114 @@ describe('round-trip: image', () => {
 		const out = roundTrip('<p><a href="https://directus.io">before<img src="/assets/abc" alt="a"></a></p>');
 
 		expect(out).toContain('<a href="https://directus.io">before</a>');
+	});
+});
+
+describe('tight paragraphs', () => {
+	function tightEditor(html: string) {
+		const { extensions } = buildFieldSchema({ tightParagraphs: true });
+		return new Editor({ extensions: fieldEditorExtensions(extensions), content: html });
+	}
+
+	const UNCHANGED: Record<string, string> = {
+		'list item': '<ul><li>a</li></ul>',
+		'nested list': '<ul><li>a<ul><li>b</li></ul></li></ul>',
+		blockquote: '<blockquote>a</blockquote>',
+		'table cells':
+			'<table style="min-width: 50px;"><colgroup><col style="min-width: 25px;"><col style="min-width: 25px;"></colgroup><tbody><tr><th colspan="1" rowspan="1">a</th><td colspan="1" rowspan="1">b</td></tr></tbody></table>',
+		'marks in a list item': '<ul><li><strong>a</strong> b</li></ul>',
+		'mixed items keep their own form': '<ul><li>a</li><li><p>b</p></li><li>c<ul><li>d</li></ul></li></ul>',
+		'stored <p> in a list item': '<ul><li><p>a</p></li></ul>',
+		'stored <p> in a blockquote': '<blockquote><p>a</p></blockquote>',
+		'stored <p> in a table cell':
+			'<table style="min-width: 25px;"><colgroup><col style="min-width: 25px;"></colgroup><tbody><tr><td colspan="1" rowspan="1"><p>a</p></td></tr></tbody></table>',
+		'second paragraph keeps its <p>': '<blockquote>a<p>b</p></blockquote>',
+		'paragraph with own attributes': '<ul><li><p class="lead">a</p></li></ul>',
+		'empty first paragraph before a paragraph': '<blockquote><p></p><p>a</p></blockquote>',
+		'empty first paragraph before a nested list': '<ul><li><p></p><ul><li>a</li></ul></li></ul>',
+		'empty list item': '<ul><li></li></ul>',
+		'top-level paragraph': '<p>a</p>',
+	};
+
+	test.each(Object.entries(UNCHANGED))('%s survives round-trip unchanged', (_name, html) => {
+		const editor = tightEditor(html);
+		const out = editor.getHTML();
+		editor.destroy();
+
+		expect(out).toBe(html);
+	});
+
+	test.each(Object.entries(UNCHANGED))('%s does not trip the normalization check', (_name, html) => {
+		const { extensions, key } = buildFieldSchema({ tightParagraphs: true });
+
+		expect(computeValueNormalizationDiff(html, extensions, key)).toBeNull();
+	});
+
+	test('a paragraph turned into a list item gets no <p>', () => {
+		const editor = tightEditor('<p>a</p>');
+
+		editor.chain().setTextSelection(1).toggleBulletList().run();
+
+		expect(editor.getHTML()).toBe('<ul><li>a</li></ul><p></p>');
+		editor.destroy();
+	});
+
+	test('a blockquote made from a paragraph gets no <p>', () => {
+		const editor = tightEditor('<p>a</p>');
+
+		editor.chain().setTextSelection(1).toggleBlockquote().run();
+
+		expect(editor.getHTML()).toBe('<blockquote>a</blockquote><p></p>');
+		editor.destroy();
+	});
+
+	test('a list item split from a stored <p> gets no <p>', () => {
+		const editor = tightEditor('<ul><li><p>a</p></li></ul>');
+
+		editor.chain().setTextSelection(4).splitListItem('listItem').insertContent('b').run();
+
+		expect(editor.getHTML()).toBe('<ul><li><p>a</p></li><li>b</li></ul><p></p>');
+		editor.destroy();
+	});
+
+	test('an empty line opened above a paragraph survives a reload', () => {
+		const editor = tightEditor('<blockquote>a</blockquote>');
+
+		editor.chain().setTextSelection(2).splitBlock().run();
+		const saved = editor.getHTML();
+		editor.destroy();
+
+		const reloaded = tightEditor(saved);
+
+		expect(reloaded.state.doc.firstChild?.childCount).toBe(2);
+		reloaded.destroy();
+	});
+
+	test('a paragraph that gains an attribute keeps its <p> so the attribute survives', () => {
+		const editor = tightEditor('<ul><li>a</li></ul>');
+
+		editor.chain().setTextSelection(3).updateAttributes('paragraph', { textAlign: 'center' }).run();
+
+		expect(editor.getHTML()).toBe('<ul><li><p style="text-align: center;">a</p></li></ul><p></p>');
+		editor.destroy();
+	});
+
+	test('the editor view still renders the paragraph', () => {
+		const editor = tightEditor('<ul><li>a</li></ul>');
+
+		expect(editor.view.dom.querySelector('li > p')?.textContent).toBe('a');
+		editor.destroy();
+	});
+
+	test('a field without the option still wraps', () => {
+		const { extensions } = buildFieldSchema({});
+		const editor = new Editor({ extensions: fieldEditorExtensions(extensions), content: '<ul><li>a</li></ul>' });
+
+		expect(editor.getHTML()).toBe('<ul><li><p>a</p></li></ul>');
+		editor.destroy();
+	});
+
+	test('the schema key tells the two modes apart', () => {
+		expect(buildFieldSchema({ tightParagraphs: true }).key).not.toBe(buildFieldSchema({}).key);
 	});
 });

@@ -19,6 +19,7 @@ import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { Table } from './table';
 import { TextAlignment } from './text-alignment';
 import { TextStyle } from './text-style';
+import { TightParagraphs } from './tight-paragraphs';
 import { contributedKey, enabledRichTexts } from '@/rich-text/register';
 
 /**
@@ -80,6 +81,8 @@ export interface FieldSchemaOptions {
 	extensionOptions?: unknown;
 	/** Field `linkProtocols` option: extra URL schemes links and image links may use. */
 	linkProtocols?: unknown;
+	/** Field `tightParagraphs` option: never add `<p>` in list items, blockquotes and table cells. */
+	tightParagraphs?: boolean;
 	comparisonMode?: boolean;
 }
 
@@ -111,12 +114,14 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			...contributed.flatMap((config) => config.extensions),
 			...customFormats.extensions,
 			...links.extensions,
+			...(options.tightParagraphs ? [TightParagraphs] : []),
 			...(options.comparisonMode ? [ComparisonDiff] : []),
 		],
 		key: [
 			options.comparisonMode ? 'comparison' : '',
 			customFormats.key,
 			links.key,
+			options.tightParagraphs ? 'tight-paragraphs' : '',
 			contributed.map((config) => config.key).join('\u0000'),
 		].join('\u0000'),
 		formats: customFormats.formats,
