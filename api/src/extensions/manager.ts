@@ -79,9 +79,9 @@ export class ExtensionManager {
 	private options: ExtensionManagerOptions = defaultOptions;
 
 	/**
-	 * Whether or not the extensions have been read from disk and registered into the system
+	 * Set once the initial load completes and never reset, so a failed reload doesn't block later ones
 	 */
-	private isLoaded = false;
+	private isInitialized = false;
 
 	// folder:Extension
 	private localExtensions: Map<string, Extension> = new Map();
@@ -106,7 +106,7 @@ export class ExtensionManager {
 	/**
 	 * Callbacks to be able to unregister extensions
 	 */
-	private unregisterFunctionMap: Map<string, PromiseCallback> = new Map();
+	private unregisterFunctionMap: Map<string, () => Promise<void>> = new Map();
 
 	/**
 	 * A local-to-extensions scoped emitter that can be used to fire and listen to custom events
@@ -136,11 +136,6 @@ export class ExtensionManager {
 	 * sequence.
 	 */
 	private reloadQueue: PQueue = new PQueue({ concurrency: 1 });
-
-	/**
-	 * Used to prevent race condition when reading extension data while reloading extensions
-	 */
-	private reloadPromise: Promise<void> = Promise.resolve();
 
 	/**
 	 * Optional file system watcher to auto-reload extensions when the local file system changes
@@ -202,27 +197,48 @@ export class ExtensionManager {
 			await this.closeWatcher();
 		}
 
-		if (!this.isLoaded) {
-			await this.load({ forceSync: true });
+		// Ensure reloads requested during the initial load wait for it, rather than being skipped
+		await this.reloadQueue.add(async () => {
+			if (this.isInitialized) {
+				logger.warn('Extensions are already initialized, skipping initialization');
+				return;
+			}
+
+			try {
+				await syncExtensions({ forceSync: true });
+			} catch (error) {
+				logger.error(`Failed to sync extensions`);
+				logger.error(error);
+				process.exit(1);
+			}
+
+			await this.load();
+
+			this.isInitialized = true;
 
 			if (this.extensions.length > 0) {
 				logger.info(`Loaded extensions: ${this.extensions.map((ext) => ext.name).join(', ')}`);
 			}
-		}
+		});
 
 		if (this.options.watch && !wasWatcherInitialized) {
 			this.updateWatchedExtensions([...this.extensions]);
 		}
 
-		this.messenger.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
-			// Ignore requests for reloading that were published by the current process
-			if (isPlainObject(payload) && 'origin' in payload && payload['origin'] === this.processId) return;
-			// Reload extensions with event options
-			const options: ExtensionSyncOptions = {};
-			if (typeof payload['forceSync'] === 'boolean') options.forceSync = payload['forceSync'];
-			if (typeof payload['partialSync'] === 'string') options.partialSync = payload['partialSync'];
-			this.reload(options);
-		});
+		this.messenger
+			.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
+				// Ignore empty messages, and requests for reloading that were published by the current process
+				if (!isPlainObject(payload) || payload['origin'] === this.processId) return;
+				// Reload extensions with event options
+				const options: ExtensionSyncOptions = {};
+				if (typeof payload['forceSync'] === 'boolean') options.forceSync = payload['forceSync'];
+				if (typeof payload['partialSync'] === 'string') options.partialSync = payload['partialSync'];
+
+				this.reload(options);
+			})
+			.catch((error) => {
+				logger.error(error, 'Failed to subscribe to extension reload messages');
+			});
 	}
 
 	/**
@@ -273,18 +289,8 @@ export class ExtensionManager {
 	/**
 	 * Load all extensions from disk and register them in their respective places
 	 */
-	private async load(options?: ExtensionSyncOptions): Promise<void> {
+	private async load(): Promise<void> {
 		const logger = useLogger();
-
-		if (env['EXTENSIONS_LOCATION']) {
-			try {
-				await syncExtensions(options);
-			} catch (error) {
-				logger.error(`Failed to sync extensions`);
-				logger.error(error);
-				process.exit(1);
-			}
-		}
 
 		try {
 			const { local, registry, module } = await getExtensions();
@@ -303,8 +309,6 @@ export class ExtensionManager {
 		if (env['SERVE_APP']) {
 			await this.generateExtensionBundle();
 		}
-
-		this.isLoaded = true;
 
 		emitter.emitAction('extensions.load', {
 			extensions: this.extensions,
@@ -325,8 +329,6 @@ export class ExtensionManager {
 
 		this.localEmitter.offAll();
 
-		this.isLoaded = false;
-
 		const logger = useLogger();
 
 		logger.info('Extensions unloaded');
@@ -343,20 +345,20 @@ export class ExtensionManager {
 
 		const logger = useLogger();
 
-		let resolve: () => void;
-		let reject: (val?: unknown) => void;
+		return this.reloadQueue.add(async () => {
+			if (!this.isInitialized) {
+				logger.warn('Extensions have to be loaded before they can be reloaded');
+				return;
+			}
 
-		this.reloadPromise = new Promise((res, rej) => {
-			resolve = res;
-			reject = rej;
-		});
+			try {
+				// Sync before unloading, so a failed sync happens before unload
+				await syncExtensions(options);
 
-		this.reloadQueue.add(async () => {
-			if (this.isLoaded) {
 				const prevExtensions = clone(this.extensions);
 
 				await this.unload();
-				await this.load(options);
+				await this.load();
 
 				logger.info('Extensions reloaded');
 
@@ -386,19 +388,20 @@ export class ExtensionManager {
 				if (removedExtensions.length > 0) {
 					logger.info(`Removed extensions: ${removedExtensions.join(', ')}`);
 				}
-
-				resolve();
-			} else {
-				logger.warn('Extensions have to be loaded before they can be reloaded');
-				reject(new Error('Extensions have to be loaded before they can be reloaded'));
+			} catch (error) {
+				logger.error(
+					error,
+					'Failed to reload extensions, extensions on this instance may be outdated until the next reload',
+				);
 			}
 		});
-
-		return this.reloadPromise;
 	}
 
+	/**
+	 * Resolves once no reload is running or waiting, to prevent reading extension data mid-reload
+	 */
 	public isReloading(): Promise<void> {
-		return this.reloadPromise;
+		return this.reloadQueue.onIdle();
 	}
 
 	/**
@@ -1020,9 +1023,18 @@ export class ExtensionManager {
 	 * Remove the registration for all API extensions
 	 */
 	private async unregisterApiExtensions(): Promise<void> {
-		const unregisterFunctions = Array.from(this.unregisterFunctionMap.values());
+		const logger = useLogger();
 
-		await Promise.all(unregisterFunctions.map((fn) => fn()));
+		await Promise.all(
+			Array.from(this.unregisterFunctionMap.entries()).map(([name, unregister]) =>
+				unregister().catch((error) => {
+					// Carry on, so a single failure doesn't stop the reload with the remaining extensions half unregistered
+					logger.error(error, `Failed to unregister extension "${name}"`);
+				}),
+			),
+		);
+
+		this.unregisterFunctionMap.clear();
 	}
 
 	/**

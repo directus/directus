@@ -132,6 +132,15 @@ describe('syncExtensions', () => {
 	});
 
 	describe('basic synchronization flow', () => {
+		test('should skip syncing when no remote extensions location is configured', async () => {
+			vi.mocked(useEnv).mockReturnValue({ EXTENSIONS_PATH: 'remote/extensions' });
+
+			await syncExtensions({ forceSync: true });
+
+			expect(mockLock.increment).not.toHaveBeenCalled();
+			expect(getStorage).not.toHaveBeenCalled();
+		});
+
 		test('should exit early if already synchronizing and forceSync is not enabled', async () => {
 			vi.mocked(isSynchronizing).mockResolvedValue(true);
 

@@ -7,6 +7,7 @@ import { isObject } from '@directus/utils';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
 import { getExtensionManager } from '../extensions/index.js';
+import { useLogger } from '../logger/index.js';
 import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 
@@ -227,9 +228,12 @@ export class ExtensionsService {
 			return extension;
 		});
 
-		this.extensionsManager.reload().then(() => {
-			this.extensionsManager.broadcastReloadNotification();
-		});
+		this.extensionsManager
+			.reload()
+			.then(() => this.extensionsManager.broadcastReloadNotification())
+			.catch((error) => {
+				useLogger().error(error, 'Failed to notify other instances to reload extensions');
+			});
 
 		return result;
 	}
