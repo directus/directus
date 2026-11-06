@@ -63,7 +63,10 @@ interface FlowMessage {
 }
 
 class FlowManager {
-	private isLoaded = false;
+	/**
+	 * Set once the initial load completes and never reset, so a failed reload doesn't block later ones
+	 */
+	private isInitialized = false;
 
 	private flows: Record<string, Flow> = {};
 	private operations: Map<string, OperationHandler> = new Map();
@@ -84,13 +87,22 @@ class FlowManager {
 		const logger = useLogger();
 
 		messenger.subscribe<FlowMessage>('flows', (event) => {
-			if (event.type === 'reload') {
+			// A reload still waiting in the queue reads the latest flows when it starts, so another one is redundant
+			if (event.type === 'reload' && this.reloadQueue.size === 0) {
 				this.reloadQueue.add(async () => {
-					if (this.isLoaded) {
+					if (!this.isInitialized) {
+						logger.warn('Flow manager is not initialized yet, skipping reload');
+						return;
+					}
+
+					try {
+						// Read before unloading, so a failed read doesn't leave the manager empty
+						const flows = await this.readFlows();
+
 						await this.unload();
-						await this.load();
-					} else {
-						logger.warn('Flows have to be loaded before they can be reloaded');
+						this.load(flows);
+					} catch (error) {
+						logger.error(error, 'Failed to reload flows, flows on this instance may be outdated until the next reload');
 					}
 				});
 			}
@@ -98,9 +110,15 @@ class FlowManager {
 	}
 
 	public async initialize(): Promise<void> {
-		if (!this.isLoaded) {
-			await this.load();
-		}
+		// Ensure change/reload requested during initialize are not skipped
+		await this.reloadQueue.add(async () => {
+			if (this.isInitialized) return;
+
+			const flows = await this.readFlows();
+			this.load(flows);
+
+			this.isInitialized = true;
+		});
 	}
 
 	public async reload(): Promise<void> {
@@ -155,9 +173,10 @@ class FlowManager {
 		return this.flows[id];
 	}
 
-	private async load(): Promise<void> {
-		const logger = useLogger();
-
+	/**
+	 * Read the active flows with their operations from the database, constructed into flow trees
+	 */
+	private async readFlows(): Promise<Flow[]> {
 		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
 		const flows = await flowsService.readByQuery({
@@ -166,9 +185,16 @@ class FlowManager {
 			limit: -1,
 		});
 
-		const flowTrees = flows.map((flow) => constructFlowTree(flow));
+		return flows.map((flow) => constructFlowTree(flow));
+	}
 
-		for (const flow of flowTrees) {
+	/**
+	 * Load the given flows into the manager and register their triggers
+	 */
+	private load(flows: Flow[]): void {
+		const logger = useLogger();
+
+		for (const flow of flows) {
 			this.flows[flow.id] = flow;
 
 			if (flow.trigger === 'event') {
@@ -363,11 +389,11 @@ class FlowManager {
 				this.webhookFlowHandlers[`POST-${flow.id}`] = handler;
 			}
 		}
-
-		this.isLoaded = true;
 	}
 
 	private async unload(): Promise<void> {
+		const logger = useLogger();
+
 		for (const trigger of this.triggerHandlers) {
 			for (const event of trigger.events) {
 				switch (event.type) {
@@ -378,7 +404,12 @@ class FlowManager {
 						emitter.offAction(event.name, event.handler);
 						break;
 					case 'schedule':
-						await event.job.stop();
+						// stop() halts the cron job synchronously before resetting its synchronized clock (async)..
+						// Carrying on is therefor safe: the leftover clock only holds a timestamp that every later tick exceeds.
+						await event.job.stop().catch((error) => {
+							logger.error(error, `Failed to stop schedule for flow "${trigger.id}"`);
+						});
+
 						break;
 				}
 			}
@@ -388,8 +419,6 @@ class FlowManager {
 		this.triggerHandlers = [];
 		this.operationFlowHandlers = {};
 		this.webhookFlowHandlers = {};
-
-		this.isLoaded = false;
 	}
 
 	private async executeFlow(flow: Flow, data: unknown = null, context: Record<string, unknown> = {}): Promise<unknown> {
