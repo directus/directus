@@ -1,7 +1,7 @@
 import { type Editor, EditorContent } from '@tiptap/vue-3';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { nextTick } from 'vue';
 import { createI18n } from 'vue-i18n';
 import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
@@ -149,5 +149,28 @@ describe('normalization warning wiring', () => {
 		await nextTick();
 
 		expect(editor.isEditable).toBe(false);
+	});
+
+	test('a list item without <p> locks a field that wraps', async () => {
+		const { editor } = await mountWithValue('<ul><li>a</li></ul>');
+
+		expect(editor.isEditable).toBe(false);
+	});
+
+	test('a list item without <p> stays editable with tight paragraphs', async () => {
+		const { editor } = await mountWithValue('<ul><li>a</li></ul>', { tightParagraphs: true });
+
+		expect(editor.isEditable).toBe(true);
+	});
+
+	test('an edit emits a list item without <p> with tight paragraphs', async () => {
+		const { wrapper, editor } = await mountWithValue('<ul><li>a</li></ul>', { tightParagraphs: true });
+
+		// the value loads in the editor's deferred onCreate
+		await vi.waitFor(() => expect(editor.getText().trim()).toBe('a'));
+
+		editor.chain().setTextSelection(4).insertContent('b').run();
+
+		expect(wrapper.emitted('input')?.at(-1)).toEqual(['<ul><li>ab</li></ul><p></p>']);
 	});
 });

@@ -29,9 +29,16 @@ describe('options compat', () => {
 			'softLength',
 			'linkProtocols',
 			'keepLegacyEmphasisTags',
+			'tightParagraphs',
 			'customFormats',
 			'tinymceOverrides',
 		]);
+	});
+
+	test('tight paragraphs is opt-in', () => {
+		const { advanced } = resolveOptions();
+
+		expect(advanced.find((f) => f.field === 'tightParagraphs')?.schema?.default_value).toBe(false);
 	});
 
 	test('keeps all legacy toolbar choice values', () => {
