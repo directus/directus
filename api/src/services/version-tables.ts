@@ -11,7 +11,7 @@ import type {
 	Type,
 } from '@directus/types';
 import type { Knex } from 'knex';
-import { groupBy, keyBy, mapValues, sortBy } from 'lodash-es';
+import { groupBy, intersection, keyBy, mapValues, sortBy } from 'lodash-es';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
@@ -82,8 +82,16 @@ export class VersionTablesService {
 		if (!state) return;
 
 		if (options?.includeRelating) {
-			const relating = await Promise.all(collections.map((collection) => this.getRelatingCollections(collection)));
-			collections = [...collections, ...relating.flat()];
+			// Collections with a m2o / a2o relation to the given collections
+			const relatedCollections = this.schema.relations
+				.filter(
+					(relation) =>
+						(relation.related_collection && collections.includes(relation.related_collection)) ||
+						intersection(relation.meta?.one_allowed_collections, collections),
+				)
+				.map((relation) => relation.collection);
+
+			collections = [...collections, ...relatedCollections];
 		}
 
 		const scope = [...new Set(collections)].filter((collection) => !isVersionTable(collection));
@@ -213,33 +221,6 @@ export class VersionTablesService {
 		}
 
 		return result;
-	}
-
-	/**
-	 * Collections with a m2o / a2o relation to the given collection
-	 */
-	private async getRelatingCollections(collection: string): Promise<string[]> {
-		const metaRows = await this.knex
-			.select('many_collection', 'one_collection', 'one_allowed_collections')
-			.from('directus_relations')
-			.where('one_collection', collection)
-			.orWhereNotNull('one_allowed_collections');
-
-		const fromMeta = metaRows
-			.filter(
-				(row) => row.one_collection === collection || parseList(row.one_allowed_collections)?.includes(collection),
-			)
-			.map((row) => row.many_collection as string);
-
-		// Relations without a meta row aren't managed by Directus, so the cached schema is still up to date for them
-		const fromSchema = this.schema.relations
-			.filter(
-				(relation) =>
-					relation.related_collection === collection || relation.meta?.one_allowed_collections?.includes(collection),
-			)
-			.map((relation) => relation.collection);
-
-		return [...new Set([...fromMeta, ...fromSchema])].filter((relating) => !isVersionTable(relating));
 	}
 
 	/**

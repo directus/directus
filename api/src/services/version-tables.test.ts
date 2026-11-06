@@ -1,6 +1,6 @@
 import type { Column, ForeignKey } from '@directus/schema';
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { RelationMeta } from '@directus/types';
+import type { RelationMeta, SchemaOverview } from '@directus/types';
 import { describe, expect, test, vi } from 'vitest';
 import { up as syncAllVersionTables } from '../database/migrations/20261106A-sync-version-tables.js';
 import { createMockDialectKnex, formatSql } from '../test-utils/knex.js';
@@ -125,6 +125,8 @@ type Options = {
 	liveForeignKeys?: ForeignKey[];
 	/** Rows of `directus_relations` */
 	relations?: Partial<RelationMeta>[];
+	/** Schema overview passed to the service */
+	schema?: SchemaOverview;
 	/** Method of the service to run, defaults to the migration syncing all version tables */
 	run?: (service: VersionTablesService) => Promise<void>;
 };
@@ -162,7 +164,7 @@ async function sync(options: Options = {}) {
 	inspector.columns = [...(options.live ?? LIVE_COLUMNS), ...existing.columns];
 	inspector.foreignKeys = [...(options.liveForeignKeys ?? LIVE_FOREIGN_KEYS), ...existing.foreignKeys];
 
-	const service = new VersionTablesService({ knex: db, schema });
+	const service = new VersionTablesService({ knex: db, schema: options.schema ?? schema });
 
 	if (options.run) {
 		await options.run(service);
@@ -527,13 +529,19 @@ describe('scoped changes', () => {
 		`);
 	});
 
-	test('includes relating collections that are only known from the relation meta', async () => {
+	test('includes collections relating through an a2o', async () => {
 		const { introspected } = await sync({
 			versioned: ['authors'],
 			liveForeignKeys: [],
-			relations: [
-				{ many_collection: 'comments', many_field: 'item', one_allowed_collections: 'articles,authors' as any },
-			],
+			schema: new SchemaBuilder()
+				.collection('authors', (c) => {
+					c.field('id').id();
+				})
+				.collection('comments', (c) => {
+					c.field('id').id();
+					c.field('item').a2o(['authors']);
+				})
+				.build(),
 			run: (service) => service.syncCollections(['authors'], { includeRelating: true }),
 		});
 
