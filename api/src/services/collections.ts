@@ -252,11 +252,7 @@ export class CollectionsService {
 				});
 
 			// Creating version tables alters the existing shadow and link tables of related collections
-			if (payload.meta?.versioning) {
-				await this.helpers.schema.withForeignKeysDisabled(createInTransaction);
-			} else {
-				await createInTransaction();
-			}
+			await this.helpers.schema.withForeignKeysDisabled(createInTransaction);
 
 			// concurrent index creation cannot be done inside the transaction
 			if (attemptConcurrentIndex && payload.schema && Array.isArray(payload.fields)) {
@@ -325,11 +321,7 @@ export class CollectionsService {
 				});
 
 			// The foreign key enforcement can't be toggled by the nested calls, as they run within this transaction
-			if (payloads.some((payload) => payload.meta?.versioning)) {
-				return await this.helpers.schema.withForeignKeysDisabled(createInTransaction);
-			}
-
-			return await createInTransaction();
+			return await this.helpers.schema.withForeignKeysDisabled(createInTransaction);
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
@@ -506,7 +498,7 @@ export class CollectionsService {
 				.first());
 
 			// Toggling versioning creates / drops the shadow and link tables
-			const versioningChanged = isVersioningChange(payload);
+			const versioningChanged = 'versioning' in payload.meta;
 
 			const updateInTransaction = () =>
 				transaction(this.knex, async (trx) => {
@@ -540,11 +532,7 @@ export class CollectionsService {
 					}
 				});
 
-			if (versioningChanged) {
-				await this.helpers.schema.withForeignKeysDisabled(updateInTransaction);
-			} else {
-				await updateInTransaction();
-			}
+			await this.helpers.schema.withForeignKeysDisabled(updateInTransaction);
 
 			return collectionKey;
 		} finally {
@@ -610,11 +598,7 @@ export class CollectionsService {
 				});
 
 			// The foreign key enforcement can't be toggled by the nested calls, as they run within this transaction
-			if (data.some((payload) => isVersioningChange(payload))) {
-				await this.helpers.schema.withForeignKeysDisabled(updateInTransaction);
-			} else {
-				await updateInTransaction();
-			}
+			await this.helpers.schema.withForeignKeysDisabled(updateInTransaction);
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
@@ -667,11 +651,7 @@ export class CollectionsService {
 				});
 
 			// The foreign key enforcement can't be toggled by the nested calls, as they run within this transaction
-			if (isVersioningChange(data)) {
-				await this.helpers.schema.withForeignKeysDisabled(updateInTransaction);
-			} else {
-				await updateInTransaction();
-			}
+			await this.helpers.schema.withForeignKeysDisabled(updateInTransaction);
 
 			return collectionKeys;
 		} finally {
@@ -939,11 +919,4 @@ export class CollectionsService {
 			}
 		}
 	}
-}
-
-/**
- * Whether the collection update toggles versioning, which creates / drops the shadow and link tables
- */
-function isVersioningChange(payload: DeepPartial<Collection>): boolean {
-	return !!payload.meta && 'versioning' in payload.meta;
 }

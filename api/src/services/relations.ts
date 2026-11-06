@@ -479,7 +479,7 @@ export class RelationsService {
 			return await this.helpers.schema.withForeignKeysDisabled(async () => {
 				await transaction(this.knex, async (trx) => {
 					// Read through the transaction, SQLite only has a single connection which the transaction holds
-					const existingConstraints = await createInspector(trx).foreignKeys();
+					const existingConstraints = await createInspector(trx).foreignKeys(existingRelation.collection);
 					const constraintNames = existingConstraints.map((key) => key.constraint_name);
 
 					if (

@@ -449,13 +449,14 @@ describe('scoped changes', () => {
 		// The outdated shadow table of articles is left alone, as it isn't affected by a change to authors
 		expect(sql).toBe('');
 
-		expect(introspected).toEqual(['directus_shadow_authors', 'directus_link_authors', 'authors']);
+		// Version tables that don't exist aren't introspected
+		expect(introspected).toEqual(['authors']);
 	});
 
-	test('does not read the live table when nothing is versioned', async () => {
+	test('does not introspect any table when nothing is versioned', async () => {
 		const { introspected } = await sync({ run: (service) => service.syncCollections(['articles']) });
 
-		expect(introspected).toEqual(['directus_shadow_articles', 'directus_link_articles']);
+		expect(introspected).toEqual([]);
 	});
 
 	test('adds a new field to the shadow table', async () => {
@@ -478,14 +479,7 @@ describe('scoped changes', () => {
 			run: (service) => service.syncCollections(['authors'], { includeRelating: true }),
 		});
 
-		expect(introspected).toEqual([
-			'directus_shadow_authors',
-			'directus_link_authors',
-			'directus_shadow_articles',
-			'directus_link_articles',
-			'authors',
-			'articles',
-		]);
+		expect(introspected).toEqual(['directus_shadow_articles', 'authors', 'articles']);
 
 		expect(sql).toMatchInlineSnapshot(`
 			"create table "directus_shadow_authors" (

@@ -94,24 +94,26 @@ export class VersionTablesService {
 	async syncCollections(collections: CollectionScope, options?: SyncCollectionsOptions): Promise<void> {
 		const exclude = new Set(options?.exclude ?? []);
 
-		if (collections !== 'all' && options?.includeRelating) {
-			const relating = await Promise.all(collections.map((collection) => this.getRelatingCollections(collection)));
-			collections = [...collections, ...relating.flat()];
-		}
-
 		const versioned = new Set<string>(
 			(await this.knex.select('collection').from('directus_collections').where('versioning', true))
 				.map(({ collection }) => collection)
 				.filter((collection) => !exclude.has(collection)),
 		);
 
+		const versionTables = (await this.schemaInspector.tables()).filter(isVersionTable);
+
+		// Prevents inspecting the schema on every schema change for projects that don't use versioning
+		if (versioned.size === 0 && versionTables.length === 0) return;
+
+		if (collections !== 'all' && options?.includeRelating) {
+			const relating = await Promise.all(collections.map((collection) => this.getRelatingCollections(collection)));
+			collections = [...collections, ...relating.flat()];
+		}
+
 		const scope: CollectionScope =
 			collections === 'all' ? 'all' : [...new Set(collections)].filter((collection) => !isVersionTable(collection));
 
-		const existing = await this.readVersionTables(scope);
-
-		// Prevents reading the live schema on every schema change for projects that don't use versioning
-		if (versioned.size === 0 && existing.tables.length === 0) return;
+		const existing = await this.readVersionTables(scope, versionTables);
 
 		const liveCollections = await this.readLiveCollections(scope, exclude);
 		const desiredTables = this.applyVendorForeignKeyRules(planVersionTables(liveCollections, versioned));
@@ -121,10 +123,15 @@ export class VersionTablesService {
 
 	/**
 	 * Read the version tables of the given collections, or all version tables for `'all'`
+	 *
+	 * @param versionTables - Names of all version tables that currently exist in the database
 	 */
-	private async readVersionTables(collections: CollectionScope): Promise<ExistingVersionTables> {
+	private async readVersionTables(
+		collections: CollectionScope,
+		versionTables: string[],
+	): Promise<ExistingVersionTables> {
 		if (collections === 'all') {
-			const tables = (await this.schemaInspector.tables()).filter(isVersionTable);
+			const tables = versionTables;
 
 			if (tables.length === 0) return { tables, columns: {}, foreignKeys: [] };
 
@@ -141,17 +148,13 @@ export class VersionTablesService {
 
 		const existing: ExistingVersionTables = { tables: [], columns: {}, foreignKeys: [] };
 
-		for (const table of collections.flatMap((collection) => [
-			getShadowTableName(collection),
-			getLinkTableName(collection),
-		])) {
-			// Tables that don't exist have no columns
-			const columns = await this.schemaInspector.columnInfo(table);
+		const tables = collections
+			.flatMap((collection) => [getShadowTableName(collection), getLinkTableName(collection)])
+			.filter((table) => versionTables.includes(table));
 
-			if (columns.length === 0) continue;
-
+		for (const table of tables) {
 			existing.tables.push(table);
-			Object.assign(existing.columns, groupColumns(columns));
+			Object.assign(existing.columns, groupColumns(await this.schemaInspector.columnInfo(table)));
 			existing.foreignKeys.push(...(await this.schemaInspector.foreignKeys(table)));
 		}
 
