@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getConfigPath } from '../utils/get-config-path.js';
-import { getDefaultType } from '../utils/get-default-type.js';
+import { getDefaultType, getTypeMapEntry } from '../utils/get-type-map-entry.js';
 import { isDirectusVariable } from '../utils/is-directus-variable.js';
 import { isFileKey } from '../utils/is-file-key.js';
 import { readConfigurationFromProcess } from '../utils/read-configuration-from-process.js';
@@ -17,7 +17,7 @@ vi.mock('../utils/read-configuration-from-process.js');
 vi.mock('../utils/remove-file-suffix.js');
 vi.mock('./cast.js');
 vi.mock('./read-configuration-from-file.js');
-vi.mock('../utils/get-default-type.js');
+vi.mock('../utils/get-type-map-entry.js');
 vi.mock('node:fs');
 
 vi.mock('../constants/defaults.js', () => ({
@@ -208,5 +208,104 @@ test('Casts regular values', () => {
 		FILE: 'cast-test-file',
 		DEFAULT: 'test-default',
 		DEFAULT_ARRAY: 'one,two,three',
+	});
+});
+
+describe('Empty values', () => {
+	test.each(['number', 'boolean', 'milliseconds', 'bytes', 'json', null] as const)(
+		'Uses the default for empty values of %s variables with a default',
+		(type) => {
+			vi.mocked(getDefaultType).mockReturnValue(type);
+			processConfig['DEFAULT'] = '';
+
+			const env = createEnv();
+
+			expect(env['DEFAULT']).toBe('test-default');
+		},
+	);
+
+	test.each(['number', 'boolean', 'milliseconds', 'bytes', 'json'] as const)(
+		'Leaves out empty values of %s variables without a default',
+		(type) => {
+			vi.mocked(getDefaultType).mockImplementation((key) => (key === 'PROCESS' ? type : null));
+			processConfig['PROCESS'] = '';
+
+			const env = createEnv();
+
+			expect(env).not.toHaveProperty('PROCESS');
+		},
+	);
+
+	test.each(['array', 'string-array'] as const)('Keeps empty values of %s variables with a default', (type) => {
+		vi.mocked(getDefaultType).mockReturnValue(type);
+		vi.mocked(cast).mockImplementation((value, key) => (key === 'DEFAULT' ? [] : value));
+		processConfig['DEFAULT'] = '';
+
+		const env = createEnv();
+
+		expect(env['DEFAULT']).toEqual([]);
+	});
+
+	test('Keeps empty values of string variables with a default', () => {
+		vi.mocked(getDefaultType).mockReturnValue('string');
+		vi.mocked(cast).mockImplementation((value) => value);
+		processConfig['DEFAULT'] = '';
+
+		const env = createEnv();
+
+		expect(env['DEFAULT']).toBe('');
+	});
+
+	test('Keeps empty values of unknown variables without a default', () => {
+		vi.mocked(getDefaultType).mockReturnValue(null);
+		processConfig['PROCESS'] = '';
+
+		const env = createEnv();
+
+		expect(env['PROCESS']).toBe('');
+	});
+});
+
+describe('Disableable variables', () => {
+	test.each([false, 'false', ''])('Keeps %j as false without casting', (value) => {
+		vi.mocked(getTypeMapEntry).mockImplementation((key) =>
+			key === 'ACTIVITY_RETENTION' ? ['milliseconds', 'false'] : null,
+		);
+
+		fileConfig['ACTIVITY_RETENTION'] = value;
+
+		const env = createEnv();
+
+		expect(env['ACTIVITY_RETENTION']).toBe(false);
+		expect(cast).not.toHaveBeenCalledWith(value, 'ACTIVITY_RETENTION');
+	});
+});
+
+describe('Invalid values', () => {
+	test.each([undefined, NaN])('Ignores values that are cast to %s and warns', (castValue) => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+		processConfig['DEFAULT'] = 'invalid';
+
+		vi.mocked(cast).mockImplementation((value, key) => (key === 'DEFAULT' && value === 'invalid' ? castValue : value));
+
+		const env = createEnv();
+
+		expect(env['DEFAULT']).toBe('test-default');
+
+		expect(warn).toHaveBeenCalledWith('Environment variable "DEFAULT" has an invalid value "invalid" and is ignored.');
+	});
+
+	test('Does not warn about empty values that are cast to undefined', () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+		processConfig['PROCESS'] = '';
+
+		vi.mocked(cast).mockImplementation((value) => (value === '' ? undefined : value));
+
+		const env = createEnv();
+
+		expect(env['PROCESS']).toBeUndefined();
+		expect(warn).not.toHaveBeenCalled();
 	});
 });

@@ -28,6 +28,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@types/bytes": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
@@ -38,6 +39,7 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/utils": "workspace:*",
+		"bytes": "catalog:",
 		"dotenv": "catalog:",
 		"lodash-es": "catalog:"
 	}

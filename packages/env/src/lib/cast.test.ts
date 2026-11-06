@@ -1,17 +1,19 @@
-import { toArray, toBoolean } from '@directus/utils';
+import { toArray, toBoolean, toMilliseconds } from '@directus/utils';
 import { toNumber, toString } from 'lodash-es';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { getDefaultType } from '../utils/get-default-type.js';
+import { getDefaultType } from '../utils/get-type-map-entry.js';
 import { guessType } from '../utils/guess-type.js';
 import { getCastFlag } from '../utils/has-cast-prefix.js';
+import { toBytes } from '../utils/to-bytes.js';
 import { tryJson } from '../utils/try-json.js';
 import { cast } from './cast.js';
 
 vi.mock('@directus/utils');
 vi.mock('lodash-es');
-vi.mock('../utils/get-default-type.js');
+vi.mock('../utils/get-type-map-entry.js');
 vi.mock('../utils/guess-type.js');
 vi.mock('../utils/has-cast-prefix.js');
+vi.mock('../utils/to-bytes.js');
 vi.mock('../utils/try-json.js');
 
 afterEach(() => {
@@ -128,5 +130,21 @@ describe('Casting', () => {
 
 		vi.mocked(tryJson).mockReturnValue('cast-value');
 		expect(cast('value')).toBe('cast-value');
+	});
+
+	test('Uses toMilliseconds for milliseconds types', () => {
+		vi.mocked(getCastFlag).mockReturnValue('milliseconds');
+
+		vi.mocked(toMilliseconds).mockReturnValue(900_000);
+		expect(cast('milliseconds:15m')).toBe(900_000);
+		expect(toMilliseconds).toHaveBeenCalledWith('15m');
+	});
+
+	test('Uses toBytes for bytes types', () => {
+		vi.mocked(getCastFlag).mockReturnValue('bytes');
+
+		vi.mocked(toBytes).mockReturnValue(10_485_760);
+		expect(cast('bytes:10mb')).toBe(10_485_760);
+		expect(toBytes).toHaveBeenCalledWith('10mb');
 	});
 });
