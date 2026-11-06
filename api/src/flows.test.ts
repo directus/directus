@@ -3,10 +3,11 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { withResolvers } from './test-utils/async.js';
 import { createMockBus } from './test-utils/bus.js';
 
-const { readByQuery, getSchema, scheduleSynchronizedJob } = vi.hoisted(() => ({
+const { readByQuery, getSchema, scheduleSynchronizedJob, sleep } = vi.hoisted(() => ({
 	readByQuery: vi.fn(),
 	getSchema: vi.fn(),
 	scheduleSynchronizedJob: vi.fn(),
+	sleep: vi.fn(),
 }));
 
 vi.mock('@directus/env', async () => {
@@ -42,6 +43,7 @@ vi.mock('./services/flows.js', () => ({
 
 vi.mock('./utils/get-schema.js', () => ({ getSchema }));
 vi.mock('./utils/schedule.js', () => ({ scheduleSynchronizedJob, validateCron: () => true }));
+vi.mock('node:timers/promises', () => ({ setTimeout: sleep }));
 
 function flushPromises() {
 	return new Promise((resolve) => setImmediate(resolve));
@@ -61,6 +63,7 @@ describe('FlowManager', () => {
 		readByQuery.mockReset().mockResolvedValue([]);
 		getSchema.mockReset().mockResolvedValue({});
 		scheduleSynchronizedJob.mockReset().mockReturnValue({ stop: vi.fn().mockResolvedValue(undefined) });
+		sleep.mockReset().mockResolvedValue(undefined);
 
 		// A fresh bus per test, so the managers of earlier tests don't receive its messages
 		const { useBus } = await import('./bus/index.js');
@@ -107,11 +110,44 @@ describe('FlowManager', () => {
 			expect(manager.getFlow('flow-b')).toBeDefined();
 		});
 
-		test('should reject when the initial load fails', async () => {
-			const error = new Error('Timeout acquiring a connection');
-			readByQuery.mockRejectedValueOnce(error);
+		test('should retry the initial load when reading the flows fails', async () => {
+			readByQuery
+				.mockRejectedValueOnce(new Error('Connection terminated unexpectedly'))
+				.mockResolvedValueOnce([createFlow('flow-a')]);
+
+			const manager = getFlowManager();
+			await manager.initialize();
+
+			expect(readByQuery).toHaveBeenCalledTimes(2);
+			expect(manager.getFlow('flow-a')).toBeDefined();
+		});
+
+		test('should keep retrying the initial load while a reload is waiting', async () => {
+			const initialRead = withResolvers<FlowRaw[]>();
+
+			readByQuery
+				.mockReturnValueOnce(initialRead.promise)
+				.mockResolvedValueOnce([createFlow('flow-a')])
+				.mockResolvedValueOnce([createFlow('flow-b')]);
+
+			const manager = getFlowManager();
+			const initialize = manager.initialize();
+
+			await manager.reload();
+			initialRead.reject(new Error('Connection terminated unexpectedly'));
+			await initialize;
+			await flushPromises();
+
+			expect(readByQuery).toHaveBeenCalledTimes(3);
+			expect(manager.getFlow('flow-b')).toBeDefined();
+		});
+
+		test('should reject when every attempt of the initial load fails', async () => {
+			const error = new Error('Connection terminated unexpectedly');
+			readByQuery.mockRejectedValue(error);
 
 			await expect(getFlowManager().initialize()).rejects.toBe(error);
+			expect(readByQuery).toHaveBeenCalledTimes(3);
 		});
 	});
 
@@ -122,20 +158,94 @@ describe('FlowManager', () => {
 	});
 
 	describe('reload', () => {
-		test('should keep the loaded flows when reading the flows fails', async () => {
+		test('should retry reading the flows when it fails', async () => {
 			const manager = await initializeWith([createFlow('flow-a')]);
 
-			readByQuery.mockRejectedValueOnce(new Error('Timeout acquiring a connection'));
+			readByQuery
+				.mockRejectedValueOnce(new Error('Connection terminated unexpectedly'))
+				.mockResolvedValueOnce([createFlow('flow-b')]);
+
 			await manager.reload();
 			await flushPromises();
 
+			expect(readByQuery).toHaveBeenCalledTimes(3);
+			expect(manager.getFlow('flow-a')).toBeUndefined();
+			expect(manager.getFlow('flow-b')).toBeDefined();
+		});
+
+		test('should wait longer before every retry', async () => {
+			const manager = await initializeWith([]);
+
+			readByQuery.mockRejectedValue(new Error('Connection terminated unexpectedly'));
+			await manager.reload();
+			await flushPromises();
+
+			const [first, second] = sleep.mock.calls.map(([delay]) => delay);
+
+			expect(sleep).toHaveBeenCalledTimes(2);
+			expect(first).toBeGreaterThanOrEqual(500);
+			expect(first).toBeLessThanOrEqual(1000);
+			expect(second).toBeGreaterThanOrEqual(1000);
+			expect(second).toBeLessThanOrEqual(2000);
+		});
+
+		test('should keep the loaded flows when every attempt at reading the flows fails', async () => {
+			const manager = await initializeWith([createFlow('flow-a')]);
+
+			readByQuery.mockRejectedValue(new Error('Connection terminated unexpectedly'));
+			await manager.reload();
+			await flushPromises();
+
+			// The initial load and 3 attempts
+			expect(readByQuery).toHaveBeenCalledTimes(4);
 			expect(manager.getFlow('flow-a')).toBeDefined();
+		});
+
+		test('should not retry reading the flows when acquiring a connection times out', async () => {
+			const { default: knex } = await import('knex');
+			const manager = await initializeWith([createFlow('flow-a')]);
+
+			readByQuery.mockRejectedValueOnce(new knex.KnexTimeoutError('Knex: Timeout acquiring a connection'));
+			await manager.reload();
+			await flushPromises();
+
+			expect(sleep).not.toHaveBeenCalled();
+			expect(manager.getFlow('flow-a')).toBeDefined();
+		});
+
+		test('should not retry reading the flows when reading the schema times out', async () => {
+			// Imported after resetting the modules, so it's the class the flow manager checks against
+			const { TimeoutError } = await import('./utils/with-timeout.js');
+			const manager = await initializeWith([createFlow('flow-a')]);
+
+			getSchema.mockRejectedValueOnce(new TimeoutError('Schema retrieval exceeded the timeout'));
+			await manager.reload();
+			await flushPromises();
+
+			expect(sleep).not.toHaveBeenCalled();
+			expect(manager.getFlow('flow-a')).toBeDefined();
+		});
+
+		test('should not retry reading the flows when another reload is waiting', async () => {
+			const manager = await initializeWith([createFlow('flow-a')]);
+
+			const failingRead = withResolvers<FlowRaw[]>();
+			readByQuery.mockReturnValueOnce(failingRead.promise).mockResolvedValueOnce([createFlow('flow-b')]);
+
+			await manager.reload();
+			await manager.reload();
+			failingRead.reject(new Error('Connection terminated unexpectedly'));
+			await flushPromises();
+
+			expect(sleep).not.toHaveBeenCalled();
+			expect(readByQuery).toHaveBeenCalledTimes(3);
+			expect(manager.getFlow('flow-b')).toBeDefined();
 		});
 
 		test('should load the latest flows on the next reload after reading the flows failed', async () => {
 			const manager = await initializeWith([createFlow('flow-a')]);
 
-			readByQuery.mockRejectedValueOnce(new Error('Timeout acquiring a connection'));
+			readByQuery.mockRejectedValue(new Error('Connection terminated unexpectedly'));
 			await manager.reload();
 			await flushPromises();
 
@@ -226,11 +336,15 @@ describe('FlowManager', () => {
 			const manager = await initializeWith([createFlow('webhook-flow', 'webhook', { method: 'GET' })]);
 
 			const failingRead = withResolvers<FlowRaw[]>();
-			readByQuery.mockReturnValueOnce(failingRead.promise);
+
+			readByQuery
+				.mockReturnValueOnce(failingRead.promise)
+				.mockRejectedValue(new Error('Connection terminated unexpectedly'));
+
 			await manager.reload();
 
 			const run = manager.runWebhookFlow('GET-webhook-flow', {}, { schema: {} as any, accountability: undefined });
-			failingRead.reject(new Error('Timeout acquiring a connection'));
+			failingRead.reject(new Error('Connection terminated unexpectedly'));
 
 			await expect(run).resolves.toHaveProperty('result');
 		});
