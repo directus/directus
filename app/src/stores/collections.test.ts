@@ -3,6 +3,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { merge } from 'lodash-es';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
+import { computed } from 'vue';
 import { useCollectionsStore } from './collections';
 import { i18n } from '@/lang';
 
@@ -82,4 +83,34 @@ test('parseField action should translate field name when all translations are re
 	collectionsStore.collections = [mockCollectionWithoutTranslations].map(collectionsStore.prepareCollectionForApp);
 	expect(collectionsStore.collections[0].name).toEqual('A');
 	expect(i18n.global.te(`collection_names.${mockCollection.collection}`)).toBe(false);
+});
+
+test('getCollection finds collections and updates when they are replaced', () => {
+	const collectionsStore = useCollectionsStore();
+	const collection = computed(() => collectionsStore.getCollection('a'));
+
+	expect(collection.value).toBeNull();
+
+	collectionsStore.collections = [mockCollection, { ...mockCollection, collection: 'b' }].map(
+		collectionsStore.prepareCollectionForApp,
+	);
+
+	expect(collection.value?.collection).toBe('a');
+	expect(collectionsStore.getCollection('b')?.collection).toBe('b');
+	expect(collectionsStore.getCollection('missing')).toBeNull();
+});
+
+test('translateCollections updates the name seen by lookups', () => {
+	const collectionsStore = useCollectionsStore();
+	const name = computed(() => collectionsStore.getCollection('a')?.name);
+
+	collectionsStore.collections = [mockCollection].map(collectionsStore.prepareCollectionForApp);
+	expect(name.value).toBe('A');
+
+	i18n.global.mergeLocaleMessage('en-US', { collection_names: { a: 'Translated A' } });
+	collectionsStore.translateCollections();
+
+	expect(name.value).toBe('Translated A');
+
+	i18n.global.mergeLocaleMessage('en-US', { collection_names: { a: undefined } });
 });
