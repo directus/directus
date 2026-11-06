@@ -32,13 +32,13 @@ import type { Collection } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
-import { isVersionTable } from '../versioning/constants.js';
-import { syncVersionTables } from '../versioning/sync-version-tables.js';
 import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
+import { isVersionTable } from './version-tables/constants.js';
+import { VersionTablesService } from './version-tables.js';
 
 export class CollectionsService {
 	knex: Knex;
@@ -243,7 +243,7 @@ export class CollectionsService {
 					}
 
 					if (payload.meta?.versioning) {
-						await syncVersionTables(trx);
+						await new VersionTablesService({ knex: trx, schema: this.schema }).createOneCollection(payload.collection);
 					}
 
 					return payload.collection;
@@ -526,7 +526,7 @@ export class CollectionsService {
 					}
 
 					if (versioningChanged) {
-						await syncVersionTables(trx);
+						await new VersionTablesService({ knex: trx, schema: this.schema }).updateOneCollection(collectionKey);
 					}
 				});
 
@@ -693,7 +693,7 @@ export class CollectionsService {
 				await transaction(this.knex, async (trx) => {
 					if (collectionToBeDeleted!.schema) {
 						// Version tables reference the live table, so they need to be cleaned up before it can be dropped
-						await syncVersionTables(trx, { exclude: [collectionKey] });
+						await new VersionTablesService({ knex: trx, schema: this.schema }).deleteOneCollection(collectionKey);
 
 						await trx.schema.dropTable(collectionKey);
 					}

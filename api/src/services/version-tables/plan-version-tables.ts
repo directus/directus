@@ -1,6 +1,6 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { Column, ForeignKey } from '@directus/schema';
-import type { Relation, SchemaOverview } from '@directus/types';
+import type { Relation } from '@directus/types';
 import {
 	getLinkTableName,
 	getShadowTableName,
@@ -34,30 +34,36 @@ export type VersionTable = {
 };
 
 /**
- * Compute the shadow and link tables that should exist for the given schema.
- *
- * @param schema - Schema of the live tables, any version tables in it are ignored
- * @param versioned - Collections that have versioning enabled
- * @param columns - Column info of the live tables, keyed by table and column name
+ * A live collection together with everything needed to plan its version tables
  */
-export function planVersionTables(
-	schema: SchemaOverview,
-	versioned: Set<string>,
-	columns: Record<string, Record<string, Column>>,
-): VersionTable[] {
-	const relations = schema.relations.filter((relation) => !isVersionTable(relation.collection));
+export type LiveCollection = {
+	collection: string;
+	/** Columns of the live table, in table order */
+	columns: Column[];
+	/** m2o and a2o relations where this collection is the "many" side */
+	relations: Relation[];
+};
+
+/**
+ * Compute the shadow and link tables that should exist for the given live collections. Only the version tables of
+ * these collections are planned, the version tables of any other collection are left out.
+ *
+ * @param collections - Live collections to plan the version tables for
+ * @param versioned - All collections that have versioning enabled, including ones not being planned
+ */
+export function planVersionTables(collections: LiveCollection[], versioned: Set<string>): VersionTable[] {
 	const tables: VersionTable[] = [];
 
-	for (const collection of versioned) {
-		if (!schema.collections[collection]) continue;
+	for (const collection of collections) {
+		if (!versioned.has(collection.collection) || isVersionTable(collection.collection)) continue;
 
-		tables.push(planShadowTable(collection, schema, versioned, relations, columns));
+		tables.push(planShadowTable(collection, versioned));
 	}
 
-	for (const collection of Object.keys(schema.collections)) {
-		if (isVersionTable(collection)) continue;
+	for (const collection of collections) {
+		if (isVersionTable(collection.collection)) continue;
 
-		const linkTable = planLinkTable(collection, schema, versioned, relations, columns);
+		const linkTable = planLinkTable(collection, versioned);
 
 		if (linkTable) tables.push(linkTable);
 	}
@@ -65,14 +71,13 @@ export function planVersionTables(
 	return tables;
 }
 
-function planShadowTable(
-	collection: string,
-	schema: SchemaOverview,
-	versioned: Set<string>,
-	relations: Relation[],
-	columns: Record<string, Record<string, Column>>,
-): VersionTable {
-	const { primary, fields } = schema.collections[collection]!;
+function getPrimaryKey(collection: LiveCollection) {
+	return collection.columns.find((column) => column.is_primary_key);
+}
+
+function planShadowTable(liveCollection: LiveCollection, versioned: Set<string>): VersionTable {
+	const { collection, columns, relations } = liveCollection;
+	const primary = getPrimaryKey(liveCollection)?.name;
 	const metaFields: string[] = Object.values(VERSION_META_FIELDS);
 
 	const shadow: VersionTable = {
@@ -107,39 +112,37 @@ function planShadowTable(
 		usedNames.add(name);
 	};
 
-	for (const field of Object.values(fields)) {
-		const source = columns[collection]?.[field.field];
+	for (const source of columns) {
+		const field = source.name;
 
-		if (field.alias || !source) continue;
-
-		reserveName(field.field, field.field);
-		shadow.columns.push({ kind: 'mirror', name: field.field, source });
+		reserveName(field, field);
+		shadow.columns.push({ kind: 'mirror', name: field, source });
 
 		// The live primary key references the live item and is null until the version is published. It has no foreign
 		// key, so archived versions keep the id of their item after the live item is removed
-		if (field.field === primary) continue;
+		if (field === primary) continue;
 
-		const relation = relations.find((relation) => relation.collection === collection && relation.field === field.field);
+		const relation = relations.find((relation) => relation.field === field);
 
 		if (!relation) continue;
 
-		const reference = getVersionReference(relation, schema, versioned);
+		const reference = getVersionReference(relation, versioned);
 
 		// Relational constraints are the only constraints that are kept on the mirrored columns
 		if (relation.schema && reference.relatedCollection) {
 			shadow.foreignKeys.push({
-				column: field.field,
+				column: field,
 				foreign_key_table: reference.relatedCollection,
-				foreign_key_column: schema.collections[reference.relatedCollection]!.primary,
+				foreign_key_column: relation.schema.foreign_key_column,
 				on_delete: relation.schema.on_delete,
 			});
 		}
 
 		if (!reference.versioned) continue;
 
-		const referenceField = getVersionReferenceField(field.field);
+		const referenceField = getVersionReferenceField(field);
 
-		reserveName(referenceField, field.field);
+		reserveName(referenceField, field);
 		shadow.columns.push({ kind: 'reference', name: referenceField });
 
 		if (reference.foreignKey) {
@@ -155,17 +158,13 @@ function planShadowTable(
  * on versioned collections without having to modify the live table.
  * Only created when at least one m2o / a2o of the collection points to a versioned collection.
  */
-function planLinkTable(
-	collection: string,
-	schema: SchemaOverview,
-	versioned: Set<string>,
-	relations: Relation[],
-	columns: Record<string, Record<string, Column>>,
-): VersionTable | null {
-	const { primary } = schema.collections[collection]!;
-	const source = columns[collection]?.[primary];
+function planLinkTable(liveCollection: LiveCollection, versioned: Set<string>): VersionTable | null {
+	const { collection, relations } = liveCollection;
+	const source = getPrimaryKey(liveCollection);
 
 	if (!source) return null;
+
+	const primary = source.name;
 
 	const link: VersionTable = {
 		table: getLinkTableName(collection),
@@ -182,9 +181,9 @@ function planLinkTable(
 	};
 
 	for (const relation of relations) {
-		if (relation.collection !== collection || relation.field === primary) continue;
+		if (relation.field === primary) continue;
 
-		const reference = getVersionReference(relation, schema, versioned);
+		const reference = getVersionReference(relation, versioned);
 
 		if (!reference.versioned) continue;
 
@@ -199,11 +198,11 @@ function planLinkTable(
 }
 
 /**
- * Figure out if a m2o / a2o relation can point to a version and how that reference should be constrained
+ * Figure out if a m2o / a2o relation can point to a version and how that reference should be constrained.
+ * Relations to collections that no longer exist are expected to be left out by the caller.
  */
-function getVersionReference(relation: Relation, schema: SchemaOverview, versioned: Set<string>) {
-	const relatedCollection =
-		relation.related_collection && schema.collections[relation.related_collection] ? relation.related_collection : null;
+function getVersionReference(relation: Relation, versioned: Set<string>) {
+	const relatedCollection = relation.related_collection;
 
 	if (relatedCollection) {
 		if (!versioned.has(relatedCollection)) return { relatedCollection, versioned: false } as const;

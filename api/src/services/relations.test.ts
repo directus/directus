@@ -11,7 +11,19 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
-vi.mock('../versioning/sync-version-tables.js', () => ({ syncVersionTables: vi.fn() }));
+vi.mock('./version-tables.js', () => ({
+	VersionTablesService: class {
+		createOneCollection = vi.fn();
+		updateOneCollection = vi.fn();
+		deleteOneCollection = vi.fn();
+		createField = vi.fn();
+		updateField = vi.fn();
+		deleteField = vi.fn();
+		createOneRelation = vi.fn();
+		updateOneRelation = vi.fn();
+		deleteOneRelation = vi.fn();
+	},
+}));
 
 vi.mock('../../src/database/index', async () => {
 	const { mockDatabase } = await import('../test-utils/database.js');
