@@ -1,4 +1,10 @@
-export type ProviderType = 'openai' | 'anthropic' | 'google' | 'openai-compatible';
+export const PROVIDER_TYPES = ['openai', 'anthropic', 'google', 'openai-compatible'] as const;
+
+export type ProviderType = (typeof PROVIDER_TYPES)[number];
+
+export function isProviderType(value: unknown): value is ProviderType {
+	return (PROVIDER_TYPES as readonly unknown[]).includes(value);
+}
 
 export type StandardProviderType = Exclude<ProviderType, 'openai-compatible'>;
 
@@ -50,6 +56,36 @@ export interface ModelDefinition {
 	attachment: boolean;
 	/** Supports reasoning / chain-of-thought */
 	reasoning: boolean;
+}
+
+/**
+ * Anthropic has no image models. OpenAI-compatible is left out: its image adapter only takes pixel sizes, and we don't
+ * know which sizes an endpoint supports.
+ */
+export const IMAGE_PROVIDER_TYPES = ['openai', 'google'] as const satisfies readonly ProviderType[];
+
+export type ImageProviderType = (typeof IMAGE_PROVIDER_TYPES)[number];
+
+export function isImageProviderType(value: unknown): value is ImageProviderType {
+	return (IMAGE_PROVIDER_TYPES as readonly unknown[]).includes(value);
+}
+
+export type AspectRatio = `${number}:${number}`;
+
+export type ImageSizeSetting = { size: `${number}x${number}` } | { aspectRatio: AspectRatio };
+
+export interface ImageModelDefinition {
+	provider: ImageProviderType;
+	model: string;
+	name: string;
+	/** Supported ratios */
+	aspectRatios: AspectRatio[];
+	/** For models that take a pixel size instead of a ratio, the size to send for each ratio */
+	sizes?: Partial<Record<AspectRatio, `${number}x${number}`>>;
+	/** Can return a transparent background */
+	transparency: boolean;
+	/** Images per request. The SDK splits larger counts into parallel requests. Leave out to use the provider's limit. */
+	maxImagesPerCall?: number;
 }
 
 export type PrimaryKey = string | number;
