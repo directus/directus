@@ -98,7 +98,12 @@ const {
 const value = computed<unknown | unknown[]>({
 	get() {
 		if (!isVariableInputActive.value && ['_in', '_nin'].includes(comparator.value)) {
-			return [...(fieldValue.value as (string | number | null)[]).filter((val) => val !== null && val !== ''), null];
+			// The value can be a non-array, e.g. a dynamic variable string like
+			// "$CURRENT_USER.country_access" entered via the raw editor. Render it
+			// as-is (like _eq does) instead of assuming an array.
+			if (!Array.isArray(fieldValue.value)) return fieldValue.value;
+
+			return [...fieldValue.value.filter((val) => val !== null && val !== ''), null];
 		}
 
 		return fieldValue.value;
@@ -107,9 +112,13 @@ const value = computed<unknown | unknown[]>({
 		let value;
 
 		if (!isVariableInputActive.value && ['_in', '_nin'].includes(comparator.value)) {
-			value = (newVal as (string | number | null)[])
-				.filter((val) => val !== null && val !== '')
-				.map((val) => (typeof val === 'string' ? val.trim() : val));
+			if (Array.isArray(newVal)) {
+				value = newVal
+					.filter((val) => val !== null && val !== '')
+					.map((val) => (typeof val === 'string' ? val.trim() : val));
+			} else {
+				value = newVal;
+			}
 		} else {
 			value = newVal;
 		}
@@ -291,20 +300,30 @@ function useVariableInput() {
 		</template>
 
 		<div v-else-if="['_in', '_nin'].includes(comparator)" class="list">
-			<div v-for="(val, index) in value" :key="index" class="value">
-				<InputComponent
-					:is="interfaceType"
-					:ref="(el) => (inputRefs[index] = el)"
-					:type="fieldInfo?.type ?? 'unknown'"
-					:value="val"
-					:focus="false"
-					:choices="choices"
-					comma-allowed
-					@input="setValueAt(index, $event)"
-					@comma-key-pressed="handleCommaKeyPressed(index)"
-					@comma-value-pasted="handleCommaValuePasted($event)"
-				/>
-			</div>
+			<template v-if="Array.isArray(value)">
+				<div v-for="(val, index) in value" :key="index" class="value">
+					<InputComponent
+						:is="interfaceType"
+						:ref="(el) => (inputRefs[index] = el)"
+						:type="fieldInfo?.type ?? 'unknown'"
+						:value="val"
+						:focus="false"
+						:choices="choices"
+						comma-allowed
+						@input="setValueAt(index, $event)"
+						@comma-key-pressed="handleCommaKeyPressed(index)"
+						@comma-value-pasted="handleCommaValuePasted($event)"
+					/>
+				</div>
+			</template>
+			<InputComponent
+				:is="interfaceType"
+				v-else
+				:choices="choices"
+				:type="fieldInfo?.type ?? 'unknown'"
+				:value="value as ScalarValue"
+				@input="value = $event"
+			/>
 		</div>
 
 		<template v-else-if="['_between', '_nbetween'].includes(comparator)">
