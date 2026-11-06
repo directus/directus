@@ -63,6 +63,9 @@ export type FilterOperators<
 	_contains: IsDateTime<Type, never, IsString<T, string, never>>;
 	_ncontains: IsDateTime<Type, never, IsString<T, string, never>>;
 	_icontains: IsDateTime<Type, never, IsString<T, string, never>>;
+	_nicontains: IsDateTime<Type, never, IsString<T, string, never>>;
+	_ieq: IsDateTime<Type, never, IsString<T, string, never>>;
+	_nieq: IsDateTime<Type, never, IsString<T, string, never>>;
 	_starts_with: IsDateTime<Type, never, IsString<T, string, never>>;
 	_istarts_with: IsDateTime<Type, never, IsString<T, string, never>>;
 	_nstarts_with: IsDateTime<Type, never, IsString<T, string, never>>;

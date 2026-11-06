@@ -12,7 +12,7 @@ type Field = keyof Omit<Fields, 'id'> | 'hash';
 
 /** The operator groups a field type supports, mirroring `getFilterOperatorsForType`. */
 const COMPARISON = ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'];
-const TEXT = ['contains', 'ncontains', 'icontains', 'starts_with', 'nstarts_with', 'istarts_with', 'nistarts_with', 'ends_with', 'nends_with', 'iends_with', 'niends_with', 'eq', 'neq', 'empty', 'nempty', 'null', 'nnull', 'in', 'nin']; // prettier-ignore
+const TEXT = ['contains', 'ncontains', 'icontains', 'nicontains', 'starts_with', 'nstarts_with', 'istarts_with', 'nistarts_with', 'ends_with', 'nends_with', 'iends_with', 'niends_with', 'eq', 'neq', 'ieq', 'nieq', 'empty', 'nempty', 'null', 'nnull', 'in', 'nin']; // prettier-ignore
 const EXISTENCE = ['empty', 'nempty', 'null', 'nnull'];
 const EQUALITY = ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
 
@@ -80,6 +80,10 @@ function expectation(field: Field, operator: string, generated = false) {
 			return { condition: { _eq: l }, expected: [low!.id] };
 		case 'neq':
 			return { condition: { _neq: l }, expected: others };
+		case 'ieq':
+			return { condition: { _ieq: 'AAA-Alpha' }, expected: [low!.id] };
+		case 'nieq':
+			return { condition: { _nieq: 'AAA-Alpha' }, expected: [high!.id] };
 		case 'lt':
 			return { condition: { _lt: h }, expected: [low!.id] };
 		case 'lte':
@@ -110,6 +114,8 @@ function expectation(field: Field, operator: string, generated = false) {
 			return { condition: { _ncontains: 'alpha' }, expected: [high!.id] };
 		case 'icontains':
 			return { condition: { _icontains: 'ALPHA' }, expected: [low!.id] };
+		case 'nicontains':
+			return { condition: { _nicontains: 'ALPHA' }, expected: [high!.id] };
 		case 'starts_with':
 			return { condition: { _starts_with: 'aaa' }, expected: [low!.id] };
 		case 'nstarts_with':

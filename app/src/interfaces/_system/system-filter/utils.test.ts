@@ -81,9 +81,12 @@ describe('JSON filter values', () => {
 	});
 
 	test.each([
+		'_ieq',
+		'_nieq',
 		'_contains',
 		'_ncontains',
 		'_icontains',
+		'_nicontains',
 		'_starts_with',
 		'_nstarts_with',
 		'_istarts_with',

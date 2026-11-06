@@ -1,6 +1,8 @@
 export type FilterOperator =
 	| 'eq'
 	| 'neq'
+	| 'ieq'
+	| 'nieq'
 	| 'lt'
 	| 'lte'
 	| 'gt'
@@ -12,6 +14,7 @@ export type FilterOperator =
 	| 'contains'
 	| 'ncontains'
 	| 'icontains'
+	| 'nicontains'
 	| 'between'
 	| 'nbetween'
 	| 'empty'
@@ -47,6 +50,8 @@ export type FieldFilter = {
 export type FieldFilterOperator = {
 	_eq?: string | number | boolean | null;
 	_neq?: string | number | boolean | null;
+	_ieq?: string;
+	_nieq?: string;
 	_lt?: string | number;
 	_lte?: string | number;
 	_gt?: string | number;
@@ -58,6 +63,7 @@ export type FieldFilterOperator = {
 	_contains?: string;
 	_ncontains?: string;
 	_icontains?: string;
+	_nicontains?: string;
 	_starts_with?: string;
 	_nstarts_with?: string;
 	_istarts_with?: string;
