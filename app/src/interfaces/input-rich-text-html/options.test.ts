@@ -28,6 +28,7 @@ describe('options compat', () => {
 		expect(fieldKeys(advanced)).toEqual([
 			'softLength',
 			'linkProtocols',
+			'keepLegacyEmphasisTags',
 			'tightParagraphs',
 			'customFormats',
 			'tinymceOverrides',

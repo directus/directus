@@ -2939,6 +2939,11 @@ interfaces:
     link_protocol_not_allowed:
       This link type is not allowed. Add its scheme to the Allowed Link Protocols option of this field.
     link_protocol_blocked: Script links such as `javascript:` are never allowed.
+    keep_legacy_emphasis_tags: Legacy Bold and Italic Tags
+    keep_legacy_emphasis_tags_label: Keep <b> and <i> tags
+    keep_legacy_emphasis_tags_note:
+      By default, the editor saves `<b>` as `<strong>` and `<i>` as `<em>`. Enable this to keep the original tags in
+      existing content. The toolbar still uses `<strong>` and `<em>` for new text.
     auto_height: Auto height
   input-block-editor:
     input-block-editor: Block Editor

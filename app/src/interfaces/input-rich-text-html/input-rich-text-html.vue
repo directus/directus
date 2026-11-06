@@ -51,6 +51,8 @@ const props = withDefaults(
 		extensionOptions?: StoredExtensionOptions;
 		/** Extra URL schemes links may use (e.g. `myapp`), on top of Tiptap's defaults. */
 		linkProtocols?: string[] | null;
+		/** Keep `<b>` and `<i>` from the source instead of rewriting them to `<strong>` and `<em>`. */
+		keepLegacyEmphasisTags?: boolean;
 		/** Never add `<p>` in list items, blockquotes and table cells; see extensions/tight-paragraphs.ts. */
 		tightParagraphs?: boolean;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
@@ -95,6 +97,7 @@ const fieldSchema = buildFieldSchema({
 	extensions: props.extensions,
 	extensionOptions: props.extensionOptions,
 	linkProtocols: props.linkProtocols,
+	keepLegacyEmphasisTags: props.keepLegacyEmphasisTags,
 	tightParagraphs: props.tightParagraphs,
 	comparisonMode: props.comparisonMode,
 });
