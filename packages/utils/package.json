@@ -34,6 +34,7 @@
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
+		"@directus/errors": "workspace:*",
 		"@directus/system-data": "workspace:*",
 		"date-fns": "catalog:",
 		"fs-extra": "catalog:",
@@ -47,7 +48,6 @@
 		"@directus/tsconfig": "catalog:",
 		"@directus/schema-builder": "workspace:*",
 		"@directus/types": "workspace:*",
-		"@directus/errors": "workspace:*",
 		"@ngneat/falso": "catalog:",
 		"@types/fs-extra": "catalog:",
 		"@types/js-yaml": "catalog:",
