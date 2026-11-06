@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
-import type { Filter, Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
+import type { Filter, Item, PrimaryKey, Query, QueryOptions, Relation } from '@directus/types';
 import { deepMapWithSchema, getRelationInfo } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
 import { cloneDeep, intersection, pick, uniq } from 'lodash-es';
@@ -232,7 +232,10 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 					];
 				}
 
-				if (context.field.field === context.collection.primary) {
+				if (
+					context.field.field === context.collection.primary &&
+					!isM2AJunctionCollection(self.schema.relations, context.collection.collection)
+				) {
 					const ids = createdIDs[context.collection.collection];
 					const match = ids?.find((id) => String(id) === String(value));
 
@@ -276,6 +279,15 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 	}
 
 	return results;
+}
+
+export function isM2AJunctionCollection(relations: Relation[], collection: string): boolean {
+	return relations.some(
+		({ meta }) =>
+			meta?.many_collection === collection &&
+			meta.one_collection_field !== null &&
+			meta.one_allowed_collections !== null,
+	);
 }
 
 function sanitizeError(error: Error) {
