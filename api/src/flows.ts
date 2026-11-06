@@ -29,6 +29,7 @@ import * as services from './services/index.js';
 import { RevisionsService } from './services/revisions.js';
 import type { EventHandler } from './types/index.js';
 import { constructFlowTree } from './utils/construct-flow-tree.js';
+import { FLOW_SECRET_KEYS } from './utils/flow-secret-keys.js';
 import { getSchema } from './utils/get-schema.js';
 import { getService } from './utils/get-service.js';
 import { isUnauthenticated } from './utils/is-unauthenticated.js';
@@ -459,21 +460,7 @@ class FlowManager {
 						data: redactObject(
 							keyedData,
 							{
-								keys: [
-									['**', 'headers', 'authorization'],
-									['**', 'headers', 'cookie'],
-									['**', 'query', 'access_token'],
-									['**', 'payload', 'password'],
-									['**', 'payload', 'token'],
-									['**', 'payload', 'tfa_secret'],
-									['**', 'payload', 'external_identifier'],
-									['**', 'payload', 'auth_data'],
-									['**', 'payload', 'credentials'],
-									['**', 'payload', 'ai_openai_api_key'],
-									['**', 'payload', 'ai_anthropic_api_key'],
-									['**', 'payload', 'ai_google_api_key'],
-									['**', 'payload', 'ai_openai_compatible_api_key'],
-								],
+								keys: FLOW_SECRET_KEYS,
 								values: this.envs,
 							},
 							getRedactedString,
@@ -531,21 +518,7 @@ class FlowManager {
 			optionData = redactObject(
 				keyedData,
 				{
-					keys: [
-						['**', 'headers', 'authorization'],
-						['**', 'headers', 'cookie'],
-						['**', 'query', 'access_token'],
-						['**', 'payload', 'password'],
-						['**', 'payload', 'token'],
-						['**', 'payload', 'tfa_secret'],
-						['**', 'payload', 'external_identifier'],
-						['**', 'payload', 'auth_data'],
-						['**', 'payload', 'credentials'],
-						['**', 'payload', 'ai_openai_api_key'],
-						['**', 'payload', 'ai_anthropic_api_key'],
-						['**', 'payload', 'ai_google_api_key'],
-						['**', 'payload', 'ai_openai_compatible_api_key'],
-					],
+					keys: FLOW_SECRET_KEYS,
 				},
 				getRedactedString,
 			);

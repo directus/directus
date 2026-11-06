@@ -92,11 +92,23 @@ export function redactObject(
 				}
 			}
 
-			const value = object[key];
+			visit(object[key], [...globalCheckPaths, ...localCheckPaths]);
+		}
+	}
 
-			if (isObject(value)) {
-				traverse(value, [...globalCheckPaths, ...localCheckPaths]);
-			}
+	/**
+	 * Array items, at any depth, are matched as if they were the array itself, so `payload.password` also covers
+	 * `payload[0].password`. Each item gets its own copy of the paths, since a match removes its path from the list.
+	 */
+	function visit(value: unknown, checkKeyPaths: Keys): void {
+		if (isObject(value)) {
+			traverse(value, checkKeyPaths);
+		} else if (Array.isArray(value)) {
+			for (const item of value)
+				visit(
+					item,
+					checkKeyPaths.map((path) => [...path]),
+				);
 		}
 	}
 }
