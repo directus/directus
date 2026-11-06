@@ -1,4 +1,4 @@
-import type { OpenAICompatibleModel } from '@directus/ai';
+import type { OpenRouterModel } from '@directus/ai';
 import { createTestingPinia } from '@pinia/testing';
 import { lastAssistantMessageIsCompleteWithToolCalls, type UIMessage } from 'ai';
 import { setActivePinia } from 'pinia';
@@ -18,7 +18,7 @@ const mockSettings = vi.hoisted(() => ({
 	ai_openai_allowed_models: ['gpt-4o-mini', 'gpt-5-nano'],
 	ai_anthropic_allowed_models: null,
 	ai_google_allowed_models: null,
-	ai_openrouter_models: null as OpenAICompatibleModel[] | null,
+	ai_openrouter_models: null as OpenRouterModel[] | null,
 	ai_openai_compatible_models: null,
 }));
 

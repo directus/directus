@@ -1,4 +1,4 @@
-import type { OpenAICompatibleModel } from '@directus/ai';
+import type { OpenRouterModel } from '@directus/ai';
 import formatTitle from '@directus/format-title';
 
 interface OpenRouterCatalogEntry {
@@ -11,9 +11,9 @@ interface OpenRouterCatalogEntry {
 // Public, unauthenticated endpoint. The assistant always sends tools, so only tool-capable models are useful.
 const OPENROUTER_MODELS_URL = 'https://openrouter.ai/api/v1/models?supported_parameters=tools&sort=most-popular';
 
-let modelsPromise: Promise<OpenAICompatibleModel[]> | null = null;
+let modelsPromise: Promise<OpenRouterModel[]> | null = null;
 
-export function fetchOpenRouterModels(): Promise<OpenAICompatibleModel[]> {
+export function fetchOpenRouterModels(): Promise<OpenRouterModel[]> {
 	modelsPromise ??= loadModels().catch(() => {
 		modelsPromise = null;
 		return [];
@@ -22,7 +22,7 @@ export function fetchOpenRouterModels(): Promise<OpenAICompatibleModel[]> {
 	return modelsPromise;
 }
 
-async function loadModels(): Promise<OpenAICompatibleModel[]> {
+async function loadModels(): Promise<OpenRouterModel[]> {
 	const response = await fetch(OPENROUTER_MODELS_URL);
 
 	if (!response.ok) throw new Error(`OpenRouter models request failed with ${response.status}`);
@@ -42,7 +42,7 @@ async function loadModels(): Promise<OpenAICompatibleModel[]> {
 	);
 }
 
-export function toSavedModel(id: string, catalog: OpenAICompatibleModel[]): OpenAICompatibleModel {
+export function toSavedModel(id: string, catalog: OpenRouterModel[]): OpenRouterModel {
 	const catalogModel = catalog.find((model) => model.id === id);
 
 	if (!catalogModel) return { id, name: formatModelId(id) };

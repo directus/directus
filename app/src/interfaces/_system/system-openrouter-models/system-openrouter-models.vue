@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { OpenAICompatibleModel } from '@directus/ai';
+import type { OpenRouterModel } from '@directus/ai';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { fetchOpenRouterModels, toSavedModel } from '@/ai/utils/openrouter-models';
@@ -14,20 +14,20 @@ import VMenu from '@/components/v-menu.vue';
 import SelectListItem from '@/components/v-select/select-list-item.vue';
 
 const props = defineProps<{
-	value: OpenAICompatibleModel[] | null;
+	value: OpenRouterModel[] | null;
 	disabled?: boolean;
 	nonEditable?: boolean;
 }>();
 
 const emit = defineEmits<{
-	input: [value: OpenAICompatibleModel[] | null];
+	input: [value: OpenRouterModel[] | null];
 }>();
 
 const { t } = useI18n();
 
 const menuActive = ref(false);
 const search = ref('');
-const catalog = ref<OpenAICompatibleModel[]>([]);
+const catalog = ref<OpenRouterModel[]>([]);
 const loading = ref(false);
 
 const selected = computed(() => props.value ?? []);

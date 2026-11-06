@@ -1,4 +1,4 @@
-import type { OpenAICompatibleModel } from '@directus/ai';
+import type { OpenRouterModel } from '@directus/ai';
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { defineComponent } from 'vue';
@@ -48,7 +48,7 @@ const savedLuna = { id: 'openai/gpt-6-luna', name: 'GPT-6 Luna', context: 1_050_
 const savedHaiku = { id: 'anthropic/claude-haiku-4.5', name: 'Claude Haiku 4.5', context: 200_000, output: 64_000 };
 const privateModel = { id: 'acme/private-model', name: 'Private Model' };
 
-function mountPicker(value: OpenAICompatibleModel[] | null = null) {
+function mountPicker(value: OpenRouterModel[] | null = null) {
 	return mount(SystemOpenRouterModels, { props: { value }, global });
 }
 

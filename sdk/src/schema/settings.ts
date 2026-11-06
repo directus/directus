@@ -89,7 +89,6 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 			output?: number;
 			attachment?: boolean;
 			reasoning?: boolean;
-			providerOptions?: Record<string, any>;
 		}> | null;
 		ai_system_prompt: string | null;
 		ai_translation_default_model: string | null;
