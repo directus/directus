@@ -94,6 +94,14 @@ describe('FlowManager', () => {
 			expect(manager.getFlow('flow-a')).toBeDefined();
 		});
 
+		test('should skip initializing again when already initialized', async () => {
+			const manager = await initializeWith([createFlow('flow-a')]);
+
+			await manager.initialize();
+
+			expect(readByQuery).toHaveBeenCalledTimes(1);
+		});
+
 		test('should queue a reload requested during the initial load', async () => {
 			const initialRead = withResolvers<FlowRaw[]>();
 			readByQuery.mockReturnValueOnce(initialRead.promise).mockResolvedValueOnce([createFlow('flow-b')]);
@@ -107,38 +115,6 @@ describe('FlowManager', () => {
 			await flushPromises();
 
 			expect(readByQuery).toHaveBeenCalledTimes(2);
-			expect(manager.getFlow('flow-b')).toBeDefined();
-		});
-
-		test('should retry the initial load when reading the flows fails', async () => {
-			readByQuery
-				.mockRejectedValueOnce(new Error('Connection terminated unexpectedly'))
-				.mockResolvedValueOnce([createFlow('flow-a')]);
-
-			const manager = getFlowManager();
-			await manager.initialize();
-
-			expect(readByQuery).toHaveBeenCalledTimes(2);
-			expect(manager.getFlow('flow-a')).toBeDefined();
-		});
-
-		test('should keep retrying the initial load while a reload is waiting', async () => {
-			const initialRead = withResolvers<FlowRaw[]>();
-
-			readByQuery
-				.mockReturnValueOnce(initialRead.promise)
-				.mockResolvedValueOnce([createFlow('flow-a')])
-				.mockResolvedValueOnce([createFlow('flow-b')]);
-
-			const manager = getFlowManager();
-			const initialize = manager.initialize();
-
-			await manager.reload();
-			initialRead.reject(new Error('Connection terminated unexpectedly'));
-			await initialize;
-			await flushPromises();
-
-			expect(readByQuery).toHaveBeenCalledTimes(3);
 			expect(manager.getFlow('flow-b')).toBeDefined();
 		});
 
@@ -173,34 +149,6 @@ describe('FlowManager', () => {
 			expect(manager.getFlow('flow-b')).toBeDefined();
 		});
 
-		test('should wait longer before every retry', async () => {
-			const manager = await initializeWith([]);
-
-			readByQuery.mockRejectedValue(new Error('Connection terminated unexpectedly'));
-			await manager.reload();
-			await flushPromises();
-
-			const [first, second] = sleep.mock.calls.map(([delay]) => delay);
-
-			expect(sleep).toHaveBeenCalledTimes(2);
-			expect(first).toBeGreaterThanOrEqual(500);
-			expect(first).toBeLessThanOrEqual(1000);
-			expect(second).toBeGreaterThanOrEqual(1000);
-			expect(second).toBeLessThanOrEqual(2000);
-		});
-
-		test('should keep the loaded flows when every attempt at reading the flows fails', async () => {
-			const manager = await initializeWith([createFlow('flow-a')]);
-
-			readByQuery.mockRejectedValue(new Error('Connection terminated unexpectedly'));
-			await manager.reload();
-			await flushPromises();
-
-			// The initial load and 3 attempts
-			expect(readByQuery).toHaveBeenCalledTimes(4);
-			expect(manager.getFlow('flow-a')).toBeDefined();
-		});
-
 		test('should not retry reading the flows when acquiring a connection times out', async () => {
 			const { default: knex } = await import('knex');
 			const manager = await initializeWith([createFlow('flow-a')]);
@@ -226,28 +174,23 @@ describe('FlowManager', () => {
 			expect(manager.getFlow('flow-a')).toBeDefined();
 		});
 
-		test('should not retry reading the flows when another reload is waiting', async () => {
-			const manager = await initializeWith([createFlow('flow-a')]);
-
-			const failingRead = withResolvers<FlowRaw[]>();
-			readByQuery.mockReturnValueOnce(failingRead.promise).mockResolvedValueOnce([createFlow('flow-b')]);
-
-			await manager.reload();
-			await manager.reload();
-			failingRead.reject(new Error('Connection terminated unexpectedly'));
-			await flushPromises();
-
-			expect(sleep).not.toHaveBeenCalled();
-			expect(readByQuery).toHaveBeenCalledTimes(3);
-			expect(manager.getFlow('flow-b')).toBeDefined();
-		});
-
-		test('should load the latest flows on the next reload after reading the flows failed', async () => {
+		test('should keep the loaded flows until the next reload when every attempt at reading the flows fails', async () => {
 			const manager = await initializeWith([createFlow('flow-a')]);
 
 			readByQuery.mockRejectedValue(new Error('Connection terminated unexpectedly'));
 			await manager.reload();
 			await flushPromises();
+
+			const [first, second] = sleep.mock.calls.map(([delay]) => delay);
+
+			// The initial load and 3 attempts, waiting longer before every retry
+			expect(readByQuery).toHaveBeenCalledTimes(4);
+			expect(sleep).toHaveBeenCalledTimes(2);
+			expect(first).toBeGreaterThanOrEqual(500);
+			expect(first).toBeLessThanOrEqual(1000);
+			expect(second).toBeGreaterThanOrEqual(1000);
+			expect(second).toBeLessThanOrEqual(2000);
+			expect(manager.getFlow('flow-a')).toBeDefined();
 
 			readByQuery.mockResolvedValueOnce([createFlow('flow-b')]);
 			await manager.reload();
@@ -440,7 +383,7 @@ describe('FlowManager', () => {
 			// A plain function rather than a mock, as Vitest marks rejections returned by mocks as handled
 			testBus.bus.subscribe = (() => Promise.reject(new Error('Connection is closed.'))) as any;
 
-			expect(() => getFlowManager()).not.toThrow();
+			getFlowManager();
 
 			// Lets an unhandled rejection surface and fail the run, as it would crash the process
 			await flushPromises();

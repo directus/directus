@@ -124,9 +124,14 @@ class FlowManager {
 	}
 
 	public async initialize(): Promise<void> {
+		const logger = useLogger();
+
 		// Ensure change/reload requested during initialize are not skipped
 		await this.reloadQueue.add(async () => {
-			if (this.isInitialized) return;
+			if (this.isInitialized) {
+				logger.warn('Flow manager is already initialized, skipping initialization');
+				return;
+			}
 
 			const flows = await this.readFlows();
 			this.load(flows);
@@ -208,9 +213,7 @@ class FlowManager {
 					attempt >= READ_FLOWS_ATTEMPTS ||
 					// Timeouts already waited long before failing
 					error instanceof knex.KnexTimeoutError ||
-					error instanceof TimeoutError ||
-					// A waiting reload reads the latest flows anyway, but is skipped when the initial load fails
-					(this.isInitialized && this.reloadQueue.size > 0)
+					error instanceof TimeoutError
 				) {
 					throw error;
 				}
