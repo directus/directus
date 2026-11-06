@@ -24,7 +24,14 @@ describe('options compat', () => {
 		const { standard, advanced } = resolveOptions({ tinymceOverrides: { font_size_formats: '8pt' } });
 
 		expect(fieldKeys(standard)).toEqual(['toolbar', 'font', 'folder', 'imageToken']);
-		expect(fieldKeys(advanced)).toEqual(['softLength', 'linkProtocols', 'customFormats', 'tinymceOverrides']);
+
+		expect(fieldKeys(advanced)).toEqual([
+			'softLength',
+			'linkProtocols',
+			'keepLegacyEmphasisTags',
+			'customFormats',
+			'tinymceOverrides',
+		]);
 	});
 
 	test('keeps all legacy toolbar choice values', () => {

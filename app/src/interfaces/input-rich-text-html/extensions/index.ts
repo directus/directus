@@ -1,7 +1,6 @@
 import type { RichTextBubbleMenu, RichTextToolbarButton } from '@directus/extensions';
 import type { AnyExtension } from '@tiptap/core';
 import { CharacterCount } from '@tiptap/extensions';
-import StarterKit from '@tiptap/starter-kit';
 import { ComparisonDiff } from './comparison-diff';
 import { buildCustomFormats, type CustomFormat } from './custom-formats';
 import { Direction } from './direction';
@@ -15,6 +14,7 @@ import { PreKeymap } from './pre-keymap';
 import { PreservedAttributes } from './preserved-attributes';
 import { RangeSelectedAtoms } from './range-selected-atoms';
 import { semanticHtml } from './semantic-html';
+import { BaseStarterKit, buildLegacyEmphasisSchema } from './starter-kit';
 import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { Table } from './table';
 import { TextAlignment } from './text-alignment';
@@ -26,12 +26,7 @@ import { contributedKey, enabledRichTexts } from '@/rich-text/register';
  * two never drift.
  */
 export const editorExtensions = [
-	StarterKit.configure({
-		// replaced by DropCursor, which draws a vertical indicator between same-row inline-block nodes
-		dropcursor: false,
-		// standalone so buildLinkProtocolSchema can swap it for a per-field configured Link
-		link: false,
-	}),
+	BaseStarterKit,
 	BaseLink,
 	DropCursor,
 	CustomImage,
@@ -80,6 +75,8 @@ export interface FieldSchemaOptions {
 	extensionOptions?: unknown;
 	/** Field `linkProtocols` option: extra URL schemes links and image links may use. */
 	linkProtocols?: unknown;
+	/** Field `keepLegacyEmphasisTags` option: keep `<b>` and `<i>` instead of rewriting them to `<strong>` and `<em>`. */
+	keepLegacyEmphasisTags?: unknown;
 	comparisonMode?: boolean;
 }
 
@@ -96,27 +93,30 @@ export interface FieldSchema {
 
 /**
  * The one place a field's schema additions are assembled: the richtext extensions the field opted
- * into, its custom formats, its link protocols, and the comparison-diff mark in comparison mode. The
- * live editor, the save-time round-trip check, the source-code drawer and the comparison view all
- * build from this result. A site that composed the list by hand could miss a contribution and report its markup as
+ * into, its custom formats, its link protocols, its legacy emphasis tags, and the comparison-diff mark in
+ * comparison mode. The live editor, the save-time round-trip check, the source-code drawer and the
+ * comparison view all build from this result. A site that composed the list by hand could miss a contribution and report its markup as
  * dropped even though the editor renders it.
  */
 export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema {
 	const customFormats = buildCustomFormats(options.customFormats);
 	const contributed = enabledRichTexts(options.extensions, options.extensionOptions);
 	const links = buildLinkProtocolSchema(options.linkProtocols);
+	const legacyEmphasis = buildLegacyEmphasisSchema(options.keepLegacyEmphasisTags);
 
 	return {
 		extensions: [
 			...contributed.flatMap((config) => config.extensions),
 			...customFormats.extensions,
 			...links.extensions,
+			...legacyEmphasis.extensions,
 			...(options.comparisonMode ? [ComparisonDiff] : []),
 		],
 		key: [
 			options.comparisonMode ? 'comparison' : '',
 			customFormats.key,
 			links.key,
+			legacyEmphasis.key,
 			contributed.map((config) => config.key).join('\u0000'),
 		].join('\u0000'),
 		formats: customFormats.formats,
