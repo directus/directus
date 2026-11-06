@@ -20,7 +20,7 @@ overrides:
   js-yaml@3: 3.15.2
   unplugin-yaml>yaml: 2.9.0
   uuid: 11.1.1
-  '@ai-sdk/provider-utils': 4.0.51
+  '@ai-sdk/provider-utils': 4.0.57
   '@opentelemetry/core': 2.11.0
   get-uri>basic-ftp: 6.2.2
   '@directus/mock-license-server>fastify': 5.12.7
@@ -46,12 +46,12 @@ allowBuilds:
   vue-demi: true
 
 catalog:
-  '@ai-sdk/anthropic': 3.0.58
-  '@ai-sdk/devtools': 0.0.15
-  '@ai-sdk/google': 3.0.43
-  '@ai-sdk/openai': 3.0.41
-  '@ai-sdk/openai-compatible': 2.0.35
-  '@ai-sdk/vue': 3.0.116
+  '@ai-sdk/anthropic': 3.0.128
+  '@ai-sdk/devtools': 0.0.28
+  '@ai-sdk/google': 3.0.131
+  '@ai-sdk/openai': 3.0.124
+  '@ai-sdk/openai-compatible': 2.0.81
+  '@ai-sdk/vue': 3.0.302
   '@authenio/samlify-node-xmllint': 2.0.0
   '@aws-sdk/client-s3': 3.1111.0
   '@aws-sdk/client-sesv2': 3.1111.0
@@ -193,7 +193,7 @@ catalog:
   '@vueuse/core': 14.0.0
   '@vueuse/integrations': 14.0.0
   '@vueuse/router': 14.0.0
-  ai: 6.0.116
+  ai: 6.0.302
   apexcharts: 4.7.0
   archiver: 8.0.0
   argon2: 0.44.0
