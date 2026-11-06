@@ -413,6 +413,24 @@ describe('useAiStore', () => {
 		});
 	});
 
+	describe('supportsFileUpload', () => {
+		test('is true for a provider with a files API', () => {
+			const aiStore = useAiStore();
+
+			expect(aiStore.selectedModel?.provider).toBe('openai');
+			expect(aiStore.supportsFileUpload).toBe(true);
+		});
+
+		test('is false when no model is available', () => {
+			mockServerInfo.ai_providers = [];
+
+			const aiStore = useAiStore();
+
+			expect(aiStore.selectedModel).toBeNull();
+			expect(aiStore.supportsFileUpload).toBe(false);
+		});
+	});
+
 	describe('openrouter', () => {
 		test('lists the saved models and disables file uploads', () => {
 			mockServerInfo.ai_providers = ['openrouter'];

@@ -1,15 +1,7 @@
 export type ProviderType = 'openai' | 'anthropic' | 'google' | 'openrouter' | 'openai-compatible';
 
+/** Providers whose chat models are limited to a list saved in settings. OpenAI-compatible endpoints aren't checked. */
 export type StandardProviderType = Exclude<ProviderType, 'openai-compatible'>;
-
-/** Providers with a files API the chat can upload attachments to */
-export type FileUploadProviderType = Extract<ProviderType, 'openai' | 'anthropic' | 'google'>;
-
-export const FILE_UPLOAD_PROVIDER_TYPES: readonly FileUploadProviderType[] = ['openai', 'anthropic', 'google'];
-
-export function isFileUploadProviderType(value: unknown): value is FileUploadProviderType {
-	return (FILE_UPLOAD_PROVIDER_TYPES as readonly unknown[]).includes(value);
-}
 
 export type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string]: JSONValue };
 
@@ -88,6 +80,18 @@ export type ContextAttachment =
 	| { type: 'item'; data: ItemContextData; display: string; snapshot: Record<string, unknown> }
 	| { type: 'visual-element'; data: VisualElementContextData; display: string; snapshot: Record<string, unknown> }
 	| { type: 'prompt'; data: PromptContextData; display: string; snapshot: Record<string, unknown> };
+
+/**
+ * Providers with a files API that chat attachments are uploaded to. OpenRouter and OpenAI-compatible endpoints have
+ * none. Not `satisfies readonly ProviderType[]`: that fails `isolatedDeclarations`.
+ */
+export const FILE_UPLOAD_PROVIDER_TYPES = ['openai', 'anthropic', 'google'] as const;
+
+export type FileUploadProviderType = (typeof FILE_UPLOAD_PROVIDER_TYPES)[number];
+
+export function isFileUploadProviderType(value: unknown): value is FileUploadProviderType {
+	return (FILE_UPLOAD_PROVIDER_TYPES as readonly unknown[]).includes(value);
+}
 
 export interface ProviderFileRef {
 	provider: FileUploadProviderType;
