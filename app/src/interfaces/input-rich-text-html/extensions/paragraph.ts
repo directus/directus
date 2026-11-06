@@ -58,11 +58,11 @@ function blockSelector(schema: Schema | undefined): string {
 	return selector;
 }
 
-function hasParagraphAttributes(element: HTMLElement): boolean {
+function hasAttributesToKeep(element: HTMLElement): boolean {
 	return hasPreservedAttributes(element) || Boolean(element.style.textAlign);
 }
 
-/** Parses a `<div>` with paragraph attributes and only inline content as a `<p>`, so those attributes survive. */
+/** Parses a `<div>` with attributes to keep and only inline content as a `<p>`, so those attributes survive. */
 export const CustomParagraph = Paragraph.extend({
 	parseHTML() {
 		const editor = this.editor;
@@ -74,7 +74,7 @@ export const CustomParagraph = Paragraph.extend({
 				// below the default 50, so page breaks and contributed `div` rules at default priority match first
 				priority: 10,
 				getAttrs: (element) =>
-					hasParagraphAttributes(element) && !element.querySelector(blockSelector(editor?.schema)) ? null : false,
+					hasAttributesToKeep(element) && !element.querySelector(blockSelector(editor?.schema)) ? null : false,
 			},
 		];
 	},
