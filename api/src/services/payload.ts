@@ -18,7 +18,7 @@ import type {
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
-import { format, isValid, parseISO } from 'date-fns';
+import { format, isValid, parse, parseISO } from 'date-fns';
 import Joi from 'joi';
 import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject } from 'lodash-es';
@@ -42,6 +42,7 @@ type Transformers = {
 		specials: string[];
 		helpers: Helpers;
 		overwriteDefaults: DefaultOverwrite | undefined;
+		field?: string;
 	}) => Promise<any>;
 };
 
@@ -150,8 +151,15 @@ export class PayloadService {
 				);
 			return value;
 		},
-		async 'cast-csv'({ action, value }) {
-			if (Array.isArray(value) === false && typeof value !== 'string') return;
+		async 'cast-csv'({ action, value, field }) {
+			if (Array.isArray(value) === false && typeof value !== 'string') {
+				if (value === null || value === undefined) return value;
+
+				if (action === 'read') return;
+
+				// Otherwise falls through to the generic stringify below, then gets mangled by `.split(',')` on the next read.
+				throw new InvalidPayloadError({ reason: `Invalid CSV format in field "${field}"` });
+			}
 
 			if (action === 'read') {
 				if (Array.isArray(value)) return value;
@@ -261,6 +269,24 @@ export class PayloadService {
 		}
 
 		if (['create', 'update'].includes(action)) {
+			const jsonFields = fieldEntries.filter(([_name, field]) => field.type === 'json');
+
+			for (const [name] of jsonFields) {
+				for (const record of processedPayload) {
+					const value = record[name];
+
+					// Only a string reaches the DB unmodified, so it must already be valid JSON text.
+					// Other types are serialized below or handled natively by the driver.
+					if (typeof value !== 'string') continue;
+
+					try {
+						JSON.parse(value);
+					} catch {
+						throw new InvalidPayloadError({ reason: `Invalid JSON format in field "${name}"` });
+					}
+				}
+			}
+
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
 					if (Array.isArray(value) || (typeof value === 'object' && !(value instanceof Date) && value !== null)) {
@@ -354,6 +380,7 @@ export class PayloadService {
 					specials: fieldSpecials,
 					helpers: this.helpers,
 					overwriteDefaults: this.overwriteDefaults,
+					field: field.field,
 				});
 			}
 		}
@@ -520,7 +547,25 @@ export class PayloadService {
 
 						if (dateColumn.type === 'timestamp') {
 							const newValue = this.helpers.date.writeTimestamp(value);
+
+							if (!isValid(newValue)) {
+								throw new InvalidPayloadError({ reason: `Invalid Timestamp format in field "${dateColumn.field}"` });
+							}
+
 							payload[name] = newValue;
+						}
+					} else if (value instanceof Date === false) {
+						// Anything but a Date or string would otherwise reach the DB driver unchanged.
+						if (dateColumn.type === 'date') {
+							throw new InvalidPayloadError({ reason: `Invalid Date format in field "${dateColumn.field}"` });
+						}
+
+						if (dateColumn.type === 'dateTime') {
+							throw new InvalidPayloadError({ reason: `Invalid DateTime format in field "${dateColumn.field}"` });
+						}
+
+						if (dateColumn.type === 'timestamp') {
+							throw new InvalidPayloadError({ reason: `Invalid Timestamp format in field "${dateColumn.field}"` });
 						}
 					}
 				}
@@ -531,7 +576,7 @@ export class PayloadService {
 		 * Some DB drivers (MS SQL f.e.) return time values as Date objects. For consistencies sake,
 		 * we'll abstract those back to hh:mm:ss
 		 */
-		for (const [name] of timeColumns) {
+		for (const [name, timeColumn] of timeColumns) {
 			for (const payload of payloads) {
 				const value = payload[name];
 
@@ -539,6 +584,11 @@ export class PayloadService {
 
 				if (action === 'read') {
 					if (value instanceof Date) payload[name] = format(value, 'HH:mm:ss');
+				} else if (value instanceof Date === false) {
+					if (typeof value !== 'string' || !isValid(parse(value, 'HH:mm:ss', new Date(0)))) {
+						// Anything but a Date or a valid "HH:mm:ss" string would otherwise reach the DB driver unchanged.
+						throw new InvalidPayloadError({ reason: `Invalid Time format in field "${timeColumn.field}"` });
+					}
 				}
 			}
 		}
