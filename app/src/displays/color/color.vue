@@ -34,7 +34,7 @@ const addBorder = computed(() => {
 <template>
 	<div class="color-dot">
 		<ValueNull v-if="value === null && defaultColor === null" />
-		<div class="dot" :class="{ 'with-border': addBorder }" />
+		<div class="dot" :class="{ 'with-border': addBorder }" :style="{ backgroundColor: color ?? undefined }" />
 	</div>
 </template>
 
@@ -44,7 +44,6 @@ const addBorder = computed(() => {
 	align-items: center;
 
 	.dot {
-		background-color: v-bind(color);
 		display: inline-block;
 		flex-shrink: 0;
 		inline-size: 0.5625rem;

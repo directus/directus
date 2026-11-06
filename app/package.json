@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "18.1.0",
+	"version": "19.1.0",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -85,6 +85,7 @@
 		"@tiptap/core": "catalog:",
 		"@tiptap/extension-image": "catalog:",
 		"@tiptap/extension-link": "catalog:",
+		"@tiptap/extension-paragraph": "catalog:",
 		"@tiptap/extension-subscript": "catalog:",
 		"@tiptap/extension-superscript": "catalog:",
 		"@tiptap/extension-table": "catalog:",
