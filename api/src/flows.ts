@@ -89,7 +89,7 @@ class FlowManager {
 		messenger
 			.subscribe<FlowMessage>('flows', (event) => {
 				// A reload still waiting in the queue reads the latest flows when it starts, so another one is redundant
-				if (event.type === 'reload' && this.reloadQueue.size === 0) {
+				if (event?.type === 'reload' && this.reloadQueue.size === 0) {
 					this.reloadQueue.add(async () => {
 						if (!this.isInitialized) {
 							logger.warn('Flow manager is not initialized yet, skipping reload');
