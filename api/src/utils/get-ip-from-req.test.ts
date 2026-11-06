@@ -55,7 +55,7 @@ describe('getIPFromReq', () => {
 		expect(result).toBe('127.0.0.1');
 	});
 
-	test('Returns overriden ip if IP_CUSTOM_HEADER is set with valid IP', () => {
+	test('Returns overridden ip if IP_CUSTOM_HEADER is set with valid IP', () => {
 		vi.mocked(useEnv).mockReturnValue({
 			IP_TRUST_PROXY: true,
 			IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
