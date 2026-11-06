@@ -1,19 +1,21 @@
-import { useEnv } from '@directus/env';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import getMailer from '../mailer.js';
-import { mockEnv } from '../test-utils/env.js';
+import { resetEnv, setEnv } from '../test-utils/env.js';
 import { ServerService } from './server.js';
 
-// Shared object rather than a fixed return value, so individual tests can amend it in place. The
-// factory seeds it with the test defaults, which several modules read as they're imported.
-const testEnv = vi.hoisted(() => ({}) as Record<string, unknown>);
-
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	Object.assign(testEnv, mockEnv());
-	return { useEnv: vi.fn(() => testEnv) };
+	const { mockUseEnv } = await import('../test-utils/env.js');
+
+	return mockUseEnv({
+		PROJECT_OWNER_ENABLED: true,
+		MCP_ENABLED: true,
+		AI_ENABLED: true,
+		MCP_OAUTH_ENABLED: true,
+		MCP_OAUTH_DCR_ENABLED: false,
+		MCP_OAUTH_CIMD_ENABLED: true,
+	});
 });
 
 vi.mock('./settings.js', () => ({
@@ -66,23 +68,11 @@ describe('ServerService', () => {
 		db = knex({ client: MockClient });
 		tracker = createTracker(db);
 
-		Object.assign(
-			testEnv,
-			mockEnv({
-				PROJECT_OWNER_ENABLED: true,
-				MCP_ENABLED: true,
-				AI_ENABLED: true,
-				MCP_OAUTH_ENABLED: true,
-				MCP_OAUTH_DCR_ENABLED: false,
-				MCP_OAUTH_CIMD_ENABLED: true,
-			}),
-		);
-
-		vi.mocked(useEnv).mockReturnValue(testEnv as any);
+		resetEnv();
 	});
 
 	test('health reports an email error when the transport cannot be built', async () => {
-		Object.assign(testEnv, { HEALTHCHECK_SERVICES: ['email'], EMAIL_VERIFY_SETUP: true });
+		setEnv({ HEALTHCHECK_SERVICES: ['email'], EMAIL_VERIFY_SETUP: true });
 
 		vi.mocked(getMailer).mockImplementation(() => {
 			throw new Error('The EMAIL_MAILTRAP_TOKEN env var is required for the mailtrap transport');
@@ -131,7 +121,7 @@ describe('ServerService', () => {
 	});
 
 	test('serverInfo respects PROJECT_OWNER_ENABLED=false for authenticated users', async () => {
-		Object.assign(testEnv, { PROJECT_OWNER_ENABLED: false });
+		setEnv({ PROJECT_OWNER_ENABLED: false });
 
 		tracker.on.select('directus_users').response([{ id: 'user-id' }]);
 

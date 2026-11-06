@@ -66,6 +66,7 @@ export function mockUseEnv(overrides?: Record<string, unknown>) {
 	resetEnv();
 
 	return {
+		DEFAULTS,
 		useEnv: vi.fn(() => currentEnv as Env),
 	};
 }

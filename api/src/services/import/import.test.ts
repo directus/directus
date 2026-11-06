@@ -10,16 +10,13 @@ import { getCache } from '../../cache.js';
 import emitter from '../../emitter.js';
 import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
+import { resetEnv, setEnv } from '../../test-utils/env.js';
 import { getService } from '../../utils/get-service.js';
 import { NotificationsService } from '../notifications.js';
 import { ImportService } from './import.js';
 
 const holder = vi.hoisted(() => ({ trx: null as any }));
 const cache: { importCount?: number } = {};
-
-// Shared object rather than a fixed return value, so individual tests can amend it in place. The
-// factory seeds it with the test defaults, which several modules read as they're imported.
-const envConfig = vi.hoisted(() => ({}) as Record<string, unknown>);
 
 vi.mock('../../utils/store.js', () => ({
 	useStore: () => (callback: (store: any) => void) => {
@@ -36,19 +33,14 @@ vi.mock('../../stores/notifications.js');
 vi.mock('../users.js');
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../../test-utils/env.js');
+	const { mockUseEnv } = await import('../../test-utils/env.js');
 
-	Object.assign(
-		envConfig,
-		mockEnv({
-			MAX_IMPORT_ERRORS: 1000,
-			IMPORT_TIMEOUT: 60_000,
-			IMPORT_MAX_CONCURRENCY: 10,
-			CACHE_AUTO_PURGE: false,
-		}),
-	);
-
-	return { useEnv: () => envConfig };
+	return mockUseEnv({
+		MAX_IMPORT_ERRORS: 1000,
+		IMPORT_TIMEOUT: 60_000,
+		IMPORT_MAX_CONCURRENCY: 10,
+		CACHE_AUTO_PURGE: false,
+	});
 });
 
 vi.mock('../../permissions/modules/validate-access/validate-access.js', () => ({
@@ -85,7 +77,7 @@ describe('ImportService', () => {
 		.build();
 
 	beforeEach(() => {
-		envConfig.CACHE_AUTO_PURGE = false;
+		resetEnv();
 
 		db = knex.default({ client: MockClient }) as unknown as Knex;
 		tracker = createTracker(db);
@@ -1526,7 +1518,7 @@ describe('ImportService.importBatch', () => {
 	});
 
 	test('emits queued actions and clears cache on a committed run when CACHE_AUTO_PURGE is enabled', async () => {
-		envConfig.CACHE_AUTO_PURGE = true;
+		setEnv({ CACHE_AUTO_PURGE: true });
 
 		const cacheClear = vi.fn();
 		vi.mocked(getCache).mockReturnValue({ cache: { clear: cacheClear } } as any);
@@ -1544,7 +1536,7 @@ describe('ImportService.importBatch', () => {
 	});
 
 	test('does not clear cache on a committed run when CACHE_AUTO_PURGE is disabled', async () => {
-		envConfig.CACHE_AUTO_PURGE = false;
+		setEnv({ CACHE_AUTO_PURGE: false });
 
 		const cacheClear = vi.fn();
 		vi.mocked(getCache).mockReturnValue({ cache: { clear: cacheClear } } as any);
