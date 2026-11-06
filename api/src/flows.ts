@@ -283,7 +283,10 @@ class FlowManager {
 					}
 
 					if (flow.options['async']) {
-						this.executeFlow(flow, data, context);
+						this.executeFlow(flow, data, context).catch((error) => {
+							logger.error(error, `Failed to run flow "${flow.id}"`);
+						});
+
 						return { result: undefined, cacheEnabled };
 					} else {
 						return { result: await this.executeFlow(flow, data, context), cacheEnabled };
@@ -376,7 +379,10 @@ class FlowManager {
 					}
 
 					if (flow.options['async']) {
-						this.executeFlow(flow, data, context);
+						this.executeFlow(flow, data, context).catch((error) => {
+							logger.error(error, `Failed to run flow "${flow.id}"`);
+						});
+
 						return { result: undefined };
 					} else {
 						return { result: await this.executeFlow(flow, data, context) };
