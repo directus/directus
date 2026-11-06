@@ -2922,7 +2922,7 @@ interfaces:
     media_preview_iframe_title: Media Preview
     embed_invalid: The embed markup could not be parsed as media (video, audio, or iframe)
     tight_paragraphs: Tight Paragraphs
-    tight_paragraphs_label: Do not add <p> tags
+    tight_paragraphs_label: Do not add <p> tags to list items, blockquotes and table cells
     tight_paragraphs_note:
       By default, the editor wraps the text of list items, blockquotes and table cells in `<p>`. Enable this to stop
       adding `<p>` there. A `<p>` that is already stored stays.
