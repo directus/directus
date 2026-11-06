@@ -10,18 +10,24 @@ export class SchemaHelperSQLite extends SchemaHelper {
 		return getDefaultIndexName(type, collection, fields, { maxLength: Infinity });
 	}
 
-	override async preColumnChange(): Promise<boolean> {
-		const foreignCheckStatus = (await this.knex.raw('PRAGMA foreign_keys'))[0].foreign_keys === 1;
+	/**
+	 * SQLite rebuilds tables for most alterations. Dropping the old table with foreign keys enabled would trigger the
+	 * `ON DELETE` actions of every table referencing it. The pragma is ignored within transactions, so this has to wrap
+	 * the transaction instead of running inside of it.
+	 */
+	override async withForeignKeysDisabled<T>(fn: () => Promise<T>): Promise<T> {
+		const enabled = (await this.knex.raw('PRAGMA foreign_keys'))[0].foreign_keys === 1;
 
-		if (foreignCheckStatus) {
-			await this.knex.raw('PRAGMA foreign_keys = OFF');
+		// Already disabled, either by the user or by an outer call
+		if (!enabled) return fn();
+
+		await this.knex.raw('PRAGMA foreign_keys = OFF');
+
+		try {
+			return await fn();
+		} finally {
+			await this.knex.raw('PRAGMA foreign_keys = ON');
 		}
-
-		return foreignCheckStatus;
-	}
-
-	override async postColumnChange(): Promise<void> {
-		await this.knex.raw('PRAGMA foreign_keys = ON');
 	}
 
 	override async getDatabaseSize(): Promise<number | null> {

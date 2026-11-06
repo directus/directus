@@ -11,6 +11,12 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
+vi.mock('./version-tables.js', () => ({
+	VersionTablesService: class {
+		syncCollections = vi.fn();
+	},
+}));
+
 vi.mock('../../src/database/index', async () => {
 	const { mockDatabase } = await import('../test-utils/database.js');
 	return mockDatabase();
@@ -48,7 +54,7 @@ vi.mock('../utils/get-schema.js', () => ({
 vi.mock('../database/helpers/index.js', () => ({
 	getHelpers: vi.fn(() => ({
 		schema: {
-			preColumnChange: vi.fn().mockResolvedValue(false),
+			withForeignKeysDisabled: vi.fn((fn) => fn()),
 			preRelationChange: vi.fn(),
 			constraintName: vi.fn((name) => name),
 		},

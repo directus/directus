@@ -333,6 +333,7 @@ catalog:
   semver: 7.7.3
   sharp: 0.35.5
   snappy: 7.3.3
+  sql-formatter: 15.9.0
   sqlite3: 6.0.1
   stream-json: 3.7.0
   string-width: 7.2.0
