@@ -86,27 +86,34 @@ class FlowManager {
 		const messenger = useBus();
 		const logger = useLogger();
 
-		messenger.subscribe<FlowMessage>('flows', (event) => {
-			// A reload still waiting in the queue reads the latest flows when it starts, so another one is redundant
-			if (event.type === 'reload' && this.reloadQueue.size === 0) {
-				this.reloadQueue.add(async () => {
-					if (!this.isInitialized) {
-						logger.warn('Flow manager is not initialized yet, skipping reload');
-						return;
-					}
+		messenger
+			.subscribe<FlowMessage>('flows', (event) => {
+				// A reload still waiting in the queue reads the latest flows when it starts, so another one is redundant
+				if (event.type === 'reload' && this.reloadQueue.size === 0) {
+					this.reloadQueue.add(async () => {
+						if (!this.isInitialized) {
+							logger.warn('Flow manager is not initialized yet, skipping reload');
+							return;
+						}
 
-					try {
-						// Read before unloading, so a failed read doesn't leave the manager empty
-						const flows = await this.readFlows();
+						try {
+							// Read before unloading, so a failed read doesn't leave the manager empty
+							const flows = await this.readFlows();
 
-						await this.unload();
-						this.load(flows);
-					} catch (error) {
-						logger.error(error, 'Failed to reload flows, flows on this instance may be outdated until the next reload');
-					}
-				});
-			}
-		});
+							await this.unload();
+							this.load(flows);
+						} catch (error) {
+							logger.error(
+								error,
+								'Failed to reload flows, flows on this instance may be outdated until the next reload',
+							);
+						}
+					});
+				}
+			})
+			.catch((error) => {
+				logger.error(error, 'Failed to subscribe to flow messages');
+			});
 	}
 
 	public async initialize(): Promise<void> {
@@ -122,9 +129,7 @@ class FlowManager {
 	}
 
 	public async reload(): Promise<void> {
-		const messenger = useBus();
-
-		messenger.publish<FlowMessage>('flows', { type: 'reload' });
+		await useBus().publish<FlowMessage>('flows', { type: 'reload' });
 	}
 
 	public addOperation(id: string, operation: OperationHandler): void {
