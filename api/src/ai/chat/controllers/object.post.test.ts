@@ -61,6 +61,7 @@ describe('aiObjectPostHandler', () => {
 						openaiApiKey: 'test-openai-key',
 						anthropicApiKey: 'test-anthropic-key',
 						googleApiKey: null,
+						openrouterApiKey: null,
 						openaiCompatibleApiKey: null,
 						openaiCompatibleBaseUrl: null,
 						openaiCompatibleName: null,
@@ -69,6 +70,7 @@ describe('aiObjectPostHandler', () => {
 						openaiAllowedModels: ['gpt-5', 'gpt-5-mini'],
 						anthropicAllowedModels: ['claude-sonnet-4-5'],
 						googleAllowedModels: ['gemini-2.5-pro'],
+						openrouterModels: [{ id: 'anthropic/claude-sonnet-5.5', name: 'Claude Sonnet 5.5' }],
 						systemPrompt: null,
 					},
 				},
@@ -143,6 +145,29 @@ describe('aiObjectPostHandler', () => {
 
 		it('should throw ForbiddenError when allowedModels is empty', async () => {
 			mockRes.locals!['ai'].settings.openaiAllowedModels = [];
+
+			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
+		});
+
+		it('should allow saved openrouter models', async () => {
+			vi.mocked(buildProviderConfigs).mockReturnValue([{ type: 'openrouter', apiKey: 'test' }]);
+
+			mockReq.body = { ...validBody, provider: 'openrouter', model: 'anthropic/claude-sonnet-5.5' };
+
+			await aiObjectPostHandler(mockReq as Request, mockRes as Response);
+
+			expect(mockPipeTextStreamToResponse).toHaveBeenCalledWith(mockRes);
+		});
+
+		it('should throw ForbiddenError when openrouter model is not in allowed list', async () => {
+			mockReq.body = { ...validBody, provider: 'openrouter', model: 'openai/gpt-5.5' };
+
+			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
+		});
+
+		it('should throw ForbiddenError when no openrouter models are saved', async () => {
+			mockRes.locals!['ai'].settings.openrouterModels = [];
+			mockReq.body = { ...validBody, provider: 'openrouter', model: 'anthropic/claude-sonnet-5.5' };
 
 			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
 		});

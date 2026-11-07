@@ -3,6 +3,7 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { safeValidateUIMessages } from 'ai';
 import type { RequestHandler } from 'express';
 import { fromZodError } from 'zod-validation-error';
+import type { AISettings } from '../../providers/index.js';
 import { createUiStream } from '../lib/create-ui-stream.js';
 import { ChatRequest } from '../models/chat-request.js';
 import { chatRequestToolsToAiSdkTools } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
@@ -21,12 +22,13 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 
 	const { provider, model, messages: rawMessages, tools: requestedTools, toolApprovals, context } = parseResult.data;
 
-	const aiSettings = res.locals['ai'].settings;
+	const aiSettings: AISettings = res.locals['ai'].settings;
 
 	const allowedModelsMap: Record<StandardProviderType, string[] | null> = {
 		openai: aiSettings.openaiAllowedModels,
 		anthropic: aiSettings.anthropicAllowedModels,
 		google: aiSettings.googleAllowedModels,
+		openrouter: aiSettings.openrouterModels?.map((model) => model.id) ?? null,
 	};
 
 	// For standard providers: null/empty = no models allowed, must be in list

@@ -33,6 +33,7 @@ export const aiObjectPostHandler: RequestHandler = async (req, res) => {
 		openai: aiSettings.openaiAllowedModels,
 		anthropic: aiSettings.anthropicAllowedModels,
 		google: aiSettings.googleAllowedModels,
+		openrouter: aiSettings.openrouterModels?.map((model) => model.id) ?? null,
 	};
 
 	if (provider !== 'openai-compatible') {

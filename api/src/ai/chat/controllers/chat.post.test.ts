@@ -45,6 +45,7 @@ describe('aiChatPostHandler', () => {
 						openaiApiKey: 'test-openai-key',
 						anthropicApiKey: 'test-anthropic-key',
 						googleApiKey: null,
+						openrouterApiKey: null,
 						openaiCompatibleApiKey: null,
 						openaiCompatibleBaseUrl: null,
 						openaiCompatibleName: null,
@@ -53,6 +54,7 @@ describe('aiChatPostHandler', () => {
 						openaiAllowedModels: ['gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'any-model-name'],
 						anthropicAllowedModels: ['claude-sonnet-4-5', 'any-model-name'],
 						googleAllowedModels: ['gemini-2.5-pro', 'gemini-2.5-flash'],
+						openrouterModels: [{ id: 'openai/gpt-6-luna', name: 'GPT-6 Luna' }],
 						systemPrompt: null,
 					},
 					systemPrompt: undefined,
@@ -247,6 +249,7 @@ describe('aiChatPostHandler', () => {
 				openaiApiKey: 'custom-openai-key',
 				anthropicApiKey: 'custom-anthropic-key',
 				googleApiKey: null,
+				openrouterApiKey: null,
 				openaiCompatibleApiKey: null,
 				openaiCompatibleBaseUrl: null,
 				openaiCompatibleName: null,
@@ -255,6 +258,7 @@ describe('aiChatPostHandler', () => {
 				openaiAllowedModels: ['gpt-5'],
 				anthropicAllowedModels: ['claude-sonnet-4-5'],
 				googleAllowedModels: ['gemini-2.5-pro'],
+				openrouterModels: [{ id: 'openai/gpt-6-luna', name: 'GPT-6 Luna' }],
 				systemPrompt: null,
 			};
 
@@ -420,6 +424,55 @@ describe('aiChatPostHandler', () => {
 			mockReq.body = {
 				provider: 'google',
 				model: 'gemini-2.5-flash',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
+			};
+
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
+				ForbiddenError,
+			);
+		});
+
+		it('should allow saved openrouter models', async () => {
+			mockRes.locals!['ai'].settings.openrouterModels = [
+				{ id: 'anthropic/claude-sonnet-5.5', name: 'Claude Sonnet 5.5' },
+			];
+
+			mockReq.body = {
+				provider: 'openrouter',
+				model: 'anthropic/claude-sonnet-5.5',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
+			};
+
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			expect(vi.mocked(createUiStream)).toHaveBeenCalled();
+		});
+
+		it('should validate openrouter models against the saved models', async () => {
+			mockRes.locals!['ai'].settings.openrouterModels = [
+				{ id: 'anthropic/claude-sonnet-5.5', name: 'Claude Sonnet 5.5' },
+			];
+
+			mockReq.body = {
+				provider: 'openrouter',
+				model: 'openai/gpt-5.5',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
+			};
+
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
+				ForbiddenError,
+			);
+		});
+
+		it('should throw ForbiddenError when no openrouter models are saved', async () => {
+			mockRes.locals!['ai'].settings.openrouterModels = [];
+
+			mockReq.body = {
+				provider: 'openrouter',
+				model: 'anthropic/claude-sonnet-5.5',
 				messages: [{ role: 'user', content: 'Hello' }],
 				tools: [],
 			};
