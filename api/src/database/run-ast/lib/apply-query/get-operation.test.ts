@@ -79,3 +79,19 @@ test('nested empty object', () => {
 
 	expect(result).toBeNull();
 });
+
+for (const quantifier of ['_some', '_none']) {
+	for (const logical of ['_and', '_or']) {
+		test(`key with ${quantifier} wrapping a ${logical} group`, () => {
+			const group = [{ level: { _eq: 1 } }, { id: { _eq: 2 } }];
+
+			const result = getOperation('skills', { [quantifier]: { [logical]: group } });
+
+			expect(result).toEqual({ operator: quantifier, value: { [logical]: group } });
+		});
+	}
+}
+
+test('key with _none wrapping a plain field filter', () => {
+	expect(getOperation('skills', { _none: { level: { _eq: 1 } } })).toEqual({ operator: '_eq', value: 1 });
+});
