@@ -1,4 +1,4 @@
 ---
 ---
 
-Imported AGENTS.md from .claude/CLAUDE.md so Claude Code loads it
+Removed .claude/CLAUDE.md so Claude Code reads AGENTS.md directly
