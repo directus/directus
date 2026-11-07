@@ -14,6 +14,11 @@ export function getOperation(key: string, value: unknown): { operator: string; v
 
 	const childKey = Object.keys(value)[0];
 
+	// `_some` / `_none` hold a nested filter that may start with a logical operator, which is applied in a subquery
+	if ((key === '_none' || key === '_some') && (childKey === '_and' || childKey === '_or')) {
+		return { operator: key, value };
+	}
+
 	if (childKey) {
 		return getOperation(childKey, Object.values(value)[0]);
 	}

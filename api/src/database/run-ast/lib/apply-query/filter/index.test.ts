@@ -267,6 +267,42 @@ for (const quantifier of ['_some', '_none']) {
 	});
 }
 
+for (const quantifier of ['_some', '_none']) {
+	for (const logical of ['_and', '_or']) {
+		test(`filtering o2m relation with ${quantifier} wrapping a ${logical} group`, async () => {
+			const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+			const queryBuilder = db.queryBuilder();
+
+			applyFilter(
+				db,
+				o2m_schema,
+				queryBuilder,
+				{
+					links: {
+						[quantifier]: {
+							[logical]: [{ name: { _eq: 2 } }, { id: { _eq: 3 } }],
+						},
+					},
+				},
+				'article',
+				{},
+				[],
+				[],
+			);
+
+			const rawQuery = queryBuilder.toSQL();
+			const operator = quantifier === '_none' ? 'not in' : 'in';
+			const glue = logical === '_and' ? 'and' : 'or';
+
+			expect(rawQuery.sql).toContain(
+				`where "article"."id" ${operator} (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and ("links_list"."name" = ? ${glue} "links_list"."id" = ?))`,
+			);
+
+			expect(rawQuery.bindings).toEqual([2, 3]);
+		});
+	}
+}
+
 test(`filtering a2o relation`, async () => {
 	const schema = new SchemaBuilder()
 		.collection('article', (c) => {
