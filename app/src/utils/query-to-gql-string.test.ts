@@ -130,3 +130,22 @@ describe('Filter query with functions', () => {
 		});
 	});
 });
+
+describe('Filter query on a many-to-any field', () => {
+	test.each([true, false])(`System collection: %o`, (isSystemCollection) => {
+		const query: Query = {
+			filter: { _and: [{ sections: { 'item:body': { content: { _contains: 'word' } } } }] },
+		};
+
+		const collection = isSystemCollection ? `directus_${collectionName}` : collectionName;
+		const formatted = formatQuery({ collection, key, query });
+
+		expect(formatted).toStrictEqual({
+			__aliasFor: collectionName,
+			__args: {
+				filter: { _and: [{ sections: { item__body: { content: { _contains: 'word' } } } }] },
+			},
+			[primaryKeyField]: true,
+		});
+	});
+});

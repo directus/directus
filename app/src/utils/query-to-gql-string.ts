@@ -74,7 +74,7 @@ export function formatQuery({ collection, query }: QueryInfo): Record<string, an
 }
 
 /**
- * Replace functions from Directus-Filter format to GraphQL format
+ * Replace functions and many-to-any keys from Directus-Filter format to GraphQL format
  */
 function replaceFuncs(filter?: Filter | null): null | undefined | Filter {
 	if (!filter) return filter;
@@ -94,7 +94,10 @@ function replaceFuncs(filter?: Filter | null): null | undefined | Filter {
 					result[key] = value;
 				}
 			} else {
-				result[key] = value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
+				// GraphQL names can't contain ":", so the API takes many-to-any keys like `item:body` as `item__body`
+				const gqlKey = typeof key === 'string' ? key.replaceAll(':', '__') : key;
+
+				result[gqlKey] = value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
 			}
 		});
 	}
