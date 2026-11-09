@@ -53,8 +53,8 @@ const props = withDefaults(
 		linkProtocols?: string[] | null;
 		/** Keep `<b>` and `<i>` from the source instead of rewriting them to `<strong>` and `<em>`. */
 		keepLegacyEmphasisTags?: boolean;
-		/** Never add `<p>` in list items, blockquotes and table cells; see extensions/tight-paragraphs.ts. */
-		tightParagraphs?: boolean;
+		/** Never add `<p>` in list items, blockquotes and table cells; see extensions/no-container-paragraphs.ts. */
+		noContainerParagraphs?: boolean;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -98,7 +98,7 @@ const fieldSchema = buildFieldSchema({
 	extensionOptions: props.extensionOptions,
 	linkProtocols: props.linkProtocols,
 	keepLegacyEmphasisTags: props.keepLegacyEmphasisTags,
-	tightParagraphs: props.tightParagraphs,
+	noContainerParagraphs: props.noContainerParagraphs,
 	comparisonMode: props.comparisonMode,
 });
 

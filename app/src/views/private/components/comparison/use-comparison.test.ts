@@ -303,10 +303,12 @@ describe('useComparison', () => {
 			expect(comparisonData.value?.displayIncoming?.body).toContain('comparison-diff--added');
 		});
 
-		it('should diff-mark list items without <p> when the field uses tight paragraphs', async () => {
+		it('should diff-mark list items without <p> when the field uses noContainerParagraphs', async () => {
 			mockFieldsStore.getFieldsForCollection.mockImplementation(() =>
 				getFieldData().map((field) =>
-					field.field === 'body' ? { ...field, meta: { ...field.meta, options: { tightParagraphs: true } } } : field,
+					field.field === 'body'
+						? { ...field, meta: { ...field.meta, options: { noContainerParagraphs: true } } }
+						: field,
 				),
 			);
 

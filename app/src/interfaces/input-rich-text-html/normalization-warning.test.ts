@@ -157,14 +157,14 @@ describe('normalization warning wiring', () => {
 		expect(editor.isEditable).toBe(false);
 	});
 
-	test('a list item without <p> stays editable with tight paragraphs', async () => {
-		const { editor } = await mountWithValue('<ul><li>a</li></ul>', { tightParagraphs: true });
+	test('a list item without <p> stays editable with noContainerParagraphs', async () => {
+		const { editor } = await mountWithValue('<ul><li>a</li></ul>', { noContainerParagraphs: true });
 
 		expect(editor.isEditable).toBe(true);
 	});
 
-	test('an edit emits a list item without <p> with tight paragraphs', async () => {
-		const { wrapper, editor } = await mountWithValue('<ul><li>a</li></ul>', { tightParagraphs: true });
+	test('an edit emits a list item without <p> with noContainerParagraphs', async () => {
+		const { wrapper, editor } = await mountWithValue('<ul><li>a</li></ul>', { noContainerParagraphs: true });
 
 		// the value loads in the editor's deferred onCreate
 		await vi.waitFor(() => expect(editor.getText().trim()).toBe('a'));

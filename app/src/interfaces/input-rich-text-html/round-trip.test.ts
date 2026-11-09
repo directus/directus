@@ -330,9 +330,9 @@ describe('round-trip: image', () => {
 	});
 });
 
-describe('tight paragraphs', () => {
-	function tightEditor(html: string) {
-		const { extensions } = buildFieldSchema({ tightParagraphs: true });
+describe('noContainerParagraphs', () => {
+	function unwrappedEditor(html: string) {
+		const { extensions } = buildFieldSchema({ noContainerParagraphs: true });
 		return new Editor({ extensions: fieldEditorExtensions(extensions), content: html });
 	}
 
@@ -357,7 +357,7 @@ describe('tight paragraphs', () => {
 	};
 
 	test.each(Object.entries(UNCHANGED))('%s survives round-trip unchanged', (_name, html) => {
-		const editor = tightEditor(html);
+		const editor = unwrappedEditor(html);
 		const out = editor.getHTML();
 		editor.destroy();
 
@@ -365,13 +365,13 @@ describe('tight paragraphs', () => {
 	});
 
 	test.each(Object.entries(UNCHANGED))('%s does not trip the normalization check', (_name, html) => {
-		const { extensions, key } = buildFieldSchema({ tightParagraphs: true });
+		const { extensions, key } = buildFieldSchema({ noContainerParagraphs: true });
 
 		expect(computeValueNormalizationDiff(html, extensions, key)).toBeNull();
 	});
 
 	test('a paragraph turned into a list item gets no <p>', () => {
-		const editor = tightEditor('<p>a</p>');
+		const editor = unwrappedEditor('<p>a</p>');
 
 		editor.chain().setTextSelection(1).toggleBulletList().run();
 
@@ -380,7 +380,7 @@ describe('tight paragraphs', () => {
 	});
 
 	test('a blockquote made from a paragraph gets no <p>', () => {
-		const editor = tightEditor('<p>a</p>');
+		const editor = unwrappedEditor('<p>a</p>');
 
 		editor.chain().setTextSelection(1).toggleBlockquote().run();
 
@@ -389,7 +389,7 @@ describe('tight paragraphs', () => {
 	});
 
 	test('a list item split from a stored <p> gets no <p>', () => {
-		const editor = tightEditor('<ul><li><p>a</p></li></ul>');
+		const editor = unwrappedEditor('<ul><li><p>a</p></li></ul>');
 
 		editor.chain().setTextSelection(4).splitListItem('listItem').insertContent('b').run();
 
@@ -398,20 +398,20 @@ describe('tight paragraphs', () => {
 	});
 
 	test('an empty line opened above a paragraph survives a reload', () => {
-		const editor = tightEditor('<blockquote>a</blockquote>');
+		const editor = unwrappedEditor('<blockquote>a</blockquote>');
 
 		editor.chain().setTextSelection(2).splitBlock().run();
 		const saved = editor.getHTML();
 		editor.destroy();
 
-		const reloaded = tightEditor(saved);
+		const reloaded = unwrappedEditor(saved);
 
 		expect(reloaded.state.doc.firstChild?.childCount).toBe(2);
 		reloaded.destroy();
 	});
 
 	test('a paragraph that gains an attribute keeps its <p> so the attribute survives', () => {
-		const editor = tightEditor('<ul><li>a</li></ul>');
+		const editor = unwrappedEditor('<ul><li>a</li></ul>');
 
 		editor.chain().setTextSelection(3).updateAttributes('paragraph', { textAlign: 'center' }).run();
 
@@ -420,7 +420,7 @@ describe('tight paragraphs', () => {
 	});
 
 	test('the editor view still renders the paragraph', () => {
-		const editor = tightEditor('<ul><li>a</li></ul>');
+		const editor = unwrappedEditor('<ul><li>a</li></ul>');
 
 		expect(editor.view.dom.querySelector('li > p')?.textContent).toBe('a');
 		editor.destroy();
@@ -435,6 +435,6 @@ describe('tight paragraphs', () => {
 	});
 
 	test('the schema key tells the two modes apart', () => {
-		expect(buildFieldSchema({ tightParagraphs: true }).key).not.toBe(buildFieldSchema({}).key);
+		expect(buildFieldSchema({ noContainerParagraphs: true }).key).not.toBe(buildFieldSchema({}).key);
 	});
 });

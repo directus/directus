@@ -4,7 +4,7 @@ import { DOMSerializer, type Fragment, type Schema } from '@tiptap/pm/model';
 const CONTAINER_TAGS = new Set(['LI', 'BLOCKQUOTE', 'TD', 'TH']);
 
 // `renderHTML` must return a real element, so a paragraph cannot drop its own wrapper there
-class TightParagraphSerializer extends DOMSerializer {
+class NoContainerParagraphSerializer extends DOMSerializer {
 	override serializeFragment(
 		fragment: Fragment,
 		options?: { document?: Document },
@@ -26,8 +26,8 @@ class TightParagraphSerializer extends DOMSerializer {
 	}
 }
 
-function seedTightParagraphSerializer(schema: Schema) {
-	schema.cached['domSerializer'] = new TightParagraphSerializer(
+function seedNoContainerParagraphSerializer(schema: Schema) {
+	schema.cached['domSerializer'] = new NoContainerParagraphSerializer(
 		DOMSerializer.nodesFromSchema(schema),
 		DOMSerializer.marksFromSchema(schema),
 	);
@@ -37,8 +37,8 @@ function seedTightParagraphSerializer(schema: Schema) {
  * Never adds `<p>` in list items, blockquotes and table cells. A stored `<p>` there stays.
  * Every output path gets this through `DOMSerializer.fromSchema`; the editor view does not.
  */
-export const TightParagraphs = Extension.create({
-	name: 'tightParagraphs',
+export const NoContainerParagraphs = Extension.create({
+	name: 'noContainerParagraphs',
 
 	addGlobalAttributes() {
 		return [
@@ -58,6 +58,6 @@ export const TightParagraphs = Extension.create({
 	},
 
 	onBeforeCreate() {
-		seedTightParagraphSerializer(this.editor.schema);
+		seedNoContainerParagraphSerializer(this.editor.schema);
 	},
 });

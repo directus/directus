@@ -360,15 +360,15 @@ export default defineInterface({
 				},
 			},
 			{
-				field: 'tightParagraphs',
-				name: '$t:interfaces.input-rich-text-html.tight_paragraphs',
+				field: 'noContainerParagraphs',
+				name: '$t:interfaces.input-rich-text-html.no_container_paragraphs',
 				type: 'boolean',
 				meta: {
 					width: 'full',
 					interface: 'boolean',
-					note: '$t:interfaces.input-rich-text-html.tight_paragraphs_note',
+					note: '$t:interfaces.input-rich-text-html.no_container_paragraphs_note',
 					options: {
-						label: '$t:interfaces.input-rich-text-html.tight_paragraphs_label',
+						label: '$t:interfaces.input-rich-text-html.no_container_paragraphs_label',
 					},
 				},
 				schema: {

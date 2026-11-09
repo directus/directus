@@ -9,6 +9,7 @@ import { figureExtensions } from './figure';
 import { CustomImage } from './image';
 import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
+import { NoContainerParagraphs } from './no-container-paragraphs';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
 import { PreservedAttributes } from './preserved-attributes';
@@ -19,7 +20,6 @@ import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { Table } from './table';
 import { TextAlignment } from './text-alignment';
 import { TextStyle } from './text-style';
-import { TightParagraphs } from './tight-paragraphs';
 import { contributedKey, enabledRichTexts } from '@/rich-text/register';
 
 /**
@@ -78,8 +78,8 @@ export interface FieldSchemaOptions {
 	linkProtocols?: unknown;
 	/** Field `keepLegacyEmphasisTags` option: keep `<b>` and `<i>` instead of rewriting them to `<strong>` and `<em>`. */
 	keepLegacyEmphasisTags?: unknown;
-	/** Field `tightParagraphs` option: never add `<p>` in list items, blockquotes and table cells. */
-	tightParagraphs?: boolean;
+	/** Field `noContainerParagraphs` option: never add `<p>` in list items, blockquotes and table cells. */
+	noContainerParagraphs?: boolean;
 	comparisonMode?: boolean;
 }
 
@@ -113,7 +113,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			...customFormats.extensions,
 			...links.extensions,
 			...legacyEmphasis.extensions,
-			...(options.tightParagraphs ? [TightParagraphs] : []),
+			...(options.noContainerParagraphs ? [NoContainerParagraphs] : []),
 			...(options.comparisonMode ? [ComparisonDiff] : []),
 		],
 		key: [
@@ -121,7 +121,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			customFormats.key,
 			links.key,
 			legacyEmphasis.key,
-			options.tightParagraphs ? 'tight-paragraphs' : '',
+			options.noContainerParagraphs ? 'no-container-paragraphs' : '',
 			contributed.map((config) => config.key).join('\u0000'),
 		].join('\u0000'),
 		formats: customFormats.formats,
