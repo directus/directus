@@ -317,15 +317,15 @@ export class ExtensionManager {
 	 * Unregister all extensions from the current process
 	 */
 	private async unload(): Promise<void> {
+		emitter.emitAction('extensions.unload', {
+			extensions: this.extensions,
+		});
+
 		await this.unregisterApiExtensions();
 
 		this.localEmitter.offAll();
 
 		this.isLoaded = false;
-
-		emitter.emitAction('extensions.unload', {
-			extensions: this.extensions,
-		});
 
 		const logger = useLogger();
 

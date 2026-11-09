@@ -32,6 +32,9 @@ export function resolveLoginRedirect(redirect: unknown, opts: { provider?: strin
 				throw new Error('Relative URL mismatch');
 			}
 
+			// Ensure the path does not start with `//`, which the browser treats as a protocol-relative URL.
+			if (parsedRelativeURL.pathname.startsWith('//')) throw new Error('Protocol-relative path');
+
 			// If the protocol & host match then it is a safe relative path
 			return parsedRelativeURL.toString().replace(dummyDomain, '');
 		} catch {

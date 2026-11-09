@@ -1,6 +1,16 @@
 import { randomUUID } from 'node:crypto';
 import { type sandbox as Sandbox } from '@directus/sandbox';
-import { clearCache, createCollection, createDirectus, createItem, rest, staticToken } from '@directus/sdk';
+import {
+	clearCache,
+	createCollection,
+	createDirectus,
+	createItem,
+	type DirectusClient,
+	rest,
+	type RestClient,
+	staticToken,
+	type StaticTokenClient,
+} from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
@@ -23,10 +33,15 @@ const CONFIGS = [
 	{ name: 'a redis store with auto purge', store: 'redis', purge: true },
 ] as const;
 
+type Schema = {
+	cache_normal: Record<string, unknown>;
+	cache_ignored: Record<string, unknown>;
+};
+
 for (const { name, store, purge } of CONFIGS) {
 	describe(`caching with ${name}`, () => {
 		let directus: Awaited<ReturnType<typeof Sandbox>>;
-		let api: ReturnType<typeof createDirectus<any>> & any;
+		let api: DirectusClient<Schema> & RestClient<Schema> & StaticTokenClient<Schema>;
 
 		beforeAll(async () => {
 			directus = await useSandbox(database, {
@@ -46,7 +61,9 @@ for (const { name, store, purge } of CONFIGS) {
 				docker: { suffix: `${getUID()}${store}${purge}` },
 			});
 
-			api = createDirectus<any>(`http://localhost:${directus.apis[0]!.port}`).with(rest()).with(staticToken('admin'));
+			api = createDirectus<Schema>(`http://localhost:${directus.apis[0]!.port}`)
+				.with(rest())
+				.with(staticToken('admin'));
 
 			for (const collection of [NORMAL, IGNORED]) {
 				await api.request(
@@ -104,9 +121,9 @@ for (const { name, store, purge } of CONFIGS) {
 				body: JSON.stringify({ last_page: `/content/${collection}` }),
 			});
 
-			const preset = await (
+			const preset = (await (
 				await fetch(`${base}/presets`, { method: 'POST', headers, body: JSON.stringify({ collection }) })
-			).json();
+			).json()) as { data: { id: string } };
 
 			await fetch(`${base}/presets/${preset.data.id}`, {
 				method: 'PATCH',
@@ -115,7 +132,7 @@ for (const { name, store, purge } of CONFIGS) {
 			});
 		}
 
-		for (const collection of [NORMAL, IGNORED]) {
+		for (const collection of [NORMAL, IGNORED] as const) {
 			const ignored = collection === IGNORED;
 
 			test(`browsing ${collection} without a referer keeps the cache`, async () => {

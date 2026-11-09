@@ -19,6 +19,7 @@ import type {
 	Transformation,
 	TransformationSet,
 } from '@directus/types';
+import { isValidUuid } from '@directus/utils';
 import { ZipArchive } from 'archiver';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
@@ -31,7 +32,6 @@ import { useLogger } from '../logger/index.js';
 import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
-import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { assertTransformsAllowed, toDimension } from './assets/assert-transforms-allowed.js';
 import { NameDeduper } from './assets/name-deduper.js';

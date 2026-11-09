@@ -3,7 +3,7 @@ import { describeMode, MODES, type SyncMode } from '../../kernel/config/mode.js'
 import type { CliContext } from '../../kernel/run.js';
 import { maybePluralize } from '../../kernel/text.js';
 import type { ImportBatchResult } from './utils/contract.js';
-import { type DataPreviewPlan, previewData } from './utils/data-push.js';
+import { type DataPreviewPlan, previewData, skippedPresetsMessage } from './utils/data-push.js';
 import {
 	claimedKeyLines,
 	claimedTemporaryKeys,
@@ -75,6 +75,9 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	const preview = await previewData(target, mode);
 
+	// Warned up front like push does, so a plan that is otherwise converged still says why.
+	if (preview !== undefined && preview.skipped > 0) ctx.ui.warn(skippedPresetsMessage(preview.skipped));
+
 	if (mode === 'mirror' && preview !== undefined && preview.incomplete.length > 0) {
 		ctx.ui.warn(
 			`The configuration in ${projectPath} is incomplete for ${preview.incomplete.join(', ')} — the source hid records from reads at pull time, and push will refuse mirror. Push with --mode merge, or license the source and re-pull.`,
@@ -126,7 +129,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	if (ctx.ui.json) return;
 
 	if (schema.result === null && !dataChanged && ambiguous === 0) {
-		ctx.ui.success(convergedMessage('diff', target, ctx.cwd, schema, preview !== undefined));
+		ctx.ui.success(convergedMessage('diff', target, ctx.cwd, schema, preview !== undefined, preview?.skipped));
 		return;
 	}
 

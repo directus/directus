@@ -51,11 +51,14 @@ vi.mock('./flows', () => ({
 	}),
 }));
 
+const licenseManager = vi.hoisted(() => ({
+	initialize: vi.fn(),
+	getLicense: vi.fn().mockResolvedValue({ meta: { validation_interval: -1 } }),
+	scheduleCheck: vi.fn(),
+}));
+
 vi.mock('./license/index.js', () => ({
-	getLicenseManager: vi.fn().mockImplementation(() => ({
-		initialize: vi.fn(),
-		getLicense: vi.fn().mockResolvedValue({ meta: { validation_interval: -1 } }),
-	})),
+	getLicenseManager: () => licenseManager,
 	getEntitlementManager: vi.fn().mockImplementation(() => ({
 		initialize: vi.fn(),
 		isEntitled: vi.fn().mockReturnValue(false),
@@ -63,10 +66,7 @@ vi.mock('./license/index.js', () => ({
 }));
 
 vi.mock('./license/manager.js', () => ({
-	getLicenseManager: vi.fn().mockImplementation(() => ({
-		initialize: vi.fn(),
-		getLicense: vi.fn().mockResolvedValue({ meta: { validation_interval: -1 } }),
-	})),
+	getLicenseManager: () => licenseManager,
 }));
 
 vi.mock('./middleware/schema', () => ({
@@ -127,6 +127,12 @@ const request = async (path: string = '') => {
 };
 
 describe('createApp', async () => {
+	test('Should schedule the license check', async () => {
+		await createApp();
+
+		expect(licenseManager.scheduleCheck).toHaveBeenCalledOnce();
+	});
+
 	describe('Content Security Policy', () => {
 		test('Should set content-security-policy header by default', async () => {
 			const response = await request();

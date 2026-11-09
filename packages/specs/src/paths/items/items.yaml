@@ -35,7 +35,7 @@ get:
                 items:
                   type: object
               meta:
-                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+                $ref: '../../openapi.yaml#/components/schemas/Metadata'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
 

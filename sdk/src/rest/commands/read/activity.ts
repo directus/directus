@@ -37,7 +37,7 @@ export const readActivity =
 		query?: TQuery,
 	): RestCommand<ReadActivityOutput<Schema, TQuery>, Schema> =>
 	() => {
-		throwIfEmpty(String(key), 'Key cannot be empty');
+		throwIfEmpty(key, 'Key cannot be empty');
 
 		return {
 			path: `/activity/${key}`,

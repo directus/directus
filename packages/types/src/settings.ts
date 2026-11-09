@@ -62,6 +62,7 @@ export type Settings = {
 	custom_aspect_ratios: CustomAspectRatio[] | null;
 	custom_css: string | null;
 	storage_default_folder: string | null;
+	default_exports_folder: string | null;
 	basemaps: any[] | null;
 	mapbox_key: string | null;
 	module_bar: (SettingsModuleBarLink | SettingsModuleBarModule)[] | null;

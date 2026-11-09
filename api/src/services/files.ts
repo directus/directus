@@ -2,7 +2,6 @@ import type { Readable } from 'node:stream';
 import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
 import zlib from 'node:zlib';
 import path from 'path';
-import url from 'url';
 import { useEnv } from '@directus/env';
 import {
 	ContentTooLargeError,
@@ -293,8 +292,8 @@ export class FilesService extends ItemsService<File> {
 		let mimeType: string;
 
 		try {
-			const parsedURL = url.parse(fileResponse.request.res.responseUrl);
-			filename = decodeURI(path.basename(parsedURL.pathname as string));
+			const parsedURL = new URL(fileResponse.request.res.responseUrl);
+			filename = decodeURI(path.basename(parsedURL.pathname));
 
 			mimeType = fileResponse.headers['content-type']?.split(';')[0]?.trim() || 'application/octet-stream';
 

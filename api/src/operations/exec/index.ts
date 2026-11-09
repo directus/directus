@@ -1,7 +1,8 @@
 import { createRequire } from 'node:module';
 import { defineOperationApi } from '@directus/extensions';
-// eslint-disable-next-line import/order
 import { sieveFunctions } from '@directus/utils';
+// eslint-disable-next-line import/order
+import { serializeErrors } from '../../utils/serialize-errors.js';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -48,7 +49,8 @@ export default defineOperationApi<Options>({
 		// Run the operation once to define the module.exports function
 		await context.eval(code, { timeout: scriptTimeoutMs });
 
-		const inputData = new ivm.ExternalCopy({ data: sieveFunctions(data) });
+		// Errors (e.g. the validation errors of a rejected condition) can't be copied into the isolate
+		const inputData = new ivm.ExternalCopy({ data: sieveFunctions(serializeErrors(data)) });
 
 		const resultRef = await context.evalClosure(`return module.exports($0.data)`, [inputData.copyInto()], {
 			result: { reference: true, promise: true },

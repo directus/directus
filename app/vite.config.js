@@ -93,6 +93,9 @@ export default defineConfig({
 		dir: path.resolve(__dirname, '..'),
 		include: ['app/**/*.test.ts'],
 		environment: 'happy-dom',
+		css: { include: [/input-rich-text-html\.vue/] },
+		// Node 25+ defines its own localStorage/sessionStorage globals, which stops vitest from installing happy-dom's
+		execArgv: ['--no-experimental-webstorage'],
 		deps: {
 			optimizer: {
 				client: {

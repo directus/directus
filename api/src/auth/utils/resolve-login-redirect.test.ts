@@ -14,6 +14,7 @@ const VALID_RELATIVE_PATHS = [
 	{ input: '/', expected: '/' },
 	{ input: '/admin/users', expected: '/admin/users' },
 	{ input: '/a/b/c/d/e', expected: '/a/b/c/d/e' },
+	{ input: '/admin//users', expected: '/admin//users' },
 	{ input: '/admin?tab=users', expected: '/admin?tab=users' },
 	{ input: '/admin#section', expected: '/admin#section' },
 	{ input: '/admin?tab=users#top', expected: '/admin?tab=users#top' },
@@ -24,6 +25,8 @@ const VALID_RELATIVE_PATHS = [
 const NORMALIZATION_CASES = [
 	{ input: './admin', expected: '/admin' },
 	{ input: '../admin', expected: '/admin' },
+	{ input: '/%2e%2e/admin', expected: '/admin' },
+	{ input: 'admin', expected: '/admin' },
 	{ input: '\\google.com', expected: '/google.com' },
 	{ input: '\\google.com/callback', expected: '/google.com/callback' },
 	{ input: '/\tgoogle.com', expected: '/google.com' },
@@ -40,11 +43,19 @@ const RELATIVE_BYPASS_ATTEMPTS = [
 	{ input: '\\\\google.com' },
 	{ input: '\\/\\/google.com' },
 	{ input: '//\\evil.com' },
+	{ input: '/..//evil.com' },
+	{ input: '/.//evil.com' },
+	{ input: '/..///evil.com' },
+	{ input: '/admin/../..//evil.com' },
+	{ input: '/%2e%2e//evil.com' },
+	{ input: '/..\\/evil.com' },
+	{ input: '//' },
 ];
 
 const SAFE_ENCODED_PATHS = [
 	{ input: '%2F%2Fevil.com', expected: '/%2F%2Fevil.com' },
 	{ input: '/admin%00.evil.com', expected: '/admin%00.evil.com' },
+	{ input: '%0d%0a//evil.com', expected: '/%0d%0a//evil.com' },
 ];
 
 const DISALLOWED_PROTOCOLS = [
@@ -165,6 +176,10 @@ describe('resolveLoginRedirect', () => {
 				expect(resolveLoginRedirect(input)).toBe(input);
 			});
 
+			test('allows matching default port', () => {
+				expect(resolveLoginRedirect(`https://directus.example.com:443/admin`)).toBe(`${PUBLIC_URL}/admin`);
+			});
+
 			test('allows matching custom port', () => {
 				vi.mocked(useEnv).mockReturnValue({ PUBLIC_URL: 'http://localhost:8055' });
 
@@ -253,6 +268,15 @@ describe('resolveLoginRedirect', () => {
 			});
 
 			expect(resolveLoginRedirect(`${PUBLIC_URL}/admin`, { provider: 'github' })).toBe(`${PUBLIC_URL}/admin`);
+		});
+
+		test('allows relative path when allow list is configured', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				PUBLIC_URL,
+				AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://allowed.com/callback',
+			});
+
+			expect(resolveLoginRedirect('/admin', { provider: 'github' })).toBe('/admin');
 		});
 
 		test('rejects URL not in allow list and not matching PUBLIC_URL', () => {

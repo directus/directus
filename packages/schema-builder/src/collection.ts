@@ -1,26 +1,29 @@
 import { ok as assert } from 'node:assert/strict';
-import type { CollectionOverview, FieldOverview, SchemaOverview } from '@directus/types';
+import type { Collection, CollectionMeta, CollectionOverview, Field } from '@directus/types';
 import { SchemaBuilder } from './builder.js';
-import { COLLECTION_DEFAULTS } from './defaults.js';
+import { COLLECTION_META_DEFAULTS } from './defaults.js';
 import { FieldBuilder } from './field.js';
 
-type InitialCollectionOverview = Omit<CollectionOverview, 'primary' | 'fields'>;
-type FinalCollectionOverview = Omit<CollectionOverview, 'fields'>;
-
 export type CollectionOveriewBuilderOptions = Partial<
-	Pick<CollectionOverview, 'singleton' | 'accountability' | 'note' | 'status'>
+	Pick<CollectionOverview, 'singleton' | 'accountability' | 'note' | 'status'> & Pick<CollectionMeta, 'versioning'>
 >;
+
+export type BuiltCollection = {
+	collection: Collection;
+	fields: Field[];
+};
 
 export class CollectionBuilder {
 	_schemaBuilder: SchemaBuilder | undefined;
-	_data: InitialCollectionOverview | FinalCollectionOverview;
+	_data: CollectionMeta;
+	_primary: string | undefined;
 	_fields: FieldBuilder[] = [];
 
 	constructor(name: string, schema?: SchemaBuilder) {
 		this._data = {
 			collection: name,
-			...COLLECTION_DEFAULTS,
-		} satisfies InitialCollectionOverview;
+			...COLLECTION_META_DEFAULTS,
+		};
 
 		this._schemaBuilder = schema;
 	}
@@ -41,23 +44,29 @@ export class CollectionBuilder {
 		return this._data.collection;
 	}
 
-	build(schema: SchemaOverview): CollectionOverview {
-		assert('primary' in this._data, `The collection ${this.get_name()} needs a primary key`);
+	build(): BuiltCollection {
+		assert(this._primary !== undefined, `The collection ${this.get_name()} needs a primary key`);
 
-		const fields: Record<string, FieldOverview> = {};
+		const fields: Field[] = [];
 
 		for (const fieldBuilder of this._fields) {
-			const field = fieldBuilder.build(schema);
-			assert(field.field in fields === false, `Field ${field.field} already exists`);
+			const field = fieldBuilder.build(this.get_name());
 
-			fields[field.field] = field;
+			assert(
+				fields.every(({ field: name }) => name !== field.field),
+				`Field ${field.field} already exists`,
+			);
+
+			fields.push(field);
 		}
 
-		const collection: CollectionOverview = {
-			...this._data,
+		return {
+			collection: {
+				collection: this.get_name(),
+				meta: { ...this._data },
+				schema: { name: this.get_name() },
+			},
 			fields,
 		};
-
-		return collection;
 	}
 }

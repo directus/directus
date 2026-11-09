@@ -147,6 +147,16 @@ test('should support multiple paths', () => {
 	);
 });
 
+test('should not drop an unmatched path when two paths match the same key', () => {
+	const result = redactObject(
+		{ a: 'value-a', secret_key: 'sensitive' },
+		{ keys: [['a'], ['*', 'x'], ['secret_key']] },
+		getRedactedString,
+	);
+
+	expect(result).toEqual({ a: REDACTED_TEXT, secret_key: REDACTED_TEXT });
+});
+
 describe('getReplacer tests', () => {
 	test('Returns parsed error object', () => {
 		const errorMessage = 'Error Message';

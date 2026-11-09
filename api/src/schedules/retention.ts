@@ -1,112 +1,98 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
+import type { PrimaryKey } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
+import { chunk, isNil } from 'lodash-es';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import { useLock } from '../lock/index.js';
 import { useLogger } from '../logger/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { runExclusive } from '../utils/run-exclusive.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
+import { transaction } from '../utils/transaction.js';
 
 export interface RetentionTask {
 	collection: string;
 	where?: readonly [string, string, Knex.Value | null];
 	join?: readonly [string, string, string];
-	timeframe: number | undefined;
+	timeframe: number;
 }
 
-const env = useEnv();
-
-const retentionLockKey = 'schedule--data-retention';
-const retentionLockTimeout = 10 * 60 * 1000; // 10 mins
-
-const ACTIVITY_RETENTION_TIMEFRAME = getMilliseconds(env['ACTIVITY_RETENTION']);
-const FLOW_LOGS_RETENTION_TIMEFRAME = getMilliseconds(env['FLOW_LOGS_RETENTION']);
-const REVISIONS_RETENTION_TIMEFRAME = getMilliseconds(env['REVISIONS_RETENTION']);
-
-const retentionTasks: RetentionTask[] = [
-	{
-		collection: 'directus_activity',
-		where: ['action', '!=', Action.RUN],
-		timeframe: ACTIVITY_RETENTION_TIMEFRAME,
-	},
-	{
-		collection: 'directus_activity',
-		where: ['action', '=', Action.RUN],
-		timeframe: FLOW_LOGS_RETENTION_TIMEFRAME,
-	},
-];
-
-export async function handleRetentionJob() {
+export async function handleRetentionJob(tasks: RetentionTask[], batch: number) {
 	const database = getDatabase();
 	const logger = useLogger();
-	const lock = useLock();
-	const batch = Number(env['RETENTION_BATCH']);
-	const lockTime = await lock.get(retentionLockKey);
-	const now = Date.now();
 	const helpers = getHelpers(database);
+	const deleted = { activities: 0, revisions: 0 };
 
-	if (lockTime && Number(lockTime) > now - retentionLockTimeout) {
-		// ensure only one connected process
-		return;
-	}
-
-	await lock.set(retentionLockKey, Date.now());
-
-	for (const task of retentionTasks) {
-		let count = 0;
-
-		if (task.timeframe === undefined) {
-			// skip disabled tasks
-			continue;
-		}
+	for (const task of tasks) {
+		let records: PrimaryKey[] = [];
 
 		do {
-			const subquery = database
+			const query = database
 				.queryBuilder()
 				.select(`${task.collection}.id`)
 				.from(task.collection)
-				.where('timestamp', '<', helpers.date.parse(new Date(Date.now() - task.timeframe)))
+				.where('directus_activity.timestamp', '<', helpers.date.parse(new Date(Date.now() - task.timeframe)))
 				.limit(batch);
 
 			if (task.where) {
-				subquery.where(...task.where);
+				query.where(...task.where);
 			}
 
 			if (task.join) {
-				subquery.join(...task.join);
+				query.join(...task.join);
 			}
 
 			try {
-				let records = [];
-				const isMySQL = helpers.schema.isOneOfClients(['mysql']);
+				/**
+				 * Fetch IDs up front so all subsequent queries operate on the same rows.
+				 *
+				 * Using a subquery could result in different rows being selected. It is also not supported by MySQL/MariaDB.
+				 * https://dev.mysql.com/doc/refman/8.4/en/subquery-restrictions.html
+				 */
+				records = await query.then((r) => r.map((r) => r.id));
 
-				// mysql/maria does not allow limit within a subquery
-				// https://dev.mysql.com/doc/refman/8.4/en/subquery-restrictions.html
-				if (isMySQL) {
-					records = await subquery.then((r) => r.map((r) => r.id));
-
-					if (records.length === 0) {
-						break;
-					}
+				if (records.length === 0) {
+					break;
 				}
 
-				count = await database(task.collection)
-					.whereIn('id', isMySQL ? records : subquery)
-					.delete();
+				const removed = await transaction(database, async (trx) => {
+					let revisionIds = records;
+
+					// deleting an activity cascades to its revisions, look those up to clear any reference
+					if (task.collection === 'directus_activity') {
+						revisionIds = await trx('directus_revisions')
+							.select('id')
+							.whereIn('activity', records)
+							.then((revisions) => revisions.map((revision) => revision.id));
+					}
+
+					// directus_revisions.parent has no on delete action, references to deleted revisions must be cleared first.
+					// Chunking by batch to ensure update is within allowed limits
+					for (const ids of chunk(revisionIds, batch)) {
+						await trx('directus_revisions').update({ parent: null }).whereIn('parent', ids);
+					}
+
+					const count = await trx(task.collection).whereIn('id', records).delete();
+
+					// revisions removed by the activity cascade are not part of the delete count
+					return task.collection === 'directus_activity'
+						? { activities: count, revisions: revisionIds.length }
+						: { activities: 0, revisions: count };
+				});
+
+				deleted.activities += removed.activities;
+				deleted.revisions += removed.revisions;
 			} catch (error) {
-				logger.error(error, `Retention failed for Collection ${task.collection}`);
+				logger.error(error, `Retention failed for collection ${task.collection}`);
 
 				break;
 			}
-
-			// Update lock time to prevent concurrent runs
-			await lock.set(retentionLockKey, Date.now());
-		} while (count >= batch);
+		} while (records.length >= batch);
 	}
 
-	await lock.delete(retentionLockKey);
+	logger.debug(`Retention deleted ${deleted.activities} activities and ${deleted.revisions} revisions`);
 }
 
 /**
@@ -116,29 +102,82 @@ export async function handleRetentionJob() {
  */
 export default async function schedule(): Promise<boolean> {
 	const env = useEnv();
+	const logger = useLogger();
+	const cron = String(env['RETENTION_SCHEDULE']);
 
 	if (!toBoolean(env['RETENTION_ENABLED'])) {
 		return false;
 	}
 
-	if (!validateCron(String(env['RETENTION_SCHEDULE']))) {
+	if (!validateCron(cron)) {
+		logger.error(`Invalid RETENTION_SCHEDULE: "${cron}". Retention disabled.`);
 		return false;
 	}
 
-	if (
-		!ACTIVITY_RETENTION_TIMEFRAME ||
-		(ACTIVITY_RETENTION_TIMEFRAME &&
-			REVISIONS_RETENTION_TIMEFRAME &&
-			ACTIVITY_RETENTION_TIMEFRAME > REVISIONS_RETENTION_TIMEFRAME)
-	) {
-		retentionTasks.push({
-			collection: 'directus_revisions',
-			join: ['directus_activity', 'directus_revisions.activity', 'directus_activity.id'],
-			timeframe: REVISIONS_RETENTION_TIMEFRAME,
+	let batch = Number(env['RETENTION_BATCH']);
+
+	if (!Number.isInteger(batch) || batch < 1) {
+		logger.error(`Invalid RETENTION_BATCH: "${env['RETENTION_BATCH']}". Retention disabled.`);
+		return false;
+	}
+
+	const activityTimeframe = getMilliseconds(env['ACTIVITY_RETENTION']);
+	const flowLogsTimeframe = getMilliseconds(env['FLOW_LOGS_RETENTION']);
+	const revisionsTimeframe = getMilliseconds(env['REVISIONS_RETENTION']);
+
+	const tasks: RetentionTask[] = [];
+
+	if (!isNil(activityTimeframe)) {
+		tasks.push({
+			collection: 'directus_activity',
+			where: ['directus_activity.action', '!=', Action.RUN],
+			timeframe: activityTimeframe,
 		});
 	}
 
-	scheduleSynchronizedJob('retention', String(env['RETENTION_SCHEDULE']), handleRetentionJob);
+	if (!isNil(flowLogsTimeframe)) {
+		tasks.push({
+			collection: 'directus_activity',
+			where: ['directus_activity.action', '=', Action.RUN],
+			timeframe: flowLogsTimeframe,
+		});
+	}
+
+	// revisions are deleted along with their activity, only required if they expire sooner
+	if (!isNil(revisionsTimeframe) && (isNil(activityTimeframe) || activityTimeframe > revisionsTimeframe)) {
+		tasks.push({
+			collection: 'directus_revisions',
+			join: ['directus_activity', 'directus_revisions.activity', 'directus_activity.id'],
+			timeframe: revisionsTimeframe,
+		});
+	}
+
+	if (tasks.length === 0) {
+		logger.warn('No retention timeframes are set. Retention disabled.');
+		return false;
+	}
+
+	// -1 as the parent-nulling update binds `null` in addition to the ids, so a batch can use all but one of the bindings
+	const maxBatch = getHelpers(getDatabase()).capabilities.getMaxBindings() - 1;
+
+	if (batch > maxBatch) {
+		logger.warn(
+			`"RETENTION_BATCH" value ${batch} exceeds the database limit. Using the maximum allowed value of ${maxBatch}`,
+		);
+
+		batch = maxBatch;
+	}
+
+	scheduleSynchronizedJob('retention', cron, async () => {
+		try {
+			await runExclusive('retention', () => handleRetentionJob(tasks, batch), {
+				// no timeout, the run is resumable and the lock lease prevents overlapping runs while it continues
+				timeout: Infinity,
+			});
+		} catch (error) {
+			logger.error(error, 'Retention run failed');
+		}
+	});
 
 	return true;
 }

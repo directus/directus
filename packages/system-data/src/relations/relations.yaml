@@ -118,6 +118,10 @@ data:
     one_collection: directus_folders
 
   - many_collection: directus_settings
+    many_field: default_exports_folder
+    one_collection: directus_folders
+
+  - many_collection: directus_settings
     many_field: public_registration_role
     one_collection: directus_roles
 

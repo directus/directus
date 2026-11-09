@@ -1,12 +1,12 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, Comment, MutationOptions, PrimaryKey } from '@directus/types';
+import { isValidUuid } from '@directus/utils';
 import { uniq } from 'lodash-es';
 import { useLogger } from '../logger/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { isValidUuid } from '../utils/is-valid-uuid.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
 import { ItemsService } from './items.js';
