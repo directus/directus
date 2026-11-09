@@ -1,7 +1,6 @@
 ---
 '@directus/api': minor
 '@directus/env': minor
-'@directus/constants': minor
 '@directus/utils': patch
 ---
 

@@ -1,4 +1,3 @@
-import { REGEX_DATE_ADJUSTMENT } from '@directus/constants';
 import {
 	addDays,
 	addHours,
@@ -27,6 +26,14 @@ import { clone } from 'lodash-es';
 const MAX_ADJUSTMENT_LENGTH = 64;
 
 /**
+ * A duration adjustment using the same syntax as Vercel's `ms`, capturing the amount and optional
+ * unit. The numeric group has exactly one way to match any input; a split point per digit would
+ * make a failed match quadratic in the input length.
+ */
+const ADJUSTMENT_PATTERN =
+	/^(-?(?:\d+(?:\.\d+)?|\.\d+)) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|months?|mth|mo|years?|yrs?|y)?$/i;
+
+/**
  * Adjust a given date by a given change in duration. The adjustment value uses the exact same syntax
  * and logic as Vercel's `ms`.
  *
@@ -45,7 +52,7 @@ export function adjustDate(date: Date, adjustment: string): Date | undefined {
 		adjustment = adjustment.substring(1);
 	}
 
-	const match = REGEX_DATE_ADJUSTMENT.exec(adjustment);
+	const match = ADJUSTMENT_PATTERN.exec(adjustment);
 
 	if (!match || !match[1]) {
 		return;
