@@ -10,14 +10,12 @@ type FragmentContext = Pick<GraphQLResolveInfo, 'fragments' | 'schema'>;
  * @param selections The selections to look through
  * @param parentType The type these selections belong to
  * @param info The fragments of this request (if any), and the schema to look type names up in
- * @param visited The named fragments already spread into this selection set
  * @returns The same selections, with any fragments in them swapped for their underlying selection set
  */
 function replaceInSelections(
 	selections: readonly SelectionNode[] | undefined,
 	parentType: GraphQLNamedType | undefined,
 	info: FragmentContext,
-	visited: Set<string>,
 ): readonly SelectionNode[] | null {
 	if (!selections) return null;
 
@@ -25,22 +23,14 @@ function replaceInSelections(
 		// A named (spread) fragment and an inline one are essentially the same, except for fragment location.
 		// Unknown fragments are rejected before this during schema validation.
 		if (selection.kind === Kind.FRAGMENT_SPREAD || selection.kind === Kind.INLINE_FRAGMENT) {
-			if (selection.kind === Kind.FRAGMENT_SPREAD) {
-				// Spreading a fragment into the same selection set twice contributes nothing the second
-				// time, and expanding it again is what makes `Fk { ...Fk-1 ...Fk-1 }` cost 2^k. This is the
-				// visited set `CollectFields` keeps in the spec.
-				if (visited.has(selection.name.value)) return [];
-
-				visited.add(selection.name.value);
-			}
-
+			// Every spread is expanded, however often it repeats. What that can cost is bounded before
+			// any resolver runs, by the `limitSelections` validation rule.
 			const fragment = selection.kind === Kind.FRAGMENT_SPREAD ? info.fragments[selection.name.value]! : selection;
 			const { typeCondition } = fragment;
 			const conditionType = typeCondition ? getNamedType(info.schema.getType(typeCondition.name.value)) : undefined;
 
 			// What is inside a fragment belongs to the type the fragment is written on and is therefore passed down.
-			const children =
-				replaceInSelections(fragment.selectionSet.selections, conditionType ?? parentType, info, visited) ?? [];
+			const children = replaceInSelections(fragment.selectionSet.selections, conditionType ?? parentType, info) ?? [];
 
 			// Check type condition within fragment to check for relevant collection for m2a union. Not applicable for other relations.
 			const narrowsUnion = isAbstractType(parentType) && isObjectType(conditionType);
@@ -72,14 +62,8 @@ function replaceInSelections(
 					...selection,
 					selectionSet: {
 						...selection.selectionSet,
-						// A nested field is collected on its own, so it starts with nothing spread into it yet
 						selections:
-							replaceInSelections(
-								selection.selectionSet.selections,
-								fieldType && getNamedType(fieldType),
-								info,
-								new Set(),
-							) ?? [],
+							replaceInSelections(selection.selectionSet.selections, fieldType && getNamedType(fieldType), info) ?? [],
 					},
 				},
 			];
@@ -97,10 +81,5 @@ function replaceInSelections(
  * @returns The selections asked for on that field, or null when it has no selection set
  */
 export function buildSelections(info: GraphQLResolveInfo): readonly SelectionNode[] | null {
-	return replaceInSelections(
-		info.fieldNodes[0]?.selectionSet?.selections,
-		getNamedType(info.returnType),
-		info,
-		new Set(),
-	);
+	return replaceInSelections(info.fieldNodes[0]?.selectionSet?.selections, getNamedType(info.returnType), info);
 }

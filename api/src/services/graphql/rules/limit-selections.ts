@@ -11,8 +11,7 @@ import { GraphQLError, Kind } from 'graphql';
  * Each fragment's size is therefore computed once and reused, which keeps this linear in the size
  * of the document no matter how large the expansion is.
  *
- * A fragment spread more than once into the same selection set is only counted once per selection
- * list it is written in, so the result can overestimate what the resolvers build, never underestimate.
+ * Every spread is counted, a repeated one included, because `buildSelections` expands every spread.
  */
 export function countSelections(
 	selectionSet: SelectionSetNode,
@@ -21,7 +20,6 @@ export function countSelections(
 	const fragmentSizes = new Map<string, number>();
 
 	const count = (selectionSet: SelectionSetNode): number => {
-		const spread = new Set<string>();
 		let total = 0;
 
 		for (const selection of selectionSet.selections) {
@@ -30,12 +28,7 @@ export function countSelections(
 			} else if (selection.kind === Kind.INLINE_FRAGMENT) {
 				total += count(selection.selectionSet);
 			} else {
-				const name = selection.name.value;
-
-				if (spread.has(name)) continue;
-
-				spread.add(name);
-				total += sizeOfFragment(name);
+				total += sizeOfFragment(selection.name.value);
 			}
 		}
 

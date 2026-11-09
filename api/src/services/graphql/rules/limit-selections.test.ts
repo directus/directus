@@ -60,8 +60,8 @@ describe('countSelections', () => {
 		expect(count('{ users { ... on User { id } } }')).toBe(2);
 	});
 
-	test('counts a fragment spread twice into the same selection set once', () => {
-		expect(count('{ users { ...F ...F } } fragment F on User { id }')).toBe(2);
+	test('counts a fragment spread twice into the same selection set twice', () => {
+		expect(count('{ users { ...F ...F } } fragment F on User { id }')).toBe(3);
 	});
 
 	test('counts a chain of aliased spreads without expanding it', () => {
@@ -88,6 +88,17 @@ describe('limitSelections', () => {
 
 		expect(errors).toHaveLength(1);
 		expect(errors[0]?.message).toContain('maximum allowed selection count of 10000');
+	});
+
+	test('rejects a chain of fragments that each spread the one below twice', () => {
+		// `Fk { ...Fk-1 ...Fk-1 }` expands to 2^k fields without a single alias
+		const fragments = ['fragment F0 on User { id }'];
+
+		for (let level = 1; level <= 20; level++) {
+			fragments.push(`fragment F${level} on User { ...F${level - 1} ...F${level - 1} }`);
+		}
+
+		expect(validateQuery(`query { users { ...F20 } } ${fragments.join(' ')}`)).toHaveLength(1);
 	});
 
 	test('counts the root fields of an operation together', () => {

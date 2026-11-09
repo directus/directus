@@ -132,20 +132,11 @@ const inliningCases: SelectionCase[] = [
 		expected: [buildField('id'), buildField('title')],
 	},
 	{
-		// The second spread contributes nothing, matching the visited set `CollectFields` keeps
-		name: 'inlines a fragment spread twice into one selection set only once',
+		// What that repetition can cost is bounded up front by the `limitSelections` validation rule
+		name: 'repeats the selections when the same fragment is spread twice',
 		selections: [buildFragmentSpread('Fields'), buildFragmentSpread('Fields')],
 		fragments: { Fields: buildFragmentDefinition('Fields', 'Page', [buildField('title')]) },
-		expected: [buildField('title')],
-	},
-	{
-		name: 'skips a fragment another fragment already spread into the same selection set',
-		selections: [buildFragmentSpread('Fields'), buildFragmentSpread('More')],
-		fragments: {
-			Fields: buildFragmentDefinition('Fields', 'Page', [buildField('title')]),
-			More: buildFragmentDefinition('More', 'Page', [buildFragmentSpread('Fields'), buildField('id')]),
-		},
-		expected: [buildField('title'), buildField('id')],
+		expected: [buildField('title'), buildField('title')],
 	},
 	{
 		name: 'inlines the same fragment again in a nested selection set',
@@ -234,6 +225,29 @@ const unionCases: SelectionCase[] = [
 		]),
 	},
 	{
+		// A visited set shared across the members used to skip the second spread, so the fields of
+		// the second member came back null
+		name: 'inlines a union fragment under every member it is spread into',
+		selections: buildContentItem([
+			buildInlineFragment('ComponentText', [buildFragmentSpread('AnyBlock')]),
+			buildInlineFragment('ComponentImage', [buildFragmentSpread('AnyBlock')]),
+		]),
+		fragments: {
+			AnyBlock: buildFragmentDefinition('AnyBlock', 'page_content_item_union', [
+				buildInlineFragment('ComponentText', [buildField('text')]),
+				buildInlineFragment('ComponentImage', [buildField('src')]),
+			]),
+		},
+		expected: buildContentItem(
+			['ComponentText', 'ComponentImage'].map((member) =>
+				buildInlineFragment(member, [
+					buildInlineFragment('ComponentText', [buildField('text')]),
+					buildInlineFragment('ComponentImage', [buildField('src')]),
+				]),
+			),
+		),
+	},
+	{
 		name: 'keeps the condition where the same fragment narrows, and drops it where it does not',
 		selections: [
 			...buildContentItem([buildFragmentSpread('Text')]),
@@ -280,30 +294,6 @@ describe('buildSelections', () => {
 		buildSelections(buildInfo(selections, fragments));
 
 		expect(selections).toEqual(before);
-	});
-
-	test('inlines a chain of fragments that each spread the one below twice', () => {
-		// `Fk { ...Fk-1 ...Fk-1 }` used to double the selections at every level, so this chain expanded
-		// to 2^20 nodes from a document of a few hundred bytes.
-		const DEPTH = 20;
-
-		const fragments: Record<string, FragmentDefinitionNode> = {
-			F0: buildFragmentDefinition('F0', 'Page', [buildField('title')]),
-		};
-
-		for (let level = 1; level <= DEPTH; level++) {
-			fragments[`F${level}`] = buildFragmentDefinition(`F${level}`, 'Page', [
-				buildFragmentSpread(`F${level - 1}`),
-				buildFragmentSpread(`F${level - 1}`),
-			]);
-		}
-
-		const selections = buildSelections(buildInfo([buildFragmentSpread(`F${DEPTH}`)], fragments));
-
-		// Counted before it is compared, so a regression reports the number rather than comparing an
-		// array of a million nodes, which runs vitest out of memory
-		expect(selections?.length).toBe(1);
-		expect(selections).toEqual([buildField('title')]);
 	});
 
 	test('returns null when the field has no selections', () => {
