@@ -36,11 +36,11 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	GRAPHQL_INTROSPECTION: 'boolean',
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 'number',
 	GRAPHQL_SINGLE_USE_MUTATIONS: 'array',
+	GRAPHQL_QUERY_SELECTION_LIMIT: 'number',
 
 	MAX_BATCH_MUTATION: 'number',
 	MAX_IMPORT_ERRORS: 'number',
 
-	// Declared so `Infinity` casts to a number rather than depending on type inference
 	QUERY_FILTER_MAX_NODES: 'number',
 	QUERY_FILTER_MAX_DEPTH: 'number',
 

@@ -15,6 +15,7 @@ The node allowance is spent across a whole query, so a filter nested under `deep
 
 - `QUERY_FILTER_MAX_NODES` (default `10000`) — total `filter`/`deep` nodes
 - `QUERY_FILTER_MAX_DEPTH` (default `50`) — nesting depth of a filter or of `deep`
+- `GRAPHQL_QUERY_SELECTION_LIMIT` (default `10000`) — fields a GraphQL operation may select across all its root fields once its fragments are expanded, checked during validation
 
 `QUERY_FILTER_MAX_NODES` is the one most likely to be reached. Every object, array and value counts,
 so `{"id":{"_in":[…]}}` costs one node per value plus three, and an `_in` of more than 9997 values is
