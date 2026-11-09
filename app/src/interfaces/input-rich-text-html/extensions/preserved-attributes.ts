@@ -139,7 +139,7 @@ function styleDeclarations(css: string): [property: string, value: string][] {
 
 export type StyleRule = Pick<StyleParseRule, 'style' | 'getAttrs'>;
 
-/** The schema's style parse rules: declarations the parser turns into marks (`font-weight` into bold, ...). */
+/** The schema's style parse rules that make a mark, so a clear-only rule (`font-weight: 400`) stays a style. */
 export function styleRules(extensions: AnyExtension[]): StyleRule[] {
 	return flattenExtensions(extensions)
 		.filter((extension) => extension.type === 'mark' || extension.type === 'node')
@@ -150,7 +150,9 @@ export function styleRules(extensions: AnyExtension[]): StyleRule[] {
 				storage: extension.storage,
 			});
 
-			return (parseHTML?.() ?? []).filter((rule): rule is StyleParseRule => 'style' in rule && !!rule.style);
+			return (parseHTML?.() ?? []).filter(
+				(rule): rule is StyleParseRule => 'style' in rule && !!rule.style && !rule.clearMark,
+			);
 		});
 }
 

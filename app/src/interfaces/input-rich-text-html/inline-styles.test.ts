@@ -101,6 +101,21 @@ describe('keepInlineStyles on: style attribute', () => {
 		expect(roundTrip(html)).toBe(html);
 	});
 
+	test.each([
+		['span in a heading', '<h2><span style="font-weight: 400;">a</span></h2>'],
+		['heading', '<h2 style="font-weight: 400;">a</h2>'],
+		['span with another property', '<p><span style="font-weight: 400; letter-spacing: 2px;">a</span></p>'],
+		['span in a heading, font-style', '<h2><span style="font-style: normal;">a</span></h2>'],
+	])('a declaration that only clears a mark stays a style: %s', (_name, html) => {
+		expect(roundTrip(html)).toBe(html);
+	});
+
+	test('a declaration that clears an outer mark keeps its style and leaves that mark off', () => {
+		expect(roundTrip('<p><strong>a <span style="font-weight: 400;">b</span></strong></p>')).toBe(
+			'<p><strong>a </strong><span style="font-weight: 400;">b</span></p>',
+		);
+	});
+
 	test('removing a mark that came from a style removes the style too', () => {
 		const instance = mount('<p><span style="font-weight: bold; letter-spacing: 1px;">a</span></p>');
 		instance.chain().selectAll().unsetBold().run();
