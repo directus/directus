@@ -1,6 +1,6 @@
-import { DEFAULTS, useEnv } from '@directus/env';
 import type { FragmentDefinitionNode, SelectionSetNode, ValidationRule } from 'graphql';
 import { GraphQLError, Kind } from 'graphql';
+import { limitFromEnv } from '../../../utils/query-limits.js';
 
 /**
  * Count the fields an operation selects once every fragment in it is expanded, as the resolvers
@@ -62,9 +62,7 @@ export function countSelections(
  * expand to an exponential number of fields is rejected without ever being expanded.
  */
 export function limitSelections(operationName?: string | null): ValidationRule {
-	const configured = Number(useEnv()['GRAPHQL_QUERY_SELECTION_LIMIT']);
-	// `Infinity` is honored as an explicit opt-out
-	const max = configured > 0 ? configured : Number(DEFAULTS['GRAPHQL_QUERY_SELECTION_LIMIT']);
+	const max = limitFromEnv('GRAPHQL_QUERY_SELECTION_LIMIT');
 
 	return (context) => ({
 		OperationDefinition(operation): void {

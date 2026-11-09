@@ -1,16 +1,25 @@
 import { buildSchema, parse, specifiedRules, validate } from 'graphql';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { useLogger } from '../../../logger/index.js';
 import { resetEnv, setEnv } from '../../../test-utils/env.js';
+import { createMockLogger } from '../../../test-utils/logger.js';
 import { countSelections, limitSelections } from './limit-selections.js';
 
-// Keep the real module so DEFAULTS stays available to limit-selections
+// Keep the real module so DEFAULTS stays available to the limit lookup
 vi.mock('@directus/env', async (importOriginal) => {
 	const { mockEnv } = await import('../../../test-utils/env.js');
 	return { ...(await importOriginal<typeof import('@directus/env')>()), ...mockEnv() };
 });
 
+vi.mock('../../../logger/index.js');
+
+let logger: ReturnType<typeof createMockLogger>;
+
 beforeEach(() => {
 	resetEnv();
+
+	logger = createMockLogger();
+	vi.mocked(useLogger).mockReturnValue(logger as any);
 });
 
 const schema = buildSchema(`
@@ -117,10 +126,11 @@ describe('limitSelections', () => {
 		expect(validateQuery(query, 'Large')).toHaveLength(1);
 	});
 
-	test('falls back to the default for an invalid limit', () => {
+	test('falls back to the default for an invalid limit, and says so', () => {
 		setEnv({ GRAPHQL_QUERY_SELECTION_LIMIT: 'nope' });
 
 		expect(validateQuery(buildAliasChain(18))[0]?.message).toContain('10000');
+		expect(logger.warn).toHaveBeenCalledWith('Invalid value for GRAPHQL_QUERY_SELECTION_LIMIT, falling back to 10000.');
 	});
 
 	test('honors Infinity as an opt-out', () => {

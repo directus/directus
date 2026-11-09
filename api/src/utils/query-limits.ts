@@ -14,7 +14,7 @@ export type QueryMaximums = {
 	maxDepth: number;
 };
 
-type LimitKey = 'QUERY_FILTER_MAX_NODES' | 'QUERY_FILTER_MAX_DEPTH';
+type LimitKey = 'QUERY_FILTER_MAX_NODES' | 'QUERY_FILTER_MAX_DEPTH' | 'GRAPHQL_QUERY_SELECTION_LIMIT';
 
 const warned = new Set<LimitKey>();
 
@@ -122,7 +122,11 @@ export class QueryLimits {
 	}
 }
 
-function limitFromEnv(key: LimitKey): number {
+/**
+ * Read a query cost limit from env, the one place that decides what counts as a usable value, so
+ * every limit falls back to its default the same way.
+ */
+export function limitFromEnv(key: LimitKey): number {
 	const configured = useEnv()[key];
 	const value = Number(configured);
 

@@ -1,6 +1,8 @@
 import { DEFAULTS, useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { useLogger } from '../logger/index.js';
+import { createMockLogger } from '../test-utils/logger.js';
 import { getQueryLimits, QueryLimits, type QueryMaximums } from './query-limits.js';
 
 // `DEFAULTS` is unmocked, so the assertions below double as a drift check against defaults.ts
@@ -9,14 +11,16 @@ vi.mock('@directus/env', async (importOriginal) => ({
 	useEnv: vi.fn(),
 }));
 
-const { warn } = vi.hoisted(() => ({ warn: vi.fn() }));
+vi.mock('../logger/index.js');
 
-vi.mock('../logger/index.js', () => ({ useLogger: () => ({ warn }) }));
+let logger: ReturnType<typeof createMockLogger>;
 
 beforeEach(() => {
 	// The state production reads limits from; tests that care about a value override it
 	vi.mocked(useEnv).mockReturnValue(DEFAULTS);
-	warn.mockClear();
+
+	logger = createMockLogger();
+	vi.mocked(useLogger).mockReturnValue(logger as any);
 });
 
 /** Limits with everything set generously, so a test only has to state the one it cares about */
@@ -41,7 +45,7 @@ describe('fromEnv', () => {
 	test('should use the shipped defaults', () => {
 		expect(getQueryLimits()).toMatchObject({ maxNodes: 10_000, maxDepth: 50 });
 
-		expect(warn).not.toHaveBeenCalled();
+		expect(logger.warn).not.toHaveBeenCalled();
 	});
 
 	test('should start with the full allowance unspent', () => {
@@ -55,7 +59,7 @@ describe('fromEnv', () => {
 		vi.mocked(useEnv).mockReturnValue({});
 
 		expect(getQueryLimits().maxNodes).toBe(10_000);
-		expect(warn).not.toHaveBeenCalled();
+		expect(logger.warn).not.toHaveBeenCalled();
 	});
 
 	test.each([
@@ -78,8 +82,8 @@ describe('fromEnv', () => {
 		getQueryLimits();
 		getQueryLimits();
 
-		expect(warn).toHaveBeenCalledTimes(1);
-		expect(warn).toHaveBeenCalledWith('Invalid value for QUERY_FILTER_MAX_DEPTH, falling back to 50.');
+		expect(logger.warn).toHaveBeenCalledTimes(1);
+		expect(logger.warn).toHaveBeenCalledWith('Invalid value for QUERY_FILTER_MAX_DEPTH, falling back to 50.');
 	});
 
 	test('should accept a numeric string', () => {
