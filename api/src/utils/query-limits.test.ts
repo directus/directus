@@ -264,6 +264,27 @@ describe('chargeFilterNodes', () => {
 		expect(() => limits({ maxDepth: 21 }).chargeFilterNodes(filter)).toThrowError(InvalidQueryError);
 	});
 
+	test('should not count the array of an `_in` list as a level', () => {
+		const filter = { id: { _in: [1, 2, 3] } };
+
+		// The root, `id` and the array of values; the values add no level of their own
+		expect(() => limits({ maxDepth: 3 }).chargeFilterNodes(filter)).not.toThrow();
+
+		expect(() => limits({ maxDepth: 3 }).chargeFilterNodes({ id: { _in: [[1, 2, 3]] } })).toThrowError(
+			InvalidQueryError,
+		);
+	});
+
+	test('should count an array nested directly in an array as a level', () => {
+		let value: unknown = 1;
+
+		for (let level = 0; level < 500; level++) value = [value];
+
+		expect(() => limits({ maxDepth: 50 }).chargeFilterNodes({ id: { _in: value } })).toThrowError(
+			'Invalid query. "filter" exceeds the maximum allowed nesting depth of 50.',
+		);
+	});
+
 	test('should report every value it does not walk into', () => {
 		const leaves: unknown[] = [];
 

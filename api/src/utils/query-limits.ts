@@ -103,10 +103,13 @@ export class QueryLimits {
 			this.checkDepth(depth, 'filter');
 
 			// The array `_and`/`_or` wrap their operands in is a container, not a level of its own —
-			// counting it would make depth depend on how a filter is grouped
-			const childDepth = Array.isArray(value) ? depth : depth + 1;
+			// counting it would make depth depend on how a filter is grouped. An array directly inside
+			// another array has no such reason, and would otherwise nest without a bound.
+			const isArray = Array.isArray(value);
 
-			for (const child of children) stack.push([child, childDepth]);
+			for (const child of children) {
+				stack.push([child, isArray && !Array.isArray(child) ? depth : depth + 1]);
+			}
 		}
 	}
 
