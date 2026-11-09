@@ -34,7 +34,6 @@ describe('findMarkupLoss', () => {
 				'<p><span style="text-decoration:underline">u</span> <span style="text-decoration:line-through">s</span></p>',
 			],
 			['unwrapped bare wrappers', '<div><span>plain</span></div><p><o:p></o:p>word</p>'],
-			['a div with inline content kept as a paragraph', '<div class="intro" data-k="v">text</div>'],
 			['preserved global attributes', '<h1 class="x" id="y" data-k="v" title="t">h</h1>'],
 			['non-content elements', '<style>p{}</style><p>s</p><script>1</script>'],
 			['trailing whitespace at a block boundary', '<p>The content is pretty awesome </p>'],

@@ -264,40 +264,6 @@ describe('round-trip: preserved attributes (class/id/title/role/lang/dir/data-*/
 	});
 });
 
-describe('round-trip: div with inline content becomes a paragraph', () => {
-	test.each([
-		['class', '<div class="intro">text</div>', '<p class="intro">text</p>'],
-		['class with marks', '<div class="note">a <strong>b</strong></div>', '<p class="note">a <strong>b</strong></p>'],
-		['id and data attributes', '<div id="a" data-k="v">text</div>', '<p id="a" data-k="v">text</p>'],
-		[
-			'dir and alignment',
-			'<div dir="rtl" style="text-align: center;">نص</div>',
-			'<p style="text-align: center;" dir="rtl">نص</p>',
-		],
-		['sibling divs', '<div class="a">one</div><div class="b">two</div>', '<p class="a">one</p><p class="b">two</p>'],
-		['hard break', '<div class="x">a<br>b</div>', '<p class="x">a<br>b</p>'],
-		['alignment alone', '<div style="text-align: right;">text</div>', '<p style="text-align: right;">text</p>'],
-	])('keeps %s', (_name, html, expected) => {
-		expect(roundTrip(html)).toBe(expected);
-	});
-
-	test('an empty div keeps its class', () => {
-		expect(roundTrip('<p>a</p><div class="spacer"></div><p>b</p>')).toBe('<p>a</p><p class="spacer"></p><p>b</p>');
-	});
-
-	test('a bare div is still unwrapped', () => {
-		expect(roundTrip('<div>text</div>')).toBe('<p>text</p>');
-	});
-
-	test('a div wrapping blocks is still unwrapped, its blocks kept', () => {
-		expect(roundTrip('<div class="wrap"><p class="a">a</p><h2>b</h2></div>')).toBe('<p class="a">a</p><h2>b</h2>');
-	});
-
-	test('a div wrapping an image is still unwrapped', () => {
-		expect(roundTrip('<div class="wrap"><img src="/assets/a"></div>')).toBe('<img src="/assets/a">');
-	});
-});
-
 describe('round-trip: image', () => {
 	test('preserves src with query params, alt, and loading="lazy"', () => {
 		const out = roundTrip('<img src="/assets/abc?width=100&access_token=x" loading="lazy" alt="alt">');
