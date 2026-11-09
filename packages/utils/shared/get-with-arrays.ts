@@ -23,23 +23,17 @@ export function get(object: Record<string, any> | any[], path: string, defaultVa
 		return defaultValue;
 	}
 
-	let current: unknown = object;
+	let current: any = object;
 
-	for (const [index, segment] of segments.entries()) {
-		const key = segment.includes(':') ? segment.split(':')[0]! : segment;
+	for (const segment of segments) {
+		if (current === undefined || current === null) return defaultValue;
 
-		const result = Array.isArray(current)
-			? getArrayResult(current, key)
-			: (current as Record<string, any> | undefined)?.[key];
+		const key = segment.split(':')[0]!;
 
-		if (result === undefined || index === segments.length - 1) {
-			return result ?? defaultValue;
-		}
-
-		current = result;
+		current = Array.isArray(current) ? getArrayResult(current, key) : current[key];
 	}
 
-	return defaultValue;
+	return current ?? defaultValue;
 }
 
 function getArrayResult(object: unknown[], key: string): unknown[] | undefined {
