@@ -2,22 +2,10 @@ import { getFieldsFromTemplate } from '@directus/utils';
 import type { RelationM2A } from '@/composables/use-relation-m2a';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isCollectionInactive } from '@/utils/collection-status';
+import { getM2ACollectionTemplates } from '@/utils/get-m2a-collection-templates';
 
 export function getM2AJunctionTemplate(relationInfo: RelationM2A, template?: string | null): string | null {
 	return template || relationInfo.junctionCollection?.meta?.display_template || null;
-}
-
-export function getM2ACollectionTemplates(relationInfo: RelationM2A): Record<string, string> {
-	const templates: Record<string, string> = {};
-
-	for (const { collection, meta } of relationInfo.allowedCollections) {
-		const primaryKeyField = relationInfo.relationPrimaryKeyFields[collection];
-		const template = meta?.display_template || (primaryKeyField ? `{{${primaryKeyField.field}}}` : null);
-
-		if (template) templates[collection] = template;
-	}
-
-	return templates;
 }
 
 export function getM2AFields(relationInfo: RelationM2A, template?: string | null): string[] {
