@@ -319,7 +319,6 @@ export default abstract class SocketController {
 			}
 		});
 
-
 		ws.on('error', () => {
 			logger.debug(`WebSocket#${client.uid} connection errored`);
 
