@@ -360,6 +360,22 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'noContainerParagraphs',
+				name: '$t:interfaces.input-rich-text-html.no_container_paragraphs',
+				type: 'boolean',
+				meta: {
+					width: 'full',
+					interface: 'boolean',
+					note: '$t:interfaces.input-rich-text-html.no_container_paragraphs_note',
+					options: {
+						label: '$t:interfaces.input-rich-text-html.no_container_paragraphs_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
 				field: 'customFormats',
 				name: '$t:interfaces.input-rich-text-html.custom_formats',
 				type: 'json',

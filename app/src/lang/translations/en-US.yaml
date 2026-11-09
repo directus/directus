@@ -2921,6 +2921,11 @@ interfaces:
     imageToken_label: Static access token is appended to the assets' URL
     media_preview_iframe_title: Media Preview
     embed_invalid: The embed markup could not be parsed as media (video, audio, or iframe)
+    no_container_paragraphs: No Paragraphs in Containers
+    no_container_paragraphs_label: Do not add <p> tags to list items, blockquotes and table cells
+    no_container_paragraphs_note:
+      By default, the editor wraps the text of list items, blockquotes and table cells in `<p>`. Enable this to stop
+      adding `<p>` there. A `<p>` that is already stored stays.
     link_protocols: Allowed Link Protocols
     link_protocols_note:
       Extra URL schemes that links may use, such as `myapp` for `myapp://` deep links. Standard schemes such as `http`,
