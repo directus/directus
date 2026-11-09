@@ -1,7 +1,6 @@
 services:
   oracle:
-    image: gvenzl/oracle-xe:${DB_VERSION}
-    platform: linux/amd64
+    image: gvenzl/oracle-free:${DB_VERSION}
     ports:
       - ${DB_PORT}:1521
     environment:

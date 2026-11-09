@@ -41,3 +41,53 @@ const schema = new SchemaBuilder()
 	})
 	.build();
 ```
+
+Pass a field name as the second argument to also create the reverse m2m field on the related collection:
+
+```ts
+c.field('tags').m2m('tags', 'articles'); // tags.articles lists the articles of a tag
+```
+
+## Snapshots
+
+The builder describes the schema through collections, fields and relations, the same shape a Directus schema snapshot
+uses. Next to `build()`, which returns a `SchemaOverview`, the schema can be exported as a snapshot that can be applied
+to a Directus instance:
+
+```ts
+const snapshot = new SchemaBuilder()
+	.collection('articles', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+	})
+	.snapshot({ directus: '12.0.0', vendor: 'postgres' });
+```
+
+The `directus` version and `vendor` have to match the instance the snapshot is applied to, unless the apply is forced.
+
+Any snapshot, including the ones returned by the `/schema/snapshot` endpoint, can be converted into a `SchemaOverview`
+with `toSchemaOverview`:
+
+```ts
+import { toSchemaOverview } from '@directus/schema-builder';
+
+const schema = toSchemaOverview(snapshot);
+```
+
+## TypeScript types
+
+The same schema can be exported as TypeScript interfaces in the shape the Directus SDK expects, so a snapshot and its
+types can be generated side by side:
+
+```ts
+const builder = new SchemaBuilder().collection('articles', (c) => {
+	c.field('id').id();
+	c.field('title').string();
+	c.field('author').m2o('users');
+});
+
+const snapshot = builder.snapshot({ directus: '12.0.0', vendor: 'postgres' });
+const types = builder.types(); // export interface Schema { articles: Articles[]; users: Users[]; } ...
+```
+
+Types can also be generated from any snapshot with `toTypeScript(snapshot, { schemaName: 'Schema' })`.

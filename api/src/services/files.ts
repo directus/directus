@@ -2,10 +2,10 @@ import type { Readable } from 'node:stream';
 import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
 import zlib from 'node:zlib';
 import path from 'path';
-import url from 'url';
 import { useEnv } from '@directus/env';
 import {
 	ContentTooLargeError,
+	ForbiddenError,
 	InternalServerError,
 	InvalidPayloadError,
 	ServiceUnavailableError,
@@ -33,6 +33,7 @@ import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import { transaction } from '../utils/transaction.js';
 import { assertUniqueFilename } from './files/lib/assert-unique-filename.js';
+import { assertValidStorageLocation } from './files/lib/assert-valid-storage-location.js';
 import { assertValidStoragePath } from './files/lib/assert-valid-storage-path.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
 import { isMimeTypeAllowed } from './files/lib/is-mime-type-allowed.js';
@@ -77,6 +78,15 @@ export class FilesService extends ItemsService<File> {
 			...(existingFile ?? {}),
 			...clone(data),
 		};
+
+		assertValidStorageLocation(payload.storage);
+
+		if (payload.filename_disk) {
+			payload.filename_disk = sanitizeFilepath(payload.filename_disk);
+
+			assertValidStoragePath(payload.filename_disk, payload.storage);
+			// assertUniqueFilename is handled by creatOne, updateMany
+		}
 
 		const disk = storage.location(payload.storage);
 
@@ -202,7 +212,17 @@ export class FilesService extends ItemsService<File> {
 			schema: this.schema,
 		});
 
-		await sudoFilesItemsService.updateOne(primaryKey, { ...payload, ...metadata }, { emitEvents: false });
+		// Do not spread user payload or include non-calculated fields here
+		await sudoFilesItemsService.updateOne(
+			primaryKey,
+			{
+				...metadata,
+				filename_disk: payload.filename_disk,
+				filesize: payload.filesize,
+				uploaded_on: payload.uploaded_on,
+			},
+			{ emitEvents: false },
+		);
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(
@@ -272,8 +292,8 @@ export class FilesService extends ItemsService<File> {
 		let mimeType: string;
 
 		try {
-			const parsedURL = url.parse(fileResponse.request.res.responseUrl);
-			filename = decodeURI(path.basename(parsedURL.pathname as string));
+			const parsedURL = new URL(fileResponse.request.res.responseUrl);
+			filename = decodeURI(path.basename(parsedURL.pathname));
 
 			mimeType = fileResponse.headers['content-type']?.split(';')[0]?.trim() || 'application/octet-stream';
 
@@ -317,16 +337,20 @@ export class FilesService extends ItemsService<File> {
 			throw new InvalidPayloadError({ reason: `"type" is required` });
 		}
 
-		if (data.filename_disk) {
-			data.filename_disk = sanitizeFilepath(data.filename_disk);
+		try {
+			if (data.storage !== undefined) {
+				assertValidStorageLocation(data.storage);
+			}
 
-			try {
+			if (data.filename_disk) {
+				data.filename_disk = sanitizeFilepath(data.filename_disk);
+
 				assertValidStoragePath(data.filename_disk, data.storage);
 				await assertUniqueFilename(this.knex, data.filename_disk);
-			} catch (err: any) {
-				// Defer the error to be thrown until after permission checks
-				opts.preMutationError = err;
 			}
+		} catch (err: any) {
+			// Defer the error to be thrown until after permission checks
+			opts.preMutationError = err;
 		}
 
 		const key = await super.createOne(data, opts);
@@ -341,22 +365,15 @@ export class FilesService extends ItemsService<File> {
 		data: Partial<File>,
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
+		// Fetch existing records to have data prior to change, dont require read permissions.
+		// In progress uploads TUS are hidden from FilesService reads, so they're missing from the results.
+		const sudoFilesItemsService = new FilesService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
 		if (keys.length === 1 && data.filename_disk) {
 			data.filename_disk = sanitizeFilepath(data.filename_disk);
-
-			try {
-				assertValidStoragePath(data.filename_disk, data.storage);
-				await assertUniqueFilename(this.knex, data.filename_disk, keys[0]);
-			} catch (err: any) {
-				// Defer the error to be thrown until after permission checks
-				opts.preMutationError = err;
-			}
-
-			// Fetch existing records to have data prior to change, dont require read permissions.
-			const sudoFilesItemsService = new FilesService({
-				knex: this.knex,
-				schema: this.schema,
-			});
 
 			const updatedFiles: Map<PrimaryKey, File> = new Map();
 
@@ -366,6 +383,31 @@ export class FilesService extends ItemsService<File> {
 
 			for (const file of changedFiles) {
 				updatedFiles.set(file.id, file);
+			}
+
+			try {
+				const currentFile = changedFiles[0];
+
+				// In progress uploads and non-existent files can't be renamed
+				if (!currentFile) {
+					throw new ForbiddenError();
+				}
+
+				// A file is currently only renamed within the storage location it's currently stored in, we never
+				// move files between storages. Changing "data.storage" has no effect on where the file data is,
+				// which is why the new path is validated against the current location instead.
+				assertValidStoragePath(data.filename_disk, currentFile['storage']);
+
+				// If the the storage is updated the record ends up pointing at this path in the new location without
+				// actually moving the file between storages, later reads and renames act on the newly stored storage
+				if (data.storage !== undefined) {
+					assertValidStorageLocation(data.storage);
+					assertValidStoragePath(data.filename_disk, data.storage);
+				}
+
+				await assertUniqueFilename(this.knex, data.filename_disk, keys[0]);
+			} catch (err: any) {
+				opts.preMutationError = err;
 			}
 
 			for (const key of keys) {
@@ -443,6 +485,27 @@ export class FilesService extends ItemsService<File> {
 			opts.preMutationError = new InvalidPayloadError({
 				reason: '"filename_disk" cannot be modified in bulk operations',
 			});
+		} else if (data.storage !== undefined) {
+			// Changing the storage only repoints the records, so their existing paths have to be valid in the new location
+			try {
+				assertValidStorageLocation(data.storage);
+
+				const files = await sudoFilesItemsService.readMany(keys, { fields: ['filename_disk'], limit: -1 });
+
+				// In progress uploads and non-existent files can't be repointed
+				if (files.length !== new Set(keys).size) {
+					throw new ForbiddenError();
+				}
+
+				for (const file of files) {
+					if (file.filename_disk) {
+						assertValidStoragePath(file.filename_disk, data.storage);
+					}
+				}
+			} catch (err: any) {
+				// Defer the error to be thrown until after permission checks
+				opts.preMutationError = err;
+			}
 		}
 
 		await super.updateMany(keys, data, opts);

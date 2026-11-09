@@ -142,7 +142,7 @@ describe('sync pull', () => {
 			scope: null,
 		});
 
-		expect(payload.data).toMatchObject({ recordCount: 1, collectionCount: 11, fileCount: 12 });
+		expect(payload.data).toMatchObject({ recordCount: 1, collectionCount: 12, fileCount: 13 });
 
 		expect(new Set(payload.data.resources)).toEqual(
 			new Set([
@@ -154,6 +154,7 @@ describe('sync pull', () => {
 				'panels',
 				'permissions',
 				'policies',
+				'presets',
 				'roles',
 				'settings',
 				'translations',
@@ -170,6 +171,7 @@ describe('sync pull', () => {
 				'directus_panels',
 				'directus_permissions',
 				'directus_policies',
+				'directus_presets',
 				'directus_roles',
 				'directus_settings',
 				'directus_translations',
@@ -582,6 +584,7 @@ describe('sync pull resources and data', () => {
 			'directus_panels',
 			'directus_permissions',
 			'directus_policies',
+			'directus_presets',
 			'directus_roles',
 			'directus_settings',
 			'directus_translations',
@@ -602,6 +605,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/presets',
 			'/folders',
 		]) {
 			interceptList(path, []);
@@ -620,7 +624,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-schema')).toBe(0);
 
-		expect(pulledCollections()).toHaveLength(11);
+		expect(pulledCollections()).toHaveLength(12);
 		expect(stdout.join('')).toContain('Schema         skipped');
 		expect(existsSync(join(dir, 'directus', 'default', 'schema', 'metadata.json'))).toBe(false);
 	});
@@ -636,7 +640,7 @@ describe('sync pull resources and data', () => {
 		expect(report.schemaSkipped).toBe(true);
 		expect(report.collections).toBeNull();
 		expect(report.dir).toBeNull();
-		expect(report.data.collectionCount).toBe(11);
+		expect(report.data.collectionCount).toBe(12);
 	});
 
 	it('refuses --no-schema combined with a collections scope instead of guessing which wins', async () => {
@@ -659,6 +663,8 @@ describe('sync pull resources and data', () => {
 		interceptList('/flows', [{ id: 'f1', name: 'Nightly' }]);
 		interceptList('/operations', []);
 
+		interceptList('/folders', []);
+
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 
 		expect(pulledCollections()).toEqual([
@@ -670,6 +676,7 @@ describe('sync pull resources and data', () => {
 			'directus_panels',
 			'directus_permissions',
 			'directus_policies',
+			'directus_presets',
 			'directus_roles',
 			'directus_settings',
 			'directus_translations',
@@ -689,6 +696,8 @@ describe('sync pull resources and data', () => {
 		]);
 
 		interceptList('/operations', []);
+
+		interceptList('/folders', []);
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 
@@ -735,6 +744,7 @@ describe('sync pull resources and data', () => {
 			'directus_panels',
 			'directus_permissions',
 			'directus_policies',
+			'directus_presets',
 			'directus_roles',
 			'directus_settings',
 			'directus_translations',
@@ -753,6 +763,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/permissions', []);
 		interceptList('/dashboards', []);
 		interceptList('/panels', []);
+		interceptList('/presets', []);
 		interceptList('/folders', []);
 		interceptList('/translations', []);
 		interceptSingleton('/settings', { id: 1 });
@@ -766,6 +777,7 @@ describe('sync pull resources and data', () => {
 			'directus_panels',
 			'directus_permissions',
 			'directus_policies',
+			'directus_presets',
 			'directus_roles',
 			'directus_settings',
 			'directus_translations',
@@ -827,6 +839,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/permissions', []);
 		interceptList('/dashboards', []);
 		interceptList('/panels', []);
+		interceptList('/presets', []);
 		interceptList('/folders', []);
 		interceptList('/translations', []);
 		interceptSingleton('/settings', { id: 1 });
@@ -840,6 +853,7 @@ describe('sync pull resources and data', () => {
 			'directus_panels',
 			'directus_permissions',
 			'directus_policies',
+			'directus_presets',
 			'directus_roles',
 			'directus_settings',
 			'directus_translations',
@@ -880,7 +894,7 @@ describe('sync pull resources and data', () => {
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
 
-		for (const path of ['/flows', '/operations', '/dashboards', '/panels', '/folders', '/translations']) {
+		for (const path of ['/flows', '/operations', '/dashboards', '/panels', '/presets', '/folders', '/translations']) {
 			interceptList(path, []);
 		}
 
@@ -982,6 +996,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/presets',
 			'/folders',
 			'/translations',
 		]) {
@@ -1039,6 +1054,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/presets',
 			'/folders',
 			'/translations',
 		]) {
@@ -1128,6 +1144,8 @@ describe('sync pull resources and data', () => {
 			},
 		]);
 
+		interceptList('/folders', []);
+
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 
 		// Operators locate the operation by the name the Data Studio shows; an unnamed one falls back to its key.
@@ -1157,6 +1175,8 @@ describe('sync pull resources and data', () => {
 			},
 		]);
 
+		interceptList('/folders', []);
+
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 
 		const err = stderr.join('');
@@ -1174,6 +1194,8 @@ describe('sync pull resources and data', () => {
 			{ id: 'o1', key: 'fetch_page', type: 'request', options: { url: 'https://example.com', headers: [] } },
 			{ id: 'o2', key: 'log_it', type: 'log', options: { headers: [{ header: 'X-Debug', value: '1' }] } },
 		]);
+
+		interceptList('/folders', []);
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 		expect(stderr.join('')).not.toMatch(/credential/i);
@@ -1198,6 +1220,7 @@ describe('sync pull resources and data', () => {
 			interceptList('/operations', []);
 			interceptList('/dashboards', []);
 			interceptList('/panels', []);
+			interceptList('/presets', []);
 			interceptList('/folders', []);
 			interceptList('/translations', []);
 			interceptSingleton('/settings', { id: 1, project_name: 'Kampala' });
@@ -1259,6 +1282,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/presets',
 			'/folders',
 			'/translations',
 		]) {
@@ -1333,6 +1357,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/presets',
 			'/folders',
 			'/translations',
 		]) {
@@ -1363,6 +1388,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/presets',
 			'/folders',
 			'/translations',
 		]) {
@@ -1420,6 +1446,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/presets',
 			'/folders',
 			'/translations',
 		]) {
@@ -1512,6 +1539,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/presets',
 			'/folders',
 			'/translations',
 		]) {
@@ -1574,6 +1602,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/presets',
 			'/folders',
 			'/translations',
 		]) {
@@ -1612,6 +1641,8 @@ describe('sync pull resources and data', () => {
 		interceptList('/flows', []);
 		interceptList('/operations', []);
 
+		interceptList('/folders', []);
+
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 
 		const metadata = JSON.parse(readFileSync(join(dataDir, 'metadata.json'), 'utf8'));
@@ -1627,6 +1658,44 @@ describe('sync pull resources and data', () => {
 
 		expect(stderr.join('')).toMatch(/refusing mirror/i);
 		expect(stderr.join('')).toContain('directus_permissions');
+	});
+
+	it('drops personal presets and keeps global and role ones', async () => {
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+
+		for (const path of [
+			'/roles',
+			'/policies',
+			'/access',
+			'/permissions',
+			'/flows',
+			'/operations',
+			'/dashboards',
+			'/panels',
+			'/folders',
+			'/translations',
+		]) {
+			interceptList(path, []);
+		}
+
+		interceptList('/presets', [
+			{ id: 1, collection: 'articles', bookmark: null, role: null, user: null },
+			{ id: 2, collection: 'articles', bookmark: 'Pending', role: 'r1', user: null },
+			{ id: 3, collection: 'articles', bookmark: 'Mine', role: null, user: 'u1' },
+		]);
+
+		interceptSingleton('/settings', { id: 1 });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		const presets = JSON.parse(readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_presets')), 'utf8'));
+
+		expect(presets.records).toEqual([
+			{ id: 1, collection: 'articles', bookmark: null, role: null, user: null },
+			{ id: 2, collection: 'articles', bookmark: 'Pending', role: 'r1', user: null },
+		]);
 	});
 
 	it('drops user-attached access records when users are out of scope', async () => {
@@ -1646,6 +1715,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/operations', []);
 		interceptList('/dashboards', []);
 		interceptList('/panels', []);
+		interceptList('/presets', []);
 		interceptList('/folders', []);
 		interceptList('/translations', []);
 		interceptSingleton('/settings', { id: 1 });
@@ -1714,6 +1784,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/operations', []);
 		interceptList('/dashboards', []);
 		interceptList('/panels', []);
+		interceptList('/presets', []);
 		interceptList('/folders', []);
 		interceptList('/translations', []);
 		interceptSingleton('/settings', { id: 1 });
@@ -1789,6 +1860,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/permissions', []);
 		interceptList('/dashboards', []);
 		interceptList('/panels', []);
+		interceptList('/presets', []);
 		interceptList('/folders', []);
 		interceptList('/translations', []);
 		interceptSingleton('/settings', { id: 1 });
@@ -1802,6 +1874,7 @@ describe('sync pull resources and data', () => {
 			'directus_panels',
 			'directus_permissions',
 			'directus_policies',
+			'directus_presets',
 			'directus_roles',
 			'directus_settings',
 			'directus_translations',

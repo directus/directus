@@ -28,33 +28,39 @@ vi.mock('../../utils/schedule.js', () => ({
 }));
 
 vi.mock('./messenger.js', () => ({
-	Messenger: vi.fn().mockImplementation(() => ({
-		handleError: vi.fn(),
-		pruneDeadInstances: vi.fn(),
-		messenger: {
-			subscribe: vi.fn(),
-			unsubscribe: vi.fn(),
-		},
-	})),
+	Messenger: vi.fn().mockImplementation(function () {
+		return {
+			handleError: vi.fn(),
+			pruneDeadInstances: vi.fn(),
+			messenger: {
+				subscribe: vi.fn(),
+				unsubscribe: vi.fn(),
+			},
+		};
+	}),
 }));
 
 vi.mock('./room.js', () => ({
 	getRoomHash: vi.fn((coll, item, version) => `${coll}_${item}_${version}`),
-	RoomManager: vi.fn().mockImplementation(() => ({
-		rooms: {},
-		terminateAll: vi.fn(),
-		createRoom: vi.fn().mockResolvedValue({ join: vi.fn() }),
-		getRoom: vi.fn(),
-		getClientRooms: vi.fn().mockResolvedValue([]),
-		getLocalRoomClients: vi.fn().mockResolvedValue([]),
-		removeRoom: vi.fn(),
-	})),
+	RoomManager: vi.fn().mockImplementation(function () {
+		return {
+			rooms: {},
+			terminateAll: vi.fn(),
+			createRoom: vi.fn().mockResolvedValue({ join: vi.fn() }),
+			getRoom: vi.fn(),
+			getClientRooms: vi.fn().mockResolvedValue([]),
+			getLocalRoomClients: vi.fn().mockResolvedValue([]),
+			removeRoom: vi.fn(),
+		};
+	}),
 }));
 
 vi.mock('../../services/settings.js', () => ({
-	SettingsService: vi.fn().mockImplementation(() => ({
-		readSingleton: vi.fn().mockResolvedValue({ collaborative_editing_enabled: true }),
-	})),
+	SettingsService: vi.fn().mockImplementation(function () {
+		return {
+			readSingleton: vi.fn().mockResolvedValue({ collaborative_editing_enabled: true }),
+		};
+	}),
 }));
 
 describe('CollabHandler', () => {
@@ -898,12 +904,11 @@ describe('CollabHandler', () => {
 		});
 
 		test('disables collaborative editing via bus settings update', async () => {
-			vi.mocked(SettingsService).mockImplementationOnce(
-				() =>
-					({
-						readSingleton: vi.fn().mockResolvedValue({ collaborative_editing_enabled: false }),
-					}) as any,
-			);
+			vi.mocked(SettingsService).mockImplementationOnce(function () {
+				return {
+					readSingleton: vi.fn().mockResolvedValue({ collaborative_editing_enabled: false }),
+				} as any;
+			});
 
 			(handler as any).settingsService = undefined;
 			handler.enabled = true;
@@ -933,12 +938,11 @@ describe('CollabHandler', () => {
 		});
 
 		test('enables collaborative editing via bus settings update', async () => {
-			vi.mocked(SettingsService).mockImplementationOnce(
-				() =>
-					({
-						readSingleton: vi.fn().mockResolvedValue({ collaborative_editing_enabled: true }),
-					}) as any,
-			);
+			vi.mocked(SettingsService).mockImplementationOnce(function () {
+				return {
+					readSingleton: vi.fn().mockResolvedValue({ collaborative_editing_enabled: true }),
+				} as any;
+			});
 
 			(handler as any).settingsService = undefined;
 			handler.enabled = false;
@@ -995,12 +999,11 @@ describe('CollabHandler', () => {
 				resolveInit = resolve;
 			});
 
-			vi.mocked(SettingsService).mockImplementationOnce(
-				() =>
-					({
-						readSingleton: () => initStarted,
-					}) as any,
-			);
+			vi.mocked(SettingsService).mockImplementationOnce(function () {
+				return {
+					readSingleton: () => initStarted,
+				} as any;
+			});
 
 			const refreshPromise = handler.initialize(true);
 
@@ -1025,12 +1028,11 @@ describe('CollabHandler', () => {
 		test('gracefully handles service failure during initialization', async () => {
 			const readSingletonMock = vi.fn().mockRejectedValue(new Error());
 
-			vi.mocked(SettingsService).mockImplementation(
-				() =>
-					({
-						readSingleton: readSingletonMock,
-					}) as any,
-			);
+			vi.mocked(SettingsService).mockImplementation(function () {
+				return {
+					readSingleton: readSingletonMock,
+				} as any;
+			});
 
 			handler.enabled = true;
 			(handler as any).settingsService = undefined;
@@ -1056,12 +1058,11 @@ describe('CollabHandler', () => {
 			});
 
 			// Mock a slow initialization triggered by a settings update
-			vi.mocked(SettingsService).mockImplementationOnce(
-				() =>
-					({
-						readSingleton: () => initStuck,
-					}) as any,
-			);
+			vi.mocked(SettingsService).mockImplementationOnce(function () {
+				return {
+					readSingleton: () => initStuck,
+				} as any;
+			});
 
 			const event = {
 				collection: 'directus_settings',
@@ -1093,12 +1094,11 @@ describe('CollabHandler', () => {
 				resolveInit = resolve;
 			});
 
-			vi.mocked(SettingsService).mockImplementationOnce(
-				() =>
-					({
-						readSingleton: () => initStarted,
-					}) as any,
-			);
+			vi.mocked(SettingsService).mockImplementationOnce(function () {
+				return {
+					readSingleton: () => initStarted,
+				} as any;
+			});
 
 			(handler as any).settingsService = undefined;
 			const first = handler.initialize(true);

@@ -1128,7 +1128,6 @@ licensing:
     collections: Koleksiyonlar
     flows: Akışlar
 settings_appearance: Görünüş
-settings_flows: Akışlar
 settings_system_logs: Sistem Geçmişleri
 settings_presets: Yer İmleri
 settings_translations: Çeviriler
@@ -1921,6 +1920,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: HTML içeriği yazmak için zengin bir metin editörü
     toolbar: Araç Çubuğu
+    extensions: Eklentiler
     custom_formats: Özel Biçimler
     folder_note: Yüklenen dosyalar için bir klasör. Varolan dosyaları etkilemez.
     imageToken: Statik Erişim Anahtarı

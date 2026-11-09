@@ -3,7 +3,7 @@ import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
 import { getEndpoint, isObject } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { cloneDeep, isEqual, mergeWith } from 'lodash';
+import { cloneDeep, isEqual, mergeWith } from 'lodash-es';
 import { computed, ComputedRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';

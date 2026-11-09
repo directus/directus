@@ -905,7 +905,6 @@ licensing:
   entitlements:
     collections: Col·leccions
     flows: Fluxes
-settings_flows: Fluxes
 settings_presets: Favorits
 settings_translations: Traduccions
 one_or_more_options_are_missing: Falta una o més opcions
@@ -1559,6 +1558,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Un editor de text enriquit escrivint contingut HTML
     toolbar: Barra d'eines
+    extensions: Extensions
     custom_formats: Formats personalitzats
   input-block-editor:
     tools: Barra d'eines

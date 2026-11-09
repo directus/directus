@@ -137,9 +137,9 @@ export async function planSchema(target: Target, options: SchemaPlanOptions, ctx
 	return { result, enabled, ...summary, total: summary.added + summary.modified + summary.deleted };
 }
 
-const CONVERGED_COPY: Record<SyncCommand, { verdict: string; outcome: string }> = {
-	diff: { verdict: 'matches', outcome: 'nothing to do' },
-	push: { verdict: 'already matches', outcome: 'nothing to push' },
+const CONVERGED_COPY: Record<SyncCommand, { verdict: string; outcome: string; remainder: string }> = {
+	diff: { verdict: 'matches', outcome: 'nothing to do', remainder: 'nothing else to do' },
+	push: { verdict: 'already matches', outcome: 'nothing to push', remainder: 'nothing else to push' },
 };
 
 export function convergedMessage(
@@ -148,10 +148,15 @@ export function convergedMessage(
 	cwd: string,
 	plan: SchemaPlan,
 	dataChecked: boolean,
+	skipped = 0,
 ): string {
-	const { verdict, outcome } = CONVERGED_COPY[command];
+	const { verdict, outcome, remainder } = CONVERGED_COPY[command];
 	const subject = `${target.profile} — ${target.url}`;
 	const projectPath = displayProjectPath(cwd, target.projectDir);
+
+	if (skipped > 0) {
+		return `${subject} ${verdict} ${projectPath}, except ${maybePluralize(skipped, 'skipped configuration record')} — ${remainder}.`;
+	}
 
 	if (!dataChecked) return `${subject} ${verdict} ${projectPath} — ${outcome}.`;
 
@@ -224,6 +229,7 @@ export interface DataComparisonCounts {
 export interface ReportedPlan {
 	readonly source: string;
 	readonly incomplete: readonly string[];
+	readonly skipped: number;
 }
 
 /** A phase that never ran reports `data: null`, never zeros. `reconciliation` and `unchanged` are diff-only. */
@@ -234,6 +240,8 @@ export interface DataReport {
 	readonly reconciliation: ReconciliationCounts | null;
 	readonly unchanged: number | null;
 	readonly incomplete: string[];
+	/** Configuration records left out of the batch because the target cannot take them yet. */
+	readonly skipped: number;
 }
 
 /** Key order here is the emitted JSON's key order, and that JSON is a published contract. */
@@ -252,5 +260,6 @@ export function dataReport(
 		reconciliation: counts?.reconciliation ?? null,
 		unchanged: counts?.unchanged ?? null,
 		incomplete: [...plan.incomplete],
+		skipped: plan.skipped,
 	};
 }

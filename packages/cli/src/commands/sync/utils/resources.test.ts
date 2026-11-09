@@ -13,9 +13,10 @@ describe('resolveResources', () => {
 
 		expect(closures).toEqual({
 			dashboards: ['panels', 'dashboards'],
-			flows: ['operations', 'flows'],
+			flows: ['folders', 'operations', 'flows'],
 			folders: ['folders'],
 			policies: ['access', 'permissions', 'policies'],
+			presets: ['presets'],
 			roles: ['access', 'permissions', 'policies', 'roles'],
 			settings: ['settings'],
 			translations: ['translations'],
@@ -47,6 +48,7 @@ describe('resolveResources', () => {
 
 		expect(names(['flows', 'users'])).toEqual([
 			'access',
+			'folders',
 			'operations',
 			'flows',
 			'permissions',
@@ -91,6 +93,7 @@ describe('resolveResources', () => {
 					'public_background',
 					'public_favicon',
 					'storage_default_folder',
+					'default_exports_folder',
 					'project_id',
 					'license_key',
 					'license_token',
@@ -141,7 +144,7 @@ describe('resolveResources', () => {
 			.filter((resource) => resource.primaryKeyType === 'integer')
 			.map((resource) => resource.collection);
 
-		expect(autoIncrement).toEqual(['directus_permissions', 'directus_settings']);
+		expect(autoIncrement).toEqual(['directus_permissions', 'directus_presets', 'directus_settings']);
 	});
 
 	it('offers only the selectable names, sorted, never the dependent-only children', () => {
@@ -150,6 +153,7 @@ describe('resolveResources', () => {
 			'flows',
 			'folders',
 			'policies',
+			'presets',
 			'roles',
 			'settings',
 			'translations',

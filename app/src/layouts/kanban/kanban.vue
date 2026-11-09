@@ -47,6 +47,7 @@ const props = withDefaults(
 		editGroup: (id: string | number, title: string) => Promise<void>;
 		deleteGroup: (id: string | number) => Promise<void>;
 		isRelational?: boolean;
+		groupCollectionInactive?: boolean;
 		canReorderGroups: boolean;
 		canReorderItems: boolean;
 		canUpdateGroupTitle: boolean;
@@ -70,6 +71,7 @@ const props = withDefaults(
 		groupTitle: null,
 		groupPrimaryKeyField: null,
 		isRelational: true,
+		groupCollectionInactive: false,
 		sortField: null,
 		userField: null,
 		groupsSortField: null,
@@ -153,6 +155,10 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 		<slot v-if="error" name="error" :error="error" :reset="resetPresetAndRefresh" />
 
 		<template v-else>
+			<VNotice v-if="groupCollectionInactive" type="warning" class="group-inactive">
+				{{ $t('layouts.kanban.group_collection_inactive') }}
+			</VNotice>
+
 			<VNotice v-if="atLimit" type="warning" class="limit">
 				{{ $t('dataset_too_large_currently_showing_n_items', { n: n(props.limit ?? 0) }) }}
 			</VNotice>
@@ -293,24 +299,24 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 <style lang="scss" scoped>
 .kanban-layout {
-	--limit-notice-height: 0;
-	--limit-notice-margin-bottom: 1.375rem;
 	--header-bar-margin: 1.375rem;
 
 	block-size: 100%;
 
-	&:has(> .limit) {
-		--limit-notice-height: calc(3.375rem + var(--limit-notice-margin-bottom));
-	}
+	display: flex;
+	flex-direction: column;
 
-	.limit {
-		margin-block-end: var(--limit-notice-margin-bottom);
+	.limit,
+	.group-inactive {
+		margin-block: 2.25rem 0.5rem;
+		margin-inline: var(--content-padding);
 	}
 }
 
 .kanban {
 	display: flex;
-	block-size: 100%;
+	flex: 1;
+	min-block-size: 0;
 
 	--user-spacing: 0.875rem;
 

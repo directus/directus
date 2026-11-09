@@ -23,7 +23,12 @@ vi.mock('../middleware/is-locked.js', () => ({
 vi.mock('../services/payload.js', () => ({ PayloadService: vi.fn() }));
 vi.mock('../services/files.js', () => ({ FilesService: vi.fn() }));
 vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({ validateAccess: vi.fn() }));
-vi.mock('../services/assets.js', () => ({ AssetsService: vi.fn(() => ({ getAsset })) }));
+
+vi.mock('../services/assets.js', () => ({
+	AssetsService: vi.fn(function () {
+		return { getAsset };
+	}),
+}));
 
 const { default: router } = await import('./assets.js');
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Theme, useTheme } from '@directus/themes';
-import { clone, get, isEmpty, setWith, unset } from 'lodash';
+import { clone, get, isEmpty, setWith, unset } from 'lodash-es';
 import { computed } from 'vue';
 import SystemThemeOverridesGroup from './SystemThemeOverridesGroup.vue';
 import type { SetValueFn } from './types.js';

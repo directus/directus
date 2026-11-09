@@ -1,4 +1,3 @@
-import { LICENSE_KEY } from '@directus/license';
 import { DeepPartial, Field, SetupForm } from '@directus/types';
 import { FailedValidationErrorExtensions } from '@directus/validation';
 import { computed, ComputedRef, MaybeRef, unref } from 'vue';
@@ -20,24 +19,6 @@ export const SetupValidator = z
 	.refine((data) => data.admin.password === data.password_confirm, {
 		path: ['password_confirm'],
 	});
-
-export const FormValidator = z.object({
-	admin: z.object({
-		email: z.email(),
-		password: z.string(),
-		first_name: z.string(),
-		last_name: z.string(),
-	}),
-	password_confirm: z.string(),
-	license: z.literal(true),
-	license_key: LICENSE_KEY.nullable(),
-	owner: z.object({
-		project_owner: z.string().nullable(),
-		project_usage: z.enum(['personal', 'commercial', 'community']).nullable(),
-		org_name: z.string().nullable(),
-		product_updates: z.boolean(),
-	}),
-});
 
 export const defaultValues: SetupForm = {
 	admin: {

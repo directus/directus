@@ -1,6 +1,6 @@
 {
 	"name": "@directus/ai",
-	"version": "1.3.2",
+	"version": "1.4.0",
 	"description": "Shared AI types and model definitions for Directus AI",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -23,11 +23,15 @@
 	],
 	"scripts": {
 		"build": "tsdown src/index.ts --dts",
-		"dev": "tsdown src/index.ts --dts --watch"
+		"dev": "tsdown src/index.ts --dts --watch",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }

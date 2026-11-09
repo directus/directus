@@ -29,7 +29,7 @@ export const deletePermissions =
 export const deletePermission =
 	<Schema>(key: DirectusPermission<Schema>['id']): RestCommand<void, Schema> =>
 	() => {
-		throwIfEmpty(String(key), 'Key cannot be empty');
+		throwIfEmpty(key, 'Key cannot be empty');
 
 		return {
 			path: `/permissions/${key}`,

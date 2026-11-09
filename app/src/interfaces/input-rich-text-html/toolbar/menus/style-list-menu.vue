@@ -92,6 +92,7 @@ defineExpose({ select, currentLabel, isActive, displayLabel });
 <template>
 	<VMenu placement="bottom-start" show-arrow close-on-content-click>
 		<template #activator="{ toggle, active }">
+			<!-- .stop keeps a parent menu (the "Show More" overflow panel) open when this lives inside it -->
 			<VButton
 				v-tooltip="t(label)"
 				class="style-list-button toolbar-button"
@@ -100,7 +101,7 @@ defineExpose({ select, currentLabel, isActive, displayLabel });
 				:style="{ '--style-list-width': `${width}px` }"
 				:disabled="disabled || !editor"
 				small
-				@click="toggle"
+				@click.stop="toggle"
 			>
 				<span class="style-list-label" :style="currentFont ? { fontFamily: currentFont } : undefined">
 					{{ currentLabel }}

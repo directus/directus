@@ -285,12 +285,21 @@ export function useTranslationJob(options: {
 			const appliedFields = new Set<string>();
 			const streamedFieldValues = new Map<string, string>();
 
-			function applyField(key: string, value: string) {
-				if (streamedFieldValues.get(key) === value) return;
+			function applyFields(fields: Record<string, unknown>) {
+				const changedFields = Object.fromEntries(
+					Object.entries(fields).filter(
+						([key, value]) => typeof value === 'string' && streamedFieldValues.get(key) !== value,
+					),
+				) as Record<string, string>;
 
-				const normalized = normalizeAiTranslatedFields({ [key]: value }, selectedFieldDefinitions);
+				if (Object.keys(changedFields).length === 0) return;
+
+				const normalized = normalizeAiTranslatedFields(changedFields, selectedFieldDefinitions);
 				options.applyTranslatedFields(normalized, langCode);
-				streamedFieldValues.set(key, value);
+
+				for (const [key, value] of Object.entries(changedFields)) {
+					streamedFieldValues.set(key, value);
+				}
 			}
 
 			while (true) {
@@ -310,17 +319,12 @@ export function useTranslationJob(options: {
 						const obj = partialObject as Record<string, unknown>;
 						const receivedKeys = Object.keys(obj);
 						const completedKeys = receivedKeys.slice(0, -1);
-						const activeKey = receivedKeys[receivedKeys.length - 1];
+						applyFields(obj);
 
 						for (const key of completedKeys) {
 							if (!appliedFields.has(key) && typeof obj[key] === 'string') {
-								applyField(key, obj[key] as string);
 								appliedFields.add(key);
 							}
-						}
-
-						if (activeKey && typeof obj[activeKey] === 'string') {
-							applyField(activeKey, obj[activeKey] as string);
 						}
 
 						if (completedKeys.length > 0) {
@@ -334,12 +338,9 @@ export function useTranslationJob(options: {
 
 					if (finalObject && typeof finalObject === 'object' && !Array.isArray(finalObject)) {
 						const obj = finalObject as Record<string, string>;
+						applyFields(obj);
 
 						for (const key of Object.keys(obj)) {
-							if (typeof obj[key] === 'string') {
-								applyField(key, obj[key] as string);
-							}
-
 							appliedFields.add(key);
 						}
 

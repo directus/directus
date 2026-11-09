@@ -92,7 +92,13 @@ export function deepMapResponse(
 				}
 			}
 
-			return callback([key, value], { collection, field, ...relationInfo, leaf });
+			return callback([key, value], {
+				collection,
+				field,
+				relation: relationInfo.relation,
+				relationType: relationInfo.relationType,
+				leaf,
+			});
 		}),
 	);
 }
