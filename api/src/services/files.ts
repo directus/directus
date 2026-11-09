@@ -1,5 +1,6 @@
 import type { Readable } from 'node:stream';
-import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
+import { PassThrough as PassThroughStream } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import zlib from 'node:zlib';
 import path from 'path';
 import { useEnv } from '@directus/env';
@@ -563,72 +564,65 @@ export class FilesService extends ItemsService<File> {
 }
 
 function decompressResponse(stream: Readable, headers: AxiosResponse['headers']) {
-	const contentEncoding = (headers['content-encoding'] || '').toLowerCase();
+    const contentEncoding = (headers['content-encoding'] || '').toLowerCase();
 
-	if (!['gzip', 'deflate', 'br'].includes(contentEncoding)) {
-		return stream;
-	}
+    if (!['gzip', 'deflate', 'br'].includes(contentEncoding)) {
+        return stream;
+    }
 
-	let isEmpty = true;
+    const output = new PassThroughStream();
+    const input = stream.iterator();
 
-	const checker = new TransformStream({
-		transform(data, _encoding, callback) {
-			if (isEmpty === false) {
-				callback(null, data);
-				return;
-			}
+    output.once('close', () => {
+        if (!stream.readableEnded) stream.destroy();
+    });
 
-			isEmpty = false;
+    void pump();
 
-			handleContentEncoding(data);
+    return output;
 
-			callback(null, data);
-		},
+    async function pump() {
+        try {
+            const prefix: Buffer[] = [];
+            const requiredBytes = contentEncoding === 'deflate' ? 2 : 1;
+            let bytes = 0;
 
-		flush(callback) {
-			callback();
-		},
-	});
+            while (bytes < requiredBytes) {
+                const chunk = await input.next();
+                if (chunk.done) break;
+                if (chunk.value.length === 0) continue;
 
-	const finalStream = new PassThroughStream({
-		autoDestroy: false,
-		destroy(error, callback) {
-			stream.destroy();
+                prefix.push(chunk.value);
+                bytes += chunk.value.length;
+            }
 
-			callback(error);
-		},
-	});
+            if (bytes === 0) {
+                output.end();
+                return;
+            }
 
-	stream.pipe(checker);
+            const first = prefix[0]!;
+            const cmf = first[0]!;
+            const flg = first[1] ?? prefix[1]?.[0];
+            const zlibHeader = flg !== undefined && (cmf & 0x0f) === 8 && (cmf >> 4) <= 7
+                && ((cmf << 8) + flg) % 31 === 0;
+            const decoder =
+                contentEncoding === 'br'
+                    ? zlib.createBrotliDecompress()
+                    : contentEncoding === 'deflate' && !zlibHeader
+                        ? zlib.createInflateRaw()
+                        : zlib.createUnzip();
 
-	return finalStream;
-
-	function handleContentEncoding(data: any) {
-		let decompressStream;
-
-		if (contentEncoding === 'br') {
-			decompressStream = zlib.createBrotliDecompress();
-		} else if (contentEncoding === 'deflate' && isDeflateAlgorithm(data)) {
-			decompressStream = zlib.createInflateRaw();
-		} else {
-			decompressStream = zlib.createUnzip();
-		}
-
-		decompressStream.once('error', (error) => {
-			if (isEmpty && !stream.readable) {
-				finalStream.end();
-				return;
-			}
-
-			finalStream.destroy(error);
-		});
-
-		checker.pipe(decompressStream).pipe(finalStream);
-	}
-
-	function isDeflateAlgorithm(data: any) {
-		const DEFLATE_ALGORITHM_HEADER = 0x08;
-
-		return data.length > 0 && (data[0] & DEFLATE_ALGORITHM_HEADER) === 0;
-	}
+            await pipeline(
+                async function* () {
+                    yield* prefix;
+                    yield* input;
+                },
+                decoder,
+                output,
+            );
+        } catch (error) {
+            output.destroy(error as Error);
+        }
+    }
 }
