@@ -31,9 +31,16 @@ describe('options compat', () => {
 			'keepInlineStyles',
 			'keepInlineStylesWarning',
 			'keepLegacyEmphasisTags',
+			'noContainerParagraphs',
 			'customFormats',
 			'tinymceOverrides',
 		]);
+	});
+
+	test('noContainerParagraphs is opt-in', () => {
+		const { advanced } = resolveOptions();
+
+		expect(advanced.find((f) => f.field === 'noContainerParagraphs')?.schema?.default_value).toBe(false);
 	});
 
 	test('keeps all legacy toolbar choice values', () => {

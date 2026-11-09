@@ -303,6 +303,25 @@ describe('useComparison', () => {
 			expect(comparisonData.value?.displayIncoming?.body).toContain('comparison-diff--added');
 		});
 
+		it('should diff-mark list items without <p> when the field uses noContainerParagraphs', async () => {
+			mockFieldsStore.getFieldsForCollection.mockImplementation(() =>
+				getFieldData().map((field) =>
+					field.field === 'body'
+						? { ...field, meta: { ...field.meta, options: { noContainerParagraphs: true } } }
+						: field,
+				),
+			);
+
+			const testCase = getRichTextTestCase('<ul><li>hello</li></ul>', '<ul><li>hello world</li></ul>');
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			expect(comparisonData.value?.displayIncoming?.body).toContain('comparison-diff--added');
+		});
+
 		describe('with a contributed richtext node', () => {
 			const Callout = Node.create({
 				name: 'callout',
