@@ -286,10 +286,12 @@ describe('resolveLoginRedirect', () => {
 		});
 
 		test('allows relative path when allow list is configured', () => {
-			vi.mocked(useEnv).mockReturnValue({
-				PUBLIC_URL,
-				AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://allowed.com/callback',
-			});
+			vi.mocked(useEnv).mockReturnValue(
+				mockEnv({
+					PUBLIC_URL,
+					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://allowed.com/callback',
+				}),
+			);
 
 			expect(resolveLoginRedirect('/admin', { provider: 'github' })).toBe('/admin');
 		});
