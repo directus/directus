@@ -505,6 +505,31 @@ describe('parseFields', () => {
 		// Counted rather than compared, so a regression does not diff thousands of nodes
 		expect(Object.keys((query.deep as any).author._alias)).toHaveLength(COUNT);
 	});
+
+	test('should keep what the children recorded when a field has arguments at every level', async () => {
+		const selections = [
+			buildField('a', {
+				args: [buildArgument('limit', 1)],
+				children: [
+					buildField('b', {
+						alias: 'renamed',
+						args: [buildArgument('limit', 2)],
+						children: [buildField('c', { args: [buildArgument('limit', 3)], children: [buildField('id')] })],
+					}),
+				],
+			}),
+		];
+
+		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
+
+		expect(query.deep).toEqual({
+			a: {
+				_limit: 1,
+				_alias: { renamed: 'b' },
+				renamed: { _limit: 2, c: { _limit: 3 } },
+			},
+		});
+	});
 });
 
 /**
@@ -631,7 +656,7 @@ describe('query limits', () => {
 		expect(new Set(limitsPerCall).size).toBe(1);
 	});
 });
-    
+
 describe('prototype pollution containment', () => {
 	afterEach(() => {
 		delete (Object.prototype as any).grandchild;
