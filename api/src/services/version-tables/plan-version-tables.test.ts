@@ -1,7 +1,8 @@
 import type { Column } from '@directus/schema';
 import type { Relation } from '@directus/types';
+import { keyBy } from 'lodash-es';
 import { describe, expect, test } from 'vitest';
-import { type LiveCollection, planVersionTables } from './plan-version-tables.js';
+import { type LiveCollection, type LiveCollections, planShadowTables } from './plan-version-tables.js';
 
 function column(table: string, name: string, data_type = 'integer'): Column {
 	return {
@@ -36,7 +37,7 @@ const columns = {
 	],
 };
 
-const collections: LiveCollection[] = [
+const collectionList: LiveCollection[] = [
 	{ collection: 'articles', columns: columns.articles, relations: [m2o('articles', 'author', 'authors')] },
 	{ collection: 'authors', columns: columns.authors, relations: [] },
 	{ collection: 'tags', columns: columns.tags, relations: [m2o('tags', 'article', 'articles')] },
@@ -53,13 +54,16 @@ const collections: LiveCollection[] = [
 	},
 ];
 
+const collections: LiveCollections = keyBy(collectionList, 'collection');
+
 describe('planVersionTables', () => {
 	test('creates nothing when no collection is versioned', () => {
-		expect(planVersionTables(collections, new Set())).toEqual([]);
+		expect(planShadowTables(collections, new Set())).toEqual({});
 	});
 
 	test('creates a shadow table mirroring the live fields', () => {
-		const [shadow] = planVersionTables(collections, new Set(['authors']));
+		const tables = planShadowTables(collections, new Set(['authors']));
+		const shadow = tables['directus_shadow_authors'];
 
 		expect(shadow!.table).toBe('directus_shadow_authors');
 
@@ -80,8 +84,8 @@ describe('planVersionTables', () => {
 	});
 
 	test('keeps relational constraints and references versions of versioned related collections', () => {
-		const tables = planVersionTables(collections, new Set(['articles', 'authors']));
-		const shadow = tables.find((table) => table.table === 'directus_shadow_articles')!;
+		const tables = planShadowTables(collections, new Set(['articles', 'authors']));
+		const shadow = tables['directus_shadow_articles']!;
 
 		expect(shadow.columns.map((column) => column.name)).toContain('version_ref_author');
 		expect(shadow.columns.map((column) => column.name)).not.toContain('tags');
@@ -100,22 +104,22 @@ describe('planVersionTables', () => {
 	});
 
 	test('does not reference versions of unversioned related collections', () => {
-		const tables = planVersionTables(collections, new Set(['articles']));
-		const shadow = tables.find((table) => table.table === 'directus_shadow_articles')!;
+		const tables = planShadowTables(collections, new Set(['articles']));
+		const shadow = tables['directus_shadow_articles']!;
 
 		expect(shadow.columns.map((column) => column.name)).not.toContain('version_ref_author');
 	});
 
 	test('creates link tables for collections pointing to versioned collections', () => {
-		const tables = planVersionTables(collections, new Set(['articles']));
+		const tables = planShadowTables(collections, new Set(['articles']));
 
-		expect(tables.map((table) => table.table).sort()).toEqual([
+		expect(Object.keys(tables).sort()).toEqual([
 			'directus_link_comments',
 			'directus_link_tags',
 			'directus_shadow_articles',
 		]);
 
-		const link = tables.find((table) => table.table === 'directus_link_tags')!;
+		const link = tables['directus_link_tags']!;
 
 		expect(link.columns).toEqual([
 			{ kind: 'mirror', name: 'id', source: columns.tags[0], primary: true },
@@ -134,28 +138,28 @@ describe('planVersionTables', () => {
 	});
 
 	test('does not add foreign keys for a2o references', () => {
-		const tables = planVersionTables(collections, new Set(['authors']));
-		const link = tables.find((table) => table.table === 'directus_link_comments')!;
+		const tables = planShadowTables(collections, new Set(['authors']));
+		const link = tables['directus_link_comments']!;
 
 		expect(link.columns.map((column) => column.name)).toEqual(['id', 'item']);
 		expect(link.foreignKeys.map((foreignKey) => foreignKey.column)).toEqual(['id']);
 	});
 
 	test('throws when a live field conflicts with a version field', () => {
-		const conflicting: LiveCollection[] = [
-			{
+		const conflicting: LiveCollections = {
+			authors: {
 				collection: 'authors',
 				columns: [column('authors', 'id'), column('authors', 'version_name', 'varchar')],
 				relations: [],
 			},
-		];
+		};
 
-		expect(() => planVersionTables(conflicting, new Set(['authors']))).toThrow('conflicts with the versioning field');
+		expect(() => planShadowTables(conflicting, new Set(['authors']))).toThrow('conflicts with the versioning field');
 	});
 
 	test('only plans the version tables of the given collections', () => {
-		const tables = planVersionTables([collections[2]!], new Set(['articles', 'tags']));
+		const tables = planShadowTables({ tags: collections['tags']! }, new Set(['articles', 'tags']));
 
-		expect(tables.map((table) => table.table)).toEqual(['directus_shadow_tags', 'directus_link_tags']);
+		expect(Object.keys(tables)).toEqual(['directus_shadow_tags', 'directus_link_tags']);
 	});
 });

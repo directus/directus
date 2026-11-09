@@ -1,15 +1,21 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { Column, ForeignKey } from '@directus/schema';
 import type { Relation } from '@directus/types';
+import type { SchemaHelper } from '../../database/helpers/schema/types.js';
 import {
 	getLinkTableName,
 	getShadowTableName,
 	getVersionReferenceField,
-	isVersionTable,
+	isShadowTable,
 	VERSION_META_FIELDS,
 } from './constants.js';
 
 export type OnDelete = ForeignKey['on_delete'];
+
+/** Vendors report the default action differently, but they all behave the same */
+export function normalizeOnDelete(onDelete: OnDelete) {
+	return onDelete === null || onDelete === 'RESTRICT' ? 'NO ACTION' : onDelete;
+}
 
 export type VersionTableColumn =
 	/** One of the version meta fields, only present on shadow tables */
@@ -44,28 +50,37 @@ export type LiveCollection = {
 	relations: Relation[];
 };
 
+/** Version tables keyed by table name */
+export type VersionTables = Record<string, VersionTable>;
+
+/** Live collections keyed by collection name */
+export type LiveCollections = Record<string, LiveCollection>;
+
 /**
  * Compute the shadow and link tables that should exist for the given live collections. Only the version tables of
  * these collections are planned, the version tables of any other collection are left out.
  *
- * @param collections - Live collections to plan the version tables for
+ * @param collections - Live collections to plan the version tables for, keyed by collection name
  * @param versioned - All collections that have versioning enabled, including ones not being planned
+ * @param schemaHelper - Adjusts the foreign keys to what the vendor supports
  */
-export function planVersionTables(collections: LiveCollection[], versioned: Set<string>): VersionTable[] {
-	const tables: VersionTable[] = [];
+export function planShadowTables(collections: LiveCollections, versioned: Set<string>): VersionTables {
+	const tables: VersionTables = {};
 
-	for (const collection of collections) {
-		if (!versioned.has(collection.collection) || isVersionTable(collection.collection)) continue;
+	for (const collection of Object.values(collections)) {
+		if (!versioned.has(collection.collection) || isShadowTable(collection.collection)) continue;
 
-		tables.push(planShadowTable(collection, versioned));
+		const shadowTable = planShadowTable(collection, versioned);
+
+		tables[shadowTable.table] = shadowTable;
 	}
 
-	for (const collection of collections) {
-		if (isVersionTable(collection.collection)) continue;
+	for (const collection of Object.values(collections)) {
+		if (isShadowTable(collection.collection)) continue;
 
 		const linkTable = planLinkTable(collection, versioned);
 
-		if (linkTable) tables.push(linkTable);
+		if (linkTable) tables[linkTable.table] = linkTable;
 	}
 
 	return tables;

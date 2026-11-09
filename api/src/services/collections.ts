@@ -36,7 +36,7 @@ import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.j
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
-import { isVersionTable } from './version-tables/constants.js';
+import { isShadowTable } from './version-tables/constants.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
 
 export class CollectionsService {
@@ -342,7 +342,7 @@ export class CollectionsService {
 		});
 
 		// Shadow and link tables are managed by versioning and shouldn't be exposed as collections
-		let tablesInDatabase = (await this.schemaInspector.tableInfo()).filter((table) => !isVersionTable(table.name));
+		let tablesInDatabase = (await this.schemaInspector.tableInfo()).filter((table) => !isShadowTable(table.name));
 
 		let meta = (await collectionsItemsService.readByQuery({
 			limit: -1,
@@ -772,7 +772,7 @@ export class CollectionsService {
 
 					const relations = this.schema.relations.filter((relation) => {
 						// Version tables have already been cleaned up above
-						if (isVersionTable(relation.collection)) return false;
+						if (isShadowTable(relation.collection)) return false;
 
 						return relation.collection === collectionKey || relation.related_collection === collectionKey;
 					});

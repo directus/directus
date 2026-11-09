@@ -30,6 +30,6 @@ export function getVersionReferenceField(field: string) {
 	return `${VERSION_REFERENCE_PREFIX}${field}`;
 }
 
-export function isVersionTable(table: string) {
+export function isShadowTable(table: string) {
 	return table.startsWith(SHADOW_TABLE_PREFIX) || table.startsWith(LINK_TABLE_PREFIX);
 }

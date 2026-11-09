@@ -1,4 +1,11 @@
 import type { Knex } from 'knex';
+import { mapValues, sortBy } from 'lodash-es';
+import { VERSION_META_FIELDS } from '../../../../services/version-tables/constants.js';
+import {
+	normalizeOnDelete,
+	type VersionTableForeignKey,
+	type VersionTables,
+} from '../../../../services/version-tables/plan-version-tables.js';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import { type CreateIndexOptions, SchemaHelper, type SortRecord, type Sql } from '../types.js';
 import { prepQueryParams } from '../utils/prep-query-params.js';
@@ -8,6 +15,13 @@ import { prepQueryParams } from '../utils/prep-query-params.js';
 const triggerCache = new Map<string, boolean>();
 
 export class SchemaHelperMSSQL extends SchemaHelper {
+	override applyShadowForeignKeyRules(tables: VersionTables): VersionTables {
+		return mapValues(super.applyShadowForeignKeyRules(tables), (table) => ({
+			...table,
+			foreignKeys: limitCascadePaths(table.foreignKeys),
+		}));
+	}
+
 	override generateIndexName(
 		type: 'unique' | 'foreign' | 'index',
 		collection: string,
@@ -128,4 +142,24 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		// Fall back to blocking index creation for non-enterprise editions
 		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
 	}
+}
+
+/**
+ * MSSQL rejects multiple cascade paths, i.e. more than one foreign key with a referential action to the same table.
+ * Only the first one keeps its action. Mirrored columns go before the version meta fields, which are cleared manually.
+ */
+function limitCascadePaths(foreignKeys: VersionTableForeignKey[]): VersionTableForeignKey[] {
+	const metaFields: string[] = Object.values(VERSION_META_FIELDS);
+	const tablesWithAction = new Set<string>();
+	const stripped = new Set<VersionTableForeignKey>();
+
+	// `sortBy` is stable and sorts `false` before `true`
+	for (const foreignKey of sortBy(foreignKeys, (foreignKey) => metaFields.includes(foreignKey.column))) {
+		if (normalizeOnDelete(foreignKey.on_delete) === 'NO ACTION') continue;
+
+		if (tablesWithAction.has(foreignKey.foreign_key_table)) stripped.add(foreignKey);
+		else tablesWithAction.add(foreignKey.foreign_key_table);
+	}
+
+	return foreignKeys.map((foreignKey) => (stripped.has(foreignKey) ? { ...foreignKey, on_delete: null } : foreignKey));
 }

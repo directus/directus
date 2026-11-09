@@ -118,7 +118,7 @@ type Options = {
 	/** Collections with versioning enabled */
 	versioned?: string[];
 	/** Version tables that already exist */
-	existing?: { tables: string[]; columns: Column[]; foreignKeys: ForeignKey[] };
+	shadow?: { tables: string[]; columns: Column[]; foreignKeys: ForeignKey[] };
 	/** Columns of the live tables, defaults to the ones matching the schema */
 	live?: Column[];
 	/** Foreign keys of the live tables, defaults to the ones matching the schema */
@@ -157,12 +157,12 @@ async function sync(options: Options = {}) {
 
 	tracker.on.any(() => true).response([]);
 
-	const existing = options.existing ?? { tables: [], columns: [], foreignKeys: [] };
+	const shadow = options.shadow ?? { tables: [], columns: [], foreignKeys: [] };
 
 	inspector.introspected = [];
-	inspector.tables = ['articles', 'authors', ...existing.tables];
-	inspector.columns = [...(options.live ?? LIVE_COLUMNS), ...existing.columns];
-	inspector.foreignKeys = [...(options.liveForeignKeys ?? LIVE_FOREIGN_KEYS), ...existing.foreignKeys];
+	inspector.tables = ['articles', 'authors', ...shadow.tables];
+	inspector.columns = [...(options.live ?? LIVE_COLUMNS), ...shadow.columns];
+	inspector.foreignKeys = [...(options.liveForeignKeys ?? LIVE_FOREIGN_KEYS), ...shadow.foreignKeys];
 
 	const service = new VersionTablesService({ knex: db, schema: options.schema ?? schema });
 
@@ -312,13 +312,13 @@ describe('VersionTablesService.syncCollections', () => {
 	});
 
 	test('does nothing when the version tables are up to date', async () => {
-		const { sql } = await sync({ versioned: ['articles'], existing: ARTICLES_SHADOW });
+		const { sql } = await sync({ versioned: ['articles'], shadow: ARTICLES_SHADOW });
 
 		expect(sql).toBe('');
 	});
 
 	test('drops the foreign keys and version tables when versioning is disabled', async () => {
-		const { sql, bindings } = await sync({ versioned: [], existing: ARTICLES_SHADOW });
+		const { sql, bindings } = await sync({ versioned: [], shadow: ARTICLES_SHADOW });
 
 		expect(sql).toMatchInlineSnapshot(`
 			"alter table "directus_shadow_articles"
@@ -346,7 +346,7 @@ describe('VersionTablesService.syncCollections', () => {
 	test('adds, alters and drops mirrored columns to match the live table', async () => {
 		const { sql, bindings } = await sync({
 			versioned: ['articles'],
-			existing: {
+			shadow: {
 				...ARTICLES_SHADOW,
 				columns: [
 					...ARTICLES_SHADOW.columns.filter((column) => column.name !== 'author'),
@@ -401,7 +401,7 @@ describe('VersionTablesService.syncCollections', () => {
 	test('recreates foreign keys whose on delete action changed', async () => {
 		const { sql, bindings } = await sync({
 			versioned: ['articles'],
-			existing: {
+			shadow: {
 				...ARTICLES_SHADOW,
 				foreignKeys: ARTICLES_SHADOW.foreignKeys.map((foreignKey) =>
 					foreignKey.column === 'author' ? { ...foreignKey, on_delete: 'CASCADE' } : foreignKey,
@@ -428,7 +428,7 @@ describe('VersionTablesService.syncCollections', () => {
 	test('treats the default on delete actions of all vendors as the same', async () => {
 		const { sql } = await sync({
 			versioned: ['articles'],
-			existing: {
+			shadow: {
 				...ARTICLES_SHADOW,
 				foreignKeys: ARTICLES_SHADOW.foreignKeys.map((foreignKey) => ({
 					...foreignKey,
@@ -451,7 +451,7 @@ describe('scoped changes', () => {
 	test('only introspects the tables of the changed collection', async () => {
 		const { sql, introspected } = await sync({
 			versioned: ['articles'],
-			existing: OUTDATED_ARTICLES_SHADOW,
+			shadow: OUTDATED_ARTICLES_SHADOW,
 			run: (service) => service.syncCollections(['authors']),
 		});
 
@@ -471,7 +471,7 @@ describe('scoped changes', () => {
 	test('adds a new field to the shadow table', async () => {
 		const { sql } = await sync({
 			versioned: ['articles'],
-			existing: OUTDATED_ARTICLES_SHADOW,
+			shadow: OUTDATED_ARTICLES_SHADOW,
 			run: (service) => service.syncCollections(['articles']),
 		});
 
@@ -484,7 +484,7 @@ describe('scoped changes', () => {
 	test('enabling versioning updates the version tables of relating collections', async () => {
 		const { sql, introspected } = await sync({
 			versioned: ['articles', 'authors'],
-			existing: ARTICLES_SHADOW,
+			shadow: ARTICLES_SHADOW,
 			run: (service) => service.syncCollections(['authors'], { includeRelating: true }),
 		});
 
@@ -551,7 +551,7 @@ describe('scoped changes', () => {
 	test('deleting a collection drops the references to it from relating collections', async () => {
 		const { sql } = await sync({
 			versioned: ['articles'],
-			existing: ARTICLES_SHADOW,
+			shadow: ARTICLES_SHADOW,
 			run: (service) => service.syncCollections(['authors'], { includeRelating: true, exclude: ['authors'] }),
 		});
 
@@ -564,7 +564,7 @@ describe('scoped changes', () => {
 	test('removing a relation drops its foreign key from the shadow table', async () => {
 		const { sql } = await sync({
 			versioned: ['articles'],
-			existing: ARTICLES_SHADOW,
+			shadow: ARTICLES_SHADOW,
 			liveForeignKeys: [],
 			run: (service) => service.syncCollections(['articles']),
 		});
@@ -643,7 +643,7 @@ describe('dialects', () => {
 			client: 'mysql',
 			versioned: ['articles'],
 			live: UNSIGNED_COLUMNS,
-			existing: {
+			shadow: {
 				...ARTICLES_SHADOW,
 				columns: ARTICLES_SHADOW.columns.map((column) =>
 					column.data_type === 'integer' ? { ...column, data_type: 'int' } : column,

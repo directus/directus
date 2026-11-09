@@ -1,18 +1,9 @@
 import type { Column, ForeignKey, SchemaInspector } from '@directus/schema';
-import { createInspector } from '@directus/schema';
 import { systemRelationRows } from '@directus/system-data';
-import type {
-	AbstractServiceOptions,
-	Accountability,
-	PrimaryKey,
-	Relation,
-	RelationMeta,
-	SchemaOverview,
-	Type,
-} from '@directus/types';
+import type { AbstractServiceOptions, Accountability, RelationMeta, SchemaOverview, Type } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { groupBy, intersection, keyBy, mapValues, sortBy } from 'lodash-es';
+import { groupBy, intersection, mapValues, partition, pickBy } from 'lodash-es';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
@@ -23,16 +14,16 @@ import { FieldsService } from './fields.js';
 import {
 	getLinkTableName,
 	getShadowTableName,
-	isVersionTable,
+	isShadowTable,
 	VERSION_META_FIELDS,
 } from './version-tables/constants.js';
 import {
-	type LiveCollection,
-	type OnDelete,
-	planVersionTables,
-	type VersionTable,
+	type LiveCollections,
+	normalizeOnDelete,
+	planShadowTables,
 	type VersionTableColumn,
 	type VersionTableForeignKey,
+	type VersionTables,
 } from './version-tables/plan-version-tables.js';
 
 type ColumnChanges = { add: VersionTableColumn[]; alter: VersionTableColumn[]; drop: string[] };
@@ -42,12 +33,19 @@ type ColumnsByTable = Record<string, Record<string, Column>>;
 
 /** Columns and foreign keys of a set of tables */
 export type InspectedTables = {
-	columns: Column[];
+	columns: ColumnsByTable;
 	foreignKeys: ForeignKey[];
 };
 
+/** Version tables, live tables and relation meta rows to plan a sync from */
+type InspectedSchema = {
+	shadowTables: InspectedTables;
+	liveTables: InspectedTables;
+	relationsMeta: RelationMeta[];
+};
+
 export type SyncCollectionsOptions = {
-	/** Also sync collections with a m2o / a2o relation to the given collections */
+	/** Also sync collections with a m2o / a2o relation to the given collections, ignored when syncing all */
 	includeRelating?: boolean;
 	/** Collections to treat as deleted */
 	exclude?: string[];
@@ -68,23 +66,83 @@ export class VersionTablesService {
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.helpers = getHelpers(this.knex);
-		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
+		this.schemaInspector = getSchemaInspector(options.knex);
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 	}
 
 	/**
-	 * Bring the version tables of the given collections in line with the current schema
+	 * Bring the version tables in line with the current schema
+	 *
+	 * @param collections - Collections to sync, excluding shadow/link tables. Syncs every version table if omitted.
 	 */
-	async syncCollections(collections: string[], options?: SyncCollectionsOptions): Promise<void> {
+	async syncCollections(collections?: string[], options?: SyncCollectionsOptions): Promise<void> {
 		const exclude = new Set(options?.exclude ?? []);
 		const state = await this.readVersioningState(exclude);
 
 		if (!state) return;
 
-		if (options?.includeRelating) {
+		const { shadowTables, liveTables, relationsMeta } = collections
+			? await this.inspectCollections(collections, state.shadowTables, exclude, options?.includeRelating)
+			: await this.inspectAll();
+
+		const isIncluded = (collection: string | null) => !collection || !exclude.has(collection);
+
+		const relations = stitchRelations(relationsMeta, liveTables.foreignKeys).filter((relation) =>
+			isIncluded(relation.related_collection),
+		);
+
+		const relationsByCollection = groupBy(relations, 'collection');
+
+		const liveCollections: LiveCollections = mapValues(
+			pickBy(liveTables.columns, (_columns, collection) => isIncluded(collection)),
+			(columns, collection) => ({
+				collection,
+				columns: Object.values(columns),
+				relations: relationsByCollection[collection] ?? [],
+			}),
+		);
+
+		let plannedShadowTables = planShadowTables(liveCollections, state.versionedTables);
+		plannedShadowTables = this.helpers.schema.applyShadowForeignKeyRules(plannedShadowTables);
+
+		await this.applyChanges(plannedShadowTables, shadowTables);
+	}
+
+	/**
+	 * Read the versioned collections and existing version tables.
+	 * Returns `null` if neither exist, so projects without versioning skip the schema inspection.
+	 */
+	private async readVersioningState(
+		exclude: Set<string>,
+	): Promise<{ versionedTables: Set<string>; shadowTables: string[] } | null> {
+		const rows = await this.knex
+			.select('collection')
+			.from('directus_collections')
+			.where('versioning', true)
+			.whereNotIn('collection', [...exclude]);
+
+		const versionedTables = new Set<string>(rows.map(({ collection }) => collection));
+
+		const shadowTables = (await this.schemaInspector.tables()).filter(isShadowTable);
+
+		if (versionedTables.size === 0 && shadowTables.length === 0) return null;
+
+		return { versionedTables, shadowTables };
+	}
+
+	/**
+	 * Inspect the version tables and live tables of the given collections only, table by table
+	 */
+	private async inspectCollections(
+		collections: string[],
+		allShadowTables: string[],
+		exclude: Set<string>,
+		includeRelating?: boolean,
+	): Promise<InspectedSchema> {
+		if (includeRelating) {
 			// Collections with a m2o / a2o relation to the given collections
-			const relatedCollections = this.schema.relations
+			const relatingCollections = this.schema.relations
 				.filter(
 					(relation) =>
 						(relation.related_collection && collections.includes(relation.related_collection)) ||
@@ -92,43 +150,45 @@ export class VersionTablesService {
 				)
 				.map((relation) => relation.collection);
 
-			collections = [...collections, ...relatedCollections];
+			collections = [...collections, ...relatingCollections];
 		}
 
-		const scope = [...new Set(collections)].filter((collection) => !isVersionTable(collection));
-
-		const existingTables = scope
+		// Only the version tables of these collections, so the ones of other collections aren't dropped
+		const shadowTables = collections
 			.flatMap((collection) => [getShadowTableName(collection), getLinkTableName(collection)])
-			.filter((table) => state.versionTables.includes(table));
+			.filter((table) => allShadowTables.includes(table));
 
-		await this.syncFromSchema({
-			versioned: state.versioned,
-			existing: { tables: existingTables, ...(await this.inspectTables(existingTables)) },
-			live: await this.inspectTables(scope.filter((collection) => !exclude.has(collection))),
-			relationsMeta: await this.readRelationsMeta(scope),
-			exclude,
-		});
+		return {
+			shadowTables: await this.inspectTables(shadowTables),
+			liveTables: await this.inspectTables(collections.filter((collection) => !exclude.has(collection))),
+			relationsMeta: await this.readRelationsMeta(collections),
+		};
 	}
 
 	/**
-	 * Read the versioned collections and existing version tables.
-	 * Returns `null` if neither exist, so projects without versioning skip the schema inspection.
+	 * Inspect every version table and live table. Inspecting the whole database at once is a lot faster than
+	 * inspecting each table on its own.
 	 */
-	async readVersioningState(
-		exclude: Set<string> = new Set(),
-	): Promise<{ versioned: Set<string>; versionTables: string[] } | null> {
-		const versioned = new Set((await this.readVersionedCollections()).filter((collection) => !exclude.has(collection)));
-		const versionTables = (await this.schemaInspector.tables()).filter(isVersionTable);
+	private async inspectAll(): Promise<InspectedSchema> {
+		const [shadowColumns, liveColumns] = partition(await this.schemaInspector.columnInfo(), (column) =>
+			isShadowTable(column.table),
+		);
 
-		if (versioned.size === 0 && versionTables.length === 0) return null;
+		const [shadowForeignKeys, liveForeignKeys] = partition(await this.schemaInspector.foreignKeys(), (foreignKey) =>
+			isShadowTable(foreignKey.table),
+		);
 
-		return { versioned, versionTables };
+		return {
+			shadowTables: { columns: keyColumns(shadowColumns), foreignKeys: shadowForeignKeys },
+			liveTables: { columns: keyColumns(liveColumns), foreignKeys: liveForeignKeys },
+			relationsMeta: await this.readRelationsMeta(),
+		};
 	}
 
 	/**
 	 * Read the relation meta rows (including system ones) of the given "many" collections, or all if omitted
 	 */
-	async readRelationsMeta(collections?: string[]): Promise<RelationMeta[]> {
+	private async readRelationsMeta(collections?: string[]): Promise<RelationMeta[]> {
 		const query = this.knex.select('*').from('directus_relations');
 
 		if (collections) query.whereIn('many_collection', collections);
@@ -147,109 +207,40 @@ export class VersionTablesService {
 		return [...rows, ...systemRows];
 	}
 
-	/**
-	 * Create, alter and drop version tables based on an already inspected schema
-	 *
-	 * @param input.existing - Version tables to sync, the ones no longer needed are dropped
-	 * @param input.live - Live tables to derive the version tables from
-	 * @param input.exclude - Collections to treat as deleted
-	 */
-	async syncFromSchema(input: {
-		versioned: Set<string>;
-		existing: { tables: string[] } & InspectedTables;
-		live: InspectedTables;
-		relationsMeta: RelationMeta[];
-		exclude?: Set<string>;
-	}): Promise<void> {
-		const exclude = input.exclude ?? new Set();
-		const isIncluded = (collection: string | null) => !collection || !exclude.has(collection);
-
-		const relations = stitchRelations(input.relationsMeta, input.live.foreignKeys).filter((relation) =>
-			isIncluded(relation.related_collection),
-		);
-
-		const relationsByCollection = groupBy(relations, 'collection');
-
-		const liveCollections: LiveCollection[] = Object.entries(groupBy(input.live.columns, 'table'))
-			.filter(([collection]) => isIncluded(collection))
-			.map(([collection, columns]) => ({
-				collection,
-				columns,
-				relations: relationsByCollection[collection] ?? [],
-			}));
-
-		const desired = this.applyVendorForeignKeyRules(planVersionTables(liveCollections, input.versioned));
-
-		await this.applyChanges(desired, {
-			tables: input.existing.tables,
-			columns: mapValues(groupBy(input.existing.columns, 'table'), (columns) => keyBy(columns, 'name')),
-			foreignKeys: input.existing.foreignKeys,
-		});
-	}
-
-	/**
-	 * Null out references to the given users in all shadow tables. Done manually before deleting users, as not every
-	 * vendor allows a referential action on both user fields (same as for `directus_versions`).
-	 */
-	async clearUserReferences(keys: PrimaryKey[]): Promise<void> {
-		if (keys.length === 0) return;
-
-		for (const collection of await this.readVersionedCollections()) {
-			const table = getShadowTableName(collection);
-
-			// Versioned folders have no shadow table
-			if (!(await this.schemaInspector.hasTable(table))) continue;
-
-			for (const field of [VERSION_META_FIELDS.userCreated, VERSION_META_FIELDS.userUpdated]) {
-				await this.knex(table)
-					.update({ [field]: null })
-					.whereIn(field, keys);
-			}
-		}
-	}
-
-	private async readVersionedCollections(): Promise<string[]> {
-		const rows = await this.knex.select('collection').from('directus_collections').where('versioning', true);
-		return rows.map(({ collection }) => collection);
-	}
-
 	private async inspectTables(tables: string[]): Promise<InspectedTables> {
-		const result: InspectedTables = { columns: [], foreignKeys: [] };
+		const columns: Column[] = [];
+		const foreignKeys: ForeignKey[] = [];
 
 		for (const table of tables) {
-			result.columns.push(...(await this.schemaInspector.columnInfo(table)));
-			result.foreignKeys.push(...(await this.schemaInspector.foreignKeys(table)));
+			columns.push(...(await this.schemaInspector.columnInfo(table)));
+			foreignKeys.push(...(await this.schemaInspector.foreignKeys(table)));
 		}
 
-		return result;
+		return { columns: keyColumns(columns), foreignKeys };
 	}
 
 	/**
-	 * Diff the desired version tables against the existing ones and apply the difference
+	 * Diff the planned version tables against the current shadow tables and apply the difference
 	 */
-	private async applyChanges(
-		desired: VersionTable[],
-		existing: { tables: string[]; columns: ColumnsByTable; foreignKeys: ForeignKey[] },
-	): Promise<void> {
-		const desiredByName = new Map(desired.map((table) => [table.table, table]));
-		const columnChanges = getColumnChanges(desired, existing.columns);
+	private async applyChanges(planned: VersionTables, shadow: InspectedTables): Promise<void> {
+		const columnChanges = getColumnChanges(planned, shadow.columns);
 
-		const tablesToDrop = existing.tables.filter((table) => !desiredByName.has(table));
-		const tablesToCreate = desired.filter((table) => !existing.tables.includes(table.table));
+		const tablesToDrop = Object.keys(shadow.columns).filter((table) => !planned[table]);
+		const tablesToCreate = Object.values(planned).filter((table) => !shadow.columns[table.table]);
 
 		const isForeignKeyOutdated = (foreignKey: ForeignKey) => {
-			const desiredTable = desiredByName.get(foreignKey.table);
+			const plannedTable = planned[foreignKey.table];
 			const changes = columnChanges.get(foreignKey.table);
 
-			if (!desiredTable) return true;
+			if (!plannedTable) return true;
 			if (changes?.drop.includes(foreignKey.column)) return true;
 			if (changes?.alter.some((column) => column.name === foreignKey.column)) return true;
 
-			return !desiredTable.foreignKeys.some((desiredForeignKey) => isSameForeignKey(foreignKey, desiredForeignKey));
+			return !plannedTable.foreignKeys.some((plannedForeignKey) => isSameForeignKey(foreignKey, plannedForeignKey));
 		};
 
-		const foreignKeysToDrop = existing.foreignKeys.filter(isForeignKeyOutdated);
-		const foreignKeysToKeep = existing.foreignKeys.filter((foreignKey) => !foreignKeysToDrop.includes(foreignKey));
+		const foreignKeysToDrop = shadow.foreignKeys.filter(isForeignKeyOutdated);
+		const foreignKeysToKeep = shadow.foreignKeys.filter((foreignKey) => !foreignKeysToDrop.includes(foreignKey));
 
 		// Drop foreign keys first, so tables and columns can be changed in any order
 		await this.dropForeignKeys(foreignKeysToDrop);
@@ -277,36 +268,12 @@ export class VersionTablesService {
 				}
 
 				for (const column of changes.alter) {
-					this.addColumn(fieldsService, builder, table, column, existing.columns[table]![column.name]);
+					this.addColumn(fieldsService, builder, table, column, shadow.columns[table]![column.name]);
 				}
 			});
 		}
 
-		await this.addForeignKeys(desired, foreignKeysToKeep);
-	}
-
-	/**
-	 * Adjust `on_delete` of the foreign keys the same way as for regular relations, as not every vendor supports
-	 * every action
-	 */
-	private applyVendorForeignKeyRules(tables: VersionTable[]): VersionTable[] {
-		const isMssql = this.helpers.schema.isOneOfClients(['mssql']);
-
-		return tables.map((table) => {
-			const foreignKeys = table.foreignKeys.map((foreignKey) => {
-				const relation: Partial<Relation> = {
-					collection: table.table,
-					related_collection: foreignKey.foreign_key_table,
-					schema: { on_delete: foreignKey.on_delete } as Relation['schema'],
-				};
-
-				this.helpers.schema.preRelationChange(relation);
-
-				return { ...foreignKey, on_delete: relation.schema!.on_delete };
-			});
-
-			return { ...table, foreignKeys: isMssql ? limitCascadePaths(foreignKeys) : foreignKeys };
-		});
+		await this.addForeignKeys(planned, foreignKeysToKeep);
 	}
 
 	private async dropForeignKeys(foreignKeys: ForeignKey[]) {
@@ -319,8 +286,8 @@ export class VersionTablesService {
 		}
 	}
 
-	private async addForeignKeys(desired: VersionTable[], existing: ForeignKey[]) {
-		for (const table of desired) {
+	private async addForeignKeys(planned: VersionTables, existing: ForeignKey[]) {
+		for (const table of Object.values(planned)) {
 			const missing = table.foreignKeys.filter(
 				(foreignKey) => !existing.some((other) => other.table === table.table && isSameForeignKey(other, foreignKey)),
 			);
@@ -423,18 +390,29 @@ export class VersionTablesService {
 	}
 }
 
+// Groups columns by table and name
+function keyColumns(columns: Column[]): ColumnsByTable {
+	const result: ColumnsByTable = {};
+
+	for (const column of columns) {
+		(result[column.table] ??= {})[column.name] = column;
+	}
+
+	return result;
+}
+
 /**
  * Column changes per existing table. Tables without changes are left out.
  */
-function getColumnChanges(desired: VersionTable[], existingColumns: ColumnsByTable) {
+function getColumnChanges(planned: VersionTables, existingColumns: ColumnsByTable) {
 	const result = new Map<string, ColumnChanges>();
 
-	for (const table of desired) {
+	for (const table of Object.values(planned)) {
 		const existing = existingColumns[table.table];
 
 		if (!existing) continue;
 
-		const desiredNames = new Set(table.columns.map((column) => column.name));
+		const plannedNames = new Set(table.columns.map((column) => column.name));
 
 		const changes: ColumnChanges = {
 			add: table.columns.filter((column) => !existing[column.name]),
@@ -442,7 +420,7 @@ function getColumnChanges(desired: VersionTable[], existingColumns: ColumnsByTab
 				const current = existing[column.name];
 				return current && column.kind === 'mirror' && !column.primary && hasTypeChanged(column.source, current);
 			}),
-			drop: Object.keys(existing).filter((name) => !desiredNames.has(name)),
+			drop: Object.keys(existing).filter((name) => !plannedNames.has(name)),
 		};
 
 		if (changes.add.length || changes.alter.length || changes.drop.length) {
@@ -477,36 +455,11 @@ function hasTypeChanged(source: Column, existing: Column) {
 	);
 }
 
-/**
- * MSSQL rejects multiple cascade paths, i.e. more than one foreign key with a referential action to the same table.
- * Only the first one keeps its action. Mirrored columns go before the version meta fields, which are cleared manually.
- */
-function limitCascadePaths(foreignKeys: VersionTableForeignKey[]): VersionTableForeignKey[] {
-	const metaFields: string[] = Object.values(VERSION_META_FIELDS);
-	const tablesWithAction = new Set<string>();
-	const stripped = new Set<VersionTableForeignKey>();
-
-	// `sortBy` is stable and sorts `false` before `true`
-	for (const foreignKey of sortBy(foreignKeys, (foreignKey) => metaFields.includes(foreignKey.column))) {
-		if (normalizeOnDelete(foreignKey.on_delete) === 'NO ACTION') continue;
-
-		if (tablesWithAction.has(foreignKey.foreign_key_table)) stripped.add(foreignKey);
-		else tablesWithAction.add(foreignKey.foreign_key_table);
-	}
-
-	return foreignKeys.map((foreignKey) => (stripped.has(foreignKey) ? { ...foreignKey, on_delete: null } : foreignKey));
-}
-
-function isSameForeignKey(existing: ForeignKey, desired: VersionTableForeignKey) {
+function isSameForeignKey(existing: ForeignKey, planned: VersionTableForeignKey) {
 	return (
-		existing.column === desired.column &&
-		existing.foreign_key_table === desired.foreign_key_table &&
-		existing.foreign_key_column === desired.foreign_key_column &&
-		normalizeOnDelete(existing.on_delete) === normalizeOnDelete(desired.on_delete)
+		existing.column === planned.column &&
+		existing.foreign_key_table === planned.foreign_key_table &&
+		existing.foreign_key_column === planned.foreign_key_column &&
+		normalizeOnDelete(existing.on_delete) === normalizeOnDelete(planned.on_delete)
 	);
-}
-
-/** Vendors report the default action differently, but they all behave the same */
-function normalizeOnDelete(onDelete: OnDelete) {
-	return onDelete === null || onDelete === 'RESTRICT' ? 'NO ACTION' : onDelete;
 }
