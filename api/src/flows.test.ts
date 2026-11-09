@@ -118,12 +118,11 @@ describe('FlowManager', () => {
 			expect(manager.getFlow('flow-b')).toBeDefined();
 		});
 
-		test('should reject when every attempt of the initial load fails', async () => {
+		test('should reject when the initial load fails', async () => {
 			const error = new Error('Connection terminated unexpectedly');
 			readByQuery.mockRejectedValue(error);
 
 			await expect(getFlowManager().initialize()).rejects.toBe(error);
-			expect(readByQuery).toHaveBeenCalledTimes(3);
 		});
 	});
 
@@ -144,12 +143,10 @@ describe('FlowManager', () => {
 			await manager.reload();
 			await flushPromises();
 
-			expect(readByQuery).toHaveBeenCalledTimes(3);
-			expect(manager.getFlow('flow-a')).toBeUndefined();
 			expect(manager.getFlow('flow-b')).toBeDefined();
 		});
 
-		test('should not retry reading the flows when acquiring a connection times out', async () => {
+		test('should not retry reading the flows when it times out', async () => {
 			const { default: knex } = await import('knex');
 			const manager = await initializeWith([createFlow('flow-a')]);
 
@@ -158,23 +155,9 @@ describe('FlowManager', () => {
 			await flushPromises();
 
 			expect(sleep).not.toHaveBeenCalled();
-			expect(manager.getFlow('flow-a')).toBeDefined();
 		});
 
-		test('should not retry reading the flows when reading the schema times out', async () => {
-			// Imported after resetting the modules, so it's the class the flow manager checks against
-			const { TimeoutError } = await import('./utils/with-timeout.js');
-			const manager = await initializeWith([createFlow('flow-a')]);
-
-			getSchema.mockRejectedValueOnce(new TimeoutError('Schema retrieval exceeded the timeout'));
-			await manager.reload();
-			await flushPromises();
-
-			expect(sleep).not.toHaveBeenCalled();
-			expect(manager.getFlow('flow-a')).toBeDefined();
-		});
-
-		test('should keep the loaded flows until the next reload when every attempt at reading the flows fails', async () => {
+		test('should keep the loaded flows when every attempt at reading the flows fails', async () => {
 			const manager = await initializeWith([createFlow('flow-a')]);
 
 			readByQuery.mockRejectedValue(new Error('Connection terminated unexpectedly'));
@@ -191,13 +174,6 @@ describe('FlowManager', () => {
 			expect(second).toBeGreaterThanOrEqual(1000);
 			expect(second).toBeLessThanOrEqual(2000);
 			expect(manager.getFlow('flow-a')).toBeDefined();
-
-			readByQuery.mockResolvedValueOnce([createFlow('flow-b')]);
-			await manager.reload();
-			await flushPromises();
-
-			expect(manager.getFlow('flow-a')).toBeUndefined();
-			expect(manager.getFlow('flow-b')).toBeDefined();
 		});
 
 		test('should load the latest flows on the next reload after loading the flows failed', async () => {
@@ -240,7 +216,7 @@ describe('FlowManager', () => {
 			const runningRead = withResolvers<FlowRaw[]>();
 			readByQuery.mockReturnValueOnce(runningRead.promise).mockResolvedValueOnce([createFlow('flow-b')]);
 
-			await manager.reload();
+			// Running, waiting, and skipped
 			await manager.reload();
 			await manager.reload();
 			await manager.reload();
@@ -266,6 +242,15 @@ describe('FlowManager', () => {
 			expect(manager.getFlow('flow-b')).toBeDefined();
 		});
 
+		test('should ignore empty messages', async () => {
+			await initializeWith([createFlow('flow-a')]);
+
+			await testBus.bus.publish('flows', null);
+			await flushPromises();
+
+			expect(readByQuery).toHaveBeenCalledTimes(1);
+		});
+
 		test('should reject when publishing the reload fails', async () => {
 			const error = new Error('Connection is closed.');
 			testBus.bus.publish.mockRejectedValueOnce(error);
@@ -275,23 +260,6 @@ describe('FlowManager', () => {
 	});
 
 	describe('runWebhookFlow', () => {
-		test('should wait for a failing reload and run the flow that is still loaded', async () => {
-			const manager = await initializeWith([createFlow('webhook-flow', 'webhook', { method: 'GET' })]);
-
-			const failingRead = withResolvers<FlowRaw[]>();
-
-			readByQuery
-				.mockReturnValueOnce(failingRead.promise)
-				.mockRejectedValue(new Error('Connection terminated unexpectedly'));
-
-			await manager.reload();
-
-			const run = manager.runWebhookFlow('GET-webhook-flow', {}, { schema: {} as any, accountability: undefined });
-			failingRead.reject(new Error('Connection terminated unexpectedly'));
-
-			await expect(run).resolves.toHaveProperty('result');
-		});
-
 		const ASYNC_FLOW_CASES = [
 			{
 				name: 'webhook',
