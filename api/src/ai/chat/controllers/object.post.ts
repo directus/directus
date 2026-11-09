@@ -1,4 +1,3 @@
-import type { StandardProviderType } from '@directus/ai';
 import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { jsonSchema, streamObject, wrapLanguageModel } from 'ai';
 import type { RequestHandler } from 'express';
@@ -13,6 +12,7 @@ import {
 import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { ObjectRequest } from '../models/object-request.js';
 import { addAdditionalPropertiesToJsonSchema } from '../utils/add-additional-properties-to-json-schema.js';
+import { validateModelAllowed } from '../utils/validate-model-allowed.js';
 
 export const aiObjectPostHandler: RequestHandler = async (req, res) => {
 	if (!req.accountability?.app) {
@@ -29,20 +29,7 @@ export const aiObjectPostHandler: RequestHandler = async (req, res) => {
 
 	const aiSettings: AISettings = res.locals['ai'].settings;
 
-	const allowedModelsMap: Record<StandardProviderType, string[] | null> = {
-		openai: aiSettings.openaiAllowedModels,
-		anthropic: aiSettings.anthropicAllowedModels,
-		google: aiSettings.googleAllowedModels,
-		openrouter: aiSettings.openrouterModels?.map((model) => model.id) ?? null,
-	};
-
-	if (provider !== 'openai-compatible') {
-		const allowedModels = allowedModelsMap[provider];
-
-		if (!allowedModels || allowedModels.length === 0 || !allowedModels.includes(model)) {
-			throw new ForbiddenError({ reason: 'Model not allowed for this provider' });
-		}
-	}
+	validateModelAllowed(provider, model, aiSettings);
 
 	const configs = buildProviderConfigs(aiSettings);
 	const providerConfig = configs.find((c) => c.type === provider);

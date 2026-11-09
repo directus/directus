@@ -5,7 +5,7 @@
 '@directus/types': minor
 '@directus/system-data': minor
 '@directus/sdk': minor
-'@directus/cli': minor
+'@directus/cli': patch
 ---
 
 Added OpenRouter as an AI provider with searchable model selection in AI settings and prompt caching across tool steps

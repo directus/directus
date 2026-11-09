@@ -1,4 +1,3 @@
-import type { StandardProviderType } from '@directus/ai';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { safeValidateUIMessages } from 'ai';
 import type { RequestHandler } from 'express';
@@ -8,6 +7,7 @@ import { createUiStream } from '../lib/create-ui-stream.js';
 import { ChatRequest } from '../models/chat-request.js';
 import { chatRequestToolsToAiSdkTools } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
 import { fixErrorToolCalls } from '../utils/fix-error-tool-calls.js';
+import { validateModelAllowed } from '../utils/validate-model-allowed.js';
 
 export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 	if (!req.accountability?.app) {
@@ -24,22 +24,7 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 
 	const aiSettings: AISettings = res.locals['ai'].settings;
 
-	const allowedModelsMap: Record<StandardProviderType, string[] | null> = {
-		openai: aiSettings.openaiAllowedModels,
-		anthropic: aiSettings.anthropicAllowedModels,
-		google: aiSettings.googleAllowedModels,
-		openrouter: aiSettings.openrouterModels?.map((model) => model.id) ?? null,
-	};
-
-	// For standard providers: null/empty = no models allowed, must be in list
-	// openai-compatible skips validation entirely
-	if (provider !== 'openai-compatible') {
-		const allowedModels = allowedModelsMap[provider];
-
-		if (!allowedModels || allowedModels.length === 0 || !allowedModels.includes(model)) {
-			throw new ForbiddenError({ reason: 'Model not allowed for this provider' });
-		}
-	}
+	validateModelAllowed(provider, model, aiSettings);
 
 	if (rawMessages.length === 0) {
 		throw new InvalidPayloadError({ reason: `"messages" must not be empty` });
