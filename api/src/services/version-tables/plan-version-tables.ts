@@ -1,7 +1,6 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { Column, ForeignKey } from '@directus/schema';
 import type { Relation } from '@directus/types';
-import type { SchemaHelper } from '../../database/helpers/schema/types.js';
 import {
 	getLinkTableName,
 	getShadowTableName,
