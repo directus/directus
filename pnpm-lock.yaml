@@ -404,6 +404,9 @@ catalogs:
     '@tiptap/extension-link':
       specifier: 3.31.3
       version: 3.31.3
+    '@tiptap/extension-paragraph':
+      specifier: 3.31.3
+      version: 3.31.3
     '@tiptap/extension-subscript':
       specifier: 3.31.3
       version: 3.31.3
@@ -1907,6 +1910,9 @@ importers:
       '@tiptap/extension-link':
         specifier: 'catalog:'
         version: 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
+      '@tiptap/extension-paragraph':
+        specifier: 'catalog:'
+        version: 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
       '@tiptap/extension-subscript':
         specifier: 'catalog:'
         version: 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
