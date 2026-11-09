@@ -63,8 +63,7 @@ describe('runSchemaChange', () => {
 			'disable foreign keys',
 			'begin',
 			'change',
-			'sync articles {}',
-			'sync authors {"includeRelating":true}',
+			'sync articles,authors {"includeRelating":["authors"]}',
 			'commit',
 			'enable foreign keys',
 		]);
@@ -104,8 +103,7 @@ describe('runSchemaChange', () => {
 			'begin',
 			'nested change',
 			'change',
-			'sync articles {}',
-			'sync authors {"includeRelating":true}',
+			'sync articles,authors {"includeRelating":["authors"]}',
 			'commit',
 			'enable foreign keys',
 		]);

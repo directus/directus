@@ -50,8 +50,11 @@ type InspectedSchema = {
 };
 
 export type SyncCollectionsOptions = {
-	/** Also sync collections with a m2o / a2o relation to the given collections, ignored when syncing all */
-	includeRelating?: boolean;
+	/**
+	 * Also sync collections with a m2o / a2o relation to the given collections, or only to the listed ones of them.
+	 * Ignored when syncing all.
+	 */
+	includeRelating?: boolean | string[];
 	/** Collections to treat as deleted */
 	exclude?: string[];
 };
@@ -84,7 +87,13 @@ export class VersionTablesService {
 	async syncCollections(collections?: string[], options?: SyncCollectionsOptions): Promise<void> {
 		const exclude = new Set(options?.exclude ?? []);
 
-		if (collections && options?.includeRelating) collections = this.resolveRelatedCollections(collections);
+		if (collections && options?.includeRelating) {
+			const related = this.resolveRelatedCollections(
+				options.includeRelating === true ? collections : options.includeRelating,
+			);
+
+			collections = uniq([...collections, ...related]);
+		}
 
 		const state = await this.readVersioningState(exclude, collections);
 

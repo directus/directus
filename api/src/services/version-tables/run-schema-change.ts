@@ -79,9 +79,14 @@ export async function runSchemaChange<T>(
 
 			const relatingCollections = [...pendingRelating].filter((collection) => !dropped.has(collection));
 
-			if (collections.length > 0) await service.syncCollections(collections, exclude);
-			if (relatingCollections.length > 0)
-				await service.syncCollections(relatingCollections, { includeRelating: true, ...exclude });
+			// Sync everything at once, as version tables can reference each other. Within a single sync all tables are
+			// created before any foreign key is added, so the order the collections were changed in doesn't matter.
+			if (collections.length > 0 || relatingCollections.length > 0) {
+				await service.syncCollections([...collections, ...relatingCollections], {
+					...(relatingCollections.length > 0 ? { includeRelating: relatingCollections } : {}),
+					...exclude,
+				});
+			}
 
 			return result;
 		}),

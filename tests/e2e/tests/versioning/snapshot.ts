@@ -39,7 +39,8 @@ export const schema = new SchemaBuilder()
 		c.field('views').integer();
 		c.field('author').m2o('authors');
 		c.field('category').m2o('categories');
-		c.field('parent').m2o('posts');
+		// MSSQL rejects self-referencing foreign keys with a referential action
+		c.field('parent').m2o('posts', undefined, (relation) => relation.options({ schema: { on_delete: 'NO ACTION' } }));
 		c.field('notes').o2m('notes', 'post_id');
 		c.field('links').o2m('links', 'post_id');
 		c.field('tags').m2m('tags');

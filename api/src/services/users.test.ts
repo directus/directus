@@ -39,12 +39,6 @@ vi.mock('@directus/env', () => ({
 vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js');
 vi.mock('../permissions/modules/validate-access/validate-access.js');
 
-vi.mock('./version-tables.js', () => ({
-	VersionTablesService: class {
-		clearUserReferences = vi.fn();
-	},
-}));
-
 const { isEntitledMock } = vi.hoisted(() => ({ isEntitledMock: vi.fn() }));
 
 vi.mock('../license/index.js', () => ({
@@ -416,6 +410,8 @@ describe('Integration Tests', () => {
 				tracker.on.update('directus_versions').response({});
 				// mock comments update query in deleteOne/deleteMany/deleteByQuery methods
 				tracker.on.update('directus_comments').response({});
+				// mock versioned collections query, whose shadow tables reference users
+				tracker.on.select('directus_collections').response([]);
 
 				const service = new UsersService({
 					knex: db,
