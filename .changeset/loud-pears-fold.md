@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed failed flow reloads crashing the process
+Fixed crashes and unintended unloading of flows and extensions during failed reloads
