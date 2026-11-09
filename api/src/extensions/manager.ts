@@ -1028,7 +1028,7 @@ export class ExtensionManager {
 		await Promise.all(
 			Array.from(this.unregisterFunctionMap.entries()).map(([name, unregister]) =>
 				unregister().catch((error) => {
-					// Carry on, so a single failure doesn't stop the reload with the remaining extensions half unregistered
+					// A unregister failure shouldn't stop the unregistration
 					logger.error(error, `Failed to unregister extension "${name}"`);
 				}),
 			),
