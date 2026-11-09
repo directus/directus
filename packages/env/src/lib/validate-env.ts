@@ -1,58 +1,10 @@
 import type { Env } from '../types/env.js';
 
-type HostConnectionEnv = {
-	DB_HOST: string;
-	DB_PORT: number;
-	DB_DATABASE: string;
-	DB_USER: string;
-	DB_PASSWORD: string;
-};
-
-type SqliteEnv = {
-	DB_CLIENT: 'sqlite3';
-	DB_FILENAME: string;
-};
-
-type OracleEnv = { DB_CLIENT: 'oracledb' } & (
-	| HostConnectionEnv
-	| {
-			DB_USER: string;
-			DB_PASSWORD: string;
-			DB_CONNECT_STRING: string;
-	  }
-);
-
-type PostgresEnv = { DB_CLIENT: 'pg' | 'cockroachdb' } & (
-	| Omit<HostConnectionEnv, 'DB_PASSWORD'>
-	| {
-			DB_CONNECTION_STRING: string;
-	  }
-);
-
-type MysqlEnv = { DB_CLIENT: 'mysql' } & (
-	| HostConnectionEnv
-	| {
-			DB_DATABASE: string;
-			DB_USER: string;
-			DB_PASSWORD: string;
-			DB_SOCKET_PATH: string;
-	  }
-);
-
-type MssqlEnv = { DB_CLIENT: 'mssql' } & (
-	| (HostConnectionEnv & { DB_TYPE?: 'default' })
-	| {
-			DB_TYPE: string;
-	  }
-);
-
-export type DatabaseEnv = SqliteEnv | OracleEnv | PostgresEnv | MysqlEnv | MssqlEnv;
-
 /**
- * Asserts that all environment variables required to connect to the database are set.
+ * Checks that all environment variables required to connect to the database are set.
  * Exits the process if any of them are missing.
  */
-export function validateDbEnv<T extends Env>(env: T): asserts env is T & DatabaseEnv {
+export function validateDbEnv(env: Env): void {
 	const client = env['DB_CLIENT'];
 	const connectionString = env['DB_CONNECTION_STRING'];
 
