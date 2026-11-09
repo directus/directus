@@ -23,7 +23,7 @@ export const DEFAULTS = {
 
 	DB_EXCLUDE_TABLES: ['spatial_ref_sys', 'sysdiagrams'],
 
-	STORAGE_LOCATIONS: ['local'] as string[],
+	STORAGE_LOCATIONS: ['local'],
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
 
@@ -82,8 +82,8 @@ export const DEFAULTS = {
 	CORS_ENABLED: false,
 	CORS_ORIGIN: false,
 	CORS_METHODS: 'GET,POST,PATCH,DELETE',
-	CORS_ALLOWED_HEADERS: ['Content-Type', 'Authorization'] as string[],
-	CORS_EXPOSED_HEADERS: ['Content-Range'] as string[],
+	CORS_ALLOWED_HEADERS: ['Content-Type', 'Authorization'],
+	CORS_EXPOSED_HEADERS: ['Content-Range'],
 	CORS_CREDENTIALS: true,
 	CORS_MAX_AGE: 18000,
 
@@ -99,7 +99,7 @@ export const DEFAULTS = {
 	CACHE_SKIP_ALLOWED: false,
 	CACHE_DEPLOYMENT_TTL: '5s',
 
-	AUTH_PROVIDERS: [] as string[],
+	AUTH_PROVIDERS: [],
 	AUTH_DISABLE_DEFAULT: false,
 
 	PACKAGE_FILE_LOCATION: '.',
@@ -139,7 +139,7 @@ export const DEFAULTS = {
 	IP_CUSTOM_HEADER: false,
 
 	IMPORT_EXPORT_NAMESPACE: 'directus:import-export',
-	IMPORT_IP_DENY_LIST: ['0.0.0.0', '169.254.169.254'] as string[],
+	IMPORT_IP_DENY_LIST: ['0.0.0.0', '169.254.169.254'],
 	IMPORT_TIMEOUT: '1h',
 	IMPORT_MAX_CONCURRENCY: 20,
 	IMPORT_MAX_FILE_SIZE: '50mb',
@@ -153,9 +153,9 @@ export const DEFAULTS = {
 	USERS_ADMIN_ACCESS_LIMIT: Infinity as number,
 	USERS_APP_ACCESS_LIMIT: Infinity as number,
 	USERS_API_ACCESS_LIMIT: Infinity as number,
-	USER_REGISTER_URL_ALLOW_LIST: [] as string[],
-	USER_INVITE_URL_ALLOW_LIST: [] as string[],
-	PASSWORD_RESET_URL_ALLOW_LIST: [] as string[],
+	USER_REGISTER_URL_ALLOW_LIST: [],
+	USER_INVITE_URL_ALLOW_LIST: [],
+	PASSWORD_RESET_URL_ALLOW_LIST: [],
 
 	MAX_JSON_QUERY_DEPTH: 10,
 
@@ -196,7 +196,7 @@ export const DEFAULTS = {
 		'users_me_tfa_enable',
 		'users_me_tfa_disable',
 		'utils_cache_clear',
-	] as string[],
+	],
 	GRAPHQL_SCHEMA_CACHE_CAPACITY: 100,
 
 	WEBSOCKETS_ENABLED: false,
@@ -266,12 +266,12 @@ export const DEFAULTS = {
 	MCP_OAUTH_CLIENT_IDLE_TTL: '0',
 	MCP_OAUTH_REQUIRE_RESOURCE: false,
 	MCP_OAUTH_CLEANUP_SCHEDULE: '*/15 * * * *',
-	MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [] as string[],
+	MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 	MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: ['raycast://oauth', 'cursor://cursor.mcp', 'cursor://anysphere.cursor-mcp'],
 	MCP_OAUTH_DCR_ENABLED: false,
 	MCP_OAUTH_CIMD_ENABLED: false,
 	MCP_OAUTH_CIMD_ALLOW_HTTP: false,
-	MCP_OAUTH_CIMD_ALLOWED_DOMAINS: [] as string[],
+	MCP_OAUTH_CIMD_ALLOWED_DOMAINS: [],
 	MCP_OAUTH_CIMD_BLOCKED_TLDS: ['test', 'localhost', 'invalid', 'example', 'local', 'onion'],
 
 	AI_ENABLED: true,
