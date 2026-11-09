@@ -1,9 +1,9 @@
-import type { Column, ForeignKey, SchemaInspector } from '@directus/schema';
+import { type Column, createInspector, type ForeignKey, type SchemaInspector } from '@directus/schema';
 import { systemRelationRows } from '@directus/system-data';
 import type { AbstractServiceOptions, Accountability, RelationMeta, SchemaOverview, Type } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { groupBy, intersection, mapValues, partition, pickBy } from 'lodash-es';
+import { groupBy, intersection, mapValues, partition, pickBy, uniq } from 'lodash-es';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
@@ -25,6 +25,11 @@ import {
 	type VersionTableForeignKey,
 	type VersionTables,
 } from './version-tables/plan-version-tables.js';
+
+/** Names of the shadow and link table of each given collection */
+function getVersionTableNames(collections: string[]): string[] {
+	return collections.flatMap((collection) => [getShadowTableName(collection), getLinkTableName(collection)]);
+}
 
 type ColumnChanges = { add: VersionTableColumn[]; alter: VersionTableColumn[]; drop: string[] };
 
@@ -66,7 +71,7 @@ export class VersionTablesService {
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.helpers = getHelpers(this.knex);
-		this.schemaInspector = getSchemaInspector(options.knex);
+		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 	}
@@ -78,12 +83,15 @@ export class VersionTablesService {
 	 */
 	async syncCollections(collections?: string[], options?: SyncCollectionsOptions): Promise<void> {
 		const exclude = new Set(options?.exclude ?? []);
-		const state = await this.readVersioningState(exclude);
+
+		if (collections && options?.includeRelating) collections = this.resolveRelatedCollections(collections);
+
+		const state = await this.readVersioningState(exclude, collections);
 
 		if (!state) return;
 
 		const { shadowTables, liveTables, relationsMeta } = collections
-			? await this.inspectCollections(collections, state.shadowTables, exclude, options?.includeRelating)
+			? await this.inspectCollections(collections, state.shadowTables, exclude)
 			: await this.inspectAll();
 
 		const isIncluded = (collection: string | null) => !collection || !exclude.has(collection);
@@ -110,11 +118,29 @@ export class VersionTablesService {
 	}
 
 	/**
-	 * Read the versioned collections and existing version tables.
+	 * Add the collections with a m2o / a2o relation to the given collections, if requested
+	 */
+	private resolveRelatedCollections(collections: string[]): string[] {
+		const relatingCollections = this.schema.relations
+			.filter(
+				(relation) =>
+					(relation.related_collection && collections.includes(relation.related_collection)) ||
+					intersection(relation.meta?.one_allowed_collections, collections).length > 0,
+			)
+			.map((relation) => relation.collection);
+
+		collections = [...collections, ...relatingCollections];
+
+		return uniq(collections);
+	}
+
+	/**
+	 * Read the versioned collections and existing version tables, limited to the ones of the given collections.
 	 * Returns `null` if neither exist, so projects without versioning skip the schema inspection.
 	 */
 	private async readVersioningState(
 		exclude: Set<string>,
+		collections?: string[],
 	): Promise<{ versionedTables: Set<string>; shadowTables: string[] } | null> {
 		const rows = await this.knex
 			.select('collection')
@@ -124,11 +150,22 @@ export class VersionTablesService {
 
 		const versionedTables = new Set<string>(rows.map(({ collection }) => collection));
 
-		const shadowTables = (await this.schemaInspector.tables()).filter(isShadowTable);
+		// Without versioned collections, only leftover version tables of the given collections have to be dropped.
+		// Probe for those instead of listing every table of the database on each schema change.
+		const shadowTables =
+			versionedTables.size === 0 && collections
+				? await this.filterExistingTables(getVersionTableNames(collections))
+				: (await this.schemaInspector.tables()).filter(isShadowTable);
 
 		if (versionedTables.size === 0 && shadowTables.length === 0) return null;
 
 		return { versionedTables, shadowTables };
+	}
+
+	private async filterExistingTables(tables: string[]): Promise<string[]> {
+		const exists = await Promise.all(tables.map((table) => this.schemaInspector.hasTable(table)));
+
+		return tables.filter((_table, index) => exists[index]);
 	}
 
 	/**
@@ -138,25 +175,9 @@ export class VersionTablesService {
 		collections: string[],
 		allShadowTables: string[],
 		exclude: Set<string>,
-		includeRelating?: boolean,
 	): Promise<InspectedSchema> {
-		if (includeRelating) {
-			// Collections with a m2o / a2o relation to the given collections
-			const relatingCollections = this.schema.relations
-				.filter(
-					(relation) =>
-						(relation.related_collection && collections.includes(relation.related_collection)) ||
-						intersection(relation.meta?.one_allowed_collections, collections),
-				)
-				.map((relation) => relation.collection);
-
-			collections = [...collections, ...relatingCollections];
-		}
-
 		// Only the version tables of these collections, so the ones of other collections aren't dropped
-		const shadowTables = collections
-			.flatMap((collection) => [getShadowTableName(collection), getLinkTableName(collection)])
-			.filter((table) => allShadowTables.includes(table));
+		const shadowTables = getVersionTableNames(collections).filter((table) => allShadowTables.includes(table));
 
 		return {
 			shadowTables: await this.inspectTables(shadowTables),

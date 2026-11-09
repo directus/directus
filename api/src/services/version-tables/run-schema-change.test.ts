@@ -86,6 +86,47 @@ describe('runSchemaChange', () => {
 		]);
 	});
 
+	test('defers the syncs of nested calls to the outermost call, syncing each collection once', async () => {
+		await runSchemaChange({ knex: db, schema }, async (trx, change) => {
+			change.sync(['articles']);
+
+			await runSchemaChange({ knex: trx, schema }, async (_trx, nested) => {
+				nested.sync(['articles', 'authors']);
+				nested.sync(['authors'], { includeRelating: true });
+				calls.push('nested change');
+			});
+
+			calls.push('change');
+		});
+
+		expect(calls).toEqual([
+			'disable foreign keys',
+			'begin',
+			'nested change',
+			'change',
+			'sync articles {}',
+			'sync authors {"includeRelating":true}',
+			'commit',
+			'enable foreign keys',
+		]);
+	});
+
+	test('does not sync dropped collections after the change', async () => {
+		await runSchemaChange({ knex: db, schema }, async (_trx, change) => {
+			change.sync(['articles', 'authors']);
+			await change.beforeDrop('authors');
+		});
+
+		expect(calls).toEqual([
+			'disable foreign keys',
+			'begin',
+			'sync authors {"includeRelating":true,"exclude":["authors"]}',
+			'sync articles {"exclude":["authors"]}',
+			'commit',
+			'enable foreign keys',
+		]);
+	});
+
 	test('does not sync when the change fails', async () => {
 		await expect(
 			runSchemaChange({ knex: db, schema }, async (_trx, change) => {

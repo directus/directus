@@ -19,7 +19,7 @@ import { isEmpty } from 'lodash-es';
 import type { StringValue } from 'ms';
 import { clearSystemCache } from '../cache.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
-import getDatabase, { getSchemaInspector } from '../database/index.js';
+import getDatabase from '../database/index.js';
 import { getEntitlementManager } from '../license/index.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
@@ -34,7 +34,6 @@ import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
 import { getShadowTableName, VERSION_META_FIELDS } from './version-tables/constants.js';
-import { VersionTablesService } from './version-tables.js';
 
 const env = useEnv();
 const logger = useLogger();

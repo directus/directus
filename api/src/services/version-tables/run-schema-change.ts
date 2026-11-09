@@ -17,6 +17,9 @@ export type SchemaChange = {
 	beforeDrop(collection: string): Promise<void>;
 };
 
+/** The change of the outermost `runSchemaChange` call, by its transaction, for nested calls to reuse */
+const activeChanges = new WeakMap<Knex, SchemaChange>();
+
 /**
  * Run a change to the live schema, keeping the version tables in sync with it.
  *
@@ -24,8 +27,9 @@ export type SchemaChange = {
  * enforcement disabled for vendors that rebuild tables to alter them. The version tables of all collections passed to
  * `change.sync` are synced within the same transaction, after the handler is done.
  *
- * Nested calls reuse the outer transaction. As the foreign key enforcement can't be toggled within a transaction, the
- * outermost call has to be a `runSchemaChange` as well.
+ * Nested calls reuse the outer transaction and defer their syncs to the outermost call, so every collection is only
+ * synced once. As the foreign key enforcement can't be toggled within a transaction, the outermost call has to be a
+ * `runSchemaChange` as well.
  */
 export async function runSchemaChange<T>(
 	options: { knex: Knex; schema: SchemaOverview },
@@ -33,24 +37,51 @@ export async function runSchemaChange<T>(
 ): Promise<T> {
 	const { knex, schema } = options;
 
+	const outerChange = activeChanges.get(knex);
+
+	if (outerChange) return handler(knex as Knex.Transaction, outerChange);
+
 	return getHelpers(knex).schema.withForeignKeysDisabled(() =>
 		transaction(knex, async (trx) => {
 			const service = new VersionTablesService({ knex: trx, schema });
-			const pending: { collections: string[]; options?: SyncCollectionsOptions | undefined }[] = [];
+			const pending = new Set<string>();
+			const pendingRelating = new Set<string>();
+			const dropped = new Set<string>();
 
 			const change: SchemaChange = {
 				sync: (collections, options) => {
-					pending.push({ collections, options });
+					for (const collection of collections) {
+						(options?.includeRelating ? pendingRelating : pending).add(collection);
+					}
 				},
-				beforeDrop: (collection) =>
-					service.syncCollections([collection], { includeRelating: true, exclude: [collection] }),
+				beforeDrop: async (collection) => {
+					dropped.add(collection);
+					await service.syncCollections([collection], { includeRelating: true, exclude: [collection] });
+				},
 			};
 
-			const result = await handler(trx, change);
+			activeChanges.set(trx, change);
 
-			for (const { collections, options } of pending) {
-				await service.syncCollections(collections, options);
+			let result: T;
+
+			try {
+				result = await handler(trx, change);
+			} finally {
+				activeChanges.delete(trx);
 			}
+
+			// Dropped collections no longer have a live table to sync from
+			const exclude = dropped.size > 0 ? { exclude: [...dropped] } : {};
+
+			const collections = [...pending].filter(
+				(collection) => !pendingRelating.has(collection) && !dropped.has(collection),
+			);
+
+			const relatingCollections = [...pendingRelating].filter((collection) => !dropped.has(collection));
+
+			if (collections.length > 0) await service.syncCollections(collections, exclude);
+			if (relatingCollections.length > 0)
+				await service.syncCollections(relatingCollections, { includeRelating: true, ...exclude });
 
 			return result;
 		}),

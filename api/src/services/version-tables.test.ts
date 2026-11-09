@@ -9,6 +9,8 @@ import { VersionTablesService } from './version-tables.js';
 const inspector = vi.hoisted(() => ({
 	/** Tables that were introspected, `*` for the whole database */
 	introspected: [] as string[],
+	/** Whether every table of the database was listed */
+	listedTables: false,
 	tables: [] as string[],
 	columns: [] as Column[],
 	foreignKeys: [] as ForeignKey[],
@@ -17,7 +19,11 @@ const inspector = vi.hoisted(() => ({
 vi.mock('@directus/schema', async (importOriginal) => ({
 	...(await importOriginal<typeof import('@directus/schema')>()),
 	createInspector: () => ({
-		tables: async () => inspector.tables,
+		tables: async () => {
+			inspector.listedTables = true;
+			return inspector.tables;
+		},
+		hasTable: async (table: string) => inspector.tables.includes(table),
 		columnInfo: async (table?: string) => {
 			inspector.introspected.push(table ?? '*');
 			return table ? inspector.columns.filter((column) => column.table === table) : inspector.columns;
@@ -160,6 +166,7 @@ async function sync(options: Options = {}) {
 	const shadow = options.shadow ?? { tables: [], columns: [], foreignKeys: [] };
 
 	inspector.introspected = [];
+	inspector.listedTables = false;
 	inspector.tables = ['articles', 'authors', ...shadow.tables];
 	inspector.columns = [...(options.live ?? LIVE_COLUMNS), ...shadow.columns];
 	inspector.foreignKeys = [...(options.liveForeignKeys ?? LIVE_FOREIGN_KEYS), ...shadow.foreignKeys];
@@ -466,6 +473,7 @@ describe('scoped changes', () => {
 		const { introspected } = await sync({ run: (service) => service.syncCollections(['articles']) });
 
 		expect(introspected).toEqual([]);
+		expect(inspector.listedTables).toBe(false);
 	});
 
 	test('adds a new field to the shadow table', async () => {
