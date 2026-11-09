@@ -209,6 +209,16 @@ describe('WebSocket SocketController message handling', () => {
 		expect(client.emit).toHaveBeenCalledWith('parsed-message', { type: 'ping' });
 	});
 
+	test('reports a message that cannot be parsed and passes nothing on', async () => {
+		const client = mockClient(PUBLIC_ACCOUNTABILITY);
+
+		await expect(onMessage(client)(Buffer.from('not json'))).resolves.toBeUndefined();
+
+		expect(client.send).toHaveBeenCalledWith(expect.stringContaining('INVALID_PAYLOAD'));
+		expect(client.emit).not.toHaveBeenCalled();
+		expect(client.close).not.toHaveBeenCalled();
+	});
+
 	test('reports an unexpected error rather than rejecting', async () => {
 		(getLicenseManager as ReturnType<typeof vi.fn>).mockReturnValue({
 			isLocked: vi.fn().mockRejectedValue(new RangeError('Maximum call stack size exceeded')),

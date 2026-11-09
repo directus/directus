@@ -290,14 +290,7 @@ export default abstract class SocketController {
 					return;
 				}
 
-				let message: WebSocketMessage;
-
-				try {
-					message = this.parseMessage(data.toString());
-				} catch (err: any) {
-					handleWebSocketError(client, err, { type: 'server' });
-					return;
-				}
+				const message = this.parseMessage(data.toString());
 
 				if (getMessageType(message) === 'auth') {
 					try {
