@@ -191,6 +191,35 @@ describe('keepInlineStyles on: <style> tags', () => {
 	});
 });
 
+describe('keepInlineStyles with keepLegacyEmphasisTags', () => {
+	const extensions = buildFieldSchema({ keepInlineStyles: true, keepLegacyEmphasisTags: true }).extensions;
+
+	test.each([
+		['styled <b>', '<p><b style="text-transform: uppercase;">a</b></p>'],
+		['styled <i> with a class', '<p><i class="x" style="letter-spacing: 2px;">a</i></p>'],
+		[
+			'legacy and modern tags in a styled block',
+			'<p style="margin-left: 40px;"><b>a</b><strong>b</strong><i>c</i><em>d</em></p>',
+		],
+		['a <style> tag next to a legacy tag', '<style>b { color: red; }</style><p><b>a</b></p>'],
+	])('%s survives round-trip unchanged', (_name, html) => {
+		expect(schemaRoundTrip(html, extensions)).toBe(html);
+	});
+
+	test('a bold declaration still becomes <strong>', () => {
+		expect(schemaRoundTrip('<p><span style="font-weight: bold; letter-spacing: 1px;">a</span></p>', extensions)).toBe(
+			'<p><span style="letter-spacing: 1px;"><strong>a</strong></span></p>',
+		);
+	});
+
+	test('the schema key differs from each option alone', () => {
+		const key = buildFieldSchema({ keepInlineStyles: true, keepLegacyEmphasisTags: true }).key;
+
+		expect(key).not.toBe(buildFieldSchema({ keepInlineStyles: true }).key);
+		expect(key).not.toBe(buildFieldSchema({ keepLegacyEmphasisTags: true }).key);
+	});
+});
+
 describe('buildFieldSchema', () => {
 	test('the option changes the schema key', () => {
 		expect(buildFieldSchema({ keepInlineStyles: true }).key).not.toBe(buildFieldSchema().key);

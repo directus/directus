@@ -376,6 +376,22 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'keepLegacyEmphasisTags',
+				name: '$t:interfaces.input-rich-text-html.keep_legacy_emphasis_tags',
+				type: 'boolean',
+				meta: {
+					width: 'full',
+					interface: 'boolean',
+					note: '$t:interfaces.input-rich-text-html.keep_legacy_emphasis_tags_note',
+					options: {
+						label: '$t:interfaces.input-rich-text-html.keep_legacy_emphasis_tags_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
 				field: 'customFormats',
 				name: '$t:interfaces.input-rich-text-html.custom_formats',
 				type: 'json',

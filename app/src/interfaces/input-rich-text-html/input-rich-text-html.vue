@@ -53,6 +53,8 @@ const props = withDefaults(
 		linkProtocols?: string[] | null;
 		/** Keep every `style` attribute and `<style>` tag instead of only the styles the toolbar models. */
 		keepInlineStyles?: boolean;
+		/** Keep `<b>` and `<i>` from the source instead of rewriting them to `<strong>` and `<em>`. */
+		keepLegacyEmphasisTags?: boolean;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -96,6 +98,7 @@ const fieldSchema = buildFieldSchema({
 	extensionOptions: props.extensionOptions,
 	linkProtocols: props.linkProtocols,
 	keepInlineStyles: props.keepInlineStyles,
+	keepLegacyEmphasisTags: props.keepLegacyEmphasisTags,
 	comparisonMode: props.comparisonMode,
 });
 

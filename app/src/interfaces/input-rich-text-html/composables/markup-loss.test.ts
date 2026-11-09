@@ -122,4 +122,16 @@ describe('findMarkupLoss', () => {
 			expect(inlineLoss('<style nonce="abc">p { color: red; }</style>')).toEqual(['<style nonce="abc">']);
 		});
 	});
+
+	describe('with keepInlineStyles and keepLegacyEmphasisTags', () => {
+		const { extensions } = buildFieldSchema({ keepInlineStyles: true, keepLegacyEmphasisTags: true });
+		const bothSchema = getSchema(fieldEditorExtensions(extensions));
+
+		test.each([
+			['a styled <b>', '<p><b style="text-transform: uppercase;">a</b> <i style="color: red;">b</i></p>'],
+			['a <style> tag next to a legacy tag', '<style>b { color: red; }</style><p><b>a</b></p>'],
+		])('%s is kept', (_name, html) => {
+			expect(findMarkupLoss(html, roundTrip(html, extensions), bothSchema)).toEqual([]);
+		});
+	});
 });

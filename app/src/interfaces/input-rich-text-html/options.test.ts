@@ -30,6 +30,7 @@ describe('options compat', () => {
 			'linkProtocols',
 			'keepInlineStyles',
 			'keepInlineStylesWarning',
+			'keepLegacyEmphasisTags',
 			'customFormats',
 			'tinymceOverrides',
 		]);
