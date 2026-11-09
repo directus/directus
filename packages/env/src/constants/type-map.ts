@@ -33,6 +33,7 @@ export const TYPE_MAP = {
 	QUERYSTRING_MAX_PARSE_DEPTH: 'number',
 	QUERYSTRING_ARRAY_LIMIT: 'number',
 	QUERY_LIMIT_DEFAULT: 'number',
+	QUERY_LIMIT_MAX: 'number',
 	MAX_BATCH_MUTATION: 'number',
 	MAX_IMPORT_ERRORS: 'number',
 	ROBOTS_TXT: 'string',

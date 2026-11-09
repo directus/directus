@@ -1473,9 +1473,6 @@ importers:
       mnemonist:
         specifier: 'catalog:'
         version: 0.40.3
-      ms:
-        specifier: 'catalog:'
-        version: 2.1.3
       nanoid:
         specifier: 'catalog:'
         version: 5.1.16

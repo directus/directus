@@ -259,7 +259,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use(extractToken);
 
 	app.get('/', (_req, res, next) => {
-		if (env.ROOT_REDIRECT !== '' && env.ROOT_REDIRECT !== false) {
+		if (env.ROOT_REDIRECT) {
 			res.redirect(env.ROOT_REDIRECT);
 		} else {
 			next();

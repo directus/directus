@@ -150,12 +150,13 @@ export class ServerService {
 			}
 
 			info['extensions'] = {
-				limit: env.EXTENSIONS_LIMIT ?? null,
+				// `0` means no limit
+				limit: env.EXTENSIONS_LIMIT || null,
 			};
 
 			info['queryLimit'] = {
 				default: env.QUERY_LIMIT_DEFAULT,
-				max: Number.isFinite(env['QUERY_LIMIT_MAX']) ? env['QUERY_LIMIT_MAX'] : -1,
+				max: env.QUERY_LIMIT_MAX !== undefined && Number.isFinite(env.QUERY_LIMIT_MAX) ? env.QUERY_LIMIT_MAX : -1,
 			};
 
 			if (env.WEBSOCKETS_ENABLED) {
