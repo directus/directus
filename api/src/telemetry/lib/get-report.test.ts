@@ -161,7 +161,7 @@ const mockLicense: TelemetryLicense = {
 	licensed: true,
 	source: 'settings',
 	status: 'active',
-	downgrade_reason: null,
+	invalid_reason: null,
 	editable: true,
 	name: 'Enterprise',
 	version: '1',

@@ -1,4 +1,4 @@
-import type { CountableEntitlementKey, License, NumericEntitlementKey } from '@directus/license';
+import type { CountableEntitlementKey, Directus, NumericEntitlementKey } from '@directus/license';
 import type { Knex } from 'knex';
 import type { EntitlementManager } from '../../license/entitlements/manager.js';
 import { getEntitlementManager, getLicenseManager } from '../../license/index.js';
@@ -8,7 +8,7 @@ export async function collectLicense(db: Knex): Promise<TelemetryLicense> {
 	const licenseManager = getLicenseManager();
 	const entitlements = getEntitlementManager();
 
-	const license = await licenseManager.getLicense({ database: db });
+	const license = await licenseManager.getLicense();
 
 	const [seats, collections, flows] = await Promise.all([
 		countableEntitlement(entitlements, license, 'seats', db),
@@ -22,7 +22,7 @@ export async function collectLicense(db: Knex): Promise<TelemetryLicense> {
 		licensed: licenseManager.getSource() !== null,
 		source: licenseManager.getSource(),
 		status: await licenseManager.getStatus(),
-		downgrade_reason: await licenseManager.getDowngradeReason(),
+		invalid_reason: await licenseManager.getInvalidReason(),
 		editable: licenseManager.getEditable(),
 		name: license.meta.name,
 		version: license.meta.version,
@@ -57,7 +57,7 @@ export async function collectLicense(db: Knex): Promise<TelemetryLicense> {
 
 async function countableEntitlement(
 	entitlements: EntitlementManager,
-	license: License,
+	license: Directus.License,
 	key: CountableEntitlementKey,
 	db: Knex,
 ): Promise<CountableEntitlement> {

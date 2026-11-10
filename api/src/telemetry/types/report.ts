@@ -1,4 +1,4 @@
-import type { InvalidLicenseStatus, LicenseSource, LicenseStatus, PoweredByEntitlement } from '@directus/license';
+import type { AppEntitlements, InvalidLicenseStatus, LicenseSource, LicenseStatus } from '@directus/license';
 
 export interface DistributionSummary {
 	min: number;
@@ -80,7 +80,7 @@ export interface TelemetryLicense {
 	licensed: boolean;
 	source: LicenseSource;
 	status: LicenseStatus;
-	downgrade_reason: InvalidLicenseStatus | null;
+	invalid_reason: InvalidLicenseStatus | null;
 	editable: boolean;
 	name: string;
 	version: string;
@@ -106,7 +106,7 @@ export interface TelemetryLicense {
 		custom_permission_rules_enabled: boolean;
 		production_enabled: boolean;
 		ai_translations_enabled: boolean;
-		display_powered_by: PoweredByEntitlement;
+		display_powered_by: AppEntitlements['display_powered_by'];
 		activity_historical_timeframe: number | null;
 		revision_historical_timeframe: number | null;
 	};

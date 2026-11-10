@@ -36,7 +36,7 @@ const setup = (opts: {
 	licenseManager = {
 		getSource: vi.fn().mockReturnValue(opts.source === undefined ? 'settings' : opts.source),
 		getStatus: vi.fn().mockResolvedValue('active'),
-		getDowngradeReason: vi.fn().mockResolvedValue(null),
+		getInvalidReason: vi.fn().mockResolvedValue(null),
 		getEditable: vi.fn().mockReturnValue(true),
 		getLicense: vi.fn().mockResolvedValue({
 			meta: { ...licenseMeta, ...opts.meta },
