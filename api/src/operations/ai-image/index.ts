@@ -23,7 +23,8 @@ import {
 	readPrompt,
 	toOperationError,
 } from '../../ai/flow-operations/utils.js';
-import { getAISettings, resolveImageModel } from '../../ai/providers/index.js';
+import { resolveImageModel } from '../../ai/providers/resolve-model.js';
+import { getAISettings } from '../../ai/providers/settings.js';
 import { fetchAllowedFields } from '../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
 import { AssetsService } from '../../services/assets.js';
