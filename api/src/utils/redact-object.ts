@@ -34,16 +34,20 @@ export function redactObject(
 
 	return clone;
 
-	function traverse(object: UnknownObject | unknown[], checkKeyPaths: Keys): void {
+	function traverse(object: unknown, checkKeyPaths: Keys): void {
 		if (checkKeyPaths.length === 0) {
 			return;
 		}
 
 		if (Array.isArray(object)) {
 			for (const item of object) {
-				if (isObject(item) || Array.isArray(item)) traverse(item, [...checkKeyPaths]);
+				traverse(item, [...checkKeyPaths]);
 			}
 
+			return;
+		}
+
+		if (!isObject(object)) {
 			return;
 		}
 
@@ -101,11 +105,7 @@ export function redactObject(
 				}
 			}
 
-			const value = object[key];
-
-			if (isObject(value) || Array.isArray(value)) {
-				traverse(value, [...globalCheckPaths, ...localCheckPaths]);
-			}
+			traverse(object[key], [...globalCheckPaths, ...localCheckPaths]);
 		}
 	}
 }
