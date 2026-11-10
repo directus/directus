@@ -1800,6 +1800,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Rich-text editor HTML tartalom írásához
     toolbar: Eszköztár
+    extensions: Bővítmények
     custom_formats: Egyéni formátumok
     folder_note: Mappa a feltöltött fájlok számára. Nem érinti a meglévő fájlokat.
     imageToken: Statikus hozzáférési token

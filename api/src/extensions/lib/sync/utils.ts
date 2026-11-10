@@ -37,21 +37,20 @@ export async function fsStat(path: string) {
  * Builds up the local and remote paths to use with syncing
  */
 export function getSyncPaths(partialPath: string | undefined) {
-	const env = useEnv();
+	const { EXTENSIONS_PATH } = useEnv();
 	const localRootPath = getExtensionsPath();
-	const remoteRootPath = env['EXTENSIONS_PATH'] as string;
 
 	if (!partialPath) {
 		return {
 			localExtensionsPath: localRootPath,
-			remoteExtensionsPath: normalizePath(remoteRootPath),
+			remoteExtensionsPath: normalizePath(EXTENSIONS_PATH),
 		};
 	}
 
 	const resolvedPartialPath = relative(sep, resolve(sep, partialPath));
 	return {
 		localExtensionsPath: join(localRootPath, resolvedPartialPath),
-		remoteExtensionsPath: normalizePath(join(remoteRootPath, resolvedPartialPath)),
+		remoteExtensionsPath: normalizePath(join(EXTENSIONS_PATH, resolvedPartialPath)),
 	};
 }
 
