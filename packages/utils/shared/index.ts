@@ -43,6 +43,7 @@ export * from './process-chunk.js';
 export * from './sieve-functions.js';
 export * from './to-array.js';
 export * from './to-boolean.js';
+export * from './to-milliseconds.js';
 export * from './validate-payload.js';
 export * from './deep-map-filter.js';
 export * from './get-relation-info.js';

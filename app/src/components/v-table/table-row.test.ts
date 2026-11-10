@@ -126,4 +126,18 @@ describe('TableRow', () => {
 		expect(reads).toContain('value');
 		expect(reads).not.toContain('width');
 	});
+
+	test('marks the cells of inactive columns', () => {
+		const wrapper = mount(TableRow, {
+			props: {
+				headers: [...headers, { ...headers[0]!, text: 'Customer', value: 'customer', inactive: true }],
+				item: { id: 1, name: 'Flow A', customer: null },
+			},
+			global,
+		});
+
+		const cells = wrapper.findAll('td.cell');
+
+		expect(cells.filter((cell) => cell.classes('inactive'))).toEqual([cells[1]]);
+	});
 });
