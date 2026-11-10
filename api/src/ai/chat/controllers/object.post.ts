@@ -2,11 +2,11 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { jsonSchema, streamObject } from 'ai';
 import type { RequestHandler } from 'express';
 import { fromZodError } from 'zod-validation-error';
-import { type AISettings, resolveLanguageModel } from '../../providers/index.js';
+import { resolveLanguageModel } from '../../providers/resolve-model.js';
+import type { AISettings } from '../../providers/types.js';
 import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { ObjectRequest } from '../models/object-request.js';
 import { addAdditionalPropertiesToJsonSchema } from '../utils/add-additional-properties-to-json-schema.js';
-import { validateModelAllowed } from '../utils/validate-model-allowed.js';
 
 export const aiObjectPostHandler: RequestHandler = async (req, res) => {
 	if (!req.accountability?.app) {
@@ -22,8 +22,6 @@ export const aiObjectPostHandler: RequestHandler = async (req, res) => {
 	const { provider, model, prompt, outputSchema, maxOutputTokens } = parseResult.data;
 
 	const aiSettings: AISettings = res.locals['ai'].settings;
-
-	validateModelAllowed(provider, model, aiSettings);
 
 	const { model: languageModel, providerOptions } = resolveLanguageModel(provider, model, aiSettings);
 

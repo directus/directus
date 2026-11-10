@@ -8,36 +8,23 @@ vi.mock('../../providers/settings.js', () => ({
 	getAISettings: vi.fn(),
 }));
 
-const settings: AISettings = {
-	openaiApiKey: 'test-key',
-	anthropicApiKey: null,
-	googleApiKey: null,
-	openrouterApiKey: null,
-	openaiCompatibleApiKey: null,
-	openaiCompatibleBaseUrl: null,
-	openaiCompatibleName: null,
-	openaiCompatibleModels: null,
-	openaiCompatibleHeaders: null,
-	allowedModels: { openai: ['gpt-5'], anthropic: [], google: [], openrouter: [] },
-	systemPrompt: 'You are Directus.',
-};
+const settings = { ai_openai_api_key: 'test-key', ai_system_prompt: 'You are Directus.' } as AISettings;
 
 beforeEach(() => {
 	vi.clearAllMocks();
 });
 
-test.each([
-	['a system prompt', 'You are Directus.'],
-	['no system prompt', null],
-])('stores AI settings and %s in res.locals', async (_, systemPrompt) => {
-	vi.mocked(getAISettings).mockResolvedValue({ ...settings, systemPrompt });
+test('stores the AI settings in res.locals, reading them with the request schema', async () => {
+	vi.mocked(getAISettings).mockResolvedValue(settings);
 
+	const schema = { collections: {}, relations: [] };
 	const res = { locals: {} } as Response;
 	const next = vi.fn();
 
-	await loadSettings({} as Request, res, next);
+	await loadSettings({ schema } as unknown as Request, res, next);
 
-	expect(res.locals).toEqual({ ai: { settings: { ...settings, systemPrompt }, systemPrompt } });
+	expect(getAISettings).toHaveBeenCalledWith({ schema });
+	expect(res.locals).toEqual({ ai: { settings } });
 	expect(next).toHaveBeenCalledTimes(1);
 });
 
