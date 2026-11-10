@@ -9,52 +9,54 @@ import type { AISettings, ProviderConfig } from './types.js';
 type ProviderRegistry = ReturnType<typeof createProviderRegistry>;
 
 /** The subset of AI settings required to determine which providers are configured. */
-export type ProviderCredentials = Pick<
-	AISettings,
-	| 'openaiApiKey'
-	| 'anthropicApiKey'
-	| 'googleApiKey'
-	| 'openrouterApiKey'
-	| 'openaiCompatibleApiKey'
-	| 'openaiCompatibleBaseUrl'
+export type ProviderCredentials = Partial<
+	Pick<
+		AISettings,
+		| 'ai_openai_api_key'
+		| 'ai_anthropic_api_key'
+		| 'ai_google_api_key'
+		| 'ai_openrouter_api_key'
+		| 'ai_openai_compatible_api_key'
+		| 'ai_openai_compatible_base_url'
+	>
 >;
 
 export function buildProviderConfigs(settings: ProviderCredentials): ProviderConfig[] {
 	const configs: ProviderConfig[] = [];
 
-	if (settings.openaiApiKey) {
+	if (settings.ai_openai_api_key) {
 		configs.push({
 			type: 'openai',
-			apiKey: settings.openaiApiKey,
+			apiKey: settings.ai_openai_api_key,
 		});
 	}
 
-	if (settings.anthropicApiKey) {
+	if (settings.ai_anthropic_api_key) {
 		configs.push({
 			type: 'anthropic',
-			apiKey: settings.anthropicApiKey,
+			apiKey: settings.ai_anthropic_api_key,
 		});
 	}
 
-	if (settings.googleApiKey) {
+	if (settings.ai_google_api_key) {
 		configs.push({
 			type: 'google',
-			apiKey: settings.googleApiKey,
+			apiKey: settings.ai_google_api_key,
 		});
 	}
 
-	if (settings.openrouterApiKey) {
+	if (settings.ai_openrouter_api_key) {
 		configs.push({
 			type: 'openrouter',
-			apiKey: settings.openrouterApiKey,
+			apiKey: settings.ai_openrouter_api_key,
 		});
 	}
 
-	if (settings.openaiCompatibleApiKey && settings.openaiCompatibleBaseUrl) {
+	if (settings.ai_openai_compatible_api_key && settings.ai_openai_compatible_base_url) {
 		configs.push({
 			type: 'openai-compatible',
-			apiKey: settings.openaiCompatibleApiKey,
-			baseUrl: settings.openaiCompatibleBaseUrl,
+			apiKey: settings.ai_openai_compatible_api_key,
+			baseUrl: settings.ai_openai_compatible_base_url,
 		});
 	}
 
@@ -86,11 +88,11 @@ export function createAIProviderRegistry(configs: ProviderConfig[], settings?: A
 			case 'openai-compatible':
 				if (config.baseUrl) {
 					const customHeaders = Object.fromEntries(
-						settings?.openaiCompatibleHeaders?.map(({ header, value }) => [header, value]) ?? [],
+						settings?.ai_openai_compatible_headers?.map(({ header, value }) => [header, value]) ?? [],
 					);
 
 					providers['openai-compatible'] = createOpenAICompatible({
-						name: settings?.openaiCompatibleName ?? 'openai-compatible',
+						name: settings?.ai_openai_compatible_name ?? 'openai-compatible',
 						apiKey: config.apiKey,
 						baseURL: config.baseUrl,
 						headers: customHeaders,

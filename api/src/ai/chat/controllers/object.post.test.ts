@@ -3,7 +3,7 @@ import { jsonSchema, streamObject } from 'ai';
 import { MockLanguageModelV3 } from 'ai/test';
 import type { Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { resolveLanguageModel } from '../../providers/index.js';
+import { resolveLanguageModel } from '../../providers/resolve-model.js';
 import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { aiObjectPostHandler } from './object.post.js';
 
@@ -15,7 +15,7 @@ vi.mock('ai', () => ({
 	jsonSchema: vi.fn((schema: unknown) => schema),
 }));
 
-vi.mock('../../providers/index.js', () => ({
+vi.mock('../../providers/resolve-model.js', () => ({
 	resolveLanguageModel: vi.fn(),
 }));
 
@@ -52,22 +52,20 @@ describe('aiObjectPostHandler', () => {
 			locals: {
 				ai: {
 					settings: {
-						openaiApiKey: 'test-openai-key',
-						anthropicApiKey: 'test-anthropic-key',
-						googleApiKey: null,
-						openrouterApiKey: null,
-						openaiCompatibleApiKey: null,
-						openaiCompatibleBaseUrl: null,
-						openaiCompatibleName: null,
-						openaiCompatibleModels: null,
-						openaiCompatibleHeaders: null,
-						allowedModels: {
-							openai: ['gpt-5', 'gpt-5-mini'],
-							anthropic: ['claude-sonnet-4-5'],
-							google: ['gemini-2.5-pro'],
-							openrouter: ['anthropic/claude-sonnet-5.5'],
-						},
-						systemPrompt: null,
+						ai_openai_api_key: 'test-openai-key',
+						ai_anthropic_api_key: 'test-anthropic-key',
+						ai_google_api_key: null,
+						ai_openrouter_api_key: null,
+						ai_openai_compatible_api_key: null,
+						ai_openai_compatible_base_url: null,
+						ai_openai_compatible_name: null,
+						ai_openai_compatible_models: null,
+						ai_openai_compatible_headers: null,
+						ai_openai_allowed_models: ['gpt-5', 'gpt-5-mini'],
+						ai_anthropic_allowed_models: ['claude-sonnet-4-5'],
+						ai_google_allowed_models: ['gemini-2.5-pro'],
+						ai_openrouter_models: [{ id: 'anthropic/claude-sonnet-5.5', name: 'Claude Sonnet 5.5' }],
+						ai_system_prompt: null,
 					},
 				},
 			},
@@ -121,53 +119,16 @@ describe('aiObjectPostHandler', () => {
 	});
 
 	describe('model validation', () => {
-		it('should throw ForbiddenError when model is not in allowed list', async () => {
+		it('should not stream when resolveLanguageModel rejects the model', async () => {
+			vi.mocked(resolveLanguageModel).mockImplementation(() => {
+				throw new ForbiddenError({ reason: 'Model not allowed for this provider' });
+			});
+
 			mockReq.body = { ...validBody, model: 'not-allowed' };
 
 			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
-			expect(resolveLanguageModel).not.toHaveBeenCalled();
-		});
-
-		it('should throw ForbiddenError when allowedModels is empty', async () => {
-			mockRes.locals!['ai'].settings.allowedModels.openai = [];
-
-			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
-		});
-
-		it('should allow saved openrouter models', async () => {
-			mockReq.body = { ...validBody, provider: 'openrouter', model: 'anthropic/claude-sonnet-5.5' };
-
-			await aiObjectPostHandler(mockReq as Request, mockRes as Response);
-
-			expect(resolveLanguageModel).toHaveBeenCalledWith('openrouter', 'anthropic/claude-sonnet-5.5', expect.anything());
-			expect(mockPipeTextStreamToResponse).toHaveBeenCalledWith(mockRes);
-		});
-
-		it('should throw ForbiddenError when openrouter model is not in allowed list', async () => {
-			mockReq.body = { ...validBody, provider: 'openrouter', model: 'openai/gpt-5.5' };
-
-			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
-		});
-
-		it('should throw ForbiddenError when no openrouter models are saved', async () => {
-			mockRes.locals!['ai'].settings.allowedModels.openrouter = [];
-			mockReq.body = { ...validBody, provider: 'openrouter', model: 'anthropic/claude-sonnet-5.5' };
-
-			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
-		});
-
-		it('should not validate openai-compatible models', async () => {
-			mockReq.body = { ...validBody, provider: 'openai-compatible', model: 'any-model' };
-
-			await aiObjectPostHandler(mockReq as Request, mockRes as Response);
-
-			expect(mockPipeTextStreamToResponse).toHaveBeenCalledWith(mockRes);
-
-			expect(resolveLanguageModel).toHaveBeenCalledWith(
-				'openai-compatible',
-				'any-model',
-				mockRes.locals!['ai'].settings,
-			);
+			expect(resolveLanguageModel).toHaveBeenCalledWith('openai', 'not-allowed', mockRes.locals!['ai'].settings);
+			expect(streamObject).not.toHaveBeenCalled();
 		});
 	});
 

@@ -1,29 +1,32 @@
 import type { ProviderType } from '@directus/ai';
 import { ServiceUnavailableError } from '@directus/errors';
-import { type LanguageModel, wrapLanguageModel } from 'ai';
+import { wrapLanguageModel } from 'ai';
+import { validateModelAllowed } from '../chat/utils/validate-model-allowed.js';
 import { getDevToolsMiddleware } from '../devtools/index.js';
 import { getProviderOptions } from './options.js';
 import { buildProviderConfigs, createAIProviderRegistry } from './registry.js';
 import type { AISettings } from './types.js';
 
 export interface ResolvedLanguageModel {
-	model: LanguageModel;
+	model: ReturnType<typeof wrapLanguageModel>;
 	providerOptions: ReturnType<typeof getProviderOptions>;
 }
 
-/** Does not check the allowed models list. Callers that need that check do it themselves. */
+/** Throws when the model isn't in the admin's allowed list or the provider has no API key saved. */
 export function resolveLanguageModel(
 	provider: ProviderType,
 	model: string,
 	settings: AISettings,
 ): ResolvedLanguageModel {
-	const configs = buildProviderConfigs(settings);
+	validateModelAllowed(provider, model, settings);
 
-	if (!configs.some((config) => config.type === provider)) {
+	const config = buildProviderConfigs(settings).find((config) => config.type === provider);
+
+	if (!config) {
 		throw new ServiceUnavailableError({ service: provider, reason: 'No API key configured for LLM provider' });
 	}
 
-	const registry = createAIProviderRegistry(configs, settings);
+	const registry = createAIProviderRegistry([config], settings);
 	let languageModel = registry.languageModel(`${provider}:${model}`);
 	const devToolsMiddleware = getDevToolsMiddleware();
 
