@@ -68,10 +68,19 @@ export async function collectMetrics(db: Knex, schema: SchemaOverview): Promise<
 		safeCollect('metrics.database', () => collectDatabaseMetrics(db)),
 	]);
 
+	let collections: Metrics['collections'] = null;
+	let items: Metrics['items'] = null;
+
+	if (collectionMetrics) {
+		const { _totalItems, _totalFields, ...rest } = collectionMetrics;
+		collections = rest;
+		items = { count: _totalItems };
+	}
+
 	return {
-		collections: collectionMetrics?.collections ?? null,
+		collections,
 		shares,
-		items: collectionMetrics?.items ?? null,
+		items,
 		files: fileMetrics,
 		users: userMetrics,
 		roles: roleMetrics,
