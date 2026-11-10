@@ -4,7 +4,12 @@ import { applyModelLimits, getFields, getModelChoices } from './fields';
 vi.mock('@/stores/server', () => ({ useServerStore: () => ({ info: { ai_providers: ['openai', 'openrouter'] } }) }));
 
 vi.mock('@/stores/settings', () => ({
-	useSettingsStore: () => ({ settings: { ai_openrouter_models: [{ id: 'openai/gpt-x', name: 'GPT X' }] } }),
+	useSettingsStore: () => ({
+		settings: {
+			ai_openai_allowed_models: ['reader', 'text-only'],
+			ai_openrouter_models: [{ id: 'openai/gpt-x', name: 'GPT X' }],
+		},
+	}),
 }));
 
 vi.mock('@/ai/models', () => ({
@@ -14,11 +19,16 @@ vi.mock('@/ai/models', () => ({
 	],
 	buildCustomModels: (models: { id: string; name: string }[] | null, provider = 'openai-compatible') =>
 		(models ?? []).map((model) => ({ provider, model: model.id, name: model.name, attachment: false })),
+	buildCustomModelDefinition: (provider: string, model: string) => ({ provider, model, name: model }),
 }));
 
 describe('getModelChoices', () => {
-	test('lists the saved OpenRouter models', () => {
-		expect(getModelChoices().map((choice) => choice.value)).toContain('openrouter:openai/gpt-x');
+	test('lists only the allowed and saved models', () => {
+		expect(getModelChoices().map((choice) => choice.value)).toEqual([
+			'openai:reader',
+			'openai:text-only',
+			'openrouter:openai/gpt-x',
+		]);
 	});
 });
 

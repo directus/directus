@@ -14,7 +14,11 @@ vi.mock('./use-generate-fields', async () => {
 
 vi.mock('@/stores/server', () => ({ useServerStore: () => ({ info: { ai_providers: ['openai'] } }) }));
 vi.mock('@/stores/settings', () => ({ useSettingsStore: () => ({ settings: {} }) }));
-vi.mock('@/ai/models', () => ({ AI_MODELS: [], buildCustomModels: () => [] }));
+vi.mock('@/ai/models', () => ({
+	AI_MODELS: [],
+	buildCustomModels: () => [],
+	buildCustomModelDefinition: (provider: string, model: string) => ({ provider, model, name: model }),
+}));
 
 const i18n = createI18n({ legacy: false, missingWarn: false, fallbackWarn: false });
 

@@ -1,8 +1,7 @@
 import type { DeepPartial, Field } from '@directus/types';
 import { omit } from 'lodash-es';
 import { OUTPUT_FIELD_MAX_DEPTH } from './output-schema';
-import { AI_MODELS, buildCustomModels } from '@/ai/models';
-import { getModelKey, getProviderIcon } from '@/ai/utils/available-models';
+import { getAvailableModels, getModelKey, getProviderIcon } from '@/ai/utils/available-models';
 import { getPermissionsField } from '@/ai/utils/operation-options';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
@@ -15,18 +14,13 @@ export function applyModelLimits(options: Record<string, unknown>): Record<strin
 
 export function getModelChoices() {
 	const providers = useServerStore().info.ai_providers ?? [];
-	const settings = useSettingsStore().settings;
-	const customModels = buildCustomModels(settings?.ai_openai_compatible_models ?? null);
-	const openRouterModels = buildCustomModels(settings?.ai_openrouter_models ?? null, 'openrouter');
 
-	return [...AI_MODELS, ...customModels, ...openRouterModels]
-		.filter((model) => providers.includes(model.provider))
-		.map((model) => ({
-			text: model.name,
-			value: getModelKey(model),
-			icon: getProviderIcon(model.provider),
-			attachment: model.attachment,
-		}));
+	return getAvailableModels(useSettingsStore().settings, providers).map((model) => ({
+		text: model.name,
+		value: getModelKey(model),
+		icon: getProviderIcon(model.provider),
+		attachment: model.attachment,
+	}));
 }
 
 export const TYPE_CHOICES = [
