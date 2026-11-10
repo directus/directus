@@ -160,15 +160,9 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return mapValues(tables, (table) => ({
 			...table,
 			foreignKeys: table.foreignKeys.map((foreignKey) => {
-				const relation: Partial<Relation> = {
-					collection: table.table,
-					related_collection: foreignKey.foreign_key_table,
-					schema: { on_delete: foreignKey.on_delete } as Relation['schema'],
-				};
-
-				this.preRelationChange(relation);
-
-				return { ...foreignKey, on_delete: relation.schema!.on_delete };
+				const schema = { on_delete: foreignKey.on_delete } as NonNullable<Relation['schema']>;
+				this.preRelationChange({ collection: table.table, related_collection: foreignKey.foreign_key_table, schema });
+				return { ...foreignKey, on_delete: schema.on_delete };
 			}),
 		}));
 	}

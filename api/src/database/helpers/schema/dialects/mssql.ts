@@ -1,6 +1,5 @@
 import type { Knex } from 'knex';
-import { mapValues, sortBy } from 'lodash-es';
-import { VERSION_META_FIELDS } from '../../../../services/version-tables/constants.js';
+import { countBy, mapValues } from 'lodash-es';
 import {
 	normalizeOnDelete,
 	type VersionTableForeignKey,
@@ -146,20 +145,15 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 
 /**
  * MSSQL rejects multiple cascade paths, i.e. more than one foreign key with a referential action to the same table.
- * Only the first one keeps its action. Mirrored columns go before the version meta fields, which are cleared manually.
+ * All foreign keys involved in such a conflict lose their action.
  */
 function limitCascadePaths(foreignKeys: VersionTableForeignKey[]): VersionTableForeignKey[] {
-	const metaFields: string[] = Object.values(VERSION_META_FIELDS);
-	const tablesWithAction = new Set<string>();
-	const stripped = new Set<VersionTableForeignKey>();
+	const hasAction = (foreignKey: VersionTableForeignKey) => normalizeOnDelete(foreignKey.on_delete) !== 'NO ACTION';
+	const actionCounts = countBy(foreignKeys.filter(hasAction), 'foreign_key_table');
 
-	// `sortBy` is stable and sorts `false` before `true`
-	for (const foreignKey of sortBy(foreignKeys, (foreignKey) => metaFields.includes(foreignKey.column))) {
-		if (normalizeOnDelete(foreignKey.on_delete) === 'NO ACTION') continue;
-
-		if (tablesWithAction.has(foreignKey.foreign_key_table)) stripped.add(foreignKey);
-		else tablesWithAction.add(foreignKey.foreign_key_table);
-	}
-
-	return foreignKeys.map((foreignKey) => (stripped.has(foreignKey) ? { ...foreignKey, on_delete: null } : foreignKey));
+	return foreignKeys.map((foreignKey) =>
+		hasAction(foreignKey) && actionCounts[foreignKey.foreign_key_table]! > 1
+			? { ...foreignKey, on_delete: null }
+			: foreignKey,
+	);
 }

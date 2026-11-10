@@ -18,7 +18,6 @@ export class SchemaHelperSQLite extends SchemaHelper {
 	override async withForeignKeysDisabled<T>(fn: () => Promise<T>): Promise<T> {
 		const enabled = (await this.knex.raw('PRAGMA foreign_keys'))[0].foreign_keys === 1;
 
-		// Already disabled, either by the user or by an outer call
 		if (!enabled) return fn();
 
 		await this.knex.raw('PRAGMA foreign_keys = OFF');
