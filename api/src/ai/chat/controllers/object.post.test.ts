@@ -67,10 +67,12 @@ describe('aiObjectPostHandler', () => {
 						openaiCompatibleName: null,
 						openaiCompatibleModels: null,
 						openaiCompatibleHeaders: null,
-						openaiAllowedModels: ['gpt-5', 'gpt-5-mini'],
-						anthropicAllowedModels: ['claude-sonnet-4-5'],
-						googleAllowedModels: ['gemini-2.5-pro'],
-						openrouterModels: [{ id: 'anthropic/claude-sonnet-5.5', name: 'Claude Sonnet 5.5' }],
+						allowedModels: {
+							openai: ['gpt-5', 'gpt-5-mini'],
+							anthropic: ['claude-sonnet-4-5'],
+							google: ['gemini-2.5-pro'],
+							openrouter: ['anthropic/claude-sonnet-5.5'],
+						},
 						systemPrompt: null,
 					},
 				},
@@ -137,14 +139,8 @@ describe('aiObjectPostHandler', () => {
 			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
 		});
 
-		it('should throw ForbiddenError when allowedModels is null', async () => {
-			mockRes.locals!['ai'].settings.openaiAllowedModels = null;
-
-			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
-		});
-
 		it('should throw ForbiddenError when allowedModels is empty', async () => {
-			mockRes.locals!['ai'].settings.openaiAllowedModels = [];
+			mockRes.locals!['ai'].settings.allowedModels.openai = [];
 
 			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
 		});
@@ -166,7 +162,7 @@ describe('aiObjectPostHandler', () => {
 		});
 
 		it('should throw ForbiddenError when no openrouter models are saved', async () => {
-			mockRes.locals!['ai'].settings.openrouterModels = [];
+			mockRes.locals!['ai'].settings.allowedModels.openrouter = [];
 			mockReq.body = { ...validBody, provider: 'openrouter', model: 'anthropic/claude-sonnet-5.5' };
 
 			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);

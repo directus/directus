@@ -28,10 +28,7 @@ describe('uploadToProvider', () => {
 		openaiCompatibleName: null,
 		openaiCompatibleModels: null,
 		openaiCompatibleHeaders: null,
-		openaiAllowedModels: null,
-		anthropicAllowedModels: null,
-		googleAllowedModels: null,
-		openrouterModels: null,
+		allowedModels: { openai: [], anthropic: [], google: [], openrouter: [] },
 		systemPrompt: null,
 	};
 

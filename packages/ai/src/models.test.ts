@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildCustomModelDefinition, buildCustomModels } from './models.js';
+import { buildCustomModelDefinition, buildCustomModels, DEFAULT_ALLOWED_MODELS, getAllowedModels } from './models.js';
 
 describe('buildCustomModels', () => {
 	it('returns empty array for null', () => {
@@ -65,5 +65,21 @@ describe('buildCustomModelDefinition', () => {
 		const result = buildCustomModelDefinition('anthropic', 'claude-custom');
 
 		expect(result.name).toBe('claude-custom');
+	});
+});
+
+describe('getAllowedModels', () => {
+	it('falls back to the defaults when a list was never saved', () => {
+		expect(getAllowedModels(null)).toEqual({ ...DEFAULT_ALLOWED_MODELS, openrouter: [] });
+	});
+
+	it('keeps an empty list instead of falling back', () => {
+		expect(getAllowedModels({ ai_openai_allowed_models: [] }).openai).toEqual([]);
+	});
+
+	it('uses the saved openrouter model ids', () => {
+		const settings = { ai_openrouter_models: [{ id: 'anthropic/claude-sonnet-5.5', name: 'Claude Sonnet 5.5' }] };
+
+		expect(getAllowedModels(settings).openrouter).toEqual(['anthropic/claude-sonnet-5.5']);
 	});
 });

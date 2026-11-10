@@ -2,7 +2,13 @@
 // MIT License
 // Copyright (c) 2025 models.dev
 
-import type { ModelDefinition, OpenAICompatibleModel, ProviderType, StandardProviderType } from './types.js';
+import type {
+	ModelDefinition,
+	OpenAICompatibleModel,
+	OpenRouterModel,
+	ProviderType,
+	StandardProviderType,
+} from './types.js';
 
 export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 	// OpenAI GPT-4 series
@@ -711,6 +717,22 @@ export const DEFAULT_ALLOWED_MODELS: Record<Exclude<StandardProviderType, 'openr
 	anthropic: ['claude-haiku-5-5', 'claude-sonnet-5-5'],
 	google: ['gemini-3.1-pro-preview', 'gemini-3.8-flash', 'gemini-3.5-flash-lite'],
 };
+
+export function getAllowedModels(
+	settings: {
+		ai_openai_allowed_models?: string[] | null;
+		ai_anthropic_allowed_models?: string[] | null;
+		ai_google_allowed_models?: string[] | null;
+		ai_openrouter_models?: OpenRouterModel[] | null;
+	} | null,
+): Record<StandardProviderType, string[]> {
+	return {
+		openai: settings?.ai_openai_allowed_models ?? DEFAULT_ALLOWED_MODELS.openai,
+		anthropic: settings?.ai_anthropic_allowed_models ?? DEFAULT_ALLOWED_MODELS.anthropic,
+		google: settings?.ai_google_allowed_models ?? DEFAULT_ALLOWED_MODELS.google,
+		openrouter: settings?.ai_openrouter_models?.map((model) => model.id) ?? [],
+	};
+}
 
 export function buildCustomModels(
 	customModels: OpenAICompatibleModel[] | null,

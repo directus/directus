@@ -1,4 +1,4 @@
-import type { OpenAICompatibleHeader, OpenAICompatibleModel, OpenRouterModel } from '@directus/ai';
+import type { OpenAICompatibleHeader, OpenAICompatibleModel, StandardProviderType } from '@directus/ai';
 
 interface OpenAIConfig {
 	type: 'openai';
@@ -38,9 +38,6 @@ export interface AISettings {
 	openaiCompatibleName: string | null;
 	openaiCompatibleModels: OpenAICompatibleModel[] | null;
 	openaiCompatibleHeaders: OpenAICompatibleHeader[] | null;
-	openaiAllowedModels: string[] | null;
-	anthropicAllowedModels: string[] | null;
-	googleAllowedModels: string[] | null;
-	openrouterModels: OpenRouterModel[] | null;
+	allowedModels: Record<StandardProviderType, string[]>;
 	systemPrompt: string | null;
 }

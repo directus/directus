@@ -13,10 +13,7 @@ const aiSettings: AISettings = {
 	openaiCompatibleName: null,
 	openaiCompatibleModels: null,
 	openaiCompatibleHeaders: null,
-	openaiAllowedModels: ['gpt-5'],
-	anthropicAllowedModels: [],
-	googleAllowedModels: null,
-	openrouterModels: [{ id: 'anthropic/claude-sonnet-4.5', name: 'Claude Sonnet 4.5' }],
+	allowedModels: { openai: ['gpt-5'], anthropic: [], google: [], openrouter: ['anthropic/claude-sonnet-4.5'] },
 	systemPrompt: null,
 };
 
@@ -34,7 +31,7 @@ describe('validateModelAllowed', () => {
 		expect(() => validateModelAllowed('openrouter', 'openai/gpt-5', aiSettings)).toThrow(ForbiddenError);
 	});
 
-	test('rejects every model when the list is empty or null', () => {
+	test('rejects every model when the list is empty', () => {
 		expect(() => validateModelAllowed('anthropic', 'claude-sonnet-4-5', aiSettings)).toThrow(ForbiddenError);
 		expect(() => validateModelAllowed('google', 'gemini-3-pro', aiSettings)).toThrow(ForbiddenError);
 	});
