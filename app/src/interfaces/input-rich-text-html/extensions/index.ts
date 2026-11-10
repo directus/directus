@@ -12,14 +12,15 @@ import { Media } from './media';
 import { NoContainerParagraphs } from './no-container-paragraphs';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
-import { PreservedAttributes } from './preserved-attributes';
+import { PreservedAttributes, styleRules } from './preserved-attributes';
 import { RangeSelectedAtoms } from './range-selected-atoms';
 import { semanticHtml } from './semantic-html';
 import { BaseStarterKit, buildLegacyEmphasisSchema } from './starter-kit';
+import { StyleTag } from './style-tag';
 import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { Table } from './table';
 import { TextAlignment } from './text-alignment';
-import { TextStyle } from './text-style';
+import { PreservingTextStyle, TextStyle } from './text-style';
 import { contributedKey, enabledRichTexts } from '@/rich-text/register';
 
 /**
@@ -57,12 +58,18 @@ export function fieldEditorExtensions(additions: AnyExtension[]): AnyExtension[]
 	const byName = new Map(additions.map((extension) => [extension.name, extension]));
 	const base = editorExtensions.map((extension) => byName.get(extension.name) ?? extension);
 	const appended = additions.filter((extension) => !base.includes(extension));
-	const others = [...base.filter((extension) => extension !== PreservedAttributes), ...appended];
+	const isPreserved = (extension: AnyExtension) => extension.name === PreservedAttributes.name;
+	const others = [...base.filter((extension) => !isPreserved(extension)), ...appended];
+
+	const isInlineTextStyle = (extension: AnyExtension) =>
+		extension.name === PreservingTextStyle.name && extension.options.inlineStyles;
 
 	return [
-		...base.map((extension) =>
-			extension === PreservedAttributes ? PreservedAttributes.configure({ extensions: others }) : extension,
-		),
+		...base.map((extension) => {
+			if (isPreserved(extension)) return extension.configure({ extensions: others });
+			if (isInlineTextStyle(extension)) return extension.configure({ styleRules: styleRules(others) });
+			return extension;
+		}),
 		...appended,
 	];
 }
@@ -76,6 +83,8 @@ export interface FieldSchemaOptions {
 	extensionOptions?: unknown;
 	/** Field `linkProtocols` option: extra URL schemes links and image links may use. */
 	linkProtocols?: unknown;
+	/** Field `keepInlineStyles` option: keep every `style` attribute and `<style>` tag. */
+	keepInlineStyles?: boolean;
 	/** Field `keepLegacyEmphasisTags` option: keep `<b>` and `<i>` instead of rewriting them to `<strong>` and `<em>`. */
 	keepLegacyEmphasisTags?: unknown;
 	/** Field `noContainerParagraphs` option: never add `<p>` in list items, blockquotes and table cells. */
@@ -96,7 +105,7 @@ export interface FieldSchema {
 
 /**
  * The one place a field's schema additions are assembled: the richtext extensions the field opted
- * into, its custom formats, its link protocols, its legacy emphasis tags, and the comparison-diff mark in
+ * into, its custom formats, its link protocols, its inline styles, its legacy emphasis tags, and the comparison-diff mark in
  * comparison mode. The live editor, the save-time round-trip check, the source-code drawer and the
  * comparison view all build from this result. A site that composed the list by hand could miss a contribution and report its markup as
  * dropped even though the editor renders it.
@@ -112,12 +121,20 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			...contributed.flatMap((config) => config.extensions),
 			...customFormats.extensions,
 			...links.extensions,
+			...(options.keepInlineStyles
+				? [
+						PreservedAttributes.configure({ inlineStyles: true }),
+						PreservingTextStyle.configure({ inlineStyles: true }),
+						StyleTag,
+					]
+				: []),
 			...legacyEmphasis.extensions,
 			...(options.noContainerParagraphs ? [NoContainerParagraphs] : []),
 			...(options.comparisonMode ? [ComparisonDiff] : []),
 		],
 		key: [
 			options.comparisonMode ? 'comparison' : '',
+			options.keepInlineStyles ? 'inline-styles' : '',
 			customFormats.key,
 			links.key,
 			legacyEmphasis.key,

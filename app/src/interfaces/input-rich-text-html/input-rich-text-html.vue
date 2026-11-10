@@ -51,6 +51,8 @@ const props = withDefaults(
 		extensionOptions?: StoredExtensionOptions;
 		/** Extra URL schemes links may use (e.g. `myapp`), on top of Tiptap's defaults. */
 		linkProtocols?: string[] | null;
+		/** Keep every `style` attribute and `<style>` tag instead of only the styles the toolbar models. */
+		keepInlineStyles?: boolean;
 		/** Keep `<b>` and `<i>` from the source instead of rewriting them to `<strong>` and `<em>`. */
 		keepLegacyEmphasisTags?: boolean;
 		/** Never add `<p>` in list items, blockquotes and table cells; see extensions/no-container-paragraphs.ts. */
@@ -97,6 +99,7 @@ const fieldSchema = buildFieldSchema({
 	extensions: props.extensions,
 	extensionOptions: props.extensionOptions,
 	linkProtocols: props.linkProtocols,
+	keepInlineStyles: props.keepInlineStyles,
 	keepLegacyEmphasisTags: props.keepLegacyEmphasisTags,
 	noContainerParagraphs: props.noContainerParagraphs,
 	comparisonMode: props.comparisonMode,
@@ -724,7 +727,7 @@ onKeyStroke('Escape', () => {
 	// `.range-selected` (RangeSelectedAtoms) covers selections that merely span the leaf, which
 	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image.
 	// A linked image renders as `<a><img></a>`, so the class lands on the anchor, not the img
-	:is(img, hr, .page-break):is(.ProseMirror-selectednode, .range-selected),
+	:is(img, hr, .page-break, .style-tag):is(.ProseMirror-selectednode, .range-selected),
 	a:is(.ProseMirror-selectednode, .range-selected) > img {
 		outline: 2px solid var(--theme--primary);
 	}
@@ -749,6 +752,29 @@ onKeyStroke('Escape', () => {
 			font-size: 0.6875rem;
 			text-transform: uppercase;
 			letter-spacing: 0.05em;
+		}
+	}
+
+	.style-tag {
+		background-color: var(--theme--background-normal);
+		border-radius: var(--theme--border-radius);
+		user-select: none;
+
+		&::before {
+			content: '<style>';
+			display: block;
+			padding: 0.25em 1em 0;
+			color: var(--theme--foreground-subdued);
+			font-family: var(--theme--fonts--monospace--font-family), monospace;
+			font-size: 0.6875rem;
+		}
+
+		pre {
+			margin: 0;
+			max-block-size: 12em;
+			background: none;
+			color: var(--theme--foreground-subdued);
+			white-space: pre-wrap;
 		}
 	}
 

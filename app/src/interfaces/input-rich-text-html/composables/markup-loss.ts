@@ -4,6 +4,7 @@ import {
 	type StyleParseRule,
 	type TagParseRule,
 } from '@tiptap/pm/model';
+import { StyleTag } from '../extensions/style-tag';
 
 /**
  * What the schema drops from `input`, given `normalized` (the same HTML after a round trip). A
@@ -20,8 +21,10 @@ import {
  */
 export function findMarkupLoss(input: string, normalized: string, schema: Schema): string[] {
 	const rules = parseRules(schema);
-	const before = parseBody(input);
-	const after = parseBody(normalized);
+	// a schema with a StyleTag node keeps <style>, so its CSS is content, not markup to drop
+	const nonContent = schema.nodes[StyleTag.name] ? NON_CONTENT_TAGS.filter((tag) => tag !== 'style') : NON_CONTENT_TAGS;
+	const before = parseBody(input, nonContent);
+	const after = parseBody(normalized, nonContent);
 
 	const survivors = Array.from(after.querySelectorAll('*')).map((el) => describe(el as HTMLElement, rules));
 	const survivingTypes = new Set(survivors.flatMap((s) => [s.type, ...s.marks]));
@@ -76,7 +79,7 @@ type Description = {
 // the parser never treats these as content, so their text and attributes are not a loss
 const NON_CONTENT_TAGS = ['head', 'meta', 'link', 'title', 'style', 'script', 'noscript'];
 
-// includes the atoms the schema lifts out of a paragraph (image, media), which then split its text
+// includes the atoms the schema lifts out of a paragraph (image, media, style), which then split its text
 const BLOCK_TAGS = new Set([
 	'address',
 	'article',
@@ -107,6 +110,7 @@ const BLOCK_TAGS = new Set([
 	'p',
 	'pre',
 	'section',
+	'style',
 	'summary',
 	'table',
 	'tbody',
@@ -130,9 +134,9 @@ function parseRules(schema: Schema): Rules {
 	};
 }
 
-function parseBody(html: string): HTMLElement {
+function parseBody(html: string, nonContent: string[]): HTMLElement {
 	const body = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html').body;
-	for (const el of Array.from(body.querySelectorAll(NON_CONTENT_TAGS.join(',')))) el.remove();
+	for (const el of Array.from(body.querySelectorAll(nonContent.join(',')))) el.remove();
 	return body;
 }
 
