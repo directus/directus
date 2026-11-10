@@ -80,6 +80,10 @@ function parseValue(key: string, value: unknown): unknown {
 	if (castValue === undefined || Number.isNaN(castValue)) {
 		// eslint-disable-next-line no-console
 		console.warn(`Environment variable "${key}" has an invalid value "${value}" and is ignored.`);
+
+		// Invalid booleans fall back to the default, or `false` if there is none
+		if (getDefaultType(key) === 'boolean' && !(key in DEFAULTS)) return false;
+
 		return undefined;
 	}
 

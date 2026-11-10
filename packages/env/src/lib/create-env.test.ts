@@ -296,6 +296,32 @@ describe('Invalid values', () => {
 		expect(warn).toHaveBeenCalledWith('Environment variable "DEFAULT" has an invalid value "invalid" and is ignored.');
 	});
 
+	test('Uses the default for invalid boolean values with a default', () => {
+		vi.spyOn(console, 'warn').mockImplementation(() => {});
+		vi.mocked(getDefaultType).mockReturnValue('boolean');
+
+		processConfig['DEFAULT'] = 'HELLO';
+
+		vi.mocked(cast).mockImplementation((value) => (value === 'HELLO' ? undefined : value));
+
+		const env = createEnv();
+
+		expect(env['DEFAULT']).toBe('test-default');
+	});
+
+	test('Sets invalid boolean values without a default to false', () => {
+		vi.spyOn(console, 'warn').mockImplementation(() => {});
+		vi.mocked(getDefaultType).mockImplementation((key) => (key === 'PROCESS' ? 'boolean' : null));
+
+		processConfig['PROCESS'] = 'HELLO';
+
+		vi.mocked(cast).mockImplementation((value) => (value === 'HELLO' ? undefined : value));
+
+		const env = createEnv();
+
+		expect(env['PROCESS']).toBe(false);
+	});
+
 	test('Does not warn about empty values that are cast to undefined', () => {
 		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
