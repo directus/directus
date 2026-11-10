@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { RegistryListResponse } from '@directus/extensions-registry';
 import { useRouteQuery } from '@vueuse/router';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../../../components/navigation.vue';

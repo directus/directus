@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { MaybeRef, Ref, ref, unref } from 'vue';
 import { LocationQuery, useRoute } from 'vue-router';
 import { useNavigationGuard } from './use-navigation-guard';

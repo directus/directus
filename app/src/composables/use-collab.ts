@@ -13,7 +13,7 @@ import {
 	WS_TYPE,
 } from '@directus/types';
 import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
-import { debounce, isEmpty, isEqual, isMatch, throttle } from 'lodash';
+import { debounce, isEmpty, isEqual, isMatch, throttle } from 'lodash-es';
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';

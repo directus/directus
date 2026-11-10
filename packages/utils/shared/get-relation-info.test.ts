@@ -25,6 +25,7 @@ describe('getRelationInfo', () => {
 				meta: null,
 			},
 			relationType: 'o2m',
+			oppositeCollection: 'test_collection',
 		});
 	});
 
@@ -46,6 +47,7 @@ describe('getRelationInfo', () => {
 				},
 			},
 			relationType: 'o2a',
+			oppositeCollection: 'test_collection',
 		});
 	});
 
@@ -63,6 +65,7 @@ describe('getRelationInfo', () => {
 
 		expect(o2mResult).toMatchInlineSnapshot(`
 			{
+			  "oppositeCollection": "related_o2m_collection",
 			  "relation": {
 			    "collection": "related_o2m_collection",
 			    "field": "related_o2m_field",
@@ -80,13 +83,14 @@ describe('getRelationInfo', () => {
 			    },
 			    "related_collection": "collection",
 			    "schema": {
-			      "column": "o2m",
-			      "constraint_name": "collection_o2m_foreign",
+			      "column": "related_o2m_field",
+			      "constraint_name": "related_o2m_collection_related_o2m_field_foreign",
+			      "foreign_key_column": "id",
 			      "foreign_key_schema": "public",
-			      "foreign_key_table": "related_o2m_collection",
+			      "foreign_key_table": "collection",
 			      "on_delete": "SET NULL",
 			      "on_update": "NO ACTION",
-			      "table": "collection",
+			      "table": "related_o2m_collection",
 			    },
 			  },
 			  "relationType": "o2m",
@@ -97,11 +101,12 @@ describe('getRelationInfo', () => {
 
 		expect(m2oResult).toMatchInlineSnapshot(`
 			{
+			  "oppositeCollection": "related_m2o_collection",
 			  "relation": {
 			    "collection": "collection",
 			    "field": "m2o",
 			    "meta": {
-			      "id": 0,
+			      "id": 1,
 			      "junction_field": null,
 			      "many_collection": "collection",
 			      "many_field": "m2o",
@@ -116,6 +121,7 @@ describe('getRelationInfo', () => {
 			    "schema": {
 			      "column": "m2o",
 			      "constraint_name": "collection_m2o_foreign",
+			      "foreign_key_column": "id",
 			      "foreign_key_schema": "public",
 			      "foreign_key_table": "related_m2o_collection",
 			      "on_delete": "SET NULL",
@@ -131,11 +137,12 @@ describe('getRelationInfo', () => {
 
 		expect(a2oResult).toMatchInlineSnapshot(`
 			{
+			  "oppositeCollection": null,
 			  "relation": {
 			    "collection": "collection",
 			    "field": "a2o",
 			    "meta": {
-			      "id": 0,
+			      "id": 2,
 			      "junction_field": null,
 			      "many_collection": "collection",
 			      "many_field": "a2o",
@@ -161,6 +168,7 @@ describe('getRelationInfo', () => {
 		expect(noResult).toEqual({
 			relation: null,
 			relationType: null,
+			oppositeCollection: null,
 		});
 	});
 });

@@ -20,10 +20,10 @@ router.get(
 		const licenseManager = getLicenseManager();
 		const entitlementManager = getEntitlementManager();
 
-		const [license, status, downgradeReason, seatUsage, collectionUsage, flowUsage] = await Promise.all([
+		const [license, status, invalidReason, seatUsage, collectionUsage, flowUsage] = await Promise.all([
 			licenseManager.getLicense(),
 			licenseManager.getStatus(),
-			licenseManager.getDowngradeReason(),
+			licenseManager.getInvalidReason(),
 			entitlementManager.getUsage('seats'),
 			entitlementManager.getUsage('collections'),
 			entitlementManager.getUsage('flows'),
@@ -49,12 +49,13 @@ router.get(
 			editable,
 			status,
 			source,
-			downgrade_reason: downgradeReason,
+			invalid_reason: invalidReason,
 			renews_at: license.meta.renews_at,
 			expires_at: expiresAt,
 			entitlements: license.entitlements,
 			grace_period: gracePeriod,
 			offline: license.meta.offline,
+			token_expires_at: license.meta.token_expires_at,
 			usage: {
 				seats: seatUsage,
 				collections: collectionUsage,

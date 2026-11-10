@@ -337,7 +337,6 @@ licensing:
   entitlements:
     collections: Συλλογές
     flows: Ροές
-settings_flows: Ροές
 settings_presets: Σελιδοδείκτες
 layout: Διάταξη
 discard_changes: Ακύρωση αλλαγών
@@ -499,6 +498,8 @@ interfaces:
     icon: Εικονίδιο
   tags:
     tags: Ετικέτες
+  input-rich-text-html:
+    extensions: Επεκτάσεις
   input-block-editor:
     tools_options:
       embed: Ενσωμάτωση

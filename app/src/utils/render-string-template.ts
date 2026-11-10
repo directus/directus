@@ -1,6 +1,6 @@
 import { Field } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
-import { set } from 'lodash';
+import { set } from 'lodash-es';
 import { render, renderFn } from 'micromustache';
 import { computed, ComputedRef, Ref, unref } from 'vue';
 import { useExtension } from '@/composables/use-extension';

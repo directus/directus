@@ -36,8 +36,14 @@ these `-sb` projects as they require more resources and have a longer runtime.
 
 ## Writing tests
 
+Before you start writing tests, evaluate if an e2e test is really needed here and if so, what kind of e2e test. Prefer
+writing Unit tests over e2e tests, and e2e tests over sandboxed tests, as each level comes with higher execution cost. A
+sandboxed doesn't need to test what a unit test can cover. e2e tests are primarily to confirm that high level behaviors
+and flows are consistent.
+
 For general best practices on writing tests, please have a quick look at
-[this guide](https://github.com/goldbergyoni/javascript-testing-best-practices?tab=readme-ov-file#section-0%EF%B8%8F%E2%83%A3-the-golden-rule).
+[this guide](https://github.com/goldbergyoni/javascript-testing-best-practices?tab=readme-ov-file#section-0%EF%B8%8F%E2%83%A3-the-golden-rule)
+and the [best practices](#best-practices) section at the bottom.
 
 Adding a test is as simple as creating a new file ending on `.test.ts` and writing your test using vitest. A minial test
 looks like this:
@@ -55,22 +61,38 @@ test('Pinging the API', async () => {
 });
 ```
 
+Make sure to place your test in a reasonable place, before creating a new folder tree. E.g. tests against the item
+enpoint belong into `/tests/endpoints/items`.
+
 ### Tests requiring a custom schema
 
-To make it simpler to write tests that require custom tables, the test suite provides a `useSnapshot` function. This
-function loads the `snaphot.json` file located in the same folder the test is located and applies the schema to the
-database when called. The function ensures uniqueness of collection names by replacing all `_1234` suffixes with a
-unique prefix. To improve type savety, an additional Schema can be provided. All collection names can be then accessed
-through the `collections` property of the returned snapshot.
+To make it simpler to write tests that require custom tables, the test suite provides a `useSnapshot` function. It
+applies a schema snapshot to the database when called and ensures uniqueness of collection names by prefixing them with
+a unique id. All collection names can then be accessed through the `collections` property of the returned object.
+
+Schemas are defined with the [SchemaBuilder](../../packages/schema-builder/readme.md) in a `snapshot.ts` next to the
+test. Export both the builder as `schema` and its snapshot as `snapshot`:
 
 ```ts
-const { collections } = await useSnapshot<Schema>(api);
+import { SchemaBuilder } from '@directus/schema-builder';
+
+export const schema = new SchemaBuilder().collection('articles', (c) => {
+	c.field('id').id();
+	c.field('title').string();
+});
+
+export const snapshot = schema.snapshot();
 ```
 
-A custom schema can be generated using the sandbox cli: `sandbox -x postgres` in the folder of your tests. This will
-create the `schema.d.ts` and `snapshot.json` into the current folder. Make sure all collection names end with `_1234` to
-ensure uniqueness. To modify an existing schema of a test, use `sandbox -s -x postgres` to start up a sandbox with the
-schema preloaded.
+To improve type safety, run `pnpm build` in `tests/e2e` to generate a `schema.d.ts` next to every `snapshot.ts`, which
+can then be passed to `useSnapshot`:
+
+```ts
+import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
+
+const { collections } = await useSnapshot<Schema>(api, snapshot);
+```
 
 ### Interacting with the API
 
@@ -136,3 +158,19 @@ For more details on how to use the sandbox, please refer to the [sandbox readme]
 
 - `getUID()` returns a unique string scoped to the current test file. Can help in reducing conflicts.
 - `@utils/constants.js` exposes the `database`, `port`, `env`, and `options` of the current global api instance.
+- `openSocket()` / `openAuthenticatedSocket()` from `@utils/websocket.js` wrap a WebSocket so a test can ask for
+  `next()` matching message or assert a socket stayed `silent()`, without racing the connection.
+- `openCollab()` from `@utils/collab.js` builds on that with the helpers the collaborative editing protocol needs
+  (`join()`, `collab()`, `waitFor()`).
+- `sandboxPort()` from `@utils/sandbox-port.js` hands a `*.sb.test.ts` file a port of its own, so a sandbox started
+  right after another one was stopped does not fail to bind. Pass a different slot per sandbox within one file. It
+  throws when called from anywhere other than a `*.sb.test.ts` file, since only those get a window.
+
+## Best Practices
+
+- Use the Directus SDK as much as possible
+- Do schema seeding/changes via the provided utils over doing them manually
+- Write tests as flat as possible, avoid nesting them in multiple layers of complexity
+- Check the existing folder structure to place new files before creating new folders
+- Don't test specific code paths/parts, test the feature broadly and generally. Use unit tests instead to test all
+  permutations or specific code paths

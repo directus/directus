@@ -145,16 +145,21 @@ const RESOURCE_LIST = [
 		plural: 'flows',
 		collection: 'directus_flows',
 		endpoint: '/flows',
-		appRoute: '/admin/settings/flows',
+		appRoute: '/admin/flows',
 		primaryKey: 'id',
 		primaryKeyType: 'uuid',
 		singleton: false,
 		selectable: true,
-		mustPull: ['operations'],
+		// Folders are pulled too: they are part of a flow's identity, so matching needs them on both sides.
+		mustPull: ['operations', 'folders'],
 		strip: ['user_created', 'date_created'],
 		aliases: ['operations'],
-		naturalKey: ['name'],
-		fkFields: [{ field: 'operation', references: 'directus_operations' }],
+		// Folders make same-named flows realistic, so the folder they live in is part of their identity.
+		naturalKey: ['name', 'folder'],
+		fkFields: [
+			{ field: 'operation', references: 'directus_operations' },
+			{ field: 'folder', references: 'directus_folders' },
+		],
 	},
 	{
 		name: 'operations',
@@ -227,6 +232,7 @@ const RESOURCE_LIST = [
 			'public_background',
 			'public_favicon',
 			'storage_default_folder',
+			'default_exports_folder',
 			'project_id',
 			'license_key',
 			'license_token',
@@ -255,9 +261,32 @@ const RESOURCE_LIST = [
 		mustPull: [],
 		strip: [],
 		aliases: [],
+		// A folder's type partitions the tree: a flows folder must never reconcile onto a file-library one.
 		// Ancestry included: one source and target folder sharing a name under different parents must not match.
-		naturalKey: ['name', 'parent'],
+		naturalKey: ['name', 'parent', 'type'],
 		fkFields: [{ field: 'parent', references: 'directus_folders' }],
+	},
+	{
+		name: 'presets',
+		singular: 'preset',
+		plural: 'presets',
+		collection: 'directus_presets',
+		endpoint: '/presets',
+		appRoute: '/admin/settings/presets',
+		primaryKey: 'id',
+		primaryKeyType: 'integer',
+		singleton: false,
+		selectable: true,
+		mustPull: [],
+		strip: [],
+		aliases: [],
+		// A null bookmark is the collection's default view. User stays in the key so a pulled preset (always
+		// user-less) never matches a target's personal one.
+		naturalKey: ['collection', 'bookmark', 'role', 'user'],
+		fkFields: [
+			{ field: 'role', references: 'directus_roles' },
+			{ field: 'user', references: 'directus_users' },
+		],
 	},
 	{
 		name: 'translations',
@@ -297,6 +326,7 @@ export const RESOURCE_FLAG_PHRASES: Record<SelectableResource, string> = {
 	flows: 'flows and their operations',
 	folders: 'media-library folders (the folder tree, not the files)',
 	policies: 'access policies with their permissions and access rules',
+	presets: 'global and role presets: bookmarks and default views',
 	roles: 'roles (brings their policies)',
 	settings: 'project settings',
 	translations: 'custom translations',

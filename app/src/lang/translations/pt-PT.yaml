@@ -189,8 +189,6 @@ logoutReason:
   SESSION_EXPIRED: Sessão expirada
 public_label: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
-public_role_info: >-
-  O papel público controla quais dados de API estão disponíveis para utilizadores não autenticados ou sem uma função. Pedidos com o papel público não podem ter acesso à aplicação ou ao administrador. Se for concedido acesso à aplicação ou ao administrador numa política atribuída ao papel público, esse acesso será ignorado.
 admin_description: Função administrativa inicial com acesso irrestrito à Aplicação/API.
 admin_policy_description: Função administrativa inicial com acesso irrestrito à Aplicação/API.
 no_description: Sem descrição...
@@ -971,7 +969,6 @@ licensing:
   resolve_sso_admin_email: Endereço de e-mail
   entitlements:
     flows: Fluxos
-settings_flows: Fluxos
 settings_presets: Favoritos
 settings_translations: Traduções
 one_or_more_options_are_missing: Uma ou mais opções estão em falta
@@ -1211,6 +1208,8 @@ interfaces:
     default_language: Idioma Padrão
   user:
     user: Utilizador
+  input-rich-text-html:
+    extensions: Extensões
   input-block-editor:
     tools_options:
       table: Tabela

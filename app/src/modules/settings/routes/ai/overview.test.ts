@@ -1,3 +1,5 @@
+import { DEFAULT_ALLOWED_MODELS } from '@directus/ai';
+import { useShortcut } from '@directus/composables';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { describe, expect, test, vi } from 'vitest';
@@ -5,6 +7,8 @@ import { defineComponent, ref } from 'vue';
 import Overview from './overview.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
 
 const settingsFields = ref([
 	{ field: 'ai_group', meta: null },
@@ -45,6 +49,10 @@ const VFormStub = defineComponent({
 			type: Array,
 			required: true,
 		},
+		initialValues: {
+			type: Object,
+			default: null,
+		},
 	},
 	emits: ['update:modelValue'],
 	template: '<div class="v-form-stub" />',
@@ -79,7 +87,7 @@ vi.mock('@/composables/use-shortcut', () => ({
 	useShortcut: vi.fn(),
 }));
 
-function mountOverview() {
+function mountOverview(settings: Record<string, unknown> = {}) {
 	const pinia = createTestingPinia({
 		createSpy: vi.fn,
 		stubActions: false,
@@ -92,6 +100,7 @@ function mountOverview() {
 					ai_openai_compatible_base_url: null,
 					ai_openai_compatible_models: null,
 					ai_translation_default_model: 'anthropic:claude-sonnet-4-6',
+					...settings,
 				},
 			},
 			serverStore: {
@@ -135,7 +144,7 @@ function getTranslationDefaultField(wrapper: ReturnType<typeof mount>) {
 
 describe('settings ai overview', () => {
 	test('computes translation default model choices from saved and unsaved settings', async () => {
-		const wrapper = mountOverview();
+		const wrapper = mountOverview({ ai_openai_allowed_models: [] });
 
 		expect(getTranslationDefaultField(wrapper)?.meta?.options?.choices).toEqual([
 			{
@@ -163,5 +172,71 @@ describe('settings ai overview', () => {
 				icon: 'logo_anthropic',
 			},
 		]);
+	});
+
+	test('shows default allowed models with a note while the setting is null', () => {
+		const wrapper = mountOverview();
+		const aiForm = wrapper.findAllComponents(VFormStub)[0]!;
+		const fields = aiForm.props('fields') as any[];
+
+		expect(aiForm.props('initialValues')).toMatchObject({
+			ai_openai_allowed_models: DEFAULT_ALLOWED_MODELS.openai,
+			ai_anthropic_allowed_models: ['claude-sonnet-4-6'],
+		});
+
+		expect(fields.find((field) => field.field === 'ai_openai_allowed_models')?.meta?.note).toBeTruthy();
+		expect(fields.find((field) => field.field === 'ai_anthropic_allowed_models')?.meta?.note).toBeUndefined();
+	});
+
+	test('shows defaults for a cleared allowed models field while keeping it null', async () => {
+		const wrapper = mountOverview();
+		const aiForm = wrapper.findAllComponents(VFormStub)[0]!;
+
+		const getNote = () =>
+			(aiForm.props('fields') as any[]).find((field) => field.field === 'ai_anthropic_allowed_models')?.meta?.note;
+
+		await aiForm.vm.$emit('update:modelValue', { ai_anthropic_allowed_models: null });
+		await wrapper.vm.$nextTick();
+
+		expect(aiForm.props('modelValue')).toEqual({ ai_anthropic_allowed_models: DEFAULT_ALLOWED_MODELS.anthropic });
+		expect(getNote()).toBeTruthy();
+
+		// VForm sends the displayed defaults back when another field changes
+		await aiForm.vm.$emit('update:modelValue', {
+			ai_anthropic_allowed_models: [...DEFAULT_ALLOWED_MODELS.anthropic],
+			ai_openai_allowed_models: ['gpt-5'],
+		});
+
+		await wrapper.vm.$nextTick();
+
+		expect(getNote()).toBeTruthy();
+
+		await aiForm.vm.$emit('update:modelValue', { ai_anthropic_allowed_models: ['claude-opus-5'] });
+		await wrapper.vm.$nextTick();
+
+		expect(getNote()).toBeUndefined();
+	});
+
+	test('saves a cleared allowed models field as null and an emptied one as []', async () => {
+		const wrapper = mountOverview();
+		const aiForm = wrapper.findAllComponents(VFormStub)[0]!;
+		const settingsStore = useSettingsStore();
+		vi.spyOn(settingsStore, 'updateSettings').mockResolvedValue(undefined as never);
+		vi.spyOn(useServerStore(), 'hydrate').mockResolvedValue(undefined as never);
+
+		await aiForm.vm.$emit('update:modelValue', { ai_anthropic_allowed_models: null });
+
+		await aiForm.vm.$emit('update:modelValue', {
+			ai_anthropic_allowed_models: [...DEFAULT_ALLOWED_MODELS.anthropic],
+			ai_openai_allowed_models: [],
+		});
+
+		const save = vi.mocked(useShortcut).mock.calls.findLast(([shortcut]) => shortcut === 'meta+s')![1];
+		await save({} as KeyboardEvent, {} as Element);
+
+		expect(settingsStore.updateSettings).toHaveBeenCalledWith({
+			ai_anthropic_allowed_models: null,
+			ai_openai_allowed_models: [],
+		});
 	});
 });

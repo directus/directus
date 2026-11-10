@@ -19,9 +19,11 @@ vi.mock('@directus/env', () => ({
 }));
 
 vi.mock('./settings.js', () => ({
-	SettingsService: vi.fn().mockImplementation(() => ({
-		readSingleton: vi.fn().mockResolvedValue({ project_name: 'Directus' }),
-	})),
+	SettingsService: vi.fn().mockImplementation(function () {
+		return {
+			readSingleton: vi.fn().mockResolvedValue({ project_name: 'Directus' }),
+		};
+	}),
 }));
 
 vi.mock('../cache.js', () => ({

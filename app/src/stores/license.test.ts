@@ -2,6 +2,8 @@ import type { ReadLicenseOutput } from '@directus/license';
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLicenseStore } from './license';
+import { i18n } from '@/lang';
+import { localizedFormat } from '@/utils/localized-format';
 
 const entitlements: ReadLicenseOutput['entitlements'] = {
 	seats: { limit: 10 },
@@ -22,11 +24,13 @@ const entitlements: ReadLicenseOutput['entitlements'] = {
 function createLicenseInfo(overrides: Partial<ReadLicenseOutput> = {}): ReadLicenseOutput {
 	return {
 		status: 'active',
+		editable: true,
 		source: 'settings',
 		name: 'Team',
 		renews_at: 1_800_000_000,
 		offline: false,
 		grace_period: 0,
+		invalid_reason: null,
 		entitlements,
 		usage: {
 			seats: 8,
@@ -119,7 +123,9 @@ describe('formattedGraceDeadline', () => {
 			renews_at: undefined,
 		});
 
-		expect(licenseStore.formattedGraceDeadline).toBe(Intl.DateTimeFormat().format(deadline));
+		expect(licenseStore.formattedGraceDeadline).toBe(
+			localizedFormat(deadline, String(i18n.global.t('date-fns_date_short'))),
+		);
 	});
 });
 
@@ -241,5 +247,110 @@ describe('history timeframes', () => {
 
 		expect(licenseStore.revisionHistoryTimeframe).toBeNull();
 		expect(licenseStore.activityHistoryTimeframe).toBeNull();
+	});
+});
+
+describe('invalid reason', () => {
+	test('reports a downgrade reason once running on core', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ source: null, invalid_reason: 'expired' });
+
+		expect(licenseStore.downgradeReason).toBe('expired');
+		expect(licenseStore.warningReason).toBeNull();
+	});
+
+	test('reports a warning reason while the license is still applied', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ source: 'settings', invalid_reason: 'binding_mismatch' });
+
+		expect(licenseStore.warningReason).toBe('binding_mismatch');
+		expect(licenseStore.downgradeReason).toBeNull();
+	});
+
+	test('reports no reason without an invalid reason', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ source: null, invalid_reason: null });
+
+		expect(licenseStore.downgradeReason).toBeNull();
+		expect(licenseStore.warningReason).toBeNull();
+	});
+});
+
+describe('tokenExpiresAt', () => {
+	test('returns null without a token expiry', () => {
+		const licenseStore = useLicenseStore();
+		licenseStore.info = createLicenseInfo();
+		expect(licenseStore.tokenExpiresAt).toBeNull();
+	});
+
+	test('returns the date the token expires', () => {
+		const licenseStore = useLicenseStore();
+		licenseStore.info = createLicenseInfo({ token_expires_at: FIXED_NOW_SEC });
+		expect(licenseStore.tokenExpiresAt).toEqual(new Date(FIXED_NOW_SEC * 1000));
+	});
+});
+
+describe('licenseWarning', () => {
+	beforeEach(() => {
+		vi.spyOn(Date, 'now').mockReturnValue(FIXED_NOW_SEC * 1000);
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	test('returns null without a token expiry or on core', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ invalid_reason: 'binding_mismatch' });
+		expect(licenseStore.licenseWarning).toBeNull();
+
+		licenseStore.info = createLicenseInfo({ source: null, invalid_reason: 'expired', token_expires_at: FIXED_NOW_SEC });
+		expect(licenseStore.licenseWarning).toBeNull();
+	});
+
+	test('falls back to a generic danger warning for other reasons', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({
+			invalid_reason: 'verification',
+			token_expires_at: FIXED_NOW_SEC + 2.5 * 86400,
+		});
+
+		expect(licenseStore.licenseWarning).toEqual({ reason: 'generic', severity: 'danger', daysRemaining: 3 });
+	});
+
+	test('treats an unreachable licensing service as a warning', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({ invalid_reason: 'unavailable', token_expires_at: FIXED_NOW_SEC + 86400 });
+
+		expect(licenseStore.licenseWarning).toEqual({ reason: 'unavailable', severity: 'warning', daysRemaining: 1 });
+	});
+});
+
+describe('hasPinnedNotice', () => {
+	test('is true for a warning, grace or core grace, unless locked', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo();
+		expect(licenseStore.hasPinnedNotice).toBe(false);
+
+		licenseStore.info = createLicenseInfo({ invalid_reason: 'binding_mismatch', token_expires_at: FIXED_NOW_SEC });
+		expect(licenseStore.hasPinnedNotice).toBe(true);
+
+		licenseStore.info = createLicenseInfo({ source: null, status: 'grace' });
+		expect(licenseStore.hasPinnedNotice).toBe(true);
+
+		licenseStore.info = createLicenseInfo({
+			status: 'locked',
+			invalid_reason: 'binding_mismatch',
+			token_expires_at: FIXED_NOW_SEC,
+		});
+
+		expect(licenseStore.hasPinnedNotice).toBe(false);
 	});
 });

@@ -14,6 +14,8 @@ This directory contains mock implementations for commonly used modules in servic
 - **[emitter.ts](#emitterts)** - Event emitter mocks
 - **[env.ts](#envts)** - env mocks
 - **[storage.ts](#storagets)** - Storage driver and manager mocks
+- **[bus.ts](#busts)** - In-memory message bus with real delivery
+- **[store.ts](#storets)** - `useStore` mocks with a serialized critical section
 - **[items-service.ts](#items-servicets)** - ItemsService mocks
 - **[fields-service.ts](#fields-servicets)** - FieldsService mocks
 - **[files-service.ts](#files-servicets)** - FilesService mocks
@@ -343,28 +345,28 @@ Provides environment variable mocking utilities for the `@directus/env` package.
 
 #### `mockEnv(overrides?)`
 
-Creates a standard environment mock with sensible test defaults for commonly used environment variables.
+Creates an environment mock based on the actual `@directus/env` defaults.
 
 **Parameters:**
 
-- `overrides` (optional): Object containing environment variable overrides to merge with defaults
+- `overrides` (optional): Object containing environment variable overrides to merge with the defaults, for every test in
+  the file
 
 **Returns:** Mock module object with `useEnv` function
 
-**Default environment variables:**
+#### `setEnv(overrides)`
 
-```
-EXTENSIONS_PATH: './extensions',
-STORAGE_LOCATIONS: 'local',
-EMAIL_TEMPLATES_PATH: './templates'
-```
+Overrides env values on top of the `mockEnv()` defaults, until the next `resetEnv()`. The object returned by `useEnv()`
+is updated in place, so modules holding a reference from a top level `useEnv()` call see the change too.
+
+#### `resetEnv()`
+
+Restores the env to the `mockEnv()` defaults, undoing any `setEnv()` calls.
 
 **Example:**
 
 ```typescript
-// Dynamically changing env values during tests
-import { useEnv } from '@directus/env';
-const { resetEnvMock } = await import('../test-utils/env.js');
+import { resetEnv, setEnv } from '../test-utils/env.js';
 
 // Standard usage with defaults
 vi.mock('@directus/env', async () => {
@@ -382,24 +384,21 @@ vi.mock('@directus/env', async () => {
 });
 
 beforeEach(() => {
-	resetEnvMock();
+	resetEnv();
 });
 
-it('should use custom env value', async () => {
-	// Override the mock return value
-	vi.mocked(useEnv).mockReturnValue({
-		FILES_DELETE_ORIGINAL_ON_MOVE: 'true',
-	});
+it('should use custom env value', () => {
+	setEnv({ FILES_DELETE_ORIGINAL_ON_MOVE: 'true' });
 
-	// Re-import the module to pick up the new mock
-	// Required if useEnv is called top level
+	// ... rest of test
+});
+
+it('should use custom env value for values derived at import time', async () => {
+	setEnv({ FILES_DELETE_ORIGINAL_ON_MOVE: 'true' });
+
+	// Clear the module cache and re-import, so the module is evaluated again with the current env
+	vi.resetModules();
 	const { FilesService } = await import('./files.js');
-
-	// Create new service instance
-	const service = new FilesService({
-		knex: db,
-		schema: { collections: {}, relations: [] },
-	});
 
 	// ... rest of test
 });
@@ -407,8 +406,9 @@ it('should use custom env value', async () => {
 
 **Important Notes:**
 
-- `vi.resetModules()` in `beforeEach` is essential for per-test overrides to work
-- Must re-import modules after changing mock values using dynamic `import()`
+- Use `setEnv()` / `resetEnv()` instead of replacing the whole env with `mockReturnValue()`
+- Modules that derive values from the env once at import time, like constants, don't see later `setEnv()` calls. Call
+  `setEnv()` first, then `vi.resetModules()` and re-import the module with a dynamic `import()`
 
 ---
 
@@ -609,6 +609,23 @@ vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
 	{ collection: 'posts', name: 'My Post' },
 ]);
 ```
+
+#### When a service does not need its own mock
+
+**A service that is just an ItemsService with no extras does not get its own mock file.** Assign the ItemsService mock
+directly in the test instead:
+
+```typescript
+vi.mock('./users.js', async () => {
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
+	return { UsersService: mockItemsService().ItemsService };
+});
+```
+
+A mock file is only warranted when the service adds behaviour beyond CRUD that callers depend on — `revert` on
+[revisions-service.ts](#revisions-servicets), `buildTree` on [folders-service.ts](#folders-servicets), or a different
+constructor signature as in [collections-service.ts](#collections-servicets). A file that only renames `ItemsService`
+adds an import and a layer of indirection for nothing.
 
 ---
 
@@ -1246,3 +1263,108 @@ When adding new mock utilities:
 5. Use TypeScript for proper typing
 6. Include return type documentation
 7. Test the mock with actual service tests
+
+---
+
+### bus.ts
+
+Provides an in-memory message bus that actually delivers, mirroring the synchronous delivery of `BusLocal`. Use it over
+a plain `{ publish: vi.fn() }` stub when the code under test has a publisher and a subscriber that must reach each
+other.
+
+#### `createMockBus()`
+
+**Returns:** `{ bus, subscriberCount, setOnPublish }`
+
+- `bus` — `publish`/`subscribe`/`unsubscribe` spies backed by real handler delivery
+- `subscriberCount(channel)` — handlers currently attached, for asserting nothing leaks on the process-wide singleton
+- `setOnPublish(callback)` — runs while a publish is in flight, to act on the window between publish and delivery
+
+```typescript
+vi.mock('../bus/index.js');
+
+const testBus = createMockBus();
+vi.mocked(useBus).mockReturnValue(testBus.bus as any);
+```
+
+---
+
+### lock.ts
+
+Provides an in-memory stand-in for the lock kv that refuses a held key, the way redlock does with `retryCount: 0`. Use
+it to drive who wins an election, and what happens when a holder's lease runs out.
+
+#### `createMockLock()`
+
+**Returns:** `{ lock, abandon, hold, isHeld, fail }`
+
+- `lock` — a `usingLock` spy that runs the callback while holding the key, handing it the lease's abort signal
+- `abandon(key)` — frees the key as if the holder's lease had expired, aborting the signal it was given
+- `hold(key)` — occupies the key as if another instance held it
+- `isHeld(key)` — whether the key is currently held
+- `fail()` — makes every subsequent `usingLock` throw
+
+```typescript
+vi.mock('../lock/index.js');
+
+const testLock = createMockLock();
+vi.mocked(useLock).mockReturnValue(testLock.lock as any);
+```
+
+---
+
+### logger.ts
+
+Provides a logger with every level stubbed. Prefer it over a partial `{ warn: vi.fn() }`, which fails with "is not a
+function" the moment the code under test logs at another level.
+
+#### `createMockLogger()`
+
+**Returns:** `{ fatal, error, warn, info, debug, trace, child }` — all spies; `child` returns the same logger
+
+```typescript
+vi.mock('../logger/index.js');
+
+const logger = createMockLogger();
+vi.mocked(useLogger).mockReturnValue(logger as any);
+
+expect(logger.warn).toHaveBeenCalledWith('...');
+```
+
+---
+
+### store.ts
+
+Provides a `useStore` mock backed by an in-memory map, with the critical section serialized the way the real store's
+lock serializes it. Keys expire after the configured `ttl`, the way a leased key does in redis, so what a caller finds
+once a holder stops renewing can be tested.
+
+#### `createMockStore(options?)`
+
+**Options:** `{ ttl }` — how long a key survives before it expires, defaulting to 10 seconds
+
+**Returns:** `{ store, state, ops, whenSettled, fail }`
+
+- `store` — the callback-taking spy `useStore` returns
+- `state` — the stored state, for seeding and asserting, with `get`/`set`/`has`/`delete`
+- `ops` — an ordered log of `get:`/`set:`/`delete:` calls
+- `whenSettled(count)` — resolves once `count` store operations have settled, so tests sequence off explicit signals
+  rather than elapsed time
+- `fail()` — makes every subsequent operation throw
+
+---
+
+### Driving tests off signals
+
+Use `Promise.withResolvers()` to sequence a test on explicit signals rather than elapsed time, so nothing depends on how
+fast the machine running it happens to be.
+
+```typescript
+const running = Promise.withResolvers<void>();
+const finish = Promise.withResolvers<string>();
+
+const fn = vi.fn(() => {
+	running.resolve();
+	return finish.promise;
+});
+```

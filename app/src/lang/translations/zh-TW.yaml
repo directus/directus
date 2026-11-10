@@ -1007,7 +1007,6 @@ licensing:
     collections: 資料集
     flows: 流程
 ai_assistant: AI助手
-settings_flows: 流程
 settings_presets: 書籤
 settings_translations: 翻譯
 one_or_more_options_are_missing: 一或多個選項遺失
@@ -1743,6 +1742,7 @@ interfaces:
     wysiwyg: 所見即所得
     description: 可以編輯HTML內容的編輯器
     toolbar: 工具列
+    extensions: 擴充功能
     custom_formats: 自訂格式
     folder_note: 供上傳檔案用的資料夾。並不會影響已存在的其他檔案。
     imageToken: 永久的 Access Token

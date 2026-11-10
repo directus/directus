@@ -1,6 +1,7 @@
 import type { DirectusField } from '../../../schema/field.js';
 import type { ApplyQueryFields, FieldQuery, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type CreateFieldOutput<
 	Schema,
@@ -16,6 +17,7 @@ export type CreateFieldOutput<
  * @param query Optional return data query
  *
  * @returns The field object for the created field.
+ * @throws Will throw if collection is empty
  */
 export const createField =
 	<Schema, const TQuery extends FieldQuery<Schema, DirectusField<Schema>>>(
@@ -23,9 +25,13 @@ export const createField =
 		item: NestedPartial<DirectusField<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateFieldOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/fields/${collection as string}`,
-		params: query ?? {},
-		body: JSON.stringify(item),
-		method: 'POST',
-	});
+	() => {
+		throwIfEmpty(collection as string, 'Collection cannot be empty');
+
+		return {
+			path: `/fields/${collection as string}`,
+			params: query ?? {},
+			body: JSON.stringify(item),
+			method: 'POST',
+		};
+	};

@@ -118,6 +118,10 @@ data:
     one_collection: directus_folders
 
   - many_collection: directus_settings
+    many_field: default_exports_folder
+    one_collection: directus_folders
+
+  - many_collection: directus_settings
     many_field: public_registration_role
     one_collection: directus_roles
 
@@ -139,6 +143,10 @@ data:
   - many_collection: directus_flows
     many_field: user_created
     one_collection: directus_users
+
+  - many_collection: directus_flows
+    many_field: folder
+    one_collection: directus_folders
 
   ### Operations
   - many_collection: directus_operations
