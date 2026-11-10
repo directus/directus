@@ -3,7 +3,8 @@ import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { APICallError, generateText, NoObjectGeneratedError } from 'ai';
 import { MockLanguageModelV3 } from 'ai/test';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { getAISettings, resolveLanguageModel } from '../../ai/providers/index.js';
+import { resolveLanguageModel } from '../../ai/providers/resolve-model.js';
+import { getAISettings } from '../../ai/providers/settings.js';
 import config from './index.js';
 
 const ALT_SCHEMA = { type: 'object', properties: { alt: { type: 'string' } }, required: ['alt'] };
@@ -20,8 +21,11 @@ vi.mock('ai', async (importOriginal) => ({
 	generateText: vi.fn(),
 }));
 
-vi.mock('../../ai/providers/index.js', () => ({
+vi.mock('../../ai/providers/settings.js', () => ({
 	getAISettings: vi.fn(async () => ({})),
+}));
+
+vi.mock('../../ai/providers/resolve-model.js', () => ({
 	resolveLanguageModel: vi.fn(() => ({ model: 'mock-model', providerOptions: {} })),
 }));
 
