@@ -24,7 +24,8 @@ import {
 	readPrompt,
 	toOperationError,
 } from '../../ai/flow-operations/utils.js';
-import { getAISettings, type ResolvedLanguageModel, resolveLanguageModel } from '../../ai/providers/index.js';
+import { type ResolvedLanguageModel, resolveLanguageModel } from '../../ai/providers/resolve-model.js';
+import { getAISettings } from '../../ai/providers/settings.js';
 import { getAITelemetryConfig } from '../../ai/telemetry/index.js';
 import { AssetsService } from '../../services/assets.js';
 

@@ -1,4 +1,3 @@
-import { DEFAULT_ALLOWED_MODELS } from '@directus/ai';
 import type { SchemaOverview } from '@directus/types';
 import knexFactory from 'knex';
 import { MockClient } from 'knex-mock-client';
@@ -8,6 +7,7 @@ import { getAISettings } from './settings.js';
 // Mock dependencies
 vi.mock('../../services/settings.js');
 vi.mock('../../utils/get-schema.js');
+vi.mock('../../license/index.js');
 
 const mockReadSingleton = vi.fn();
 const mockGetSchema = vi.fn();
@@ -20,106 +20,66 @@ vi.mocked(await import('../../services/settings.js')).SettingsService = vi.fn().
 
 vi.mocked(await import('../../utils/get-schema.js')).getSchema = mockGetSchema;
 
+const mockIsEntitled = vi.fn();
+
+vi.mocked(await import('../../license/index.js')).getEntitlementManager = vi.fn(() => ({
+	isEntitled: mockIsEntitled,
+})) as any;
+
 beforeEach(() => {
 	vi.clearAllMocks();
 	mockGetSchema.mockResolvedValue({});
+	mockIsEntitled.mockReturnValue(true);
 });
 
 describe('getAISettings', () => {
-	test('should load and map AI settings', async () => {
-		mockReadSingleton.mockResolvedValue({
-			ai_openai_api_key: 'test-openai-key',
-			ai_anthropic_api_key: 'test-anthropic-key',
-			ai_google_api_key: 'test-google-key',
-			ai_openrouter_api_key: 'test-openrouter-key',
-			ai_openai_compatible_api_key: 'test-custom-key',
-			ai_openai_compatible_base_url: 'http://localhost:11434/v1',
-			ai_openai_compatible_name: 'Ollama',
-			ai_openai_compatible_models: [{ id: 'llama3', name: 'Llama 3' }],
-			ai_openai_compatible_headers: [{ header: 'X-Custom', value: 'value' }],
-			ai_openai_allowed_models: ['gpt-5'],
-			ai_anthropic_allowed_models: ['claude-sonnet-4-5'],
-			ai_google_allowed_models: null,
-			ai_openrouter_models: [{ id: 'openai/gpt-6-luna', name: 'GPT-6 Luna' }],
-			ai_system_prompt: 'You are Directus.',
-		});
+	const stored = {
+		ai_openai_api_key: 'test-openai-key',
+		ai_anthropic_api_key: 'test-anthropic-key',
+		ai_google_api_key: 'test-google-key',
+		ai_openrouter_api_key: 'test-openrouter-key',
+		ai_openai_compatible_api_key: 'test-custom-key',
+		ai_openai_compatible_base_url: 'http://localhost:11434/v1',
+		ai_openai_compatible_name: 'Ollama',
+		ai_openai_compatible_models: [{ id: 'llama3', name: 'Llama 3' }],
+		ai_openai_compatible_headers: [{ header: 'X-Custom', value: 'value' }],
+		ai_openai_allowed_models: ['gpt-5'],
+		ai_anthropic_allowed_models: ['claude-sonnet-4-5'],
+		ai_google_allowed_models: null,
+		ai_openrouter_models: [{ id: 'openai/gpt-6-luna', name: 'GPT-6 Luna' }],
+		ai_system_prompt: 'You are Directus.',
+	};
+
+	test('should read the AI settings fields and return them as stored', async () => {
+		mockReadSingleton.mockResolvedValue(stored);
 
 		const settings = await getAISettings();
 
 		expect(mockGetSchema).toHaveBeenCalledTimes(1);
-
-		expect(mockReadSingleton).toHaveBeenCalledWith({
-			fields: [
-				'ai_openai_api_key',
-				'ai_anthropic_api_key',
-				'ai_google_api_key',
-				'ai_openrouter_api_key',
-				'ai_openai_compatible_api_key',
-				'ai_openai_compatible_base_url',
-				'ai_openai_compatible_name',
-				'ai_openai_compatible_models',
-				'ai_openai_compatible_headers',
-				'ai_openai_allowed_models',
-				'ai_anthropic_allowed_models',
-				'ai_google_allowed_models',
-				'ai_openrouter_models',
-				'ai_system_prompt',
-			],
-		});
-
-		expect(settings).toEqual({
-			openaiApiKey: 'test-openai-key',
-			anthropicApiKey: 'test-anthropic-key',
-			googleApiKey: 'test-google-key',
-			openrouterApiKey: 'test-openrouter-key',
-			openaiCompatibleApiKey: 'test-custom-key',
-			openaiCompatibleBaseUrl: 'http://localhost:11434/v1',
-			openaiCompatibleName: 'Ollama',
-			openaiCompatibleModels: [{ id: 'llama3', name: 'Llama 3' }],
-			openaiCompatibleHeaders: [{ header: 'X-Custom', value: 'value' }],
-			allowedModels: {
-				openai: ['gpt-5'],
-				anthropic: ['claude-sonnet-4-5'],
-				google: DEFAULT_ALLOWED_MODELS.google,
-				openrouter: ['openai/gpt-6-luna'],
-			},
-			systemPrompt: 'You are Directus.',
-		});
+		expect(mockReadSingleton).toHaveBeenCalledWith({ fields: Object.keys(stored) });
+		expect(settings).toEqual(stored);
 	});
 
-	test('should keep an empty allowed models list instead of falling back to defaults', async () => {
-		mockReadSingleton.mockResolvedValue({ ai_openai_allowed_models: [] });
+	test('should use null for missing settings', async () => {
+		mockReadSingleton.mockResolvedValue({});
 
-		const settings = await getAISettings();
-
-		expect(settings.allowedModels.openai).toEqual([]);
-		expect(settings.allowedModels.anthropic).toEqual(DEFAULT_ALLOWED_MODELS.anthropic);
+		expect(await getAISettings()).toEqual(Object.fromEntries(Object.keys(stored).map((field) => [field, null])));
 	});
 
-	test.each([
-		['missing', {}],
-		['null', { ai_openai_api_key: null, ai_openai_compatible_models: null, ai_system_prompt: null }],
-	])('should use null and the default allowed models for %s settings', async (_, stored) => {
+	test('should drop the OpenAI-compatible settings when custom LLMs are not licensed', async () => {
+		mockIsEntitled.mockReturnValue(false);
 		mockReadSingleton.mockResolvedValue(stored);
 
 		expect(await getAISettings()).toEqual({
-			openaiApiKey: null,
-			anthropicApiKey: null,
-			googleApiKey: null,
-			openrouterApiKey: null,
-			openaiCompatibleApiKey: null,
-			openaiCompatibleBaseUrl: null,
-			openaiCompatibleName: null,
-			openaiCompatibleModels: null,
-			openaiCompatibleHeaders: null,
-			allowedModels: {
-				openai: DEFAULT_ALLOWED_MODELS.openai,
-				anthropic: DEFAULT_ALLOWED_MODELS.anthropic,
-				google: DEFAULT_ALLOWED_MODELS.google,
-				openrouter: [],
-			},
-			systemPrompt: null,
+			...stored,
+			ai_openai_compatible_api_key: null,
+			ai_openai_compatible_base_url: null,
+			ai_openai_compatible_name: null,
+			ai_openai_compatible_models: null,
+			ai_openai_compatible_headers: null,
 		});
+
+		expect(mockIsEntitled).toHaveBeenCalledWith('custom_llms_enabled');
 	});
 
 	test('should keep empty strings as they are', async () => {
@@ -127,8 +87,8 @@ describe('getAISettings', () => {
 
 		const settings = await getAISettings();
 
-		expect(settings.openaiApiKey).toBe('');
-		expect(settings.systemPrompt).toBe('');
+		expect(settings.ai_openai_api_key).toBe('');
+		expect(settings.ai_system_prompt).toBe('');
 	});
 
 	test('should throw error if database fails', async () => {
