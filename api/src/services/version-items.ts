@@ -27,7 +27,7 @@ import {
 } from './version-tables/constants.js';
 
 export type VersionMeta = {
-	id: number | null;
+	id: PrimaryKey | null;
 	name: string | null;
 	type: 'draft' | 'published' | 'archived';
 	date_created: string | null;
@@ -76,27 +76,23 @@ export class VersionedItemsService {
 		}
 	}
 
-	async createOne(data: VersionPayload): Promise<number> {
+	async createOne(data: VersionPayload): Promise<PrimaryKey> {
 		return transaction(this.knex, (trx) => this.saveVersion(trx, this.collection, null, data));
 	}
 
-	async updateOne(versionId: number, data: VersionPayload): Promise<number> {
+	async updateOne(versionId: PrimaryKey, data: VersionPayload): Promise<PrimaryKey> {
 		return transaction(this.knex, (trx) => this.saveVersion(trx, this.collection, versionId, data));
 	}
 
-	async deleteOne(versionId: number): Promise<number> {
-		await transaction(this.knex, async (trx) => {
-			await this.getShadowService(trx, this.collection).deleteOne(versionId);
-		});
-
-		return versionId;
+	async deleteOne(versionId: PrimaryKey): Promise<PrimaryKey> {
+		return this.getShadowService(this.knex, this.collection).deleteOne(versionId);
 	}
 
 	/**
 	 * Publish the version to the live collection, together with the versions of related items it references.
 	 * Returns the primary key of the live item.
 	 */
-	async publish(versionId: number, options?: { deleteVersion?: boolean }): Promise<PrimaryKey> {
+	async publish(versionId: PrimaryKey, options?: { deleteVersion?: boolean }): Promise<PrimaryKey> {
 		return transaction(this.knex, async (trx) => {
 			const liveKey = await this.publishVersion(trx, this.collection, versionId, new Set());
 
@@ -111,7 +107,7 @@ export class VersionedItemsService {
 	/**
 	 * Remove the live item of a published version, the version is kept as a draft
 	 */
-	async unpublish(versionId: number): Promise<number> {
+	async unpublish(versionId: PrimaryKey): Promise<PrimaryKey> {
 		await transaction(this.knex, async (trx) => {
 			const { primary } = this.schema.collections[this.collection]!;
 			const row = await this.readVersionRow(trx, this.collection, versionId, 'update');
@@ -134,7 +130,7 @@ export class VersionedItemsService {
 	 * Archive the published version of the item and remove the live item, other versions stay drafts.
 	 * Returns the id of the archived version.
 	 */
-	async archive(versionId: number): Promise<number> {
+	async archive(versionId: PrimaryKey): Promise<PrimaryKey> {
 		return transaction(this.knex, async (trx) => {
 			const { primary } = this.schema.collections[this.collection]!;
 			const shadowTable = getShadowTableName(this.collection);
@@ -168,7 +164,7 @@ export class VersionedItemsService {
 	/**
 	 * Read a version in the shape of a live item, with the version meta under `directus_version`
 	 */
-	async readOne(versionId: number, query?: { fields?: string[] | null }): Promise<Item> {
+	async readOne(versionId: PrimaryKey, query?: { fields?: string[] | null }): Promise<Item> {
 		const row = await this.readVersionRow(this.knex, this.collection, versionId, 'read');
 		const { fields } = this.schema.collections[this.collection]!;
 		const shadowFields = this.schema.collections[getShadowTableName(this.collection)]!.fields;
@@ -204,9 +200,9 @@ export class VersionedItemsService {
 	private async saveVersion(
 		trx: Knex,
 		collection: string,
-		versionId: number | null,
+		versionId: PrimaryKey | null,
 		data: VersionPayload,
-	): Promise<number> {
+	): Promise<PrimaryKey> {
 		if (!isPlainObject(data)) {
 			throw new InvalidPayloadError({ reason: `Version of "${collection}" has to be an object` });
 		}
@@ -274,7 +270,7 @@ export class VersionedItemsService {
 		} else {
 			record[VERSION_META_FIELDS.userCreated] = this.accountability?.user ?? null;
 
-			versionId = Number(await shadowService.createOne(record));
+			versionId = await shadowService.createOne(record);
 		}
 
 		for (const [relation, value] of o2mValues) {
@@ -310,7 +306,7 @@ export class VersionedItemsService {
 		const isLinkOnly =
 			Object.keys(relatedVersion).length === 1 && isEqual(Object.keys(relatedVersion.directus_version ?? {}), ['id']);
 
-		let relatedVersionId: number;
+		let relatedVersionId: PrimaryKey;
 
 		if (isLinkOnly) {
 			relatedVersionId = relatedVersion.directus_version!.id!;
@@ -327,7 +323,7 @@ export class VersionedItemsService {
 	 * Keys link live items to the version through the link table of the related collection.
 	 * Objects create or update versions of related items that reference this version.
 	 */
-	private async saveO2M(trx: Knex, relation: Relation, versionId: number, value: unknown) {
+	private async saveO2M(trx: Knex, relation: Relation, versionId: PrimaryKey, value: unknown) {
 		const field = relation.meta!.one_field;
 
 		if (Array.isArray(value)) {
@@ -357,11 +353,11 @@ export class VersionedItemsService {
 		});
 	}
 
-	private async linkO2M(trx: Knex, relation: Relation, versionId: number, items: unknown[]) {
+	private async linkO2M(trx: Knex, relation: Relation, versionId: PrimaryKey, items: unknown[]) {
 		const relatedCollection = relation.collection;
 		const { primary } = this.schema.collections[relatedCollection]!;
 		const linkTable = getLinkTableName(relatedCollection);
-		const linked = { keys: [] as PrimaryKey[], versionIds: [] as number[] };
+		const linked = { keys: [] as PrimaryKey[], versionIds: [] as PrimaryKey[] };
 
 		for (const item of items) {
 			const key = this.getO2MLinkKey(relation, item);
@@ -409,8 +405,8 @@ export class VersionedItemsService {
 	private async unlinkO2M(
 		trx: Knex,
 		relation: Relation,
-		versionId: number,
-		items: { keys: PrimaryKey[]; versionIds: number[] },
+		versionId: PrimaryKey,
+		items: { keys: PrimaryKey[]; versionIds: PrimaryKey[] },
 		options: { except: boolean },
 	) {
 		const relatedCollection = relation.collection;
@@ -461,7 +457,7 @@ export class VersionedItemsService {
 	 * Split the items to unlink into keys of live items and ids of versions
 	 */
 	private splitO2MItems(relation: Relation, items: unknown[]) {
-		const result = { keys: [] as PrimaryKey[], versionIds: [] as number[] };
+		const result = { keys: [] as PrimaryKey[], versionIds: [] as PrimaryKey[] };
 
 		for (const item of items) {
 			const key = this.getO2MLinkKey(relation, item);
@@ -469,7 +465,7 @@ export class VersionedItemsService {
 
 			if (key !== null) {
 				result.keys.push(key);
-			} else if (typeof versionId === 'number') {
+			} else if (versionId !== undefined && versionId !== null) {
 				result.versionIds.push(versionId);
 			} else {
 				throw new InvalidPayloadError({
@@ -496,7 +492,7 @@ export class VersionedItemsService {
 	private async publishVersion(
 		trx: Knex,
 		collection: string,
-		versionId: number,
+		versionId: PrimaryKey,
 		visited: Set<string>,
 	): Promise<PrimaryKey> {
 		const { primary, fields } = this.schema.collections[collection]!;
@@ -551,11 +547,7 @@ export class VersionedItemsService {
 		const payloadService = new PayloadService(collection, { knex: trx, schema: this.schema, accountability: null });
 		const payload = await payloadService.processValues('read', values);
 
-		const itemsService = new ItemsService(collection, {
-			knex: trx,
-			schema: this.schema,
-			accountability: this.accountability,
-		});
+		const itemsService = this.getItemsService(trx, collection);
 
 		let liveKey: PrimaryKey;
 
@@ -638,7 +630,7 @@ export class VersionedItemsService {
 	private async publishRelatedItems(
 		trx: Knex,
 		collection: string,
-		versionId: number,
+		versionId: PrimaryKey,
 		liveKey: PrimaryKey,
 		visited: Set<string>,
 	) {
@@ -672,13 +664,7 @@ export class VersionedItemsService {
 				const linkedKeys = (await query).map((row) => row[primary]);
 
 				if (linkedKeys.length > 0) {
-					const itemsService = new ItemsService(relatedCollection, {
-						knex: trx,
-						schema: this.schema,
-						accountability: this.accountability,
-					});
-
-					await itemsService.updateMany(linkedKeys, { [relation.field]: liveKey });
+					await this.getItemsService(trx, relatedCollection).updateMany(linkedKeys, { [relation.field]: liveKey });
 
 					await trx(linkTable)
 						.update({ [relation.field]: null })
@@ -730,15 +716,7 @@ export class VersionedItemsService {
 		// The item might already be gone, e.g. when archiving a version of an archived item
 		const exists = await trx(collection).select(primary).where(primary, liveKey).first();
 
-		if (exists) {
-			const itemsService = new ItemsService(collection, {
-				knex: trx,
-				schema: this.schema,
-				accountability: this.accountability,
-			});
-
-			await itemsService.deleteOne(liveKey);
-		}
+		if (exists) await this.getItemsService(trx, collection).deleteOne(liveKey);
 
 		if (options.keepReference && versionIds.length > 0) {
 			await trx(shadowTable)
@@ -747,15 +725,15 @@ export class VersionedItemsService {
 		}
 	}
 
-	private getShadowService(knex: Knex, collection: string) {
-		return new ItemsService(getShadowTableName(collection), {
-			knex,
-			schema: this.schema,
-			accountability: this.accountability,
-		});
+	private getItemsService(knex: Knex, collection: string) {
+		return new ItemsService(collection, { knex, schema: this.schema, accountability: this.accountability });
 	}
 
-	private async readVersionRow(knex: Knex, collection: string, versionId: number, action: PermissionsAction) {
+	private getShadowService(knex: Knex, collection: string) {
+		return this.getItemsService(knex, getShadowTableName(collection));
+	}
+
+	private async readVersionRow(knex: Knex, collection: string, versionId: PrimaryKey, action: PermissionsAction) {
 		const shadowTable = getShadowTableName(collection);
 
 		if (this.accountability) {

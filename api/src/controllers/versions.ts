@@ -1,4 +1,4 @@
-import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
 import { assign } from 'lodash-es';
@@ -281,19 +281,9 @@ router.post(
  * Versions stored in the shadow table of a versioned collection
  */
 
-function getVersionId(req: express.Request) {
-	const versionId = Number(req.params['id']);
-
-	if (!Number.isInteger(versionId)) {
-		throw new InvalidPayloadError({ reason: `"${req.params['id']}" isn't a valid version id` });
-	}
-
-	return versionId;
-}
-
 async function respondWithVersion(
 	service: VersionedItemsService,
-	versionId: number,
+	versionId: PrimaryKey,
 	req: express.Request,
 	res: express.Response,
 ) {
@@ -329,7 +319,7 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const versionId = await service.updateOne(getVersionId(req), req.body);
+		const versionId = await service.updateOne(req.params['id']!, req.body);
 
 		await respondWithVersion(service, versionId, req, res);
 
@@ -346,7 +336,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		await service.deleteOne(getVersionId(req));
+		await service.deleteOne(req.params['id']!);
 
 		return next();
 	}),
@@ -361,10 +351,9 @@ router.post(
 			schema: req.schema,
 		});
 
-		const versionId = getVersionId(req);
 		const deleteVersion = req.body?.['delete_references'] === true;
 
-		const liveKey = await service.publish(versionId, { deleteVersion });
+		const liveKey = await service.publish(req.params['id']!, { deleteVersion });
 
 		if (deleteVersion) {
 			const { primary } = req.schema.collections[service.collection]!;
@@ -376,7 +365,7 @@ router.post(
 				),
 			};
 		} else {
-			await respondWithVersion(service, versionId, req, res);
+			await respondWithVersion(service, req.params['id']!, req, res);
 		}
 
 		return next();
@@ -392,7 +381,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		const versionId = await service.unpublish(getVersionId(req));
+		const versionId = await service.unpublish(req.params['id']!);
 
 		await respondWithVersion(service, versionId, req, res);
 
@@ -409,7 +398,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const versionId = await service.archive(getVersionId(req));
+		const versionId = await service.archive(req.params['id']!);
 
 		await respondWithVersion(service, versionId, req, res);
 
