@@ -5,7 +5,7 @@ import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
 import { describe, expect, test } from 'vitest';
 import { formatSql } from '../test-utils/knex.js';
-import { countVersionedItems, readVersionedItems } from './read.js';
+import { countVersionedItems, isVersionedQuery, readVersionedItems } from './read.js';
 
 // The database helpers derive the dialect from the class name of the client
 const CLIENTS = {
@@ -32,6 +32,7 @@ const schema = new SchemaBuilder()
 		c.field('author').m2o('authors');
 		c.field('tags').o2m('tags', 'article');
 		c.field('category').m2o('categories');
+		c.field('comments').o2m('comments', 'article');
 	})
 	.collection('authors', (c) => {
 		c.field('id').id();
@@ -64,6 +65,15 @@ const schema = new SchemaBuilder()
 		c.field('version_ref_article').m2o('directus_shadow_articles');
 	})
 	.collection('directus_link_tags', (c) => {
+		c.field('id').id();
+		c.field('article').integer();
+	})
+	// Not versioned, but linked to versions of articles
+	.collection('comments', (c) => {
+		c.field('id').id();
+		c.field('body').text();
+	})
+	.collection('directus_link_comments', (c) => {
 		c.field('id').id();
 		c.field('article').integer();
 	})
@@ -123,6 +133,16 @@ async function read(collection: string, query: Query, options: Options = {}) {
 
 	return { items, ...queries() };
 }
+
+describe('isVersionedQuery', () => {
+	test.each([
+		[{ version: 'true' }, true],
+		[{ version: 'main' }, false],
+		[{}, false],
+	] as [Query, boolean][])('%o → %s', (query, expected) => {
+		expect(isVersionedQuery(query)).toBe(expected);
+	});
+});
 
 describe('source of the virtual collection', () => {
 	test('combines live items with their published meta and all unpublished versions', async () => {
@@ -1317,5 +1337,74 @@ describe('version references', () => {
 		`);
 
 		expect(items[0]!['tags']).toEqual([{ label: 'live' }, { label: 'draft' }]);
+	});
+
+	test('only returns the reference to versions of m2o related items without subfields', async () => {
+		const { items, sql } = await read(
+			'articles',
+			{ fields: ['id', 'author'] },
+			{
+				responses: [
+					[
+						'directus_versioned_articles',
+						[{ id: 1, author: null, version_ref_author: 7, version_type: 'draft', directus_version_key: -3 }],
+					],
+				],
+			},
+		);
+
+		expect(sql).not.toContain('directus_versioned_authors');
+		expect(items[0]!['author']).toEqual({ directus_version: { id: 7 } });
+	});
+
+	test('only returns keys and version ids of o2m related items without subfields', async () => {
+		const { items } = await read(
+			'articles',
+			{ fields: ['id', 'tags'] },
+			{
+				responses: [
+					['directus_versioned_articles', [{ id: 1, version_id: 3, version_type: 'draft', directus_version_key: -3 }]],
+					['"directus_link_tags"', [{ id: 10, article: 3 }]],
+					['"directus_shadow_tags"', [{ version_id: 12, version_ref_article: 3 }]],
+				],
+			},
+		);
+
+		expect(items[0]!['tags']).toEqual([10, { directus_version: { id: 12 } }]);
+	});
+
+	test("doesn't resolve o2m related items of published items", async () => {
+		const { sql } = await read(
+			'articles',
+			{ fields: ['id', 'tags.label'] },
+			{
+				responses: [
+					[
+						'directus_versioned_articles',
+						[{ id: 1, version_id: 3, version_type: 'published', directus_version_key: 1 }],
+					],
+				],
+			},
+		);
+
+		expect(sql).not.toContain('directus_link_tags');
+		expect(sql).not.toContain('directus_shadow_tags');
+	});
+
+	test("reads linked o2m related items in collections that aren't versioned", async () => {
+		const { items } = await read(
+			'articles',
+			{ fields: ['id', 'comments.body', 'comments.directus_version.type'] },
+			{
+				responses: [
+					['directus_versioned_articles', [{ id: 1, version_id: 3, version_type: 'draft', directus_version_key: -3 }]],
+					['"comments"', []],
+					['"directus_link_comments"', [{ id: 5, article: 3 }]],
+					['"comments"', [{ id: 5, body: 'Hi' }]],
+				],
+			},
+		);
+
+		expect(items[0]!['comments']).toEqual([{ body: 'Hi', directus_version: { type: 'published' } }]);
 	});
 });

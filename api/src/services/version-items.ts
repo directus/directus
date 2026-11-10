@@ -9,13 +9,13 @@ import type {
 	Relation,
 	SchemaOverview,
 } from '@directus/types';
+import { getRelationInfo } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEqual, isPlainObject, pick } from 'lodash-es';
 import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { transaction } from '../utils/transaction.js';
 import { validateLinkAccess } from '../versioning/link-access.js';
-import { getO2MRelation } from '../versioning/read.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import {
@@ -226,24 +226,20 @@ export class VersionedItemsService {
 			Object.assign(record, await this.readLiveRow(trx, collection, values[primary]));
 		}
 
-		const m2oRelations = this.getM2ORelations(collection);
-
 		for (const [field, value] of Object.entries(values)) {
 			if (!(field in fields)) {
 				throw new InvalidPayloadError({ reason: `Field "${field}" doesn't exist in collection "${collection}"` });
 			}
 
-			const m2o = m2oRelations.find((relation) => relation.field === field);
+			const { relation, relationType } = getRelationInfo(this.schema.relations, collection, field);
 
-			if (m2o) {
-				Object.assign(record, await this.saveM2O(trx, collection, m2o, value, { ...existing, ...values }));
+			if (relationType === 'm2o' || relationType === 'a2o') {
+				Object.assign(record, await this.saveM2O(trx, collection, relation!, value, { ...existing, ...values }));
 				continue;
 			}
 
-			const o2m = getO2MRelation(this.schema, collection, field);
-
-			if (o2m) {
-				o2mValues.push([o2m, value]);
+			if (relationType === 'o2m') {
+				o2mValues.push([relation!, value]);
 				continue;
 			}
 

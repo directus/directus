@@ -201,6 +201,13 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return 'CAST(?? AS CHAR(255))';
 	}
 
+	/**
+	 * Wrap a raw SQL expression in a cast to a string, e.g. to combine keys of different types in one column
+	 */
+	castToString(sql: string): string {
+		return `CAST(${sql} AS VARCHAR(255))`;
+	}
+
 	formatUUID(uuid: string): string {
 		return uuid; // no-op by default
 	}
