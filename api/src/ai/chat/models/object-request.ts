@@ -1,10 +1,22 @@
 import { type JSONSchema7 } from 'ai';
 import { z } from 'zod';
 import { zodJsonSchema7Parser } from '../utils/zod-jsonschema7-parser.js';
-import { ProviderAnthropic, ProviderGoogle, ProviderOpenAi, ProviderOpenAiCompatible } from './providers.js';
+import {
+	ProviderAnthropic,
+	ProviderGoogle,
+	ProviderOpenAi,
+	ProviderOpenAiCompatible,
+	ProviderOpenRouter,
+} from './providers.js';
 
 export const ObjectRequest = z.intersection(
-	z.discriminatedUnion('provider', [ProviderOpenAi, ProviderAnthropic, ProviderGoogle, ProviderOpenAiCompatible]),
+	z.discriminatedUnion('provider', [
+		ProviderOpenAi,
+		ProviderAnthropic,
+		ProviderGoogle,
+		ProviderOpenRouter,
+		ProviderOpenAiCompatible,
+	]),
 	z.object({
 		prompt: z.string(),
 		outputSchema: z.custom<JSONSchema7>(zodJsonSchema7Parser, { message: 'Invalid JSON schema' }),

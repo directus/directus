@@ -17,8 +17,35 @@ interface PromptCachingFinishResult {
 	steps?: PromptCachingStepResult[];
 }
 
-export function buildCacheAwareSystemPrompt(provider: ProviderType, content: string): string | SystemModelMessage {
-	if (provider !== 'anthropic') {
+// `~anthropic/...-latest` ids are OpenRouter's auto-updating aliases
+const OPENROUTER_ANTHROPIC_MODEL = /^~?anthropic\//;
+
+/** Claude models need explicit cache breakpoints, whether called directly or through OpenRouter. */
+export function usesAnthropicCaching(provider: ProviderType, model: string): boolean {
+	return provider === 'anthropic' || (provider === 'openrouter' && OPENROUTER_ANTHROPIC_MODEL.test(model));
+}
+
+/**
+ * The OpenRouter SDK puts message-level cache control on every tool result and on assistant messages
+ * as a whole, which can exceed Anthropic's 4 breakpoint limit and isn't a documented OpenRouter form.
+ * Only user messages get a content-block breakpoint, so other turns use request-level automatic caching.
+ */
+function usesOpenRouterAutomaticCaching(provider: ProviderType, model: string, messages: ModelMessage[]): boolean {
+	return provider === 'openrouter' && OPENROUTER_ANTHROPIC_MODEL.test(model) && messages.at(-1)?.role !== 'user';
+}
+
+export function getOpenRouterAutomaticCacheOptions(provider: ProviderType, model: string, messages: ModelMessage[]) {
+	if (!usesOpenRouterAutomaticCaching(provider, model, messages)) return {};
+
+	return { openrouter: { cacheControl: { type: 'ephemeral' } } };
+}
+
+export function buildCacheAwareSystemPrompt(
+	provider: ProviderType,
+	model: string,
+	content: string,
+): string | SystemModelMessage {
+	if (!usesAnthropicCaching(provider, model)) {
 		return content;
 	}
 
@@ -34,7 +61,7 @@ export function buildCacheAwareSystemPrompt(provider: ProviderType, content: str
 }
 
 /**
- * For Anthropic, place a cache breakpoint on the last existing message so the conversation
+ * For Anthropic models, place a cache breakpoint on the last existing message so the conversation
  * prefix (tools + system + history) caches as it grows, and append the per-request page
  * context as a new user message after the breakpoint so it stays out of the cached prefix.
  *
@@ -46,15 +73,24 @@ export function buildCacheAwareSystemPrompt(provider: ProviderType, content: str
  * model respond to the context instead of synthesizing the tool output. The model still
  * sees context from the originating user turn earlier in the conversation.
  *
- * Other providers either auto-cache (Google/OpenAI) or don't support this, so we keep the
- * context inside the system prompt for them (handled upstream).
+ * Other models either auto-cache (Google/OpenAI) or don't support this, so we keep the
+ * context inside the system prompt for them (handled upstream). Claude turns through OpenRouter
+ * that don't end in a user message are cached at the request level instead
+ * (see `getOpenRouterAutomaticCacheOptions`).
  */
 export function applyAnthropicConversationCaching(
 	provider: ProviderType,
+	model: string,
 	messages: ModelMessage[],
 	contextBlock: string | null,
 ): ModelMessage[] {
-	if (provider !== 'anthropic' || messages.length === 0) return messages;
+	if (
+		!usesAnthropicCaching(provider, model) ||
+		messages.length === 0 ||
+		usesOpenRouterAutomaticCaching(provider, model, messages)
+	) {
+		return messages;
+	}
 
 	const lastIndex = messages.length - 1;
 
