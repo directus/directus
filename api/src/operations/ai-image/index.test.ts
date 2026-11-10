@@ -2,7 +2,8 @@ import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { APICallError, generateImage } from 'ai';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { readFilesForModel } from '../../ai/flow-operations/utils.js';
-import { getAISettings, resolveImageModel } from '../../ai/providers/index.js';
+import { resolveImageModel } from '../../ai/providers/resolve-model.js';
+import { getAISettings } from '../../ai/providers/settings.js';
 import { fetchAllowedFields } from '../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
 import config from './index.js';
@@ -23,8 +24,11 @@ vi.mock('../../logger/index.js', () => ({
 	useLogger: () => ({ warn: vi.fn() }),
 }));
 
-vi.mock('../../ai/providers/index.js', () => ({
+vi.mock('../../ai/providers/settings.js', () => ({
 	getAISettings: vi.fn(async () => ({})),
+}));
+
+vi.mock('../../ai/providers/resolve-model.js', () => ({
 	resolveImageModel: vi.fn(() => 'mock-image-model'),
 }));
 
