@@ -6,14 +6,13 @@ const baseSettings: AISettings = {
 	openaiApiKey: null,
 	anthropicApiKey: null,
 	googleApiKey: null,
+	openrouterApiKey: null,
 	openaiCompatibleApiKey: null,
 	openaiCompatibleBaseUrl: null,
 	openaiCompatibleName: null,
 	openaiCompatibleModels: null,
 	openaiCompatibleHeaders: null,
-	openaiAllowedModels: null,
-	anthropicAllowedModels: null,
-	googleAllowedModels: null,
+	allowedModels: { openai: [], anthropic: [], google: [], openrouter: [] },
 	systemPrompt: null,
 };
 

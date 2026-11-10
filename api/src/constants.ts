@@ -148,6 +148,7 @@ export const FLOW_SECRET_KEYS: string[][] = [
 	['**', 'payload', 'ai_openai_api_key'],
 	['**', 'payload', 'ai_anthropic_api_key'],
 	['**', 'payload', 'ai_google_api_key'],
+	['**', 'payload', 'ai_openrouter_api_key'],
 	['**', 'payload', 'ai_openai_compatible_api_key'],
 	['**', 'body', 'password'],
 	['**', 'body', 'token'],
@@ -158,5 +159,6 @@ export const FLOW_SECRET_KEYS: string[][] = [
 	['**', 'body', 'ai_openai_api_key'],
 	['**', 'body', 'ai_anthropic_api_key'],
 	['**', 'body', 'ai_google_api_key'],
+	['**', 'body', 'ai_openrouter_api_key'],
 	['**', 'body', 'ai_openai_compatible_api_key'],
 ];
