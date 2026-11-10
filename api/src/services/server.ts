@@ -113,6 +113,7 @@ export class ServerService {
 						'ai_openai_api_key',
 						'ai_anthropic_api_key',
 						'ai_google_api_key',
+						'ai_openrouter_api_key',
 						'ai_openai_compatible_api_key',
 						'ai_openai_compatible_base_url',
 					],
@@ -122,6 +123,7 @@ export class ServerService {
 					openaiApiKey: aiSettings['ai_openai_api_key'] ?? null,
 					anthropicApiKey: aiSettings['ai_anthropic_api_key'] ?? null,
 					googleApiKey: aiSettings['ai_google_api_key'] ?? null,
+					openrouterApiKey: aiSettings['ai_openrouter_api_key'] ?? null,
 					openaiCompatibleApiKey: aiSettings['ai_openai_compatible_api_key'] ?? null,
 					openaiCompatibleBaseUrl: aiSettings['ai_openai_compatible_base_url'] ?? null,
 				});
