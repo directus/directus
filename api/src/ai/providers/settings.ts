@@ -1,4 +1,4 @@
-import { DEFAULT_ALLOWED_MODELS } from '@directus/ai';
+import { getAllowedModels } from '@directus/ai';
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { SettingsService } from '../../services/settings.js';
@@ -21,6 +21,7 @@ export async function getAISettings(context: { knex?: Knex; schema?: SchemaOverv
 			'ai_openai_api_key',
 			'ai_anthropic_api_key',
 			'ai_google_api_key',
+			'ai_openrouter_api_key',
 			'ai_openai_compatible_api_key',
 			'ai_openai_compatible_base_url',
 			'ai_openai_compatible_name',
@@ -29,6 +30,7 @@ export async function getAISettings(context: { knex?: Knex; schema?: SchemaOverv
 			'ai_openai_allowed_models',
 			'ai_anthropic_allowed_models',
 			'ai_google_allowed_models',
+			'ai_openrouter_models',
 			'ai_system_prompt',
 		],
 	});
@@ -37,14 +39,13 @@ export async function getAISettings(context: { knex?: Knex; schema?: SchemaOverv
 		openaiApiKey: settings['ai_openai_api_key'] ?? null,
 		anthropicApiKey: settings['ai_anthropic_api_key'] ?? null,
 		googleApiKey: settings['ai_google_api_key'] ?? null,
+		openrouterApiKey: settings['ai_openrouter_api_key'] ?? null,
 		openaiCompatibleApiKey: settings['ai_openai_compatible_api_key'] ?? null,
 		openaiCompatibleBaseUrl: settings['ai_openai_compatible_base_url'] ?? null,
 		openaiCompatibleName: settings['ai_openai_compatible_name'] ?? null,
 		openaiCompatibleModels: settings['ai_openai_compatible_models'] ?? null,
 		openaiCompatibleHeaders: settings['ai_openai_compatible_headers'] ?? null,
-		openaiAllowedModels: settings['ai_openai_allowed_models'] ?? DEFAULT_ALLOWED_MODELS.openai,
-		anthropicAllowedModels: settings['ai_anthropic_allowed_models'] ?? DEFAULT_ALLOWED_MODELS.anthropic,
-		googleAllowedModels: settings['ai_google_allowed_models'] ?? DEFAULT_ALLOWED_MODELS.google,
+		allowedModels: getAllowedModels(settings),
 		systemPrompt: settings['ai_system_prompt'] ?? null,
 	};
 }
