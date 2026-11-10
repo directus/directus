@@ -34,8 +34,16 @@ export function redactObject(
 
 	return clone;
 
-	function traverse(object: UnknownObject, checkKeyPaths: Keys): void {
+	function traverse(object: UnknownObject | unknown[], checkKeyPaths: Keys): void {
 		if (checkKeyPaths.length === 0) {
+			return;
+		}
+
+		if (Array.isArray(object)) {
+			for (const item of object) {
+				if (isObject(item) || Array.isArray(item)) traverse(item, [...checkKeyPaths]);
+			}
+
 			return;
 		}
 
@@ -94,16 +102,9 @@ export function redactObject(
 			}
 
 			const value = object[key];
-			const nestedCheckPaths = [...globalCheckPaths, ...localCheckPaths];
 
-			if (isObject(value)) {
-				traverse(value, nestedCheckPaths);
-			} else if (Array.isArray(value)) {
-				// Items are matched as if they were the array itself, so `payload.password` also covers `payload[0].password`.
-				// Each item gets its own list since traverse removes matched paths.
-				for (const item of value.flat(Infinity)) {
-					if (isObject(item)) traverse(item, [...nestedCheckPaths]);
-				}
+			if (isObject(value) || Array.isArray(value)) {
+				traverse(value, [...globalCheckPaths, ...localCheckPaths]);
 			}
 		}
 	}
