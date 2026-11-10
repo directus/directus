@@ -1,25 +1,25 @@
 import { readFileSync } from 'node:fs';
-import { type DotenvParseOutput, parse } from 'dotenv';
 
-/**
- * Matches a variable definition, capturing the key and the raw value
- */
-const DEFINITION_REGEX = /^\s*(?:export\s+)?([\w.-]+)(?:\s*=|:)[ \t]*(.*)$/gm;
+const LINE =
+	/(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/gm;
 
-export function readConfigurationFromDotEnv(path: string): DotenvParseOutput {
-	const contents = String(readFileSync(path));
-	const output = parse(contents);
+export function readConfigurationFromDotEnv(path: string): Record<string, string> {
+	const contents = String(readFileSync(path)).replace(/\r\n?/g, '\n');
+	const output: Record<string, string> = {};
 
-	// dotenv parses both `KEY=` and `KEY=""` to an empty string. Variables without a value are left out instead, so that
-	// they are treated as not configured, while explicitly quoted empty strings are kept
-	const isBare = new Map<string, boolean>();
+	for (const [, key, raw = ''] of contents.matchAll(LINE)) {
+		const value = raw.trim();
 
-	for (const [, key, rawValue] of contents.matchAll(DEFINITION_REGEX)) {
-		isBare.set(key!, rawValue === '' || rawValue!.startsWith('#'));
-	}
+		if (value === '') {
+			delete output[key!];
+			continue;
+		}
 
-	for (const [key, bare] of isBare) {
-		if (bare && output[key] === '') delete output[key];
+		let parsed = value.replace(/^(['"`])([\s\S]*)\1$/gm, '$2');
+
+		if (value[0] === '"') parsed = parsed.replace(/\\n/g, '\n').replace(/\\r/g, '\r');
+
+		output[key!] = parsed;
 	}
 
 	return output;

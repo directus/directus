@@ -40,7 +40,6 @@
 		"@directus/constants": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"bytes": "catalog:",
-		"dotenv": "catalog:",
 		"lodash-es": "catalog:"
 	}
 }
