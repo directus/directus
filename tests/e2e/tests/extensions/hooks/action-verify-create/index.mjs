@@ -5,6 +5,11 @@
  * Reports each item it saw on stdout as `action-verify-create:<collection>:<name>:<0|1>`.
  */
 export default function registerHooks({ action }, { services }) {
+	action('extensions.unload', () => {
+		// eslint-disable-next-line no-console
+		console.log('action-verify-unload:1');
+	});
+
 	action('hook_artists.items.create', async (data, { schema, accountability }) => {
 		const itemsService = new services.ItemsService(data.collection, { schema, accountability });
 
