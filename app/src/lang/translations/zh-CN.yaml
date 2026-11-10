@@ -1496,10 +1496,53 @@ licensing:
   addon_summary_downgrade: '{active} 当前值 - {difference} 单位（s） = {new} 单位总计（s）'
   addon_price_summary: '{ new } x ${ unitPrice }/unit/{ interval } = ${ total }/{ interval }'
   addon_prorated_notice: '确认即表示您同意自 {renewalDate} 起，按 ${total}/{interval} 的标准进行扣费。针对当前计费周期剩余时段的按比例折算费用共计 ${adjustedTotal}将计入您的下一期账单。'
+  addon_renewal_notice_date: '变更将于下次续期（{date}）时生效。'
   addon_update: 更新
+  addon_confirm_purchase: 确认购买
+  deactivate: 停用许可证
+  deactivate_confirm_title: 停用许可证？
+  deactivate_confirm_body: 您确定要停用许可证吗？您的实例将被降级为核心计划。
+  resolve_title_manual: 停用许可证
+  resolve_title_locked: 解决许可限制
+  resolve_title_expired: 许可证过期
+  resolve_title_suspended: 许可证暂停
+  resolve_title_canceled: 许可证已取消
+  resolve_title_invalid_key: 无效的许可证密钥
+  resolve_title_activation_limit: 已达到激活数限制
+  resolve_title_binding_mismatch: 在其他地方注册的许可
+  resolve_title_verification: 许可证无法验证
+  resolve_title_unavailable: 许可证无法检查
+  resolve_title_env_removed: 许可证已删除
+  resolve_title_grace: 解决许可限制
+  resolve_title_no_resolution: 许可证未激活
+  resolve_subtitle: 如果您需要更新您的许可证密钥，您可以在环境变量中更新它。
+  resolve_notice_grace: 您的项目使用量已超出套餐限额。请在宽限期结束前解决此超额问题，否则您的项目将被锁定。停用的项目仍会保留在 Directus 中，但处于锁定状态；自定义访问规则也将被锁定。
+  resolve_countdown: '还剩 {days} 天（至 {date}）| 还剩 {days} 天（至 {date}）'
+  resolve_notice_manual: 若要停用您的项目，该项目必须首先符合“核心”套餐的限制要求。下文列出了超出“核心”套餐限制且需要进行调整的项目。
+  resolve_notice_locked: 您的项目超出了套餐限制，现已被锁定。下方列出了超出限制且需要调整的项目。
+  resolve_notice_env_removed: 您的项目目前已无有效的许可证密钥。下文列出了超出核心限制且需要进行调整的项目内容。
+  resolve_notice_no_resolution: 您的许可证已失效，项目已被降级至 Core 计划。部分功能可能无法继续使用；超出 Core 计划限制的内容仍会保留在 Directus 中，但处于锁定状态。如需恢复完整访问权限，请添加新的许可证密钥。
+  resolve_notice_expired: 您的许可证已过期，项目已被降级至“核心版”。部分功能可能无法继续使用；超出“核心版”限制的内容仍会保留在 Directus 中，但处于锁定状态。若要恢复完整访问权限，请续订许可证或添加新的许可证密钥。
+  resolve_notice_canceled: 您的订阅已被取消，项目已降级至 Core 计划。部分功能可能无法继续使用；超出 Core 计划限额的内容仍会保留在 Directus 中，但处于锁定状态。如需恢复完整访问权限，请添加新的许可证密钥。
+  resolve_notice_suspended: 您的许可证已被暂停，项目也已降级至“核心版”套餐。部分功能可能无法继续使用；超出“核心版”套餐限制的内容仍会保留在 Directus 中，但处于锁定状态。请联系支持团队以恢复您的许可证。
+  resolve_notice_invalid_key: 您的许可证密钥未获通过，您的项目已被降级至“核心”套餐。部分功能可能无法继续使用；超出“核心”套餐限制的项目仍会保留在 Directus 中，但处于锁定状态。请检查密钥是否有拼写错误，或添加一个新的许可证密钥。
+  resolve_notice_activation_limit: 您的许可证密钥已无可用激活次数，因此您的项目已被降级至“核心版”套餐。请在您不再使用的项目中停用该许可证，然后在此处重新添加此密钥。
+  resolve_notice_binding_mismatch: 您的许可证密钥已注册至其他项目或网址，因此您的项目已被降级至“核心版”套餐。请确认当前项目网址是否与激活该密钥时所用的网址一致，或者添加一个新的许可证密钥。
+  resolve_notice_verification: 无法验证您所存储的许可证，因此您的项目已被降级至“核心”套餐。您的许可证密钥保持不变，项目重启时系统将再次进行验证。
+  resolve_notice_unavailable: 由于无法连接至许可服务，系统未能完成对您许可证的验证，因此您的项目已被降级至“核心”方案。您的许可证本身可能依然有效；项目重启时，系统将再次进行验证。
   resolve_continue: 继续
+  resolve_acknowledge: 承认
+  resolve_submit: 停用选中的条目
   resolve_show_n_more: '显示更多 {count}'
+  resolve_available: 可用
+  resolve_section_collections: 数据集合
+  resolve_section_seats: 用户席位
   resolve_section_flows: 流程
+  resolve_section_collections_caption: 选择要停用的集合(s)
+  resolve_section_seats_users_caption: 选择要停用的用户座位(s)
+  resolve_section_seats_admins_caption: 选择要停用的 admin(s)
+  resolve_section_flows_caption: 选择要停用的流程(s)
+  resolve_section_sso: 停用 SSO
   resolve_sso_confirm: 确认 SSO 停用
   resolve_sso_caption: 当做出此更改时，仅限SSO的用户将被停用。 要恢复他们的访问权限，您需要重新激活他们，并通过用户目录配置电子邮件和密码。
   resolve_sso_admin_title: 确认 SSO 管理信息
@@ -1860,12 +1903,17 @@ fields:
     report_bug_url: 用于反馈Bug的网址
     report_error_url: 用于反馈错误的网址
     collaborative_editing: 共同编辑
+    collaborative_editing_enabled: 启用协作编辑
     collaborative_editing_note: 共同编辑需要WebSockets才能正常工作。
+    ai_notice: 'AI 助手在应用内提供了一个侧边栏，方便您与大语言模型LLM进行对话。启用后，您可通过工具栏打开 AI 侧边栏，进行提问、生成内容，或在处理项目时获取帮助。<a href="https://directus.com/docs/guides/ai/assistant" target="_blank">了解更多关于配置和使用 AI 助手的信息。</a>'
     mcp_enabled: MCP服务器
+    mcp_enabled_note: '通过 <a href="https://directus.com/docs/guides/ai/mcp" target="_blank">模型上下文协议 (MCP)</a> 将 AI/LLM 工具连接至您的 Directus 项目。这使得 AI 助手能够安全地读取您的 Directus 数据并与之交互。'
+    mcp_notice: '模型上下文协议MCP是一种将大语言模型 LLM 连接至 Directus 等应用程序的标准。启用后，Directus MCP 服务器即可通过 `/mcp` 路径访问。<a href="https://directus.com/docs/guides/ai/mcp" target="_blank">了解更多关于 MCP 的信息及连接方式。</a>'
     mcp_allow_deletes: 允许删除
     mcp_allow_deletes_note:
       - 允许通过MCP工具删除条目、文件、流程、字段、关系以及模型。<strong>注意：这可能导致数据丢失。</strong>出于安全考虑，默认为禁用。
     mcp_prompts_collection: AI 提示词集合
+    mcp_prompts_collection_note: '选择一个集合，用于存储可供 AI 交互使用的<a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">提示词模板</a>。'
     mcp_system_prompt_divider: 系统提示配置
     mcp_system_prompt_enabled: 使用系统提示
     mcp_system_prompt_enabled_note: "使用<a href='https://directus.com/docs/guides/ai/mcp#system-prompt' target='_blank'>默认系统提示词</a>来指导大型语言模型LLM的行为。禁用后可以移除或使用下方您自己的提示词覆盖。"
@@ -2096,11 +2144,31 @@ ai:
   unknown: 未知
   approval_requested: 请求批准
   approve: 批准
+  always_allow: 总是允许
+  deny: 拒绝
+  approve_tool_execution: 批准工具执行？
+  prompt_input_placeholder: 在此处输入您的留言……
+  clear_conversation: 清除对话
+  build_with_assistant: 使用 AI 助手创建
+  responses_may_be_inaccurate: AI 响应可能不正确
+  add_content: 添加内容
+  prompt: 提示词
+  prompts: 提示词
   items: 条目
   content: 内容
+  insert_prompt: 插入提示词
+  insert_reusable_prompt: 插入一个可重复使用的提示模板
+  insert_item_context: 插入条目上下文
+  coming_soon: 即将呈现
+  failed_to_load_prompts: 加载提示失败
+  failed_to_load_items: 加载条目失败
+  setup_ai_assistant_user_description: 请联系您的管理员以启用 AI 助手。
   settings: 设置
   tool_approval:
+    always: 总是允许
+    ask: 需要批准
     disabled: 禁用
+  enabled_tools: 启用的工具
   disabled_tools: 禁用工具
   ask_user_submit: 提交
   ask_user_next: 下一步
@@ -3052,14 +3120,17 @@ triggers:
     collection_and_item: 集合和条目页面
     collection_only: 仅集合页面
     item_only: 仅条目页面
+    hidden: 无 (隐藏)
     collection_page: 集合页面
     require_selection: 需要选择
 a_flow_uuid: 选择要触发的流...
 any_string_or_json: 任意字符串或JSON对象...
 item_payload_placeholder: 这是用于更新条目字段值的 JSON对象...
+operation_variables_note: 您可以使用诸如 **{'{'}{'{'}$last{'}'}{'}'}**、**{'{'}{'{'}$trigger{'}'}{'}'}** 和 **{'{'}{'{'}$accountability{'}'}{'}'}** 之类的变量来访问 Flow 数据，也可以通过 **{'{'}{'{'}operation_key{'}'}{'}'}** 引用之前的操作。
 operations:
   condition:
     name: 条件
+    description: 路由一个基于如果/其他逻辑的流程
   exec:
     name: 运行脚本
     description: 执行任意代码来修改有效负载
@@ -3110,6 +3181,8 @@ operations:
   mail:
     name: 发送电子邮件
     description: 向一个或多个用户发送电子邮件
+    from_name: 发件人名称
+    from_name_placeholder: 默认项目名称
     to: 至
     to_placeholder: 添加电子邮件地址并按回车……
     body: 正文内容
@@ -3156,6 +3229,7 @@ operations:
     description: 修改流程的JSON格式负载
   trigger:
     name: 触发流程
+    description: 将此数据传递到另一个流程
     flows: 流程
     flow: 流程
     data: 数据
@@ -3166,6 +3240,7 @@ operations:
     batch: 批处理
     batch_size: 批量大小
     cache: 缓存
+    cache_query: 缓存查询参数
     cache_query_placeholder: 允许查询参数……
     cache_query_description: 这些查询参数将额外用于缓存密钥。
 unit: 单位
