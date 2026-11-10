@@ -20,9 +20,13 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 关于
+directus_mscl: Directus MSCL-1.0-GPL
 data_processing_agreement: 数据处理协议
+contact_support: contact support
 setup_welcome: 欢迎使用 Directus
 setup_info: 让我们创建您的管理员帐户并启动您的项目。
+setup_license_key_notice: >
+  如果您拥有许可证密钥，请在下方输入以解锁完整方案。年收入低于5M美元且符合条件的企业，或许有资格申请我们的 {oig}。
 setup_save_accept_license: >
   点击保存即表示您接受 {directusMscl} 和 {privacyPolicy} 的条款。
 setup_license_invalid: >
@@ -40,6 +44,7 @@ project_usage_personal: 个人/辅助项目
 project_usage_commercial: 商业 / 商用
 project_usage_community: 开源 / 社区
 org_name: 组织名称
+org_name_placeholder: Acme Inc。
 license_key_option: 我有一个许可证密钥
 license_key_option_desc: 'OIG, 团队或企业计划'
 core_option: 我正在使用核心计划
@@ -1674,6 +1679,7 @@ license:
   unlicensed_status_notice:
     grace_period: '您的宽限期还剩 {daysLeft} — 截止至 {date}。此后，将适用“核心版的资源限制。您可以 {retrieveLicenseKey} 或 {upgrade} 以提高资源限额。'
     grace_days_left: '还剩 {days} 天 | 还剩 {days} 天'
+    retrieve_license_key: Retrieve license key
     upgrade: 升级
     oig_eligible: '您或许符合我们 {oig} 计划的申请资格。提交申请，即可免费获得 Directus 的完整使用权限。'
   locked_status_notice: '您的 Directus 实例已被锁定。请管理许可证或{contactSupport}以解决此问题。'
@@ -2162,6 +2168,29 @@ ai:
   coming_soon: 即将呈现
   failed_to_load_prompts: 加载提示失败
   failed_to_load_items: 加载条目失败
+  some_context_failed: '无法加载 {count} 个上下文项（s）'
+  prompt_inserted: 提示已插入
+  prompt_staged: 提示词已就绪
+  items_staged: 已完成事项
+  some_items_staged: '已暂存 {count} 项（s）（已达上限）'
+  files_staged: 已暂存文件
+  some_files_staged: '{count} 个文件（s）已暂存（已达上限）'
+  attach_file_subtitle: 附加现有文件
+  upload_file_subtitle: 本地上传
+  file_upload_failed: '{name} 上传失败'
+  file_upload_not_supported: 此提供商不支持文件上传
+  unsupported_file_type: 不支持的文件类型
+  provider_locked_tooltip: 上传文件后无法更改提供商。清除现有对话以切换。
+  image_preview: 图像预览
+  item_staged: 已进行项目
+  invalid_collection: 无效的集合
+  element_already_staged: 元素已暂存
+  max_elements_reached: 已达到最大元素
+  element_staged: 元素已就位
+  failed_to_insert_prompt: 插入提示失败
+  go_to_settings: 转到设置
+  setup_ai_assistant: 设置 AI 助手
+  setup_ai_assistant_admin_description: 在设置中添加您的 AI 提供商 API 密钥以启用 AI 助手。
   setup_ai_assistant_user_description: 请联系您的管理员以启用 AI 助手。
   settings: 设置
   tool_approval:
