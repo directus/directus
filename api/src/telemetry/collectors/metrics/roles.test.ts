@@ -5,9 +5,11 @@ import { RolesService } from '../../../services/roles.js';
 import { collectRoleMetrics } from './roles.js';
 
 vi.mock('../../../services/roles.js', () => ({
-	RolesService: vi.fn().mockImplementation(() => ({
-		readByQuery: vi.fn().mockResolvedValue([]),
-	})),
+	RolesService: vi.fn().mockImplementation(function () {
+		return {
+			readByQuery: vi.fn().mockResolvedValue([]),
+		};
+	}),
 }));
 
 vi.mock('../../utils/stats.js', () => ({
@@ -33,15 +35,14 @@ describe('collectRoleMetrics', () => {
 	});
 
 	test('returns distributions when roles exist', async () => {
-		vi.mocked(RolesService).mockImplementation(
-			() =>
-				({
-					readByQuery: vi.fn().mockResolvedValue([
-						{ id: 'a', parent: null, users_count: '3', children_count: '1', policies_count: '2' },
-						{ id: 'b', parent: 'a', users_count: '5', children_count: '0', policies_count: '1' },
-					]),
-				}) as any,
-		);
+		vi.mocked(RolesService).mockImplementation(function () {
+			return {
+				readByQuery: vi.fn().mockResolvedValue([
+					{ id: 'a', parent: null, users_count: '3', children_count: '1', policies_count: '2' },
+					{ id: 'b', parent: 'a', users_count: '5', children_count: '0', policies_count: '1' },
+				]),
+			} as any;
+		});
 
 		const result = await collectRoleMetrics(mockDb, mockSchema);
 		expect(result.count).toBe(2);
@@ -53,12 +54,11 @@ describe('collectRoleMetrics', () => {
 	test('queries with id, parent, and count fields', async () => {
 		const mockReadByQuery = vi.fn().mockResolvedValue([]);
 
-		vi.mocked(RolesService).mockImplementation(
-			() =>
-				({
-					readByQuery: mockReadByQuery,
-				}) as any,
-		);
+		vi.mocked(RolesService).mockImplementation(function () {
+			return {
+				readByQuery: mockReadByQuery,
+			} as any;
+		});
 
 		await collectRoleMetrics(mockDb, mockSchema);
 

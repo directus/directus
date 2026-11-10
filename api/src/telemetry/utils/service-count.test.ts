@@ -5,9 +5,11 @@ import { ItemsService } from '../../services/items.js';
 import { serviceCount } from './service-count.js';
 
 vi.mock('../../services/items.js', () => ({
-	ItemsService: vi.fn().mockImplementation(() => ({
-		readByQuery: vi.fn().mockResolvedValue([{ count: 42 }]),
-	})),
+	ItemsService: vi.fn().mockImplementation(function () {
+		return {
+			readByQuery: vi.fn().mockResolvedValue([{ count: 42 }]),
+		};
+	}),
 }));
 
 afterEach(() => {
@@ -30,24 +32,22 @@ describe('serviceCount', () => {
 	});
 
 	test('defaults to 0 when no count returned', async () => {
-		vi.mocked(ItemsService).mockImplementationOnce(
-			() =>
-				({
-					readByQuery: vi.fn().mockResolvedValue([{}]),
-				}) as any,
-		);
+		vi.mocked(ItemsService).mockImplementationOnce(function () {
+			return {
+				readByQuery: vi.fn().mockResolvedValue([{}]),
+			} as any;
+		});
 
 		const result = await serviceCount(mockDb, mockSchema, 'directus_shares');
 		expect(result).toBe(0);
 	});
 
 	test('defaults to 0 when empty array returned', async () => {
-		vi.mocked(ItemsService).mockImplementationOnce(
-			() =>
-				({
-					readByQuery: vi.fn().mockResolvedValue([]),
-				}) as any,
-		);
+		vi.mocked(ItemsService).mockImplementationOnce(function () {
+			return {
+				readByQuery: vi.fn().mockResolvedValue([]),
+			} as any;
+		});
 
 		const result = await serviceCount(mockDb, mockSchema, 'directus_shares');
 		expect(result).toBe(0);

@@ -5,9 +5,11 @@ import { FlowsService } from '../../../services/flows.js';
 import { collectFlowMetrics } from './flows.js';
 
 vi.mock('../../../services/flows.js', () => ({
-	FlowsService: vi.fn().mockImplementation(() => ({
-		readByQuery: vi.fn().mockResolvedValue([]),
-	})),
+	FlowsService: vi.fn().mockImplementation(function () {
+		return {
+			readByQuery: vi.fn().mockResolvedValue([]),
+		};
+	}),
 }));
 
 afterEach(() => {
@@ -25,15 +27,14 @@ describe('collectFlowMetrics', () => {
 	});
 
 	test('separates active and inactive counts', async () => {
-		vi.mocked(FlowsService).mockImplementation(
-			() =>
-				({
-					readByQuery: vi.fn().mockResolvedValue([
-						{ status: 'active', countDistinct: { id: 5 } },
-						{ status: 'inactive', countDistinct: { id: 3 } },
-					]),
-				}) as any,
-		);
+		vi.mocked(FlowsService).mockImplementation(function () {
+			return {
+				readByQuery: vi.fn().mockResolvedValue([
+					{ status: 'active', countDistinct: { id: 5 } },
+					{ status: 'inactive', countDistinct: { id: 3 } },
+				]),
+			} as any;
+		});
 
 		const result = await collectFlowMetrics(mockDb, mockSchema);
 		expect(result.active.count).toBe(5);

@@ -12,9 +12,11 @@ vi.mock('directus/version', () => ({
 }));
 
 vi.mock('../../services/settings.js', () => ({
-	SettingsService: vi.fn().mockImplementation(() => ({
-		readSingleton: vi.fn().mockResolvedValue({ project_id: '018cc701-e800-7000-8000-000000000000' }),
-	})),
+	SettingsService: vi.fn().mockImplementation(function () {
+		return {
+			readSingleton: vi.fn().mockResolvedValue({ project_id: '018cc701-e800-7000-8000-000000000000' }),
+		};
+	}),
 }));
 
 vi.mock('../utils/derive-created-at-from-uuid.js', () => ({

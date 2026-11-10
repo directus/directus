@@ -5,9 +5,11 @@ import { DashboardsService } from '../../../services/dashboards.js';
 import { collectDashboardMetrics } from './dashboards.js';
 
 vi.mock('../../../services/dashboards.js', () => ({
-	DashboardsService: vi.fn().mockImplementation(() => ({
-		readByQuery: vi.fn().mockResolvedValue([]),
-	})),
+	DashboardsService: vi.fn().mockImplementation(function () {
+		return {
+			readByQuery: vi.fn().mockResolvedValue([]),
+		};
+	}),
 }));
 
 vi.mock('../../utils/stats.js', () => ({
@@ -30,12 +32,11 @@ describe('collectDashboardMetrics', () => {
 	});
 
 	test('calculates panel distribution for dashboards', async () => {
-		vi.mocked(DashboardsService).mockImplementation(
-			() =>
-				({
-					readByQuery: vi.fn().mockResolvedValue([{ panels: 3 }, { panels: 5 }, { panels: 1 }]),
-				}) as any,
-		);
+		vi.mocked(DashboardsService).mockImplementation(function () {
+			return {
+				readByQuery: vi.fn().mockResolvedValue([{ panels: 3 }, { panels: 5 }, { panels: 1 }]),
+			} as any;
+		});
 
 		const result = await collectDashboardMetrics(mockDb, mockSchema);
 		expect(result.count).toBe(3);

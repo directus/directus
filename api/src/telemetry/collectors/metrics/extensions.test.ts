@@ -5,9 +5,11 @@ import { ExtensionsService } from '../../../services/extensions.js';
 import { collectExtensionMetrics, createEmptyBreakdown } from './extensions.js';
 
 vi.mock('../../../services/extensions.js', () => ({
-	ExtensionsService: vi.fn().mockImplementation(() => ({
-		readAll: vi.fn().mockResolvedValue([]),
-	})),
+	ExtensionsService: vi.fn().mockImplementation(function () {
+		return {
+			readAll: vi.fn().mockResolvedValue([]),
+		};
+	}),
 }));
 
 afterEach(() => {
@@ -48,15 +50,14 @@ describe('collectExtensionMetrics', () => {
 	});
 
 	test('categorises enabled non-bundled extensions', async () => {
-		vi.mocked(ExtensionsService).mockImplementation(
-			() =>
-				({
-					readAll: vi.fn().mockResolvedValue([
-						{ bundle: null, meta: { enabled: true, source: 'local' }, schema: { type: 'hook' } },
-						{ bundle: null, meta: { enabled: true, source: 'registry' }, schema: { type: 'panel' } },
-					]),
-				}) as any,
-		);
+		vi.mocked(ExtensionsService).mockImplementation(function () {
+			return {
+				readAll: vi.fn().mockResolvedValue([
+					{ bundle: null, meta: { enabled: true, source: 'local' }, schema: { type: 'hook' } },
+					{ bundle: null, meta: { enabled: true, source: 'registry' }, schema: { type: 'panel' } },
+				]),
+			} as any;
+		});
 
 		const result = await collectExtensionMetrics(mockDb, mockSchema);
 
@@ -72,16 +73,15 @@ describe('collectExtensionMetrics', () => {
 	});
 
 	test('categorises disabled extensions into inactive breakdown', async () => {
-		vi.mocked(ExtensionsService).mockImplementation(
-			() =>
-				({
-					readAll: vi
-						.fn()
-						.mockResolvedValue([
-							{ bundle: null, meta: { enabled: false, source: 'registry' }, schema: { type: 'display' } },
-						]),
-				}) as any,
-		);
+		vi.mocked(ExtensionsService).mockImplementation(function () {
+			return {
+				readAll: vi
+					.fn()
+					.mockResolvedValue([
+						{ bundle: null, meta: { enabled: false, source: 'registry' }, schema: { type: 'display' } },
+					]),
+			} as any;
+		});
 
 		const result = await collectExtensionMetrics(mockDb, mockSchema);
 
@@ -92,14 +92,13 @@ describe('collectExtensionMetrics', () => {
 	});
 
 	test('skips extensions with null schema entirely', async () => {
-		vi.mocked(ExtensionsService).mockImplementation(
-			() =>
-				({
-					readAll: vi
-						.fn()
-						.mockResolvedValue([{ bundle: null, meta: { enabled: true, source: 'registry' }, schema: null }]),
-				}) as any,
-		);
+		vi.mocked(ExtensionsService).mockImplementation(function () {
+			return {
+				readAll: vi
+					.fn()
+					.mockResolvedValue([{ bundle: null, meta: { enabled: true, source: 'registry' }, schema: null }]),
+			} as any;
+		});
 
 		const result = await collectExtensionMetrics(mockDb, mockSchema);
 
@@ -108,16 +107,15 @@ describe('collectExtensionMetrics', () => {
 	});
 
 	test('separates bundle and individual counting for bundled extensions', async () => {
-		vi.mocked(ExtensionsService).mockImplementation(
-			() =>
-				({
-					readAll: vi.fn().mockResolvedValue([
-						{ bundle: null, meta: { enabled: true, source: 'registry' }, schema: { type: 'bundle' } },
-						{ bundle: 'parent-id', meta: { enabled: true, source: 'registry' }, schema: { type: 'interface' } },
-						{ bundle: 'parent-id', meta: { enabled: true, source: 'registry' }, schema: { type: 'interface' } },
-					]),
-				}) as any,
-		);
+		vi.mocked(ExtensionsService).mockImplementation(function () {
+			return {
+				readAll: vi.fn().mockResolvedValue([
+					{ bundle: null, meta: { enabled: true, source: 'registry' }, schema: { type: 'bundle' } },
+					{ bundle: 'parent-id', meta: { enabled: true, source: 'registry' }, schema: { type: 'interface' } },
+					{ bundle: 'parent-id', meta: { enabled: true, source: 'registry' }, schema: { type: 'interface' } },
+				]),
+			} as any;
+		});
 
 		const result = await collectExtensionMetrics(mockDb, mockSchema);
 
