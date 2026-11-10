@@ -240,7 +240,7 @@ export class CollectionsService {
 
 				// Creating version tables alters the existing shadow and link tables of related collections
 				if (payload.meta?.versioning) {
-					change.sync([payload.collection], { includeRelating: true });
+					change.sync([payload.collection]);
 				}
 			});
 
@@ -509,7 +509,7 @@ export class CollectionsService {
 
 				// Toggling versioning creates / drops the shadow and link tables
 				if ('versioning' in payload.meta!) {
-					change.sync([collectionKey], { includeRelating: true });
+					change.sync([collectionKey]);
 				}
 			});
 

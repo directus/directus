@@ -52,7 +52,7 @@ describe('runSchemaChange', () => {
 	test('syncs the version tables after the change, within the transaction', async () => {
 		const result = await runSchemaChange({ knex: db, schema }, async (_trx, change) => {
 			change.sync(['articles']);
-			change.sync(['authors'], { includeRelating: true });
+			change.sync(['authors']);
 			calls.push('change');
 			return 'done';
 		});
@@ -63,7 +63,7 @@ describe('runSchemaChange', () => {
 			'disable foreign keys',
 			'begin',
 			'change',
-			'sync articles,authors {"includeRelating":["authors"]}',
+			'sync articles,authors {"includeRelating":true,"exclude":[]}',
 			'commit',
 			'enable foreign keys',
 		]);
@@ -91,7 +91,7 @@ describe('runSchemaChange', () => {
 
 			await runSchemaChange({ knex: trx, schema }, async (_trx, nested) => {
 				nested.sync(['articles', 'authors']);
-				nested.sync(['authors'], { includeRelating: true });
+				nested.sync(['authors']);
 				calls.push('nested change');
 			});
 
@@ -103,7 +103,7 @@ describe('runSchemaChange', () => {
 			'begin',
 			'nested change',
 			'change',
-			'sync articles,authors {"includeRelating":["authors"]}',
+			'sync articles,authors {"includeRelating":true,"exclude":[]}',
 			'commit',
 			'enable foreign keys',
 		]);
@@ -119,7 +119,7 @@ describe('runSchemaChange', () => {
 			'disable foreign keys',
 			'begin',
 			'sync authors {"includeRelating":true,"exclude":["authors"]}',
-			'sync articles {"exclude":["authors"]}',
+			'sync articles,authors {"includeRelating":true,"exclude":["authors"]}',
 			'commit',
 			'enable foreign keys',
 		]);
