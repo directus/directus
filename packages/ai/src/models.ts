@@ -727,9 +727,9 @@ export function getAllowedModels(
 	} | null,
 ): Record<StandardProviderType, string[]> {
 	return {
-		openai: settings?.ai_openai_allowed_models ?? DEFAULT_ALLOWED_MODELS.openai,
-		anthropic: settings?.ai_anthropic_allowed_models ?? DEFAULT_ALLOWED_MODELS.anthropic,
-		google: settings?.ai_google_allowed_models ?? DEFAULT_ALLOWED_MODELS.google,
+		openai: settings?.ai_openai_allowed_models ?? [...DEFAULT_ALLOWED_MODELS.openai],
+		anthropic: settings?.ai_anthropic_allowed_models ?? [...DEFAULT_ALLOWED_MODELS.anthropic],
+		google: settings?.ai_google_allowed_models ?? [...DEFAULT_ALLOWED_MODELS.google],
 		openrouter: settings?.ai_openrouter_models?.map((model) => model.id) ?? [],
 	};
 }
