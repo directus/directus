@@ -1867,6 +1867,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Визуален редактор на HTML съдържание
     toolbar: Лента с инструменти
+    extensions: Разширения
     custom_formats: Собтсвени формати
     folder_note: Папка за качване на файловете. Съществуващите файлове не се променят.
     imageToken: Статичен токен за достъп

@@ -97,14 +97,14 @@ export class ExportService {
 				const count = query.limit && query.limit > -1 ? Math.min(totalCount, query.limit) : totalCount;
 
 				const requestedLimit = query.limit ?? -1;
-				const batchesRequired = Math.ceil(count / (env['EXPORT_BATCH_SIZE'] as number));
+				const batchesRequired = Math.ceil(count / env.EXPORT_BATCH_SIZE);
 
 				let readCount = 0;
 
 				for (let batch = 0; batch < batchesRequired; batch++) {
-					let limit = env['EXPORT_BATCH_SIZE'] as number;
+					let limit = env.EXPORT_BATCH_SIZE;
 
-					if (requestedLimit > 0 && (env['EXPORT_BATCH_SIZE'] as number) > requestedLimit - readCount) {
+					if (requestedLimit > 0 && env.EXPORT_BATCH_SIZE > requestedLimit - readCount) {
 						limit = requestedLimit - readCount;
 					}
 
@@ -112,7 +112,7 @@ export class ExportService {
 						...query,
 						sort,
 						limit,
-						offset: batch * (env['EXPORT_BATCH_SIZE'] as number),
+						offset: batch * env.EXPORT_BATCH_SIZE,
 					});
 
 					readCount += result.length;
@@ -161,8 +161,19 @@ export class ExportService {
 			const title = `export-${collection}-${getDateTimeFormatted()}`;
 			const filename = `${title}.${format}`;
 
+			const file: Partial<File> = { ...(options?.file ?? {}) };
+
+			// If no folder is specified, we'll use the default exports folder from the settings if it exists
+			if ('folder' in file === false) {
+				const settings = await this.knex.select('default_exports_folder').from('directus_settings').first();
+
+				if (settings?.default_exports_folder) {
+					file.folder = settings.default_exports_folder;
+				}
+			}
+
 			const fileWithDefaults: Partial<File> & { filename_download: string } = {
-				...(options?.file ?? {}),
+				...file,
 				title: options?.file?.title ?? title,
 				filename_download: options?.file?.filename_download ?? filename,
 				type: mimeTypes[format],
@@ -183,7 +194,7 @@ export class ExportService {
 					fields: ['first_name', 'last_name', 'email'],
 				});
 
-				const href = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'files', savedFile).toString();
+				const href = new Url(env.PUBLIC_URL).addPath('admin', 'files', savedFile).toString();
 
 				const message = `
 Hello ${userName(user)},

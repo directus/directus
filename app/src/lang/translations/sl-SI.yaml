@@ -1261,6 +1261,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Bogat tekstualni urejevalnik za HTML vsebino
     toolbar: Orodna vrstica
+    extensions: Razširitve
     custom_formats: Prilagojene oblike
   input-block-editor:
     tools: Orodna vrstica

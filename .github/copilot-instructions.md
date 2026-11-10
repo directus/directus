@@ -12,8 +12,8 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 ## Technology Stack
 
 - **Language**: TypeScript, JavaScript
-- **Runtime**: Node.js 22
-- **Package Manager**: pnpm (>=10 <11)
+- **Runtime**: Node.js 26
+- **Package Manager**: pnpm (>=12 <13)
 - **Frontend Framework**: Vue.js 3
 - **Build Tools**: Vite, Rollup, esbuild
 - **Testing**: Vitest
@@ -23,8 +23,8 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 ### Prerequisites
 
-- Node.js 22
-- pnpm >=10 <11
+- Node.js 26
+- pnpm >=12 <13
 
 ### Installation
 
