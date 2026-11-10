@@ -15,7 +15,7 @@ import { getIPFromReq } from '../utils/get-ip-from-req.js';
  * Verify the passed JWT and assign the user ID and role to `req`
  */
 export const handler = async (req: Request, res: Response, next: NextFunction) => {
-	const env = useEnv();
+	const { SESSION_COOKIE_NAME } = useEnv();
 
 	const defaultAccountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
@@ -49,9 +49,9 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 		req.accountability = await getAccountabilityForToken(req.token, defaultAccountability);
 	} catch (err) {
 		if (isDirectusError(err, ErrorCode.InvalidCredentials) || isDirectusError(err, ErrorCode.InvalidToken)) {
-			if (req.cookies[env['SESSION_COOKIE_NAME'] as string] === req.token) {
+			if (req.cookies[SESSION_COOKIE_NAME] === req.token) {
 				// clear the session token if ended up in an invalid state
-				res.clearCookie(env['SESSION_COOKIE_NAME'] as string, SESSION_COOKIE_OPTIONS);
+				res.clearCookie(SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS);
 			}
 		}
 
