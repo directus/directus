@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 关于
+data_processing_agreement: 数据处理协议
 setup_welcome: 欢迎使用 Directus
 setup_info: 让我们创建您的管理员帐户并启动您的项目。
 setup_marketing_emails: 向我发送产品更新和发行说明
