@@ -6,8 +6,10 @@ vi.mock('../../../database/index.js', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
 
-vi.mock('../../utils/get-database-version.js', () => ({
-	getDatabaseVersion: vi.fn().mockResolvedValue('PostgreSQL 16.0'),
+vi.mock('../../../database/helpers/index.js', () => ({
+	getHelpers: vi.fn().mockReturnValue({
+		schema: { getVersion: vi.fn().mockResolvedValue('PostgreSQL 16.0') },
+	}),
 }));
 
 describe('collectDatabase', () => {
