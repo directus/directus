@@ -124,7 +124,7 @@ describe('FlowManager', () => {
 		['item-read', false],
 	])('redacts secrets from flow data before a %s step: %s', async (type, redacted) => {
 		const { redactObject } = await import('./utils/redact-object.js');
-		const { FLOW_SECRET_KEYS } = await import('./utils/flow-secret-keys.js');
+		const { FLOW_SECRET_KEYS } = await import('./constants.js');
 
 		const manager = getFlowManager();
 		manager.addOperation(type, vi.fn());
