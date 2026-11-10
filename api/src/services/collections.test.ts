@@ -14,8 +14,8 @@ const entitlements = vi.hoisted(() => ({ assert: vi.fn(), clearCache: vi.fn() })
 vi.mock('../license/index.js', () => ({ getEntitlementManager: () => entitlements }));
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv();
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
 });
 
 vi.mock('../../src/database/index', async () => {

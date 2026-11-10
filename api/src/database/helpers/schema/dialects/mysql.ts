@@ -5,7 +5,7 @@ import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types.js';
 
-const env = useEnv();
+const { DB_DATABASE } = useEnv();
 let lowerCaseTableNames: number | undefined;
 
 export class SchemaHelperMySQL extends SchemaHelper {
@@ -39,7 +39,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 					this.knex
 						.select(this.knex.raw('data_length + index_length AS size'))
 						.from('information_schema.TABLES')
-						.where('table_schema', '=', String(env['DB_DATABASE']))
+						.where('table_schema', '=', String(DB_DATABASE))
 						.as('size'),
 				)) as Record<string, any>[];
 
