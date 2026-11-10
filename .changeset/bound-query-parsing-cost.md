@@ -24,4 +24,8 @@ A `$NOW(...)` adjustment longer than 64 characters is now treated as unparseable
 a zero-padded amount that long, such as `$NOW(0000…0005s)`. A dynamic variable path deeper than 25
 segments now resolves to its default value.
 
+A `$CURRENT_USER`, `$CURRENT_ROLE`, `$CURRENT_ROLES` or `$CURRENT_POLICIES` path in a query filter is
+now held to `MAX_RELATIONAL_DEPTH`, the same as the fields it is fetched as, and is rejected with an
+`InvalidQueryError` beyond it.
+
 :::

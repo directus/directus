@@ -14,8 +14,10 @@ import {
 } from '../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { Meta } from '../types/index.js';
+import { getFieldRelationalDepth } from './get-field-relational-depth.js';
 import { getQueryLimits, type QueryLimits } from './query-limits.js';
 import { splitFields } from './split-fields.js';
+import { getMaxRelationalDepth } from './validate-query.js';
 
 /**
  * Sanitize the query parameters and parse them where necessary.
@@ -189,6 +191,17 @@ async function sanitizeFilter(
 	// into the generic "Invalid filter object". The dynamic variable context comes along for the
 	// ride, since this pass already visits every value the filter holds.
 	limits.chargeFilterNodes(filters, (value) => collectDynamicVariableContext(value, dynamicVariableContext));
+
+	// These paths are fetched as the fields of an internal read, which `validateQuery` never sees
+	const maxRelationalDepth = getMaxRelationalDepth();
+
+	for (const paths of Object.values(dynamicVariableContext)) {
+		for (const path of paths) {
+			if (getFieldRelationalDepth(path) > maxRelationalDepth) {
+				throw new InvalidQueryError({ reason: 'Max relational depth exceeded' });
+			}
+		}
+	}
 
 	try {
 		let filterContext;

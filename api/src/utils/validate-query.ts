@@ -257,8 +257,14 @@ function validateSort(sort: string[]) {
 	}
 }
 
+/** The deepest relational path a query may reference, never less than 2 */
+export function getMaxRelationalDepth(): number {
+	const configured = Number(useEnv()['MAX_RELATIONAL_DEPTH']);
+	return configured > 2 ? configured : 2;
+}
+
 function validateRelationalDepth(query: Query) {
-	const maxRelationalDepth = Number(env['MAX_RELATIONAL_DEPTH']) > 2 ? Number(env['MAX_RELATIONAL_DEPTH']) : 2;
+	const maxRelationalDepth = getMaxRelationalDepth();
 
 	// Process the fields in the same way as api/src/utils/get-ast-from-query.ts
 	let fields = ['*'];

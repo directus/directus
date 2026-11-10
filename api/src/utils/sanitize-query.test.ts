@@ -253,6 +253,32 @@ describe('filter', () => {
 
 		expect(sanitizedQuery.filter).toEqual({ field_a: { _eq: 'test' } });
 	});
+
+	test.each(['$CURRENT_USER', '$CURRENT_ROLE', '$CURRENT_ROLES', '$CURRENT_POLICIES'])(
+		'rejects a %s path deeper than the max relational depth before fetching it',
+		async (variable) => {
+			vi.mocked(useEnv).mockReturnValue({ MAX_RELATIONAL_DEPTH: 3 });
+
+			const filter = { id: { _eq: `${variable}.role.users.role.id` } };
+
+			await expect(sanitizeQuery({ filter }, null as any, {} as any)).rejects.toThrowError(
+				'Invalid query. Max relational depth exceeded.',
+			);
+
+			expect(fetchDynamicVariableData).not.toHaveBeenCalled();
+		},
+	);
+
+	test('fetches a dynamic variable path at the max relational depth', async () => {
+		vi.mocked(useEnv).mockReturnValue({ MAX_RELATIONAL_DEPTH: 3 });
+		vi.mocked(fetchDynamicVariableData).mockResolvedValue({ $CURRENT_USER: { role: { users: [{ id: 'a' }] } } });
+
+		const filter = { id: { _in: '$CURRENT_USER.role.users.id' } };
+
+		await sanitizeQuery({ filter }, null as any, {} as any);
+
+		expect(fetchDynamicVariableData).toHaveBeenCalledOnce();
+	});
 });
 
 describe('query limits', () => {
