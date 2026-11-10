@@ -608,6 +608,7 @@ import_data_validation_errors_notice: '以下行记录有无效数据：'
 import_data_error_row: '行 {rows}{field}：'
 export_flow: 导出流程
 export_flows: 导出流程
+flow_import_input_placeholder: JSON……
 flow_import_success: 流程导入成功。
 flow_import_failed: 无法导入流程
 flow_import_not_json: 该文件不是有效的JSON格式。
@@ -1167,14 +1168,69 @@ invalid_url_copy: 指定的 URL 与设置中指定的任何 URL 都不匹配。
 insights: 洞察分析
 overview: 概况
 deployment:
+  deployment: 部署
+  overview:
+    overview: 概况
+    providers: 提供者
+    configure: 配置
+    provider_description: 在 Directus 内部触发 {provider} 部署
+    projects: '{count} 个项目|{count} 个项目'
   provider:
+    setup_title: '{provider} 设置'
+    credentials:
+      notice: 您可以在您的 {provider} 账户设置中找到此信息。
+      link: 打开 {provider} 设置
     token:
+      label: 个人访问令牌
       placeholder: 输入您的访问令牌……
+      encrypted_notice: 此令牌将被加密并安全地存储在您的 Directus 配置
     settings:
       settings: '{provider} 配置'
+      edit_configuration: 编辑配置
+      delete: 删除设置
       delete_confirm: 此操作是永久性的，无法撤销。您确定要继续吗？
       remove_projects_confirm: 移除下列项目（{projects}）会从Directus永久删除其所有部署历史。此操作不可撤销。您确定要继续吗？
+    vercel:
+      name: Vercel
+      settings_warning: 更改凭据或团队ID可能会影响您所选的项目，如果它们不再能够通过新的配置访问。
+      account_type:
+        label: 帐户类型
+        hint: 选择团队使用团队ID，或者个人帐户使用您的Vercel用户名进行部署链接。
+        team: 团队
+        personal: 个人账户
+      team_id:
+        label: 团队 ID
+        hint: 团队账号所需。请在您的Vercel团队设置中查找它。
+        placeholder: team_xxxxxxxxxxxxxxx
+      username:
+        label: 用户名
+        hint: 您个人账户的 Vercel 用户名。可在您的 Vercel 账户 URL（vercel.com/username）中找到。
+        placeholder: 您的用户名
+    netlify:
+      name: Netlify
+      settings_warning: 更改凭据或账户地址可能会影响到您所选的项目，如果它们不再可以通过新的配置访问。
+      account_slug:
+        label: 账户标识符
+        hint: 可选。筛选站点到特定帐户。留空以显示所有可访问站点。
+        placeholder: 您的帐户标识
+    projects: 项目
+    select_projects: 选择项目
+    select_projects_hint: 从Directus选择你想要管理的项目
+    project:
+      not_deployable: 通过 Directus 无法部署项目。请查看文档以获取更多信息。
+    runs:
+      runs: 部署运行
+      id: 部署 ID
+      started: 已开始
+      author: 作者
+      refresh: 刷新
+      deploy_preview: 部署预览
+      empty: 无部署运行
+      empty_copy: 此项目尚无部署历史。
+      external_user: 外部用户
     run:
+      title: '{project}：部署详情'
+      id: 部署 ID
       currently_deploying: 正在部署中……
       stop: 停止部署
       cancel_confirm: 此操作是永久性的，无法撤销。您确定要继续吗？
@@ -1438,10 +1494,17 @@ licensing:
   addon_summary_pending: '{active} 当前状态 → {effective} 下次续期时生效（{date}）。增加操作以取消待执行的停用。'
   addon_summary_upgrade: '{active} 当前值 + {difference} 单位（s） = {new} 单位总计（s）'
   addon_summary_downgrade: '{active} 当前值 - {difference} 单位（s） = {new} 单位总计（s）'
+  addon_price_summary: '{ new } x ${ unitPrice }/unit/{ interval } = ${ total }/{ interval }'
+  addon_prorated_notice: '确认即表示您同意自 {renewalDate} 起，按 ${total}/{interval} 的标准进行扣费。针对当前计费周期剩余时段的按比例折算费用共计 ${adjustedTotal}将计入您的下一期账单。'
   addon_update: 更新
   resolve_continue: 继续
   resolve_show_n_more: '显示更多 {count}'
   resolve_section_flows: 流程
+  resolve_sso_confirm: 确认 SSO 停用
+  resolve_sso_caption: 当做出此更改时，仅限SSO的用户将被停用。 要恢复他们的访问权限，您需要重新激活他们，并通过用户目录配置电子邮件和密码。
+  resolve_sso_admin_title: 确认 SSO 管理信息
+  resolve_sso_admin_description: 请确认您的电子邮件和密码正确。一旦SSO被停用，您需要同时登录。
+  resolve_sso_admin_description_email_only: 请确认您的电子邮件正确。一旦SSO被停用，您将需要它重新登录。
   resolve_sso_admin_email: 邮箱地址
   resolve_sso_admin_password: 密码
   resolve_sso_admin_password_placeholder: 设置密码……
@@ -1548,10 +1611,45 @@ license:
       您已经达到了您计划允许的最大限制。您将需要购买额外附加组件或升级。
   max_capacity:
     label: 最大容量
+    alert_danger_prefix: 您已达到最大容量。
+    alert_danger_suffix: 解锁更多。
+    alert_warning: 您还剩 {count} 次。升级套餐即可解锁更多。
+  manage_plan: 管理套餐
+  collections_remaining: '剩余 {n} 个模型 | 剩余 {n} 个模型'
   flows_limit:
+    title: 已达到流程数量限制
     body: >-
       您已经达到了您计划允许的最大限制。您将需要购买额外附加组件或升级。
+  flows_remaining: '{n} 向左流程 | {n} 向左流程'
   contact_sales: 联系销售
+  upgrade_to_unlock: 升级您的计划来解锁此功能。
+  activity_history_notice: '您当前的套餐包含 {timeframe} 的活动历史记录。'
+  revisions_history_notice: '您当前的套餐包含 {timeframe} 的修订历史记录。'
+  status_notice:
+    grace_period: '在“核心”层级资源限制生效前，您还剩 {daysLeft} 天。'
+    grace_days: '{days} 天 | {days} 天'
+  unlicensed_status_notice:
+    grace_period: '您的宽限期还剩 {daysLeft} — 截止至 {date}。此后，将适用“核心版的资源限制。您可以 {retrieveLicenseKey} 或 {upgrade} 以提高资源限额。'
+    grace_days_left: '还剩 {days} 天 | 还剩 {days} 天'
+    upgrade: 升级
+    oig_eligible: '您或许符合我们 {oig} 计划的申请资格。提交申请，即可免费获得 Directus 的完整使用权限。'
+  locked_status_notice: '您的 Directus 实例已被锁定。请管理许可证或{contactSupport}以解决此问题。'
+  warning_status_notice:
+    generic: 无法刷新您许可证的激活状态。它将保持激活至 {date}，此后您的项目将转入“核心版”方案。请在“设置”>“许可证”中查看您的许可证密钥。
+    activation_limit: 您的许可证已达到激活次数上限，无法用于激活当前项目。该许可证在 {date} 之前保持有效，此后您的项目将转入“核心版”套餐。若要为当前项目激活该许可证，请先在您不再使用的项目中将其停用，然后再重试激活。
+    binding_mismatch: 您的许可证关联至其他项目或网址，因此无法刷新其激活状态。该许可证在 {date} 之前保持有效，此后您的项目将转入“核心版”套餐。请确认您的项目网址与最初激活该许可证时所用的网址是否一致。
+    unavailable: 我们无法连接至许可服务以刷新您的许可状态。我们将定期尝试重新连接。您的许可在 {date} 之前保持有效；若届时仍无法刷新许可状态，您的项目将转入“核心版”套餐。
+  pinned_status_notice:
+    grace_period_title: '宽限期（剩余 {days} 天）'
+    grace_period_body: 在“设置” > “许可证”中管理您的许可证密钥。
+    warning_title:
+      generic: '许可证验证失败（剩余 {days} 天）'
+      invalid_key: '许可证密钥无效（剩余 {days} 天）'
+      activation_limit: '已达到激活次数上限（还剩 {days} 天）'
+      binding_mismatch: '许可证 URL 不匹配（剩余 {days} 天）'
+      unavailable: '无法连接至许可服务（剩余 {days} 天）'
+  unlicensed_pinned_status_notice:
+    grace_period_title: '宽限期（剩余 {days} 天）'
 no_upscale: 不要放大图片
 no_extensions: 无扩展
 no_extensions_copy: 尚未安装扩展。
@@ -1566,6 +1664,8 @@ source_local: 本地
 source_module: Node模块
 collection: 数据模型
 collections: 数据模型
+collection_inactive: 此模型处于非活动状态
+collection_inactive_copy: 此视图引用了 {collection}，该集合当前处于非活动状态。
 content: 内容
 singleton: 单一
 singleton_label: 视为单个对象
@@ -1578,6 +1678,7 @@ directus_collection:
   directus_dashboards: Insights模块中的仪表板
   directus_fields: 其他字段配置和元数据
   directus_files: 文件资源元数据
+  directus_flows: 自动化流程
   directus_folders: 虚拟文件目录
   directus_migrations: 您的数据库版本是
   directus_notifications: 发送给用户的通知
@@ -1596,6 +1697,10 @@ directus_collection:
   directus_translations: 自定义翻译
   directus_versions: 条目的内容版本
   directus_extensions: 扩展配置
+  directus_oauth_clients: 注册的 OAuth 客户端应用程序
+  directus_oauth_codes: OAuth 流程的授权码
+  directus_oauth_consents: OAuth 客户端的用户授权许可
+  directus_oauth_tokens: OAuth 客户端的访问令牌与刷新令牌
 fields:
   directus_activity:
     item: 条目主键
@@ -1624,6 +1729,7 @@ fields:
     sort_field: 排序字段
     accountability: 活动和版本修订跟踪
     versioning: 版本
+    autosave_revision_interval: 自动保存修订间隔
     archive_field: 归档字段
     item_duplication_fields: 条目重复字段
   directus_files:
@@ -1674,6 +1780,7 @@ fields:
     status_active: 激活
     status_suspended: 已停用
     status_archived: 已存档
+    status_inactive_license_exceeded: 未激活（超出许可限制）
     role: 角色
     token: Token
     provider: 提供方
@@ -1723,6 +1830,8 @@ fields:
     auth_login_attempts: 尝试认证登录次数
     files_and_thumbnails: 文件和存储
     storage_default_folder: 默认文件夹
+    default_exports_folder: 默认导出文件夹
+    default_exports_folder_note: 当导出内容保存至“文件库​​”且未指定具体文件夹时，系统会将其存入默认文件夹。
     storage_asset_presets: 转换预设
     storage_asset_transform: 允许的转换
     overrides: 应用设置覆盖
@@ -1743,6 +1852,9 @@ fields:
     public_registration_email_filter_note: 只有符合此过滤规则的电子邮件地址才能注册。
     public_registration_verify_email: 验证电子邮件
     public_registration_verify_email_note: 向注册用户发送一封电子邮件，请他们在登录前点击验证链接。
+    live_preview: 实时预览
+    preview_base_url: 预览基础 URL
+    preview_base_url_note: 可在集合的“预览 URL”中将其选为动态“预览基础 URL”变量，从而使主机地址能够随环境而异。
     visual_editor_urls: 可视化编辑器网址
     report_feature_url: 用于反馈功能的网址
     report_bug_url: 用于反馈Bug的网址
@@ -1989,9 +2101,16 @@ ai:
   settings: 设置
   tool_approval:
     disabled: 禁用
+  disabled_tools: 禁用工具
   ask_user_submit: 提交
   ask_user_next: 下一步
+  ask_user_skip: 跳过
+  ask_user_chat_about_this: 聊聊这个
+  ask_user_type_answer: 输入您的答案……
+  ask_user_skipped: 已跳过
   tool_descriptions:
+    items: 创建、读取、更新和删除内容
+    files: 搜索和管理文件
     folders: 创建并整理文件夹
     flows: 创建和更新流程
     trigger-flow: 手动运行触发的流程
@@ -2501,6 +2620,14 @@ interfaces:
     translation_pending_delete: 此语言有待删除，不能被翻译。
     permission_check_failed: 无法验证此语言的权限。请重试。
     empty: (空)
+    field_empty_tooltip: 此字段没有要翻译的源内容
+    ai_translating: 翻译中……
+    ai_translating_progress: '正在翻译 {done} / {total} 种语言……'
+    translation_has_errors: 部分翻译失败。
+    translation_complete: 翻译成功完成。
+    translation_complete_with_warnings: 翻译已完成，但有些字段可能不完整。
+    partial_translation: '在 {total} 个字段中，仅有 {count} 个完成了翻译。'
+    rate_limited: AI 提供方正在对请求进行限流。请稍候再试。
   list-o2m-tree-view:
     description: 递归显示树状图
     recursive_only: 树状图仅适用于递归关系。
@@ -2517,11 +2644,27 @@ interfaces:
     description: 富文本编辑器
     toolbar: 工具栏
     extensions: 扩展
+    extensions_placeholder: 选择扩展……
+    extensions_note: 此字段可使用的扩展。保存时，未选定扩展所生成的标记内容会被移除。
+    extension_options: 扩展选项
+    extension_options_for: '{extension}选项'
     custom_formats: 自定义格式
+    custom_formats_note: 一组自定义格式。每个条目都需要包含一个 `title`，以及以下其中一项：`inline`、`block`、用于指定块级标签的 `selector`，或者用于将条目归入子菜单的 `items`。此外，还可以根据需要添加 `classes`、`styles`和 `attributes`。一旦配置，工具栏中便会出现一个“格式”下拉菜单。使用 `block` 定义的格式仅限于在段落和标题之间进行转换；不支持 `wrapper`类型的条目。
+    options_override: 选项覆盖 (过时)
+    options_override_note: 已过时的 TinyMCE 替代。此值已不再被编辑器应用，仅保留作参考。 使用其他接口选项，如自定义格式选项。
     folder_note: 用于上传文件的文件夹。不影响现有文件。
     imageToken: 静态访问令牌
     imageToken_label: 静态访问令牌已被附加到资源的 URL
     media_preview_iframe_title: 媒体预览
+    embed_invalid: 无法将嵌入标记解析为媒体（视频、音频或 iframe）
+    link_protocols: 允许的链接协议
+    link_protocols_note: 链接可使用的额外 URL 方案，例如用于 `myapp://` 深度链接的 `myapp`。`http`、`https`、`mailto` 和 `tel` 等标准方案始终是被允许的。`javascript` 等脚本方案则绝不允许使用。请仅添加您所信任的方案。
+    link_protocols_placeholder: 添加方案并按回车键……
+    link_protocols_blocked: '未添加“{scheme}”。使用此方案的链接可能会执行潜在的恶意代码，因此绝不允许使用。'
+    link_protocols_invalid: '“{scheme}”未被添加。方案以字母开头，且仅包含字母、数字、`+`、`-` 和 `.`。'
+    link_protocol_not_allowed: 不允许使用此类型的链接。请将该链接的协议添加到此字段的“允许的链接协议”选项中。
+    link_protocol_blocked: 不允许像"javascript:"这样的脚本链接。
+    auto_height: 自动高度
   input-block-editor:
     input-block-editor: 块编辑器
     description: 用于富媒体故事的块式编辑器，使用 Editor.js 以 JSON 格式输出干净的数据
@@ -2570,18 +2713,39 @@ interfaces:
     generate: 生成令牌
     regenerate: 重新生成令牌
     regenerate_confirm_title: 重新生成令牌
+    regenerate_confirm_body: 当前令牌将立即失效。无法撤消。
     remove_token: 删除令牌
     remove_confirm_title: 删除令牌
+    remove_confirm_body: 使用此令牌的任何API访问都将立即停止。
+    new_user_disabled_notice: 在生成令牌之前保存此用户。
+    token_saved_notice: 令牌保存成功。
+    token_saved_copy: 请确保现在复制此令牌。出于安全原因，它将不会再次可见。
   system-raw-editor:
     system-raw-editor: 原始编辑器
     description: 允许输入原始或mustache 模板值
   input-password:
     input-password: 输入密码
     description: 带有隐藏值切换的密码输入
+  flow-select:
+    flow-select: 流程选择
   header:
     header: 报头
+    description: 创建一个标题、字幕、帮助信息和/或链接来帮助用户导航或执行流程。
     links: 链接
     action_type: 动作类型
+    help:
+      title: 帮助
+      note: 为用户提供可切换的帮助信息。
+    help_display_mode:
+      title: 帮助显示模式
+      note: 选择帮助信息的显示模式。
+    enable_help_translations:
+      title: 启用帮助翻译
+      note: 如果启用，这将用来自帮助翻译字符串的值覆盖帮助字段。
+    help_translations_string:
+      title: 帮助翻译字符串
+      note: 您需要在项目的“翻译”设置中，针对每个想要支持的语言，为相应键创建包含已译内容的翻译值。
+    collapse: 折叠帮助
 displays:
   translations:
     translations: 翻译
@@ -2630,6 +2794,8 @@ displays:
     down: 向下取整
     nearest: 最近的
     up: 向上取整
+    timezone: 时区
+    timezone_note: IANA时区标识符(例如：“America/New_York”、“UTC”)，留空使用本地时区。
   file:
     file: 文件
     description: 显示文件
@@ -2751,6 +2917,7 @@ layouts:
     group_field_placeholder: 用于分组的字段...，
     group_title: 分组标题：
     group_title_placeholder: 分组标题字段...，
+    group_collection_inactive: 该板组的集合处于非活动状态
     title: 卡片标题
     title_placeholder: 可选标题字段...
     text: 卡片文本
@@ -3000,6 +3167,7 @@ operations:
     batch_size: 批量大小
     cache: 缓存
     cache_query_placeholder: 允许查询参数……
+    cache_query_description: 这些查询参数将额外用于缓存密钥。
 unit: 单位
 standard: 基本设置
 scientific: 科学的
@@ -3038,6 +3206,8 @@ series_grouping: 系列分组
 date_precision: 日期精度
 export_dashboard: 导出仪表盘
 duplicate_dashboard: 复制仪表板
+duplicate_policy: 重复的策略
+duplicate_flow: 重复流程
 search_dashboard: 搜索仪表板...
 search_flow: 搜索流程...
 percent: 百分比
@@ -3045,10 +3215,21 @@ show_password: 显示密码
 hide_password: 隐藏密码
 license_grace_key_modal:
   optional: 可选的
+  get_license_key: 获取许可证密钥
+  over_limit_warning_lead: 您已经超出了核心套餐允许的使用范围。
+  over_limit_warning_tail: '{lead} 请在 {date}（距今 {days} 天）之前添加 {licenseKey}，以保留您当前的访问权限。'
+  over_limit_customer_help: 已经是我们的客户了？请发送电子邮件至 {email} 以获取您的密钥。
+  license_key_link_label: 许可证密钥
 license_banner:
+  title: 您没有设置项目的所有者。
+  license: 我们需要这个来确保遵守我们的MSCL-1.0-GPL许可。这应该是您的项目的主要联系人。
+  set_owner: 设置所有者
   remind_later: 稍后提醒
+  remind_next_login: 我们会在您下次登录时再次提醒。
 accepted: 已接受
 text_direction_auto: 自动(匹配语言)
 text_direction_ltr: 从左到右 (LTR)
 text_direction_rtl: 从右到左 (RTL)
 set_to_now: 设置为现在
+aria:
+  more_options: 更多选项
