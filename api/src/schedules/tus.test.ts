@@ -4,13 +4,13 @@ import tusSchedule from './tus.js';
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
-		EMAIL_TEMPLATES_PATH: './templates',
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({
 		TUS_ENABLED: true,
 		TUS_CLEANUP_SCHEDULE: '0 */6 * * *',
-	}),
-}));
+	});
+});
 
 vi.spyOn(schedule, 'scheduleSynchronizedJob');
 vi.spyOn(schedule, 'validateCron');
