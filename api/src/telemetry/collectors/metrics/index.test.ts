@@ -3,7 +3,6 @@ import type { Knex } from 'knex';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLogger } from '../../../logger/index.js';
 import type {
-	CollectionMetrics,
 	DashboardMetrics,
 	DatabaseMetrics,
 	DeploymentMetrics,
@@ -19,7 +18,7 @@ import type {
 	UserMetrics,
 } from '../../types/report.js';
 import { serviceCount } from '../../utils/service-count.js';
-import { collectCollectionMetrics } from './collections.js';
+import { collectCollectionMetrics, type CollectionMetricsResult } from './collections.js';
 import { collectRoleMetrics } from './roles.js';
 import { collectMetrics } from './index.js';
 
@@ -48,20 +47,21 @@ vi.mock('../../../logger/index.js');
 
 vi.mock('./collections.js', () => ({
 	collectCollectionMetrics: vi.fn(
-		async (): Promise<CollectionMetrics & { _totalItems: number; _totalFields: number }> => ({
-			count: 0,
-			shares: { ...distribution },
-			fields: { ...distribution },
-			items: { ...distribution },
-			versioned: { count: 0, items: { ...distribution } },
-			archive_app_filter: { count: 0, items: { ...distribution } },
-			activity: {
-				all: { count: 0, items: { ...distribution } },
-				activity: { count: 0, items: { ...distribution } },
-				none: { count: 0, items: { ...distribution } },
+		async (): Promise<CollectionMetricsResult> => ({
+			collections: {
+				count: 0,
+				shares: { ...distribution },
+				fields: { ...distribution },
+				items: { ...distribution },
+				versioned: { count: 0, items: { ...distribution } },
+				archive_app_filter: { count: 0, items: { ...distribution } },
+				activity: {
+					all: { count: 0, items: { ...distribution } },
+					activity: { count: 0, items: { ...distribution } },
+					none: { count: 0, items: { ...distribution } },
+				},
 			},
-			_totalItems: 42,
-			_totalFields: 7,
+			items: { count: 42 },
 		}),
 	),
 }));
@@ -214,13 +214,14 @@ describe('collectMetrics', () => {
 		expect(result).not.toHaveProperty('api_requests');
 	});
 
-	test('strips internal properties from collections', async () => {
+	test('splits the collections result into the collections and items sections', async () => {
 		const result = await collectMetrics(mockDb, mockSchema);
-		expect(result.collections).not.toHaveProperty('_totalItems');
-		expect(result.collections).not.toHaveProperty('_totalFields');
+		expect(result.collections).not.toHaveProperty('collections');
+		expect(result.collections).toHaveProperty('count', 0);
+		expect(result.items).toStrictEqual({ count: 42 });
 	});
 
-	test('maps _totalItems to items.count', async () => {
+	test('takes items.count from the collections collector', async () => {
 		const result = await collectMetrics(mockDb, mockSchema);
 		expect(result.items).toStrictEqual({ count: 42 });
 	});

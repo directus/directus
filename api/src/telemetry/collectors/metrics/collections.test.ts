@@ -26,9 +26,8 @@ describe('collectCollectionMetrics', () => {
 
 	test('returns zeroes when no user collections', async () => {
 		const result = await collectCollectionMetrics(mockDb, emptySchema);
-		expect(result.count).toBe(0);
-		expect(result._totalItems).toBe(0);
-		expect(result._totalFields).toBe(0);
+		expect(result.collections.count).toBe(0);
+		expect(result.items).toStrictEqual({ count: 0 });
 	});
 
 	test('counts user collections excluding directus_ prefix', async () => {
@@ -51,6 +50,6 @@ describe('collectCollectionMetrics', () => {
 		});
 
 		const result = await collectCollectionMetrics(mockKnex as unknown as Knex, schemaWithCollections);
-		expect(result.count).toBe(2);
+		expect(result.collections.count).toBe(2);
 	});
 });
