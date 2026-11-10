@@ -1,4 +1,4 @@
-import type { ProviderFileRef, StandardProviderType } from '@directus/ai';
+import type { FileUploadProviderType, ProviderFileRef } from '@directus/ai';
 import { InvalidPayloadError } from '@directus/errors';
 import type { AISettings } from '../../providers/types.js';
 import { uploadToAnthropic, uploadToGoogle, uploadToOpenAI } from '../adapters/index.js';
@@ -6,7 +6,7 @@ import type { UploadedFile } from '../types.js';
 
 export async function uploadToProvider(
 	file: UploadedFile,
-	provider: StandardProviderType,
+	provider: FileUploadProviderType,
 	settings: AISettings,
 ): Promise<ProviderFileRef> {
 	switch (provider) {
