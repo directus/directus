@@ -1,4 +1,10 @@
 import type { Knex } from 'knex';
+import { countBy, mapValues } from 'lodash-es';
+import {
+	normalizeOnDelete,
+	type VersionTableForeignKey,
+	type VersionTables,
+} from '../../../../services/version-tables/plan-version-tables.js';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import { type CreateIndexOptions, SchemaHelper, type SortRecord, type Sql } from '../types.js';
 import { prepQueryParams } from '../utils/prep-query-params.js';
@@ -8,6 +14,13 @@ import { prepQueryParams } from '../utils/prep-query-params.js';
 const triggerCache = new Map<string, boolean>();
 
 export class SchemaHelperMSSQL extends SchemaHelper {
+	override applyShadowForeignKeyRules(tables: VersionTables): VersionTables {
+		return mapValues(super.applyShadowForeignKeyRules(tables), (table) => ({
+			...table,
+			foreignKeys: limitCascadePaths(table.foreignKeys),
+		}));
+	}
+
 	override generateIndexName(
 		type: 'unique' | 'foreign' | 'index',
 		collection: string,
@@ -128,4 +141,19 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		// Fall back to blocking index creation for non-enterprise editions
 		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
 	}
+}
+
+/**
+ * MSSQL rejects multiple cascade paths, i.e. more than one foreign key with a referential action to the same table.
+ * All foreign keys involved in such a conflict lose their action.
+ */
+function limitCascadePaths(foreignKeys: VersionTableForeignKey[]): VersionTableForeignKey[] {
+	const hasAction = (foreignKey: VersionTableForeignKey) => normalizeOnDelete(foreignKey.on_delete) !== 'NO ACTION';
+	const actionCounts = countBy(foreignKeys.filter(hasAction), 'foreign_key_table');
+
+	return foreignKeys.map((foreignKey) =>
+		hasAction(foreignKey) && actionCounts[foreignKey.foreign_key_table]! > 1
+			? { ...foreignKey, on_delete: null }
+			: foreignKey,
+	);
 }

@@ -21,9 +21,9 @@ import {
 	getShadowTableName,
 	getVersionReferenceField,
 	isVersionedCollection,
-	isVersionTable,
+	isShadowTable,
 	VERSION_META_FIELDS,
-} from './constants.js';
+} from '../services/version-tables/constants.js';
 import { validateLinkAccess } from './link-access.js';
 
 export type VersionMeta = {
@@ -67,7 +67,7 @@ export class VersionedItemsService {
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 
-		if (!(collection in this.schema.collections) || isVersionTable(collection)) {
+		if (!(collection in this.schema.collections) || isShadowTable(collection)) {
 			throw new ForbiddenError();
 		}
 
@@ -614,7 +614,7 @@ export class VersionedItemsService {
 	) {
 		const relations = this.schema.relations.filter(
 			(relation) =>
-				!isVersionTable(relation.collection) &&
+				!isShadowTable(relation.collection) &&
 				(relation.related_collection === collection || relation.meta?.one_allowed_collections?.includes(collection)),
 		);
 

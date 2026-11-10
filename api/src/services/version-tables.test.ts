@@ -1,30 +1,39 @@
 import type { Column, ForeignKey } from '@directus/schema';
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { SchemaOverview } from '@directus/types';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import type { RelationMeta, SchemaOverview } from '@directus/types';
+import { describe, expect, test, vi } from 'vitest';
+import { up as syncAllVersionTables } from '../database/migrations/20261106A-sync-version-tables.js';
 import { createMockDialectKnex, formatSql } from '../test-utils/knex.js';
-import { syncVersionTables } from './sync-version-tables.js';
+import { VersionTablesService } from './version-tables.js';
 
 const inspector = vi.hoisted(() => ({
+	/** Tables that were introspected, `*` for the whole database */
+	introspected: [] as string[],
+	/** Whether every table of the database was listed */
+	listedTables: false,
 	tables: [] as string[],
 	columns: [] as Column[],
 	foreignKeys: [] as ForeignKey[],
 }));
 
-const schemaMock = vi.hoisted(() => ({ current: null as SchemaOverview | null }));
-
 vi.mock('@directus/schema', async (importOriginal) => ({
 	...(await importOriginal<typeof import('@directus/schema')>()),
 	createInspector: () => ({
-		tables: async () => inspector.tables,
-		columnInfo: async () => inspector.columns,
-		foreignKeys: async () => inspector.foreignKeys,
+		tables: async () => {
+			inspector.listedTables = true;
+			return inspector.tables;
+		},
+		hasTable: async (table: string) => inspector.tables.includes(table),
+		columnInfo: async (table?: string) => {
+			inspector.introspected.push(table ?? '*');
+			return table ? inspector.columns.filter((column) => column.table === table) : inspector.columns;
+		},
+		foreignKeys: async (table?: string) =>
+			table ? inspector.foreignKeys.filter((foreignKey) => foreignKey.table === table) : inspector.foreignKeys,
 	}),
 }));
 
-vi.mock('../utils/get-schema.js', () => ({
-	getSchema: async () => structuredClone(schemaMock.current),
-}));
+vi.mock('../utils/get-schema.js', () => ({ getSchema: async () => schema }));
 
 vi.mock('../cache.js', async () => {
 	const { mockCache } = await import('../test-utils/cache.js');
@@ -115,15 +124,27 @@ type Options = {
 	/** Collections with versioning enabled */
 	versioned?: string[];
 	/** Version tables that already exist */
-	existing?: { tables: string[]; columns: Column[]; foreignKeys: ForeignKey[] };
+	shadow?: { tables: string[]; columns: Column[]; foreignKeys: ForeignKey[] };
 	/** Columns of the live tables, defaults to the ones matching the schema */
 	live?: Column[];
+	/** Foreign keys of the live tables, defaults to the ones matching the schema */
+	liveForeignKeys?: ForeignKey[];
+	/** Rows of `directus_relations` */
+	relations?: Partial<RelationMeta>[];
+	/** Schema overview passed to the service */
+	schema?: SchemaOverview;
+	/** Method of the service to run, defaults to the migration syncing all version tables */
+	run?: (service: VersionTablesService) => Promise<void>;
 };
+
+/** The m2o from articles to authors, as it exists on the live table */
+const LIVE_FOREIGN_KEYS = [foreignKey('articles', 'author', 'authors', 'SET NULL')];
 
 async function sync(options: Options = {}) {
 	const { db, tracker, language } = createMockDialectKnex(options.client ?? 'postgres');
 
 	tracker.on.select('directus_collections').response((options.versioned ?? []).map((collection) => ({ collection })));
+	tracker.on.select('directus_relations').response(options.relations ?? []);
 
 	// SQLite alters tables by recreating them from their current definition, which is the last one created by the sync
 	tracker.on
@@ -142,17 +163,28 @@ async function sync(options: Options = {}) {
 
 	tracker.on.any(() => true).response([]);
 
-	const existing = options.existing ?? { tables: [], columns: [], foreignKeys: [] };
+	const shadow = options.shadow ?? { tables: [], columns: [], foreignKeys: [] };
 
-	inspector.tables = ['articles', 'authors', ...existing.tables];
-	inspector.columns = [...(options.live ?? LIVE_COLUMNS), ...existing.columns];
-	inspector.foreignKeys = existing.foreignKeys;
+	inspector.introspected = [];
+	inspector.listedTables = false;
+	inspector.tables = ['articles', 'authors', ...shadow.tables];
+	inspector.columns = [...(options.live ?? LIVE_COLUMNS), ...shadow.columns];
+	inspector.foreignKeys = [...(options.liveForeignKeys ?? LIVE_FOREIGN_KEYS), ...shadow.foreignKeys];
 
-	await syncVersionTables(db);
+	const service = new VersionTablesService({ knex: db, schema: options.schema ?? schema });
 
-	// Only the statements changing the schema, the read of the versioned collections is the same for every sync
+	if (options.run) {
+		await options.run(service);
+	} else {
+		await syncAllVersionTables(db);
+	}
+
+	// Only the statements changing the schema, the reads of the versioning settings and relations are the same for every sync
 	const statements = tracker.history.all.filter(
-		(query) => !query.sql.includes('directus_collections') && !query.sql.includes('sqlite_master'),
+		(query) =>
+			!query.sql.includes('directus_collections') &&
+			!query.sql.includes('directus_relations') &&
+			!query.sql.includes('sqlite_master'),
 	);
 
 	return {
@@ -160,14 +192,11 @@ async function sync(options: Options = {}) {
 			.map((query) => formatSql(query.sql.replace(/_knex_temp_alter\d+/g, '_knex_temp_alter'), language))
 			.join(';\n\n'),
 		bindings: statements.map((query) => query.bindings),
+		introspected: [...new Set(inspector.introspected)],
 	};
 }
 
-beforeEach(() => {
-	schemaMock.current = schema;
-});
-
-describe('syncVersionTables', () => {
+describe('VersionTablesService.syncCollections', () => {
 	test('does nothing when no collection is versioned and no version tables exist', async () => {
 		const { sql } = await sync();
 
@@ -290,13 +319,13 @@ describe('syncVersionTables', () => {
 	});
 
 	test('does nothing when the version tables are up to date', async () => {
-		const { sql } = await sync({ versioned: ['articles'], existing: ARTICLES_SHADOW });
+		const { sql } = await sync({ versioned: ['articles'], shadow: ARTICLES_SHADOW });
 
 		expect(sql).toBe('');
 	});
 
 	test('drops the foreign keys and version tables when versioning is disabled', async () => {
-		const { sql, bindings } = await sync({ versioned: [], existing: ARTICLES_SHADOW });
+		const { sql, bindings } = await sync({ versioned: [], shadow: ARTICLES_SHADOW });
 
 		expect(sql).toMatchInlineSnapshot(`
 			"alter table "directus_shadow_articles"
@@ -324,7 +353,7 @@ describe('syncVersionTables', () => {
 	test('adds, alters and drops mirrored columns to match the live table', async () => {
 		const { sql, bindings } = await sync({
 			versioned: ['articles'],
-			existing: {
+			shadow: {
 				...ARTICLES_SHADOW,
 				columns: [
 					...ARTICLES_SHADOW.columns.filter((column) => column.name !== 'author'),
@@ -379,7 +408,7 @@ describe('syncVersionTables', () => {
 	test('recreates foreign keys whose on delete action changed', async () => {
 		const { sql, bindings } = await sync({
 			versioned: ['articles'],
-			existing: {
+			shadow: {
 				...ARTICLES_SHADOW,
 				foreignKeys: ARTICLES_SHADOW.foreignKeys.map((foreignKey) =>
 					foreignKey.column === 'author' ? { ...foreignKey, on_delete: 'CASCADE' } : foreignKey,
@@ -406,7 +435,7 @@ describe('syncVersionTables', () => {
 	test('treats the default on delete actions of all vendors as the same', async () => {
 		const { sql } = await sync({
 			versioned: ['articles'],
-			existing: {
+			shadow: {
 				...ARTICLES_SHADOW,
 				foreignKeys: ARTICLES_SHADOW.foreignKeys.map((foreignKey) => ({
 					...foreignKey,
@@ -416,6 +445,142 @@ describe('syncVersionTables', () => {
 		});
 
 		expect(sql).toBe('');
+	});
+});
+
+describe('scoped changes', () => {
+	/** Shadow table of articles that is missing the title column */
+	const OUTDATED_ARTICLES_SHADOW = {
+		...ARTICLES_SHADOW,
+		columns: ARTICLES_SHADOW.columns.filter((column) => column.name !== 'title'),
+	};
+
+	test('only introspects the tables of the changed collection', async () => {
+		const { sql, introspected } = await sync({
+			versioned: ['articles'],
+			shadow: OUTDATED_ARTICLES_SHADOW,
+			run: (service) => service.syncCollections(['authors']),
+		});
+
+		// The outdated shadow table of articles is left alone, as it isn't affected by a change to authors
+		expect(sql).toBe('');
+
+		// Version tables that don't exist aren't introspected
+		expect(introspected).toEqual(['authors']);
+	});
+
+	test('does not introspect any table when nothing is versioned', async () => {
+		const { introspected } = await sync({ run: (service) => service.syncCollections(['articles']) });
+
+		expect(introspected).toEqual([]);
+		expect(inspector.listedTables).toBe(false);
+	});
+
+	test('adds a new field to the shadow table', async () => {
+		const { sql } = await sync({
+			versioned: ['articles'],
+			shadow: OUTDATED_ARTICLES_SHADOW,
+			run: (service) => service.syncCollections(['articles']),
+		});
+
+		expect(sql).toMatchInlineSnapshot(`
+			"alter table "directus_shadow_articles"
+			add column "title" varchar(255) null default null"
+		`);
+	});
+
+	test('enabling versioning updates the version tables of relating collections', async () => {
+		const { sql, introspected } = await sync({
+			versioned: ['articles', 'authors'],
+			shadow: ARTICLES_SHADOW,
+			run: (service) => service.syncCollections(['authors'], { includeRelating: true }),
+		});
+
+		expect(introspected).toEqual(['directus_shadow_articles', 'authors', 'articles']);
+
+		expect(sql).toMatchInlineSnapshot(`
+			"create table "directus_shadow_authors" (
+			  "version_id" serial primary key,
+			  "version_name" varchar(255) null,
+			  "version_type" varchar(16) not null default 'draft',
+			  "version_date_created" timestamptz default CURRENT_TIMESTAMP,
+			  "version_date_updated" timestamptz null,
+			  "version_user_created" uuid null,
+			  "version_user_updated" uuid null,
+			  "id" integer null default null,
+			  "name" varchar(255) null default null
+			);
+
+			create table "directus_link_articles" (
+			  "id" integer not null default null,
+			  "author" integer null,
+			  constraint "directus_link_articles_pkey" primary key ("id")
+			);
+
+			alter table "directus_shadow_articles"
+			add column "version_ref_author" integer null;
+
+			alter table "directus_shadow_authors"
+			add constraint "directus_shadow_authors_version_user_created_foreign" foreign key ("version_user_created") references "directus_users" ("id") on delete SET NULL;
+
+			alter table "directus_shadow_authors"
+			add constraint "directus_shadow_authors_version_user_updated_foreign" foreign key ("version_user_updated") references "directus_users" ("id") on delete SET NULL;
+
+			alter table "directus_shadow_articles"
+			add constraint "directus_shadow_articles_version_ref_author_foreign" foreign key ("version_ref_author") references "directus_shadow_authors" ("version_id") on delete SET NULL;
+
+			alter table "directus_link_articles"
+			add constraint "directus_link_articles_id_foreign" foreign key ("id") references "articles" ("id") on delete CASCADE;
+
+			alter table "directus_link_articles"
+			add constraint "directus_link_articles_author_foreign" foreign key ("author") references "directus_shadow_authors" ("version_id") on delete SET NULL"
+		`);
+	});
+
+	test('includes collections relating through an a2o', async () => {
+		const { introspected } = await sync({
+			versioned: ['authors'],
+			liveForeignKeys: [],
+			schema: new SchemaBuilder()
+				.collection('authors', (c) => {
+					c.field('id').id();
+				})
+				.collection('comments', (c) => {
+					c.field('id').id();
+					c.field('item').a2o(['authors']);
+				})
+				.build(),
+			run: (service) => service.syncCollections(['authors'], { includeRelating: true }),
+		});
+
+		expect(introspected).toContain('comments');
+	});
+
+	test('deleting a collection drops the references to it from relating collections', async () => {
+		const { sql } = await sync({
+			versioned: ['articles'],
+			shadow: ARTICLES_SHADOW,
+			run: (service) => service.syncCollections(['authors'], { includeRelating: true, exclude: ['authors'] }),
+		});
+
+		expect(sql).toMatchInlineSnapshot(`
+			"alter table "directus_shadow_articles"
+			drop constraint "directus_shadow_articles_author_foreign""
+		`);
+	});
+
+	test('removing a relation drops its foreign key from the shadow table', async () => {
+		const { sql } = await sync({
+			versioned: ['articles'],
+			shadow: ARTICLES_SHADOW,
+			liveForeignKeys: [],
+			run: (service) => service.syncCollections(['articles']),
+		});
+
+		expect(sql).toMatchInlineSnapshot(`
+			"alter table "directus_shadow_articles"
+			drop constraint "directus_shadow_articles_author_foreign""
+		`);
 	});
 });
 
@@ -486,7 +651,7 @@ describe('dialects', () => {
 			client: 'mysql',
 			versioned: ['articles'],
 			live: UNSIGNED_COLUMNS,
-			existing: {
+			shadow: {
 				...ARTICLES_SHADOW,
 				columns: ARTICLES_SHADOW.columns.map((column) =>
 					column.data_type === 'integer' ? { ...column, data_type: 'int' } : column,
@@ -526,7 +691,7 @@ describe('dialects', () => {
 			ADD CONSTRAINT [directus_shadow_articles_version_user_created_foreign] FOREIGN KEY ([version_user_created]) REFERENCES [directus_users] ([id]) ON DELETE SET NULL;
 
 			ALTER TABLE [directus_shadow_articles]
-			ADD CONSTRAINT [directus_shadow_articles_version_user_updated_foreign] FOREIGN KEY ([version_user_updated]) REFERENCES [directus_users] ([id]) ON DELETE SET NULL;
+			ADD CONSTRAINT [directus_shadow_articles_version_user_updated_foreign] FOREIGN KEY ([version_user_updated]) REFERENCES [directus_users] ([id]);
 
 			ALTER TABLE [directus_shadow_articles]
 			ADD CONSTRAINT [directus_shadow_articles_author_foreign] FOREIGN KEY ([author]) REFERENCES [authors] ([id]) ON DELETE SET NULL"

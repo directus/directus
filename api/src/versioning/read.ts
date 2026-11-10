@@ -27,7 +27,7 @@ import {
 	VERSION_META_FIELDS,
 	VERSION_META_KEYS,
 	VERSION_REFERENCE_PREFIX,
-} from './constants.js';
+} from '../services/version-tables/constants.js';
 import { validateLinkAccess } from './link-access.js';
 
 type Context = { knex: Knex; schema: SchemaOverview; accountability: Accountability | null };

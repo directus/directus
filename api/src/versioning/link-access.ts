@@ -1,7 +1,7 @@
 import type { Accountability, PermissionsAction, PrimaryKey, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { getShadowTableName, isVersionedCollection } from './constants.js';
+import { getShadowTableName, isVersionedCollection } from '../services/version-tables/constants.js';
 
 /**
  * Link tables have no permissions of their own. They mirror the shadow table of the same collection,

@@ -76,13 +76,15 @@ test('removes constraints from mirrored fields', async () => {
 });
 
 test('mirrors field updates and deletions', async () => {
-	await api.request(updateField(collections.posts, 'subtitle', { schema: { max_length: 100 } }));
+	// Not unique, as CockroachDB can't change the type of indexed columns
+	await api.request(createField(collections.posts, { field: 'summary', type: 'string', schema: { max_length: 50 } }));
+	await api.request(updateField(collections.posts, 'summary', { schema: { max_length: 100 } }));
 
-	expect((await api.request(readField(SHADOW + collections.posts, 'subtitle'))).schema?.max_length).toBe(100);
+	expect((await api.request(readField(SHADOW + collections.posts, 'summary'))).schema?.max_length).toBe(100);
 
-	await api.request(deleteField(collections.posts, 'subtitle'));
+	await api.request(deleteField(collections.posts, 'summary'));
 
-	expect(await getColumns(api, SHADOW + collections.posts)).not.toContain('subtitle');
+	expect(await getColumns(api, SHADOW + collections.posts)).not.toContain('summary');
 });
 
 test('creates link tables only for collections referencing versioned collections', async () => {
@@ -105,7 +107,8 @@ test('mirrors relations that are added and removed', async () => {
 			collection: collections.posts,
 			field: 'editor',
 			related_collection: collections.authors,
-			schema: { on_delete: 'SET NULL' },
+			// MSSQL rejects a second cascade path to the same table, `author` already sets null
+			schema: { on_delete: 'NO ACTION' },
 		}),
 	);
 

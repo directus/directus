@@ -21,7 +21,11 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
-vi.mock('../versioning/sync-version-tables.js', () => ({ syncVersionTables: vi.fn() }));
+vi.mock('./version-tables.js', () => ({
+	VersionTablesService: class {
+		syncCollections = vi.fn();
+	},
+}));
 
 vi.mock('../../src/database/index', async () => {
 	const { mockDatabase } = await import('../test-utils/database.js');
@@ -88,8 +92,7 @@ vi.mock('../database/helpers/index.js', () => ({
 		schema: {
 			createIndex: mockCreateIndexSpy,
 			processFieldType: vi.fn((field) => field.type),
-			preColumnChange: vi.fn().mockResolvedValue(true),
-			postColumnChange: vi.fn().mockResolvedValue(undefined),
+			withForeignKeysDisabled: vi.fn((fn) => fn()),
 			setNullable: vi.fn(),
 			generateIndexName: vi.fn((type, collection, field) => `${collection}_${field}_${type}`),
 			isOneOfClients: vi.fn(() => mockIsOneOfClientsMSSQL),

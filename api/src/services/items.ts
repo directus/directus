@@ -39,7 +39,7 @@ import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { captureSeatCount, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { handleVersion } from '../utils/versioning/handle-version.js';
-import { getShadowTableName, isVersionedCollection } from '../versioning/constants.js';
+import { getShadowTableName, isVersionedCollection } from './version-tables/constants.js';
 import { isVersionedQuery, readVersionedItems } from '../versioning/read.js';
 import { PayloadService } from './payload.js';
 

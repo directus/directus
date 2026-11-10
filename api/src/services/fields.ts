@@ -42,14 +42,13 @@ import getLocalType from '../utils/get-local-type.js';
 import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
-import { transaction } from '../utils/transaction.js';
-import { syncVersionTables } from '../versioning/sync-version-tables.js';
 import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
+import { runSchemaChange } from './version-tables/run-schema-change.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const env = useEnv();
@@ -367,7 +366,6 @@ export class FieldsService {
 			throw new ForbiddenError();
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
@@ -394,7 +392,7 @@ export class FieldsService {
 			let hookAdjustedField = field;
 			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
-			await transaction(this.knex, async (trx) => {
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
 				const itemsService = new ItemsService('directus_fields', {
 					knex: trx,
 					accountability: this.accountability,
@@ -429,7 +427,7 @@ export class FieldsService {
 							});
 						});
 
-						await syncVersionTables(trx);
+						change.sync([collection]);
 					}
 				}
 
@@ -480,10 +478,6 @@ export class FieldsService {
 				});
 			}
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
@@ -508,7 +502,6 @@ export class FieldsService {
 			throw new ForbiddenError();
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		// 'type' is required for further checks on schema update
@@ -565,7 +558,7 @@ export class FieldsService {
 					try {
 						const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
-						await transaction(this.knex, async (trx) => {
+						await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
 							await trx.schema.alterTable(collection, (table) => {
 								if (!hookAdjustedField.schema) return;
 
@@ -575,7 +568,7 @@ export class FieldsService {
 								});
 							});
 
-							await syncVersionTables(trx);
+							change.sync([collection]);
 						});
 
 						// concurrent index creation cannot be done inside the transaction
@@ -637,10 +630,6 @@ export class FieldsService {
 
 			return field.field;
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
@@ -704,7 +693,6 @@ export class FieldsService {
 			throw new ForbiddenError();
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
@@ -723,7 +711,7 @@ export class FieldsService {
 				);
 			}
 
-			await transaction(this.knex, async (trx) => {
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
 				const relations = getRelations(this.schema.relations, collection, field);
 
 				const relationsService = new RelationsService({
@@ -782,7 +770,7 @@ export class FieldsService {
 						table.dropColumn(field);
 					});
 
-					await syncVersionTables(trx);
+					change.sync([collection]);
 				}
 
 				const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(
@@ -886,10 +874,6 @@ export class FieldsService {
 				nestedActionEvents.push(actionEvent);
 			}
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}

@@ -359,7 +359,12 @@ export function createMockDialectKnex(vendor: keyof typeof DIALECTS) {
 	Object.defineProperty(Client.prototype, 'isMock', { value: true });
 
 	// Oracle names the sequences and triggers of auto increments based on the version
-	const db = knex.default({ client: Client, useNullAsDefault: true, ...(vendor === 'oracle' ? { version: '19.0' } : {}) });
+	const db = knex.default({
+		client: Client,
+		useNullAsDefault: true,
+		...(vendor === 'oracle' ? { version: '19.0' } : {}),
+	});
+
 	const tracker = createTracker(db);
 
 	return { db, tracker, language: DIALECTS[vendor].language as SqlLanguage };

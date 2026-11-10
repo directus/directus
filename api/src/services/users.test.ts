@@ -410,6 +410,8 @@ describe('Integration Tests', () => {
 				tracker.on.update('directus_versions').response({});
 				// mock comments update query in deleteOne/deleteMany/deleteByQuery methods
 				tracker.on.update('directus_comments').response({});
+				// mock versioned collections query, whose shadow tables reference users
+				tracker.on.select('directus_collections').response([]);
 
 				const service = new UsersService({
 					knex: db,

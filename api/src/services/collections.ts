@@ -31,14 +31,13 @@ import { validateAccess } from '../permissions/modules/validate-access/validate-
 import type { Collection } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
-import { transaction } from '../utils/transaction.js';
-import { isVersionTable } from '../versioning/constants.js';
-import { syncVersionTables } from '../versioning/sync-version-tables.js';
 import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
+import { isShadowTable } from './version-tables/constants.js';
+import { runSchemaChange } from './version-tables/run-schema-change.js';
 
 export class CollectionsService {
 	knex: Knex;
@@ -99,7 +98,6 @@ export class CollectionsService {
 		payload.collection = await this.helpers.schema.parseCollectionName(payload.collection);
 
 		const nestedActionEvents: ActionEventParams[] = [];
-		const runPostColumnChange = payload.meta?.versioning ? await this.helpers.schema.preColumnChange() : false;
 
 		try {
 			const existingCollections: string[] = [
@@ -117,7 +115,7 @@ export class CollectionsService {
 			// Create the collection/fields in a transaction so it'll be reverted in case of errors or
 			// permission problems. This might not work reliably in MySQL, as it doesn't support DDL in
 			// transactions.
-			await transaction(this.knex, async (trx) => {
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
 				if (payload.schema) {
 					if ('fields' in payload && !Array.isArray(payload.fields)) {
 						throw new InvalidPayloadError({ reason: `"fields" must be an array` });
@@ -240,11 +238,10 @@ export class CollectionsService {
 					);
 				}
 
+				// Creating version tables alters the existing shadow and link tables of related collections
 				if (payload.meta?.versioning) {
-					await syncVersionTables(trx);
+					change.sync([payload.collection]);
 				}
-
-				return payload.collection;
 			});
 
 			// concurrent index creation cannot be done inside the transaction
@@ -262,10 +259,6 @@ export class CollectionsService {
 
 			return payload.collection;
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
@@ -293,7 +286,7 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			const collections = await transaction(this.knex, async (trx) => {
+			return await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx) => {
 				const service = new CollectionsService({
 					schema: this.schema,
 					accountability: this.accountability,
@@ -315,8 +308,6 @@ export class CollectionsService {
 
 				return collectionNames;
 			});
-
-			return collections;
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
@@ -351,7 +342,7 @@ export class CollectionsService {
 		});
 
 		// Shadow and link tables are managed by versioning and shouldn't be exposed as collections
-		let tablesInDatabase = (await this.schemaInspector.tableInfo()).filter((table) => !isVersionTable(table.name));
+		let tablesInDatabase = (await this.schemaInspector.tableInfo()).filter((table) => !isShadowTable(table.name));
 
 		let meta = (await collectionsItemsService.readByQuery({
 			limit: -1,
@@ -476,7 +467,6 @@ export class CollectionsService {
 		}
 
 		const nestedActionEvents: ActionEventParams[] = [];
-		let runPostColumnChange = false;
 
 		try {
 			if (!payload.meta) {
@@ -493,14 +483,7 @@ export class CollectionsService {
 				.where({ collection: collectionKey })
 				.first());
 
-			// Toggling versioning creates / drops the shadow and link tables
-			const versioningChanged = 'versioning' in payload.meta;
-
-			if (versioningChanged) {
-				runPostColumnChange = await this.helpers.schema.preColumnChange();
-			}
-
-			await transaction(this.knex, async (trx) => {
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
 				const collectionsItemsService = new ItemsService('directus_collections', {
 					knex: trx,
 					accountability: this.accountability,
@@ -524,17 +507,14 @@ export class CollectionsService {
 					);
 				}
 
-				if (versioningChanged) {
-					await syncVersionTables(trx);
+				// Toggling versioning creates / drops the shadow and link tables
+				if ('versioning' in payload.meta!) {
+					change.sync([collectionKey]);
 				}
 			});
 
 			return collectionKey;
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
@@ -572,7 +552,7 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await transaction(this.knex, async (trx) => {
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx) => {
 				const collectionItemsService = new CollectionsService({
 					knex: trx,
 					accountability: this.accountability,
@@ -628,7 +608,7 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await transaction(this.knex, async (trx) => {
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx) => {
 				const service = new CollectionsService({
 					schema: this.schema,
 					accountability: this.accountability,
@@ -675,7 +655,6 @@ export class CollectionsService {
 			throw new ForbiddenError();
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
@@ -687,10 +666,10 @@ export class CollectionsService {
 				throw new ForbiddenError();
 			}
 
-			await transaction(this.knex, async (trx) => {
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
 				if (collectionToBeDeleted!.schema) {
 					// Version tables reference the live table, so they need to be cleaned up before it can be dropped
-					await syncVersionTables(trx, { exclude: [collectionKey] });
+					await change.beforeDrop(collectionKey);
 
 					await trx.schema.dropTable(collectionKey);
 				}
@@ -793,7 +772,7 @@ export class CollectionsService {
 
 					const relations = this.schema.relations.filter((relation) => {
 						// Version tables have already been cleaned up above
-						if (isVersionTable(relation.collection)) return false;
+						if (isShadowTable(relation.collection)) return false;
 
 						return relation.collection === collectionKey || relation.related_collection === collectionKey;
 					});
@@ -838,10 +817,6 @@ export class CollectionsService {
 
 			return collectionKey;
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
@@ -873,7 +848,8 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await transaction(this.knex, async (trx) => {
+			// The foreign key enforcement can't be toggled by the nested calls, as they run within this transaction
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx) => {
 				const service = new CollectionsService({
 					schema: this.schema,
 					accountability: this.accountability,
