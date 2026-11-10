@@ -1,32 +1,14 @@
-import { type AnyExtension, Node } from '@tiptap/vue-3';
+import type { AnyExtension } from '@tiptap/vue-3';
+import { blockContainer } from './semantic-html';
 
 /** Wrapper elements a field can opt into keeping. `section` and `article` are always kept (semantic-html.ts). */
 export const WRAPPER_ELEMENTS = ['div', 'aside', 'header', 'footer', 'nav', 'main'] as const;
 
-type WrapperElement = (typeof WRAPPER_ELEMENTS)[number];
-
-function wrapperNode(tag: WrapperElement) {
-	return Node.create({
-		name: `wrapper${tag[0]!.toUpperCase()}${tag.slice(1)}`,
-		group: 'block',
-		content: 'block+',
-		defining: true,
-
-		parseHTML() {
-			return [{ tag, getAttrs: (element) => (isParsedAsWrapper(element) ? null : false) }];
-		},
-
-		renderHTML({ HTMLAttributes }) {
-			return [tag, HTMLAttributes, 0];
-		},
-	});
-}
-
-function isParsedAsWrapper(element: HTMLElement): boolean {
+function isParsedAsWrapper(element: HTMLElement): null | false {
 	// page breaks are `div[data-page-break]` in the editor and belong to the pageBreak node
 	if (element.hasAttribute('data-page-break')) return false;
 	// a list item must start with a paragraph, so ProseMirror would move a leading wrapper out of the list
-	return !(element.parentElement?.nodeName === 'LI' && startsParent(element));
+	return element.parentElement?.nodeName === 'LI' && startsParent(element) ? false : null;
 }
 
 function startsParent(element: HTMLElement): boolean {
@@ -37,7 +19,9 @@ function startsParent(element: HTMLElement): boolean {
 	return true;
 }
 
-const WRAPPER_NODES = WRAPPER_ELEMENTS.map(wrapperNode);
+const WRAPPER_NODES = WRAPPER_ELEMENTS.map((tag) =>
+	blockContainer(`wrapper${tag[0]!.toUpperCase()}${tag.slice(1)}`, tag, 'block+', isParsedAsWrapper),
+);
 
 export function buildWrapperElementSchema(keep: unknown): { extensions: AnyExtension[]; tags: string[]; key: string } {
 	if (keep !== true) return { extensions: [], tags: [], key: '' };

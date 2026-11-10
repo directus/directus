@@ -181,7 +181,7 @@ describe('normalization warning wiring', () => {
 	});
 
 	test('an edit keeps the <div> with wrapper elements', async () => {
-		const { wrapper, editor } = await mountWithValue('<div class="box">a</div>', { allowWrapperElements: true });
+		const { wrapper, editor } = await mountWithValue('<div class="box">a</div>', { keepWrapperElements: true });
 
 		await vi.waitFor(() => expect(editor.getText().trim()).toBe('a'));
 

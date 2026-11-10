@@ -9,7 +9,7 @@ import { figureExtensions } from './figure';
 import { CustomImage } from './image';
 import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
-import { LIST_CONTAINER_TAGS, NoContainerParagraphs } from './no-container-paragraphs';
+import { buildContainerParagraphSchema } from './no-container-paragraphs';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
 import { PreservedAttributes, styleRules } from './preserved-attributes';
@@ -90,8 +90,8 @@ export interface FieldSchemaOptions {
 	keepLegacyEmphasisTags?: unknown;
 	/** Field `noContainerParagraphs` option: never add `<p>` in list items, blockquotes and table cells. */
 	noContainerParagraphs?: boolean;
-	/** Field `allowWrapperElements` option: keep `div`, `aside`, `header`, `footer`, `nav` and `main` instead of unwrapping them. */
-	allowWrapperElements?: unknown;
+	/** Field `keepWrapperElements` option: keep `div`, `aside`, `header`, `footer`, `nav` and `main` instead of unwrapping them. */
+	keepWrapperElements?: unknown;
 	comparisonMode?: boolean;
 }
 
@@ -118,8 +118,8 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 	const contributed = enabledRichTexts(options.extensions, options.extensionOptions);
 	const links = buildLinkProtocolSchema(options.linkProtocols);
 	const legacyEmphasis = buildLegacyEmphasisSchema(options.keepLegacyEmphasisTags);
-	const wrappers = buildWrapperElementSchema(options.allowWrapperElements);
-	const unwrapTags = [...(options.noContainerParagraphs ? LIST_CONTAINER_TAGS : []), ...wrappers.tags];
+	const wrappers = buildWrapperElementSchema(options.keepWrapperElements);
+	const containerParagraphs = buildContainerParagraphSchema(options.noContainerParagraphs, wrappers.tags);
 
 	return {
 		extensions: [
@@ -135,7 +135,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 				: []),
 			...legacyEmphasis.extensions,
 			...wrappers.extensions,
-			...(unwrapTags.length > 0 ? [NoContainerParagraphs.configure({ tags: unwrapTags })] : []),
+			...containerParagraphs.extensions,
 			...(options.comparisonMode ? [ComparisonDiff] : []),
 		],
 		key: [
@@ -144,7 +144,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			customFormats.key,
 			links.key,
 			legacyEmphasis.key,
-			options.noContainerParagraphs ? 'no-container-paragraphs' : '',
+			containerParagraphs.key,
 			wrappers.key,
 			contributed.map((config) => config.key).join('\u0000'),
 		].join('\u0000'),

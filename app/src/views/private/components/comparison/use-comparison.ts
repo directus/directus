@@ -317,7 +317,7 @@ export function useComparison(options: UseComparisonOptions) {
 					keepInlineStyles: field.meta?.options?.['keepInlineStyles'],
 					keepLegacyEmphasisTags: field.meta?.options?.['keepLegacyEmphasisTags'],
 					noContainerParagraphs: field.meta?.options?.['noContainerParagraphs'],
-					allowWrapperElements: field.meta?.options?.['allowWrapperElements'],
+					keepWrapperElements: field.meta?.options?.['keepWrapperElements'],
 					comparisonMode: true,
 				});
 

@@ -1,7 +1,11 @@
-import { Extension } from '@tiptap/core';
+import { type AnyExtension, Extension } from '@tiptap/core';
 import { DOMSerializer, type Fragment, type Schema } from '@tiptap/pm/model';
 
-export const LIST_CONTAINER_TAGS = ['li', 'blockquote', 'td', 'th'];
+const CONTAINER_TAGS = ['li', 'blockquote', 'td', 'th'];
+
+function toNodeNames(tags: string[]): ReadonlySet<string> {
+	return new Set(tags.map((tag) => tag.toUpperCase()));
+}
 
 // `renderHTML` must return a real element, so a paragraph cannot drop its own wrapper there
 class NoContainerParagraphSerializer extends DOMSerializer {
@@ -45,11 +49,11 @@ export const NoContainerParagraphs = Extension.create<NoContainerParagraphsOptio
 	name: 'noContainerParagraphs',
 
 	addOptions() {
-		return { tags: LIST_CONTAINER_TAGS };
+		return { tags: CONTAINER_TAGS };
 	},
 
 	addGlobalAttributes() {
-		const containerTags = new Set(this.options.tags.map((tag) => tag.toUpperCase()));
+		const containerTags = toNodeNames(this.options.tags);
 
 		return [
 			{
@@ -68,7 +72,22 @@ export const NoContainerParagraphs = Extension.create<NoContainerParagraphsOptio
 	},
 
 	onBeforeCreate() {
-		const containerTags = new Set(this.options.tags.map((tag) => tag.toUpperCase()));
-		this.editor.schema.cached['domSerializer'] = new NoContainerParagraphSerializer(this.editor.schema, containerTags);
+		this.editor.schema.cached['domSerializer'] = new NoContainerParagraphSerializer(
+			this.editor.schema,
+			toNodeNames(this.options.tags),
+		);
 	},
 });
+
+/** `wrapperTags` always get the serializer, so a kept `<div>text</div>` does not gain a `<p>`. */
+export function buildContainerParagraphSchema(
+	noContainerParagraphs: unknown,
+	wrapperTags: string[],
+): { extensions: AnyExtension[]; key: string } {
+	const tags = [...(noContainerParagraphs === true ? CONTAINER_TAGS : []), ...wrapperTags];
+
+	return {
+		extensions: tags.length > 0 ? [NoContainerParagraphs.configure({ tags })] : [],
+		key: noContainerParagraphs === true ? 'no-container-paragraphs' : '',
+	};
+}

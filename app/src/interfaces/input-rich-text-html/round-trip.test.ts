@@ -441,7 +441,7 @@ describe('noContainerParagraphs', () => {
 
 describe('wrapper elements', () => {
 	function wrapperSchema() {
-		return buildFieldSchema({ allowWrapperElements: true });
+		return buildFieldSchema({ keepWrapperElements: true });
 	}
 
 	function wrapperEditor(html: string) {
@@ -504,7 +504,7 @@ describe('wrapper elements', () => {
 	});
 
 	test('the checkbox turns the option off', () => {
-		const { extensions } = buildFieldSchema({ allowWrapperElements: false });
+		const { extensions } = buildFieldSchema({ keepWrapperElements: false });
 		const editor = new Editor({ extensions: fieldEditorExtensions(extensions), content: '<div class="box">a</div>' });
 
 		expect(editor.getHTML()).toBe('<p>a</p>');
@@ -517,7 +517,7 @@ describe('wrapper elements', () => {
 
 	test('works together with noContainerParagraphs', () => {
 		const { extensions, key } = buildFieldSchema({
-			allowWrapperElements: true,
+			keepWrapperElements: true,
 			noContainerParagraphs: true,
 		});
 
@@ -534,7 +534,7 @@ describe('wrapper elements', () => {
 			buildFieldSchema({}).key,
 			wrapperSchema().key,
 			buildFieldSchema({ noContainerParagraphs: true }).key,
-			buildFieldSchema({ allowWrapperElements: true, noContainerParagraphs: true }).key,
+			buildFieldSchema({ keepWrapperElements: true, noContainerParagraphs: true }).key,
 		]);
 
 		expect(keys.size).toBe(4);

@@ -408,15 +408,15 @@ export default defineInterface({
 				},
 			},
 			{
-				field: 'allowWrapperElements',
-				name: '$t:interfaces.input-rich-text-html.allow_wrapper_elements',
+				field: 'keepWrapperElements',
+				name: '$t:interfaces.input-rich-text-html.keep_wrapper_elements',
 				type: 'boolean',
 				meta: {
 					width: 'full',
 					interface: 'boolean',
-					note: '$t:interfaces.input-rich-text-html.allow_wrapper_elements_note',
+					note: '$t:interfaces.input-rich-text-html.keep_wrapper_elements_note',
 					options: {
-						label: '$t:interfaces.input-rich-text-html.allow_wrapper_elements_label',
+						label: '$t:interfaces.input-rich-text-html.keep_wrapper_elements_label',
 					},
 				},
 				schema: {

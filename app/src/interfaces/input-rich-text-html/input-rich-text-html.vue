@@ -58,7 +58,7 @@ const props = withDefaults(
 		/** Never add `<p>` in list items, blockquotes and table cells; see extensions/no-container-paragraphs.ts. */
 		noContainerParagraphs?: boolean;
 		/** Keep `div` and other wrapper elements instead of unwrapping them; see extensions/wrapper-elements.ts. */
-		allowWrapperElements?: boolean;
+		keepWrapperElements?: boolean;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -104,7 +104,7 @@ const fieldSchema = buildFieldSchema({
 	keepInlineStyles: props.keepInlineStyles,
 	keepLegacyEmphasisTags: props.keepLegacyEmphasisTags,
 	noContainerParagraphs: props.noContainerParagraphs,
-	allowWrapperElements: props.allowWrapperElements,
+	keepWrapperElements: props.keepWrapperElements,
 	comparisonMode: props.comparisonMode,
 });
 
