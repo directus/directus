@@ -14,9 +14,10 @@ Added a `toMilliseconds` helper to `@directus/utils`
 
 Env vars are now cast more strictly:
 
-- Booleans only accept `true`, `false`, `1` and `0` (eg `TRUE` is now `false`)
+- Booleans only accept `true`, `false`, `1` and `0` (case-insensitive). Other values (eg `yes`) are invalid, where some
+  vars previously treated any non-empty value as enabled (eg `SERVE_APP=FALSE`)
 - Plain number durations (eg `ACCESS_TOKEN_TTL=900`) are read as milliseconds, use a unit to be explicit (eg `15m`)
-- Invalid values fall back to the default and log a warning
+- Invalid values log a warning and fall back to the default (or `false` for booleans without one)
 - Variables without a value in a `.env` file (eg `KEY=`) are treated as not configured and fall back to the default. Use
   `KEY=""` for an empty value, eg `DB_PASSWORD=""` for a database user without a password, as `DB_PASSWORD=` is now
   reported as missing
