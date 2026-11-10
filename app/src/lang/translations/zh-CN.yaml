@@ -227,6 +227,7 @@ connection_good: 好的连接状态
 connection_fair: 一般的连接状态
 connection_poor: 连接不良
 primary: 主要的
+download_folder: 下载文件夹
 rename_folder: 重命名文件夹
 delete_folder: 删除文件夹
 prefix: 前缀
@@ -235,17 +236,28 @@ keep: 保持
 version: 版本号
 version_key: 版本密钥
 version_name: 版本名称
+your_version: 您的版本
 switch_version: 切换版本
 switch_version_copy: 确定要切换到"{version}"版本？未保存的更改将会丢失。
 create_version: 创建新版本
 rename_version: 重命名版本
+reserved_version_key: '版本键“{key}”已被保留，无法使用。'
 compare_version: 对比版本
 save_version: 保存版本
+publish: 发布
+version_create_item_less: 只有在草稿版本发布后才能创建版本
 apply: 应用
+discard: 舍弃
 select_all_differences: 选择所有差异
+show_differences_only: 仅显示差异
+published_updated_notice: 自此版本创建以来，主条目已更新。
 delete_version: 删除版本
 delete_version_copy: >-
   你确定要删除"{version}" 这个版本吗? 此操作无法撤销。
+auto_save_failed: 自动保存失败
+auto_save_failed_copy: 重试时保持此页面打开！
+auto_save_enabled: 自动保存已启用
+content_edited: 内容已编辑
 reset_bookmark: 重置书签
 update_bookmark: 更新书签
 delete_bookmark: 删除书签
@@ -276,7 +288,16 @@ recommended_defaults: 推荐设置
 unarchive: 取消存档
 unarchive_confirm: 您确定要取消归档此条目吗？
 nested_files_folders_will_be_moved: 文件和文件夹将被上移一级。
+delete_folder_dialog:
+  move_content: 将内容向上移动一级
+  delete_content: 删除所有内容
+  content_behavior: 无论此文件夹发生什么？
+delete_flow_folder_dialog:
+  content_behavior: 无论此文件夹下的子文件夹发生什么？您的流程将不会被删除。
+  move_content: 仅删除此文件夹
+  delete_content: 删除此文件夹及其子文件夹
 validation_errors_notice: '以下字段含有无效值:'
+validation_value_is_invalid: 值无效
 validationError:
   eq: 值必须是 {valid}
   neq: 值不能为 {invalid}
@@ -306,6 +327,7 @@ validationError:
   niends_with: 值不能以"{substring}"结尾
   confirm_password: 密码不匹配
   org_name: 请包含组织名称
+  unsafe: 值不是一个安全的数字
 all_access: 允许所有
 no_access: 禁止访问
 use_custom: 自定义
@@ -551,16 +573,41 @@ related_collection: 相关模型
 related_collections: 相关模型
 translations_collection: 翻译模型
 languages_collection: 语言模型
+enable_translations: 启用翻译
+manage_translation_fields: 添加翻译字段
+fields_to_translate: 要翻译的字段
+fields_to_add_to_translations: 要添加到翻译的字段
+translations_collection_name: 翻译模型名称
+translations_already_enabled: 翻译已启用
+translations_manage_helper_description: 您可以从此模型中添加更多字段来翻译。
+translations_copy_data_note: 字段已复制到翻译集合中。现有数据未迁移。
+add_fields: 添加字段
+show_advanced_options: 显示关系详细信息
+hide_advanced_options: 隐藏关系详细信息
+translations_field_name_required: 所有翻译字段名称都是必需的。
+translations_foreign_key_name_conflict: 父级和语言的外键名称必须不同。
+translations_duplicate_field_names: 翻译字段名称必须唯一。
+translation_configuration: 翻译配置
+translations_invalid_config_warning: '{count} 项翻译配置无法解析，将保持只读状态 | {count} 项翻译配置无法解析，将保持只读状态'
+translations_collection_already_exists: 这个翻译集已经存在，并将被重新使用
+translations_fields_up_to_date: 所有符合条件的字段已经存在于翻译集中。
 translations_preview_collections: 数据模型
 translations_preview_fields: 字段
+translations_preview_relations: 关系
+ungrouped: 未分组
+translations_enable_helper_description: 将内容翻译成多种语言。
 import_data_input_placeholder: CSV 或 JSON
 import_data_button: 开始导入
+import_background: 在后台导入
 import_data_indeterminate: 导入数据中
 import_data_success: 成功从 {filename} 导入数据
+import_upload_success: '{filename} 已成功上传。正在后台导入数据。'
 import_data_errors: 导入错误
 import_data_error: 此文件的数据结构与模型不匹配。
 import_data_validation_errors_notice: '以下行记录有无效数据：'
 import_data_error_row: '行 {rows}{field}：'
+export_flow: 导出流程
+export_flows: 导出流程
 flow_import_success: 流程导入成功。
 flow_import_failed: 无法导入流程
 flow_import_not_json: 该文件不是有效的JSON格式。
@@ -1128,8 +1175,13 @@ deployment:
       delete_confirm: 此操作是永久性的，无法撤销。您确定要继续吗？
       remove_projects_confirm: 移除下列项目（{projects}）会从Directus永久删除其所有部署历史。此操作不可撤销。您确定要继续吗？
     run:
+      currently_deploying: 正在部署中……
+      stop: 停止部署
       cancel_confirm: 此操作是永久性的，无法撤销。您确定要继续吗？
       log_all: 所有日志级别
+      search_logs: 搜索日志……
+      no_logs: 无可用日志
+      download_logs: 下载日志
       open_deployment: 访问
       open_in_provider: 在 {provider} 中打开
   no_providers: 没有部署提供商
@@ -1160,6 +1212,11 @@ deployment:
     successful_builds: '构建成功：{count} | 构建成功：{count}'
     total_deployments: '部署：{count} | 部署：{count}'
     average_build_time: '平均构建时长：{value}'
+    success_rate: '成功率：{value}%'
+  range:
+    1d: 最近24小时
+    7d: 最近 7 天
+    30d: 最近 30 天
 dashboard: 控制面板
 panel: 面板
 panel_options: 选项
@@ -1209,6 +1266,7 @@ right_align: 右对齐
 fit_to_screen: 自适应
 image_url: 图片 Url
 alt_text: 替代文本
+caption: 标题
 media: Media
 quality: 质量
 width: 宽
@@ -1230,6 +1288,7 @@ unlimited: 无限制
 open_link_in: 打开链接于
 new_tab: 新标签页
 save_image: 保存图像
+save_link: 保存链接
 save_media: 保存媒体
 wysiwyg_options:
   aligncenter: 居中对齐
@@ -1250,8 +1309,12 @@ wysiwyg_options:
   bullist: 符号列表
   numlist: 数字列表
   hr: 水平线
+  pagebreak: 分页
+  insertdatetime: 插入日期/时间
   insertdatetime_date: Date
   insertdatetime_time: 时间
+  insertdatetime_datetime: 日期和时间
+  insertdatetime_locale: 本地化
   link: 添加/编辑链接
   unlink: 移除链接
   media: 添加/编辑媒体
@@ -1270,6 +1333,7 @@ wysiwyg_options:
   pre: 预格式化
   fontselect: 选择字体
   fontsizeselect: 选择字体大小
+  styles: 格式
   indent: 缩进
   outdent: 减少缩进
   undo: 撤销
@@ -1278,8 +1342,45 @@ wysiwyg_options:
   removeformat: 清除格式
   selectall: 全选
   table: 表
+  table_cell: 单元
+  table_row: 行
+  table_column: 列
+  table_insert: 插入表格
+  table_insert_size: '{cols} × {rows}'
+  table_add_row_before: 在上方添加行
+  table_add_row_after: 在下方添加行
+  table_add_column_before: 添加左列
+  table_add_column_after: 添加右列
+  table_delete_row: 删除行
+  table_delete_column: 删除列
+  table_toggle_header_row: 切换表头行
+  table_toggle_header_column: 切换头列
+  table_merge_cells: 合并单元格
+  table_split_cell: 拆分单元格
+  table_delete: 删除表格
   visualaid: 显示不可见的元素
   source_code: 编辑源代码
+  source_code_normalization_notice: 当您保存时，编辑器无法呈现的标记会被标准化。
+  source_code_normalize_title: 一些标记将被删除
+  source_code_normalize_body: 编辑器无法呈现高亮显示的标记，因此在您保存时，这些标记会被移除。
+  save_anyway: 仍然保存
+  normalization_warning_title: 此处部分格式不受支持
+  normalization_warning_body: 此内容包含新编辑器不支持的元素，因此该字段目前处于“只读”状态。如果您执意进行编辑，这些元素将在保存时被移除。若要保持存储的 HTML 内容完全不变，请直接编辑原始 HTML 代码。一旦这些不支持的元素被移除，此警告便会消失。如果您此前已在这些元素丢失的情况下进行了保存，可以通过“修订版本”功能找回原始内容。
+  normalization_warning_view_changes: 查看变更
+  normalization_warning_keep_readonly: 保持只读
+  normalization_warning_edit_anyway: 继续编辑
+  normalization_warning_edit_raw: 编辑原始HTML
+  normalization_locked_notice: 此字段包含新编辑器不支持的格式，因此为只读状态。请选中该字段，以选择编辑方式。
+  normalization_locked_learn_more: 了解改变了的内容
+  paste_warning_notice: 我们已清除了您所粘贴内容中不受支持的标记。某些应用程序会在复制的内容外添加额外的标记，而本编辑器并不支持这些标记。
+  paste_warning_see_removed: 查看已删除的内容
+  paste_warning_title: 不支持的标记已从您的粘贴中删除
+  paste_warning_body: '“清除格式粘贴”会保留文本及其格式；“撤销粘贴”则可将其移除。“以原始格式粘贴”会完整保留所复制的 HTML 内容，并将此字段切换为原始 HTML 编辑模式。'
+  paste_warning_body_kept: 经过清理的粘贴内容保留了原有的文本和格式。由于粘贴后的内容已发生变更，因此无法再在此处执行撤销操作。
+  paste_warning_undo: 撤销粘贴
+  paste_warning_paste_raw: 粘贴原始内容
+  paste_warning_keep: 保持干净状态
+  normalization_comparison_notice: 此版本包含编辑器无法显示的格式，因此所存储的 HTML 将按原样呈现。应用此版本可还原内容，且内容保持不变。
   fullscreen: 全屏显示
   directionality: 方向
   ltr: 从左到右
@@ -1299,6 +1400,7 @@ appearance_light: 亮色
 appearance_dark: 深色
 other: 其他...
 adding_user: 添加用户
+more_users: 点击查看更多
 unknown_user: 未知用户
 unknown_version: 未知的版本
 unknown_revision: 未知的修订版
@@ -1313,27 +1415,84 @@ settings_data_model: 数据模型
 settings_roles: 用户角色
 settings_permissions: 访问策略
 settings_project: 设置
+settings_license: 许可协议
 licensing:
+  unlicensed: 未授权
+  current_plan: 当前套餐
+  expires_on: '将于 {date} 过期'
+  renews_on: '续费日期 {date}'
+  add: 添加许可证
+  manage: 管理许可证
+  upgrade_plan: 升级套餐
+  included: 包括
+  not_included: 不包含
   unlimited: 无限制
+  plan_usage: 您的套餐使用情况
+  addons: 附加组件包
+  addon_purchase: 购买
   addon_manage: 管理
+  contact_sales: 联系销售
+  addon_purchase_dialog_title: '额外购买{name}'
+  addon_summary_purchase: '{new} 总共。'
+  addon_summary_active: '{active} 当前'
+  addon_summary_pending: '{active} 当前状态 → {effective} 下次续期时生效（{date}）。增加操作以取消待执行的停用。'
+  addon_summary_upgrade: '{active} 当前值 + {difference} 单位（s） = {new} 单位总计（s）'
+  addon_summary_downgrade: '{active} 当前值 - {difference} 单位（s） = {new} 单位总计（s）'
   addon_update: 更新
   resolve_continue: 继续
   resolve_show_n_more: '显示更多 {count}'
   resolve_section_flows: 流程
   resolve_sso_admin_email: 邮箱地址
   resolve_sso_admin_password: 密码
+  resolve_sso_admin_password_placeholder: 设置密码……
+  resolve_sso_admin_confirm: 确认
+  resolve_section_custom_llms: 自定义LLM
+  resolve_custom_llms_confirm: 确认自定义LM停用
+  resolve_custom_llms_caption: 自定义LLM配置将在做出此更改时被禁用。
+  resolve_section_custom_permissions: 自定义访问策略
+  resolve_custom_permissions_confirm: 确认自定义访问规则停用
+  resolve_custom_permissions_caption: 由自定义规则所管控的任何访问策略/权限，若无法匹配，将回退至“无访问权限”状态。
+  resolve_section_ai_translations: AI 翻译
+  resolve_ai_translations_confirm: 确认 AI 翻译停用
+  resolve_ai_translations_caption: AI 翻译将被禁用，您的翻译设置将不再使用。
+  env_managed: 您的许可证密钥是通过环境变量管理的，无法在这里更新。
+  manage_license_disabled: 您的许可证密钥管理已被您的环境设置禁用。
+  key_management: 许可证密钥管理
   key: 许可证密钥
   entitlements:
     collections: 数据模型
+    seats: 座位数
     flows: 流程
+    activity_historical_timeframe: 活动历史
+    revisions_historical_timeframe: 修订历史
+    sso_enabled: 单点登录
+    offline_enabled: 离线模式
+    telemetry_opt_out: 遥测选择退出
+    custom_llms_enabled: 自定义 LLM
+    custom_permission_rules_enabled: 自定义规则 (访问策略)
+    ai_translations_enabled: AI 翻译
+    display_powered_by: 显示驱动者
     production_enabled: 生产
   badge:
+    directus: 由 Directus 驱动
     oig: 开放创新补助金
     non_prod: 非制造业
+danger_zone: 危险区
 settings_appearance: 外观
 settings_ai: AI
 model_context_protocol: 模型上下文协议
 ai_assistant: AI助手
+ai_disabled_by_env: AI 助理功能已被环境变量禁用。
+ai_allowed_models_default_note: 使用推荐模型，这些模型会随 Directus 新版本的发布而更新。更改此列表将保存您的个人选择。
+mcp_disabled_by_env: MCP 功能已被环境变量禁用。
+mcp_oauth_disabled_by_env: MCP OAuth 被MCP_OOUTH_ENABLED 环境变量禁用。
+mcp_oauth_dcr_disabled_by_env: 动态客户端注册被MCP_OAUTH_DCR_ENABLED 环境变量禁用。
+mcp_oauth_cimd_disabled_by_env: 客户端ID 元数据文档被MCP_OAUTH_CIMD_ENABLED 环境变量禁用。
+mcp_oauth_clients: 'MCP OAuth 客户端'
+manage_registered_clients: '管理已注册客户终端'
+no_oauth_clients: '尚未注册 OAuth 客户端。'
+revoke_client: '撤销客户端'
+revoke_client_confirm: '您确定要撤销此客户端吗？所有相关的令牌和会话将被删除。'
 settings_system_logs: 系统日志
 settings_presets: 书签
 settings_translations: 翻译
@@ -1354,9 +1513,16 @@ data: 数据
 theme-overrides: 主题覆盖
 unsaved_changes: 修改还未保存
 unsaved_changes_copy: 您确定要离开此页面吗？
+unsaved_changes_collab: 未保存协作更改
+unsaved_changes_copy_collab: 您正在和其他人一起编辑此项目。您的更改将保留在合作会话中，但如果没有人保存，可能会丢失。
+leave_page: 离开页面
+cancel_anyway: 仍要取消
 discard_changes: 不保存修改并离开此页
 discard_all_changes: 放弃所有更改
 discard_changes_copy: 您确定要放弃所有更改吗？
+published_item_has_changed: 已发布条目已更改
+published_item_has_changed_copy: 自此版本创建以来，已发布的条目已经更新。现在发布将覆盖这些更改。
+discard_changes_copy_collab: 您正在与他人共同编辑此项目。放弃更改将清除本次协作会话中所有尚未保存的编辑内容。
 show_x_axis: 显示 X 轴
 show_y_axis: 显示 Y 轴
 keep_editing: 继续编辑
@@ -1369,6 +1535,23 @@ no_layout_collection_selected_yet: 尚未选择布局/模型
 batch_delete_confirm: >-
   您还没有选择数据 | 您确定要删除此条数据吗? 此操作无法撤消。 | 您确定要删除这 {count} 条数据吗?  此操作无法撤消。
 cancel: 取消
+license:
+  seats_limit:
+    title: 用户将被创建，但处于非活动状态。
+    body_admin: >-
+      您已经达到了您计划允许的最大限制。您将需要购买额外附加组件或升级。
+    body_member: >-
+      您已达到您计划允许的最大限制。请联系管理员购买附加组件或升级。
+  collections_limit:
+    title: 已达到模型限制数量
+    body: >-
+      您已经达到了您计划允许的最大限制。您将需要购买额外附加组件或升级。
+  max_capacity:
+    label: 最大容量
+  flows_limit:
+    body: >-
+      您已经达到了您计划允许的最大限制。您将需要购买额外附加组件或升级。
+  contact_sales: 联系销售
 no_upscale: 不要放大图片
 no_extensions: 无扩展
 no_extensions_copy: 尚未安装扩展。
@@ -1573,19 +1756,47 @@ fields:
     mcp_prompts_collection: AI 提示词集合
     mcp_system_prompt_divider: 系统提示配置
     mcp_system_prompt_enabled: 使用系统提示
+    mcp_system_prompt_enabled_note: "使用<a href='https://directus.com/docs/guides/ai/mcp#system-prompt' target='_blank'>默认系统提示词</a>来指导大型语言模型LLM的行为。禁用后可以移除或使用下方您自己的提示词覆盖。"
     mcp_system_prompt: 自定义系统提示
     mcp_system_prompt_note: '自定义系统提示替换默认值。留空则使用默认值(如果已启用)。'
+    mcp_oauth_enabled: 'OAuth 已启用'
+    mcp_oauth_enabled_note: '允许 MCP 客户端通过 OAuth 2.1 验证'
+    mcp_oauth_dcr_enabled: '动态客户端注册'
+    mcp_oauth_cimd_enabled: '客户端 ID 元数据档案'
     ai_system_prompt: 用于AI系统的提示词
     ai_system_prompt_note: '自定义用于AI系统的提示词，可以在与AI助手的交互中引导大型语言模型的行为。若留空，则使用默认值。'
+    ai_translation_default_model: 翻译默认模型
+    ai_translation_default_model_note: '选择用于AI 翻译的默认模型。只有在上面的设置中启用的模型是可以在这里使用的。'
+    ai_glossary_term: 期限
+    ai_glossary_term_placeholder: Directus流程
+    ai_glossary_note: 翻译说明
+    ai_glossary_note_placeholder: 永远不要翻译，保持原来状态
+    ai_translation_glossary: 翻译词汇表
+    ai_translation_glossary_note: '定义关键词及其在您的语言之间的认可翻译。保留产品名称、用户界面标签和其他重要短语与您的内容一致。'
+    ai_translation_style_guide: 翻译风格指南
+    ai_translation_style_guide_note: '描述如何翻译您的内容，包括语音、形式和格式规则。 包含您的商店、产品和受众的详细信息，以帮助AI 保持您品牌语音的一致性。'
+    ai_translation_style_guide_placeholder: "翻译成一个充满信心、可理解的语音。使用非正式的“你”，避免闪烁，并保持术语的一致性。"
+    ai_openai_api_key: OpenAI API 密钥
     ai_openai_allowed_models: AI OpenAI的可用模型
+    ai_anthropic_api_key: Anthropic API 密钥
     ai_anthropic_allowed_models: AI Anthropic的可用模型
+    ai_google_api_key: Google API 密钥
     ai_google_allowed_models: AI Google的可用模型
     ai_openai_compatible: 与OpenAI相兼容的提供者
+    ai_translations_notice: 您当前的套餐不包含 AI 翻译。升级以解锁。
+    ai_openai_compatible_notice: 您当前的计划不包括自定义LLM。升级以解锁。
     ai_openai_compatible_name: 提供者的名称
     ai_openai_compatible_base_url: 根URL
+    ai_openai_compatible_api_key: API密钥
     ai_openai_compatible_models: 模型
     ai_openai_compatible_headers: 自定义标头
     ai_model_id: 型号
+    ai_context_limit: 上下文限制
+    ai_output_limit: 输出限制
+    ai_supports_attachments: 支持附件
+    ai_supports_reasoning: 支持推理
+    ai_provider_options: 提供商选项
+    ai_provider_options_note: 提供者特定选项传递到 AI 端点。
     ai_header_name: 报头
   directus_shares:
     name: 名称
@@ -1651,14 +1862,19 @@ field_options:
     overrides_divider_title: 应用设置覆盖
   directus_activity:
     login: 登录
+    logout: 注销
     create: 创建
     update: 更新
     delete: 删除
+  directus_oauth_clients:
+    registration_type_dcr: DCR
+    registration_type_cimd: CIMD
   directus_collections:
     track_activity_revisions: 跟踪活动和历史修改版本
     only_track_activity: 仅跟踪活动
     do_not_track_anything: 不跟踪任何内容
     collection_setup: 模型设置
+    collection_naming_translations_note: "基于用户的语言，覆盖模型在应用程序中的显示名称。"
     note_placeholder: 此模型的简介...
     hidden_label: 在管理菜单中隐藏
     singleton: 视为单个对象
@@ -1678,8 +1894,11 @@ field_options:
     accountability_divider: 访问控制
     duplication_divider: 复制
     preview_divider: 预览
+    content_translations_divider: 内容翻译
     content_versioning_divider: 内容版本
     enable_versioning: 启用版本
+    interval_default: '默认 ({minutes} 分钟)'
+    interval_default_seconds: '默认 ({seconds} 秒)'
   directus_files:
     title: 唯一的标题...
     description: 可选描述...
@@ -1742,14 +1961,29 @@ live_preview:
   toggle_3d: 切换 3D
   iframe_title: 实时网站预览
   display_options: 显示选项
+  exit_full_width: 退出完整宽度
+  open_in_visual_editor: 在视觉编辑器中打开
 shares: 共享
 unlimited_usage: 无限使用
 uses_left: 无剩余使用次数 | 剩余一次使用次数 | 剩余 {n} 次使用次数
 no_shares: 没有要显示的共享
 new_share: 新建分享
+show_more: 显示更多
+show_less: 显示更少
+retry: 重试
 ai:
+  thinking: 思考中……
   input: Input
+  output: 输出
+  streaming: 串流中……
+  ready: 准备
+  complete: 完成
+  error: 错误
+  error_message: 发生了一个错误
+  unknown_error: 未知错误
   unknown: 未知
+  approval_requested: 请求批准
+  approve: 批准
   items: 条目
   content: 内容
   settings: 设置
@@ -1757,7 +1991,19 @@ ai:
     disabled: 禁用
   ask_user_submit: 提交
   ask_user_next: 下一步
+  tool_descriptions:
+    folders: 创建并整理文件夹
+    flows: 创建和更新流程
+    trigger-flow: 手动运行触发的流程
+    operations: 在流程中管理操作
+    schema: 获取数据库建模信息
+    collections: 创建和管理模型
+    fields: 创建和配置模型字段
+    relations: 设置模型之间的关系
 ai_tools:
+  ask_user: 询问用户
+  update_form_values: 更新表单值
+  read_form_values: 读取表单值
   items: 条目
   files: 多个文件
   folders: 文件夹
@@ -1767,6 +2013,7 @@ ai_tools:
   schema: Schema
   collections: 数据模型
   fields: 字段
+  relations: 关系
 mcp_prompts_collection:
   no_collection_selected: 无选择的集合
   no_collection_selected_copy: 选择一个集合来启用可重复使用的提示词模板。
@@ -1790,6 +2037,7 @@ mcp_prompts_collection_schema:
   messages_role_user: 用户
   messages_role_assistant: 助理
   messages_role_note: 谁正在这个信息中说话。
+  meta_prompts_notice: '提示词是可重复使用的模板，您可以通过 Directus MCP 服务器、流程或其他 AI 应用程序与大型语言模型LLM一起使用。<a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">了解更多关于创建有效提示词的信息。</a>'
 expired: 已过期
 upcoming: 即将到来的
 share: 分享
@@ -1823,10 +2071,20 @@ continue_as: >-
   {name} 目前已被身份验证。如果您确认此帐户，请按继续。
 editing_role: '{role} 角色'
 editing_policy: '{policy} 策略'
+public_policy_warning: >-
+  此处的更改会影响未经身份验证的用户以及未被分配角色的用户所能访问的内容及其可执行的操作。有关更多信息，请参阅 {docs}。
+public_policy_warning_docs_link: 安全最佳实践文件
+public_policy_dialog:
+  title: 更改系统模型的公开访问权限？
+  copy: >-
+    您将要更改以下系统收藏的公共权限。这些操作将提供给未经授权的用户和没有角色的用户：
+  unfiltered_read_warning: 在没有过滤器的情况下读取访问权限会显示模型中的每个记录。
+  best_practices: 有关更多信息，请参阅 {docs}。
 no_permissions: 没有权限
 permission_add_collection: 添加模型
 default_label: 默认值
 delete_label: 删除
+discard_label: 舍弃
 delete_are_you_sure: >-
   此操作是永久性的，无法撤销。您确定要继续吗？
 delete_field_are_you_sure: >-
@@ -1863,6 +2121,7 @@ colors:
 junction_collection: 交叉模型
 latency: 延迟
 login: 登录
+logout: 登出
 my_activity: 操作记录
 not_authenticated: 未认证
 authenticated: 已认证。
@@ -1958,14 +2217,21 @@ interfaces:
     accordion_mode: 折叠模式
     max_one_section_open: 最多展开 1 项
   group-tabs:
+    name: 标签页
+    description: 将字段或群组作为标签显示
+    overwrite_group_width: 覆盖组宽度
     fill_width: 全宽
+    fill_width_note: 允许此组填满页面的全宽度。
   presentation-links:
     presentation-links: 按钮
+    description: 可配置的链接按钮，用于启动动态 URL 或触发流程
     style: 样式
     primary: 主要的
     link: 链接
     button: 按钮
     error: 无法执行操作
+    action_type: 动作类型
+    select_manual_flow_note: 此模型的流程必须配置为手动触发
   select-multiple-checkbox:
     checkboxes: 复选框
     description: 通过复选框选择多个选项
@@ -2046,6 +2312,9 @@ interfaces:
   file:
     file: 文件
     description: 选择或上传文件
+    allowed_mime_types: 允许的 MIME 类型
+    mime_types_placeholder: 选择或添加允许 MIME 类型……
+    mime_types_note: 请注意，在您的环境中定义的全局FILES_MIME_TYPE_ALLOW_LIST 将优先于上述选择。
   files:
     files: 多个文件
     description: 选择或上传多个文件
@@ -2091,6 +2360,9 @@ interfaces:
   collection-item-dropdown:
     collection-item-dropdown: 集合项下拉菜单
     description: 从JSON格式的集合中选择一个项目
+  collection-item-multiple-dropdown:
+    collection-item-multiple-dropdown: 集合项下拉菜单（多选）
+    description: 从JSON格式的集合中选择多个项目
   input-rich-text-md:
     markdown: Markdown
     description: 输入并预览Markdown
@@ -2153,7 +2425,10 @@ interfaces:
     incompatible_data: 当前数据与重复器接口不兼容，添加项目到重复器时将被覆盖
     interface_group: 接口选项
     display_group: 显示选项
+    edit_mode: 编辑模式
+    edit_mode_drawer: 抽屉
     edit_mode_inline: 内联
+    confirm_remove: 确认删除条目
   slider:
     slider: 滑块
     description: 使用滑块选择一个数字
@@ -2211,6 +2486,21 @@ interfaces:
     default_language: 默认语言
     language_field: 语言指示字段
     language_direction_field: 语言方向字段
+    ai_translate: 使用 AI 翻译
+    ai_translate_short: 翻译
+    ai_translate_tooltip: 将您的内容通过AI自动翻译
+    model: 模型
+    source_language: 源语言
+    target_languages: 目标语言
+    translate_n_languages: '翻译 {count} 种语言 | 翻译 {count} 种语言'
+    no_source_content: 所选源字段没有要翻译的内容。
+    no_additional_languages: 未配置其他语言。
+    no_translation_models: 目前没有可用的翻译模型。
+    translation_error: 这种语言翻译失败。
+    translation_not_allowed: 您无权翻译这种语言。
+    translation_pending_delete: 此语言有待删除，不能被翻译。
+    permission_check_failed: 无法验证此语言的权限。请重试。
+    empty: (空)
   list-o2m-tree-view:
     description: 递归显示树状图
     recursive_only: 树状图仅适用于递归关系。
@@ -2291,6 +2581,7 @@ interfaces:
   header:
     header: 报头
     links: 链接
+    action_type: 动作类型
 displays:
   translations:
     translations: 翻译
@@ -2708,6 +2999,7 @@ operations:
     batch: 批处理
     batch_size: 批量大小
     cache: 缓存
+    cache_query_placeholder: 允许查询参数……
 unit: 单位
 standard: 基本设置
 scientific: 科学的
