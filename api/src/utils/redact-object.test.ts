@@ -167,6 +167,14 @@ test.each([
 	expect(JSON.stringify(result)).toContain('"title":"a"');
 });
 
+test('should not change the keys passed in', () => {
+	const keys = [['a'], ['*', 'b']];
+
+	redactObject({ a: 1, x: { b: 2 } }, { keys }, getRedactedString);
+
+	expect(keys).toEqual([['a'], ['*', 'b']]);
+});
+
 describe('getReplacer tests', () => {
 	test('Returns parsed error object', () => {
 		const errorMessage = 'Error Message';
