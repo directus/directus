@@ -16,6 +16,9 @@ export const VERSION_META_FIELDS = {
 	userUpdated: 'version_user_updated',
 } as const;
 
+/** Field that holds the version meta of an item in the API */
+export const VERSION_META_FIELD = 'directus_version';
+
 /**
  * Keys of the `directus_version` object in the API, mapped to the shadow table columns
  */
@@ -28,6 +31,13 @@ export const VERSION_META_KEYS: Record<string, string> = {
 	user_created: VERSION_META_FIELDS.userCreated,
 	user_updated: VERSION_META_FIELDS.userUpdated,
 };
+
+/**
+ * Map the meta columns of a shadow table row to the keys of the `directus_version` object
+ */
+export function toVersionMeta(row: Record<string, unknown>): Record<string, any> {
+	return Object.fromEntries(Object.entries(VERSION_META_KEYS).map(([key, column]) => [key, row[column] ?? null]));
+}
 
 export const VERSION_TYPES = ['draft', 'published', 'archived'] as const;
 

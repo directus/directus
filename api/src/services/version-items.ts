@@ -15,6 +15,7 @@ import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { transaction } from '../utils/transaction.js';
 import { validateLinkAccess } from '../versioning/link-access.js';
+import { getO2MRelation } from '../versioning/read.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import {
@@ -23,10 +24,12 @@ import {
 	getVersionReferenceField,
 	isShadowTable,
 	isVersionedCollection,
+	toVersionMeta,
+	VERSION_META_FIELD,
 	VERSION_META_FIELDS,
 } from './version-tables/constants.js';
 
-export type VersionMeta = {
+type VersionMeta = {
 	id: PrimaryKey | null;
 	name: string | null;
 	type: 'draft' | 'published' | 'archived';
@@ -36,7 +39,7 @@ export type VersionMeta = {
 	user_updated: string | null;
 };
 
-export type VersionPayload = Item & { directus_version?: Partial<Pick<VersionMeta, 'id' | 'name'>> };
+type VersionPayload = Item & { [VERSION_META_FIELD]?: Partial<Pick<VersionMeta, 'id' | 'name'>> };
 
 /** Values of these fields are maintained by the live collection on publish */
 const MANAGED_SPECIALS = [
@@ -188,11 +191,11 @@ export class VersionedItemsService {
 			const referenceField = getVersionReferenceField(relation.field);
 
 			if (referenceField in shadowFields && item[relation.field] === null && row[referenceField] !== null) {
-				item[relation.field] = { directus_version: { id: row[referenceField] } };
+				item[relation.field] = { [VERSION_META_FIELD]: { id: row[referenceField] } };
 			}
 		}
 
-		item['directus_version'] = this.toVersionMeta(row);
+		item[VERSION_META_FIELD] = toVersionMeta(row);
 
 		return pickFields(item, query?.fields);
 	}
@@ -207,7 +210,7 @@ export class VersionedItemsService {
 			throw new InvalidPayloadError({ reason: `Version of "${collection}" has to be an object` });
 		}
 
-		const { directus_version: meta, ...values } = data;
+		const { [VERSION_META_FIELD]: meta, ...values } = data;
 		const { primary, fields } = this.schema.collections[collection]!;
 
 		versionId ??= meta?.id ?? null;
@@ -223,19 +226,21 @@ export class VersionedItemsService {
 			Object.assign(record, await this.readLiveRow(trx, collection, values[primary]));
 		}
 
+		const m2oRelations = this.getM2ORelations(collection);
+
 		for (const [field, value] of Object.entries(values)) {
 			if (!(field in fields)) {
 				throw new InvalidPayloadError({ reason: `Field "${field}" doesn't exist in collection "${collection}"` });
 			}
 
-			const m2o = this.getM2ORelations(collection).find((relation) => relation.field === field);
+			const m2o = m2oRelations.find((relation) => relation.field === field);
 
 			if (m2o) {
 				Object.assign(record, await this.saveM2O(trx, collection, m2o, value, { ...existing, ...values }));
 				continue;
 			}
 
-			const o2m = this.getO2MRelation(collection, field);
+			const o2m = getO2MRelation(this.schema, collection, field);
 
 			if (o2m) {
 				o2mValues.push([o2m, value]);
@@ -304,12 +309,13 @@ export class VersionedItemsService {
 		const relatedVersion = value as VersionPayload;
 
 		const isLinkOnly =
-			Object.keys(relatedVersion).length === 1 && isEqual(Object.keys(relatedVersion.directus_version ?? {}), ['id']);
+			Object.keys(relatedVersion).length === 1 &&
+			isEqual(Object.keys(relatedVersion[VERSION_META_FIELD] ?? {}), ['id']);
 
 		let relatedVersionId: PrimaryKey;
 
 		if (isLinkOnly) {
-			relatedVersionId = relatedVersion.directus_version!.id!;
+			relatedVersionId = relatedVersion[VERSION_META_FIELD]!.id!;
 			await this.readVersionRow(trx, relatedCollection, relatedVersionId, 'read');
 		} else {
 			relatedVersionId = await this.saveVersion(trx, relatedCollection, null, relatedVersion);
@@ -372,7 +378,7 @@ export class VersionedItemsService {
 				linked.versionIds.push(
 					await this.saveVersion(trx, relatedCollection, null, {
 						...(item as Item),
-						[relation.field]: { directus_version: { id: versionId } },
+						[relation.field]: { [VERSION_META_FIELD]: { id: versionId } },
 					}),
 				);
 
@@ -415,10 +421,11 @@ export class VersionedItemsService {
 		const relatedShadowTable = getShadowTableName(relatedCollection);
 		const referenceField = getVersionReferenceField(relation.field);
 
-		const linkQuery = trx(linkTable).select(primary).where(relation.field, versionId);
+		const scope = async (query: Knex.QueryBuilder, column: string, values: PrimaryKey[]): Promise<Item[]> =>
+			options.except ? query.whereNotIn(column, values) : query.whereIn(column, values);
 
 		const unlinkedKeys = (
-			await (options.except ? linkQuery.whereNotIn(primary, items.keys) : linkQuery.whereIn(primary, items.keys))
+			await scope(trx(linkTable).select(primary).where(relation.field, versionId), primary, items.keys)
 		).map((row) => row[primary]);
 
 		if (unlinkedKeys.length > 0) {
@@ -434,12 +441,12 @@ export class VersionedItemsService {
 
 		if (!this.schema.collections[relatedShadowTable]?.fields[referenceField]) return;
 
-		const versionQuery = trx(relatedShadowTable).select(VERSION_META_FIELDS.id).where(referenceField, versionId);
-
 		const unlinkedVersionIds = (
-			await (options.except
-				? versionQuery.whereNotIn(VERSION_META_FIELDS.id, items.versionIds)
-				: versionQuery.whereIn(VERSION_META_FIELDS.id, items.versionIds))
+			await scope(
+				trx(relatedShadowTable).select(VERSION_META_FIELDS.id).where(referenceField, versionId),
+				VERSION_META_FIELDS.id,
+				items.versionIds,
+			)
 		).map((row) => row[VERSION_META_FIELDS.id]);
 
 		if (unlinkedVersionIds.length === 0) return;
@@ -461,7 +468,7 @@ export class VersionedItemsService {
 
 		for (const item of items) {
 			const key = this.getO2MLinkKey(relation, item);
-			const versionId = (item as VersionPayload)?.directus_version?.id;
+			const versionId = (item as VersionPayload)?.[VERSION_META_FIELD]?.id;
 
 			if (key !== null) {
 				result.keys.push(key);
@@ -778,24 +785,6 @@ export class VersionedItemsService {
 				relation.collection === collection &&
 				(relation.related_collection !== null || relation.meta?.one_allowed_collections),
 		);
-	}
-
-	private getO2MRelation(collection: string, field: string) {
-		return this.schema.relations.find(
-			(relation) => relation.related_collection === collection && relation.meta?.one_field === field,
-		);
-	}
-
-	private toVersionMeta(row: Item): VersionMeta {
-		return {
-			id: row[VERSION_META_FIELDS.id],
-			name: row[VERSION_META_FIELDS.name],
-			type: row[VERSION_META_FIELDS.type],
-			date_created: row[VERSION_META_FIELDS.dateCreated],
-			date_updated: row[VERSION_META_FIELDS.dateUpdated],
-			user_created: row[VERSION_META_FIELDS.userCreated],
-			user_updated: row[VERSION_META_FIELDS.userUpdated],
-		};
 	}
 }
 

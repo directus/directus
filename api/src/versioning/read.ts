@@ -23,6 +23,8 @@ import {
 	getShadowTableName,
 	getVersionReferenceField,
 	isVersionedCollection,
+	toVersionMeta,
+	VERSION_META_FIELD,
 	VERSION_META_FIELDS,
 	VERSION_META_KEYS,
 	VERSION_REFERENCE_PREFIX,
@@ -40,8 +42,6 @@ type ReadMode = 'items' | 'versions';
 
 /** Unique key of the combined rows, as live primary keys and version ids overlap */
 const KEY_FIELD = 'directus_version_key';
-
-const META_FIELD = 'directus_version';
 
 export function isVersionedQuery(query: Query) {
 	return String(query.version) === 'true';
@@ -140,9 +140,7 @@ export async function readVersionedItems(
 	await resolveVersionReferences(collection, items, fields, context, mode);
 
 	return items.map((item) => {
-		item[META_FIELD] = Object.fromEntries(
-			Object.entries(VERSION_META_KEYS).map(([key, column]) => [key, item[column] ?? null]),
-		);
+		item[VERSION_META_FIELD] = toVersionMeta(item);
 
 		for (const field of addedFields) {
 			delete item[field];
@@ -166,7 +164,7 @@ function formatAggregate(item: Item, query: Query) {
 	for (const [key, column] of Object.entries(VERSION_META_KEYS)) {
 		if (!(column in item)) continue;
 
-		item[META_FIELD] = { ...item[META_FIELD], [key]: item[column] };
+		item[VERSION_META_FIELD] = { ...item[VERSION_META_FIELD], [key]: item[column] };
 		delete item[column];
 	}
 
@@ -175,7 +173,7 @@ function formatAggregate(item: Item, query: Query) {
 
 		item[aggregate] = mapKeys(item[aggregate], (_value, column) => {
 			const key = Object.keys(VERSION_META_KEYS).find((key) => VERSION_META_KEYS[key] === column);
-			return key ? `${META_FIELD}.${key}` : column;
+			return key ? `${VERSION_META_FIELD}.${key}` : column;
 		});
 	}
 
@@ -326,7 +324,7 @@ function getEngineFields(schema: SchemaOverview, collection: string, fields: str
 
 	for (const field of fields) {
 		const path = field.split('.');
-		const index = path.indexOf(META_FIELD);
+		const index = path.indexOf(VERSION_META_FIELD);
 
 		if (index === -1) {
 			result.push(field);
@@ -367,11 +365,11 @@ function mapAggregate(aggregate: Aggregate, map: (fields: string[]) => string[])
 }
 
 function isMetaField(field: string) {
-	return field === META_FIELD || field.startsWith(`${META_FIELD}.`);
+	return field === VERSION_META_FIELD || field.startsWith(`${VERSION_META_FIELD}.`);
 }
 
 function toMetaColumn(field: string) {
-	return isMetaField(field) ? getMetaColumn(field.slice(META_FIELD.length + 1)) : field;
+	return isMetaField(field) ? getMetaColumn(field.slice(VERSION_META_FIELD.length + 1)) : field;
 }
 
 /**
@@ -390,7 +388,7 @@ function stripMetaFilter(filter: Filter | null | undefined): Filter | null {
 		const result: Record<string, unknown> = {};
 
 		for (const [key, nested] of Object.entries(value as object)) {
-			if (key === META_FIELD) continue;
+			if (key === VERSION_META_FIELD) continue;
 
 			const stripped = strip(nested);
 
@@ -426,80 +424,77 @@ function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 	const result: Record<string, unknown> = {};
 	const conditions: Filter[] = [];
 
+	const rewriteAt = (value: unknown, collection: string, versioned: boolean) =>
+		rewriteFilter(value as Filter, { ...level, collection, hasMeta: versioned, references: versioned });
+
 	for (const [key, value] of Object.entries(filter)) {
 		if ((key === '_and' || key === '_or') && Array.isArray(value)) {
 			result[key] = value.map((nested) => rewriteFilter(nested, level));
-		} else if (key === '_some' || key === '_none') {
+			continue;
+		}
+
+		if (key === '_some' || key === '_none') {
 			result[key] = rewriteFilter(value as Filter, level);
-		} else if (key === META_FIELD) {
+			continue;
+		}
+
+		if (key === VERSION_META_FIELD) {
 			if (level.hasMeta) {
-				for (const [metaKey, condition] of Object.entries(value ?? {})) {
-					result[getMetaColumn(metaKey)] = condition;
-				}
+				Object.assign(
+					result,
+					mapKeys(value ?? {}, (_, metaKey) => getMetaColumn(metaKey)),
+				);
 			} else if (!matchesPublishedMeta(value as Record<string, Record<string, unknown>>)) {
 				// Never matches, as an empty `_in` compiles to `1 = 0`. A `_null` check on the primary key would still match
 				// rows without a related item, as relations are left joined
 				conditions.push({ [level.schema.collections[level.collection]!.primary]: { _in: [] } } as Filter);
 			}
-		} else if (key.startsWith('_') || !isPlainObject(value) || isFieldCondition(value as Record<string, unknown>)) {
+
+			continue;
+		}
+
+		const related = isPlainObject(value) && !key.startsWith('_') && !isFieldCondition(value as Record<string, unknown>);
+		const m2oCollection = related ? getM2ORelation(level.schema, level.collection, key)?.related_collection : null;
+		const o2m = related && !m2oCollection ? getO2MRelation(level.schema, level.collection, key) : null;
+
+		if (o2m) {
+			result[key] = rewriteAt(value, o2m.collection, false);
+			continue;
+		}
+
+		if (!m2oCollection) {
 			result[key] = value;
+			continue;
+		}
+
+		const live = nestOrExists(key, rewriteAt(value, m2oCollection, false));
+		const referenceField = getVersionReferenceField(key);
+
+		const shadow = level.references
+			? getM2ORelation(level.schema, level.collection, referenceField)?.related_collection
+			: null;
+
+		if (shadow) {
+			level.shadows.add(shadow);
+
+			const version = nestOrExists(referenceField, rewriteAt(value, shadow, true));
+			conditions.push({ _or: [live, { _and: [{ [key]: { _null: true } }, version] }] } as Filter);
+		} else if ('_and' in live || '_or' in live) {
+			conditions.push(live);
 		} else {
-			const m2o = getM2ORelation(level.schema, level.collection, key);
-			const o2m = getO2MRelation(level.schema, level.collection, key);
-
-			if (m2o?.related_collection) {
-				const live = rewriteFilter(value as Filter, {
-					...level,
-					collection: m2o.related_collection,
-					hasMeta: false,
-					references: false,
-				});
-
-				const referenceField = getVersionReferenceField(key);
-				const reference = level.references ? getM2ORelation(level.schema, level.collection, referenceField) : null;
-
-				// A relation filter that's left without conditions still requires the related item to exist
-				const orExists = (field: string, filter: Filter) =>
-					Object.keys(filter).length > 0 ? nestFilter(field, filter) : ({ [field]: { _nnull: true } } as Filter);
-
-				if (reference?.related_collection) {
-					level.shadows.add(reference.related_collection);
-
-					const version = rewriteFilter(value as Filter, {
-						...level,
-						collection: reference.related_collection,
-						hasMeta: true,
-						references: true,
-					});
-
-					conditions.push({
-						_or: [orExists(key, live), { _and: [{ [key]: { _null: true } }, orExists(referenceField, version)] }],
-					} as Filter);
-				} else {
-					const nested = orExists(key, live);
-
-					if ('_and' in nested || '_or' in nested) {
-						conditions.push(nested);
-					} else {
-						Object.assign(result, nested);
-					}
-				}
-			} else if (o2m) {
-				result[key] = rewriteFilter(value as Filter, {
-					...level,
-					collection: o2m.collection,
-					hasMeta: false,
-					references: false,
-				});
-			} else {
-				result[key] = value;
-			}
+			Object.assign(result, live);
 		}
 	}
 
 	if (conditions.length === 0) return result as Filter;
+	if (Object.keys(result).length > 0) conditions.unshift(result as Filter);
 
-	return { _and: [...(Object.keys(result).length > 0 ? [result as Filter] : []), ...conditions] } as Filter;
+	return { _and: conditions } as Filter;
+}
+
+/** Nest a filter under an m2o field. A filter left without conditions still requires the related item to exist */
+function nestOrExists(field: string, filter: Filter): Filter {
+	return Object.keys(filter).length > 0 ? nestFilter(field, filter) : ({ [field]: { _nnull: true } } as Filter);
 }
 
 /**
@@ -573,24 +568,21 @@ function matchesOperator(value: unknown, operator: string, argument: unknown) {
 			if (value === null) return false;
 
 			throw new InvalidQueryError({
-				reason: `Operator "${operator}" isn't supported on "${META_FIELD}" of live items`,
+				reason: `Operator "${operator}" isn't supported on "${VERSION_META_FIELD}" of live items`,
 			});
 	}
 }
 
 function rewriteSort(sort: string) {
-	if (!isMetaField(sort.replace(/^-/, ''))) return sort;
-
 	const descending = sort.startsWith('-');
-	const key = sort.replace(/^-/, '').slice(META_FIELD.length + 1);
 
-	return `${descending ? '-' : ''}${getMetaColumn(key)}`;
+	return `${descending ? '-' : ''}${toMetaColumn(descending ? sort.slice(1) : sort)}`;
 }
 
 function getMetaColumn(key: string) {
 	const column = VERSION_META_KEYS[key];
 
-	if (!column) throw new InvalidQueryError({ reason: `"${META_FIELD}.${key}" doesn't exist` });
+	if (!column) throw new InvalidQueryError({ reason: `"${VERSION_META_FIELD}.${key}" doesn't exist` });
 
 	return column;
 }
@@ -638,7 +630,7 @@ async function resolveM2O(items: Item[], relation: Relation, subfields: string[]
 	// a2o references and requests for keys only return the reference itself
 	if (!related || subfields.length === 0 || !isVersionedCollection(context.schema, related)) {
 		for (const item of pending) {
-			item[relation.field] = { [META_FIELD]: { id: item[referenceField] } };
+			item[relation.field] = { [VERSION_META_FIELD]: { id: item[referenceField] } };
 		}
 
 		return;
@@ -735,7 +727,7 @@ async function resolveO2M(versions: Item[], relation: Relation, subfields: strin
 
 			addChild(
 				reference[referenceField],
-				relatedVersions ? relatedVersions.get(String(versionId)) : { [META_FIELD]: { id: versionId } },
+				relatedVersions ? relatedVersions.get(String(versionId)) : { [VERSION_META_FIELD]: { id: versionId } },
 			);
 		}
 	}
@@ -749,8 +741,8 @@ async function readVersionsById(collection: string, subfields: string[], ids: un
 	const items = await readVersionedItems(
 		collection,
 		{
-			fields: [...subfields, `${META_FIELD}.id`],
-			filter: { [META_FIELD]: { id: { _in: uniq(ids) } } } as Filter,
+			fields: [...subfields, `${VERSION_META_FIELD}.id`],
+			filter: { [VERSION_META_FIELD]: { id: { _in: uniq(ids) } } } as Filter,
 			limit: -1,
 		},
 		context,
@@ -759,7 +751,7 @@ async function readVersionsById(collection: string, subfields: string[], ids: un
 
 	return new Map(
 		items.map((item) => {
-			const id = String(item[META_FIELD].id);
+			const id = String(item[VERSION_META_FIELD].id);
 			trimVersionMeta(item, subfields);
 			return [id, item];
 		}),
@@ -777,7 +769,11 @@ async function readLiveById(collection: string, subfields: string[], keys: unkno
 	if (isVersionedCollection(schema, collection)) {
 		items = await readVersionedItems(
 			collection,
-			{ fields, filter: { _and: [filter, { [META_FIELD]: { type: { _eq: 'published' } } }] } as Filter, limit: -1 },
+			{
+				fields,
+				filter: { _and: [filter, { [VERSION_META_FIELD]: { type: { _eq: 'published' } } }] } as Filter,
+				limit: -1,
+			},
 			context,
 		);
 	} else {
@@ -807,15 +803,14 @@ async function readLiveById(collection: string, subfields: string[], keys: unkno
 function injectPublishedMeta(item: Item, fields: string[]) {
 	if (!isPlainObject(item)) return;
 
-	if (item[META_FIELD] === undefined && requestedMetaKeys(fields).length > 0) {
-		item[META_FIELD] = Object.fromEntries(Object.keys(VERSION_META_KEYS).map((key) => [key, null]));
-		item[META_FIELD].type = 'published';
+	if (item[VERSION_META_FIELD] === undefined && requestedMetaKeys(fields).length > 0) {
+		item[VERSION_META_FIELD] = { ...PUBLISHED_META };
 	}
 
-	if (item[META_FIELD] !== undefined) trimVersionMeta(item, fields);
+	if (item[VERSION_META_FIELD] !== undefined) trimVersionMeta(item, fields);
 
 	for (const root of uniq(fields.map((field) => field.split('.')[0]!))) {
-		if (root === META_FIELD || root === '*') continue;
+		if (root === VERSION_META_FIELD || root === '*') continue;
 
 		const subfields = getSubfields(fields, root);
 
@@ -833,9 +828,9 @@ function trimVersionMeta(item: Item, fields: string[]) {
 	const keys = requestedMetaKeys(fields);
 
 	if (keys.length === 0) {
-		delete item[META_FIELD];
+		delete item[VERSION_META_FIELD];
 	} else {
-		item[META_FIELD] = pick(item[META_FIELD], keys);
+		item[VERSION_META_FIELD] = pick(item[VERSION_META_FIELD], keys);
 	}
 }
 
@@ -845,7 +840,7 @@ function requestedMetaKeys(fields: string[]) {
 	for (const field of fields) {
 		const [root, key] = field.split('.');
 
-		if (root !== META_FIELD) continue;
+		if (root !== VERSION_META_FIELD) continue;
 
 		if (!key || key === '*') return Object.keys(VERSION_META_KEYS);
 
@@ -868,7 +863,7 @@ function getRequestedRoots(schema: SchemaOverview, collection: string, fields: s
 
 		if (root === '*') {
 			Object.keys(schema.collections[collection]!.fields).forEach((field) => roots.add(field));
-		} else if (root !== META_FIELD) {
+		} else if (root !== VERSION_META_FIELD) {
 			roots.add(root);
 		}
 	}
@@ -904,7 +899,7 @@ function getM2ORelation(schema: SchemaOverview, collection: string, field: strin
 	return schema.relations.find((relation) => relation.collection === collection && relation.field === field);
 }
 
-function getO2MRelation(schema: SchemaOverview, collection: string, field: string) {
+export function getO2MRelation(schema: SchemaOverview, collection: string, field: string) {
 	return schema.relations.find(
 		(relation) => relation.related_collection === collection && relation.meta?.one_field === field,
 	);

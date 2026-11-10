@@ -41,7 +41,7 @@ import { captureSeatCount, validateUserCountIntegrity } from '../utils/validate-
 import { handleVersion } from '../utils/versioning/handle-version.js';
 import { isVersionedQuery, readVersionedItems } from '../versioning/read.js';
 import { PayloadService } from './payload.js';
-import { getShadowTableName, isVersionedCollection } from './version-tables/constants.js';
+import { getShadowTableName, isVersionedCollection, VERSION_META_FIELD } from './version-tables/constants.js';
 
 export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
 	implements AbstractService<Item>
@@ -628,12 +628,12 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const filter = {
 				_and: [
 					{ [primaryKeyField]: { _eq: key } },
-					{ directus_version: { type: { _in: ['published', 'archived'] } } },
+					{ [VERSION_META_FIELD]: { type: { _in: ['published', 'archived'] } } },
 					...(query.filter ? [query.filter] : []),
 				],
 			} as Filter;
 
-			const sort = ['-directus_version.type', '-directus_version.id'];
+			const sort = [`-${VERSION_META_FIELD}.type`, `-${VERSION_META_FIELD}.id`];
 			const [result] = await this.readByQuery({ ...query, filter, sort, limit: 1 }, { ...opts, key });
 
 			if (!result) throw new ForbiddenError();
@@ -1186,10 +1186,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const previousSeatCount = await captureSeatCount(trx, opts.userIntegrityCheckFlags);
 
 			// Versions of an item are deleted along with it
-			const shadowTable = getShadowTableName(this.collection);
-
-			if (shadowTable in this.schema.collections) {
-				await trx(shadowTable).whereIn(primaryKeyField, keysAfterHooks).delete();
+			if (isVersionedCollection(this.schema, this.collection)) {
+				await trx(getShadowTableName(this.collection)).whereIn(primaryKeyField, keysAfterHooks).delete();
 			}
 
 			await trx(this.collection).whereIn(primaryKeyField, keysAfterHooks).delete();
