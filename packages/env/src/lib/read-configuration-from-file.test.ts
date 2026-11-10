@@ -9,7 +9,7 @@ import { readConfigurationFromFile } from './read-configuration-from-file.js';
 
 vi.mock('node:fs');
 vi.mock('../utils/get-file-extension.js');
-vi.mock('../utils/read-configuration-from-dotenv.js');
+vi.mock('../utils/read-configuration-from-env.js');
 vi.mock('../utils/read-configuration-from-javascript.js');
 vi.mock('../utils/read-configuration-from-json.js');
 vi.mock('../utils/read-configuration-from-yaml.js');
