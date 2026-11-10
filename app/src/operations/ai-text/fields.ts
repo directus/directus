@@ -15,9 +15,11 @@ export function applyModelLimits(options: Record<string, unknown>): Record<strin
 
 export function getModelChoices() {
 	const providers = useServerStore().info.ai_providers ?? [];
-	const customModels = buildCustomModels(useSettingsStore().settings?.ai_openai_compatible_models ?? null);
+	const settings = useSettingsStore().settings;
+	const customModels = buildCustomModels(settings?.ai_openai_compatible_models ?? null);
+	const openRouterModels = buildCustomModels(settings?.ai_openrouter_models ?? null, 'openrouter');
 
-	return [...AI_MODELS, ...customModels]
+	return [...AI_MODELS, ...customModels, ...openRouterModels]
 		.filter((model) => providers.includes(model.provider))
 		.map((model) => ({
 			text: model.name,
