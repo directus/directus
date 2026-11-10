@@ -101,6 +101,7 @@
 		"@langfuse/otel": "catalog:",
 		"@modelcontextprotocol/sdk": "catalog:",
 		"@netlify/api": "catalog:",
+		"@openrouter/ai-sdk-provider": "catalog:",
 		"@opentelemetry/sdk-trace-node": "catalog:",
 		"@rollup/plugin-alias": "catalog:",
 		"@rollup/plugin-node-resolve": "catalog:",

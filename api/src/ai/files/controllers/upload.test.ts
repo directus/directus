@@ -69,14 +69,13 @@ describe('aiFileUploadHandler', () => {
 						openaiApiKey: 'test-openai-key',
 						anthropicApiKey: 'test-anthropic-key',
 						googleApiKey: 'test-google-key',
+						openrouterApiKey: 'test-openrouter-key',
 						openaiCompatibleApiKey: null,
 						openaiCompatibleBaseUrl: null,
 						openaiCompatibleName: null,
 						openaiCompatibleModels: null,
 						openaiCompatibleHeaders: null,
-						openaiAllowedModels: null,
-						anthropicAllowedModels: null,
-						googleAllowedModels: null,
+						allowedModels: { openai: [], anthropic: [], google: [], openrouter: [] },
 						systemPrompt: null,
 					},
 				},
@@ -189,7 +188,7 @@ describe('aiFileUploadHandler', () => {
 			expect(mockNext).toHaveBeenCalledWith(expect.any(InvalidPayloadError));
 
 			const error = (mockNext as any).mock.calls[0][0];
-			expect(error.message).toContain('Unsupported provider');
+			expect(error.message).toContain('File uploads not supported for invalid-provider provider');
 		});
 
 		it('should throw InvalidPayloadError for openai-compatible provider', async () => {
@@ -210,6 +209,26 @@ describe('aiFileUploadHandler', () => {
 
 			const error = (mockNext as any).mock.calls[0][0];
 			expect(error.message).toContain('File uploads not supported for openai-compatible');
+		});
+
+		it('should throw InvalidPayloadError for openrouter provider', async () => {
+			const { stream, headers } = createMockMultipartRequest(
+				{ provider: 'openrouter' },
+				{ name: 'test.pdf', data: Buffer.from('test'), type: 'application/pdf' },
+			);
+
+			mockReq = {
+				headers,
+				accountability: { user: 'test', role: 'test', app: true } as any,
+				pipe: stream.pipe.bind(stream),
+			} as any;
+
+			await aiFileUploadHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			expect(mockNext).toHaveBeenCalledWith(expect.any(InvalidPayloadError));
+
+			const error = (mockNext as any).mock.calls[0][0];
+			expect(error.message).toContain('File uploads not supported for openrouter provider');
 		});
 
 		it('should throw InvalidPayloadError for unsupported MIME type', async () => {

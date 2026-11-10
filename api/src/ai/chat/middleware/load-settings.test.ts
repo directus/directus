@@ -12,14 +12,13 @@ const settings: AISettings = {
 	openaiApiKey: 'test-key',
 	anthropicApiKey: null,
 	googleApiKey: null,
+	openrouterApiKey: null,
 	openaiCompatibleApiKey: null,
 	openaiCompatibleBaseUrl: null,
 	openaiCompatibleName: null,
 	openaiCompatibleModels: null,
 	openaiCompatibleHeaders: null,
-	openaiAllowedModels: ['gpt-5'],
-	anthropicAllowedModels: [],
-	googleAllowedModels: [],
+	allowedModels: { openai: ['gpt-5'], anthropic: [], google: [], openrouter: [] },
 	systemPrompt: 'You are Directus.',
 };
 
