@@ -26,6 +26,13 @@ test('toggles multiple cards without mutating the input array', async () => {
 	expect(cards.every((card) => card.attributes('aria-checked') === 'false')).toBe(true);
 });
 
+test('toggles a card with Enter', async () => {
+	const wrapper = mount(VCheckboxCards, { props: { items }, global, attachTo: document.body });
+	await wrapper.findAll('[role="checkbox"]')[1]!.trigger('keydown', { key: 'Enter' });
+	expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([['b']]);
+	wrapper.unmount();
+});
+
 test('preserves numeric values and distinguishes them from strings', async () => {
 	const wrapper = mount(VCheckboxCards, {
 		props: {

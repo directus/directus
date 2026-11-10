@@ -34,6 +34,7 @@ const selectedValues = computed(() => props.modelValue ?? []);
 		@keydown="focusAdjacentCard"
 		@update:model-value="emit('update:modelValue', $event as T[])"
 	>
+		<!-- Reka blocks Enter on checkboxes; toggle on Enter to match v-radio-cards -->
 		<CheckboxRoot
 			v-for="(item, index) in items"
 			:key="item.value"
@@ -43,6 +44,7 @@ const selectedValues = computed(() => props.modelValue ?? []);
 			:class="{ custom: $slots.item, unselected: selectedValues.length > 0 && !selectedValues.includes(item.value) }"
 			:aria-labelledby="item.label ? `${groupId}-${index}-label` : undefined"
 			:aria-describedby="item.description ? `${groupId}-${index}-description` : undefined"
+			@keydown.enter="($event.currentTarget as HTMLElement).click()"
 		>
 			<slot
 				name="item"
