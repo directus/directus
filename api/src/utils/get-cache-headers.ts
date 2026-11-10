@@ -25,7 +25,7 @@ export function getCacheControlHeader(
 	if (ttl === undefined || ttl < 0) return 'no-cache';
 
 	// When the API cache can invalidate at any moment
-	if (globalCacheSettings && env['CACHE_AUTO_PURGE'] === true) return 'no-cache';
+	if (globalCacheSettings && env.CACHE_AUTO_PURGE) return 'no-cache';
 
 	const headerValues = [];
 
@@ -41,12 +41,11 @@ export function getCacheControlHeader(
 	headerValues.push(`max-age=${ttlSeconds}`);
 
 	// When the s-maxage flag should be included
-	if (
-		globalCacheSettings &&
-		Number.isInteger(env['CACHE_CONTROL_S_MAXAGE']) &&
-		(env['CACHE_CONTROL_S_MAXAGE'] as number) >= 0
-	) {
-		headerValues.push(`s-maxage=${env['CACHE_CONTROL_S_MAXAGE']}`);
+	// CACHE_CONTROL_S_MAXAGE has no default, so it can be undefined. NaN (invalid value) and negative values disable the flag
+	const sMaxAge = env.CACHE_CONTROL_S_MAXAGE;
+
+	if (globalCacheSettings && sMaxAge !== undefined && Number.isInteger(sMaxAge) && sMaxAge >= 0) {
+		headerValues.push(`s-maxage=${sMaxAge}`);
 	}
 
 	return headerValues.join(', ');
