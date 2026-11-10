@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getFileExtension } from '../utils/get-file-extension.js';
-import { readConfigurationFromDotEnv } from '../utils/read-configuration-from-dotenv.js';
+import { readConfigurationFromDotEnv } from '../utils/read-configuration-from-env.js';
 import { readConfigurationFromJavaScript } from '../utils/read-configuration-from-javascript.js';
 import { readConfigurationFromJson } from '../utils/read-configuration-from-json.js';
 import { readConfigurationFromYaml } from '../utils/read-configuration-from-yaml.js';
