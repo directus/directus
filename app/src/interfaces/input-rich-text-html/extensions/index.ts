@@ -9,7 +9,7 @@ import { figureExtensions } from './figure';
 import { CustomImage } from './image';
 import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
-import { NoContainerParagraphs } from './no-container-paragraphs';
+import { LIST_CONTAINER_TAGS, NoContainerParagraphs } from './no-container-paragraphs';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
 import { PreservedAttributes } from './preserved-attributes';
@@ -20,6 +20,7 @@ import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { Table } from './table';
 import { TextAlignment } from './text-alignment';
 import { TextStyle } from './text-style';
+import { buildWrapperElementSchema } from './wrapper-elements';
 import { contributedKey, enabledRichTexts } from '@/rich-text/register';
 
 /**
@@ -80,6 +81,8 @@ export interface FieldSchemaOptions {
 	keepLegacyEmphasisTags?: unknown;
 	/** Field `noContainerParagraphs` option: never add `<p>` in list items, blockquotes and table cells. */
 	noContainerParagraphs?: boolean;
+	/** Field `allowWrapperElements` option: keep `div`, `aside`, `header`, `footer`, `nav` and `main` instead of unwrapping them. */
+	allowWrapperElements?: unknown;
 	comparisonMode?: boolean;
 }
 
@@ -96,7 +99,7 @@ export interface FieldSchema {
 
 /**
  * The one place a field's schema additions are assembled: the richtext extensions the field opted
- * into, its custom formats, its link protocols, its legacy emphasis tags, and the comparison-diff mark in
+ * into, its custom formats, its link protocols, its legacy emphasis tags, its wrapper elements, and the comparison-diff mark in
  * comparison mode. The live editor, the save-time round-trip check, the source-code drawer and the
  * comparison view all build from this result. A site that composed the list by hand could miss a contribution and report its markup as
  * dropped even though the editor renders it.
@@ -106,6 +109,8 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 	const contributed = enabledRichTexts(options.extensions, options.extensionOptions);
 	const links = buildLinkProtocolSchema(options.linkProtocols);
 	const legacyEmphasis = buildLegacyEmphasisSchema(options.keepLegacyEmphasisTags);
+	const wrappers = buildWrapperElementSchema(options.allowWrapperElements);
+	const unwrapTags = [...(options.noContainerParagraphs ? LIST_CONTAINER_TAGS : []), ...wrappers.tags];
 
 	return {
 		extensions: [
@@ -113,7 +118,8 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			...customFormats.extensions,
 			...links.extensions,
 			...legacyEmphasis.extensions,
-			...(options.noContainerParagraphs ? [NoContainerParagraphs] : []),
+			...wrappers.extensions,
+			...(unwrapTags.length > 0 ? [NoContainerParagraphs.configure({ tags: unwrapTags })] : []),
 			...(options.comparisonMode ? [ComparisonDiff] : []),
 		],
 		key: [
@@ -122,6 +128,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			links.key,
 			legacyEmphasis.key,
 			options.noContainerParagraphs ? 'no-container-paragraphs' : '',
+			wrappers.key,
 			contributed.map((config) => config.key).join('\u0000'),
 		].join('\u0000'),
 		formats: customFormats.formats,

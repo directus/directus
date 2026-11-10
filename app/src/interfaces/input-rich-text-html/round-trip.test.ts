@@ -438,3 +438,105 @@ describe('noContainerParagraphs', () => {
 		expect(buildFieldSchema({ noContainerParagraphs: true }).key).not.toBe(buildFieldSchema({}).key);
 	});
 });
+
+describe('wrapper elements', () => {
+	function wrapperSchema() {
+		return buildFieldSchema({ allowWrapperElements: true });
+	}
+
+	function wrapperEditor(html: string) {
+		const { extensions } = wrapperSchema();
+		return new Editor({ extensions: fieldEditorExtensions(extensions), content: decodePageBreaks(html) });
+	}
+
+	function wrapperRoundTrip(html: string): string {
+		const editor = wrapperEditor(html);
+		const out = encodePageBreaks(editor.getHTML());
+		editor.destroy();
+		return out;
+	}
+
+	const UNCHANGED: Record<string, string> = {
+		'div with text': '<div>a</div>',
+		'div with a paragraph': '<div><p>a</p></div>',
+		'div with class and id': '<div class="box" id="intro"><p>a</p></div>',
+		'div with data attribute': '<div data-role="card">a</div>',
+		'nested divs': '<div class="outer"><div class="inner"><p>a</p></div></div>',
+		'div with text then a paragraph': '<div>a<p>b</p></div>',
+		'div with a heading and a list': '<div><h2>a</h2><ul><li><p>b</p></li></ul></div>',
+		'empty div': '<div></div>',
+		aside: '<aside><p>a</p></aside>',
+		header: '<header><h1>a</h1></header>',
+		footer: '<footer>a</footer>',
+		nav: '<nav><ul><li><p>a</p></li></ul></nav>',
+		main: '<main><p>a</p></main>',
+		'div in a section': '<section><div class="box"><p>a</p></div></section>',
+		'page break next to a div': '<div>a</div><!-- pagebreak --><div>b</div>',
+	};
+
+	test.each(Object.entries(UNCHANGED))('%s survives round-trip unchanged', (_name, html) => {
+		expect(wrapperRoundTrip(html)).toBe(html);
+	});
+
+	test.each(Object.entries(UNCHANGED))('%s does not trip the normalization check', (_name, html) => {
+		const { extensions, key } = wrapperSchema();
+
+		expect(computeValueNormalizationDiff(decodePageBreaks(html), extensions, key)).toBeNull();
+	});
+
+	test('the editor view still renders the paragraph in a text-only div', () => {
+		const editor = wrapperEditor('<div>a</div>');
+
+		expect(editor.view.dom.querySelector('div > p')?.textContent).toBe('a');
+		editor.destroy();
+	});
+
+	test('a page break is still a page break', () => {
+		const editor = wrapperEditor('<p>a</p><!-- pagebreak --><p>b</p>');
+
+		expect(editor.state.doc.child(1).type.name).toBe('pageBreak');
+		editor.destroy();
+	});
+
+	test('a wrapper that starts a list item is unwrapped, so it stays in the list', () => {
+		expect(wrapperRoundTrip('<ul><li><div>a</div></li></ul>')).toBe('<ul><li><p>a</p></li></ul>');
+		expect(wrapperRoundTrip('<ul><li>a<div>b</div></li></ul>')).toBe('<ul><li><p>a</p><div>b</div></li></ul>');
+	});
+
+	test('the checkbox turns the option off', () => {
+		const { extensions } = buildFieldSchema({ allowWrapperElements: false });
+		const editor = new Editor({ extensions: fieldEditorExtensions(extensions), content: '<div class="box">a</div>' });
+
+		expect(editor.getHTML()).toBe('<p>a</p>');
+		editor.destroy();
+	});
+
+	test('a text-only div keeps no <p> without noContainerParagraphs', () => {
+		expect(wrapperRoundTrip('<ul><li><p>a</p></li></ul><div>b</div>')).toBe('<ul><li><p>a</p></li></ul><div>b</div>');
+	});
+
+	test('works together with noContainerParagraphs', () => {
+		const { extensions, key } = buildFieldSchema({
+			allowWrapperElements: true,
+			noContainerParagraphs: true,
+		});
+
+		const html = '<div>a</div><ul><li>b</li></ul><blockquote>c</blockquote>';
+		const editor = new Editor({ extensions: fieldEditorExtensions(extensions), content: html });
+
+		expect(editor.getHTML()).toBe(html);
+		expect(computeValueNormalizationDiff(html, extensions, key)).toBeNull();
+		editor.destroy();
+	});
+
+	test('the schema key tells the options apart', () => {
+		const keys = new Set([
+			buildFieldSchema({}).key,
+			wrapperSchema().key,
+			buildFieldSchema({ noContainerParagraphs: true }).key,
+			buildFieldSchema({ allowWrapperElements: true, noContainerParagraphs: true }).key,
+		]);
+
+		expect(keys.size).toBe(4);
+	});
+});

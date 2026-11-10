@@ -316,6 +316,7 @@ export function useComparison(options: UseComparisonOptions) {
 					linkProtocols: field.meta?.options?.['linkProtocols'],
 					keepLegacyEmphasisTags: field.meta?.options?.['keepLegacyEmphasisTags'],
 					noContainerParagraphs: field.meta?.options?.['noContainerParagraphs'],
+					allowWrapperElements: field.meta?.options?.['allowWrapperElements'],
 					comparisonMode: true,
 				});
 

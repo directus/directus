@@ -2926,6 +2926,12 @@ interfaces:
     no_container_paragraphs_note:
       By default, the editor wraps the text of list items, blockquotes and table cells in `<p>`. Enable this to stop
       adding `<p>` there. A `<p>` that is already stored stays.
+    allow_wrapper_elements: Wrapper Elements
+    allow_wrapper_elements_label: Keep <div> and other wrapper elements
+    allow_wrapper_elements_note:
+      By default, the editor removes `<div>`, `<aside>`, `<header>`, `<footer>`, `<nav>` and `<main>` and keeps only
+      their content. Enable this to keep these elements and their attributes. `<section>` and `<article>` are always
+      kept.
     link_protocols: Allowed Link Protocols
     link_protocols_note:
       Extra URL schemes that links may use, such as `myapp` for `myapp://` deep links. Standard schemes such as `http`,
