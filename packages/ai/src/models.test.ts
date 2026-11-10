@@ -73,6 +73,12 @@ describe('getAllowedModels', () => {
 		expect(getAllowedModels(null)).toEqual({ ...DEFAULT_ALLOWED_MODELS, openrouter: [] });
 	});
 
+	it('returns copies of the defaults so callers cannot change them', () => {
+		getAllowedModels(null).openai.push('changed');
+
+		expect(DEFAULT_ALLOWED_MODELS.openai).not.toContain('changed');
+	});
+
 	it('keeps an empty list instead of falling back', () => {
 		expect(getAllowedModels({ ai_openai_allowed_models: [] }).openai).toEqual([]);
 	});

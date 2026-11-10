@@ -6,7 +6,7 @@ export function getModelDefinition(
 	model: string,
 	settings: AISettings,
 ): ModelDefinition | undefined {
-	const customModels = buildCustomModels(settings.openaiCompatibleModels);
+	const customModels = buildCustomModels(settings.ai_openai_compatible_models);
 
 	return [...DEFAULT_AI_MODELS, ...customModels].find((m) => m.provider === provider && m.model === model);
 }
@@ -27,10 +27,10 @@ export function getProviderOptions(provider: ProviderType, model: string, settin
 	}
 
 	if (provider === 'openai-compatible') {
-		const customModel = settings.openaiCompatibleModels?.find((m) => m.id === model);
+		const customModel = settings.ai_openai_compatible_models?.find((m) => m.id === model);
 
 		if (customModel?.providerOptions) {
-			const providerName = settings.openaiCompatibleName ?? 'openai-compatible';
+			const providerName = settings.ai_openai_compatible_name ?? 'openai-compatible';
 			return { [providerName]: customModel.providerOptions };
 		}
 	}
