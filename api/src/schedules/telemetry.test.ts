@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getCache } from '../cache.js';
 import { getEntitlementManager } from '../license/index.js';
 import { track } from '../telemetry/index.js';
+import { mockEnv } from '../test-utils/env.js';
 import { scheduleSynchronizedJob } from '../utils/schedule.js';
 import { jobCallback, default as telemetrySchedule } from './telemetry.js';
 
@@ -17,11 +18,10 @@ vi.mock('../license/index.js', () => ({
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
-		EMAIL_TEMPLATES_PATH: './templates',
-	}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
+});
 
 vi.mock('../utils/schedule.js');
 
@@ -31,7 +31,7 @@ beforeEach(() => {
 	mockCache = { lockCache: { get: vi.fn(), set: vi.fn() } } as unknown as ReturnType<typeof getCache>;
 
 	vi.mocked(getCache).mockReturnValue(mockCache);
-	vi.mocked(useEnv).mockReturnValue({ TELEMETRY: true });
+	vi.mocked(useEnv).mockReturnValue(mockEnv({ TELEMETRY: true }));
 });
 
 afterEach(() => {
@@ -40,7 +40,7 @@ afterEach(() => {
 
 describe('telemetry', () => {
 	test('Returns early when telemetry is disabled and not required by entitlement', async () => {
-		vi.mocked(useEnv).mockReturnValue({ TELEMETRY: false });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ TELEMETRY: false }));
 
 		const res = await telemetrySchedule();
 
@@ -48,7 +48,7 @@ describe('telemetry', () => {
 	});
 
 	test('Continues when telemetry is disabled but required by entitlement', async () => {
-		vi.mocked(useEnv).mockReturnValue({ TELEMETRY: false });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ TELEMETRY: false }));
 		vi.mocked(getEntitlementManager).mockReturnValueOnce({ isEntitled: vi.fn().mockReturnValue(true) } as any);
 
 		const res = await telemetrySchedule();
