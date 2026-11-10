@@ -18,7 +18,6 @@ import { runAst } from '../database/run-ast/run-ast.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { ItemsService } from '../services/items.js';
-import type { FieldNode } from '../types/ast.js';
 import {
 	getLinkTableName,
 	getShadowTableName,
@@ -28,6 +27,7 @@ import {
 	VERSION_META_KEYS,
 	VERSION_REFERENCE_PREFIX,
 } from '../services/version-tables/constants.js';
+import type { FieldNode } from '../types/ast.js';
 import { validateLinkAccess } from './link-access.js';
 
 type Context = { knex: Knex; schema: SchemaOverview; accountability: Accountability | null };
@@ -221,7 +221,10 @@ function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection:
 
 	const isNumericKey = ['integer', 'bigInteger'].includes(live.fields[primary]!.type);
 
-	// Live rows keep their primary key as key, versions use their negative id, so o2m relations of live rows still work
+	// Live rows keep their primary key as key, versions use their negative id, so o2m relations of live rows still work.
+	// MySQL version ids are unsigned, so they need to be signed before they can be negated.
+	const negatedVersionId = getDatabaseClient(knex) === 'mysql' ? '-1 * CAST(?? AS SIGNED)' : '-1 * ??';
+
 	const selectKey = (sql: string, bindings: string[]) =>
 		isNumericKey
 			? knex.raw(`${sql} as ??`, [...bindings, KEY_FIELD])
@@ -235,7 +238,7 @@ function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection:
 			...columns.map((column) => selectColumn(shadowTable, column in shadow.fields, column)),
 			...metaFields.map((column) => selectColumn(shadowTable, true, column)),
 			...referenceFields.map((column) => selectColumn(shadowTable, column in shadow.fields, column)),
-			selectKey('-1 * ??', [`${shadowTable}.${VERSION_META_FIELDS.id}`]),
+			selectKey(negatedVersionId, [`${shadowTable}.${VERSION_META_FIELDS.id}`]),
 		])
 		.from(shadowTable);
 

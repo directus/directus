@@ -11,20 +11,20 @@ import type {
 } from '@directus/types';
 import type { Knex } from 'knex';
 import { isEqual, isPlainObject, pick } from 'lodash-es';
-import getDatabase from '../database/index.js';
+import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { ItemsService } from '../services/items.js';
-import { PayloadService } from '../services/payload.js';
 import { transaction } from '../utils/transaction.js';
+import { validateLinkAccess } from '../versioning/link-access.js';
+import { ItemsService } from './items.js';
+import { PayloadService } from './payload.js';
 import {
 	getLinkTableName,
 	getShadowTableName,
 	getVersionReferenceField,
-	isVersionedCollection,
 	isShadowTable,
+	isVersionedCollection,
 	VERSION_META_FIELDS,
-} from '../services/version-tables/constants.js';
-import { validateLinkAccess } from './link-access.js';
+} from './version-tables/constants.js';
 
 export type VersionMeta = {
 	id: number | null;
@@ -561,7 +561,12 @@ export class VersionedItemsService {
 
 		if (!liveRow) {
 			// Versions of removed items, like archived ones, recreate the item under its original id
-			liveKey = await itemsService.createOne(currentKey !== null ? { ...payload, [primary]: currentKey } : payload);
+			liveKey = await this.withExplicitKey(trx, collection, currentKey !== null, () =>
+				itemsService.createOne(currentKey !== null ? { ...payload, [primary]: currentKey } : payload),
+			);
+
+			// Some databases, like Oracle, return generated integer keys as strings
+			if (fields[primary]?.type === 'integer') liveKey = Number(liveKey);
 		} else {
 			liveKey = currentKey!;
 
@@ -600,6 +605,31 @@ export class VersionedItemsService {
 		await this.publishRelatedItems(trx, collection, versionId, liveKey, visited);
 
 		return liveKey;
+	}
+
+	/**
+	 * MSSQL doesn't allow inserting explicit values into identity columns unless it's enabled for the table
+	 */
+	private async withExplicitKey<T>(
+		trx: Knex,
+		collection: string,
+		hasExplicitKey: boolean,
+		callback: () => Promise<T>,
+	): Promise<T> {
+		const { primary, fields } = this.schema.collections[collection]!;
+
+		const needsIdentityInsert =
+			hasExplicitKey && getDatabaseClient(trx) === 'mssql' && fields[primary]?.defaultValue === 'AUTO_INCREMENT';
+
+		if (!needsIdentityInsert) return callback();
+
+		await trx.raw('SET IDENTITY_INSERT ?? ON', [collection]);
+
+		try {
+			return await callback();
+		} finally {
+			await trx.raw('SET IDENTITY_INSERT ?? OFF', [collection]);
+		}
 	}
 
 	/**

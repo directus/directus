@@ -9,8 +9,8 @@ import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { getCases } from '../permissions/modules/process-ast/lib/get-cases.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { isAdmin } from '../utils/is-admin.js';
-import { isVersionedCollection } from './version-tables/constants.js';
 import { countVersionedItems, isVersionedQuery } from '../versioning/read.js';
+import { isVersionedCollection } from './version-tables/constants.js';
 
 export class MetaService {
 	knex: Knex;
