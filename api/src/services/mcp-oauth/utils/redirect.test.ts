@@ -75,7 +75,11 @@ describe('matchRedirectUri', () => {
 describe('validateRedirectUri', () => {
 	beforeEach(async () => {
 		const { useEnv } = vi.mocked(await import('@directus/env'));
-		useEnv.mockReturnValue({ MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: DEFAULT_ALLOWED_CUSTOM_REDIRECTS } as any);
+
+		useEnv.mockReturnValue({
+			MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: DEFAULT_ALLOWED_CUSTOM_REDIRECTS,
+			MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
+		} as any);
 	});
 
 	it('accepts a valid HTTPS URL', () => {
@@ -138,7 +142,11 @@ describe('validateRedirectUri', () => {
 	describe('MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS', () => {
 		it('uses configured custom redirect authorities instead of the defaults', async () => {
 			const { useEnv } = vi.mocked(await import('@directus/env'));
-			useEnv.mockReturnValue({ MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: ['myapp://oauth'] } as any);
+
+			useEnv.mockReturnValue({
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: ['myapp://oauth'],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
+			} as any);
 
 			expect(() => validateRedirectUri('myapp://oauth/callback?package_name=directus')).not.toThrow();
 			expect(() => validateRedirectUri('raycast://oauth?package_name=directus')).toThrow(OAuthError);
@@ -146,14 +154,22 @@ describe('validateRedirectUri', () => {
 
 		it('rejects configured custom redirect requests with a port', async () => {
 			const { useEnv } = vi.mocked(await import('@directus/env'));
-			useEnv.mockReturnValue({ MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: ['myapp://oauth'] } as any);
+
+			useEnv.mockReturnValue({
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: ['myapp://oauth'],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
+			} as any);
 
 			expect(() => validateRedirectUri('myapp://oauth:1234/callback')).toThrow(OAuthError);
 		});
 
 		it('can disable custom redirect schemes', async () => {
 			const { useEnv } = vi.mocked(await import('@directus/env'));
-			useEnv.mockReturnValue({ MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [] } as any);
+
+			useEnv.mockReturnValue({
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
+			} as any);
 
 			expect(() => validateRedirectUri('raycast://oauth?package_name=directus')).toThrow(OAuthError);
 			expect(() => validateRedirectUri('cursor://cursor.mcp?name=directus')).toThrow(OAuthError);
