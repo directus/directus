@@ -51,10 +51,6 @@ export function redactObject(
 			return;
 		}
 
-		if (!isObject(object)) {
-			return;
-		}
-
 		const REDACTED_TEXT = replacement();
 		const globalCheckPaths = [];
 
