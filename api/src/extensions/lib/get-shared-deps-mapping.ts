@@ -11,7 +11,7 @@ import { Url } from '../../utils/url.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const getSharedDepsMapping = async (deps: readonly string[]): Promise<Record<string, string>> => {
-	const env = useEnv();
+	const { PUBLIC_URL } = useEnv();
 	const logger = useLogger();
 
 	const appDir = await readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
@@ -22,7 +22,7 @@ export const getSharedDepsMapping = async (deps: readonly string[]): Promise<Rec
 		const depName = appDir.find((file) => depRegex.test(file));
 
 		if (depName) {
-			const depUrl = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'assets', depName);
+			const depUrl = new Url(PUBLIC_URL).addPath('admin', 'assets', depName);
 
 			depsMapping[dep] = depUrl.toString({ rootRelative: true });
 		} else {

@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 import { isPlainObject } from 'lodash-es';
 
-export const readConfigurationFromJson = (path: string) => {
+export function readConfigurationFromJson(path: string): Record<string, unknown> {
 	const require = createRequire(import.meta.url);
 
 	const config = require(path);
@@ -11,4 +11,4 @@ export const readConfigurationFromJson = (path: string) => {
 	}
 
 	return config as Record<string, unknown>;
-};
+}

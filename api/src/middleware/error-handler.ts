@@ -20,7 +20,7 @@ type ApiError = {
 const FALLBACK_ERROR = new InternalServerError();
 
 export const errorHandler = asyncErrorHandler(async (err, req, res) => {
-	const env = useEnv();
+	const { MCP_OAUTH_ENABLED } = useEnv();
 	const logger = useLogger();
 
 	let errors: ApiError[] = [];
@@ -39,7 +39,7 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 				isDirectusError(error, ErrorCode.InvalidToken) ||
 				isDirectusError(error, ErrorCode.TokenExpired)) &&
 			isMcpPath(req.path) &&
-			env['MCP_OAUTH_ENABLED'] === true
+			MCP_OAUTH_ENABLED
 		) {
 			const { metadataUrl } = getMcpUrls();
 
