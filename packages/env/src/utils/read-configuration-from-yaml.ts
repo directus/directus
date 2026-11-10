@@ -1,7 +1,7 @@
 import { requireYaml } from '@directus/utils/node';
 import { isPlainObject } from 'lodash-es';
 
-export const readConfigurationFromYaml = (path: string) => {
+export function readConfigurationFromYaml(path: string): Record<string, unknown> {
 	const config = requireYaml(path);
 
 	if (isPlainObject(config) === false) {
@@ -9,4 +9,4 @@ export const readConfigurationFromYaml = (path: string) => {
 	}
 
 	return config as Record<string, unknown>;
-};
+}
