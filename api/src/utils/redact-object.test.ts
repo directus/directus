@@ -1,6 +1,7 @@
 import { getRedactedString, REDACTED_TEXT } from '@directus/utils';
 import { merge } from 'lodash-es';
 import { describe, expect, test } from 'vitest';
+import { FLOW_SECRET_KEYS } from '../constants.js';
 import { getReplacer, redactObject } from './redact-object.js';
 
 const input = {
@@ -165,6 +166,39 @@ test.each([
 
 	expect(JSON.stringify(result)).not.toContain('secret');
 	expect(JSON.stringify(result)).toContain('"title":"a"');
+});
+
+test('should redact matching keys inside an array under any key', () => {
+	const result = redactObject(
+		{ $trigger: { body: { users: [{ name: 'a', password: 'secret' }] } } },
+		{ keys: [['**', 'password']] },
+		getRedactedString,
+	);
+
+	expect(result).toEqual({ $trigger: { body: { users: [{ name: 'a', password: REDACTED_TEXT }] } } });
+});
+
+test.each([
+	[
+		'a webhook trigger',
+		{
+			headers: { authorization: 'Bearer shh', cookie: 'shh' },
+			query: { access_token: 'shh' },
+			body: { password: 'shh', token: 'shh', ai_openrouter_api_key: 'shh', title: 'a' },
+		},
+	],
+	['a webhook trigger with an array body', { body: [{ password: 'shh', title: 'a' }, [{ credentials: 'shh' }]] }],
+	['a webhook trigger with secrets nested under any key', { body: { users: [{ password: 'shh', title: 'a' }] } }],
+	[
+		'an event trigger with secrets nested under any key',
+		{ payload: { role: { users: [{ token: 'shh', title: 'a' }] } } },
+	],
+	['an event trigger', { payload: { password: 'shh', tfa_secret: 'shh', title: 'a' } }],
+])('should redact flow secrets from %s', (_, trigger) => {
+	const result = JSON.stringify(redactObject({ $trigger: trigger }, { keys: FLOW_SECRET_KEYS }, getRedactedString));
+
+	expect(result).not.toContain('shh');
+	expect(result).toContain('"title":"a"');
 });
 
 test('should not change the keys passed in', () => {
