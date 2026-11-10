@@ -11,27 +11,27 @@ export async function uploadToProvider(
 ): Promise<ProviderFileRef> {
 	switch (provider) {
 		case 'openai': {
-			if (!settings.openaiApiKey) {
+			if (!settings.ai_openai_api_key) {
 				throw new InvalidPayloadError({ reason: 'OpenAI API key not configured' });
 			}
 
-			return uploadToOpenAI(file, settings.openaiApiKey);
+			return uploadToOpenAI(file, settings.ai_openai_api_key);
 		}
 
 		case 'anthropic': {
-			if (!settings.anthropicApiKey) {
+			if (!settings.ai_anthropic_api_key) {
 				throw new InvalidPayloadError({ reason: 'Anthropic API key not configured' });
 			}
 
-			return uploadToAnthropic(file, settings.anthropicApiKey);
+			return uploadToAnthropic(file, settings.ai_anthropic_api_key);
 		}
 
 		case 'google': {
-			if (!settings.googleApiKey) {
+			if (!settings.ai_google_api_key) {
 				throw new InvalidPayloadError({ reason: 'Google API key not configured' });
 			}
 
-			return uploadToGoogle(file, settings.googleApiKey);
+			return uploadToGoogle(file, settings.ai_google_api_key);
 		}
 
 		default:

@@ -1,7 +1,8 @@
 import type { ProviderType } from '@directus/ai';
 import { convertToModelMessages, stepCountIs, streamText, type StreamTextResult, type Tool, type UIMessage } from 'ai';
 import { useLogger } from '../../../logger/index.js';
-import { type AISettings, resolveLanguageModel } from '../../providers/index.js';
+import { resolveLanguageModel } from '../../providers/resolve-model.js';
+import type { AISettings } from '../../providers/types.js';
 import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 import type { ChatContext } from '../models/chat-request.js';
