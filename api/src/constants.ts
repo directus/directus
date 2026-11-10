@@ -130,3 +130,33 @@ export const CUSTOM_LLM_FIELDS = [
 	'ai_openai_compatible_models',
 	'ai_openai_compatible_headers',
 ] as const satisfies readonly (keyof Settings)[];
+
+/**
+ * Paths redacted from flow data before it's saved to the run log or handed to the Log step. Event triggers put items
+ * in `payload`, webhook triggers put the request body in `body`.
+ */
+export const FLOW_SECRET_KEYS: string[][] = [
+	['**', 'headers', 'authorization'],
+	['**', 'headers', 'cookie'],
+	['**', 'query', 'access_token'],
+	['**', 'payload', 'password'],
+	['**', 'payload', 'token'],
+	['**', 'payload', 'tfa_secret'],
+	['**', 'payload', 'external_identifier'],
+	['**', 'payload', 'auth_data'],
+	['**', 'payload', 'credentials'],
+	['**', 'payload', 'ai_openai_api_key'],
+	['**', 'payload', 'ai_anthropic_api_key'],
+	['**', 'payload', 'ai_google_api_key'],
+	['**', 'payload', 'ai_openai_compatible_api_key'],
+	['**', 'body', 'password'],
+	['**', 'body', 'token'],
+	['**', 'body', 'tfa_secret'],
+	['**', 'body', 'external_identifier'],
+	['**', 'body', 'auth_data'],
+	['**', 'body', 'credentials'],
+	['**', 'body', 'ai_openai_api_key'],
+	['**', 'body', 'ai_anthropic_api_key'],
+	['**', 'body', 'ai_google_api_key'],
+	['**', 'body', 'ai_openai_compatible_api_key'],
+];
