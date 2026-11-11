@@ -58,6 +58,21 @@ describe('fetchOpenRouterModels', () => {
 		]);
 	});
 
+	test('fetches image models from their own list, cached separately', async () => {
+		fetchMock.mockResolvedValue({ ok: true, json: async () => catalog });
+		const { fetchOpenRouterModels } = await import('./openrouter-models');
+
+		await fetchOpenRouterModels();
+		await fetchOpenRouterModels('image');
+		await fetchOpenRouterModels('image');
+
+		expect(fetchMock).toHaveBeenCalledTimes(2);
+
+		expect(fetchMock).toHaveBeenLastCalledWith(
+			'https://openrouter.ai/api/v1/models?output_modalities=image&sort=most-popular',
+		);
+	});
+
 	test('fetches once across calls', async () => {
 		fetchMock.mockResolvedValue({ ok: true, json: async () => catalog });
 		const { fetchOpenRouterModels } = await import('./openrouter-models');

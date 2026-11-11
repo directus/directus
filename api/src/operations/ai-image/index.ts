@@ -46,7 +46,7 @@ type Options = {
 
 const MAX_IMAGES = 4;
 
-/** The image types both OpenAI and Google take as input. */
+/** The image types every image provider takes as input. */
 const REFERENCE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 export default defineOperationApi<Options>({
@@ -58,7 +58,7 @@ export default defineOperationApi<Options>({
 		const { provider, model: modelId } = parseModelKey(options.model);
 
 		if (!isImageProviderType(provider)) {
-			throw new InvalidPayloadError({ reason: `Image generation supports OpenAI and Google models` });
+			throw new InvalidPayloadError({ reason: `Image generation supports OpenAI, Google, and OpenRouter models` });
 		}
 
 		const prompt = readPrompt(options.prompt);

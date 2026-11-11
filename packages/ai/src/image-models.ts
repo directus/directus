@@ -88,11 +88,14 @@ export function findImageModel(provider: ImageProviderType, model: string): Imag
 	return DEFAULT_IMAGE_MODELS.find((m) => m.provider === provider && m.model === model);
 }
 
-/** Ratios for a model, falling back to the provider's usual set for ids that aren't in the catalog. */
+/**
+ * Ratios for a model, falling back to the provider's usual set for ids that aren't in the catalog. OpenRouter models
+ * are never in the catalog, and some of them reject ratios like 8:1, so they only get the common ones.
+ */
 export function getSupportedAspectRatios(provider: ImageProviderType, model: string): AspectRatio[] {
 	const known = findImageModel(provider, model);
 	if (known) return known.aspectRatios;
-	return provider === 'openai' ? OPENAI_RATIOS.aspectRatios : GEMINI_RATIOS;
+	return provider === 'google' ? GEMINI_RATIOS : OPENAI_RATIOS.aspectRatios;
 }
 
 /** The supported ratio closest in shape to the one asked for. */
@@ -119,10 +122,14 @@ export function getImageSizeSetting(provider: ImageProviderType, model: string, 
 	return { aspectRatio };
 }
 
-/** Gemini ids outside the catalog get the same limit as the catalogued ones. */
+/**
+ * Gemini ids outside the catalog get the same limit as the catalogued ones. Some OpenRouter models only make one image
+ * per request, so OpenRouter always asks for one.
+ */
 export function getMaxImagesPerCall(provider: ImageProviderType, model: string): number | undefined {
 	const known = findImageModel(provider, model);
 	if (known) return known.maxImagesPerCall;
+	if (provider === 'openrouter') return 1;
 	return provider === 'google' && model.startsWith('gemini-') ? 1 : undefined;
 }
 

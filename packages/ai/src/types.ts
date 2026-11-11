@@ -65,9 +65,10 @@ export interface ModelDefinition {
  * Anthropic has no image models. OpenAI-compatible is left out: its image adapter only takes pixel sizes, and we don't
  * know which sizes an endpoint supports.
  */
-export const IMAGE_PROVIDER_TYPES: readonly ['openai', 'google'] = [
+export const IMAGE_PROVIDER_TYPES: readonly ['openai', 'google', 'openrouter'] = [
 	'openai',
 	'google',
+	'openrouter',
 ] as const satisfies readonly ProviderType[];
 
 export type ImageProviderType = (typeof IMAGE_PROVIDER_TYPES)[number];

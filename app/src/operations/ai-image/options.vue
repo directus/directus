@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DEFAULT_ASPECT_RATIO } from '@directus/ai';
+import { DEFAULT_ASPECT_RATIO, type OpenRouterModel } from '@directus/ai';
 import type { Field } from '@directus/types';
 import { omit } from 'lodash-es';
 import { computed, ref } from 'vue';
@@ -7,10 +7,12 @@ import { useI18n } from 'vue-i18n';
 import { applyModelLimits, getFields } from './fields';
 import { IMAGE_STARTING_POINTS } from './starting-points';
 import AiStartingPoints from '@/ai/components/ai-starting-points.vue';
+import { fetchOpenRouterModels } from '@/ai/utils/openrouter-models';
 import { applyFormValues, mergeFileIds } from '@/ai/utils/operation-options';
 import VButton from '@/components/v-button.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { useServerStore } from '@/stores/server';
 import { translate } from '@/utils/translate-object-values';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 
@@ -32,7 +34,13 @@ const values = computed<Record<string, any>>(() => ({
 	...props.value,
 }));
 
-const fields = computed(() => translate(getFields(values.value)) as Field[]);
+const openRouterModels = ref<OpenRouterModel[]>([]);
+
+if (useServerStore().info.ai_providers?.includes('openrouter')) {
+	fetchOpenRouterModels('image').then((models) => (openRouterModels.value = models));
+}
+
+const fields = computed(() => translate(getFields(values.value, openRouterModels.value)) as Field[]);
 const promptFields = computed(() => fields.value.filter((f) => ['model', 'prompt'].includes(f.field!)));
 const referenceFields = computed(() => fields.value.filter((f) => f.field === 'referenceImages'));
 

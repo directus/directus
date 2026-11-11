@@ -8,22 +8,27 @@ interface OpenRouterCatalogEntry {
 	top_provider?: { max_completion_tokens?: number | null };
 }
 
-// Public, unauthenticated endpoint. The assistant always sends tools, so only tool-capable models are useful.
-const OPENROUTER_MODELS_URL = 'https://openrouter.ai/api/v1/models?supported_parameters=tools&sort=most-popular';
+export type OpenRouterCatalog = 'chat' | 'image';
 
-let modelsPromise: Promise<OpenRouterModel[]> | null = null;
+// Public, unauthenticated endpoints. The assistant always sends tools, so only tool-capable models are useful for chat.
+const OPENROUTER_MODELS_URLS: Record<OpenRouterCatalog, string> = {
+	chat: 'https://openrouter.ai/api/v1/models?supported_parameters=tools&sort=most-popular',
+	image: 'https://openrouter.ai/api/v1/models?output_modalities=image&sort=most-popular',
+};
 
-export function fetchOpenRouterModels(): Promise<OpenRouterModel[]> {
-	modelsPromise ??= loadModels().catch(() => {
-		modelsPromise = null;
+const modelsPromises: Partial<Record<OpenRouterCatalog, Promise<OpenRouterModel[]>>> = {};
+
+export function fetchOpenRouterModels(catalog: OpenRouterCatalog = 'chat'): Promise<OpenRouterModel[]> {
+	modelsPromises[catalog] ??= loadModels(catalog).catch(() => {
+		delete modelsPromises[catalog];
 		return [];
 	});
 
-	return modelsPromise;
+	return modelsPromises[catalog];
 }
 
-async function loadModels(): Promise<OpenRouterModel[]> {
-	const response = await fetch(OPENROUTER_MODELS_URL);
+async function loadModels(catalog: OpenRouterCatalog): Promise<OpenRouterModel[]> {
+	const response = await fetch(OPENROUTER_MODELS_URLS[catalog]);
 
 	if (!response.ok) throw new Error(`OpenRouter models request failed with ${response.status}`);
 

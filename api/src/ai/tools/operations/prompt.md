@@ -165,8 +165,8 @@ same row, `reject` one row down. Wiring up the chain is all it takes to keep the
 Explicit positions are applied as-is (no layout pass) and re-derived on the next link change. Grid: 14x14 panels,
 columns every 18 units, rows every 16, first operation at (19,1). </positioning_system>
 
-<operation_examples> **ai-image** - Generate images and save them as files. OpenAI and Google only. Returns `{ files }`
-(array of file ids).
+<operation_examples> **ai-image** - Generate images and save them as files. OpenAI, Google, and OpenRouter only
+(OpenRouter ids look like `openrouter:vendor/model`). Returns `{ files }` (array of file ids).
 
 ```json
 {
