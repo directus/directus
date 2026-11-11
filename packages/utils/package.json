@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "14.0.1",
+	"version": "14.1.0",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -41,7 +41,8 @@
 		"joi": "catalog:",
 		"js-yaml": "catalog:",
 		"lodash-es": "catalog:",
-		"micromustache": "catalog:"
+		"micromustache": "catalog:",
+		"ms": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
@@ -52,6 +53,7 @@
 		"@types/fs-extra": "catalog:",
 		"@types/js-yaml": "catalog:",
 		"@types/lodash-es": "catalog:",
+		"@types/ms": "catalog:",
 		"@types/node": "catalog:",
 		"@types/tmp": "catalog:",
 		"@vitest/coverage-v8": "catalog:",

@@ -313,6 +313,7 @@ export function useComparison(options: UseComparisonOptions) {
 					customFormats: field.meta?.options?.['customFormats'],
 					extensions: field.meta?.options?.['extensions'],
 					extensionOptions: field.meta?.options?.['extensionOptions'],
+					linkProtocols: field.meta?.options?.['linkProtocols'],
 					comparisonMode: true,
 				});
 
