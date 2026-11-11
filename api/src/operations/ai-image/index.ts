@@ -1,5 +1,6 @@
 import { Readable } from 'node:stream';
 import {
+	AI_IMAGE_REFERENCE_MIME_TYPES,
 	DEFAULT_ASPECT_RATIO,
 	findImageModel,
 	getImageSizeSetting,
@@ -46,9 +47,6 @@ type Options = {
 
 const MAX_IMAGES = 4;
 
-/** The image types every image provider takes as input. */
-const REFERENCE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-
 export default defineOperationApi<Options>({
 	id: 'ai-image',
 
@@ -81,7 +79,7 @@ export default defineOperationApi<Options>({
 		await assertCanSave(options.folder, opAccountability, { schema, knex: database });
 
 		const assets = new AssetsService({ schema, accountability: opAccountability, knex: database });
-		const references = await readFilesForModel(assets, referenceIds, REFERENCE_TYPES);
+		const references = await readFilesForModel(assets, referenceIds, AI_IMAGE_REFERENCE_MIME_TYPES);
 
 		const maxImagesPerCall = getMaxImagesPerCall(provider, modelId);
 
