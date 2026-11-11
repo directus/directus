@@ -861,6 +861,7 @@ file_library: Biblioteka Fajlova
 forgot_password: Zaboravljena lozinka
 hidden: Sakriveno
 icon: Ikonica
+image: Slika
 info: Informacija
 normal: Normalno
 success: Uspješno
@@ -1028,6 +1029,8 @@ interfaces:
   select-radio:
     radio-buttons: Radio dugmići
     description: Odaberi jednu od više ponuđenih opcija
+  system-file-image:
+    image: Slika
   list:
     repeater: Ponavljanje
     description: Napravi više upisa od postojeće strukture
