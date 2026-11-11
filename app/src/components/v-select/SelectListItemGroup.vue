@@ -92,7 +92,6 @@ function onGroupClick(item: Option) {
 				:item="childItem"
 				:item-label-font-family="itemLabelFontFamily"
 				:multiple="multiple"
-				:allow-other="allowOther"
 				:non-editable="nonEditable"
 				@update:model-value="$emit('update:modelValue', $event)"
 			/>
