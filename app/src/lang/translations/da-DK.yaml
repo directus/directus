@@ -1349,6 +1349,7 @@ forgot_password: Glemt adgangskode
 hidden: Skjult
 hidden_in_group: Skjult i {group}
 icon: Ikon
+image: Billede
 info: Info
 normal: Normal
 success: Succes
@@ -1607,6 +1608,8 @@ interfaces:
   select-radio:
     radio-buttons: Radioknapper
     description: Vælg et af flere valg
+  system-file-image:
+    image: Billede
   list:
     repeater: Gentager
     description: Opret flere indgange af samme struktur
