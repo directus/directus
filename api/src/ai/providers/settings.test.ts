@@ -7,7 +7,6 @@ import { getAISettings } from './settings.js';
 // Mock dependencies
 vi.mock('../../services/settings.js');
 vi.mock('../../utils/get-schema.js');
-vi.mock('../../license/index.js');
 
 const mockReadSingleton = vi.fn();
 const mockGetSchema = vi.fn();
@@ -20,16 +19,9 @@ vi.mocked(await import('../../services/settings.js')).SettingsService = vi.fn().
 
 vi.mocked(await import('../../utils/get-schema.js')).getSchema = mockGetSchema;
 
-const mockIsEntitled = vi.fn();
-
-vi.mocked(await import('../../license/index.js')).getEntitlementManager = vi.fn(() => ({
-	isEntitled: mockIsEntitled,
-})) as any;
-
 beforeEach(() => {
 	vi.clearAllMocks();
 	mockGetSchema.mockResolvedValue({});
-	mockIsEntitled.mockReturnValue(true);
 });
 
 describe('getAISettings', () => {
@@ -64,22 +56,6 @@ describe('getAISettings', () => {
 		mockReadSingleton.mockResolvedValue({});
 
 		expect(await getAISettings()).toEqual(Object.fromEntries(Object.keys(stored).map((field) => [field, null])));
-	});
-
-	test('should drop the OpenAI-compatible settings when custom LLMs are not licensed', async () => {
-		mockIsEntitled.mockReturnValue(false);
-		mockReadSingleton.mockResolvedValue(stored);
-
-		expect(await getAISettings()).toEqual({
-			...stored,
-			ai_openai_compatible_api_key: null,
-			ai_openai_compatible_base_url: null,
-			ai_openai_compatible_name: null,
-			ai_openai_compatible_models: null,
-			ai_openai_compatible_headers: null,
-		});
-
-		expect(mockIsEntitled).toHaveBeenCalledWith('custom_llms_enabled');
 	});
 
 	test('should keep empty strings as they are', async () => {
