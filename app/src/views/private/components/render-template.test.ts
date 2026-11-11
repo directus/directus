@@ -108,3 +108,37 @@ describe('collection name', () => {
 		expect(wrapper.text()).toBe('Acme redesign');
 	});
 });
+
+describe('M2A item parts', () => {
+	const template = '{{ kind }}: {{ target:headings.text }} {{ target:texts.body }}';
+
+	beforeEach(() => {
+		mockFieldsStore.getField.mockReturnValue(null);
+
+		mockRelationsStore.getRelationsForField.mockImplementation((collection: string, field: string) =>
+			collection === 'pages_blocks' && field === 'target' ? [{ meta: { one_collection_field: 'kind' } }] : [],
+		);
+	});
+
+	it('renders nothing for a part that targets another M2A collection', () => {
+		const wrapper = mountRenderTemplate({
+			collection: 'pages_blocks',
+			template,
+			item: { kind: 'headings', target: { text: 'Hello' } },
+		});
+
+		expect(wrapper.find('.null').exists()).toBe(false);
+		expect(wrapper.text()).toBe('headings: Hello');
+	});
+
+	it('renders a null value for a part that targets the item M2A collection', () => {
+		const wrapper = mountRenderTemplate({
+			collection: 'pages_blocks',
+			template,
+			item: { kind: 'texts', target: { body: null } },
+		});
+
+		expect(wrapper.findAll('.null')).toHaveLength(1);
+		expect(wrapper.text()).toBe('texts:  --');
+	});
+});
