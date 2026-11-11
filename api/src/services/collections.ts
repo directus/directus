@@ -90,8 +90,6 @@ export class CollectionsService {
 			throw new InvalidPayloadError({ reason: `"schema" or "meta" is required` });
 		}
 
-		assertValidIcon(payload.meta?.icon);
-
 		if (payload.schema && payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
 			await getEntitlementManager().assert('collections', { adding: 1, knex: this.knex });
 		}
@@ -477,8 +475,6 @@ export class CollectionsService {
 			if (!payload.meta) {
 				return collectionKey;
 			}
-
-			assertValidIcon(payload.meta.icon);
 
 			if (payload.meta?.status === 'active') {
 				await getEntitlementManager().assert('collections', { adding: 1, knex: this.knex });
@@ -872,19 +868,5 @@ export class CollectionsService {
 				}
 			}
 		}
-	}
-}
-
-/**
- * Icon names (Material Symbols ligatures and the app's own icons) only use lowercase letters, numbers and
- * underscores. The app renders the stored value as text, so anything else would show arbitrary text in the UI.
- */
-function assertValidIcon(icon: unknown) {
-	if (icon === undefined || icon === null) return;
-
-	if (typeof icon !== 'string' || !/^[a-z0-9_]*$/.test(icon)) {
-		throw new InvalidPayloadError({
-			reason: `"meta.icon" can only contain lowercase letters, numbers and underscores`,
-		});
 	}
 }
