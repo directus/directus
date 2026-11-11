@@ -6,7 +6,7 @@ import {
 } from '@tiptap/pm/model';
 import { RAW_HTML_NODE_NAMES } from '../extensions/raw-html';
 import { StyleTag } from '../extensions/style-tag';
-import { parseBody, removeDroppedWhitespace } from './canonical-html';
+import { parseBody, removeDroppedWhitespace, sortAttributes } from './canonical-html';
 
 /**
  * What the schema drops from `input`, given `normalized` (the same HTML after a round trip). A
@@ -62,7 +62,11 @@ export function findMarkupLoss(input: string, normalized: string, schema: Schema
 		lost.push(openTag(el, missing.size > 0 ? missing : attrs));
 	}
 
-	lost.push(...keptElementLoss(keptBefore, keptAfter));
+	const keptOutput = new Set(keptAfter.map((root) => sortAttributes(root.outerHTML)));
+
+	for (const root of keptBefore) {
+		if (!keptOutput.has(sortAttributes(root.outerHTML))) lost.push(openTag(root, describe(root, rules).attrs));
+	}
 
 	if (visibleText(before) !== visibleText(after)) lost.push('#text');
 
@@ -164,39 +168,6 @@ function parseContent(
 	}
 
 	return { body, keptRoots };
-}
-
-// kept roots are stored whole, so any element or attribute the sanitizer removed from them is a loss
-function keptElementLoss(before: HTMLElement[], after: HTMLElement[]): string[] {
-	const elementsOf = (roots: HTMLElement[]) =>
-		roots.flatMap((root) => [root, ...root.querySelectorAll<HTMLElement>('*')]);
-
-	const output = elementsOf(after);
-	const remaining = new Map<string, number>();
-
-	for (const el of output) remaining.set(signature(el), (remaining.get(signature(el)) ?? 0) + 1);
-
-	const unmatched = elementsOf(before).filter((el) => {
-		const count = remaining.get(signature(el)) ?? 0;
-		if (count > 0) remaining.set(signature(el), count - 1);
-		return count === 0;
-	});
-
-	return unmatched.map((el) => {
-		const attrs = new Map(Array.from(el.attributes, ({ name, value }) => [name, value] as const));
-		const sameTag = output.filter((candidate) => candidate.localName === el.localName);
-
-		const missing = new Map(
-			Array.from(attrs).filter(([name, value]) => !sameTag.some((candidate) => candidate.getAttribute(name) === value)),
-		);
-
-		return openTag(el, missing.size > 0 ? missing : attrs);
-	});
-}
-
-function signature(el: Element): string {
-	const attrs = Array.from(el.attributes, ({ name, value }) => `${name}=${JSON.stringify(value)}`).sort();
-	return [el.localName, ...attrs].join(' ');
 }
 
 function isInside(el: Element, roots: Element[]): boolean {
