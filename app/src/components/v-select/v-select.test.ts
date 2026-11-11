@@ -108,6 +108,15 @@ test('should render with string items', () => {
 	expect(wrapper.html()).toMatchSnapshot();
 });
 
+test('shows choice icons in the list when other values are allowed', () => {
+	const wrapper = mount(VSelect, {
+		props: { items: [{ text: 'Item 1', value: 'item1', icon: 'star' }], itemIcon: 'icon', allowOther: true, multiple: false },
+		global,
+	});
+
+	expect(wrapper.find('v-list-item-icon-stub').exists()).toBe(true);
+});
+
 describe('SelectListItemGroup', () => {
 	const VListGroup = {
 		template: `<div class="v-list-group" @click="$emit('click')"><slot name="activator" /><slot /></div>`,

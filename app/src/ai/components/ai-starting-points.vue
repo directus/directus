@@ -43,7 +43,7 @@ function startOver() {
 		</VChip>
 	</div>
 
-	<template v-else>
+	<div v-else class="prompt-actions">
 		<VNotice v-if="marker" type="warning">
 			<span v-md="{ value: t('ai.flow_operations.replace_marker', { marker }), target: '_blank' }" />
 		</VNotice>
@@ -68,21 +68,29 @@ function startOver() {
 				</VCardActions>
 			</VCard>
 		</VDialog>
-	</template>
+	</div>
 </template>
 
 <style lang="scss" scoped>
-.starting-points {
+.starting-points,
+.prompt-actions {
 	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
 	gap: 0.5rem;
 	margin-block-start: calc(-1 * var(--theme--form--row-gap) + 0.5rem);
+}
+
+.starting-points {
+	flex-wrap: wrap;
+	align-items: center;
 
 	.label {
 		font-style: normal;
 		margin-inline-end: 0.25rem;
 	}
+}
+
+.prompt-actions {
+	flex-direction: column;
 }
 
 .start-over {

@@ -21,17 +21,21 @@ function mountPoints() {
 	});
 }
 
+function dialogButton(wrapper: ReturnType<typeof mountPoints>, label: string) {
+	return wrapper.findAll('.dialog button').find((button) => button.text() === label)!;
+}
+
 test('only starts over once the dialog is confirmed', async () => {
 	const wrapper = mountPoints();
 
 	await wrapper.find('.start-over').trigger('click');
 	expect(wrapper.emitted('startOver')).toBeUndefined();
 
-	await wrapper.findAll('.dialog button')[0]!.trigger('click');
+	await dialogButton(wrapper, 'cancel').trigger('click');
 	expect(wrapper.find('.dialog').exists()).toBe(false);
 	expect(wrapper.emitted('startOver')).toBeUndefined();
 
 	await wrapper.find('.start-over').trigger('click');
-	await wrapper.findAll('.dialog button')[1]!.trigger('click');
+	await dialogButton(wrapper, 'ai.flow_operations.start_over').trigger('click');
 	expect(wrapper.emitted('startOver')).toHaveLength(1);
 });
