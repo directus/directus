@@ -14,6 +14,7 @@ import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
 import { PreservedAttributes, styleRules } from './preserved-attributes';
 import { RangeSelectedAtoms } from './range-selected-atoms';
+import { RawHtmlBlock, RawHtmlInline } from './raw-html';
 import { semanticHtml } from './semantic-html';
 import { BaseStarterKit, buildLegacyEmphasisSchema } from './starter-kit';
 import { StyleTag } from './style-tag';
@@ -45,6 +46,8 @@ export const editorExtensions = [
 	CharacterCount,
 	...figureExtensions,
 	...semanticHtml,
+	RawHtmlBlock,
+	RawHtmlInline,
 	PreservedAttributes,
 ];
 
@@ -116,11 +119,15 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 	const links = buildLinkProtocolSchema(options.linkProtocols);
 	const legacyEmphasis = buildLegacyEmphasisSchema(options.keepLegacyEmphasisTags);
 
+	const rawHtmlOptions = { keepInlineStyles: Boolean(options.keepInlineStyles), linkProtocols: links.protocols };
+	const needsRawHtmlConfig = rawHtmlOptions.keepInlineStyles || rawHtmlOptions.linkProtocols.length > 0;
+
 	return {
 		extensions: [
 			...contributed.flatMap((config) => config.extensions),
 			...customFormats.extensions,
 			...links.extensions,
+			...(needsRawHtmlConfig ? [RawHtmlBlock.configure(rawHtmlOptions), RawHtmlInline.configure(rawHtmlOptions)] : []),
 			...(options.keepInlineStyles
 				? [
 						PreservedAttributes.configure({ inlineStyles: true }),

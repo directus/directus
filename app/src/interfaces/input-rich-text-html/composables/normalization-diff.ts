@@ -2,6 +2,7 @@ import { type AnyExtension, Editor } from '@tiptap/vue-3';
 import { type Change, diffLines } from 'diff';
 import { fieldEditorExtensions } from '../extensions';
 import { decodePageBreaks, encodePageBreaks } from '../extensions/page-break';
+import { DEFAULT_RAW_HTML_ELEMENTS } from '../extensions/raw-html';
 import { formatHtml } from './format-html';
 
 // Re-parse through the schema exactly as saveSourceCode will, so the diff compares against what
@@ -15,9 +16,13 @@ export function roundTrip(html: string, extraExtensions: AnyExtension[] = []): s
 }
 
 // a re-parse renders preserved global attributes before a node's own, so attribute order is not stable
-function sortAttributes(html: string): string {
-	const root = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html').body;
+export function sortAttributes(html: string): string {
+	const root = parseBody(html);
+	sortElementAttributes(root);
+	return root.innerHTML;
+}
 
+function sortElementAttributes(root: HTMLElement): void {
 	for (const el of root.querySelectorAll('*')) {
 		const attributes = Array.from(el.attributes, ({ name, value }) => [name, value] as const);
 		for (const [name] of attributes) el.removeAttribute(name);
@@ -26,14 +31,42 @@ function sortAttributes(html: string): string {
 			el.setAttribute(name, value);
 		}
 	}
+}
 
+function parseBody(html: string): HTMLElement {
+	return new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html').body;
+}
+
+// the same test Tiptap's elementFromString uses to drop whitespace text nodes before parsing
+const DROPPED_WHITESPACE = /^(\n\s\s|\n)$/;
+
+const RAW_HTML_SELECTOR = DEFAULT_RAW_HTML_ELEMENTS.map(({ tag }) => tag).join(', ');
+
+// only inside svg and map: elsewhere such a newline can be the only gap between two words
+export function removeDroppedWhitespace(root: ParentNode): void {
+	for (const el of root.querySelectorAll(RAW_HTML_SELECTOR)) {
+		const walker = el.ownerDocument.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+		const dropped: Node[] = [];
+
+		while (walker.nextNode()) {
+			if (DROPPED_WHITESPACE.test(walker.currentNode.textContent ?? '')) dropped.push(walker.currentNode);
+		}
+
+		for (const node of dropped) node.parentNode?.removeChild(node);
+	}
+}
+
+function canonicalHtml(html: string): string {
+	const root = parseBody(html);
+	removeDroppedWhitespace(root);
+	sortElementAttributes(root);
 	return root.innerHTML;
 }
 
 // Both sides run through formatHtml so only semantic loss surfaces, never cosmetic reformatting.
 export function diffFormatted(rawBefore: string, rawAfter: string): Change[] | null {
-	const before = formatHtml(sortAttributes(rawBefore));
-	const after = formatHtml(sortAttributes(rawAfter));
+	const before = formatHtml(canonicalHtml(rawBefore));
+	const after = formatHtml(canonicalHtml(rawAfter));
 	if (before === after) return null;
 
 	const changes = diffLines(before, after);

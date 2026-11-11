@@ -22,7 +22,7 @@ import { StyleTag } from './style-tag';
  * Types that serialize a fixed attribute set and must not carry preserved attributes
  * (comparisonDiff derives its class from its own `type` attribute).
  */
-const EXCLUDED_TYPES = new Set(['doc', 'text', 'pageBreak', 'comparisonDiff']);
+const EXCLUDED_TYPES = new Set(['doc', 'text', 'pageBreak', 'comparisonDiff', 'rawHtmlBlock', 'rawHtmlInline']);
 
 /** Types that already model `title` on their own attributes; a global `title` would double-render. */
 const OWN_TITLE_TYPES = new Set(['link', 'abbreviation']);
