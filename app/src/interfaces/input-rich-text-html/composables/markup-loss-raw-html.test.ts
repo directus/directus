@@ -21,7 +21,18 @@ test('a kept svg and map report no loss', () => {
 	expect(loss(`<p>x ${FA_ICON}</p>${MAP}`)).toEqual([]);
 });
 
-test('a sanitizer removal inside a kept element is a loss', () => {
-	expect(loss('<svg onload="alert(1)"></svg>')).toContain('<svg onload="alert(1)">');
-	expect(loss('<svg><script>alert(1)</script></svg>')).not.toEqual([]);
+test('a removed attribute names only that attribute', () => {
+	expect(loss('<svg class="a" onload="alert(1)"></svg>')).toEqual(['<svg onload="alert(1)">']);
+});
+
+test('a removed child names the child, not the kept root', () => {
+	const lost = loss('<svg class="a"><script>alert(1)</script><rect></rect></svg>');
+	expect(lost).toContain('<script>');
+	expect(lost.some((tag) => tag.startsWith('<svg'))).toBe(false);
+});
+
+test('a removed attribute on a map area names the area', () => {
+	expect(loss('<map name="m"><area alt="x" href="javascript:alert(1)"></map>')).toEqual([
+		'<area href="javascript:alert(1)">',
+	]);
 });

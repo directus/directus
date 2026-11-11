@@ -5,12 +5,6 @@ export function parseBody(html: string): HTMLElement {
 }
 
 // a re-parse renders preserved global attributes before a node's own, so attribute order is not stable
-export function sortAttributes(html: string): string {
-	const root = parseBody(html);
-	sortElementAttributes(root);
-	return root.innerHTML;
-}
-
 function sortElementAttributes(root: HTMLElement): void {
 	for (const el of root.querySelectorAll('*')) {
 		const attributes = Array.from(el.attributes, ({ name, value }) => [name, value] as const);
