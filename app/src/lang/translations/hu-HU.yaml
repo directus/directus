@@ -1457,6 +1457,7 @@ forgot_password: Elfelejtett jelszó
 hidden: Rejtett
 hidden_in_group: Elrejtve {group}
 icon: Ikon
+image: Kép
 info: Információ
 normal: Normál
 success: Sikeres
@@ -1718,6 +1719,8 @@ interfaces:
   select-radio:
     radio-buttons: Rádiógombok
     description: Válasszon egyet a több lehetőség közül
+  system-file-image:
+    image: Kép
   list:
     repeater: Repeater
     description: Ugyanazon struktúra több bejegyzésének létrehozása
