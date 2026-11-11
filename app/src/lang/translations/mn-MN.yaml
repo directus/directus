@@ -676,6 +676,8 @@ file_moved: Файлыг зөөв
 collection_created: Бүрдлийг үүсгэлээ
 modified_on: Өөрчлөгдсөн
 card_size: Картын хэмжээ
+small: Жижиг
+large: Том
 sort_field: Талбаруудыг эрэмбэлэх
 add_sort_field: Эрэмбэлэх талбар нэмэх
 sort: Эрэмбэлэх
@@ -1586,6 +1588,7 @@ forgot_password: Нууц үгээ мартсан
 hidden: Нуусан
 hidden_in_group: '{group}-д нуусан'
 icon: Таних тэмдэг
+image: Зураг
 info: Мэдээлэл
 normal: Энгийн
 success: Амжилттай
@@ -1876,6 +1879,8 @@ interfaces:
   select-radio:
     radio-buttons: Радио товчлуур
     description: Олон сонголтоос нэгийг сонгох
+  system-file-image:
+    image: Зураг
   list:
     repeater: Давтагч
     description: Нэг бүтэцтэй олон оруулгууд үүсгэх
