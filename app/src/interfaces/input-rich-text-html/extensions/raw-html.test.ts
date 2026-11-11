@@ -2,7 +2,7 @@
 import { Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test } from 'vitest';
 import { computeValueNormalizationDiff, roundTrip } from '../composables/normalization-diff';
-import { htmlToElement } from './raw-html';
+import { htmlToElement } from './raw-html-sanitize';
 import { buildFieldSchema, editorExtensions } from './index';
 
 const FA_ICON =
@@ -11,7 +11,7 @@ const FA_ICON =
 const MAP =
 	'<map name="rade_img_map_1497323218965" id="rade_img_map_1497323218965">\n<area href="http://" shape="RECT" coords="10,10,185,85"></map>';
 
-const EXAMPLE_1 = `<a href="/nationalmuseum/content/open-call-details/collecting-contemporary-singapore---covid-19" class="btn-enquire-now dark-btn btn-rounded d-flex align-flex-start mt-5 mb-4">
+const LINKED_ICON_BUTTON = `<a href="/nationalmuseum/content/open-call-details/collecting-contemporary-singapore---covid-19" class="btn-enquire-now dark-btn btn-rounded d-flex align-flex-start mt-5 mb-4">
 <div class="it-btn-icon-bg it-icon-featured-box-bg d-flex align-center justify-center">
 <div class="it-btn-icon">${FA_ICON}<!-- <i class="fa-solid fa-arrow-up-right-from-square"></i> Font Awesome fontawesome.com --></div>
 </div>
@@ -36,6 +36,10 @@ test.each([
 	['svg inside a link', `<p><a href="https://directus.io">${FA_ICON}</a></p>`],
 	['svg inside a mark with text around', `<p>Go <strong>${FA_ICON}</strong> now</p>`],
 	['top-level map', `<p>a</p>${MAP.replace('\n', '')}`],
+	['svg beside an image', `<img src="/assets/abc">${FA_ICON}`],
+	['sprite icon', '<p>Go <svg><use href="#icon-home"></use></svg> home</p>'],
+	['svg with paths', '<p>a</p><svg viewBox="0 0 10 10"><path d="M0 0h10v10z"></path></svg><p>b</p>'],
+	['map inside a paragraph', `<p>text ${MAP.replace('\n', '')} more</p>`],
 ])('%s round-trips unchanged', (_n, html) => expect(roundTrip(html)).toBe(html));
 
 test("RadEditor map loses only the newline Tiptap's elementFromString removes", () => {
@@ -52,8 +56,8 @@ test('svg alone in a table cell stays a direct child of the cell', () => {
 	);
 });
 
-test('real example 1: the icon keeps its link and class', () => {
-	expect(roundTrip(EXAMPLE_1)).toContain(
+test('a linked icon button keeps its link and the icon', () => {
+	expect(roundTrip(LINKED_ICON_BUTTON)).toContain(
 		`<a class="btn-enquire-now dark-btn btn-rounded d-flex align-flex-start mt-5 mb-4" href="/nationalmuseum/content/open-call-details/collecting-contemporary-singapore---covid-19">${FA_ICON}</a>`,
 	);
 });

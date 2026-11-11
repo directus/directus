@@ -6,7 +6,7 @@ import {
 } from '@tiptap/pm/model';
 import { RAW_HTML_NODE_NAMES } from '../extensions/raw-html';
 import { StyleTag } from '../extensions/style-tag';
-import { removeDroppedWhitespace, sortAttributes } from './normalization-diff';
+import { parseBody, removeDroppedWhitespace, sortAttributes } from './canonical-html';
 
 /**
  * What the schema drops from `input`, given `normalized` (the same HTML after a round trip). A
@@ -25,8 +25,8 @@ export function findMarkupLoss(input: string, normalized: string, schema: Schema
 	const rules = parseRules(schema);
 	// a schema with a StyleTag node keeps <style>, so its CSS is content, not markup to drop
 	const nonContent = schema.nodes[StyleTag.name] ? NON_CONTENT_TAGS.filter((tag) => tag !== 'style') : NON_CONTENT_TAGS;
-	const { body: before, keptRoots: keptBefore } = parseBody(input, nonContent, rules);
-	const { body: after, keptRoots: keptAfter } = parseBody(normalized, nonContent, rules);
+	const { body: before, keptRoots: keptBefore } = parseContent(input, nonContent, rules);
+	const { body: after, keptRoots: keptAfter } = parseContent(normalized, nonContent, rules);
 
 	const survivors = Array.from(after.querySelectorAll('*'))
 		.filter((el) => !isInside(el, keptAfter))
@@ -148,8 +148,12 @@ function parseRules(schema: Schema): Rules {
 }
 
 // a kept root (svg, map) is stored whole, so its descendants, non-content ones included, belong to it
-function parseBody(html: string, nonContent: string[], rules: Rules): { body: HTMLElement; keptRoots: HTMLElement[] } {
-	const body = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html').body;
+function parseContent(
+	html: string,
+	nonContent: string[],
+	rules: Rules,
+): { body: HTMLElement; keptRoots: HTMLElement[] } {
+	const body = parseBody(html);
 	removeDroppedWhitespace(body);
 
 	const keptRoots: HTMLElement[] = [];

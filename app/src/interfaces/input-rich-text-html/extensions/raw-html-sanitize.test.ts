@@ -26,6 +26,8 @@ const MAP =
 test.each([
 	['Font Awesome icon', FA_ICON],
 	['RadEditor image map', MAP],
+	['sprite icon', '<svg><use href="#icon-home"></use></svg>'],
+	['sprite icon with xlink:href', '<svg><use xlink:href="#icon-home"></use></svg>'],
 	['svg with viewBox and paths', '<svg viewBox="0 0 10 10"><title>t</title><path d="M0 0h10v10z"></path></svg>'],
 ])('%s is unchanged', (_n, html) => expect(sanitizeRawHtml(html, OFF)).toBe(html));
 
@@ -39,7 +41,12 @@ test.each([
 		'<svg><a href="/ok"></a></svg>',
 	],
 	['animate', '<svg><animate attributeName="x"></animate></svg>', '<svg></svg>'],
-	['use', '<svg><use href="#icon"></use></svg>', '<svg></svg>'],
+	[
+		'use with an external href',
+		'<svg><use href="https://x.test/sprite.svg#icon"></use></svg>',
+		'<svg><use></use></svg>',
+	],
+	['use with a data: href', '<svg><use href="data:image/svg+xml,<svg></svg>#x"></use></svg>', '<svg><use></use></svg>'],
 	['javascript: in svg a', '<svg><a href="javascript:alert(1)">x</a></svg>', '<svg><a>x</a></svg>'],
 	['javascript: in xlink:href', '<svg><a xlink:href="javascript:alert(1)">x</a></svg>', '<svg><a>x</a></svg>'],
 	['javascript: in area', '<map name="m"><area href="javascript:alert(1)"></map>', '<map name="m"><area></map>'],

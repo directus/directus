@@ -1,29 +1,18 @@
 import type { DOMOutputSpec } from '@tiptap/pm/model';
 import { Node } from '@tiptap/vue-3';
-import { type RawHtmlSanitizeOptions, sanitizeRawHtml } from './raw-html-sanitize';
+import { htmlToElement, type RawHtmlSanitizeOptions, sanitizeRawHtml } from './raw-html-sanitize';
 
-export interface RawHtmlElement {
-	tag: string;
-	placement: 'block' | 'auto';
-}
-
-export interface RawHtmlOptions extends RawHtmlSanitizeOptions {
-	elements: RawHtmlElement[];
-}
-
-export const DEFAULT_RAW_HTML_ELEMENTS: RawHtmlElement[] = [
-	{ tag: 'svg', placement: 'auto' },
-	{ tag: 'map', placement: 'block' },
-];
+export const RAW_HTML_TAGS = ['svg', 'map'];
 
 const PHRASING =
 	'a, abbr, b, bdi, bdo, cite, code, del, dfn, em, i, ins, kbd, label, mark, q, s, samp, small, span, strong, sub, sup, time, u, var';
 
 const TEXT_BLOCKS = 'p, h1, h2, h3, h4, h5, h6, pre, figcaption, caption, li';
 
-const INLINE_SIBLINGS = `${PHRASING}, img, br`;
+// no img: the image is a block node, so an element beside one stays a block
+const INLINE_SIBLINGS = `${PHRASING}, br`;
 
-/** Whether an element sits among inline content, so it must parse as an inline node to keep its marks. */
+// an element among inline content must parse as an inline node, or it splits its paragraph and loses its marks
 export function isInlineContext(element: Element): boolean {
 	for (
 		let ancestor = element.parentElement;
@@ -42,15 +31,8 @@ export function isInlineContext(element: Element): boolean {
 	});
 }
 
-/** Parses stored HTML into a detached element; a `<template>` keeps it inert (no scripts, no loads). */
-export function htmlToElement(html: string): Element | null {
-	const template = document.createElement('template');
-	template.innerHTML = html;
-	return template.content.firstElementChild;
-}
-
 function rawHtmlNode(name: string, inline: boolean) {
-	return Node.create<RawHtmlOptions>({
+	return Node.create<RawHtmlSanitizeOptions>({
 		name,
 		group: inline ? 'inline' : 'block',
 		inline,
@@ -58,7 +40,7 @@ function rawHtmlNode(name: string, inline: boolean) {
 		selectable: true,
 
 		addOptions() {
-			return { elements: DEFAULT_RAW_HTML_ELEMENTS, keepInlineStyles: false, linkProtocols: [] };
+			return { keepInlineStyles: false, linkProtocols: [] };
 		},
 
 		addAttributes() {
@@ -73,15 +55,10 @@ function rawHtmlNode(name: string, inline: boolean) {
 		},
 
 		parseHTML() {
-			return this.options.elements
-				.filter(({ placement }) => !inline || placement === 'auto')
-				.map(({ tag, placement }) => ({
-					tag,
-					getAttrs: (element: HTMLElement) => {
-						if (placement === 'auto' && isInlineContext(element) !== inline) return false;
-						return {};
-					},
-				}));
+			return RAW_HTML_TAGS.map((tag) => ({
+				tag,
+				getAttrs: (element: HTMLElement) => (isInlineContext(element) === inline ? {} : false),
+			}));
 		},
 
 		renderHTML({ node }): DOMOutputSpec {

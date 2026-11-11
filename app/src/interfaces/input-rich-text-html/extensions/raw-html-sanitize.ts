@@ -1,5 +1,5 @@
 import { isAllowedUri } from '@tiptap/extension-link';
-import DOMPurify from 'dompurify';
+import DOMPurify, { type UponSanitizeAttributeHook } from 'dompurify';
 
 export interface RawHtmlSanitizeOptions {
 	keepInlineStyles: boolean;
@@ -8,33 +8,47 @@ export interface RawHtmlSanitizeOptions {
 
 const purify = DOMPurify(window);
 
-let currentLinkProtocols: string[] = [];
+const LINK_TAGS = new Set(['a', 'area']);
+const HREF_ATTRIBUTES = new Set(['href', 'xlink:href']);
 
-purify.addHook('uponSanitizeAttribute', (node, data) => {
-	const tag = node.nodeName.toLowerCase();
-	if ((tag !== 'a' && tag !== 'area') || (data.attrName !== 'href' && data.attrName !== 'xlink:href')) return;
+function hrefHook(linkProtocols: string[]): UponSanitizeAttributeHook {
+	return (node, data) => {
+		if (!HREF_ATTRIBUTES.has(data.attrName)) return;
 
-	if (isAllowedUri(data.attrValue, currentLinkProtocols)) {
-		data.forceKeepAttr = true;
-	} else {
-		data.keepAttr = false;
-	}
-});
+		const tag = node.nodeName.toLowerCase();
+		if (tag !== 'use' && !LINK_TAGS.has(tag)) return;
+
+		// a fragment-only href can only point at an element already in the page, never load a file
+		const allowed = tag === 'use' ? data.attrValue.startsWith('#') : isAllowedUri(data.attrValue, linkProtocols);
+
+		if (allowed) data.forceKeepAttr = true;
+		else data.keepAttr = false;
+	};
+}
+
+// a <template> keeps the parsed HTML inert: no scripts run and no resources load
+export function htmlToElement(html: string): Element | null {
+	const template = document.createElement('template');
+	template.innerHTML = html;
+	return template.content.firstElementChild;
+}
 
 export function sanitizeRawHtml(html: string, options: RawHtmlSanitizeOptions): string {
-	currentLinkProtocols = options.linkProtocols;
-
 	if (!purify.isSupported) return '';
 
-	const template = document.createElement('template');
+	const hook = hrefHook(options.linkProtocols);
+	purify.addHook('uponSanitizeAttribute', hook);
 
-	const clean = purify.sanitize(html, {
-		USE_PROFILES: { html: true, svg: true, svgFilters: true },
-		ADD_ATTR: ['focusable', 'target'],
-		...(options.keepInlineStyles ? {} : { FORBID_TAGS: ['style'], FORBID_ATTR: ['style'] }),
-	});
+	try {
+		const clean = purify.sanitize(html, {
+			USE_PROFILES: { html: true, svg: true, svgFilters: true },
+			ADD_TAGS: ['use'],
+			ADD_ATTR: ['focusable', 'target'],
+			...(options.keepInlineStyles ? {} : { FORBID_TAGS: ['style'], FORBID_ATTR: ['style'] }),
+		});
 
-	template.innerHTML = clean;
-
-	return template.content.firstElementChild?.outerHTML ?? '';
+		return htmlToElement(clean)?.outerHTML ?? '';
+	} finally {
+		purify.removeHook('uponSanitizeAttribute', hook);
+	}
 }
