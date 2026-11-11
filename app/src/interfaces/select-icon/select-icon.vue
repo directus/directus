@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { SOCIAL_ICONS } from '@directus/constants';
 import formatTitle from '@directus/format-title';
+import { isKnownIcon } from '@directus/utils';
 import { computed, nextTick, onUnmounted, type Ref, ref, watch } from 'vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import icons from './icons.json';
@@ -11,7 +12,7 @@ import VMenu from '@/components/v-menu.vue';
 import VRemove from '@/components/v-remove.vue';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
-withDefaults(
+const props = withDefaults(
 	defineProps<{
 		value: string | null;
 		disabled?: boolean;
@@ -24,6 +25,9 @@ withDefaults(
 );
 
 const emit = defineEmits(['input']);
+
+// an unknown stored name (e.g. arbitrary text saved before icons were validated) is shown as an empty field, not as its text
+const knownValue = computed(() => (props.value && isKnownIcon(props.value) ? props.value : null));
 
 const searchQuery = ref('');
 const menuActive = ref(false);
@@ -191,14 +195,14 @@ function useIconsPerRow(
 				v-model="searchQuery"
 				:disabled
 				:non-editable
-				:placeholder="value ? formatTitle(value) : $t('interfaces.select-icon.search_for_icon')"
-				:class="{ 'has-value': value, 'non-editable': nonEditable }"
+				:placeholder="knownValue ? formatTitle(knownValue) : $t('interfaces.select-icon.search_for_icon')"
+				:class="{ 'has-value': knownValue, 'non-editable': nonEditable }"
 				:nullable="false"
 				@click="onClickInput($event, toggle)"
 				@keydown="onKeydownInput($event, activate)"
 			>
-				<template v-if="value" #prepend>
-					<VIcon class="selected-icon" clickable :disabled :name="value" @click="toggle" />
+				<template v-if="knownValue" #prepend>
+					<VIcon class="selected-icon" clickable :disabled :name="knownValue" @click="toggle" />
 				</template>
 
 				<template #append>
