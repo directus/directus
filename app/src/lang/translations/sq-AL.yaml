@@ -676,6 +676,8 @@ file_moved: Skedari u Zhvendos
 collection_created: Koleksioni u Krijua
 modified_on: Modifikuar Më
 card_size: Madhësia e Kartës
+small: Vogël
+large: Madh
 sort_field: Fusha e Renditjes
 add_sort_field: Shto Fushë Renditjeje
 sort: Rendit
@@ -1586,6 +1588,7 @@ forgot_password: Harruat Fjalëkalimin
 hidden: I Fshehur
 hidden_in_group: I fshehur në {group}
 icon: Ikonë
+image: Imazh
 info: Info
 normal: Normal
 success: Sukses
@@ -1876,6 +1879,8 @@ interfaces:
   select-radio:
     radio-buttons: Butonat Radio
     description: Zgjidh një nga zgjedhjet e shumta
+  system-file-image:
+    image: Imazh
   list:
     repeater: Përsëritës
     description: Krijo hyrje të shumta të strukturës së njëjtë
