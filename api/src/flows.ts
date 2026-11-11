@@ -417,8 +417,8 @@ class FlowManager {
 						emitter.offAction(event.name, event.handler);
 						break;
 					case 'schedule':
-						// stop() halts the cron job synchronously before resetting its synchronized clock (async)..
-						// Carrying on is therefor safe: the leftover clock only holds a timestamp that every later tick exceeds.
+						// stop() halts the job, only the clock reset can fail here.
+						// The leftover clock value is harmless, as later ticks always set a larger one
 						await event.job.stop().catch((error) => {
 							logger.error(error, `Failed to stop schedule for flow "${trigger.id}"`);
 						});
