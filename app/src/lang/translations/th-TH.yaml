@@ -1005,6 +1005,7 @@ file_library: ไลบรารีไฟล์
 forgot_password: ลืมรหัสผ่าน
 hidden: ซ่อน
 icon: ไอคอน
+image: รูปภาพ
 info: ข้อมูล
 normal: ปกติ
 success: สำเร็จ
@@ -1192,6 +1193,8 @@ interfaces:
   select-radio:
     radio-buttons: ปุ่มตัวเลือก
     description: เลือกได้ 1 จากหลายตัวเลือก
+  system-file-image:
+    image: รูปภาพ
   list:
     repeater: การทำซ้ำ
     description: สร้างหลายรายการโดยใช้โครงสร้างเดียวกัน
