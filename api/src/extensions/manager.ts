@@ -667,9 +667,12 @@ export class ExtensionManager {
 		});
 
 		this.unregisterFunctionMap.set(extension.name, async () => {
-			await unregisterFunction();
-
-			if (!isolate.isDisposed) isolate.dispose();
+			try {
+				await unregisterFunction();
+			} finally {
+				// Always dispose, nothing else will and its memory will otherwise leak
+				if (!isolate.isDisposed) isolate.dispose();
+			}
 		});
 	}
 
