@@ -2290,6 +2290,8 @@ ai:
     model_placeholder: Select a model or type provider:model-id
     start_from: 'Start from:'
     start_over: Start over
+    start_over_title: Start over?
+    start_over_copy: This clears the prompt and the settings that go with it.
     replace_marker:
       Replace **{marker}** with flow data, like `{'{'}{'{'} $trigger.payload.your_field {'}'}{'}'}` or `{'{'}{'{'}
       step_key.your_field {'}'}{'}'}`. Otherwise the model gets it as written. See the [data chain
