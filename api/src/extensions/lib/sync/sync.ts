@@ -25,14 +25,13 @@ export type ExtensionSyncOptions = {
 export async function syncExtensions(options?: ExtensionSyncOptions): Promise<void> {
 	if (options?.skipSync === true) return;
 
-	const env = useEnv();
-
-	// Extensions are only synced from a remote storage location
-	if (!env['EXTENSIONS_LOCATION']) return;
-
+	const { EXTENSIONS_LOCATION } = useEnv();
 	const lock = useLock();
 	const messenger = useBus();
 	const logger = useLogger();
+
+	// Extensions are only synced from a remote storage location
+	if (!EXTENSIONS_LOCATION) return;
 
 	if (options?.forceSync !== true && (await isSynchronizing())) {
 		logger.debug('Extensions are already being synced to this directory from another process.');
@@ -62,7 +61,7 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 		const { localExtensionsPath, remoteExtensionsPath } = getSyncPaths(options?.partialSync);
 
 		const storage = await getStorage();
-		const disk = storage.location(env['EXTENSIONS_LOCATION'] as string);
+		const disk = storage.location(EXTENSIONS_LOCATION!);
 
 		// check if we are only removing the local directory
 		if (options?.partialSync) {

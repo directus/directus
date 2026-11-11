@@ -5,11 +5,11 @@ import { toDimension } from '../../assets/assert-transforms-allowed.js';
 export function getSharpInstance(): Sharp {
 	const env = useEnv();
 
-	const maxInputDimension = toDimension(env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION']) ?? 6000;
+	const maxInputDimension = toDimension(env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION) ?? 6000;
 
 	return sharp({
 		limitInputPixels: Math.trunc(Math.pow(maxInputDimension, 2)),
 		sequentialRead: true,
-		failOn: env['ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL'] as FailOnOptions,
+		failOn: env.ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL as FailOnOptions,
 	});
 }
