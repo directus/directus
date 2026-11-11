@@ -726,6 +726,8 @@ file_moved: Bestand verplaatst
 collection_created: Collectie aangemaakt
 modified_on: Aangepast op
 card_size: Kaart grootte
+small: Klein
+large: Groot
 sort_field: Sorteerveld
 add_sort_field: Voeg Sorteerveld Toe
 sort: Sorteren
@@ -1732,6 +1734,7 @@ forgot_password: Wachtwoord vergeten
 hidden: Verborgen
 hidden_in_group: Verborgen in {group}
 icon: Icoon
+image: Afbeelding
 info: Info
 normal: Normaal
 success: Geslaagd
@@ -2035,6 +2038,8 @@ interfaces:
   select-radio:
     radio-buttons: Keuzerondjes
     description: Selecteer één van meerdere keuzes
+  system-file-image:
+    image: Afbeelding
   list:
     repeater: Herhaler
     description: Maak meerdere items met dezelfde structuur
