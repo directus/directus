@@ -13,10 +13,11 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
-import { type Knex } from 'knex';
+import knex, { type Knex } from 'knex';
 import { pick } from 'lodash-es';
 import { get } from 'micromustache';
 import PQueue from 'p-queue';
+import pRetry from 'p-retry';
 import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
@@ -35,6 +36,7 @@ import { isUnauthenticated } from './utils/is-unauthenticated.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 import { getCollectionFromSchema } from './utils/schema/get-collection-from-schema.js';
+import { TimeoutError } from './utils/with-timeout.js';
 
 let flowManager: FlowManager | undefined;
 
@@ -57,6 +59,9 @@ const TRIGGER_KEY = '$trigger';
 const ACCOUNTABILITY_KEY = '$accountability';
 const LAST_KEY = '$last';
 const ENV_KEY = '$env';
+
+/** Retries of a failed flows read on reload, waiting 1s then 2s */
+const RELOAD_READ_RETRIES = 2;
 
 interface FlowMessage {
 	type: 'reload';
@@ -99,7 +104,17 @@ class FlowManager {
 
 					try {
 						// Read before unloading, so a failed read doesn't leave the manager empty
-						const flows = await this.readFlows();
+						// TODO: Improve message handling so a failed reload can't leave this instance out of sync
+						const flows = await pRetry(() => this.readFlows(), {
+							retries: RELOAD_READ_RETRIES,
+							shouldRetry: ({ error, attemptNumber }) => {
+								// Timeouts already waited long before failing, retrying would hold the queue even longer
+								if (error instanceof knex.KnexTimeoutError || error instanceof TimeoutError) return false;
+
+								logger.warn(error, `Failed to read flows on reload (attempt ${attemptNumber}), retrying`);
+								return true;
+							},
+						});
 
 						await this.unload();
 						this.load(flows);

@@ -1,4 +1,5 @@
 import type { FlowRaw } from '@directus/types';
+import knex from 'knex';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { withResolvers } from './test-utils/async.js';
 import { createMockBus } from './test-utils/bus.js';
@@ -71,6 +72,7 @@ describe('FlowManager', () => {
 	});
 
 	afterEach(() => {
+		vi.useRealTimers();
 		vi.clearAllMocks();
 	});
 
@@ -130,14 +132,64 @@ describe('FlowManager', () => {
 	});
 
 	describe('reload', () => {
-		test('should keep the loaded flows when reading the flows fails', async () => {
+		test('should retry reading the flows when it fails', async () => {
+			vi.useFakeTimers({ toFake: ['setTimeout'] });
+
 			const manager = await initializeWith([createFlow('flow-a')]);
 
-			readByQuery.mockRejectedValueOnce(new Error('Connection terminated unexpectedly'));
+			readByQuery
+				.mockRejectedValueOnce(new Error('Connection terminated unexpectedly'))
+				.mockResolvedValueOnce([createFlow('flow-b')]);
+
 			await manager.reload();
 			await flushPromises();
+			await vi.runAllTimersAsync();
 
-			// The initial load and the failed read
+			// The initial load, the failed read and the retry
+			expect(readByQuery).toHaveBeenCalledTimes(3);
+			expect(manager.getFlow('flow-a')).toBeUndefined();
+			expect(manager.getFlow('flow-b')).toBeDefined();
+		});
+
+		test('should keep the loaded flows when reading the flows keeps failing', async () => {
+			vi.useFakeTimers({ toFake: ['setTimeout'] });
+
+			const manager = await initializeWith([createFlow('flow-a')]);
+
+			readByQuery.mockRejectedValue(new Error('Connection terminated unexpectedly'));
+			await manager.reload();
+			await flushPromises();
+			await vi.runAllTimersAsync();
+
+			// The initial load, the failed read and both failed retries
+			expect(readByQuery).toHaveBeenCalledTimes(4);
+			expect(manager.getFlow('flow-a')).toBeDefined();
+		});
+
+		test.each([
+			{
+				name: 'KnexTimeoutError',
+				createError: async () => new knex.KnexTimeoutError('Knex: Timeout acquiring a connection'),
+			},
+			{
+				name: 'TimeoutError',
+				// Imported after the module reset, so it is the same class flows.ts checks against
+				createError: async () => {
+					const { TimeoutError } = await import('./utils/with-timeout.js');
+					return new TimeoutError('Timeout of 10000ms exceeded');
+				},
+			},
+		])('should not retry reading the flows on a $name', async ({ createError }) => {
+			vi.useFakeTimers({ toFake: ['setTimeout'] });
+
+			const manager = await initializeWith([createFlow('flow-a')]);
+
+			readByQuery.mockRejectedValueOnce(await createError());
+			await manager.reload();
+			await flushPromises();
+			await vi.runAllTimersAsync();
+
+			// The initial load and the timed out read
 			expect(readByQuery).toHaveBeenCalledTimes(2);
 			expect(manager.getFlow('flow-a')).toBeDefined();
 		});
