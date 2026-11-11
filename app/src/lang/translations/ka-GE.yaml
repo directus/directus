@@ -687,6 +687,8 @@ file_moved: ფაილი გადატანილია
 collection_created: კოლექცია შეიქმნა
 modified_on: შეიცვალა
 card_size: ბარათის ზომა
+small: პატარა
+large: დიდი
 sort_field: დალაგების ველი
 add_sort_field: დალაგების ველის დამატება
 sort: დალაგება
@@ -1608,6 +1610,7 @@ forgot_password: დაგავიწყდათ პაროლი
 hidden: დამალული
 hidden_in_group: დამალულია {group}-ში
 icon: ხატულა
+image: სურათი
 info: ინფორმაცია
 normal: ნორმალური
 success: წარმატება
@@ -1900,6 +1903,8 @@ interfaces:
   select-radio:
     radio-buttons: რადიო ღილაკები
     description: აირჩიეთ ერთი მრავალი არჩევანიდან
+  system-file-image:
+    image: სურათი
   list:
     repeater: გამეორება
     description: შექმენით ერთი და იგივე სტრუქტურის მრავალი ჩანაწერი
