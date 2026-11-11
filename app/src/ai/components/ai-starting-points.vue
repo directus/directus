@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { findPlaceholderMarker } from '@/ai/prompt-markers';
 import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
 import VChip from '@/components/v-chip.vue';
+import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 
@@ -20,6 +25,13 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 const marker = computed(() => findPlaceholderMarker(String(props.prompt ?? '')));
+
+const confirmStartOver = ref(false);
+
+function startOver() {
+	confirmStartOver.value = false;
+	emit('startOver');
+}
 </script>
 
 <template>
@@ -36,10 +48,26 @@ const marker = computed(() => findPlaceholderMarker(String(props.prompt ?? '')))
 			<span v-md="{ value: t('ai.flow_operations.replace_marker', { marker }), target: '_blank' }" />
 		</VNotice>
 
-		<VButton class="start-over" secondary x-small @click="emit('startOver')">
+		<VButton class="start-over" secondary x-small @click="confirmStartOver = true">
 			<VIcon name="restart_alt" x-small left />
 			{{ t('ai.flow_operations.start_over') }}
 		</VButton>
+
+		<VDialog v-model="confirmStartOver" @esc="confirmStartOver = false" @apply="startOver">
+			<VCard>
+				<VCardTitle>{{ t('ai.flow_operations.start_over_title') }}</VCardTitle>
+				<VCardText>{{ t('ai.flow_operations.start_over_copy') }}</VCardText>
+
+				<VCardActions>
+					<VButton secondary @click="confirmStartOver = false">
+						{{ t('cancel') }}
+					</VButton>
+					<VButton kind="danger" @click="startOver">
+						{{ t('ai.flow_operations.start_over') }}
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 	</template>
 </template>
 

@@ -14,6 +14,7 @@ vi.mock('./use-generate-fields', async () => {
 
 vi.mock('@/stores/server', () => ({ useServerStore: () => ({ info: { ai_providers: ['openai'] } }) }));
 vi.mock('@/stores/settings', () => ({ useSettingsStore: () => ({ settings: {} }) }));
+
 vi.mock('@/ai/models', () => ({
 	AI_MODELS: [],
 	buildCustomModels: () => [],
