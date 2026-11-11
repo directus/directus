@@ -679,6 +679,8 @@ file_moved: File Spostato
 collection_created: Raccolta Creata
 modified_on: Modificato il
 card_size: Dimensione della Card
+small: Piccolo
+large: Grande
 sort_field: Ordina per
 add_sort_field: Aggiungi Campo Ordinamento
 sort: Ordinamento
@@ -1598,6 +1600,7 @@ forgot_password: Ha dimenticato la password
 hidden: Nascosto
 hidden_in_group: Nascosto in {group}
 icon: Icona
+image: Immagine
 info: Informazioni
 normal: Normale
 success: Successo
@@ -1890,6 +1893,8 @@ interfaces:
   select-radio:
     radio-buttons: Radio button
     description: Seleziona una tra più scelte
+  system-file-image:
+    image: Immagine
   list:
     repeater: Ripetitore
     description: Crea più elementi della stessa struttura
