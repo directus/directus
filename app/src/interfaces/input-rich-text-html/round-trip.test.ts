@@ -501,6 +501,7 @@ describe('wrapper elements', () => {
 	test('a wrapper that starts a list item is unwrapped, so it stays in the list', () => {
 		expect(wrapperRoundTrip('<ul><li><div>a</div></li></ul>')).toBe('<ul><li><p>a</p></li></ul>');
 		expect(wrapperRoundTrip('<ul><li>a<div>b</div></li></ul>')).toBe('<ul><li><p>a</p><div>b</div></li></ul>');
+		expect(wrapperRoundTrip('<ul><li><!-- c --><div>a</div></li></ul>')).toBe('<ul><li><p>a</p></li></ul>');
 	});
 
 	test('the checkbox turns the option off', () => {

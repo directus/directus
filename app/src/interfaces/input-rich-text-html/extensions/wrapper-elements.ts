@@ -13,7 +13,8 @@ function isParsedAsWrapper(element: HTMLElement): null | false {
 
 function startsParent(element: HTMLElement): boolean {
 	for (let node = element.previousSibling; node; node = node.previousSibling) {
-		if (node.nodeType === 1 || node.textContent?.trim()) return false;
+		if (node.nodeType === Node.ELEMENT_NODE) return false;
+		if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) return false;
 	}
 
 	return true;
