@@ -119,7 +119,7 @@ function requireSameOrigin(req: Request, res: Response, next: NextFunction) {
 	let requestOrigin: URL;
 
 	try {
-		publicUrl = new URL(String(env['PUBLIC_URL']));
+		publicUrl = new URL(env.PUBLIC_URL);
 		requestOrigin = new URL(origin);
 	} catch {
 		res.status(403).json({ error: 'access_denied', error_description: 'Malformed Origin header' });
@@ -239,7 +239,7 @@ async function loadOAuthPageOpts(
 	return {
 		projectName: settings?.project_name ?? 'Directus',
 		projectColor: settings?.project_color ?? '#6644ff',
-		logoUrl: projectLogo ? new Url(env['PUBLIC_URL'] as string).addPath('assets', projectLogo).toString() : null,
+		logoUrl: projectLogo ? new Url(env.PUBLIC_URL).addPath('assets', projectLogo).toString() : null,
 		appearance: (user?.appearance ?? settings?.default_appearance ?? 'auto') as string,
 	};
 }
@@ -356,7 +356,7 @@ mcpOAuthPublicRouter.get(
 	asyncHandler(checkOAuthSettings),
 	asyncHandler(async (req: Request, res: Response) => {
 		const env = useEnv();
-		const loginUrl = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'login').toString();
+		const loginUrl = new Url(env.PUBLIC_URL).addPath('admin', 'login').toString();
 		const schema = await getSchema();
 
 		function redirectToLogin() {
@@ -364,7 +364,7 @@ mcpOAuthPublicRouter.get(
 		}
 
 		// Check session cookie manually (this route is before authenticate middleware)
-		const cookieName = env['SESSION_COOKIE_NAME'] as string;
+		const cookieName = env.SESSION_COOKIE_NAME;
 		const sessionToken = req.cookies?.[cookieName];
 
 		if (!sessionToken) {
@@ -412,7 +412,7 @@ mcpOAuthPublicRouter.get(
 				sessionHash,
 			);
 
-			const decisionUrl = new Url(env['PUBLIC_URL'] as string).addPath('mcp-oauth', 'authorize', 'decision').toString();
+			const decisionUrl = new Url(env.PUBLIC_URL).addPath('mcp-oauth', 'authorize', 'decision').toString();
 
 			res.set('Content-Type', 'text/html; charset=utf-8');
 			noCache(res);

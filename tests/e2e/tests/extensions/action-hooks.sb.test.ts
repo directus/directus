@@ -7,9 +7,11 @@ import {
 	createItems,
 	deleteCollection,
 	deleteField,
+	readExtensions,
 	rest,
 	staticToken,
 	updateCollection,
+	updateExtension,
 	updateField,
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
@@ -42,7 +44,7 @@ const reported = new Signal<string[]>([]);
 
 directus.logger.onLog((message) => {
 	for (const line of message.split('\n')) {
-		const start = line.search(/action-verify-(create|schema):/);
+		const start = line.search(/action-verify-(create|schema|unload):/);
 		if (start !== -1) reported.set([...reported.get(), line.slice(start)]);
 	}
 });
@@ -141,4 +143,17 @@ test('the schema action hooks already see the change that triggered them', async
 	]);
 
 	expect(lines.every((line) => line.endsWith(':1'))).toBe(true);
+});
+
+test('the extensions.unload action hook runs when its extension is disabled', async () => {
+	const extensions = await api.request(readExtensions());
+	const extension = extensions.find((extension) => extension.meta.folder === 'action-verify-create');
+
+	expect(extension?.meta.enabled).toBe(true);
+
+	const report = reported.waitFor((all) => all.find((line) => line.startsWith('action-verify-unload:')));
+
+	await api.request(updateExtension(extension!.id, { meta: { enabled: false } }));
+
+	expect(await report).toBe('action-verify-unload:1');
 });
