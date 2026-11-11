@@ -487,7 +487,7 @@ describe('wrapper elements', () => {
 	test('the editor view still renders the paragraph in a text-only div', () => {
 		const editor = wrapperEditor('<div>a</div>');
 
-		expect(editor.view.dom.querySelector('div > p')?.textContent).toBe('a');
+		expect(editor.view.dom.querySelector(':scope div > p')?.textContent).toBe('a');
 		editor.destroy();
 	});
 
