@@ -654,6 +654,8 @@ file_moved: Файлът е преместен
 collection_created: Колекцията е създадена
 modified_on: Променен на
 card_size: Големина на картите
+small: Малък
+large: Голям
 sort_field: Поле за сортиране
 add_sort_field: Добавяне на поле за сортиране
 sort: Сортиране
@@ -1505,6 +1507,7 @@ forgot_password: Забравена парола
 hidden: Скриване
 hidden_in_group: Скрит в {group}
 icon: Икона
+image: Изображение
 info: Информация
 normal: Нормален
 success: Успех
@@ -1783,6 +1786,8 @@ interfaces:
   select-radio:
     radio-buttons: Радио бутони
     description: Избор измежду един или няколко възможности
+  system-file-image:
+    image: Изображение
   list:
     repeater: Повторение
     description: Създаване на множество записи с еднаква структура
