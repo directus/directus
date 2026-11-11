@@ -173,4 +173,22 @@ describe('normalization warning wiring', () => {
 
 		expect(wrapper.emitted('input')?.at(-1)).toEqual(['<ul><li>ab</li></ul><p></p>']);
 	});
+
+	test('a <div> locks the editor without wrapper elements', async () => {
+		const { editor } = await mountWithValue('<div class="box">a</div>');
+
+		expect(editor.isEditable).toBe(false);
+	});
+
+	test('an edit keeps the <div> with wrapper elements', async () => {
+		const { wrapper, editor } = await mountWithValue('<div class="box">a</div>', { keepWrapperElements: true });
+
+		await vi.waitFor(() => expect(editor.getText().trim()).toBe('a'));
+
+		expect(editor.isEditable).toBe(true);
+
+		editor.chain().setTextSelection(3).insertContent('b').run();
+
+		expect(wrapper.emitted('input')?.at(-1)).toEqual(['<div class="box">ab</div><p></p>']);
+	});
 });
