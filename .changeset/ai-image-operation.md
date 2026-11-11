@@ -1,4 +1,5 @@
 ---
+'@directus/ai': minor
 '@directus/api': minor
 '@directus/app': minor
 ---

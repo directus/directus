@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DEFAULT_ASPECT_RATIO } from '@directus/ai';
+import { AI_IMAGE_REFERENCE_MIME_TYPES, DEFAULT_ASPECT_RATIO } from '@directus/ai';
 import type { Field } from '@directus/types';
 import { omit } from 'lodash-es';
 import { computed, ref } from 'vue';
@@ -118,7 +118,7 @@ function addReferences(ids: (string | number)[] | null) {
 		<DrawerFiles
 			v-model:active="filesDrawerActive"
 			multiple
-			:filter="{ type: { _starts_with: 'image/' } }"
+			:filter="{ type: { _in: [...AI_IMAGE_REFERENCE_MIME_TYPES] } }"
 			@input="addReferences"
 		/>
 
