@@ -855,6 +855,8 @@ file_moved: 파일 이동됨
 collection_created: 목록이 생성됨
 modified_on: 변경 일자
 card_size: 카드형식 크기
+small: 작게
+large: 크게
 sort_field: 정렬 기준
 add_sort_field: 정렬 필드 추가
 add_to_ai_context: AI 컨텍스트에 추가
@@ -2320,6 +2322,7 @@ forgot_password: 비밀번호를 잊으셨나요?
 hidden: 숨김
 hidden_in_group: '{group}에 숨김'
 icon: 아이콘
+image: 이미지
 info: 정보
 normal: 정상
 success: 성공
@@ -2631,6 +2634,8 @@ interfaces:
   select-radio:
     radio-buttons: 라디오 버튼
     description: 여러 선택 항목 중 하나를 선택하십시오.
+  system-file-image:
+    image: 이미지
   list:
     repeater: 리피터
     description: 동일한 구조의 여러 항목 만들기
