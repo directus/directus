@@ -114,7 +114,19 @@ describe('values', () => {
 		['should ignore the value when it is empty', { a: 'secret' }, { empty: '' }, { a: 'secret' }],
 		['should ignore the value when it is not a string', { a: '123456' }, { number: 123456 }, { a: '123456' }],
 		[
-			'should replace the value literally when it contains regex characters (issue #24641)',
+			'should replace the value when it appears in an error message',
+			{ error: new Error('Invalid token s3cr3t') },
+			{ TOKEN: 's3cr3t' },
+			{ error: expect.objectContaining({ message: 'Invalid token --redacted:TOKEN--' }) },
+		],
+		[
+			'should replace the value literally when it contains a regex character (issue #24641)',
+			{ a: 'x)yMQt7ZNK3k' },
+			{ some_password: 'x)yMQt7ZNK3k' },
+			{ a: '--redacted:some_password--' },
+		],
+		[
+			'should replace the value literally when it is made up of regex characters (issue #24641)',
 			{ a: '^.+.*?^)(][}{|$' },
 			{ some_password: '^.+.*?^)(][}{|$' },
 			{ a: '--redacted:some_password--' },
@@ -125,8 +137,14 @@ describe('values', () => {
 });
 
 describe('getReplacer', () => {
-	const circular: Record<string, any> = { a: 1 };
-	circular['b'] = circular;
+	const selfReference: Record<string, any> = { a: 1 };
+	selfReference['b'] = selfReference;
+
+	const nestedReference: Record<string, any> = { a: 1 };
+	nestedReference['b'] = { c: nestedReference };
+
+	const arrayReference: Record<string, any> = { a: 1 };
+	arrayReference['b'] = [arrayReference];
 
 	const ref = {};
 
@@ -138,8 +156,18 @@ describe('getReplacer', () => {
 		],
 		[
 			"should replace the reference with '[Circular]' when an object contains itself",
-			circular,
+			selfReference,
 			{ a: 1, b: '[Circular]' },
+		],
+		[
+			"should replace the reference with '[Circular]' when a nested object refers back to its parent",
+			nestedReference,
+			{ a: 1, b: { c: '[Circular]' } },
+		],
+		[
+			"should replace the reference with '[Circular]' when an array contains its parent",
+			arrayReference,
+			{ a: 1, b: ['[Circular]'] },
 		],
 		[
 			'should serialise each occurrence when the same object is referenced twice without a cycle',
@@ -148,5 +176,28 @@ describe('getReplacer', () => {
 		],
 	])('%s', (_, input, output) => {
 		expect(JSON.parse(JSON.stringify(input, getReplacer(getRedactedString)))).toStrictEqual(output);
+	});
+
+	test.each([
+		['undefined', undefined],
+		['null', null],
+		['zero', 0],
+		['a number', 1],
+		['false', false],
+		['true', true],
+		['an empty string', ''],
+		['a string', 'abc'],
+		['an empty array', []],
+		['an array', ['123']],
+		['an empty object', {}],
+		['an object', { abc: '123' }],
+		[
+			'a function',
+			() => {
+				// empty
+			},
+		],
+	])('should return the value as is when given %s', (_, input) => {
+		expect(getReplacer(getRedactedString)('', input)).toEqual(input);
 	});
 });
