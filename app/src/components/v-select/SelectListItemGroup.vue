@@ -14,14 +14,12 @@ const props = withDefaults(
 		itemLabelFontFamily?: string;
 		modelValue?: string | number | (string | number)[] | null;
 		multiple?: boolean;
-		allowOther?: boolean;
 		groupSelectable?: boolean;
 		nonEditable?: boolean;
 	}>(),
 	{
 		modelValue: null,
 		multiple: true,
-		allowOther: true,
 		groupSelectable: false,
 		nonEditable: false,
 	},
@@ -57,7 +55,7 @@ function onGroupClick(item: Option) {
 		@click="onGroupClick(item)"
 	>
 		<template #activator>
-			<VListItemIcon v-if="multiple === false && allowOther === false && item.icon">
+			<VListItemIcon v-if="multiple === false && item.icon">
 				<VIcon :name="item.icon" />
 			</VListItemIcon>
 			<VListItemContent>
@@ -81,7 +79,6 @@ function onGroupClick(item: Option) {
 				:item-label-font-family="itemLabelFontFamily"
 				:model-value="modelValue"
 				:multiple="multiple"
-				:allow-other="allowOther"
 				:group-selectable="groupSelectable"
 				:non-editable="nonEditable"
 				@update:model-value="$emit('update:modelValue', $event)"
