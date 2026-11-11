@@ -724,6 +724,8 @@ file_moved: Файл переміщено
 collection_created: Колекцію створено
 modified_on: Час зміни
 card_size: Розмір картки
+small: Малий
+large: Великий
 sort_field: Поле сортування
 add_sort_field: Додати поле сортування
 sort: Сортування
@@ -1688,6 +1690,7 @@ forgot_password: Забули пароль
 hidden: Приховано
 hidden_in_group: Приховано в {group}
 icon: Іконка
+image: Зображення
 info: Інформація
 normal: Нормальний
 success: Успішно
@@ -1991,6 +1994,8 @@ interfaces:
   select-radio:
     radio-buttons: Радіокнопки
     description: Вибір одного з кількох варіантів
+  system-file-image:
+    image: Зображення
   list:
     repeater: Повторювач
     description: Створити кілька записів однієї структури
