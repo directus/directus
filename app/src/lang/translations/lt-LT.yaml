@@ -677,6 +677,8 @@ file_moved: Failas perkeltas
 collection_created: Kolekcija sukurta
 modified_on: Pakeista
 card_size: Kortelės dydis
+small: Small
+large: Large
 sort_field: Rūšiavimo laukas
 add_sort_field: Pridėti rikiavimo lauką
 sort: Rūšiuoti
@@ -1588,6 +1590,7 @@ forgot_password: Pamiršote slaptažodį
 hidden: Paslėptas
 hidden_in_group: Paslėptas {group}
 icon: Ikona
+image: Paveikslėlis
 info: Informacija
 normal: Normalus
 success: Pavyko
@@ -1878,6 +1881,8 @@ interfaces:
   select-radio:
     radio-buttons: Pasirinkties akutės
     description: Pasirinkties akučių pasirinkimai
+  system-file-image:
+    image: Paveikslėlis
   list:
     repeater: Pasikartojanti forma
     description: Sukurti keletą tos pačios struktūros įrašų
