@@ -994,6 +994,7 @@ file_library: Knjižnjica datotek
 forgot_password: Pozabljeno geslo
 hidden: Skrito
 icon: Ikona
+image: Slika
 info: Informacije
 normal: Običajno
 success: Uspeh
@@ -1193,6 +1194,8 @@ interfaces:
   select-radio:
     radio-buttons: Radijski gumbi
     description: Izberite eno od opcij
+  system-file-image:
+    image: Slika
   list:
     repeater: Ponavljalnik
     description: Ustvarite več zapisov enake strukture
