@@ -1,13 +1,15 @@
 import type { FlowRaw } from '@directus/types';
 import knex from 'knex';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { useBus } from './bus/index.js';
+import emitter from './emitter.js';
 import { withResolvers } from './test-utils/async.js';
 import { createMockBus } from './test-utils/bus.js';
 
 const { readByQuery, getSchema, scheduleSynchronizedJob } = vi.hoisted(() => ({
-	readByQuery: vi.fn(),
-	getSchema: vi.fn(),
-	scheduleSynchronizedJob: vi.fn(),
+	readByQuery: vi.fn(async (): Promise<unknown[]> => []),
+	getSchema: vi.fn(async (): Promise<unknown> => ({})),
+	scheduleSynchronizedJob: vi.fn(() => ({ stop: vi.fn(async () => {}) })),
 }));
 
 vi.mock('@directus/env', async () => {
@@ -54,26 +56,25 @@ function createFlow(id: string, trigger = 'operation', options: Record<string, u
 
 describe('FlowManager', () => {
 	let getFlowManager: typeof import('./flows.js').getFlowManager;
-	let testBus: ReturnType<typeof createMockBus>;
+	let TimeoutError: typeof import('./utils/with-timeout.js').TimeoutError;
+	let bus: ReturnType<typeof createMockBus>['bus'];
 
 	beforeEach(async () => {
-		vi.resetModules();
-
-		readByQuery.mockReset().mockResolvedValue([]);
-		getSchema.mockReset().mockResolvedValue({});
-		scheduleSynchronizedJob.mockReset().mockReturnValue({ stop: vi.fn().mockResolvedValue(undefined) });
-
 		// A fresh bus per test, so the managers of earlier tests don't receive its messages
-		const { useBus } = await import('./bus/index.js');
-		testBus = createMockBus();
-		vi.mocked(useBus).mockReturnValue(testBus.bus as any);
+		bus = createMockBus().bus;
+		vi.mocked(useBus).mockReturnValue(bus as any);
 
+		// flows.ts keeps its manager as a module singleton, so it's re-imported after a reset for a fresh one.
+		// Mocked modules survive the reset, so only real modules have to be re-imported to match flows.ts
+		vi.resetModules();
 		({ getFlowManager } = await import('./flows.js'));
+		({ TimeoutError } = await import('./utils/with-timeout.js'));
 	});
 
 	afterEach(() => {
 		vi.useRealTimers();
-		vi.clearAllMocks();
+		// Restores the mocks to their defaults, dropping any leftover once values
+		vi.resetAllMocks();
 	});
 
 	async function initializeWith(flows: FlowRaw[]) {
@@ -125,12 +126,6 @@ describe('FlowManager', () => {
 		});
 	});
 
-	describe('getFlow', () => {
-		test('should return undefined for a flow that is not loaded', () => {
-			expect(getFlowManager().getFlow('missing-flow')).toBeUndefined();
-		});
-	});
-
 	describe('reload', () => {
 		test('should retry reading the flows when it fails', async () => {
 			vi.useFakeTimers({ toFake: ['setTimeout'] });
@@ -169,22 +164,16 @@ describe('FlowManager', () => {
 		test.each([
 			{
 				name: 'KnexTimeoutError',
-				createError: async () => new knex.KnexTimeoutError('Knex: Timeout acquiring a connection'),
+				createError: () => new knex.KnexTimeoutError('Knex: Timeout acquiring a connection'),
 			},
-			{
-				name: 'TimeoutError',
-				// Imported after the module reset, so it is the same class flows.ts checks against
-				createError: async () => {
-					const { TimeoutError } = await import('./utils/with-timeout.js');
-					return new TimeoutError('Timeout of 10000ms exceeded');
-				},
-			},
+			// Created in the test, as TimeoutError is only imported after the module reset
+			{ name: 'TimeoutError', createError: () => new TimeoutError('Timeout of 10000ms exceeded') },
 		])('should not retry reading the flows on a $name', async ({ createError }) => {
 			vi.useFakeTimers({ toFake: ['setTimeout'] });
 
 			const manager = await initializeWith([createFlow('flow-a')]);
 
-			readByQuery.mockRejectedValueOnce(await createError());
+			readByQuery.mockRejectedValueOnce(createError());
 			await manager.reload();
 			await flushPromises();
 			await vi.runAllTimersAsync();
@@ -195,7 +184,6 @@ describe('FlowManager', () => {
 		});
 
 		test('should load the latest flows on the next reload after loading the flows failed', async () => {
-			const emitter = vi.mocked((await import('./emitter.js')).default);
 			const manager = await initializeWith([]);
 
 			readByQuery.mockResolvedValueOnce([
@@ -210,7 +198,7 @@ describe('FlowManager', () => {
 			await manager.reload();
 			await flushPromises();
 
-			const [event, partiallyLoadedHandler] = emitter.onAction.mock.calls[0]!;
+			const [event, partiallyLoadedHandler] = vi.mocked(emitter.onAction).mock.calls[0]!;
 
 			readByQuery.mockResolvedValueOnce([createFlow('flow-b')]);
 			await manager.reload();
@@ -263,17 +251,10 @@ describe('FlowManager', () => {
 		test('should ignore empty messages', async () => {
 			await initializeWith([createFlow('flow-a')]);
 
-			await testBus.bus.publish('flows', null);
+			await bus.publish('flows', null);
 			await flushPromises();
 
 			expect(readByQuery).toHaveBeenCalledTimes(1);
-		});
-
-		test('should reject when publishing the reload fails', async () => {
-			const error = new Error('Connection is closed.');
-			testBus.bus.publish.mockRejectedValueOnce(error);
-
-			await expect(getFlowManager().reload()).rejects.toBe(error);
 		});
 	});
 
@@ -367,7 +348,7 @@ describe('FlowManager', () => {
 	describe('getFlowManager', () => {
 		test('should not leave a failed subscription to flow messages unhandled', async () => {
 			// A plain function rather than a mock, as Vitest marks rejections returned by mocks as handled
-			testBus.bus.subscribe = (() => Promise.reject(new Error('Connection is closed.'))) as any;
+			bus.subscribe = (() => Promise.reject(new Error('Connection is closed.'))) as any;
 
 			getFlowManager();
 

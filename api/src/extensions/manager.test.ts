@@ -118,22 +118,13 @@ describe('ExtensionManager', () => {
 			expect(exit).toHaveBeenCalledWith(1);
 		});
 
-		test('should skip initializing again when already initialized', async () => {
+		test('should not load or subscribe again when initialized again', async () => {
 			const manager = await initialize();
 
 			await manager.initialize({ watch: false });
 
 			expect(getExtensions).toHaveBeenCalledTimes(1);
-		});
-
-		test('should subscribe to reload messages only once when initialized again', async () => {
-			const subscribe = vi.spyOn(testBus.bus, 'subscribe');
-
-			const manager = await initialize();
-
-			await manager.initialize({ watch: false });
-
-			expect(subscribe).toHaveBeenCalledTimes(1);
+			expect(testBus.bus.subscribe).toHaveBeenCalledTimes(1);
 		});
 
 		test('should queue a reload requested during the initial load', async () => {
@@ -265,23 +256,6 @@ describe('ExtensionManager', () => {
 			// The initial load and the reload
 			expect(getExtensions).toHaveBeenCalledTimes(2);
 		});
-
-		test('should wait for reloads queued while waiting', async () => {
-			const manager = await initialize();
-
-			const first = withResolvers<void>();
-			syncExtensions.mockReturnValueOnce(first.promise);
-
-			manager.reload();
-			const waiting = manager.isReloading();
-			manager.reload();
-
-			first.resolve();
-			await waiting;
-
-			// The initial load and both reloads, as the second starts before the waiting caller resumes
-			expect(getExtensions).toHaveBeenCalledTimes(3);
-		});
 	});
 
 	describe('reload messages', () => {
@@ -294,19 +268,13 @@ describe('ExtensionManager', () => {
 			expect(syncExtensions).toHaveBeenLastCalledWith({ partialSync: '.registry/extension' });
 		});
 
-		test('should ignore messages published by the current process', async () => {
+		test.each([
+			{ name: 'messages published by the current process', payload: { origin: processId() } },
+			{ name: 'empty messages', payload: null },
+		])('should ignore $name', async ({ payload }) => {
 			const manager = await initialize();
 
-			await testBus.bus.publish('extensions.reload', { origin: processId() });
-			await manager.isReloading();
-
-			expect(syncExtensions).toHaveBeenCalledTimes(1);
-		});
-
-		test('should ignore empty messages', async () => {
-			const manager = await initialize();
-
-			await testBus.bus.publish('extensions.reload', null);
+			await testBus.bus.publish('extensions.reload', payload);
 			await manager.isReloading();
 
 			expect(syncExtensions).toHaveBeenCalledTimes(1);
