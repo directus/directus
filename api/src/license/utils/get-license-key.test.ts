@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { mockEnv } from '../../test-utils/env.js';
 import { getLicenseKey } from './get-license-key.js';
 
 const settings = vi.hoisted(() => ({ readSingleton: vi.fn() }));
@@ -15,7 +16,7 @@ vi.mock('../../services/settings.js', () => ({
 vi.mock('../../utils/get-schema.js', () => ({ getSchema: vi.fn() }));
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({});
+	vi.mocked(useEnv).mockReturnValue(mockEnv());
 	settings.readSingleton.mockResolvedValue({ license_key: 'D0001-00000-00000-00000-0000J' });
 });
 
@@ -25,13 +26,13 @@ afterEach(() => {
 
 describe('getLicenseKey', () => {
 	test('an env key takes precedence over settings', async () => {
-		vi.mocked(useEnv).mockReturnValue({ LICENSE_KEY: 'D0000-00000-00000-00000-0000K' });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ LICENSE_KEY: 'D0000-00000-00000-00000-0000K' }));
 
 		expect(await getLicenseKey()).toEqual({ source: 'env', key: 'D0000-00000-00000-00000-0000K' });
 	});
 
 	test('an env token hides a key persisted in settings', async () => {
-		vi.mocked(useEnv).mockReturnValue({ LICENSE_TOKEN: 'token' });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ LICENSE_TOKEN: 'token' }));
 
 		expect(await getLicenseKey()).toEqual({ source: 'env', key: null });
 		expect(settings.readSingleton).not.toHaveBeenCalled();

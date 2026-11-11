@@ -12,6 +12,7 @@ import { useBus } from '../../../bus/index.js';
 import { useLock } from '../../../lock/index.js';
 import { useLogger } from '../../../logger/index.js';
 import { getStorage } from '../../../storage/index.js';
+import { mockEnv } from '../../../test-utils/env.js';
 import { getExtensionsPath } from '../get-extensions-path.js';
 import { isSynchronizing, setSyncStatus, SyncStatus } from './status.js';
 import { syncExtensions } from './sync.js';
@@ -24,11 +25,11 @@ vi.mock('@directus/env', () => ({
 		EXTENSIONS_PATH: 'remote/extensions',
 		EXTENSIONS_STORAGE_MAX_CONCURRENCY: 2,
 		REFRESH_TOKEN_COOKIE_DOMAIN: 'localhost',
-		REFRESH_TOKEN_TTL: '7d',
+		REFRESH_TOKEN_TTL: 604_800_000,
 		REFRESH_TOKEN_COOKIE_SECURE: false,
 		REFRESH_TOKEN_COOKIE_SAME_SITE: 'strict',
 		SESSION_COOKIE_DOMAIN: 'localhost',
-		SESSION_COOKIE_TTL: '1d',
+		SESSION_COOKIE_TTL: 86_400_000,
 		SESSION_COOKIE_SECURE: false,
 		SESSION_COOKIE_SAME_SITE: 'strict',
 	})),
@@ -48,7 +49,7 @@ vi.mock('node:stream/promises');
 vi.mock('node-machine-id');
 
 describe('syncExtensions', () => {
-	let mockEnv: Record<string, any>;
+	let envValues: Record<string, any>;
 	let mockLock: any;
 	let mockMessenger: any;
 	let mockLogger: any;
@@ -58,7 +59,7 @@ describe('syncExtensions', () => {
 
 	beforeEach(() => {
 		// Mock all the things
-		mockEnv = new Proxy(
+		envValues = new Proxy(
 			{
 				EXTENSIONS_LOCATION: 'test-location',
 				EXTENSIONS_PATH: 'remote/extensions',
@@ -104,7 +105,7 @@ describe('syncExtensions', () => {
 			cleanup: vi.fn().mockResolvedValue(undefined),
 		};
 
-		vi.mocked(useEnv).mockReturnValue(mockEnv);
+		vi.mocked(useEnv).mockReturnValue(mockEnv(envValues));
 		vi.mocked(useLock).mockReturnValue(mockLock);
 		vi.mocked(useBus).mockReturnValue(mockMessenger);
 		vi.mocked(useLogger).mockReturnValue(mockLogger);
