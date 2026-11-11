@@ -11,4 +11,6 @@ export default defineConfig({
 	minify: env === 'production',
 	watch: env === 'development',
 	dts: true,
+	fixedExtension: false,
+	deps: { dts: { neverBundle: true } },
 });

@@ -17,6 +17,7 @@ export default defineConfig(() => [
 		...shared,
 		dts: true, // generate dts file for main module
 		fixedExtension: false, // use .js/.cjs based on package type
+		deps: { dts: { neverBundle: true } },
 		entry: ['src/index.ts', 'src/types.ts'],
 		format: ['esm', 'cjs'],
 	},

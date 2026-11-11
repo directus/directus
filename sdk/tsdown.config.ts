@@ -10,6 +10,8 @@ export default defineConfig({
 	minify: env === 'production',
 	watch: env === 'development',
 	unbundle: true,
+	fixedExtension: false,
+	deps: { dts: { neverBundle: true } },
 	target: 'es2022',
 	entry: ['src/index.ts'],
 	define: {

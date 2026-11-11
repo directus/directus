@@ -6,4 +6,5 @@ export default defineConfig({
 	platform: 'neutral',
 	plugins: [Vue({ isProduction: true })],
 	dts: { vue: true },
+	deps: { dts: { neverBundle: true } },
 });

@@ -1,5 +1,8 @@
 {
 	"extends": "@directus/tsconfig/node26",
+	"compilerOptions": {
+		"types": ["node"]
+	},
 	"include": ["src"],
 	"typedocOptions": {
 		"entryPoints": ["./src/index.ts"]

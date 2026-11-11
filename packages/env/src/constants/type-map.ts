@@ -331,7 +331,7 @@ export const TYPE_MAP = {
 	'AUTH_.+_GROUP_DN': 'string',
 	'AUTH_.+_BIND_PASSWORD': 'string',
 	'AUTH_.+_COOKIE_SECURE': 'boolean',
-} as const satisfies Record<string, TypeMapEntry>;
+} as const;
 
 export const TYPE_MAP_REGEX: [RegExp, TypeMapEntry][] = Object.entries(TYPE_MAP).map(([name, value]) => [
 	new RegExp(`^${name}$`),
