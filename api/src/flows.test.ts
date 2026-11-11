@@ -3,16 +3,15 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { withResolvers } from './test-utils/async.js';
 import { createMockBus } from './test-utils/bus.js';
 
-const { readByQuery, getSchema, scheduleSynchronizedJob, sleep } = vi.hoisted(() => ({
+const { readByQuery, getSchema, scheduleSynchronizedJob } = vi.hoisted(() => ({
 	readByQuery: vi.fn(),
 	getSchema: vi.fn(),
 	scheduleSynchronizedJob: vi.fn(),
-	sleep: vi.fn(),
 }));
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('./test-utils/env.js');
-	return mockEnv();
+	const { mockUseEnv } = await import('./test-utils/env.js');
+	return mockUseEnv();
 });
 
 vi.mock('./logger/index.js', async () => {
@@ -43,7 +42,6 @@ vi.mock('./services/flows.js', () => ({
 
 vi.mock('./utils/get-schema.js', () => ({ getSchema }));
 vi.mock('./utils/schedule.js', () => ({ scheduleSynchronizedJob, validateCron: () => true }));
-vi.mock('node:timers/promises', () => ({ setTimeout: sleep }));
 
 function flushPromises() {
 	return new Promise((resolve) => setImmediate(resolve));
@@ -63,7 +61,6 @@ describe('FlowManager', () => {
 		readByQuery.mockReset().mockResolvedValue([]);
 		getSchema.mockReset().mockResolvedValue({});
 		scheduleSynchronizedJob.mockReset().mockReturnValue({ stop: vi.fn().mockResolvedValue(undefined) });
-		sleep.mockReset().mockResolvedValue(undefined);
 
 		// A fresh bus per test, so the managers of earlier tests don't receive its messages
 		const { useBus } = await import('./bus/index.js');
@@ -133,46 +130,15 @@ describe('FlowManager', () => {
 	});
 
 	describe('reload', () => {
-		test('should retry reading the flows when it fails', async () => {
+		test('should keep the loaded flows when reading the flows fails', async () => {
 			const manager = await initializeWith([createFlow('flow-a')]);
 
-			readByQuery
-				.mockRejectedValueOnce(new Error('Connection terminated unexpectedly'))
-				.mockResolvedValueOnce([createFlow('flow-b')]);
-
+			readByQuery.mockRejectedValueOnce(new Error('Connection terminated unexpectedly'));
 			await manager.reload();
 			await flushPromises();
 
-			expect(manager.getFlow('flow-b')).toBeDefined();
-		});
-
-		test('should not retry reading the flows when it times out', async () => {
-			const { default: knex } = await import('knex');
-			const manager = await initializeWith([createFlow('flow-a')]);
-
-			readByQuery.mockRejectedValueOnce(new knex.KnexTimeoutError('Knex: Timeout acquiring a connection'));
-			await manager.reload();
-			await flushPromises();
-
-			expect(sleep).not.toHaveBeenCalled();
-		});
-
-		test('should keep the loaded flows when every attempt at reading the flows fails', async () => {
-			const manager = await initializeWith([createFlow('flow-a')]);
-
-			readByQuery.mockRejectedValue(new Error('Connection terminated unexpectedly'));
-			await manager.reload();
-			await flushPromises();
-
-			const [first, second] = sleep.mock.calls.map(([delay]) => delay);
-
-			// The initial load and 3 attempts, waiting longer before every retry
-			expect(readByQuery).toHaveBeenCalledTimes(4);
-			expect(sleep).toHaveBeenCalledTimes(2);
-			expect(first).toBeGreaterThanOrEqual(500);
-			expect(first).toBeLessThanOrEqual(1000);
-			expect(second).toBeGreaterThanOrEqual(1000);
-			expect(second).toBeLessThanOrEqual(2000);
+			// The initial load and the failed read
+			expect(readByQuery).toHaveBeenCalledTimes(2);
 			expect(manager.getFlow('flow-a')).toBeDefined();
 		});
 

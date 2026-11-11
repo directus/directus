@@ -1,4 +1,3 @@
-import { setTimeout } from 'node:timers/promises';
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
@@ -14,7 +13,7 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
-import knex, { type Knex } from 'knex';
+import { type Knex } from 'knex';
 import { pick } from 'lodash-es';
 import { get } from 'micromustache';
 import PQueue from 'p-queue';
@@ -36,7 +35,6 @@ import { isUnauthenticated } from './utils/is-unauthenticated.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 import { getCollectionFromSchema } from './utils/schema/get-collection-from-schema.js';
-import { TimeoutError } from './utils/with-timeout.js';
 
 let flowManager: FlowManager | undefined;
 
@@ -59,11 +57,6 @@ const TRIGGER_KEY = '$trigger';
 const ACCOUNTABILITY_KEY = '$accountability';
 const LAST_KEY = '$last';
 const ENV_KEY = '$env';
-
-/** Total attempts at reading the flows */
-const READ_FLOWS_ATTEMPTS = 3;
-/** Delay before the first retry in milliseconds, doubled for every following one */
-const READ_FLOWS_BASE_DELAY = 1000;
 
 interface FlowMessage {
 	type: 'reload';
@@ -189,40 +182,17 @@ class FlowManager {
 
 	/**
 	 * Read the active flows with their operations from the database, constructed into flow trees.
-	 * Failed reads are retried with backoff.
 	 */
 	private async readFlows(): Promise<Flow[]> {
-		const logger = useLogger();
+		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
-		for (let attempt = 1; ; attempt++) {
-			try {
-				const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
+		const flows = await flowsService.readByQuery({
+			filter: { status: { _eq: 'active' } },
+			fields: ['*', 'operations.*'],
+			limit: -1,
+		});
 
-				const flows = await flowsService.readByQuery({
-					filter: { status: { _eq: 'active' } },
-					fields: ['*', 'operations.*'],
-					limit: -1,
-				});
-
-				return flows.map((flow) => constructFlowTree(flow));
-			} catch (error) {
-				if (
-					attempt >= READ_FLOWS_ATTEMPTS ||
-					// Timeouts already waited long before failing
-					error instanceof knex.KnexTimeoutError ||
-					error instanceof TimeoutError
-				) {
-					throw error;
-				}
-
-				const delay = READ_FLOWS_BASE_DELAY * 2 ** (attempt - 1);
-
-				logger.warn(error, `Failed to read flows (attempt ${attempt}/${READ_FLOWS_ATTEMPTS}), retrying`);
-
-				// Jitter the delay to avoid hammering
-				await setTimeout(delay / 2 + Math.random() * (delay / 2));
-			}
-		}
+		return flows.map((flow) => constructFlowTree(flow));
 	}
 
 	/**
