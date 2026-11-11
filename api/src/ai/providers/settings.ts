@@ -1,7 +1,5 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { CUSTOM_LLM_FIELDS } from '../../constants.js';
-import { getEntitlementManager } from '../../license/index.js';
 import { SettingsService } from '../../services/settings.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { AISettings } from './types.js';
@@ -37,16 +35,5 @@ export async function getAISettings(context: { knex?: Knex; schema?: SchemaOverv
 	// The Settings type masks API keys, but reading as the system returns them decrypted.
 	const stored = (await service.readSingleton({ fields: [...AI_SETTINGS_FIELDS] })) as Partial<AISettings>;
 
-	const settings = Object.fromEntries(
-		AI_SETTINGS_FIELDS.map((field) => [field, stored[field] ?? null]),
-	) as unknown as AISettings;
-
-	// Reading as the system skips the settings service's license masking, so apply it here.
-	if (!getEntitlementManager().isEntitled('custom_llms_enabled')) {
-		for (const field of CUSTOM_LLM_FIELDS) {
-			settings[field] = null;
-		}
-	}
-
-	return settings;
+	return Object.fromEntries(AI_SETTINGS_FIELDS.map((field) => [field, stored[field] ?? null])) as unknown as AISettings;
 }
