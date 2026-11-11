@@ -116,7 +116,7 @@ export const RESUMABLE_UPLOADS = {
 	SCHEDULE: env.TUS_CLEANUP_SCHEDULE,
 };
 
-export const ALLOWED_DB_DEFAULT_FUNCTIONS = ['gen_random_uuid()'];
+export const ALLOWED_DB_DEFAULT_FUNCTIONS = ['gen_random_uuid()', 'uuidv7()'];
 
 export const CUSTOM_LLM_FIELDS = [
 	'ai_openai_compatible_api_key',
