@@ -712,6 +712,8 @@ file_moved: Soubor přesunut
 collection_created: Kolekce vytvořena
 modified_on: Upraveno
 card_size: Velikost karty
+small: Malé
+large: Velké
 sort_field: Pole řazení
 add_sort_field: Přidat pole řazení
 sort: Seřadit
@@ -1640,6 +1642,7 @@ forgot_password: Zapomenuté heslo
 hidden: Skryté
 hidden_in_group: Skrytý v {group}
 icon: Ikona
+image: Obrázek
 info: Informace
 normal: Normální
 success: Úspěch
@@ -1928,6 +1931,8 @@ interfaces:
   select-radio:
     radio-buttons: Přepínací tlačítka
     description: Vyberte jednu z více možností
+  system-file-image:
+    image: Obrázek
   list:
     repeater: Opakovač
     description: Vytvořit více záznamů ve stejné struktuře
