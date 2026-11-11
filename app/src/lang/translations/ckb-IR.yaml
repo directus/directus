@@ -677,6 +677,8 @@ file_moved: پەڕگە گواسترایەوە
 collection_created: کۆمەڵە دروستکرا
 modified_on: دەستکاریکرا لە
 card_size: قەبارەی کارت
+small: بچوک
+large: گەورە
 sort_field: خانەی ڕیزکردن
 add_sort_field: دانانی خانەی ڕیزکردن
 sort: ڕیزکردن
@@ -1595,6 +1597,7 @@ forgot_password: تێپەڕەوشەت لەبیرکردوە
 hidden: شاراوە
 hidden_in_group: شاراوە لە {group}
 icon: ئایکۆن
+image: وێنە
 info: زانیاری
 normal: ئاسایی
 success: سەرکەوتووبوو
@@ -1885,6 +1888,8 @@ interfaces:
   select-radio:
     radio-buttons: دوگمە ڕادیۆییەکان
     description: یەکێک دیاری بکە لە چەند هەڵبژاردەیەک
+  system-file-image:
+    image: وێنە
   list:
     repeater: دوبارەکەرەوە
     description: چەندین نوسراو لەهەمان پێکهاتە دروست بکە
