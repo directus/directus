@@ -1232,6 +1232,7 @@ forgot_password: Zaboravljena lozinka
 hidden: Skriveno
 hidden_in_group: Skriveno u {group}
 icon: Ikona
+image: Slika
 info: Informacija
 normal: Normalno
 success: Uspješno
@@ -1483,6 +1484,8 @@ interfaces:
   select-radio:
     radio-buttons: Radio dugmeta
     description: Odaberite jedan od više izbora
+  system-file-image:
+    image: Slika
   list:
     repeater: Ponavljač
     description: Napravite više unosa iste strukture
