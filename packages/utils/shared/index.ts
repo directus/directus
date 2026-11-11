@@ -47,3 +47,4 @@ export * from './validate-payload.js';
 export * from './deep-map-filter.js';
 export * from './get-relation-info.js';
 export * from './deep-map-with-schema.js';
+export * from './is-known-icon.js';

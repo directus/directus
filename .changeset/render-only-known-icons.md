@@ -1,5 +1,8 @@
 ---
+'@directus/api': patch
 '@directus/app': patch
+'@directus/constants': minor
+'@directus/utils': minor
 ---
 
-Fixed icons with an unknown name (for example a collection's or bookmark's `icon` set to arbitrary text) rendering that text in place of the icon; they now render nothing
+Fixed icon fields (collection `meta.icon`, bookmarks, dashboards, panels, flows, roles and policies) accepting arbitrary text, which the app displayed in place of the icon; saving an unknown icon name now fails with a 400, and the app no longer renders unknown names it already has stored

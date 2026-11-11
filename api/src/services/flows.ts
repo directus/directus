@@ -2,6 +2,7 @@ import type { AbstractServiceOptions, FlowRaw, Item, MutationOptions, PrimaryKey
 import { getFlowManager } from '../flows.js';
 import { getEntitlementManager } from '../license/entitlements/manager.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { assertKnownIcon } from '../utils/assert-known-icon.js';
 import { ItemsService } from './items.js';
 
 export class FlowsService extends ItemsService<FlowRaw> {
@@ -10,6 +11,8 @@ export class FlowsService extends ItemsService<FlowRaw> {
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		assertKnownIcon(data['icon']);
+
 		if (!('status' in data) || data['status'] === 'active') {
 			await getEntitlementManager().assert('flows', { adding: 1, knex: this.knex });
 		}
@@ -23,6 +26,8 @@ export class FlowsService extends ItemsService<FlowRaw> {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		assertKnownIcon(data['icon']);
+
 		if ('status' in data && data['status'] === 'active') {
 			await getEntitlementManager().assert('flows', { adding: keys.length, knex: this.knex });
 		}

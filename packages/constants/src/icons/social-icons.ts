@@ -1,4 +1,5 @@
-export const socialIcons: string[] = [
+/** Font Awesome brand icons the app renders, by their snake_case name. */
+export const SOCIAL_ICONS: readonly string[] = [
 	'42_group',
 	'500px',
 	'accessible_icon',

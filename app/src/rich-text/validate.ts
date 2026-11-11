@@ -5,6 +5,7 @@ import type {
 	RichTextPerField,
 	RichTextToolbarButton,
 } from '@directus/extensions';
+import { isKnownIcon } from '@directus/utils';
 import {
 	type AnyExtension,
 	type Attributes,
@@ -15,7 +16,6 @@ import {
 	type GlobalAttributes,
 	splitExtensions,
 } from '@tiptap/core';
-import { isKnownIcon } from '@/components/v-icon/known-icons';
 import { editorExtensions, fieldEditorExtensions } from '@/interfaces/input-rich-text-html/extensions';
 import { ComparisonDiff } from '@/interfaces/input-rich-text-html/extensions/comparison-diff';
 import { CUSTOM_FORMAT_PREFIX } from '@/interfaces/input-rich-text-html/extensions/custom-formats';

@@ -3,6 +3,7 @@ import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { clearSystemCache } from '../cache.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { assertKnownIcon } from '../utils/assert-known-icon.js';
 import { transaction } from '../utils/transaction.js';
 import { AccessService } from './access.js';
 import { ItemsService } from './items.js';
@@ -17,12 +18,19 @@ export class RolesService extends ItemsService {
 	// No need to check user integrity in createOne, as the creation of a role itself does not influence the number of
 	// users, as the role of a user is actually updated in the UsersService on the user, which will make sure to
 	// initiate a user integrity check if necessary. Same goes for role nesting check as well as cache clearing.
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		assertKnownIcon(data['icon']);
+
+		return super.createOne(data, opts);
+	}
 
 	override async updateMany(
 		keys: PrimaryKey[],
 		data: Partial<Item>,
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
+		assertKnownIcon(data['icon']);
+
 		if ('parent' in data) {
 			// If the parent of a role changed we need to make a full integrity check.
 			// Anything related to policies will be checked in the AccessService, where the policies are attached to roles

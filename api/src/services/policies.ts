@@ -4,6 +4,7 @@ import { UserIntegrityCheckFlag } from '@directus/types';
 import { IpBlocklist } from '@directus/utils/node';
 import { clearSystemCache } from '../cache.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
+import { assertKnownIcon } from '../utils/assert-known-icon.js';
 import { ItemsService } from './items.js';
 
 export function isIpAccessValid(value?: unknown): boolean {
@@ -36,6 +37,7 @@ export class PoliciesService extends ItemsService<Policy> {
 
 	override async createOne(data: Partial<Policy>, opts: MutationOptions = {}): Promise<PrimaryKey> {
 		this.assertValidIpAccess(data);
+		assertKnownIcon(data['icon']);
 
 		// A policy has been created, but the attachment to a user/role happens in the AccessService,
 		// so no need to check user integrity
@@ -55,6 +57,7 @@ export class PoliciesService extends ItemsService<Policy> {
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
 		this.assertValidIpAccess(data);
+		assertKnownIcon(data['icon']);
 
 		if ('admin_access' in data) {
 			let flags = UserIntegrityCheckFlag.RemainingAdmins;
