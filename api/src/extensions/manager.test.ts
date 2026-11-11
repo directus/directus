@@ -95,7 +95,7 @@ describe('ExtensionManager', () => {
 
 	async function initialize() {
 		const manager = new ExtensionManager();
-		await manager.initialize({ watch: false });
+		await manager.initialize();
 
 		return manager;
 	}
@@ -118,11 +118,21 @@ describe('ExtensionManager', () => {
 			expect(exit).toHaveBeenCalledWith(1);
 		});
 
-		test('should not load or subscribe again when initialized again', async () => {
-			const manager = await initialize();
+		test('should apply new options without loading or subscribing again when initialized again', async () => {
+			getExtensions.mockResolvedValue(createExtensions([['hook-a', HOOK]]));
+			const handler = vi.fn();
+			mockHook(({ schedule }) => schedule('* * * * *', handler));
+			scheduleSynchronizedJob.mockReturnValue({ stop: vi.fn() });
 
-			await manager.initialize({ watch: false });
+			// As the CLI does before the app initializes
+			const manager = new ExtensionManager();
+			await manager.initialize({ schedule: false });
+			await manager.initialize();
 
+			const [, , tick] = scheduleSynchronizedJob.mock.calls[0]!;
+			await tick();
+
+			expect(handler).toHaveBeenCalledOnce();
 			expect(getExtensions).toHaveBeenCalledTimes(1);
 			expect(testBus.bus.subscribe).toHaveBeenCalledTimes(1);
 		});
@@ -132,7 +142,7 @@ describe('ExtensionManager', () => {
 			syncExtensions.mockReturnValueOnce(initialSync.promise);
 
 			const manager = new ExtensionManager();
-			const initializing = manager.initialize({ watch: false });
+			const initializing = manager.initialize();
 			const reloading = manager.reload();
 
 			initialSync.resolve();

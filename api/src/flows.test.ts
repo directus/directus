@@ -137,7 +137,6 @@ describe('FlowManager', () => {
 				.mockResolvedValueOnce([createFlow('flow-b')]);
 
 			await manager.reload();
-			await flushPromises();
 			await vi.runAllTimersAsync();
 
 			// The initial load, the failed read and the retry
@@ -153,7 +152,6 @@ describe('FlowManager', () => {
 
 			readByQuery.mockRejectedValue(new Error('Connection terminated unexpectedly'));
 			await manager.reload();
-			await flushPromises();
 			await vi.runAllTimersAsync();
 
 			// The initial load, the failed read and both failed retries
@@ -175,7 +173,6 @@ describe('FlowManager', () => {
 
 			readByQuery.mockRejectedValueOnce(createError());
 			await manager.reload();
-			await flushPromises();
 			await vi.runAllTimersAsync();
 
 			// The initial load and the timed out read

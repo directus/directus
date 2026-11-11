@@ -184,25 +184,23 @@ export class ExtensionManager {
 	public async initialize(options: Partial<ExtensionManagerOptions> = {}): Promise<void> {
 		const logger = useLogger();
 
+		// Applied on every call, as the app initializes again after the CLI to enable schedules and watching
+		this.options = {
+			...defaultOptions,
+			...options,
+		};
+
+		const wasWatcherInitialized = this.watcher !== null;
+
+		if (this.options.watch && !wasWatcherInitialized) {
+			this.initializeWatcher();
+		} else if (!this.options.watch && wasWatcherInitialized) {
+			await this.closeWatcher();
+		}
+
 		// Ensure reloads requested during the initial load wait for it, rather than being skipped
 		await this.reloadQueue.add(async () => {
-			if (this.isInitialized) {
-				logger.warn('Extensions are already initialized, skipping initialization');
-				return;
-			}
-
-			this.options = {
-				...defaultOptions,
-				...options,
-			};
-
-			const wasWatcherInitialized = this.watcher !== null;
-
-			if (this.options.watch && !wasWatcherInitialized) {
-				this.initializeWatcher();
-			} else if (!this.options.watch && wasWatcherInitialized) {
-				await this.closeWatcher();
-			}
+			if (this.isInitialized) return;
 
 			try {
 				await syncExtensions({ forceSync: true });
@@ -220,10 +218,6 @@ export class ExtensionManager {
 				logger.info(`Loaded extensions: ${this.extensions.map((ext) => ext.name).join(', ')}`);
 			}
 
-			if (this.options.watch && !wasWatcherInitialized) {
-				this.updateWatchedExtensions([...this.extensions]);
-			}
-
 			this.messenger
 				.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
 					// Ignore empty messages, and requests for reloading that were published by the current process
@@ -239,6 +233,10 @@ export class ExtensionManager {
 					logger.error(error, 'Failed to subscribe to extension reload messages');
 				});
 		});
+
+		if (this.options.watch && !wasWatcherInitialized) {
+			this.updateWatchedExtensions([...this.extensions]);
+		}
 	}
 
 	/**
