@@ -835,6 +835,8 @@ file_moved: Datei verschoben
 collection_created: Sammlung erstellt
 modified_on: Geändert am
 card_size: Kartengröße
+small: Klein
+large: Groß
 sort_field: Sortierfeld
 add_sort_field: Sortierfeld hinzufügen
 add_to_ai_context: Zum AI-Kontext hinzufügen
@@ -2204,6 +2206,7 @@ forgot_password: Passwort vergessen
 hidden: Ausgeblendet
 hidden_in_group: Versteckt in {group}
 icon: Symbol
+image: Bild
 info: Information
 normal: Normal
 success: Erfolgreich
@@ -2515,6 +2518,8 @@ interfaces:
   select-radio:
     radio-buttons: Radio-Buttons
     description: Eine von mehreren Optionen auswählen
+  system-file-image:
+    image: Bild
   list:
     repeater: Repeater
     description: Mehrere Einträge derselben Struktur erstellen
