@@ -855,6 +855,8 @@ file_moved: 文件已移动
 collection_created: 模型已创建
 modified_on: 修改于
 card_size: 卡片大小
+small: 小字体
+large: 大号
 sort_field: 排序字段
 add_sort_field: 添加排序字段
 add_to_ai_context: 添加到 AI 环境
@@ -2319,6 +2321,7 @@ forgot_password: 忘记密码
 hidden: 隐藏
 hidden_in_group: 在 {group} 中隐藏
 icon: 图标
+image: 图片
 info: 更多信息
 normal: 标准
 success: 成功
@@ -2630,6 +2633,8 @@ interfaces:
   select-radio:
     radio-buttons: 单选按钮
     description: 选择多项选择
+  system-file-image:
+    image: 图片
   list:
     repeater: 重复器
     description: 创建同一结构的多个条目
