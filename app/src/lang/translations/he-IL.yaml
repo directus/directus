@@ -803,6 +803,8 @@ file_moved: הקובץ הועבר
 collection_created: האוסף נוצר
 modified_on: שונה בתאריך
 card_size: גודל כרטיס
+small: קטן
+large: גדול
 sort_field: שדה מיון
 add_sort_field: הוספת שדה מיון
 add_to_ai_context: הוספה להקשר ה-AI
@@ -2139,6 +2141,7 @@ forgot_password: שכחת סיסמה
 hidden: מוסתר
 hidden_in_group: מוסתר ב{group}
 icon: סמל
+image: תמונה
 info: מידע
 normal: רגיל
 success: הצלחה
@@ -2444,6 +2447,8 @@ interfaces:
   select-radio:
     radio-buttons: כפתורי רדיו
     description: בחירת אחת ממספר אפשרויות
+  system-file-image:
+    image: תמונה
   list:
     repeater: חוזר
     description: יצירת מספר רשומות בעלות אותו מבנה
