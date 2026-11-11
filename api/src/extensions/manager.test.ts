@@ -179,6 +179,28 @@ describe('ExtensionManager', () => {
 			expect(manager.extensions).toEqual([extension]);
 		});
 
+		test('should resolve a skipped reload only once the queued reload is done', async () => {
+			const manager = await initialize();
+
+			const sync = withResolvers<void>();
+			syncExtensions.mockReturnValueOnce(sync.promise);
+
+			manager.reload();
+			manager.reload();
+
+			let reloaded = false;
+			const skipped = manager.reload().then(() => (reloaded = true));
+
+			await flushPromises();
+			expect(reloaded).toBe(false);
+
+			sync.resolve();
+			await skipped;
+
+			// The initial load and the two queued reloads
+			expect(getExtensions).toHaveBeenCalledTimes(3);
+		});
+
 		test('should skip the reload when the extensions are not initialized yet', async () => {
 			await expect(new ExtensionManager().reload()).resolves.toBeUndefined();
 
@@ -242,6 +264,23 @@ describe('ExtensionManager', () => {
 
 			// The initial load and the reload
 			expect(getExtensions).toHaveBeenCalledTimes(2);
+		});
+
+		test('should wait for reloads queued while waiting', async () => {
+			const manager = await initialize();
+
+			const first = withResolvers<void>();
+			syncExtensions.mockReturnValueOnce(first.promise);
+
+			manager.reload();
+			const waiting = manager.isReloading();
+			manager.reload();
+
+			first.resolve();
+			await waiting;
+
+			// The initial load and both reloads, as the second starts before the waiting caller resumes
+			expect(getExtensions).toHaveBeenCalledTimes(3);
 		});
 	});
 

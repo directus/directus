@@ -339,8 +339,8 @@ export class ExtensionManager {
 	 */
 	public reload(options?: ExtensionSyncOptions): Promise<unknown> {
 		if (this.reloadQueue.size > 0) {
-			// The pending job in the queue will already handle the additional changes
-			return Promise.resolve();
+			// The pending job in the queue will already handle the additional changes, so wait for it
+			return this.reloadQueue.onIdle();
 		}
 
 		const logger = useLogger();
