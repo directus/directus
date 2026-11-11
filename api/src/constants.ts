@@ -127,9 +127,8 @@ export const CUSTOM_LLM_FIELDS = [
 ] as const satisfies readonly (keyof Settings)[];
 
 /**
- * Paths redacted from flow data before it's saved to the run log or handed to the Log step. Event triggers put items
- * in `payload`, webhook triggers put the request body in `body`. Secrets are matched at any depth under those, since
- * their shape is up to the sender.
+ * Key paths redacted from flow logs. Secrets under `body` and `payload` match at any depth, since the sender controls
+ * their shape
  */
 export const FLOW_SECRET_KEYS: string[][] = [
 	['**', 'headers', 'authorization'],
