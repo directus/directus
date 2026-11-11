@@ -17,8 +17,8 @@ const { syncExtensions, getExtensions, getExtensionsSettings, importFileUrl, sch
 	}));
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv({ EXTENSIONS_LOCATION: 'extensions', SERVE_APP: false, EXTENSIONS_AUTO_RELOAD: false });
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({ EXTENSIONS_LOCATION: 'extensions', SERVE_APP: false, EXTENSIONS_AUTO_RELOAD: false });
 });
 
 vi.mock('../logger/index.js', async () => {
@@ -124,6 +124,16 @@ describe('ExtensionManager', () => {
 			await manager.initialize({ watch: false });
 
 			expect(getExtensions).toHaveBeenCalledTimes(1);
+		});
+
+		test('should subscribe to reload messages only once when initialized again', async () => {
+			const subscribe = vi.spyOn(testBus.bus, 'subscribe');
+
+			const manager = await initialize();
+
+			await manager.initialize({ watch: false });
+
+			expect(subscribe).toHaveBeenCalledTimes(1);
 		});
 
 		test('should queue a reload requested during the initial load', async () => {

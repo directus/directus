@@ -184,24 +184,24 @@ export class ExtensionManager {
 	public async initialize(options: Partial<ExtensionManagerOptions> = {}): Promise<void> {
 		const logger = useLogger();
 
-		this.options = {
-			...defaultOptions,
-			...options,
-		};
-
-		const wasWatcherInitialized = this.watcher !== null;
-
-		if (this.options.watch && !wasWatcherInitialized) {
-			this.initializeWatcher();
-		} else if (!this.options.watch && wasWatcherInitialized) {
-			await this.closeWatcher();
-		}
-
 		// Ensure reloads requested during the initial load wait for it, rather than being skipped
 		await this.reloadQueue.add(async () => {
 			if (this.isInitialized) {
 				logger.warn('Extensions are already initialized, skipping initialization');
 				return;
+			}
+
+			this.options = {
+				...defaultOptions,
+				...options,
+			};
+
+			const wasWatcherInitialized = this.watcher !== null;
+
+			if (this.options.watch && !wasWatcherInitialized) {
+				this.initializeWatcher();
+			} else if (!this.options.watch && wasWatcherInitialized) {
+				await this.closeWatcher();
 			}
 
 			try {
@@ -219,26 +219,26 @@ export class ExtensionManager {
 			if (this.extensions.length > 0) {
 				logger.info(`Loaded extensions: ${this.extensions.map((ext) => ext.name).join(', ')}`);
 			}
+
+			if (this.options.watch && !wasWatcherInitialized) {
+				this.updateWatchedExtensions([...this.extensions]);
+			}
+
+			this.messenger
+				.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
+					// Ignore empty messages, and requests for reloading that were published by the current process
+					if (!isPlainObject(payload) || payload['origin'] === this.processId) return;
+					// Reload extensions with event options
+					const options: ExtensionSyncOptions = {};
+					if (typeof payload['forceSync'] === 'boolean') options.forceSync = payload['forceSync'];
+					if (typeof payload['partialSync'] === 'string') options.partialSync = payload['partialSync'];
+
+					this.reload(options);
+				})
+				.catch((error) => {
+					logger.error(error, 'Failed to subscribe to extension reload messages');
+				});
 		});
-
-		if (this.options.watch && !wasWatcherInitialized) {
-			this.updateWatchedExtensions([...this.extensions]);
-		}
-
-		this.messenger
-			.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
-				// Ignore empty messages, and requests for reloading that were published by the current process
-				if (!isPlainObject(payload) || payload['origin'] === this.processId) return;
-				// Reload extensions with event options
-				const options: ExtensionSyncOptions = {};
-				if (typeof payload['forceSync'] === 'boolean') options.forceSync = payload['forceSync'];
-				if (typeof payload['partialSync'] === 'string') options.partialSync = payload['partialSync'];
-
-				this.reload(options);
-			})
-			.catch((error) => {
-				logger.error(error, 'Failed to subscribe to extension reload messages');
-			});
 	}
 
 	/**
