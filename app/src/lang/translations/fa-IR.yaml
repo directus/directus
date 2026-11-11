@@ -835,6 +835,8 @@ file_moved: فایل منتقل شد
 collection_created: مجموعه ساخته شد
 modified_on: ویرایش شده در
 card_size: سایز کارت
+small: کوچک
+large: بزرگ
 sort_field: فیلد مرتب سازی
 add_sort_field: افزودن فیلد مرتب سازی
 add_to_ai_context: افزودن به زمینه هوش مصنوعی
@@ -2023,6 +2025,7 @@ forgot_password: فراموشی رمز عبور
 hidden: مخفی
 hidden_in_group: Hidden in {group}
 icon: آیکن
+image: عکس
 info: اطلاعات
 normal: عادی
 success: موفق
@@ -2329,6 +2332,8 @@ interfaces:
   select-radio:
     radio-buttons: دکمه رادیویی
     description: یکی از چندین گزینه را انتخاب کنید
+  system-file-image:
+    image: عکس
   list:
     repeater: تکرار شونده
     description: Create multiple entries of the same structure
