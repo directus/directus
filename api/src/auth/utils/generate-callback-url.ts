@@ -1,5 +1,4 @@
 import { useEnv } from '@directus/env';
-import { toArray } from '@directus/utils';
 import { Url } from '../../utils/url.js';
 
 /**
@@ -35,13 +34,10 @@ function findMatchingPublicUrl(requestOrigin: string, allowedPublicUrls: string[
  * @returns Callback URL
  */
 export function generateCallbackUrl(providerName: string, requestOrigin: string): string {
-	const env = useEnv();
-	const publicUrl = env['PUBLIC_URL'] as string;
+	const { PUBLIC_URL, AUTH_ALLOWED_PUBLIC_URLS } = useEnv();
 
-	const allowedPublicUrls = env['AUTH_ALLOWED_PUBLIC_URLS'] ? toArray(env['AUTH_ALLOWED_PUBLIC_URLS'] as string) : [];
-
-	const matchedUrl = findMatchingPublicUrl(requestOrigin, allowedPublicUrls);
+	const matchedUrl = findMatchingPublicUrl(requestOrigin, AUTH_ALLOWED_PUBLIC_URLS ?? []);
 
 	// Use matched public URL or fallback to PUBLIC_URL for backward compatibility
-	return new Url(matchedUrl || publicUrl).addPath('auth', 'login', providerName, 'callback').toString();
+	return new Url(matchedUrl || PUBLIC_URL).addPath('auth', 'login', providerName, 'callback').toString();
 }

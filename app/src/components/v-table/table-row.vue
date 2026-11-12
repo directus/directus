@@ -76,7 +76,12 @@ function onClick(event: MouseEvent) {
 			/>
 		</td>
 
-		<td v-for="header in headers" :key="header.value" class="cell" :class="`align-${header.align}`">
+		<td
+			v-for="header in headers"
+			:key="header.value"
+			class="cell"
+			:class="[`align-${header.align}`, { inactive: header.inactive }]"
+		>
 			<slot :name="`item.${header.value}`" :item="item">
 				<VTextOverflow
 					v-if="
@@ -124,6 +129,11 @@ function onClick(event: MouseEvent) {
 		&.select {
 			display: flex;
 			align-items: center;
+		}
+
+		/* Columns of an inactive collection stay readable, but are muted */
+		&.inactive {
+			color: var(--theme--foreground-subdued);
 		}
 	}
 

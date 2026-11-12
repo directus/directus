@@ -31,7 +31,7 @@ import { stitchRelations } from '../utils/stitch-relations.js';
 import { ItemsService } from './items.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
 
-const env = useEnv();
+const { CACHE_SCHEMA } = useEnv();
 
 export class RelationsService {
 	knex: Knex;
@@ -64,7 +64,7 @@ export class RelationsService {
 	}
 
 	async foreignKeys(collection?: string) {
-		const schemaCacheIsEnabled = Boolean(env['CACHE_SCHEMA']);
+		const schemaCacheIsEnabled = Boolean(CACHE_SCHEMA);
 
 		let foreignKeys: ForeignKey[] | null = null;
 
