@@ -784,6 +784,11 @@ onKeyStroke('Escape', () => {
 		}
 	}
 
+	// the app base styles make every label a block
+	label {
+		display: inline;
+	}
+
 	.raw-html {
 		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
