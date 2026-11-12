@@ -19,7 +19,7 @@ vi.mock('@ai-sdk/google', () => ({
 }));
 
 // Allowed models are covered in validate-model-allowed.test.ts.
-vi.mock('../utils/validate-model-allowed.js');
+vi.mock('../../providers/validate-model-allowed.js');
 
 vi.mock('../constants/system-prompt.js', () => ({
 	SYSTEM_PROMPT: 'DEFAULT_SYSTEM_PROMPT',

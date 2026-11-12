@@ -1,11 +1,11 @@
 import type { ProviderType } from '@directus/ai';
 import { ServiceUnavailableError } from '@directus/errors';
 import { wrapLanguageModel } from 'ai';
-import { validateModelAllowed } from '../chat/utils/validate-model-allowed.js';
 import { getDevToolsMiddleware } from '../devtools/index.js';
 import { getProviderOptions } from './options.js';
 import { buildProviderConfigs, createAIProviderRegistry } from './registry.js';
 import type { AISettings } from './types.js';
+import { validateModelAllowed } from './validate-model-allowed.js';
 
 export interface ResolvedLanguageModel {
 	model: ReturnType<typeof wrapLanguageModel>;
