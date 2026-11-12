@@ -6,6 +6,7 @@ import { set } from 'lodash-es';
 export interface GetConfigFromEnvOptions {
 	omitPrefix?: string | string[];
 	omitKey?: string | string[];
+	omitSuffix?: string | string[];
 	type?: 'camelcase' | 'underscore';
 }
 
@@ -18,6 +19,7 @@ export function getConfigFromEnv(prefix: string, options?: GetConfigFromEnvOptio
 	const lowerCasePrefix = prefix.toLowerCase();
 	const omitKeys = toArray(options?.omitKey ?? []).map((key) => key.toLowerCase());
 	const omitPrefixes = toArray(options?.omitPrefix ?? []).map((prefix) => prefix.toLowerCase());
+	const omitSuffixes = toArray(options?.omitSuffix ?? []).map((suffix) => suffix.toLowerCase());
 
 	for (const [key, value] of Object.entries(env)) {
 		const lowerCaseKey = key.toLowerCase();
@@ -33,6 +35,8 @@ export function getConfigFromEnv(prefix: string, options?: GetConfigFromEnvOptio
 
 			if (keyStartsWithAnyPrefix) continue;
 		}
+
+		if (omitSuffixes.some((suffix) => lowerCaseKey.endsWith(suffix))) continue;
 
 		if (key.includes('__')) {
 			const path = key

@@ -1,0 +1,75 @@
+<script setup lang="ts" generic="T extends string | number = string | number">
+import { CheckboxGroupRoot, CheckboxRoot } from 'reka-ui';
+import { computed, useId } from 'vue';
+import CardContent from './v-choice-cards/card-content.vue';
+import { focusAdjacentCard } from './v-choice-cards/focus-adjacent-card';
+import type { ChoiceCardItem } from './v-choice-cards/types';
+
+interface Props {
+	items: ChoiceCardItem<T>[];
+	modelValue?: T[] | null;
+	disabled?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: () => [],
+	disabled: false,
+});
+
+const emit = defineEmits<{
+	'update:modelValue': [value: T[]];
+}>();
+
+const groupId = useId();
+const selectedValues = computed(() => props.modelValue ?? []);
+</script>
+
+<template>
+	<CheckboxGroupRoot
+		role="group"
+		class="v-checkbox-cards choice-cards"
+		:model-value="selectedValues"
+		:disabled="disabled"
+		:roving-focus="false"
+		@keydown="focusAdjacentCard"
+		@update:model-value="emit('update:modelValue', $event as T[])"
+	>
+		<!-- Reka blocks Enter on checkboxes; toggle on Enter to match v-radio-cards -->
+		<CheckboxRoot
+			v-for="(item, index) in items"
+			:key="item.value"
+			:value="item.value"
+			:disabled="item.disabled || disabled"
+			class="v-checkbox-card choice-card"
+			:class="{ custom: $slots.item, unselected: selectedValues.length > 0 && !selectedValues.includes(item.value) }"
+			:aria-labelledby="item.label ? `${groupId}-${index}-label` : undefined"
+			:aria-describedby="item.description ? `${groupId}-${index}-description` : undefined"
+			@keydown.enter="($event.currentTarget as HTMLElement).click()"
+		>
+			<slot
+				name="item"
+				:item="item"
+				:index="index"
+				:selected="selectedValues.includes(item.value)"
+				:label-id="`${groupId}-${index}-label`"
+				:description-id="`${groupId}-${index}-description`"
+			>
+				<CardContent
+					:item="item"
+					:label-id="`${groupId}-${index}-label`"
+					:description-id="`${groupId}-${index}-description`"
+				/>
+			</slot>
+		</CheckboxRoot>
+	</CheckboxGroupRoot>
+</template>
+
+<style lang="scss" scoped>
+@use './v-choice-cards/styles';
+
+@include styles.choice-cards;
+
+.v-checkbox-cards {
+	--choice-cards-color: var(--v-checkbox-cards-color, var(--theme--primary));
+}
+</style>
