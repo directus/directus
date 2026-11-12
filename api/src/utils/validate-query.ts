@@ -18,11 +18,8 @@ const querySchema = Joi.object({
 	sort: Joi.array().items(Joi.string()),
 	filter: Joi.object({}).unknown(),
 	limit:
-		'QUERY_LIMIT_MAX' in env && env['QUERY_LIMIT_MAX'] !== -1
-			? Joi.number()
-					.integer()
-					.min(-1)
-					.max(env['QUERY_LIMIT_MAX'] as number) // min should be 0
+		env.QUERY_LIMIT_MAX !== undefined && env.QUERY_LIMIT_MAX !== -1
+			? Joi.number().integer().min(-1).max(env.QUERY_LIMIT_MAX) // min should be 0
 			: Joi.number().integer().min(-1),
 	offset: Joi.number().integer().min(0),
 	page: Joi.number().integer().min(0),
@@ -258,7 +255,7 @@ function validateSort(sort: string[]) {
 }
 
 function validateRelationalDepth(query: Query) {
-	const maxRelationalDepth = Number(env['MAX_RELATIONAL_DEPTH']) > 2 ? Number(env['MAX_RELATIONAL_DEPTH']) : 2;
+	const maxRelationalDepth = env.MAX_RELATIONAL_DEPTH > 2 ? env.MAX_RELATIONAL_DEPTH : 2;
 
 	// Process the fields in the same way as api/src/utils/get-ast-from-query.ts
 	let fields = ['*'];
