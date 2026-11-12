@@ -32,5 +32,5 @@ export async function getAISettings(context: { knex?: Knex; schema?: SchemaOverv
 		accountability: null,
 	});
 
-	return (await service.readSingleton({ fields: [...AI_SETTINGS_FIELDS] })) as AISettings;
+	return service.readSingleton({ fields: [...AI_SETTINGS_FIELDS] }) as Promise<AISettings>;
 }
