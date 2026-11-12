@@ -1,7 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ServiceUnavailableError } from '@directus/errors';
 import type { ActionHandler, WebSocketClient, WebSocketMessage } from '@directus/types';
-import { toBoolean } from '@directus/utils';
 import emitter from '../emitter.js';
 import { getWebSocketController } from '../websocket/controllers/index.js';
 import type { WebSocketController } from '../websocket/controllers/rest.js';
@@ -12,7 +11,7 @@ export class WebSocketService {
 	private controller: WebSocketController;
 
 	constructor() {
-		if (!toBoolean(env['WEBSOCKETS_ENABLED']) || !toBoolean(env['WEBSOCKETS_REST_ENABLED'])) {
+		if (!env.WEBSOCKETS_ENABLED || !env.WEBSOCKETS_REST_ENABLED) {
 			throw new ServiceUnavailableError({ service: 'ws', reason: 'WebSocket server is disabled' });
 		}
 

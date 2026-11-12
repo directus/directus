@@ -91,7 +91,7 @@ export const collections = defineTool<
 		}
 
 		if (args.action === 'read') {
-			let result = null;
+			let result;
 
 			if (args.keys) {
 				result = await service.readMany(args.keys);

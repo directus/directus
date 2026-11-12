@@ -1558,6 +1558,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Un editor de text enriquit escrivint contingut HTML
     toolbar: Barra d'eines
+    extensions: Extensions
     custom_formats: Formats personalitzats
   input-block-editor:
     tools: Barra d'eines

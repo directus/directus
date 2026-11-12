@@ -103,6 +103,17 @@ export function assembleBatch(
 		}
 	}
 
+	// Target IDs of the roles the source speaks for: every mapped role, plus pushed ones, which keep their UUID.
+	// Mirror leaves presets of any other role alone, and personal ones too, since pull never carries them.
+	const roleBucket = bucket['directus_roles'] ?? {};
+	const coveredRoleIds = new Set(Object.values(roleBucket));
+	const roles = system.find((entry) => entry.resource.collection === 'directus_roles');
+
+	for (const record of roles?.data.records ?? []) {
+		const sourceId = String(record[roles!.resource.primaryKey]);
+		coveredRoleIds.add(roleBucket[sourceId] ?? sourceId);
+	}
+
 	for (const { data, resource } of system) {
 		const collectionBucket = bucket[resource.collection] ?? {};
 		const targetRows = targets.get(resource.collection);
@@ -132,22 +143,23 @@ export function assembleBatch(
 
 			const result = remapSystemRecord(record, resource, bucket);
 
-			// Add-mode PK conflicts create duplicates instead of updating existing records.
-			if (mode === 'add' && targetByPk.has(result.sent.sentPk)) continue;
-
 			// An unmatched integer may belong to an unrelated target record, or to one created earlier in this
-			// batch, so a temporary key is sent instead. A singleton drops its key: it cannot report a remap.
-			if (mode !== 'add' && !mapped && resource.primaryKeyType === 'integer') {
-				if (resource.singleton) {
-					delete result.record[resource.primaryKey];
-					items.push(result.record);
-					continue;
-				}
-
+			// batch, so a temporary key is sent instead. Add mode too: its natural key already found no match.
+			if (!mapped && resource.primaryKeyType === 'integer' && !resource.singleton) {
 				const temporaryPk = takeTemporaryPk();
 				result.record[resource.primaryKey] = temporaryPk;
 				items.push(result.record);
 				sent.push({ sourceId, sentPk: String(temporaryPk), temporary: true });
+				continue;
+			}
+
+			// Add-mode PK conflicts create duplicates instead of updating existing records.
+			if (mode === 'add' && targetByPk.has(result.sent.sentPk)) continue;
+
+			// A singleton drops its key: it cannot report a remap.
+			if (mode !== 'add' && !mapped && resource.singleton) {
+				delete result.record[resource.primaryKey];
+				items.push(result.record);
 				continue;
 			}
 
@@ -166,16 +178,25 @@ export function assembleBatch(
 			sent.push(result.sent);
 		}
 
-		if (mode === 'mirror' && !includesUsers) {
+		if (mode === 'mirror') {
 			const shouldEcho = (row: Record<string, unknown>): boolean => {
+				if (resource.collection === 'directus_presets') {
+					if (row['user'] !== null && row['user'] !== undefined) return true;
+					return row['role'] !== null && row['role'] !== undefined && !coveredRoleIds.has(String(row['role']));
+				}
+
+				if (includesUsers) return false;
 				if (resource.collection === 'directus_access') return row['user'] !== null && row['user'] !== undefined;
 				if (resource.collection === 'directus_policies') return echoPolicyIds.has(String(row[resource.primaryKey]));
 				if (resource.collection === 'directus_permissions') return echoPolicyIds.has(String(row['policy']));
 				return false;
 			};
 
+			// A mapped record re-scoped on the target would otherwise be sent twice, and the echo would win.
+			const sentPks = new Set(items.map((item) => String(item[resource.primaryKey])));
+
 			for (const row of targetRows ?? []) {
-				if (shouldEcho(row)) {
+				if (shouldEcho(row) && !sentPks.has(String(row[resource.primaryKey]))) {
 					items.push({ ...row });
 					markUnchanged(resource.collection, String(row[resource.primaryKey]));
 				}

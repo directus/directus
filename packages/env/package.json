@@ -1,6 +1,6 @@
 {
 	"name": "@directus/env",
-	"version": "6.4.0",
+	"version": "7.0.1",
 	"description": "Utilities around using global env configuration",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -28,6 +28,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@types/bytes": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
@@ -38,7 +39,7 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"dotenv": "catalog:",
+		"bytes": "catalog:",
 		"lodash-es": "catalog:"
 	}
 }

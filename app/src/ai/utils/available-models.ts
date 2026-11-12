@@ -1,4 +1,4 @@
-import type { ProviderType, StandardProviderType } from '@directus/ai';
+import { DEFAULT_ALLOWED_MODELS, type ProviderType, type StandardProviderType } from '@directus/ai';
 import type { Settings } from '@directus/types';
 import { AI_MODELS, type AppModelDefinition, buildCustomModelDefinition, buildCustomModels } from '../models';
 
@@ -22,10 +22,10 @@ export function getAvailableModels(
 	const customModels = buildCustomModels(settings?.ai_openai_compatible_models ?? null);
 	const allModels = [...AI_MODELS, ...customModels];
 
-	const allowedModelsMap: Record<StandardProviderType, string[] | null> = {
-		openai: settings?.ai_openai_allowed_models ?? null,
-		anthropic: settings?.ai_anthropic_allowed_models ?? null,
-		google: settings?.ai_google_allowed_models ?? null,
+	const allowedModelsMap: Record<StandardProviderType, string[]> = {
+		openai: settings?.ai_openai_allowed_models ?? DEFAULT_ALLOWED_MODELS.openai,
+		anthropic: settings?.ai_anthropic_allowed_models ?? DEFAULT_ALLOWED_MODELS.anthropic,
+		google: settings?.ai_google_allowed_models ?? DEFAULT_ALLOWED_MODELS.google,
 	};
 
 	const result: AppModelDefinition[] = [];

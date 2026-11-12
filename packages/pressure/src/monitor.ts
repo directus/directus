@@ -5,10 +5,10 @@ import { setTimeout } from 'node:timers';
 import { defaults } from '@directus/utils';
 
 export type PressureMonitorOptions = {
-	maxEventLoopDelay?: number | false;
-	maxEventLoopUtilization?: number | false;
-	maxMemoryHeapUsed?: number | false;
-	maxMemoryRss?: number | false;
+	maxEventLoopDelay?: number | undefined;
+	maxEventLoopUtilization?: number | undefined;
+	maxMemoryHeapUsed?: number | undefined;
+	maxMemoryRss?: number | undefined;
 	sampleInterval?: number;
 	resolution?: number;
 };
@@ -26,10 +26,10 @@ export class PressureMonitor {
 		this.options = defaults(options, {
 			sampleInterval: 250,
 			resolution: 10,
-			maxMemoryHeapUsed: false,
-			maxMemoryRss: false,
-			maxEventLoopDelay: false,
-			maxEventLoopUtilization: false,
+			maxMemoryHeapUsed: undefined,
+			maxMemoryRss: undefined,
+			maxEventLoopDelay: undefined,
+			maxEventLoopUtilization: undefined,
 		});
 
 		this.histogram = monitorEventLoopDelay({ resolution: this.options.resolution });
