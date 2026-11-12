@@ -117,6 +117,10 @@ export default defineLayout<LayoutOptions>({
 
 		const colorField = syncRefProperty(layoutOptions, 'colorField', undefined);
 
+		const colorFieldInfo = computed(() => {
+			return colorFields.value.find((field: Field) => field.field === colorField.value);
+		});
+
 		const firstDay = syncRefProperty(layoutOptions, 'firstDay', undefined);
 
 		const queryFields = computed(() => {
@@ -126,7 +130,7 @@ export default defineLayout<LayoutOptions>({
 			if (template.value) fields.push(...getFieldsFromTemplate(template.value));
 			if (startDateField.value) fields.push(startDateField.value);
 			if (endDateField.value) fields.push(endDateField.value);
-			if (colorField.value) fields.push(colorField.value);
+			if (colorFieldInfo.value) fields.push(colorFieldInfo.value.field);
 
 			return [...fields, ...adjustFieldsForDisplays(fields, collection.value!)];
 		});
@@ -180,7 +184,6 @@ export default defineLayout<LayoutOptions>({
 					center: 'title',
 					right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek',
 				},
-				eventDisplay: 'block',
 				views: {
 					dayGridMonth: {
 						displayEventTime,
@@ -387,7 +390,7 @@ export default defineLayout<LayoutOptions>({
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,
-				...getEventStyling(item, colorField.value),
+				...getEventStyling(item, colorFieldInfo.value?.field),
 				className: selection.value.includes(eventId) ? 'selected' : undefined,
 			};
 		}
@@ -411,18 +414,41 @@ export default defineLayout<LayoutOptions>({
 	},
 });
 
-export function getEventStyling(item: Record<string, any>, colorField?: string | null) {
-	const color: string | undefined = (colorField && item[colorField]) || undefined;
+const textColorCache = new Map<string, string | null>();
 
-	let textColor: string | undefined;
+function getContrastTextColor(color: string): string | null {
+	if (textColorCache.has(color)) return textColorCache.get(color)!;
 
-	if (color) {
-		try {
-			textColor = Color(color).isDark() ? '#ffffff' : '#000000';
-		} catch {
-			// unparseable color: keep the default text color
-		}
+	let textColor: string | null = null;
+
+	try {
+		const parsed = Color(color);
+		const alpha = parsed.alpha();
+		const onLight = Color('#ffffff').mix(parsed.alpha(1), alpha).isDark();
+		const onDark = Color('#000000').mix(parsed.alpha(1), alpha).isDark();
+
+		// Translucent colors whose contrast depends on the page background fall back to the theme foreground
+		if (onLight === onDark) textColor = onLight ? '#ffffff' : '#000000';
+		else textColor = 'var(--theme--foreground)';
+	} catch {
+		// unparseable color
 	}
 
-	return { color, textColor, display: 'block' as const };
+	textColorCache.set(color, textColor);
+	return textColor;
+}
+
+export function getEventStyling(
+	item: Record<string, any>,
+	colorField?: string | null,
+): { color?: string; textColor?: string; display?: 'block' } {
+	const color = colorField ? item[colorField] : undefined;
+
+	if (typeof color !== 'string' || !color) return {};
+
+	const textColor = getContrastTextColor(color);
+
+	if (!textColor) return {};
+
+	return { color, textColor, display: 'block' };
 }

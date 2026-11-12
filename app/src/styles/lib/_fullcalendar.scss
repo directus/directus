@@ -159,7 +159,7 @@
 	.select-mode & .fc-event {
 		@include select-element {
 			content: 'check_box_outline_blank';
-			color: var(--fc-event-text-color);
+			color: inherit;
 			vertical-align: -0.25em;
 			margin-inline-end: 0.1em;
 			font-family: 'Material Symbols';

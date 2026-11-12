@@ -184,12 +184,12 @@ function createMockProps(overrides: Record<string, any> = {}) {
 }
 
 describe('getEventStyling', () => {
-	it('returns no color or textColor without a colorField or value', () => {
-		const empty = { color: undefined, textColor: undefined, display: 'block' };
-
-		expect(getEventStyling({ id: 1, color: '#ff0000' }, undefined)).toEqual(empty);
-		expect(getEventStyling({ id: 1 }, 'color')).toEqual(empty);
-		expect(getEventStyling({ id: 1, color: null }, 'color')).toEqual(empty);
+	it('returns no styling without a colorField or a valid value', () => {
+		expect(getEventStyling({ id: 1, color: '#ff0000' }, undefined)).toEqual({});
+		expect(getEventStyling({ id: 1 }, 'color')).toEqual({});
+		expect(getEventStyling({ id: 1, color: null }, 'color')).toEqual({});
+		expect(getEventStyling({ id: 1, color: 123 }, 'color')).toEqual({});
+		expect(getEventStyling({ id: 1, color: 'invalid-color' }, 'color')).toEqual({});
 	});
 
 	it('returns color with a contrasting textColor', () => {
@@ -206,12 +206,12 @@ describe('getEventStyling', () => {
 		});
 	});
 
-	it('returns undefined textColor for unparseable colors', () => {
-		expect(getEventStyling({ id: 1, color: 'invalid-color' }, 'color')).toEqual({
-			color: 'invalid-color',
-			textColor: undefined,
-			display: 'block',
+	it('accounts for transparency when picking textColor', () => {
+		expect(getEventStyling({ id: 1, color: '#00000020' }, 'color')).toMatchObject({
+			textColor: 'var(--theme--foreground)',
 		});
+
+		expect(getEventStyling({ id: 1, color: '#000000f0' }, 'color')).toMatchObject({ textColor: '#ffffff' });
 	});
 });
 
@@ -275,7 +275,14 @@ describe('calendarLayout.setup', () => {
 		expect(capturedItemsOptions.fields.value).toContain('color');
 	});
 
-	it('configures FullCalendar with eventDisplay block and applies event styling', async () => {
+	it('ignores a stored colorField that is not an available color field', () => {
+		const props = createMockProps({ layoutOptions: { startDateField: 'start_date', colorField: 'missing_field' } });
+		setupCalendar(props, vi.fn());
+
+		expect(capturedItemsOptions.fields.value).not.toContain('missing_field');
+	});
+
+	it('applies block display and color styling only to colored events', async () => {
 		const props = createMockProps({
 			layoutOptions: {
 				startDateField: 'start_date',
@@ -299,8 +306,12 @@ describe('calendarLayout.setup', () => {
 		expect(mockCalendarInstances.length).toBe(1);
 		const calendarInstance = mockCalendarInstances[0];
 
-		expect(calendarInstance.options.eventDisplay).toBe('block');
+		expect(calendarInstance.options.eventDisplay).toBeUndefined();
 
-		expect(calendarInstance.options.events[0]).toMatchObject({ color: '#ff0000', textColor: '#ffffff' });
+		expect(calendarInstance.options.events[0]).toMatchObject({
+			color: '#ff0000',
+			textColor: '#ffffff',
+			display: 'block',
+		});
 	});
 });
