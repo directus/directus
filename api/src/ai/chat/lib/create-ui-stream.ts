@@ -24,7 +24,6 @@ export interface CreateUiStreamOptions {
 	model: string;
 	tools: { [x: string]: Tool };
 	aiSettings: AISettings;
-	systemPrompt?: string | null;
 	userId?: string | null;
 	role?: string | null;
 	context?: ChatContext;
@@ -33,11 +32,11 @@ export interface CreateUiStreamOptions {
 
 export const createUiStream = async (
 	messages: UIMessage[],
-	{ provider, model, tools, aiSettings, systemPrompt, userId, role, context, onUsage }: CreateUiStreamOptions,
+	{ provider, model, tools, aiSettings, userId, role, context, onUsage }: CreateUiStreamOptions,
 ): Promise<StreamTextResult<Record<string, Tool<any, any>>, any>> => {
 	const { model: languageModel, providerOptions } = resolveLanguageModel(provider, model, aiSettings);
 
-	const baseSystemPrompt = systemPrompt || SYSTEM_PROMPT;
+	const baseSystemPrompt = aiSettings.ai_system_prompt || SYSTEM_PROMPT;
 	const contextBlock = context ? formatContextForSystemPrompt(context) : null;
 
 	// For Anthropic models, keep `system` as the stable base prompt only (so the tools+system prefix

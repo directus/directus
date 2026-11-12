@@ -1,7 +1,7 @@
 import { DEFAULT_ALLOWED_MODELS } from '@directus/ai';
 import { ForbiddenError } from '@directus/errors';
 import { describe, expect, test } from 'vitest';
-import type { AISettings } from '../../providers/types.js';
+import type { AISettings } from './types.js';
 import { validateModelAllowed } from './validate-model-allowed.js';
 
 const aiSettings: AISettings = {
