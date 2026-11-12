@@ -227,9 +227,10 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				continue;
 			}
 
-			toArray(req).forEach(({ collection, query }, index) => {
-				const key = getSimpleHash(panel.id + collection + JSON.stringify(query));
-				queries.set(key, { panel: panel.id, collection, query, key, index, length: toArray(req).length });
+			toArray(req).forEach(({ collection, query }, index, all) => {
+				// Include the index so identical sub-queries in one panel don't collide
+				const key = getSimpleHash(panel.id + index + collection + JSON.stringify(query));
+				queries.set(key, { panel: panel.id, collection, query, key, index, length: all.length });
 			});
 		}
 
@@ -264,10 +265,10 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				const result = mapKeys(data.data, (_, key) => key.substring('query_'.length));
 
 				for (const [key, data] of Object.entries(result)) {
-					const { panel, length } = queries.get(key);
+					const { panel, index, length } = queries.get(key);
 					if (length === 1) results[panel] = data;
-					else if (!results[panel]) results[panel] = [data];
-					else results[panel]?.push(data);
+					// Place by query index, response key order isn't guaranteed to match
+					else ((results[panel] ??= []) as Item[])[index] = data;
 				}
 
 				if (Array.isArray(data.errors)) {
