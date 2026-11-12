@@ -397,6 +397,21 @@ describe('community thread cases', () => {
 		expect(editor.getHTML()).not.toContain('float-left');
 	});
 
+	test('applies a float class to an inline image and strips it again', () => {
+		const editor = editorWith('<p>a <img src="/assets/a.png" alt="a"> b</p>');
+		const format = blockFormat({ title: 'Float left', selector: 'img', classes: 'float-left' });
+		editor.commands.selectAll();
+
+		toggleBlockFormat(editor, format);
+		expect(editor.getHTML()).toBe('<p>a <img class="float-left" src="/assets/a.png" alt="a"> b</p>');
+
+		editor.commands.selectAll();
+		expect(isBlockFormatActive(editor, format)).toBe(true);
+
+		toggleBlockFormat(editor, format);
+		expect(editor.getHTML()).toBe('<p>a <img src="/assets/a.png" alt="a"> b</p>');
+	});
+
 	// The view adds `ProseMirror-selectednode` to the selected image's DOM node; serialization reads
 	// the document, so the stored class list must hold the format's class and nothing else.
 	test('the view-only selected-node class never reaches the stored HTML', () => {

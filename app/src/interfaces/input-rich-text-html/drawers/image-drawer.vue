@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { File, SettingsStorageAssetPreset } from '@directus/types';
-import type { ImageSelection } from '../composables/use-image';
+import { canBeInline, type ImageSelection } from '../composables/use-image';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VInput from '@/components/v-input.vue';
@@ -65,7 +65,7 @@ const selection = defineModel<ImageSelection | null>('imageSelection', { require
 							v-model="selection.inline"
 							block
 							:label="$t('wysiwyg_options.inline_image_label')"
-							:disabled="selection.inFigure || !!selection.caption?.trim()"
+							:disabled="!canBeInline(selection)"
 						/>
 					</div>
 					<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">

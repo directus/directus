@@ -79,7 +79,7 @@ type Description = {
 // the parser never treats these as content, so their text and attributes are not a loss
 const NON_CONTENT_TAGS = ['head', 'meta', 'link', 'title', 'style', 'script', 'noscript'];
 
-// includes the atoms the schema lifts out of a paragraph (image, media, style), which then split its text
+// includes the atoms the schema can lift out of a paragraph (image, media, style), which then split its text
 const BLOCK_TAGS = new Set([
 	'address',
 	'article',

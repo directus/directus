@@ -507,6 +507,31 @@ describe('inline images', () => {
 		expect(html).toBe(`<figure class="left">${NEW_IMG}</figure><p>y</p>`);
 	});
 
+	test('openImageDrawer reports an inline image in a figure paragraph as inline, without the figure caption', () => {
+		const { editor, imageSelection, openImageDrawer } = setup({
+			content: `<figure><p>a ${IMG} b</p><figcaption>c</figcaption></figure>`,
+		});
+
+		selectNode(editor.value, 'inlineImage');
+		openImageDrawer();
+
+		expect(imageSelection.value).toMatchObject({ inline: true, inFigure: false, caption: '' });
+	});
+
+	test('saveImage edits an inline image in a figure paragraph in place', () => {
+		const html = edit(`<figure><p>a ${IMG} b</p><figcaption>c</figcaption></figure>`, 'inlineImage', {});
+
+		expect(html).toBe(`<figure><p>a ${NEW_IMG} b</p><figcaption>c</figcaption></figure><p></p>`);
+	});
+
+	test('saveImage keeps the link title as the image title when an inline image becomes a block image', () => {
+		const html = edit(`<p>a <a href="https://directus.io" title="Tip">${IMG}</a></p>`, 'inlineImage', {
+			inline: false,
+		});
+
+		expect(html).toContain('title="Tip"');
+	});
+
 	test('saveImage ignores the caption of an inline image', () => {
 		const html = edit(`<p>a ${IMG}</p>`, 'inlineImage', { inline: true, caption: 'A caption' });
 

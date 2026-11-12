@@ -1,7 +1,7 @@
-import { type Attributes, type Editor, mergeAttributes } from '@tiptap/core';
+import { type Attributes, type Editor, mergeAttributes, type Node } from '@tiptap/core';
 import { Image, type ImageOptions } from '@tiptap/extension-image';
 import { isAllowedUri } from '@tiptap/extension-link';
-import type { DOMOutputSpec } from '@tiptap/pm/model';
+import type { DOMOutputSpec, Node as ProseMirrorNode, TagParseRule } from '@tiptap/pm/model';
 
 /**
  * Block image (`InlineImage` below takes `<img>` in paragraph, heading and list item text), extended with:
@@ -29,6 +29,19 @@ declare module '@tiptap/core' {
 export const IMAGE_NODE = 'image';
 
 export const INLINE_IMAGE_NODE = 'inlineImage';
+
+export const IMAGE_LINK_ATTRIBUTES = ['href', 'target', 'rel'] as const satisfies readonly (keyof ImageLink)[];
+
+export function isImageNode(node: ProseMirrorNode): boolean {
+	return node.type.name === IMAGE_NODE || node.type.name === INLINE_IMAGE_NODE;
+}
+
+/** The attributes without the block image's own link, which an inline image holds as the Link mark. */
+export function withoutImageLink<T>(attrs: Record<string, T>): Record<string, T> {
+	return Object.fromEntries(
+		Object.entries(attrs).filter(([name]) => !(IMAGE_LINK_ATTRIBUTES as readonly string[]).includes(name)),
+	);
+}
 
 export function isImageLinkActive(editor: Editor): boolean {
 	return editor.isActive(IMAGE_NODE) && Boolean(editor.getAttributes(IMAGE_NODE).href);
@@ -167,32 +180,41 @@ function followsBlockInListItem(img: HTMLElement, item: Element): boolean {
 }
 
 /**
- * An image inside a paragraph, heading or list item, kept in its line of text. A link around it is
- * the Link mark, so it has no `href`/`target`/`rel` of its own. It defines no commands: `setImage`
- * always inserts a block image.
+ * The inline variant of a block image node, for `<img>` in paragraph, heading and list item text.
+ * Its link is the Link mark, and it has no commands, so `setImage` always inserts a block image.
  */
-export const InlineImage = CustomImage.extend({
-	name: INLINE_IMAGE_NODE,
+export function inlineImageOf(blockImage: Node) {
+	return blockImage.extend({
+		name: INLINE_IMAGE_NODE,
+		inline: true,
+		group: 'inline',
 
-	addAttributes() {
-		const { href: _href, target: _target, rel: _rel, ...attributes } = (this.parent?.() ?? {}) as Attributes;
-		return attributes;
-	},
+		addAttributes() {
+			return withoutImageLink((this.parent?.() ?? {}) as Attributes);
+		},
 
-	parseHTML() {
-		return (this.parent?.() ?? []).map((rule) => ({
-			...rule,
-			// ahead of the block image's rule, which takes every <img> this one declines
-			priority: 60,
-			getAttrs: (element: HTMLElement) => (isInInlineImageHost(element) ? null : false),
-		}));
-	},
+		parseHTML() {
+			return ((this.parent?.() ?? []) as TagParseRule[])
+				.filter((rule) => rule.tag)
+				.map((rule) => ({
+					...rule,
+					// ahead of the block image's rule, which takes every <img> this one declines
+					priority: 60,
+					getAttrs: (element: HTMLElement) => {
+						if (!isInInlineImageHost(element)) return false;
+						return rule.getAttrs?.(element) ?? null;
+					},
+				}));
+		},
 
-	addCommands() {
-		return {};
-	},
+		addCommands() {
+			return {};
+		},
 
-	addInputRules() {
-		return [];
-	},
-}).configure({ inline: true });
+		addInputRules() {
+			return [];
+		},
+	});
+}
+
+export const InlineImage = inlineImageOf(CustomImage);

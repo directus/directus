@@ -4,7 +4,14 @@ import type { Editor } from '@tiptap/vue-3';
 import mime from 'mime/lite';
 import { Ref, ref, watch } from 'vue';
 import { FIGCAPTION_NODE, FIGURE_NODE, findFigure, getFigureCaption } from '../extensions/figure';
-import { activeImageType, IMAGE_NODE, INLINE_IMAGE_NODE } from '../extensions/image';
+import {
+	activeImageType,
+	IMAGE_LINK_ATTRIBUTES,
+	IMAGE_NODE,
+	INLINE_IMAGE_NODE,
+	isImageNode,
+	withoutImageLink,
+} from '../extensions/image';
 import { replaceUrlAccessToken } from './replace-url-access-token';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
@@ -22,12 +29,14 @@ export type ImageSelection = {
 	previewUrl?: string;
 	/** Keeps the image in its line of text (`inlineImage`); a captioned image is always a block image. */
 	inline?: boolean;
-	/** The edited image sits in a figure, which only holds block images. */
+	/** The edited block image is a figure's image, so it cannot become inline. */
 	inFigure?: boolean;
 };
 
-const IMAGE_TYPES = new Set([IMAGE_NODE, INLINE_IMAGE_NODE]);
-const LINK_ATTRIBUTES = ['href', 'target', 'rel'] as const;
+/** The drawer offers inline only for an image that is not a figure's image and has no caption. */
+export function canBeInline(selection: ImageSelection): boolean {
+	return !selection.inFigure && !selection.caption?.trim();
+}
 
 type UsableImage = {
 	imageDrawerOpen: Ref<boolean>;
@@ -83,7 +92,8 @@ export function useImage(
 		if (imageUrl === null || alt === null) return;
 
 		const imageUrlParams = safeUrlParams(imageUrl);
-		const figure = findFigure(editor.value.state.selection);
+		// an inline image in a figure's paragraph is not the figure's image
+		const figure = type === IMAGE_NODE ? findFigure(editor.value.state.selection) : undefined;
 		const lazy = attrs.loading === 'lazy';
 		const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
 		const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
@@ -174,10 +184,10 @@ export function useImage(
 		// insert-vs-edit is decided when the drawer opens, so saving does what the form showed the user;
 		// re-resolving the position here keeps it valid if the doc was re-synced while the drawer was open
 		const imagePos = editingImage.value ? findImagePos(editor.value.state) : undefined;
-		const current = imagePos === undefined ? null : editor.value.state.doc.nodeAt(imagePos);
+		const existingImage = imagePos === undefined ? null : editor.value.state.doc.nodeAt(imagePos);
 		const chain = editor.value.chain().focus();
 
-		if (imagePos === undefined || !current) {
+		if (imagePos === undefined || !existingImage) {
 			// fresh insert: with a caption the whole figure goes in at once, so there is no intermediate
 			// state where a wrap could catch the wrong block
 			if (inline) {
@@ -187,16 +197,19 @@ export function useImage(
 			} else {
 				chain.setImage(attrs);
 			}
-		} else if (current.type.name === INLINE_IMAGE_NODE && !inline) {
-			const link = current.marks.find((mark) => mark.type.name === 'link');
-			const blockAttrs = { ...current.attrs, ...linkAttributes(link?.attrs), ...attrs };
+		} else if (existingImage.type.name === INLINE_IMAGE_NODE && !inline) {
+			const link = existingImage.marks.find((mark) => mark.type.name === 'link')?.attrs;
+			// a block image's link tooltip is its own title, so the mark's title moves onto the image
+			const title = existingImage.attrs.title ?? link?.title ?? null;
+			const blockAttrs = { ...existingImage.attrs, ...linkAttributes(link), title, ...attrs };
 
 			chain
 				.setNodeSelection(imagePos)
 				.insertContent(caption ? captionedFigure(blockAttrs, caption) : { type: IMAGE_NODE, attrs: blockAttrs });
-		} else if (current.type.name === IMAGE_NODE && inline) {
-			const { href, target, rel, ...inlineAttrs }: Record<string, unknown> = { ...current.attrs, ...attrs };
-			const marks = href ? [{ type: 'link', attrs: { href, target, rel } }] : [];
+		} else if (existingImage.type.name === IMAGE_NODE && inline) {
+			const blockAttrs: Record<string, unknown> = { ...existingImage.attrs, ...attrs };
+			const inlineAttrs = withoutImageLink(blockAttrs);
+			const marks = blockAttrs.href ? [{ type: 'link', attrs: linkAttributes(blockAttrs) }] : [];
 
 			chain
 				.setNodeSelection(imagePos)
@@ -204,9 +217,9 @@ export function useImage(
 		} else {
 			// editing an existing image: update in place rather than replacing the node, so its own
 			// preserved attributes (class/id/data-*) and any surrounding figure survive the edit
-			chain.setNodeSelection(imagePos).updateAttributes(current.type.name, attrs);
+			chain.setNodeSelection(imagePos).updateAttributes(existingImage.type.name, attrs);
 
-			if (current.type.name === IMAGE_NODE) {
+			if (existingImage.type.name === IMAGE_NODE) {
 				if (caption) chain.setFigureCaption(caption);
 				else chain.unsetFigureCaption();
 			}
@@ -223,7 +236,7 @@ export function useImage(
 		let imagePos: number | undefined;
 
 		state.doc.nodesBetween(from, to, (node, pos) => {
-			if (imagePos === undefined && IMAGE_TYPES.has(node.type.name)) imagePos = pos;
+			if (imagePos === undefined && isImageNode(node)) imagePos = pos;
 		});
 
 		return imagePos;
@@ -240,7 +253,7 @@ export function useImage(
 	}
 
 	function linkAttributes(attrs: Record<string, unknown> | undefined) {
-		return Object.fromEntries(LINK_ATTRIBUTES.map((name) => [name, attrs?.[name] ?? null]));
+		return Object.fromEntries(IMAGE_LINK_ATTRIBUTES.map((name) => [name, attrs?.[name] ?? null]));
 	}
 
 	function safeUrlParams(url: string): URLSearchParams | undefined {

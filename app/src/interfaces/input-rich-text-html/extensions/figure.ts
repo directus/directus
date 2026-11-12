@@ -2,6 +2,7 @@ import { Extension, findParentNode, Node } from '@tiptap/core';
 import { Fragment, type Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { type EditorState, Plugin, type Selection, type Transaction } from '@tiptap/pm/state';
 import { Mapping, ReplaceStep } from '@tiptap/pm/transform';
+import { IMAGE_NODE } from './image';
 
 export const FIGURE_NODE = 'figure';
 
@@ -195,7 +196,7 @@ function isCaptionNode(node: ProseMirrorNode): boolean {
 }
 
 function isImage(node: ProseMirrorNode): boolean {
-	return node.type.name === 'image';
+	return node.type.name === IMAGE_NODE;
 }
 
 /** The figure the selection sits in, if any. `pos` is the position before the figure node. */
