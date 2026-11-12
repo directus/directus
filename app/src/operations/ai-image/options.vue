@@ -2,7 +2,7 @@
 import { AI_IMAGE_REFERENCE_MIME_TYPES, DEFAULT_ASPECT_RATIO } from '@directus/ai';
 import type { Field } from '@directus/types';
 import { omit } from 'lodash-es';
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { applyModelLimits, getFields } from './fields';
 import { IMAGE_STARTING_POINTS } from './starting-points';
@@ -37,7 +37,17 @@ const values = computed<Record<string, any>>(() => ({
 const openRouterModels = ref<OpenRouterImageModel[]>([]);
 
 if (useServerStore().info.ai_providers?.includes('openrouter')) {
-	fetchOpenRouterModels('image').then((models) => (openRouterModels.value = models));
+	fetchOpenRouterModels('image').then(async (models) => {
+		// Snap a saved ratio the model doesn't list before the dropdown sees the narrower choices, or it clears it
+		const next = applyModelLimits(values.value, models);
+
+		if (props.value && next['aspectRatio'] !== values.value['aspectRatio']) {
+			emit('input', { ...props.value, aspectRatio: next['aspectRatio'] });
+			await nextTick();
+		}
+
+		openRouterModels.value = models;
+	});
 }
 
 const fields = computed(() => translate(getFields(values.value, openRouterModels.value)) as Field[]);

@@ -26,6 +26,8 @@ const OPENROUTER_MODELS_URLS: Record<OpenRouterCatalog, string> = {
 
 const modelsPromises: Partial<Record<OpenRouterCatalog, Promise<OpenRouterImageModel[]>>> = {};
 
+export function fetchOpenRouterModels(catalog?: 'chat'): Promise<OpenRouterModel[]>;
+export function fetchOpenRouterModels(catalog: 'image'): Promise<OpenRouterImageModel[]>;
 export function fetchOpenRouterModels(catalog: OpenRouterCatalog = 'chat'): Promise<OpenRouterImageModel[]> {
 	modelsPromises[catalog] ??= loadModels(catalog).catch(() => {
 		delete modelsPromises[catalog];
@@ -44,7 +46,7 @@ async function loadModels(catalog: OpenRouterCatalog): Promise<OpenRouterImageMo
 
 	return (
 		data
-			// Batch variants are for OpenRouter's batch API, not chat
+			// Batch variants are for OpenRouter's batch API
 			.filter((model) => !model.id.endsWith(':batch'))
 			.map((model) => ({
 				id: model.id,

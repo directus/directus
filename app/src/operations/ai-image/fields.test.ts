@@ -49,12 +49,14 @@ describe('getAspectRatioChoices', () => {
 	test('narrows an OpenRouter model to the ratios OpenRouter lists for it', () => {
 		const openRouterModels = [
 			{ id: 'acme/narrow', name: 'Narrow', aspectRatios: ['1:1', '16:9', '1:3'] as `${number}:${number}`[] },
+			{ id: 'acme/odd', name: 'Odd', aspectRatios: ['1:3', '2.35:1'] as `${number}:${number}`[] },
 		];
 
 		const values = (model: string) =>
 			getAspectRatioChoices(model, false, openRouterModels).map((choice) => choice.value);
 
 		expect(values('openrouter:acme/narrow')).toEqual(['1:1', '16:9']);
+		expect(values('openrouter:acme/odd')).toHaveLength(10);
 		expect(values('openrouter:acme/typed-in')).toHaveLength(10);
 	});
 
