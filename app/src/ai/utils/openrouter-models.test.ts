@@ -67,10 +67,28 @@ describe('fetchOpenRouterModels', () => {
 		await fetchOpenRouterModels('image');
 
 		expect(fetchMock).toHaveBeenCalledTimes(2);
+		expect(fetchMock).toHaveBeenLastCalledWith('https://openrouter.ai/api/v1/images/models');
+	});
 
-		expect(fetchMock).toHaveBeenLastCalledWith(
-			'https://openrouter.ai/api/v1/models?output_modalities=image&sort=most-popular',
-		);
+	test('keeps the ratios each image model lists', async () => {
+		const imageCatalog = {
+			data: [
+				{
+					id: 'acme/image',
+					name: 'Acme: Image',
+					supported_parameters: { aspect_ratio: { type: 'enum', values: ['1:1', '2.35:1', 'auto'] } },
+				},
+				{ id: 'acme/no-ratios', name: 'Acme: No Ratios', supported_parameters: {} },
+			],
+		};
+
+		fetchMock.mockResolvedValue({ ok: true, json: async () => imageCatalog });
+		const { fetchOpenRouterModels } = await import('./openrouter-models');
+
+		expect(await fetchOpenRouterModels('image')).toEqual([
+			{ id: 'acme/image', name: 'Acme: Image', aspectRatios: ['1:1', '2.35:1'] },
+			{ id: 'acme/no-ratios', name: 'Acme: No Ratios' },
+		]);
 	});
 
 	test('fetches once across calls', async () => {

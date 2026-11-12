@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AI_IMAGE_REFERENCE_MIME_TYPES, DEFAULT_ASPECT_RATIO, type OpenRouterModel } from '@directus/ai';
+import { AI_IMAGE_REFERENCE_MIME_TYPES, DEFAULT_ASPECT_RATIO } from '@directus/ai';
 import type { Field } from '@directus/types';
 import { omit } from 'lodash-es';
 import { computed, ref } from 'vue';
@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { applyModelLimits, getFields } from './fields';
 import { IMAGE_STARTING_POINTS } from './starting-points';
 import AiStartingPoints from '@/ai/components/ai-starting-points.vue';
-import { fetchOpenRouterModels } from '@/ai/utils/openrouter-models';
+import { fetchOpenRouterModels, type OpenRouterImageModel } from '@/ai/utils/openrouter-models';
 import { applyFormValues, mergeFileIds } from '@/ai/utils/operation-options';
 import VButton from '@/components/v-button.vue';
 import VForm from '@/components/v-form/v-form.vue';
@@ -34,7 +34,7 @@ const values = computed<Record<string, any>>(() => ({
 	...props.value,
 }));
 
-const openRouterModels = ref<OpenRouterModel[]>([]);
+const openRouterModels = ref<OpenRouterImageModel[]>([]);
 
 if (useServerStore().info.ai_providers?.includes('openrouter')) {
 	fetchOpenRouterModels('image').then((models) => (openRouterModels.value = models));
@@ -67,7 +67,7 @@ function update(patch: Record<string, any>) {
 }
 
 function commit(next: Record<string, any>) {
-	emit('input', applyModelLimits(next));
+	emit('input', applyModelLimits(next, openRouterModels.value));
 }
 
 function updateFromForm(formFields: Field[], formValues: Record<string, any>) {

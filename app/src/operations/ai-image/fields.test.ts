@@ -45,6 +45,28 @@ describe('getAspectRatioChoices', () => {
 	test("uses Google's ratios for a model that isn't an image provider", () => {
 		expect(getAspectRatioChoices('anthropic:x', false).map((choice) => choice.value)).toContain('8:1');
 	});
+
+	test('narrows an OpenRouter model to the ratios OpenRouter lists for it', () => {
+		const openRouterModels = [
+			{ id: 'acme/narrow', name: 'Narrow', aspectRatios: ['1:1', '16:9', '1:3'] as `${number}:${number}`[] },
+		];
+
+		const values = (model: string) =>
+			getAspectRatioChoices(model, false, openRouterModels).map((choice) => choice.value);
+
+		expect(values('openrouter:acme/narrow')).toEqual(['1:1', '16:9']);
+		expect(values('openrouter:acme/typed-in')).toHaveLength(10);
+	});
+
+	test('snaps the saved ratio to one the OpenRouter model lists', () => {
+		const openRouterModels = [
+			{ id: 'acme/narrow', name: 'Narrow', aspectRatios: ['1:1', '16:9'] as `${number}:${number}`[] },
+		];
+
+		expect(
+			applyModelLimits({ model: 'openrouter:acme/narrow', aspectRatio: '21:9' }, openRouterModels).aspectRatio,
+		).toBe('16:9');
+	});
 });
 
 describe('getFields', () => {
