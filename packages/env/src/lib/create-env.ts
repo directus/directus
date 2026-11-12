@@ -20,7 +20,7 @@ export function createEnv(): Env {
 	const output: Record<string, unknown> = {};
 
 	for (const [rawKey, rawValue] of Object.entries(rawConfiguration)) {
-		const [key, value] = resolveFileValue(rawKey, rawValue);
+		const [key, value] = isDirectusVariable(rawKey) ? resolveFileValue(rawKey, rawValue) : [rawKey, rawValue];
 		const parsedValue = parseValue(key, value);
 
 		if (parsedValue !== undefined) output[key] = parsedValue;
@@ -38,7 +38,7 @@ export function createEnv(): Env {
 			if (!isFileKey(rawKey) || isDirectusVariable(rawKey) || typeof rawValue !== 'string') continue;
 			if (!flowEnvAllowList.includes(removeFileSuffix(rawKey))) continue;
 
-			const [key, value] = resolveFileValue(rawKey, rawValue, true);
+			const [key, value] = resolveFileValue(rawKey, rawValue);
 			const parsedValue = parseValue(key, value);
 
 			if (parsedValue !== undefined) output[key] = parsedValue;
@@ -54,8 +54,8 @@ export function createEnv(): Env {
 /**
  * Replaces `*_FILE` variables with the content of the file they point to, keeping the cast prefix if present
  */
-function resolveFileValue(key: string, value: unknown, allowCustom = false): [string, unknown] {
-	if (!isFileKey(key) || (!isDirectusVariable(key) && !allowCustom) || typeof value !== 'string') return [key, value];
+function resolveFileValue(key: string, value: unknown): [string, unknown] {
+	if (!isFileKey(key) || typeof value !== 'string') return [key, value];
 
 	const castFlag = getCastFlag(value);
 	const castPrefix = castFlag ? castFlag + ':' : '';
