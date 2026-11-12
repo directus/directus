@@ -139,6 +139,7 @@ extension_layout: Layout
 extension_module: Module
 extension_panel: Panel
 extension_theme: Theme
+extension_richtext: Rich Text
 extension_hook: Hook
 extension_endpoint: Endpoint
 extension_operation: Operation
@@ -149,6 +150,7 @@ extension_layouts: Layouts
 extension_modules: Modules
 extension_panels: Panels
 extension_themes: Themes
+extension_richtexts: Rich Text
 extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operations
@@ -873,6 +875,8 @@ file_moved: File Moved
 collection_created: Collection Created
 modified_on: Modified On
 card_size: Card Size
+small: Small
+large: Large
 sort_field: Sort Field
 add_sort_field: Add Sort Field
 add_to_ai_context: Add to AI Context
@@ -1679,6 +1683,8 @@ settings_ai: AI
 model_context_protocol: Model Context Protocol
 ai_assistant: AI Assistant
 ai_disabled_by_env: AI Assistant features have been disabled via environment variable.
+ai_allowed_models_default_note:
+  Using the recommended models, which update with new Directus releases. Changing this list saves your own selection.
 mcp_disabled_by_env: MCP features have been disabled via environment variable.
 mcp_oauth_disabled_by_env: MCP OAuth is disabled by the MCP_OAUTH_ENABLED environment variable.
 mcp_oauth_dcr_disabled_by_env:
@@ -2471,6 +2477,7 @@ forgot_password: Forgot Password
 hidden: Hidden
 hidden_in_group: Hidden in {group}
 icon: Icon
+image: Image
 info: Info
 normal: Normal
 success: Success
@@ -2783,6 +2790,20 @@ interfaces:
   select-radio:
     radio-buttons: Radio Buttons
     description: Select one of multiple choices
+  select-card-radio:
+    card-select: Card Select
+    description: Select a single item using visual cards
+    icon_type: Icon Type
+    description_note: Short text displayed below the card label
+  select-card-checkbox:
+    card-select-multiple: Card Select (Multiple)
+    description: Select multiple items using visual cards
+    icon_type: Icon Type
+    description_note: Short text displayed below the card label
+  system-file-image:
+    image_unavailable: Image unavailable
+    image: Image
+    description: Select an image file
   list:
     repeater: Repeater
     description: Create multiple entries of the same structure
@@ -2897,6 +2918,11 @@ interfaces:
     wysiwyg: WYSIWYG
     description: A rich-text editor writing HTML content
     toolbar: Toolbar
+    extensions: Extensions
+    extensions_placeholder: Select extensions...
+    extensions_note: Extensions this field can use. Markup from unselected extensions is removed on save.
+    extension_options: Extension Options
+    extension_options_for: '{extension} Options'
     custom_formats: Custom Formats
     custom_formats_note:
       A list of custom formats. Each entry needs a `title` plus either an `inline` tag, a `block` tag, a `selector` of
@@ -2912,6 +2938,19 @@ interfaces:
     imageToken_label: Static access token is appended to the assets' URL
     media_preview_iframe_title: Media Preview
     embed_invalid: The embed markup could not be parsed as media (video, audio, or iframe)
+    link_protocols: Allowed Link Protocols
+    link_protocols_note:
+      Extra URL schemes that links may use, such as `myapp` for `myapp://` deep links. Standard schemes such as `http`,
+      `https`, `mailto` and `tel` are always allowed. Script schemes such as `javascript` are never allowed. Only add
+      schemes you trust.
+    link_protocols_placeholder: Add a scheme and press Enter...
+    link_protocols_blocked:
+      '"{scheme}" was not added. Links with this scheme can run potentially malicious code, so it is never allowed.'
+    link_protocols_invalid:
+      '"{scheme}" was not added. A scheme starts with a letter and contains only letters, digits, `+`, `-` and `.`.'
+    link_protocol_not_allowed:
+      This link type is not allowed. Add its scheme to the Allowed Link Protocols option of this field.
+    link_protocol_blocked: Script links such as `javascript:` are never allowed.
     auto_height: Auto height
   input-block-editor:
     input-block-editor: Block Editor
