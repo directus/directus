@@ -110,7 +110,12 @@ test('should render with string items', () => {
 
 test('shows choice icons in the list when other values are allowed', () => {
 	const wrapper = mount(VSelect, {
-		props: { items: [{ text: 'Item 1', value: 'item1', icon: 'star' }], itemIcon: 'icon', allowOther: true, multiple: false },
+		props: {
+			items: [{ text: 'Item 1', value: 'item1', icon: 'star' }],
+			itemIcon: 'icon',
+			allowOther: true,
+			multiple: false,
+		},
 		global,
 	});
 
