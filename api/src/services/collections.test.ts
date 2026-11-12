@@ -200,47 +200,6 @@ describe('Integration Tests', () => {
 				expect(createOneSpy).toHaveBeenCalled();
 			});
 
-			test.each(['<details open ontoggle=alert(1)>', 'lorem_ipsum', 'Box', 'two words', 42])(
-				'should throw InvalidPayloadError for meta.icon %j',
-				async (icon) => {
-					const createOneSpy = vi.spyOn(ItemsService.prototype, 'createOne');
-
-					const service = new CollectionsService({
-						knex: db,
-						schema,
-						accountability: null,
-					});
-
-					await expect(
-						service.createOne({
-							collection: 'meta_collection',
-							meta: { collection: 'meta_collection', icon },
-						} as RawCollection),
-					).rejects.toThrow(InvalidPayloadError);
-
-					expect(createOneSpy).not.toHaveBeenCalled();
-				},
-			);
-
-			test.each(['box', 'database', 'logo_openai', '', null])('should accept meta.icon %j', async (icon) => {
-				tracker.on.select('directus_collections').response([]);
-
-				const createOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue('meta_collection');
-
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				await service.createOne({
-					collection: 'meta_collection',
-					meta: { collection: 'meta_collection', icon },
-				} as RawCollection);
-
-				expect(createOneSpy).toHaveBeenCalledWith(expect.objectContaining({ icon }), expect.anything());
-			});
-
 			test('should create collection with fields', async () => {
 				tracker.on.select('directus_collections').response([]);
 
@@ -554,44 +513,6 @@ describe('Integration Tests', () => {
 				} as Partial<Collection>);
 
 				expect(createOneSpy).toHaveBeenCalled();
-			});
-
-			test('should throw InvalidPayloadError for an unknown meta.icon without saving it', async () => {
-				tracker.on.select('directus_collections').response([{ collection: 'test_collection' }]);
-
-				const updateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne');
-
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				await expect(
-					service.updateOne('test_collection', {
-						meta: { icon: '<details open ontoggle=alert(1)>' },
-					} as Partial<Collection>),
-				).rejects.toThrow(InvalidPayloadError);
-
-				expect(updateOneSpy).not.toHaveBeenCalled();
-			});
-
-			test('should update a known meta.icon', async () => {
-				tracker.on.select('directus_collections').response([{ collection: 'test_collection' }]);
-
-				const updateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('test_collection');
-
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				await service.updateOne('test_collection', {
-					meta: { icon: 'box' },
-				} as Partial<Collection>);
-
-				expect(updateOneSpy).toHaveBeenCalledWith('test_collection', { icon: 'box' }, expect.anything());
 			});
 		});
 

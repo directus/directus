@@ -29,7 +29,6 @@ import { getEntitlementManager } from '../license/index.js';
 import { fetchAllowedCollections } from '../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { Collection } from '../types/index.js';
-import { assertKnownIcon } from '../utils/assert-known-icon.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
@@ -90,8 +89,6 @@ export class CollectionsService {
 		if (!payload.schema && !payload.meta) {
 			throw new InvalidPayloadError({ reason: `"schema" or "meta" is required` });
 		}
-
-		assertKnownIcon(payload.meta?.icon, 'meta.icon');
 
 		if (payload.schema && payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
 			await getEntitlementManager().assert('collections', { adding: 1, knex: this.knex });
@@ -478,8 +475,6 @@ export class CollectionsService {
 			if (!payload.meta) {
 				return collectionKey;
 			}
-
-			assertKnownIcon(payload.meta.icon, 'meta.icon');
 
 			if (payload.meta?.status === 'active') {
 				await getEntitlementManager().assert('collections', { adding: 1, knex: this.knex });

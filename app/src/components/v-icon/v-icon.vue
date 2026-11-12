@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useSizeClass } from '@directus/composables';
-import { SOCIAL_ICONS } from '@directus/constants';
-import { isIn, isKnownIcon } from '@directus/utils';
+import { isIn } from '@directus/utils';
 import type { IconName } from '@fortawesome/fontawesome-svg-core';
 import { camelCase, upperFirst } from 'lodash-es';
 import { computed, defineAsyncComponent } from 'vue';
 import { RTL_REVERSE_ICONS } from '../../constants/text-direction';
 import { components } from './custom-icons';
+import { isKnownIcon } from './known-icons';
+import { socialIcons } from './social-icons';
 import { useUserStore } from '@/stores/user';
 
 const SocialIcon = defineAsyncComponent(() => import('./social-icon.vue'));
@@ -67,11 +68,11 @@ const customIconName = computed(() => {
 
 const socialIconName = computed<IconName | null>(() => {
 	if (!props.name) return null;
-	if (SOCIAL_ICONS.includes(props.name)) return props.name.replace(/_/g, '-') as IconName;
+	if (socialIcons.includes(props.name)) return props.name.replace(/_/g, '-') as IconName;
 	return null;
 });
 
-// the font draws a name it has no ligature for as plain text, so unknown names (e.g. a user-supplied meta.icon) render nothing
+// the font draws a name it has no ligature for as plain text, so unknown names render nothing
 const materialIconName = computed(() => (props.name && isKnownIcon(props.name) ? props.name : null));
 
 const mirrored = computed(() => userStore.textDirection === 'rtl' && isIn(props.name, RTL_REVERSE_ICONS));

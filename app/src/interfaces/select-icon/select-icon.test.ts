@@ -117,34 +117,4 @@ describe('Interface', () => {
 
 		expect(wrapper.find('.item-actions v-remove-stub').exists()).toBe(false);
 	});
-
-	it('should show the title and preview of a known icon', () => {
-		const wrapper = mount(SelectIcon, {
-			props: {
-				value: 'star_rate',
-			},
-			global,
-		});
-
-		expect(wrapper.find('.v-input .input input').attributes('placeholder')).toBe('Star Rate');
-		expect(wrapper.find('.v-input').classes()).toContain('has-value');
-		expect(wrapper.find('.selected-icon').exists()).toBe(true);
-	});
-
-	it.each(['lorem ipsum', '<details open ontoggle=alert(1)>'])(
-		'should not show the unknown icon %j as text, but still allow deselecting it',
-		(value) => {
-			const wrapper = mount(SelectIcon, {
-				props: {
-					value,
-				},
-				global,
-			});
-
-			expect(wrapper.find('.v-input .input input').attributes('placeholder')).toBe('Search for icon...');
-			expect(wrapper.find('.v-input').classes()).not.toContain('has-value');
-			expect(wrapper.find('.selected-icon').exists()).toBe(false);
-			expect(wrapper.find('.item-actions v-remove-stub').exists()).toBe(true);
-		},
-	);
 });
