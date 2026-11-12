@@ -9,5 +9,5 @@ import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
  */
 export const createRedis = () => {
 	const env = useEnv();
-	return new Redis(env['REDIS'] ?? getConfigFromEnv('REDIS'));
+	return new Redis(env['REDIS'] ?? getConfigFromEnv('REDIS', { omitSuffix: '_NAMESPACE' }));
 };

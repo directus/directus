@@ -532,7 +532,7 @@ export function useRelationMultiple(
 
 			if (
 				isEqual(newRelation, oldRelation) &&
-				newPreviewQuery.filter === oldPreviewQuery?.filter &&
+				isEqual(newPreviewQuery.filter, oldPreviewQuery?.filter) &&
 				newPreviewQuery.search === oldPreviewQuery?.search &&
 				newItemId === oldItemId &&
 				newRefreshSignal === oldRefreshSignal

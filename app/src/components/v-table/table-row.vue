@@ -32,12 +32,11 @@ const props = withDefaults(
 
 const emit = defineEmits(['click', 'item-selected']);
 
-const cssHeight = computed(() => {
-	return {
-		tableRow: props.height + 2 + 'px',
-		renderTemplateImage: props.height - 16 + 'px',
-	};
-});
+// Inline vars instead of CSS v-bind(): v-bind() adds a MutationObserver and a document-wide query per row
+const rowStyle = computed(() => ({
+	'--table-row-height': props.height + 2 + 'px',
+	'--table-row-image-height': props.height - 16 + 'px',
+}));
 
 function onKeydown(e: KeyboardEvent) {
 	if (e.metaKey) return;
@@ -59,6 +58,7 @@ function onClick(event: MouseEvent) {
 	<tr
 		class="table-row"
 		:class="{ subdued: subdued, clickable: hasClickListener }"
+		:style="rowStyle"
 		:tabindex="hasClickListener ? 0 : undefined"
 		@click="onClick"
 		@keydown="onKeydown"
@@ -76,7 +76,12 @@ function onClick(event: MouseEvent) {
 			/>
 		</td>
 
-		<td v-for="header in headers" :key="header.value" class="cell" :class="`align-${header.align}`">
+		<td
+			v-for="header in headers"
+			:key="header.value"
+			class="cell"
+			:class="[`align-${header.align}`, { inactive: header.inactive }]"
+		>
 			<slot :name="`item.${header.value}`" :item="item">
 				<VTextOverflow
 					v-if="
@@ -105,7 +110,7 @@ function onClick(event: MouseEvent) {
 .table-row {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
 
-	block-size: v-bind('cssHeight.tableRow');
+	block-size: var(--table-row-height);
 
 	.cell {
 		display: flex;
@@ -124,6 +129,11 @@ function onClick(event: MouseEvent) {
 		&.select {
 			display: flex;
 			align-items: center;
+		}
+
+		/* Columns of an inactive collection stay readable, but are muted */
+		&.inactive {
+			color: var(--theme--foreground-subdued);
 		}
 	}
 
@@ -155,10 +165,10 @@ function onClick(event: MouseEvent) {
 	}
 
 	:deep(.render-template) {
-		block-size: v-bind('cssHeight.tableRow');
+		block-size: var(--table-row-height);
 
 		img {
-			block-size: v-bind('cssHeight.renderTemplateImage');
+			block-size: var(--table-row-image-height);
 		}
 	}
 }

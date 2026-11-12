@@ -140,6 +140,8 @@ interfaces:
     primary: প্রাথমিক
   input-hash:
     hash: হ্যাশ
+  input-rich-text-html:
+    extensions: এক্সটেনশন্স
 displays:
   formatted-value:
     text: পাঠ্য

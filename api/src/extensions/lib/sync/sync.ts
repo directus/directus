@@ -25,7 +25,7 @@ export type ExtensionSyncOptions = {
 export async function syncExtensions(options?: ExtensionSyncOptions): Promise<void> {
 	if (options?.skipSync === true) return;
 
-	const env = useEnv();
+	const { EXTENSIONS_LOCATION } = useEnv();
 	const lock = useLock();
 	const messenger = useBus();
 	const logger = useLogger();
@@ -58,7 +58,7 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 		const { localExtensionsPath, remoteExtensionsPath } = getSyncPaths(options?.partialSync);
 
 		const storage = await getStorage();
-		const disk = storage.location(env['EXTENSIONS_LOCATION'] as string);
+		const disk = storage.location(EXTENSIONS_LOCATION!);
 
 		// check if we are only removing the local directory
 		if (options?.partialSync) {
