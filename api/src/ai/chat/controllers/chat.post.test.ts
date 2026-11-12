@@ -279,7 +279,6 @@ describe('aiChatPostHandler', () => {
 				aiSettings: customSettings,
 				userId: 'test-user',
 				role: 'test-role',
-				systemPrompt: 'You are Directus.',
 				onUsage: expect.any(Function),
 			});
 		});
@@ -323,7 +322,6 @@ describe('aiChatPostHandler', () => {
 				aiSettings: mockRes.locals!['ai'].settings,
 				userId: 'test-user',
 				role: 'test-role',
-				systemPrompt: null,
 				onUsage: expect.any(Function),
 			});
 

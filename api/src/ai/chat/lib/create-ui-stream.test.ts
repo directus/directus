@@ -19,7 +19,7 @@ vi.mock('@ai-sdk/google', () => ({
 }));
 
 // Allowed models are covered in validate-model-allowed.test.ts.
-vi.mock('../utils/validate-model-allowed.js');
+vi.mock('../../providers/validate-model-allowed.js');
 
 vi.mock('../constants/system-prompt.js', () => ({
 	SYSTEM_PROMPT: 'DEFAULT_SYSTEM_PROMPT',
@@ -139,8 +139,7 @@ describe('createUiStream', () => {
 			provider: 'openai',
 			model: 'gpt-4o',
 			tools: {},
-			aiSettings,
-			systemPrompt: 'CUSTOM_PROMPT',
+			aiSettings: { ...aiSettings, ai_system_prompt: 'CUSTOM_PROMPT' },
 		});
 
 		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'CUSTOM_PROMPT' }));
@@ -378,8 +377,7 @@ describe('createUiStream', () => {
 			provider: 'openai',
 			model: 'gpt-4o-mini',
 			tools: {},
-			aiSettings,
-			systemPrompt: '',
+			aiSettings: { ...aiSettings, ai_system_prompt: '' },
 		});
 
 		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'DEFAULT_SYSTEM_PROMPT' }));
