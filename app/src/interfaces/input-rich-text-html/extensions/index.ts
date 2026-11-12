@@ -9,7 +9,7 @@ import { figureExtensions } from './figure';
 import { CustomImage } from './image';
 import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
-import { NoContainerParagraphs } from './no-container-paragraphs';
+import { buildContainerParagraphSchema } from './no-container-paragraphs';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
 import { PreservedAttributes, styleRules } from './preserved-attributes';
@@ -22,6 +22,7 @@ import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { Table } from './table';
 import { TextAlignment } from './text-alignment';
 import { PreservingTextStyle, TextStyle } from './text-style';
+import { buildWrapperElementSchema } from './wrapper-elements';
 import { contributedKey, enabledRichTexts } from '@/rich-text/register';
 
 /**
@@ -92,6 +93,8 @@ export interface FieldSchemaOptions {
 	keepLegacyEmphasisTags?: unknown;
 	/** Field `noContainerParagraphs` option: never add `<p>` in list items, blockquotes and table cells. */
 	noContainerParagraphs?: boolean;
+	/** Field `keepWrapperElements` option: keep `div`, `aside`, `header`, `footer`, `nav` and `main` instead of unwrapping them. */
+	keepWrapperElements?: unknown;
 	comparisonMode?: boolean;
 }
 
@@ -108,7 +111,7 @@ export interface FieldSchema {
 
 /**
  * The one place a field's schema additions are assembled: the richtext extensions the field opted
- * into, its custom formats, its link protocols, its inline styles, its legacy emphasis tags, and the comparison-diff mark in
+ * into, its custom formats, its link protocols, its inline styles, its legacy emphasis tags, its wrapper elements, and the comparison-diff mark in
  * comparison mode. The live editor, the save-time round-trip check, the source-code drawer and the
  * comparison view all build from this result. A site that composed the list by hand could miss a contribution and report its markup as
  * dropped even though the editor renders it.
@@ -118,6 +121,8 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 	const contributed = enabledRichTexts(options.extensions, options.extensionOptions);
 	const links = buildLinkProtocolSchema(options.linkProtocols);
 	const legacyEmphasis = buildLegacyEmphasisSchema(options.keepLegacyEmphasisTags);
+	const wrappers = buildWrapperElementSchema(options.keepWrapperElements);
+	const containerParagraphs = buildContainerParagraphSchema(options.noContainerParagraphs, wrappers.tags);
 
 	const rawHtmlOptions = { keepInlineStyles: Boolean(options.keepInlineStyles), linkProtocols: links.protocols };
 	const needsRawHtmlConfig = rawHtmlOptions.keepInlineStyles || rawHtmlOptions.linkProtocols.length > 0;
@@ -136,7 +141,8 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 					]
 				: []),
 			...legacyEmphasis.extensions,
-			...(options.noContainerParagraphs ? [NoContainerParagraphs] : []),
+			...wrappers.extensions,
+			...containerParagraphs.extensions,
 			...(options.comparisonMode ? [ComparisonDiff] : []),
 		],
 		key: [
@@ -145,7 +151,8 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			customFormats.key,
 			links.key,
 			legacyEmphasis.key,
-			options.noContainerParagraphs ? 'no-container-paragraphs' : '',
+			containerParagraphs.key,
+			wrappers.key,
 			contributed.map((config) => config.key).join('\u0000'),
 		].join('\u0000'),
 		formats: customFormats.formats,
