@@ -6,7 +6,7 @@ import { buildCustomFormats, type CustomFormat } from './custom-formats';
 import { Direction } from './direction';
 import { DropCursor } from './drop-cursor';
 import { figureExtensions } from './figure';
-import { CustomImage } from './image';
+import { CustomImage, InlineImage } from './image';
 import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
 import { buildContainerParagraphSchema } from './no-container-paragraphs';
@@ -33,6 +33,7 @@ export const editorExtensions = [
 	BaseLink,
 	DropCursor,
 	CustomImage,
+	InlineImage,
 	Media,
 	TextAlignment,
 	Direction,

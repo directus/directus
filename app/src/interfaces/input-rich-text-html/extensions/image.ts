@@ -1,17 +1,16 @@
-import { type Editor, mergeAttributes } from '@tiptap/core';
+import { type Attributes, type Editor, mergeAttributes } from '@tiptap/core';
 import { Image, type ImageOptions } from '@tiptap/extension-image';
 import { isAllowedUri } from '@tiptap/extension-link';
 import type { DOMOutputSpec } from '@tiptap/pm/model';
 
 /**
- * Image node extended with:
+ * Block image (`InlineImage` below takes `<img>` in paragraph, heading and list item text), extended with:
  *
  * - `loading`, so the drawer's lazy-loading option and legacy `loading="lazy"` markup survive
  *   parse → serialize (the base node only models src/alt/title/width/height).
- * - `href`/`target`/`rel`, modelling `<a href><img></a>`. The image is a block node and the Link
- *   mark only applies to inline content, so ProseMirror would otherwise drop the anchor on load
- *   and the normalization warning would lock the field. Keeping the link on the node (rather than
- *   making the image inline) leaves figures, drop cursor and stored bare `<img>` untouched.
+ * - `href`/`target`/`rel`, modelling `<a href><img></a>`. The Link mark only applies to inline
+ *   content, so ProseMirror would otherwise drop the anchor around a block image on load and the
+ *   normalization warning would lock the field.
  */
 
 export type ImageLink = { href: string; target: string | null; rel: string | null };
@@ -27,8 +26,19 @@ declare module '@tiptap/core' {
 	}
 }
 
+export const IMAGE_NODE = 'image';
+
+export const INLINE_IMAGE_NODE = 'inlineImage';
+
 export function isImageLinkActive(editor: Editor): boolean {
-	return editor.isActive('image') && Boolean(editor.getAttributes('image').href);
+	return editor.isActive(IMAGE_NODE) && Boolean(editor.getAttributes(IMAGE_NODE).href);
+}
+
+/** The image type the selection is on, or `null` when it is not on an image. */
+export function activeImageType(editor: Editor): typeof IMAGE_NODE | typeof INLINE_IMAGE_NODE | null {
+	if (editor.isActive(IMAGE_NODE)) return IMAGE_NODE;
+	if (editor.isActive(INLINE_IMAGE_NODE)) return INLINE_IMAGE_NODE;
+	return null;
 }
 
 /**
@@ -104,3 +114,85 @@ export const CustomImage = Image.extend<ImageOptions & { linkProtocols: string[]
 		};
 	},
 });
+
+const INLINE_IMAGE_HOSTS = new Set(['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI']);
+
+const BLOCK_ANCESTORS = [
+	...Array.from(INLINE_IMAGE_HOSTS, (tag) => tag.toLowerCase()),
+	'address',
+	'article',
+	'aside',
+	'blockquote',
+	'body',
+	'dd',
+	'details',
+	'div',
+	'dl',
+	'dt',
+	'figcaption',
+	'figure',
+	'footer',
+	'header',
+	'main',
+	'nav',
+	'ol',
+	'pre',
+	'section',
+	'summary',
+	'table',
+	'td',
+	'th',
+	'ul',
+].join(',');
+
+const BLOCK_SIBLINGS = `${BLOCK_ANCESTORS},hr,iframe,video,audio`;
+
+/** True when the parser reads this `<img>` as an inline image. */
+export function isInInlineImageHost(img: HTMLElement): boolean {
+	const block = img.parentElement?.closest(BLOCK_ANCESTORS);
+	if (!block || !INLINE_IMAGE_HOSTS.has(block.tagName)) return false;
+	return block.tagName !== 'LI' || !followsBlockInListItem(img, block);
+}
+
+// Tiptap stores a block image in a list item after the item's first paragraph (`<li><p>a</p><img></li>`)
+function followsBlockInListItem(img: HTMLElement, item: Element): boolean {
+	let child: Element = img;
+	while (child.parentElement !== item) child = child.parentElement!;
+
+	for (let sibling = child.previousElementSibling; sibling; sibling = sibling.previousElementSibling) {
+		if (sibling.matches(BLOCK_SIBLINGS)) return true;
+	}
+
+	return false;
+}
+
+/**
+ * An image inside a paragraph, heading or list item, kept in its line of text. A link around it is
+ * the Link mark, so it has no `href`/`target`/`rel` of its own. It defines no commands: `setImage`
+ * always inserts a block image.
+ */
+export const InlineImage = CustomImage.extend({
+	name: INLINE_IMAGE_NODE,
+
+	addAttributes() {
+		const { href: _href, target: _target, rel: _rel, ...attributes } = (this.parent?.() ?? {}) as Attributes;
+		return attributes;
+	},
+
+	parseHTML() {
+		return (this.parent?.() ?? []).map((rule) => ({
+			...rule,
+			// ahead of the block image's rule, which takes every <img> this one declines
+			priority: 60,
+			getAttrs: (element: HTMLElement) => (isInInlineImageHost(element) ? null : false),
+		}));
+	},
+
+	addCommands() {
+		return {};
+	},
+
+	addInputRules() {
+		return [];
+	},
+}).configure({ inline: true });

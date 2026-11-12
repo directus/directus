@@ -30,9 +30,17 @@ const SAMPLES: Record<string, string> = {
 	headings: '<h1>H1</h1><h2>H2</h2>',
 	link: '<p><a href="https://directus.io">link</a></p>',
 	image: '<img src="/assets/abc" alt="alt">',
+	'inline image': '<p>a<img src="/assets/abc" alt="alt">b</p>',
+	'inline image alone': '<p><img src="/assets/abc" alt="alt"></p>',
+	'linked inline image': '<h2>t <a href="https://directus.io"><img src="/assets/abc" alt="alt"></a></h2>',
+	'block image in a list item': '<ul><li><p>one</p><img src="/assets/abc" alt="alt"></li></ul>',
 };
 
 describe('formatHtml', () => {
+	test('keeps an inline image on the line of its paragraph', () => {
+		expect(formatHtml('<p>a<img src="/x" alt="x">b</p>')).toBe('<p>a<img src="/x" alt="x">b</p>');
+	});
+
 	test('indents nested block structure', () => {
 		expect(formatHtml('<ul><li><p>one</p></li></ul>')).toBe(
 			['<ul>', '  <li>', '    <p>one</p>', '  </li>', '</ul>'].join('\n'),

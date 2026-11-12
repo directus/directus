@@ -1,6 +1,7 @@
 import type { Editor } from '@tiptap/vue-3';
 import type { Component } from 'vue';
 import { isAnyLinkActive, unsetAnyLink } from '../composables/use-link';
+import { activeImageType } from '../extensions/image';
 import { PAGE_BREAK_NODE } from '../extensions/page-break';
 import ColorMenu from './menus/color-menu.vue';
 import DateTimeMenu from './menus/datetime-menu.vue';
@@ -299,7 +300,7 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		icon: 'image',
 		label: 'wysiwyg_options.image',
 		command: (_e, ctx) => ctx.image.open(),
-		isActive: (e) => e.isActive('image'),
+		isActive: (e) => activeImageType(e) !== null,
 	},
 	customMedia: {
 		icon: 'slideshow',
