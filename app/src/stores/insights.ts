@@ -227,9 +227,10 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				continue;
 			}
 
-			toArray(req).forEach(({ collection, query }, index) => {
-				const key = getSimpleHash(panel.id + collection + JSON.stringify(query));
-				queries.set(key, { panel: panel.id, collection, query, key, index, length: toArray(req).length });
+			toArray(req).forEach(({ collection, query }, index, all) => {
+				// Include the index so identical sub-queries in one panel don't collide
+				const key = getSimpleHash(panel.id + index + collection + JSON.stringify(query));
+				queries.set(key, { panel: panel.id, collection, query, key, index, length: all.length });
 			});
 		}
 
