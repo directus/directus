@@ -50,7 +50,6 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 		aiSettings,
 		userId: req.accountability?.user,
 		role: req.accountability?.role,
-		systemPrompt: aiSettings.ai_system_prompt,
 		...(context && { context }),
 		onUsage: (usage) => {
 			res.write(`data: ${JSON.stringify({ type: 'data-usage', data: usage })}\n\n`);
