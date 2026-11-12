@@ -1,413 +1,203 @@
 import { getRedactedString, REDACTED_TEXT } from '@directus/utils';
-import { merge } from 'lodash-es';
 import { describe, expect, test } from 'vitest';
-import { FLOW_SECRET_KEYS } from '../constants.js';
 import { getReplacer, redactObject } from './redact-object.js';
 
-const input = {
-	$trigger: {
-		event: 'users.create',
-		payload: {
-			first_name: 'Example',
-			last_name: 'User',
-			email: 'user@example.com',
-			password: 'secret',
-		},
-		key: 'eb641950-fffa-4388-8606-aede594ae487',
-		collection: 'directus_users',
-	},
-	exec_fm27u: {
-		$trigger: {
-			event: 'users.create',
-			payload: {
-				first_name: 'Example',
-				last_name: 'User',
-				email: 'user@example.com',
-				password: 'secret',
-				secret: '^.+.*?^)(][}{|$',
-			},
-			key: 'eb641950-fffa-4388-8606-aede594ae487',
-			collection: 'directus_users',
-		},
-		$last: {
-			event: 'users.create',
-			payload: {
-				first_name: 'Example',
-				last_name: 'User',
-				email: 'user@example.com',
-				password: 'secret',
-				secret: 'x)yMQt7ZNK3k',
-			},
-			key: 'eb641950-fffa-4388-8606-aede594ae487',
-			collection: 'directus_users',
-		},
-	},
-};
-
-test('should not mutate input', () => {
-	const result = redactObject(input, { keys: [['$trigger']] }, getRedactedString);
-
-	expect(result).not.toBe(input);
-});
-
-test('should support single level path', () => {
-	const result = redactObject(input, { keys: [['$trigger']] }, getRedactedString);
-
-	expect(result).toEqual(
-		merge({}, input, {
-			$trigger: REDACTED_TEXT,
-		}),
-	);
-});
-
-test('should support multi level path', () => {
-	const result = redactObject(input, { keys: [['$trigger', 'payload', 'password']] }, getRedactedString);
-
-	expect(result).toEqual(
-		merge({}, input, {
-			$trigger: {
-				payload: { password: REDACTED_TEXT },
-			},
-		}),
-	);
-});
-
-test('should support wildcard path', () => {
-	const result = redactObject(input, { keys: [['*', 'payload']] }, getRedactedString);
-
-	expect(result).toEqual(
-		merge({}, input, {
-			$trigger: {
-				payload: REDACTED_TEXT,
-			},
-		}),
-	);
-});
-
-test('should support deep path', () => {
-	const result = redactObject(input, { keys: [['**', 'password']] }, getRedactedString);
-
-	expect(result).toMatchObject(
-		merge({}, input, {
-			$trigger: {
-				payload: {
-					password: REDACTED_TEXT,
-				},
-			},
-			exec_fm27u: {
-				$trigger: {
-					payload: {
-						password: REDACTED_TEXT,
-					},
-				},
-				$last: {
-					payload: {
-						password: REDACTED_TEXT,
-					},
-				},
-			},
-		}),
-	);
-});
-
-test('should support multiple paths', () => {
-	const result = redactObject(
-		input,
-		{
-			keys: [
-				['$trigger', 'key'],
-				['*', 'payload', 'email'],
-				['**', 'password'],
-			],
-		},
-		getRedactedString,
-	);
-
-	expect(result).toEqual(
-		merge({}, input, {
-			$trigger: {
-				key: REDACTED_TEXT,
-				payload: {
-					email: REDACTED_TEXT,
-					password: REDACTED_TEXT,
-				},
-			},
-			exec_fm27u: {
-				$trigger: {
-					payload: {
-						password: REDACTED_TEXT,
-					},
-				},
-				$last: {
-					payload: {
-						password: REDACTED_TEXT,
-					},
-				},
-			},
-		}),
-	);
-});
-
-test('should not drop an unmatched path when two paths match the same key', () => {
-	const result = redactObject(
-		{ a: 'value-a', secret_key: 'sensitive' },
-		{ keys: [['a'], ['*', 'x'], ['secret_key']] },
-		getRedactedString,
-	);
-
-	expect(result).toEqual({ a: REDACTED_TEXT, secret_key: REDACTED_TEXT });
-});
-
-test.each([
-	['an array', { payload: [{ password: 'secret', title: 'a' }, { password: 'secret' }] }],
-	['nested arrays', { payload: [[{ password: 'secret', title: 'a' }], [[{ password: 'secret' }]]] }],
-])('should redact matching keys inside %s', (_, data) => {
-	const result = redactObject({ $trigger: data }, { keys: [['**', 'payload', 'password']] }, getRedactedString);
-
-	expect(JSON.stringify(result)).not.toContain('secret');
-	expect(JSON.stringify(result)).toContain('"title":"a"');
-});
-
-test('should redact matching keys inside an array under any key', () => {
-	const result = redactObject(
-		{ $trigger: { body: { users: [{ name: 'a', password: 'secret' }] } } },
-		{ keys: [['**', 'password']] },
-		getRedactedString,
-	);
-
-	expect(result).toEqual({ $trigger: { body: { users: [{ name: 'a', password: REDACTED_TEXT }] } } });
-});
-
-test.each([
-	[
-		'a webhook trigger',
-		{
-			headers: { authorization: 'Bearer shh', cookie: 'shh' },
-			query: { access_token: 'shh' },
-			body: { password: 'shh', token: 'shh', ai_openrouter_api_key: 'shh', title: 'a' },
-		},
-	],
-	['a webhook trigger with an array body', { body: [{ password: 'shh', title: 'a' }, [{ credentials: 'shh' }]] }],
-	['a webhook trigger with secrets nested under any key', { body: { users: [{ password: 'shh', title: 'a' }] } }],
-	[
-		'an event trigger with secrets nested under any key',
-		{ payload: { role: { users: [{ token: 'shh', title: 'a' }] } } },
-	],
-	['an event trigger', { payload: { password: 'shh', tfa_secret: 'shh', title: 'a' } }],
-])('should redact flow secrets from %s', (_, trigger) => {
-	const result = JSON.stringify(redactObject({ $trigger: trigger }, { keys: FLOW_SECRET_KEYS }, getRedactedString));
-
-	expect(result).not.toContain('shh');
-	expect(result).toContain('"title":"a"');
-});
-
-test('should not change the keys passed in', () => {
-	const keys = [['a'], ['*', 'b']];
-
-	redactObject({ a: 1, x: { b: 2 } }, { keys }, getRedactedString);
-
-	expect(keys).toEqual([['a'], ['*', 'b']]);
-});
-
-describe('getReplacer tests', () => {
-	test('Returns parsed error object', () => {
-		const errorMessage = 'Error Message';
-		const errorCause = 'Error Cause';
-		const replacer = getReplacer(getRedactedString);
-		const result: any = replacer('', new Error(errorMessage, { cause: errorCause }));
-		expect(result.name).toBe('Error');
-		expect(result.message).toBe(errorMessage);
-		expect(result.stack).toBeDefined();
-		expect(result.cause).toBe(errorCause);
+describe('keys', () => {
+	test.each([
+		[
+			'should redact the whole value when the path is a single key',
+			{ a: { b: 1 }, c: 1 },
+			[['a']],
+			{ a: REDACTED_TEXT, c: 1 },
+		],
+		[
+			'should redact only the last key when the path has several keys',
+			{ a: { b: { c: 1, d: 1 } }, c: 1 },
+			[['a', 'b', 'c']],
+			{ a: { b: { c: REDACTED_TEXT, d: 1 } }, c: 1 },
+		],
+		[
+			'should match any single key when a path segment is *',
+			{ a: { b: 1 }, c: { b: 1, d: { b: 1 } } },
+			[['*', 'b']],
+			{ a: { b: REDACTED_TEXT }, c: { b: REDACTED_TEXT, d: { b: 1 } } },
+		],
+		[
+			'should match any number of levels when a path segment is **',
+			{ b: 1, a: { b: 1, c: { b: 1, d: 1 } } },
+			[['**', 'b']],
+			{ b: REDACTED_TEXT, a: { b: REDACTED_TEXT, c: { b: REDACTED_TEXT, d: 1 } } },
+		],
+		[
+			'should continue with the rest of the path when ** finds a key',
+			{ a: { b: { c: 1, d: 1 } }, c: 1 },
+			[['**', 'b', 'c']],
+			{ a: { b: { c: REDACTED_TEXT, d: 1 } }, c: 1 },
+		],
+		[
+			'should match at any depth below a key when ** follows it',
+			{ a: { b: { c: 1 } }, c: 1 },
+			[['a', '**', 'c']],
+			{ a: { b: { c: REDACTED_TEXT } }, c: 1 },
+		],
+		[
+			'should apply every path when several paths are given',
+			{ a: 1, b: 1, c: 1 },
+			[['a'], ['b']],
+			{ a: REDACTED_TEXT, b: REDACTED_TEXT, c: 1 },
+		],
+		[
+			'should not drop an unmatched path when two paths match the same key',
+			{ a: 1, b: 1 },
+			[['a'], ['*', 'x'], ['b']],
+			{ a: REDACTED_TEXT, b: REDACTED_TEXT },
+		],
+		[
+			'should not count an array as a level when a path reaches one',
+			{ a: [{ b: 1 }, [{ b: 1 }]] },
+			[['a', 'b']],
+			{ a: [{ b: REDACTED_TEXT }, [{ b: REDACTED_TEXT }]] },
+		],
+		[
+			'should skip non-object items when a path reaches an array',
+			{ a: [null, 'x', { b: 1 }] },
+			[['a', 'b']],
+			{ a: [null, 'x', { b: REDACTED_TEXT }] },
+		],
+	])('%s', (_, input, keys, output) => {
+		expect(redactObject(input, { keys }, getRedactedString)).toEqual(output);
 	});
 
-	test('Returns other types as is', () => {
-		const values = [
-			undefined,
-			null,
-			0,
-			1,
-			true,
-			false,
-			'',
-			'abc',
-			[],
-			['123'],
-			{},
-			{ abc: '123' },
+	test('should leave the input unchanged when redacting', () => {
+		const input = { a: { b: 1 } };
+
+		redactObject(input, { keys: [['a', 'b']] }, getRedactedString);
+
+		expect(input).toEqual({ a: { b: 1 } });
+	});
+
+	test('should leave the keys unchanged when redacting', () => {
+		const keys = [['a'], ['*', 'b']];
+
+		redactObject({ a: 1, x: { b: 1 } }, { keys }, getRedactedString);
+
+		expect(keys).toEqual([['a'], ['*', 'b']]);
+	});
+});
+
+describe('values', () => {
+	test.each([
+		[
+			'should replace the value when it appears within a longer string',
+			{ a: 'because' },
+			{ cause: 'cause' },
+			{ a: 'be--redacted:cause--' },
+		],
+		[
+			'should replace the value when the string is nested in objects and arrays',
+			{ a: { b: ['cause'] } },
+			{ cause: 'cause' },
+			{ a: { b: ['--redacted:cause--'] } },
+		],
+		[
+			'should replace each value when several values are given',
+			{ a: 'cause', b: 'Error' },
+			{ cause: 'cause', ERROR: 'Error' },
+			{ a: '--redacted:cause--', b: '--redacted:ERROR--' },
+		],
+		[
+			'should leave the string unchanged when the value differs in case',
+			{ a: 'Cause' },
+			{ cause: 'cause' },
+			{ a: 'Cause' },
+		],
+		['should ignore the value when it is empty', { a: 'secret' }, { empty: '' }, { a: 'secret' }],
+		['should ignore the value when it is not a string', { a: '123456' }, { number: 123456 }, { a: '123456' }],
+		[
+			'should replace the value when it appears in an error message',
+			{ error: new Error('Invalid token s3cr3t') },
+			{ TOKEN: 's3cr3t' },
+			{ error: expect.objectContaining({ message: 'Invalid token --redacted:TOKEN--' }) },
+		],
+		[
+			'should replace the value literally when it contains a regex character (issue #24641)',
+			{ a: 'x)yMQt7ZNK3k' },
+			{ some_password: 'x)yMQt7ZNK3k' },
+			{ a: '--redacted:some_password--' },
+		],
+		[
+			'should replace the value literally when it is made up of regex characters (issue #24641)',
+			{ a: '^.+.*?^)(][}{|$' },
+			{ some_password: '^.+.*?^)(][}{|$' },
+			{ a: '--redacted:some_password--' },
+		],
+	])('%s', (_, input, values, output) => {
+		expect(redactObject(input, { values }, getRedactedString)).toEqual(output);
+	});
+});
+
+describe('getReplacer', () => {
+	const selfReference: Record<string, any> = { a: 1 };
+	selfReference['b'] = selfReference;
+
+	const nestedReference: Record<string, any> = { a: 1 };
+	nestedReference['b'] = { c: nestedReference };
+
+	const arrayReference: Record<string, any> = { a: 1 };
+	arrayReference['b'] = [arrayReference];
+
+	const ref = {};
+
+	test.each([
+		[
+			'should return the name, message, stack and cause when given an error',
+			new Error('Error Message', { cause: 'Error Cause' }),
+			{ name: 'Error', message: 'Error Message', stack: expect.any(String), cause: 'Error Cause' },
+		],
+		[
+			"should replace the reference with '[Circular]' when an object contains itself",
+			selfReference,
+			{ a: 1, b: '[Circular]' },
+		],
+		[
+			"should replace the reference with '[Circular]' when a nested object refers back to its parent",
+			nestedReference,
+			{ a: 1, b: { c: '[Circular]' } },
+		],
+		[
+			"should replace the reference with '[Circular]' when an array contains its parent",
+			arrayReference,
+			{ a: 1, b: ['[Circular]'] },
+		],
+		[
+			'should serialise each occurrence when the same object is referenced twice without a cycle',
+			{ a: ref, b: ref },
+			{ a: {}, b: {} },
+		],
+	])('%s', (_, input, output) => {
+		expect(JSON.parse(JSON.stringify(input, getReplacer(getRedactedString)))).toStrictEqual(output);
+	});
+
+	test.each([
+		['undefined', undefined],
+		['null', null],
+		['zero', 0],
+		['a number', 1],
+		['false', false],
+		['true', true],
+		['an empty string', ''],
+		['a string', 'abc'],
+		['an empty array', []],
+		['an array', ['123']],
+		['an empty object', {}],
+		['an object', { abc: '123' }],
+		[
+			'a function',
 			() => {
 				// empty
 			},
-		];
-
-		const replacer = getReplacer(getRedactedString);
-
-		for (const value of values) {
-			expect(replacer('', value)).toEqual(value);
-		}
-	});
-
-	test('Correctly parses object with circular structure when used with JSON.stringify()', () => {
-		const obj: Record<string, any> = {
-			a: 'foo',
-		};
-
-		obj['b'] = obj;
-		obj['c'] = { obj };
-		obj['d'] = [obj];
-
-		const expectedResult = {
-			a: 'foo',
-			b: '[Circular]',
-			c: { obj: '[Circular]' },
-			d: ['[Circular]'],
-		};
-
-		const result = JSON.parse(JSON.stringify(obj, getReplacer(getRedactedString)));
-
-		expect(result).toStrictEqual(expectedResult);
-	});
-
-	test('Correctly parses object with repeatedly occurring same refs', () => {
-		const ref = {};
-
-		const obj: Record<string, any> = {
-			a: ref,
-			b: ref,
-		};
-
-		const expectedResult = {
-			a: ref,
-			b: ref,
-		};
-
-		const result = JSON.parse(JSON.stringify(obj, getReplacer(getRedactedString)));
-
-		expect(result).toStrictEqual(expectedResult);
-	});
-
-	test('Correctly parses error object when used with JSON.stringify()', () => {
-		const errorMessage = 'Error Message';
-		const errorCause = 'Error Cause';
-
-		const baseValue = {
-			string: 'abc',
-			num: 123,
-			bool: true,
-			null: null,
-		};
-
-		const objWithError = {
-			...baseValue,
-			error: new Error(errorMessage, { cause: errorCause }),
-		};
-
-		const expectedResult = {
-			...baseValue,
-			error: { name: 'Error', message: errorMessage, cause: errorCause },
-		};
-
-		const result = JSON.parse(JSON.stringify(objWithError, getReplacer(getRedactedString)));
-
-		// Stack changes depending on env
-		expect(result.error.stack).toBeDefined();
-		delete result.error.stack;
-
-		expect(result).toStrictEqual(expectedResult);
-	});
-
-	test('Correctly redacts values when used with JSON.stringify()', () => {
-		const baseValue = {
-			num: 123,
-			bool: true,
-			null: null,
-			string_ignore: `No error Cause it's case sensitive~~`,
-		};
-
-		const objWithError = {
-			...baseValue,
-			string: `Replace cause case matches Errors~~`,
-			nested: { another_str: 'just because of safety 123456' },
-			nested_array: [{ str_a: 'cause surely' }, { str_b: 'not an Error' }, { str_ignore: 'nothing here' }],
-			array: ['something', 'no Error', 'just because', 'all is good'],
-			error: new Error('This is an Error message.', { cause: 'Here is an Error cause!' }),
-		};
-
-		const expectedResult = {
-			...baseValue,
-			string: `Replace ${getRedactedString('cause')} case matches ${getRedactedString('ERROR')}s~~`,
-			nested: { another_str: `just be${getRedactedString('cause')} of safety 123456` },
-			nested_array: [
-				{ str_a: `${getRedactedString('cause')} surely` },
-				{ str_b: `not an ${getRedactedString('ERROR')}` },
-				{ str_ignore: 'nothing here' },
-			],
-			array: ['something', `no ${getRedactedString('ERROR')}`, `just be${getRedactedString('cause')}`, 'all is good'],
-			error: {
-				name: getRedactedString('ERROR'),
-				message: `This is an ${getRedactedString('ERROR')} message.`,
-				cause: `Here is an ${getRedactedString('ERROR')} ${getRedactedString('cause')}!`,
-			},
-		};
-
-		const result = JSON.parse(
-			JSON.stringify(
-				objWithError,
-				getReplacer(getRedactedString, {
-					empty: '',
-					ERROR: 'Error',
-					cause: 'cause',
-					number: 123456,
-				}),
-			),
-		);
-
-		// Stack changes depending on env
-		expect(result.error.stack).toBeDefined();
-		delete result.error.stack;
-
-		expect(result).toStrictEqual(expectedResult);
-	});
-});
-
-describe('regex escape special characters (issue #24641)', () => {
-	test("escaping 'x)yMQt7ZNK3k'", () => {
-		const redactValues = {
-			some_password: 'x)yMQt7ZNK3k',
-		};
-
-		const result = redactObject(input, { values: redactValues }, getRedactedString);
-
-		expect(result).toEqual(
-			merge({}, input, {
-				exec_fm27u: {
-					$last: {
-						payload: {
-							secret: '--redacted:some_password--',
-						},
-					},
-				},
-			}),
-		);
-	});
-
-	test("escaping '^.+.*?^)(][}{|$'", () => {
-		const redactValues = {
-			some_password: '^.+.*?^)(][}{|$',
-		};
-
-		const result = redactObject(input, { values: redactValues }, getRedactedString);
-
-		expect(result).toEqual(
-			merge({}, input, {
-				exec_fm27u: {
-					$trigger: {
-						payload: {
-							secret: '--redacted:some_password--',
-						},
-					},
-				},
-			}),
-		);
+		],
+	])('should return the value as is when given %s', (_, input) => {
+		expect(getReplacer(getRedactedString)('', input)).toEqual(input);
 	});
 });

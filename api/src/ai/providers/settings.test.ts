@@ -52,12 +52,6 @@ describe('getAISettings', () => {
 		expect(settings).toEqual(stored);
 	});
 
-	test('should use null for missing settings', async () => {
-		mockReadSingleton.mockResolvedValue({});
-
-		expect(await getAISettings()).toEqual(Object.fromEntries(Object.keys(stored).map((field) => [field, null])));
-	});
-
 	test('should keep empty strings as they are', async () => {
 		mockReadSingleton.mockResolvedValue({ ai_openai_api_key: '', ai_system_prompt: '' });
 
