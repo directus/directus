@@ -1,9 +1,11 @@
 // @vitest-environment jsdom
+import { getSchema } from '@tiptap/core';
 import { Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test } from 'vitest';
+import { findMarkupLoss } from '../composables/markup-loss';
 import { computeValueNormalizationDiff, roundTrip } from '../composables/normalization-diff';
 import { htmlToElement } from './raw-html-sanitize';
-import { buildFieldSchema, editorExtensions } from './index';
+import { buildFieldSchema, editorExtensions, fieldEditorExtensions } from './index';
 
 const FA_ICON =
 	'<svg class="svg-inline--fa fa-arrow-up-right-from-square" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-up-right-from-square" role="img" xmlns="http://www.w3.org/2000/svg" data-fa-i2svg=""></svg>';
@@ -168,5 +170,143 @@ describe('paste', () => {
 		const instance = mount('');
 		instance.view.pasteHTML(`<p>x ${FA_ICON}</p>`, pasteEvent());
 		expect(instance.getHTML()).toBe(`<p>x ${FA_ICON}</p>`);
+	});
+});
+
+describe('form elements', () => {
+	const FORMS = buildFieldSchema({ keepFormElements: true }).extensions;
+
+	const SEARCH_FORM =
+		'<form action="/search" method="get" class="search-form" id="site-search"><label for="q">Search</label><input type="text" id="q" name="q" placeholder="Keywords" required=""><select name="scope"><option value="all" selected="">All</option></select><textarea name="note" rows="3"></textarea><button type="submit" name="go" value="go" formaction="/search/advanced">Go</button></form>';
+
+	function mountForms(content: string): Editor {
+		editor = new Editor({
+			element: document.createElement('div'),
+			extensions: fieldEditorExtensions(FORMS),
+			content,
+		});
+
+		return editor;
+	}
+
+	function types(content: string): string[] {
+		const names: string[] = [];
+		mountForms(content).state.doc.descendants((node) => void names.push(node.type.name));
+		return names;
+	}
+
+	test.each([
+		['form between paragraphs', `<p>a</p>${SEARCH_FORM}<p>b</p>`],
+		['button inline in text', '<p>Click <button type="button">here</button> now</p>'],
+		['input inline in text', '<p>Name <input type="text" name="full_name"></p>'],
+		['select inside a link', '<p><a href="/x"><select name="s"><option value="1">1</option></select></a></p>'],
+		['top-level loose input', '<p>a</p><input type="hidden" name="token" value="x">'],
+		[
+			'form inside a table cell',
+			`<table style="min-width: 25px;"><colgroup><col style="min-width: 25px;"></colgroup><tbody><tr><td colspan="1" rowspan="1">${SEARCH_FORM}</td></tr></tbody></table>`,
+		],
+	])('%s round-trips unchanged', (_n, html) => {
+		expect(roundTrip(html, FORMS)).toBe(html);
+		expect(computeValueNormalizationDiff(html, FORMS, 'forms')).toBeNull();
+	});
+
+	test('a form loses only the newlines elementFromString removes', () => {
+		const html = '<form action="/s">\n<input name="q">\n<button>Go</button>\n</form>';
+		expect(roundTrip(html, FORMS)).toBe('<form action="/s"><input name="q"><button>Go</button></form>');
+		expect(computeValueNormalizationDiff(html, FORMS, 'forms')).toBeNull();
+	});
+
+	test('without the option, a form is removed and shows the warning', () => {
+		expect(roundTrip(SEARCH_FORM)).not.toContain('<form');
+		expect(computeValueNormalizationDiff(SEARCH_FORM)).not.toBeNull();
+	});
+
+	test('a form is always a block, a loose control follows its context', () => {
+		expect(types(SEARCH_FORM)).toContain('rawHtmlBlock');
+		editor!.destroy();
+		expect(types(`<ul><li>${SEARCH_FORM}</li></ul>`)).not.toContain('rawHtmlInline');
+		editor!.destroy();
+		expect(types('<p>a <button>b</button></p>')).toContain('rawHtmlInline');
+		editor!.destroy();
+		expect(types('<button>b</button>')).toContain('rawHtmlBlock');
+	});
+
+	test('a form after text in a list item stays in the item', () => {
+		expect(roundTrip(`<ul><li>a${SEARCH_FORM}</li></ul>`, FORMS)).toBe(`<ul><li><p>a</p>${SEARCH_FORM}</li></ul>`);
+	});
+
+	// a list item must start with a paragraph, and ProseMirror moves a leading block out instead of adding one
+	test('a form that starts a list item is kept, and the move shows the warning', () => {
+		const html = `<ul><li>${SEARCH_FORM}</li></ul>`;
+		expect(roundTrip(html, FORMS)).toContain(SEARCH_FORM);
+		expect(computeValueNormalizationDiff(html, FORMS, 'forms')).not.toBeNull();
+	});
+
+	test('controls inside a form are part of the form', () => {
+		const instance = mountForms(SEARCH_FORM);
+		const chips = instance.view.dom.querySelectorAll('.raw-html');
+		expect(Array.from(chips, (c) => (c as HTMLElement).dataset['rawHtml'])).toEqual(['form']);
+		expect(instance.view.dom.querySelector('form, input, button, select, textarea')).toBeNull();
+	});
+
+	test.each([
+		['onsubmit', '<form action="/s" onsubmit="alert(1)"></form>', '<form action="/s"></form>'],
+		['javascript: action', '<form action="javascript:alert(1)"></form>', '<form></form>'],
+		[
+			'javascript: formaction',
+			'<form><button formaction="javascript:alert(1)">Go</button></form>',
+			'<form><button>Go</button></form>',
+		],
+		[
+			'onclick on a loose button',
+			'<button type="button" onclick="alert(1)">Go</button>',
+			'<button type="button">Go</button>',
+		],
+		['onfocus on a loose input', '<p>a <input onfocus="alert(1)" autofocus></p>', '<p>a <input></p>'],
+	])('removes %s', (_n, input, expected) => {
+		expect(roundTrip(input, FORMS)).toBe(expected);
+		expect(computeValueNormalizationDiff(input, FORMS, 'forms')).not.toBeNull();
+	});
+
+	test('adjacent controls share one inline context and keep the space between them', () => {
+		const html =
+			'<div class="buttons"><button type="button">Audio</button>\n        <button type="button">Video</button></div>';
+
+		const wrapped = buildFieldSchema({
+			keepFormElements: true,
+			keepWrapperElements: true,
+			noContainerParagraphs: true,
+		});
+
+		const out = roundTrip(html, wrapped.extensions);
+
+		expect(out).toBe(
+			'<div class="buttons"><button type="button">Audio</button> <button type="button">Video</button></div>',
+		);
+
+		expect(findMarkupLoss(html, out, getSchema(fieldEditorExtensions(wrapped.extensions)))).toEqual([]);
+	});
+
+	test.each([
+		['label beside its control', '<p><label for="q">Name</label> <input id="q" name="q"></p>'],
+		['label around its control', '<p><label>搜索<input type="search"></label></p>'],
+		['label with a form attribute', '<p><label for="q" form="f">Name</label></p>'],
+	])('%s round-trips unchanged', (_n, html) => {
+		expect(roundTrip(html, FORMS)).toBe(html);
+		expect(computeValueNormalizationDiff(html, FORMS, 'forms')).toBeNull();
+	});
+
+	test('label text stays editable', () => {
+		const instance = mountForms('<p><label for="q">Name</label></p>');
+		instance.chain().setTextSelection(3).insertContent('-').run();
+		expect(instance.getHTML()).toBe('<p><label for="q">Na-me</label></p>');
+	});
+
+	test('without the option, a label loses its for attribute', () => {
+		expect(roundTrip('<p><label for="q">Name</label></p>')).toBe('<p>Name</p>');
+	});
+
+	test('the option is part of the schema key', () => {
+		expect(buildFieldSchema({ keepFormElements: true }).key).not.toBe(buildFieldSchema({}).key);
 	});
 });

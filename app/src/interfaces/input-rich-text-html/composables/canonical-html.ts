@@ -1,4 +1,4 @@
-import { RAW_HTML_TAGS } from '../extensions/raw-html';
+import { FORM_TAGS, RAW_HTML_TAGS } from '../extensions/raw-html';
 
 export function parseBody(html: string): HTMLElement {
 	return new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html').body;
@@ -25,11 +25,11 @@ function sortElementAttributes(root: HTMLElement): void {
 // the same test Tiptap's elementFromString uses to drop whitespace text nodes before parsing
 const DROPPED_WHITESPACE = /^(\n\s\s|\n)$/;
 
-const RAW_HTML_SELECTOR = RAW_HTML_TAGS.join(', ');
+const RAW_HTML_SELECTOR = [...RAW_HTML_TAGS, ...FORM_TAGS].join(', ');
 
-// only inside svg and map: elsewhere such a newline can be the only gap between two words
-export function removeDroppedWhitespace(root: ParentNode): void {
-	for (const el of root.querySelectorAll(RAW_HTML_SELECTOR)) {
+// only inside elements a raw HTML node can keep: elsewhere such a newline can be the only gap between two words
+export function removeDroppedWhitespace(roots: Iterable<Element>): void {
+	for (const el of roots) {
 		const walker = el.ownerDocument.createTreeWalker(el, NodeFilter.SHOW_TEXT);
 		const dropped: Node[] = [];
 
@@ -43,7 +43,7 @@ export function removeDroppedWhitespace(root: ParentNode): void {
 
 export function canonicalHtml(html: string): string {
 	const root = parseBody(html);
-	removeDroppedWhitespace(root);
+	removeDroppedWhitespace(root.querySelectorAll(RAW_HTML_SELECTOR));
 	sortElementAttributes(root);
 	return root.innerHTML;
 }

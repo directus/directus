@@ -8,6 +8,8 @@ export interface RawHtmlSanitizeOptions {
 
 const purify = DOMPurify(window);
 
+const FORM_ATTRIBUTES = ['accept-charset', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget'];
+
 const LINK_TAGS = new Set(['a', 'area']);
 const HREF_ATTRIBUTES = new Set(['href', 'xlink:href']);
 
@@ -43,7 +45,8 @@ export function sanitizeRawHtml(html: string, options: RawHtmlSanitizeOptions): 
 		const clean = purify.sanitize(html, {
 			USE_PROFILES: { html: true, svg: true, svgFilters: true },
 			ADD_TAGS: ['use'],
-			ADD_ATTR: ['focusable', 'target'],
+			// DOMPurify drops a javascript: URI in any allowed attribute, so `formaction` is safe to add
+			ADD_ATTR: ['focusable', 'target', ...FORM_ATTRIBUTES],
 			...(options.keepInlineStyles ? {} : { FORBID_TAGS: ['style'], FORBID_ATTR: ['style'] }),
 		});
 

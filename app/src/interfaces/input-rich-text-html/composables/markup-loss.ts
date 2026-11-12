@@ -147,21 +147,21 @@ function parseRules(schema: Schema): Rules {
 	};
 }
 
-// a kept root (svg, map) is stored whole, so its descendants, non-content ones included, belong to it
+// a kept root (svg, map, form) is stored whole, so its descendants, non-content ones included, belong to it
 function parseContent(
 	html: string,
 	nonContent: string[],
 	rules: Rules,
 ): { body: HTMLElement; keptRoots: HTMLElement[] } {
 	const body = parseBody(html);
-	removeDroppedWhitespace(body);
-
 	const keptRoots: HTMLElement[] = [];
 
 	for (const el of Array.from(body.querySelectorAll<HTMLElement>('*'))) {
 		if (isInside(el, keptRoots)) continue;
 		if (RAW_HTML_NODE_NAMES.has(matchType(el, rules) ?? '')) keptRoots.push(el);
 	}
+
+	removeDroppedWhitespace(keptRoots);
 
 	for (const el of Array.from(body.querySelectorAll(nonContent.join(',')))) {
 		if (!isInside(el, keptRoots)) el.remove();
