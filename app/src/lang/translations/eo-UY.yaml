@@ -1247,6 +1247,15 @@ triggers:
   manual:
     name: Mana
 operations:
+  ai-image:
+    background: Fono
+    starting_points:
+      icon: Emblemo
+  ai-text:
+    files: Dosieroj
+    type_text: Teksto
+    view_fields: Kampoj
+    view_json: JSON
   condition:
     name: Kondiĉo
   item-create:
