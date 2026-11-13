@@ -1250,6 +1250,13 @@ triggers:
   webhook:
     method: Metoda
 operations:
+  ai-image:
+    starting_points:
+      icon: Ikonica
+  ai-text:
+    files: Fajlovi
+    type_text: Text
+    view_json: JSON
   json-web-token:
     token: Token
     options: Opcije
