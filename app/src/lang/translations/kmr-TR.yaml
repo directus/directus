@@ -2345,6 +2345,16 @@ a_flow_uuid: Herikînekê hilbijêre ji bo tetîkkirinê...
 any_string_or_json: Her rêzek an JSON...
 item_payload_placeholder: Ev e JSONa ku tê bikaranîn ji bo nûkirina nirxên qadê yên hêmanê...
 operations:
+  ai-image:
+    background: Paş
+    emit_events: Bûyeran Derxe
+    starting_points:
+      icon: Îkon
+  ai-text:
+    files: Pel
+    type_text: Nivîs
+    view_fields: Qad
+    view_json: JSON
   condition:
     name: Merc
   exec:
