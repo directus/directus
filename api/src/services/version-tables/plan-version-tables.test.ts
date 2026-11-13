@@ -123,8 +123,6 @@ describe('planVersionTables', () => {
 		const tables = planShadowTables(collections, new Set(['articles']));
 		const shadow = tables['directus_shadow_articles']!;
 
-		console.log(tables);
-
 		expect(shadow.columns.map((column) => column.name)).not.toContain('version_ref_author');
 	});
 
