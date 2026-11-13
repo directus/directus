@@ -7,7 +7,7 @@ mocking patterns across service tests.
 
 This directory contains mock implementations for commonly used modules in service tests:
 
-- **[knex.ts](#knexts)** - Knex instance, query tracker, and schema builder mocks
+- **[knex.ts](#knexts)** - Knex instance, query tracker, and schema builder mocks, and SQL formatting for snapshots
 - **[database.ts](#databasets)** - Database client and transaction mocks
 - **[cache.ts](#cachets)** - Cache system mocks
 - **[schema.ts](#schemats)** - Schema inspector mocks
@@ -187,6 +187,52 @@ db.schema.table = schemaTableSpy as any;
 await db.schema.table('users', (table) => {
 	table.dropColumn('old_field');
 });
+```
+
+#### `formatSql(sql, language?)`
+
+Formats SQL captured by the tracker, so snapshots of generated queries are readable. Clauses and columns get their own
+line and subqueries are indented. Throws if formatting would change more than whitespace, so snapshots always show the
+exact query. Uses the PostgreSQL dialect by default, as mock clients quote identifiers with double quotes.
+
+**Example:**
+
+```typescript
+const { db, tracker } = createMockKnex();
+
+await db.select('id').from('articles').where('status', 'published');
+
+const [query] = tracker.history.select;
+
+expect(formatSql(query!.sql)).toMatchInlineSnapshot(`
+	"select
+	  "id"
+	from
+	  "articles"
+	where
+	  "status" = ?"
+`);
+
+expect(query!.bindings).toEqual(['published']);
+```
+
+#### `createMockDialectKnex(vendor)`
+
+Creates a knex instance that compiles queries, including schema changes, with the real dialect of a vendor (`postgres`,
+`mysql`, `mssql`, `sqlite` or `oracle`) and runs them against a knex-mock-client tracker. The client keeps the class
+name of the real dialect, so `getDatabaseClient` and the database helpers behave as for that vendor. Also returns the
+`formatSql` language of the vendor.
+
+**Example:**
+
+```typescript
+const { db, tracker, language } = createMockDialectKnex('mysql');
+
+tracker.on.any(() => true).response([]);
+
+await db.schema.createTable('articles', (table) => table.increments('id'));
+
+expect(formatSql(tracker.history.all[0]!.sql, language)).toMatchInlineSnapshot();
 ```
 
 ---

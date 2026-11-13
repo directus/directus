@@ -27,8 +27,9 @@ import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
-import { transaction } from '../utils/transaction.js';
+import { stitchRelations } from '../utils/stitch-relations.js';
 import { ItemsService } from './items.js';
+import { runSchemaChange } from './version-tables/run-schema-change.js';
 
 const { CACHE_SCHEMA } = useEnv();
 
@@ -127,7 +128,7 @@ export class RelationsService {
 			schemaRows = schemaRows.filter((row) => row.table === collection);
 		}
 
-		const results = this.stitchRelations(metaRows, schemaRows);
+		const results = stitchRelations(metaRows, schemaRows);
 		return await this.filterForbidden(results);
 	}
 
@@ -175,7 +176,7 @@ export class RelationsService {
 
 		const schemaRow = (await this.foreignKeys(collection)).find((foreignKey) => foreignKey.column === field);
 
-		const stitched = this.stitchRelations(metaRow, schemaRow ? [schemaRow] : []);
+		const stitched = stitchRelations(metaRow, schemaRow ? [schemaRow] : []);
 		const results = await this.filterForbidden(stitched);
 
 		if (results.length === 0) {
@@ -237,7 +238,6 @@ export class RelationsService {
 			});
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		this.helpers.schema.preRelationChange(relation);
 
 		const nestedActionEvents: ActionEventParams[] = [];
@@ -250,7 +250,7 @@ export class RelationsService {
 				one_collection: relation.related_collection || null,
 			};
 
-			await transaction(this.knex, async (trx) => {
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
 				if (relation.related_collection) {
 					await trx.schema.alterTable(relation.collection!, (table) => {
 						this.alterType(table, relation, fieldSchema.nullable);
@@ -285,12 +285,10 @@ export class RelationsService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 				});
+
+				change.sync([relation.collection!]);
 			});
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
@@ -344,8 +342,6 @@ export class RelationsService {
 			});
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
-
 		const updatedSchema = relation.schema ? { ...existingRelation.schema, ...relation.schema } : null;
 
 		const updatedRelation: Partial<Relation> = {
@@ -361,7 +357,7 @@ export class RelationsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await transaction(this.knex, async (trx) => {
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
 				if (updatedSchema && existingRelation.related_collection) {
 					await trx.schema.alterTable(collection, (table) => {
 						let constraintName: string = getDefaultIndexName('foreign', collection, field);
@@ -427,12 +423,10 @@ export class RelationsService {
 						);
 					}
 				}
+
+				change.sync([collection]);
 			});
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
@@ -474,12 +468,12 @@ export class RelationsService {
 			});
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await transaction(this.knex, async (trx) => {
-				const existingConstraints = await this.foreignKeys();
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
+				// Read through the transaction, SQLite only has a single connection which the transaction holds
+				const existingConstraints = await createInspector(trx).foreignKeys(existingRelation.collection);
 				const constraintNames = existingConstraints.map((key) => key.constraint_name);
 
 				if (
@@ -494,6 +488,8 @@ export class RelationsService {
 				if (existingRelation.meta) {
 					await trx('directus_relations').delete().where({ many_collection: collection, many_field: field });
 				}
+
+				change.sync([collection]);
 
 				const actionEvent = {
 					event: 'relations.delete',
@@ -515,10 +511,6 @@ export class RelationsService {
 				}
 			});
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
@@ -532,49 +524,6 @@ export class RelationsService {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Combine raw schema foreign key information with Directus relations meta rows to form final
-	 * Relation objects
-	 */
-	private stitchRelations(metaRows: RelationMeta[], schemaRows: ForeignKey[]) {
-		const results = schemaRows.map((foreignKey): Relation => {
-			return {
-				collection: foreignKey.table,
-				field: foreignKey.column,
-				related_collection: foreignKey.foreign_key_table,
-				schema: foreignKey,
-				meta:
-					metaRows.find((meta) => {
-						if (meta.many_collection !== foreignKey.table) return false;
-						if (meta.many_field !== foreignKey.column) return false;
-						if (meta.one_collection && meta.one_collection !== foreignKey.foreign_key_table) return false;
-						return true;
-					}) || null,
-			};
-		});
-
-		/**
-		 * Meta rows that don't have a corresponding schema foreign key
-		 */
-		const remainingMetaRows = metaRows
-			.filter((meta) => {
-				return !results.find((relation) => relation.meta === meta);
-			})
-			.map((meta): Relation => {
-				return {
-					collection: meta.many_collection,
-					field: meta.many_field,
-					related_collection: meta.one_collection ?? null,
-					schema: null,
-					meta: meta,
-				};
-			});
-
-		results.push(...remainingMetaRows);
-
-		return results;
 	}
 
 	/**

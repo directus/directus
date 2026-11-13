@@ -232,6 +232,7 @@
 		"get-port": "catalog:",
 		"knex-mock-client": "catalog:",
 		"native-copyfiles": "catalog:",
+		"sql-formatter": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
