@@ -1,3 +1,4 @@
+import CustomIconAiMagic from './custom-icons/ai_magic.vue';
 import CustomIconBookmarkSave from './custom-icons/bookmark_save.vue';
 import CustomIconBox from './custom-icons/box.vue';
 import CustomIconCommitNode from './custom-icons/commit_node.vue';
@@ -52,6 +53,7 @@ export const components: Record<string, any> = {
 	CustomIconFolderMove,
 	CustomIconFolderLock,
 	CustomIconFunctionF,
+	CustomIconAiMagic,
 	CustomIconLogoAnthropic,
 	CustomIconLogoCustomProvider,
 	CustomIconLogoGoogle,
