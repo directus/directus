@@ -136,6 +136,28 @@ describe('Operations / AI Image', () => {
 		expect(generateImage).toHaveBeenCalledWith(expect.objectContaining({ aspectRatio: '9:16', providerOptions: {} }));
 	});
 
+	test('sends OpenRouter models an aspect ratio, one image per request, and no OpenAI options', async () => {
+		await config.handler(
+			{
+				model: 'openrouter:openai/gpt-image-2.6-flare',
+				prompt: 'A logo',
+				aspectRatio: '16:9',
+				count: 2,
+				quality: 'high',
+				transparent: true,
+			},
+			context,
+		);
+
+		expect(resolveImageModel).toHaveBeenCalledWith('openrouter', 'openai/gpt-image-2.6-flare', {});
+
+		expect(generateImage).toHaveBeenCalledWith(
+			expect.objectContaining({ aspectRatio: '16:9', n: 2, maxImagesPerCall: 1, providerOptions: {} }),
+		);
+
+		expect(generateImage).toHaveBeenCalledWith(expect.not.objectContaining({ size: expect.anything() }));
+	});
+
 	test('sends OpenAI quality and transparency', async () => {
 		await config.handler(
 			{ model: 'openai:gpt-image-2.5-flare', prompt: 'A logo', quality: 'high', transparent: true },

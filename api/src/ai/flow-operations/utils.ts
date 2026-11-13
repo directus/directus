@@ -69,6 +69,10 @@ export function toOperationError(error: unknown, provider: ProviderType): unknow
 		return new ServiceUnavailableError({ service: provider, reason: 'The provider refused the API key' });
 	}
 
+	if (status === 402) {
+		return new ServiceUnavailableError({ service: provider, reason: 'The provider account is out of credits' });
+	}
+
 	if (status === 429) {
 		return new ServiceUnavailableError({
 			service: provider,

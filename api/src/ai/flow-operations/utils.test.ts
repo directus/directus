@@ -94,6 +94,7 @@ describe('toOperationError', () => {
 	test.each([
 		[400, InvalidPayloadError, 'rejected the request (HTTP 400)'],
 		[401, ServiceUnavailableError, 'refused the API key'],
+		[402, ServiceUnavailableError, 'out of credits'],
 		[429, ServiceUnavailableError, 'limiting requests'],
 		[503, ServiceUnavailableError, 'failed (HTTP 503)'],
 		[undefined, ServiceUnavailableError, "couldn't be reached"],

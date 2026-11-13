@@ -29,6 +29,12 @@ describe('getImageSizeSetting', () => {
 		expect(getImageSizeSetting('openai', 'gpt-image-2.5-flare', '1:8')).toEqual({ size: '864x1536' });
 	});
 
+	it('sends an aspect ratio for OpenRouter, including OpenAI models routed through it', () => {
+		expect(getImageSizeSetting('openrouter', 'openai/gpt-image-2.6-flare', '16:9')).toEqual({ aspectRatio: '16:9' });
+		expect(getImageSizeSetting('openrouter', 'some/new-model', '7:3')).toEqual({ aspectRatio: '21:9' });
+		expect(getImageSizeSetting('openrouter', 'some/new-model', '8:1')).toEqual({ aspectRatio: '21:9' });
+	});
+
 	it('sends an aspect ratio for Google', () => {
 		expect(getImageSizeSetting('google', 'gemini-nano-banana-2.1', '8:1')).toEqual({ aspectRatio: '8:1' });
 		expect(getImageSizeSetting('google', 'gemini-nano-banana-2.1', '7:3')).toEqual({ aspectRatio: '21:9' });
@@ -42,6 +48,7 @@ describe('getSupportedAspectRatios', () => {
 		);
 
 		expect(getSupportedAspectRatios('google', 'gemini-9-image')).toContain('1:8');
+		expect(getSupportedAspectRatios('openrouter', 'some/new-model')).not.toContain('1:8');
 	});
 });
 
@@ -51,6 +58,11 @@ describe('getMaxImagesPerCall', () => {
 		expect(getMaxImagesPerCall('google', 'gemini-9-image')).toBe(1);
 	});
 
+	it('limits OpenRouter models to one image per request', () => {
+		expect(getMaxImagesPerCall('openrouter', 'black-forest-labs/flux-3-image')).toBe(1);
+		expect(getMaxImagesPerCall('openrouter', 'some/new-model')).toBe(1);
+	});
+
 	it("leaves other models at the provider's limit", () => {
 		expect(getMaxImagesPerCall('openai', 'gpt-image-2.5-flare')).toBeUndefined();
 	});
@@ -58,12 +70,8 @@ describe('getMaxImagesPerCall', () => {
 
 describe('isImageProviderType', () => {
 	it('accepts only providers with image models', () => {
-		expect(['openai', 'google', 'anthropic', 'openai-compatible', 'other'].map(isImageProviderType)).toEqual([
-			true,
-			true,
-			false,
-			false,
-			false,
-		]);
+		expect(
+			['openai', 'google', 'openrouter', 'anthropic', 'openai-compatible', 'other'].map(isImageProviderType),
+		).toEqual([true, true, true, false, false, false]);
 	});
 });

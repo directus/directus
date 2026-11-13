@@ -3395,10 +3395,11 @@ operations:
     file_title_note: Defaults to "AI image". Multiple images are numbered.
     aspect_ratio_reference_note: Match reference image uses the shape of the first reference image.
     description: Generate images with an AI model and save them to Files
-    no_providers: No image providers configured. Add an OpenAI or Google API key in Settings → AI.
+    no_providers: No image providers configured. Add an OpenAI, Google, or OpenRouter API key in Settings → AI.
     prompt_placeholder: Describe the image you want
     reference_images: Reference Images
-    reference_images_note: Optional. The model edits or combines these instead of starting from scratch.
+    reference_images_note:
+      Optional. The model edits or combines these instead of starting from scratch. Some OpenRouter models ignore them.
     reference_images_placeholder: File IDs or {'{'}{'{'}$trigger.key{'}'}{'}'}
     choose_files_disabled: 'Images come from flow data. Clear the value to pick images from the library.'
     aspect_ratio_note: Only the ratios this model supports are listed.

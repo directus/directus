@@ -56,7 +56,7 @@ export default defineOperationApi<Options>({
 		const { provider, model: modelId } = parseModelKey(options.model);
 
 		if (!isImageProviderType(provider)) {
-			throw new InvalidPayloadError({ reason: `Image generation supports OpenAI and Google models` });
+			throw new InvalidPayloadError({ reason: `Image generation supports OpenAI, Google, and OpenRouter models` });
 		}
 
 		const prompt = readPrompt(options.prompt);

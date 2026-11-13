@@ -2,15 +2,17 @@
 import { AI_IMAGE_REFERENCE_MIME_TYPES, DEFAULT_ASPECT_RATIO } from '@directus/ai';
 import type { Field } from '@directus/types';
 import { omit } from 'lodash-es';
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { applyModelLimits, getFields } from './fields';
 import { IMAGE_STARTING_POINTS } from './starting-points';
 import AiStartingPoints from '@/ai/components/ai-starting-points.vue';
+import { fetchOpenRouterModels, type OpenRouterImageModel } from '@/ai/utils/openrouter-models';
 import { applyFormValues, mergeFileIds } from '@/ai/utils/operation-options';
 import VButton from '@/components/v-button.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { useServerStore } from '@/stores/server';
 import { translate } from '@/utils/translate-object-values';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 
@@ -32,7 +34,23 @@ const values = computed<Record<string, any>>(() => ({
 	...props.value,
 }));
 
-const fields = computed(() => translate(getFields(values.value)) as Field[]);
+const openRouterModels = ref<OpenRouterImageModel[]>([]);
+
+if (useServerStore().info.ai_providers?.includes('openrouter')) {
+	fetchOpenRouterModels('image').then(async (models) => {
+		// Snap a saved ratio the model doesn't list before the dropdown sees the narrower choices, or it clears it
+		const next = applyModelLimits(values.value, models);
+
+		if (props.value && next['aspectRatio'] !== values.value['aspectRatio']) {
+			emit('input', { ...props.value, aspectRatio: next['aspectRatio'] });
+			await nextTick();
+		}
+
+		openRouterModels.value = models;
+	});
+}
+
+const fields = computed(() => translate(getFields(values.value, openRouterModels.value)) as Field[]);
 const promptFields = computed(() => fields.value.filter((f) => ['model', 'prompt'].includes(f.field!)));
 const referenceFields = computed(() => fields.value.filter((f) => f.field === 'referenceImages'));
 
@@ -59,7 +77,7 @@ function update(patch: Record<string, any>) {
 }
 
 function commit(next: Record<string, any>) {
-	emit('input', applyModelLimits(next));
+	emit('input', applyModelLimits(next, openRouterModels.value));
 }
 
 function updateFromForm(formFields: Field[], formValues: Record<string, any>) {
