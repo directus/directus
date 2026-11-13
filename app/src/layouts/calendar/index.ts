@@ -9,6 +9,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import Color from 'color';
 import { format, formatISO, isValid, parse } from 'date-fns';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -70,6 +71,10 @@ export default defineLayout<LayoutOptions>({
 			}),
 		);
 
+		const colorFields = computed(() =>
+			fieldsInCollection.value.filter((field: Field) => field.meta?.interface === 'select-color'),
+		);
+
 		const calendarFilter = computed(() => {
 			if (!calendar.value || !startDateField.value) {
 				return null;
@@ -110,6 +115,12 @@ export default defineLayout<LayoutOptions>({
 			return fieldsInCollection.value.find((field: Field) => field.field === endDateField.value);
 		});
 
+		const colorField = syncRefProperty(layoutOptions, 'colorField', undefined);
+
+		const colorFieldInfo = computed(() => {
+			return colorFields.value.find((field: Field) => field.field === colorField.value);
+		});
+
 		const firstDay = syncRefProperty(layoutOptions, 'firstDay', undefined);
 
 		const queryFields = computed(() => {
@@ -119,6 +130,7 @@ export default defineLayout<LayoutOptions>({
 			if (template.value) fields.push(...getFieldsFromTemplate(template.value));
 			if (startDateField.value) fields.push(startDateField.value);
 			if (endDateField.value) fields.push(endDateField.value);
+			if (colorFieldInfo.value) fields.push(colorFieldInfo.value.field);
 
 			return [...fields, ...adjustFieldsForDisplays(fields, collection.value!)];
 		});
@@ -286,8 +298,10 @@ export default defineLayout<LayoutOptions>({
 			filterWithCalendarView,
 			template,
 			dateFields,
+			colorFields,
 			startDateField,
 			endDateField,
+			colorField,
 			firstDay,
 			showingCount,
 			createCalendar,
@@ -376,6 +390,7 @@ export default defineLayout<LayoutOptions>({
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,
+				...getEventStyling(item, colorFieldInfo.value?.field),
 				className: selection.value.includes(eventId) ? 'selected' : undefined,
 			};
 		}
@@ -398,3 +413,42 @@ export default defineLayout<LayoutOptions>({
 		}
 	},
 });
+
+const textColorCache = new Map<string, string | null>();
+
+function getContrastTextColor(color: string): string | null {
+	if (textColorCache.has(color)) return textColorCache.get(color)!;
+
+	let textColor: string | null = null;
+
+	try {
+		const parsed = Color(color);
+		const alpha = parsed.alpha();
+		const onLight = Color('#ffffff').mix(parsed.alpha(1), alpha).isDark();
+		const onDark = Color('#000000').mix(parsed.alpha(1), alpha).isDark();
+
+		// Translucent colors whose contrast depends on the page background fall back to the theme foreground
+		if (onLight === onDark) textColor = onLight ? '#ffffff' : '#000000';
+		else textColor = 'var(--theme--foreground)';
+	} catch {
+		// unparseable color
+	}
+
+	textColorCache.set(color, textColor);
+	return textColor;
+}
+
+export function getEventStyling(
+	item: Record<string, any>,
+	colorField?: string | null,
+): { color?: string; textColor?: string; display?: 'block' } {
+	const color = colorField ? item[colorField] : undefined;
+
+	if (typeof color !== 'string' || !color) return {};
+
+	const textColor = getContrastTextColor(color);
+
+	if (!textColor) return {};
+
+	return { color, textColor, display: 'block' };
+}
