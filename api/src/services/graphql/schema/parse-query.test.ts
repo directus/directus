@@ -511,6 +511,50 @@ describe('parseFields', () => {
 			contents: { item__ComponentText: { _alias: { a: 'cover_image', b: 'cover_image' } } },
 		});
 	});
+
+	test('should key the deep query of an aliased M2A field by its alias', async () => {
+		const { filterReplaceM2ADeep } = await import('../utils/filter-replace-m2a.js');
+
+		const actual = await vi.importActual<typeof import('../utils/filter-replace-m2a.js')>(
+			'../utils/filter-replace-m2a.js',
+		);
+
+		vi.mocked(filterReplaceM2ADeep).mockImplementationOnce(actual.filterReplaceM2ADeep);
+
+		const selections = [
+			buildField('contents', {
+				children: [
+					buildField('item', {
+						alias: 'block',
+						children: [
+							buildInlineFragment('ComponentText', [
+								buildField('translations', { args: [buildArgument('limit', 1)], children: [buildField('id')] }),
+								buildField('cover_image', { alias: 'coverImage', children: [buildField('id')] }),
+							]),
+						],
+					}),
+				],
+			}),
+		];
+
+		const query = await getQuery({}, pageM2ASchema, selections, mockVariableValues, mockAccountability, 'Page');
+
+		expect(query.fields).toEqual([
+			'contents.block:ComponentText.translations.id',
+			'contents.block:ComponentText.coverImage.id',
+		]);
+
+		// get-ast-from-query looks the deep up as `${fieldKey}:${collection}`, where fieldKey is the alias
+		expect(query.deep).toEqual({
+			contents: {
+				_alias: { block: 'item' },
+				'block:ComponentText': {
+					translations: { _limit: 1 },
+					_alias: { coverImage: 'cover_image' },
+				},
+			},
+		});
+	});
 });
 
 /**
