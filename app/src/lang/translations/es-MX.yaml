@@ -697,6 +697,8 @@ file_moved: Archivo movido
 collection_created: Colección creada
 modified_on: Modificado el
 card_size: Tamaño de tarjeta
+small: Pequeño
+large: Grande
 sort_field: Ordenar campo
 add_sort_field: Añadir campo de ordenación
 sort: Ordenar
@@ -1621,6 +1623,7 @@ forgot_password: He olvidado mi Contraseña
 hidden: Oculto
 hidden_in_group: Escondido en {group}
 icon: Ícono
+image: Imagen
 info: Información
 normal: Normal
 success: Éxito
@@ -1913,6 +1916,8 @@ interfaces:
   select-radio:
     radio-buttons: Botones de radio
     description: Seleccione una de las múltiples opciones
+  system-file-image:
+    image: Imagen
   list:
     repeater: Repetidor
     description: Crear múltiples entradas con la misma estructura
@@ -2371,6 +2376,16 @@ a_flow_uuid: Seleccione un flujo para disparar...
 any_string_or_json: Alguna cadena o JSON...
 item_payload_placeholder: Este es el JSON usado para actualizar los valores del campo del elemento...
 operations:
+  ai-image:
+    background: Fondo
+    emit_events: Emitir eventos
+    starting_points:
+      icon: Ícono
+  ai-text:
+    files: Archivos
+    type_text: Texto
+    view_fields: Campos
+    view_json: JSON
   condition:
     name: Condición
   exec:

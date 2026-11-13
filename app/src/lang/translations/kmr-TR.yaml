@@ -677,6 +677,8 @@ file_moved: Pel Hat Veguhastin
 collection_created: Koleksiyon Hate Afirandin
 modified_on: Guherti di
 card_size: Mezinahiya Kartê
+small: Biçûk
+large: Mezin
 sort_field: Qada Rêzkirinê
 add_sort_field: Qada Rêzkirinê Zêde Bike
 sort: Rêz Bike
@@ -1594,6 +1596,7 @@ forgot_password: Şîfre Hate Jibîrkirin
 hidden: Veşartî
 hidden_in_group: Di {group} de veşartî
 icon: Îkon
+image: Wêne
 info: Agahî
 normal: Asayî
 success: Serkeftî
@@ -1884,6 +1887,8 @@ interfaces:
   select-radio:
     radio-buttons: Bişkokên Radyoyê
     description: Yek ji çend bijaran hilbijêre
+  system-file-image:
+    image: Wêne
   list:
     repeater: Dubareker
     description: Çend têketinên heman şêweyî biafirîne
@@ -2340,6 +2345,16 @@ a_flow_uuid: Herikînekê hilbijêre ji bo tetîkkirinê...
 any_string_or_json: Her rêzek an JSON...
 item_payload_placeholder: Ev e JSONa ku tê bikaranîn ji bo nûkirina nirxên qadê yên hêmanê...
 operations:
+  ai-image:
+    background: Paş
+    emit_events: Bûyeran Derxe
+    starting_points:
+      icon: Îkon
+  ai-text:
+    files: Pel
+    type_text: Nivîs
+    view_fields: Qad
+    view_json: JSON
   condition:
     name: Merc
   exec:

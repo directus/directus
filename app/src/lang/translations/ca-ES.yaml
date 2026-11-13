@@ -1237,6 +1237,7 @@ forgot_password: He oblidat la contrasenya
 hidden: Amagat
 hidden_in_group: Amagat al {group}
 icon: Icona
+image: Imatge
 info: Informació
 normal: Normal
 success: Èxit
@@ -1490,6 +1491,8 @@ interfaces:
   select-radio:
     radio-buttons: Botons de selecció
     description: Selecciona una de múltiples opcions
+  system-file-image:
+    image: Imatge
   list:
     repeater: Repetidor
     description: Crea múltiples entrades de la mateixa estructura
@@ -1735,6 +1738,14 @@ triggers:
   webhook:
     method: Mètode
 operations:
+  ai-image:
+    starting_points:
+      icon: Icona
+  ai-text:
+    files: Arxius
+    type_text: Text
+    view_fields: Camps
+    view_json: JSON
   item-create:
     payload: Càrrega
   item-update:

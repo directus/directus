@@ -835,6 +835,8 @@ file_moved: Datei verschoben
 collection_created: Sammlung erstellt
 modified_on: Geändert am
 card_size: Kartengröße
+small: Klein
+large: Groß
 sort_field: Sortierfeld
 add_sort_field: Sortierfeld hinzufügen
 add_to_ai_context: Zum AI-Kontext hinzufügen
@@ -2032,6 +2034,8 @@ show_more: Mehr anzeigen
 show_less: Weniger anzeigen
 retry: Erneut versuchen
 ai:
+  flow_operations:
+    model: Modell
   thinking: Nachdenken...
   input: Eingabe
   output: Ausgabe
@@ -2204,6 +2208,7 @@ forgot_password: Passwort vergessen
 hidden: Ausgeblendet
 hidden_in_group: Versteckt in {group}
 icon: Symbol
+image: Bild
 info: Information
 normal: Normal
 success: Erfolgreich
@@ -2515,6 +2520,8 @@ interfaces:
   select-radio:
     radio-buttons: Radio-Buttons
     description: Eine von mehreren Optionen auswählen
+  system-file-image:
+    image: Bild
   list:
     repeater: Repeater
     description: Mehrere Einträge derselben Struktur erstellen
@@ -3024,6 +3031,19 @@ any_string_or_json: Ein String oder JSON...
 item_payload_placeholder: Dies ist der JSON-Wert um die Feldwerte des Elements zu aktualisieren...
 operation_variables_note: Sie können auf Flow-Daten mit Variablen wie **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** und **{'{'}{'{'}$accountability{'}'}{'}'}** zugreifen oder mit **{'{'}{'{'}operation_key{'}'}{'}'}** auf frühere Operationen verweisen.
 operations:
+  ai-image:
+    background: Hintergrund
+    emit_events: Event auslösen
+    starting_points:
+      icon: Symbol
+  ai-text:
+    files: Dateien
+    output: Ausgabe
+    type_text: Text
+    view_fields: Felder
+    view_json: JSON
+    starting_points:
+      translate: Übersetzen
   condition:
     name: Kondition
     description: Leiten eines Flows basierend auf If / Else Logik

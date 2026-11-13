@@ -151,6 +151,8 @@ triggers:
   webhook:
     method: পদ্ধতি
 operations:
+  ai-text:
+    type_text: পাঠ্য
   log:
     message: বার্তা
   notification:

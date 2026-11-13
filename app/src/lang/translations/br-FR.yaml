@@ -809,6 +809,7 @@ file_library: Teuliaoueg
 forgot_password: Ger-tremen disoñjet
 hidden: Kuzhet
 icon: Arlun
+image: Skeudenn
 info: Titouroù
 success: Graet eo
 warning: Diwall
@@ -974,6 +975,8 @@ interfaces:
   select-radio:
     radio-buttons: Boutonoù radio
     description: Dibab unan eus ar choazoù kinniget
+  system-file-image:
+    image: Skeudenn
   list:
     repeater: Adkaser
     description: Krouiñ meur a ebarzh evit ar memes framm
@@ -1186,6 +1189,12 @@ panels:
   label:
     name: Tikedenn
 operations:
+  ai-image:
+    starting_points:
+      icon: Arlun
+  ai-text:
+    files: Restroù
+    type_text: Testenn
   json-web-token:
     options: Arventennoù
   mail:

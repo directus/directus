@@ -789,6 +789,8 @@ file_moved: Файл перемещён
 collection_created: Коллекция создана
 modified_on: Дата изменения
 card_size: Размер карточки
+small: Маленький
+large: Большой
 sort_field: Поле сортировки
 add_sort_field: Добавить поле сортировки
 sort: Сортировать
@@ -1766,6 +1768,7 @@ forgot_password: Забыли пароль
 hidden: Скрыто
 hidden_in_group: Скрыто в {group}
 icon: Иконка
+image: Изображение
 info: Инфо
 normal: Нормальный
 success: Успех
@@ -2058,6 +2061,8 @@ interfaces:
   select-radio:
     radio-buttons: Радиокнопки
     description: Выбор одного из нескольких вариантов
+  system-file-image:
+    image: Изображение
   list:
     repeater: Повторитель
     description: Создать несколько записей одной структуры
@@ -2514,6 +2519,16 @@ a_flow_uuid: Выберите процесс для запуска...
 any_string_or_json: Любая строка или JSON...
 item_payload_placeholder: Это JSON, используемый для обновления значений полей элемента...
 operations:
+  ai-image:
+    background: Фон
+    emit_events: Генерировать события
+    starting_points:
+      icon: Иконка
+  ai-text:
+    files: Файлы
+    type_text: Текст
+    view_fields: Поля
+    view_json: JSON
   condition:
     name: Условие
   exec:

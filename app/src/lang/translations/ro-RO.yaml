@@ -1285,6 +1285,7 @@ file_library: Bibliotecă de fișiere
 forgot_password: Am uitat parola
 hidden: Ascuns
 icon: Pictogramă
+image: Imagine
 info: Info
 normal: Normal
 success: Succes
@@ -1526,6 +1527,8 @@ interfaces:
   select-radio:
     radio-buttons: Butoane radio
     description: Selectați una dintre mai multe opțiuni
+  system-file-image:
+    image: Imagine
   list:
     repeater: Repetator
     description: Creează mai multe intrări ale aceleiași structuri
@@ -1824,6 +1827,15 @@ triggers:
   webhook:
     method: Metodă
 operations:
+  ai-image:
+    background: Fundal
+    starting_points:
+      icon: Pictogramă
+  ai-text:
+    files: Fişiere
+    type_text: Text
+    view_fields: Câmpuri
+    view_json: JSON
   json-web-token:
     token: Token
     options: Opţiuni

@@ -785,6 +785,8 @@ file_moved: Fichier déplacé
 collection_created: Collection créée
 modified_on: Modifié le
 card_size: Taille de tuile
+small: Petit
+large: Grande
 sort_field: Champ de tri
 add_sort_field: Ajouter un champ de tri
 add_to_ai_context: Ajouter au contexte IA
@@ -1780,6 +1782,7 @@ forgot_password: Mot de passe oublié
 hidden: Masqué
 hidden_in_group: Masqué dans {group}
 icon: Icône
+image: Image
 info: Information
 normal: Normal
 success: Succès
@@ -2072,6 +2075,8 @@ interfaces:
   select-radio:
     radio-buttons: Boutons radio
     description: Sélectionner l'un des choix proposés
+  system-file-image:
+    image: Image
   list:
     repeater: Répéteur
     description: Créer plusieurs entrées de la même structure
@@ -2527,6 +2532,16 @@ a_flow_uuid: Choisir un flux à exécuter...
 any_string_or_json: Toute chaîne de caractères ou JSON...
 item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
 operations:
+  ai-image:
+    background: Couleur de fond
+    emit_events: Émettre des événements
+    starting_points:
+      icon: Icône
+  ai-text:
+    files: Fichiers
+    type_text: Texte
+    view_fields: Champs
+    view_json: JSON
   condition:
     name: Condition
   exec:

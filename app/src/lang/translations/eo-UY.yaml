@@ -868,6 +868,7 @@ forgot_password: Pasvorto forgesita
 hidden: Kaŝita
 hidden_in_group: Kaŝita en {group}
 icon: Emblemo
+image: Bildo
 info: Informoj
 normal: Normala
 success: Sukceso
@@ -1006,6 +1007,8 @@ interfaces:
     one-to-many: Unu-al-pluraj-rilato
   system-folder:
     description: Elekti dosierujon
+  system-file-image:
+    image: Bildo
   list:
     repeater: Ripetilo
     edit_fields: Redakti kampojn
@@ -1244,6 +1247,15 @@ triggers:
   manual:
     name: Mana
 operations:
+  ai-image:
+    background: Fono
+    starting_points:
+      icon: Emblemo
+  ai-text:
+    files: Dosieroj
+    type_text: Teksto
+    view_fields: Kampoj
+    view_json: JSON
   condition:
     name: Kondiĉo
   item-create:

@@ -654,6 +654,8 @@ file_moved: Файлът е преместен
 collection_created: Колекцията е създадена
 modified_on: Променен на
 card_size: Големина на картите
+small: Малък
+large: Голям
 sort_field: Поле за сортиране
 add_sort_field: Добавяне на поле за сортиране
 sort: Сортиране
@@ -1505,6 +1507,7 @@ forgot_password: Забравена парола
 hidden: Скриване
 hidden_in_group: Скрит в {group}
 icon: Икона
+image: Изображение
 info: Информация
 normal: Нормален
 success: Успех
@@ -1783,6 +1786,8 @@ interfaces:
   select-radio:
     radio-buttons: Радио бутони
     description: Избор измежду един или няколко възможности
+  system-file-image:
+    image: Изображение
   list:
     repeater: Повторение
     description: Създаване на множество записи с еднаква структура
@@ -2232,6 +2237,16 @@ a_flow_uuid: Избор на процес за задействане...
 any_string_or_json: Всякакъв низ или JSON...
 item_payload_placeholder: Това трябва да е JSON документа, който ще се използва при актуализирането на полетата на записа...
 operations:
+  ai-image:
+    background: Фон
+    emit_events: Излъчване на събития
+    starting_points:
+      icon: Икона
+  ai-text:
+    files: Файлове
+    type_text: Текст
+    view_fields: Полета
+    view_json: JSON
   condition:
     name: Условие
   exec:
