@@ -1,8 +1,17 @@
-import type { DOMOutputSpec } from '@tiptap/pm/model';
+import type { DOMOutputSpec, TagParseRule } from '@tiptap/pm/model';
 import { Node } from '@tiptap/vue-3';
 import { htmlToElement, type RawHtmlSanitizeOptions, sanitizeRawHtml } from './raw-html-sanitize';
 
 export const RAW_HTML_TAGS = ['svg', 'map'];
+
+/** Controls kept outside a `<form>` when a field keeps form elements; inside one, the form keeps them. */
+export const FORM_CONTROL_TAGS = ['button', 'input', 'select', 'textarea'];
+
+export const FORM_TAGS = ['form', ...FORM_CONTROL_TAGS];
+
+export interface RawHtmlOptions extends RawHtmlSanitizeOptions {
+	formElements: boolean;
+}
 
 const PHRASING =
 	'a, abbr, b, bdi, bdo, cite, code, del, dfn, em, i, ins, kbd, label, mark, q, s, samp, small, span, strong, sub, sup, time, u, var';
@@ -10,7 +19,7 @@ const PHRASING =
 const TEXT_BLOCKS = 'p, h1, h2, h3, h4, h5, h6, pre, figcaption, caption, li';
 
 // no img: the image is a block node, so an element beside one stays a block
-const INLINE_SIBLINGS = `${PHRASING}, br`;
+const INLINE_SIBLINGS = `${PHRASING}, br, ${FORM_CONTROL_TAGS.join(', ')}`;
 
 // an element among inline content must parse as an inline node, or it splits its paragraph and loses its marks
 export function isInlineContext(element: Element): boolean {
@@ -32,7 +41,7 @@ export function isInlineContext(element: Element): boolean {
 }
 
 function rawHtmlNode(name: string, inline: boolean) {
-	return Node.create<RawHtmlSanitizeOptions>({
+	return Node.create<RawHtmlOptions>({
 		name,
 		group: inline ? 'inline' : 'block',
 		inline,
@@ -40,7 +49,7 @@ function rawHtmlNode(name: string, inline: boolean) {
 		selectable: true,
 
 		addOptions() {
-			return { keepInlineStyles: false, linkProtocols: [] };
+			return { keepInlineStyles: false, linkProtocols: [], formElements: false };
 		},
 
 		addAttributes() {
@@ -55,10 +64,17 @@ function rawHtmlNode(name: string, inline: boolean) {
 		},
 
 		parseHTML() {
-			return RAW_HTML_TAGS.map((tag) => ({
+			const tags = this.options.formElements ? [...RAW_HTML_TAGS, ...FORM_CONTROL_TAGS] : RAW_HTML_TAGS;
+
+			const rules: TagParseRule[] = tags.map((tag) => ({
 				tag,
 				getAttrs: (element: HTMLElement) => (isInlineContext(element) === inline ? {} : false),
 			}));
+
+			// a <form> inside a <p> is invalid HTML: the next load would split the paragraph around it
+			if (this.options.formElements && !inline) rules.push({ tag: 'form' });
+
+			return rules;
 		},
 
 		renderHTML({ node }): DOMOutputSpec {
@@ -78,7 +94,10 @@ function rawHtmlNode(name: string, inline: boolean) {
 	});
 }
 
-/** An element the schema cannot model (`<svg>`, `<map>`), kept as sanitized HTML and shown as a chip. */
+/**
+ * An element the schema cannot model (`<svg>`, `<map>`, and with `formElements` a `<form>` or a loose
+ * form control), kept as sanitized HTML and shown as a chip.
+ */
 export const RawHtmlBlock = rawHtmlNode('rawHtmlBlock', false);
 
 /** The inline variant of `RawHtmlBlock`, for an element among text, so marks such as Link reach it. */

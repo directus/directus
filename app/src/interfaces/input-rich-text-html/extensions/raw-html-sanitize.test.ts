@@ -76,6 +76,24 @@ test('an area keeps target', () => {
 	expect(sanitizeRawHtml(html, OFF)).toBe(html);
 });
 
+test('a form keeps its submission attributes and control names', () => {
+	const html =
+		'<form action="/s" method="post" enctype="multipart/form-data" accept-charset="utf-8"><input type="submit" name="content_0$send" value="Send"><button name="go" formaction="/b" formmethod="get" formtarget="_blank" formnovalidate="">Go</button></form>';
+
+	expect(sanitizeRawHtml(html, OFF)).toBe(html);
+});
+
+test('a control name that clobbers a form property is removed', () => {
+	expect(sanitizeRawHtml('<form><input name="submit"></form>', OFF)).toBe('<form><input></form>');
+});
+
+test.each([
+	['onsubmit', '<form onsubmit="alert(1)"></form>', '<form></form>'],
+	['javascript: action', '<form action="javascript:alert(1)"></form>', '<form></form>'],
+	['javascript: formaction', '<button formaction=" javascript:alert(1)">Go</button>', '<button>Go</button>'],
+	['onclick', '<button onclick="alert(1)">Go</button>', '<button>Go</button>'],
+])('removes %s from a form element', (_n, input, expected) => expect(sanitizeRawHtml(input, OFF)).toBe(expected));
+
 test('returns nothing when DOMPurify is unsupported', () => {
 	unsupported.value = true;
 	expect(sanitizeRawHtml('<svg></svg>', OFF)).toBe('');

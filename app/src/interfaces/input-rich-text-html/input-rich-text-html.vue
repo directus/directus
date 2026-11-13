@@ -59,6 +59,8 @@ const props = withDefaults(
 		noContainerParagraphs?: boolean;
 		/** Keep `div` and other wrapper elements instead of unwrapping them; see extensions/wrapper-elements.ts. */
 		keepWrapperElements?: boolean;
+		/** Keep `<form>` and loose form controls as non-editable blocks; see extensions/raw-html.ts. */
+		keepFormElements?: boolean;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -105,6 +107,7 @@ const fieldSchema = buildFieldSchema({
 	keepLegacyEmphasisTags: props.keepLegacyEmphasisTags,
 	noContainerParagraphs: props.noContainerParagraphs,
 	keepWrapperElements: props.keepWrapperElements,
+	keepFormElements: props.keepFormElements,
 	comparisonMode: props.comparisonMode,
 });
 
@@ -779,6 +782,11 @@ onKeyStroke('Escape', () => {
 			color: var(--theme--foreground-subdued);
 			white-space: pre-wrap;
 		}
+	}
+
+	// the app base styles make every label a block
+	label {
+		display: inline;
 	}
 
 	.raw-html {
