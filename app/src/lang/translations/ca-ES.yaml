@@ -1738,6 +1738,14 @@ triggers:
   webhook:
     method: Mètode
 operations:
+  ai-image:
+    starting_points:
+      icon: Icona
+  ai-text:
+    files: Arxius
+    type_text: Text
+    view_fields: Camps
+    view_json: JSON
   item-create:
     payload: Càrrega
   item-update:
