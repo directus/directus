@@ -11,6 +11,7 @@ import { CustomImage } from './image';
 import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
 import { PageBreak } from './page-break';
+import { CustomParagraph } from './paragraph';
 import { PreKeymap } from './pre-keymap';
 import { PreservedAttributes } from './preserved-attributes';
 import { RangeSelectedAtoms } from './range-selected-atoms';
@@ -29,9 +30,11 @@ export const editorExtensions = [
 	StarterKit.configure({
 		// replaced by DropCursor, which draws a vertical indicator between same-row inline-block nodes
 		dropcursor: false,
+		paragraph: false,
 		// standalone so buildLinkProtocolSchema can swap it for a per-field configured Link
 		link: false,
 	}),
+	CustomParagraph,
 	BaseLink,
 	DropCursor,
 	CustomImage,
