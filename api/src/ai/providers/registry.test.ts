@@ -34,17 +34,20 @@ vi.mock('ai', () => ({
 }));
 
 const baseSettings: AISettings = {
-	openaiApiKey: null,
-	anthropicApiKey: null,
-	googleApiKey: null,
-	openrouterApiKey: null,
-	openaiCompatibleApiKey: null,
-	openaiCompatibleBaseUrl: null,
-	openaiCompatibleName: null,
-	openaiCompatibleModels: null,
-	openaiCompatibleHeaders: null,
-	allowedModels: { openai: [], anthropic: [], google: [], openrouter: [] },
-	systemPrompt: null,
+	ai_openai_api_key: null,
+	ai_anthropic_api_key: null,
+	ai_google_api_key: null,
+	ai_openrouter_api_key: null,
+	ai_openai_compatible_api_key: null,
+	ai_openai_compatible_base_url: null,
+	ai_openai_compatible_name: null,
+	ai_openai_compatible_models: null,
+	ai_openai_compatible_headers: null,
+	ai_openai_allowed_models: [],
+	ai_anthropic_allowed_models: [],
+	ai_google_allowed_models: [],
+	ai_openrouter_models: [],
+	ai_system_prompt: null,
 };
 
 describe('buildProviderConfigs', () => {
@@ -60,7 +63,7 @@ describe('buildProviderConfigs', () => {
 	it('includes OpenAI when API key is set', () => {
 		const configs = buildProviderConfigs({
 			...baseSettings,
-			openaiApiKey: 'sk-openai-key',
+			ai_openai_api_key: 'sk-openai-key',
 		});
 
 		expect(configs).toHaveLength(1);
@@ -70,7 +73,7 @@ describe('buildProviderConfigs', () => {
 	it('includes Anthropic when API key is set', () => {
 		const configs = buildProviderConfigs({
 			...baseSettings,
-			anthropicApiKey: 'sk-anthropic-key',
+			ai_anthropic_api_key: 'sk-anthropic-key',
 		});
 
 		expect(configs).toHaveLength(1);
@@ -80,7 +83,7 @@ describe('buildProviderConfigs', () => {
 	it('includes Google when API key is set', () => {
 		const configs = buildProviderConfigs({
 			...baseSettings,
-			googleApiKey: 'google-api-key',
+			ai_google_api_key: 'google-api-key',
 		});
 
 		expect(configs).toHaveLength(1);
@@ -90,7 +93,7 @@ describe('buildProviderConfigs', () => {
 	it('includes OpenRouter when API key is set', () => {
 		const configs = buildProviderConfigs({
 			...baseSettings,
-			openrouterApiKey: 'sk-or-key',
+			ai_openrouter_api_key: 'sk-or-key',
 		});
 
 		expect(configs).toHaveLength(1);
@@ -100,8 +103,8 @@ describe('buildProviderConfigs', () => {
 	it('includes OpenAI-compatible only when both API key and base URL are set', () => {
 		const configs = buildProviderConfigs({
 			...baseSettings,
-			openaiCompatibleApiKey: 'custom-key',
-			openaiCompatibleBaseUrl: 'http://localhost:11434/v1',
+			ai_openai_compatible_api_key: 'custom-key',
+			ai_openai_compatible_base_url: 'http://localhost:11434/v1',
 		});
 
 		expect(configs).toHaveLength(1);
@@ -116,7 +119,7 @@ describe('buildProviderConfigs', () => {
 	it('excludes OpenAI-compatible when only API key is set', () => {
 		const configs = buildProviderConfigs({
 			...baseSettings,
-			openaiCompatibleApiKey: 'custom-key',
+			ai_openai_compatible_api_key: 'custom-key',
 		});
 
 		expect(configs).toHaveLength(0);
@@ -125,7 +128,7 @@ describe('buildProviderConfigs', () => {
 	it('excludes OpenAI-compatible when only base URL is set', () => {
 		const configs = buildProviderConfigs({
 			...baseSettings,
-			openaiCompatibleBaseUrl: 'http://localhost:11434/v1',
+			ai_openai_compatible_base_url: 'http://localhost:11434/v1',
 		});
 
 		expect(configs).toHaveLength(0);
@@ -134,12 +137,12 @@ describe('buildProviderConfigs', () => {
 	it('includes multiple providers when configured', () => {
 		const configs = buildProviderConfigs({
 			...baseSettings,
-			openaiApiKey: 'sk-openai',
-			anthropicApiKey: 'sk-anthropic',
-			googleApiKey: 'google-key',
-			openrouterApiKey: 'sk-or-key',
-			openaiCompatibleApiKey: 'custom-key',
-			openaiCompatibleBaseUrl: 'http://localhost:11434/v1',
+			ai_openai_api_key: 'sk-openai',
+			ai_anthropic_api_key: 'sk-anthropic',
+			ai_google_api_key: 'google-key',
+			ai_openrouter_api_key: 'sk-or-key',
+			ai_openai_compatible_api_key: 'custom-key',
+			ai_openai_compatible_base_url: 'http://localhost:11434/v1',
 		});
 
 		expect(configs).toHaveLength(5);
@@ -203,9 +206,9 @@ describe('createAIProviderRegistry', () => {
 
 		const settings: AISettings = {
 			...baseSettings,
-			openaiCompatibleApiKey: 'custom-key',
-			openaiCompatibleBaseUrl: 'http://localhost:11434/v1',
-			openaiCompatibleName: 'Ollama',
+			ai_openai_compatible_api_key: 'custom-key',
+			ai_openai_compatible_base_url: 'http://localhost:11434/v1',
+			ai_openai_compatible_name: 'Ollama',
 		};
 
 		createAIProviderRegistry(configs, settings);
@@ -219,9 +222,9 @@ describe('createAIProviderRegistry', () => {
 
 		const settings: AISettings = {
 			...baseSettings,
-			openaiCompatibleApiKey: 'custom-key',
-			openaiCompatibleBaseUrl: 'http://localhost:11434/v1',
-			openaiCompatibleHeaders: [
+			ai_openai_compatible_api_key: 'custom-key',
+			ai_openai_compatible_base_url: 'http://localhost:11434/v1',
+			ai_openai_compatible_headers: [
 				{ header: 'X-Custom-Header', value: 'custom-value' },
 				{ header: 'Authorization', value: 'Bearer token123' },
 			],

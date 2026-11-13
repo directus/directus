@@ -2,12 +2,11 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { safeValidateUIMessages } from 'ai';
 import type { RequestHandler } from 'express';
 import { fromZodError } from 'zod-validation-error';
-import type { AISettings } from '../../providers/index.js';
+import type { AISettings } from '../../providers/types.js';
 import { createUiStream } from '../lib/create-ui-stream.js';
 import { ChatRequest } from '../models/chat-request.js';
 import { chatRequestToolsToAiSdkTools } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
 import { fixErrorToolCalls } from '../utils/fix-error-tool-calls.js';
-import { validateModelAllowed } from '../utils/validate-model-allowed.js';
 
 export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 	if (!req.accountability?.app) {
@@ -24,8 +23,6 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 
 	const aiSettings: AISettings = res.locals['ai'].settings;
 
-	validateModelAllowed(provider, model, aiSettings);
-
 	if (rawMessages.length === 0) {
 		throw new InvalidPayloadError({ reason: `"messages" must not be empty` });
 	}
@@ -36,7 +33,7 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 		chatRequestTools: requestedTools,
 		accountability: req.accountability!,
 		schema: req.schema,
-		systemPrompt: res.locals['ai'].systemPrompt,
+		systemPrompt: aiSettings.ai_system_prompt,
 		...(toolApprovals && { toolApprovals }),
 	});
 
@@ -53,7 +50,6 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 		aiSettings,
 		userId: req.accountability?.user,
 		role: req.accountability?.role,
-		systemPrompt: res.locals['ai'].systemPrompt,
 		...(context && { context }),
 		onUsage: (usage) => {
 			res.write(`data: ${JSON.stringify({ type: 'data-usage', data: usage })}\n\n`);

@@ -18,6 +18,9 @@ vi.mock('@ai-sdk/google', () => ({
 	createGoogleGenerativeAI: vi.fn(() => (model: string) => ({ id: `google:${model}` })),
 }));
 
+// Allowed models are covered in validate-model-allowed.test.ts.
+vi.mock('../../providers/validate-model-allowed.js');
+
 vi.mock('../constants/system-prompt.js', () => ({
 	SYSTEM_PROMPT: 'DEFAULT_SYSTEM_PROMPT',
 }));
@@ -51,17 +54,20 @@ describe('createUiStream', () => {
 	];
 
 	const aiSettings: AISettings = {
-		openaiApiKey: 'openai-key',
-		anthropicApiKey: 'anthropic-key',
-		googleApiKey: null,
-		openrouterApiKey: null,
-		openaiCompatibleApiKey: null,
-		openaiCompatibleBaseUrl: null,
-		openaiCompatibleName: null,
-		openaiCompatibleModels: null,
-		openaiCompatibleHeaders: null,
-		allowedModels: { openai: [], anthropic: [], google: [], openrouter: [] },
-		systemPrompt: null,
+		ai_openai_api_key: 'openai-key',
+		ai_anthropic_api_key: 'anthropic-key',
+		ai_google_api_key: null,
+		ai_openrouter_api_key: null,
+		ai_openai_compatible_api_key: null,
+		ai_openai_compatible_base_url: null,
+		ai_openai_compatible_name: null,
+		ai_openai_compatible_models: null,
+		ai_openai_compatible_headers: null,
+		ai_openai_allowed_models: [],
+		ai_anthropic_allowed_models: [],
+		ai_google_allowed_models: [],
+		ai_openrouter_models: [],
+		ai_system_prompt: null,
 	};
 
 	it('should create a stream for OpenAI provider', async () => {
@@ -92,7 +98,7 @@ describe('createUiStream', () => {
 				provider: 'openai',
 				model: 'gpt-3.5',
 				tools: {},
-				aiSettings: { ...aiSettings, openaiApiKey: null },
+				aiSettings: { ...aiSettings, ai_openai_api_key: null },
 			}),
 		).rejects.toThrow(ServiceUnavailableError);
 
@@ -101,7 +107,7 @@ describe('createUiStream', () => {
 				provider: 'anthropic',
 				model: 'claude-2',
 				tools: {},
-				aiSettings: { ...aiSettings, anthropicApiKey: null },
+				aiSettings: { ...aiSettings, ai_anthropic_api_key: null },
 			}),
 		).rejects.toThrow(ServiceUnavailableError);
 	});
@@ -133,8 +139,7 @@ describe('createUiStream', () => {
 			provider: 'openai',
 			model: 'gpt-4o',
 			tools: {},
-			aiSettings,
-			systemPrompt: 'CUSTOM_PROMPT',
+			aiSettings: { ...aiSettings, ai_system_prompt: 'CUSTOM_PROMPT' },
 		});
 
 		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'CUSTOM_PROMPT' }));
@@ -211,7 +216,7 @@ describe('createUiStream', () => {
 			provider: 'openrouter',
 			model: 'anthropic/claude-sonnet-5.5',
 			tools: {},
-			aiSettings: { ...aiSettings, openrouterApiKey: 'openrouter-key' },
+			aiSettings: { ...aiSettings, ai_openrouter_api_key: 'openrouter-key' },
 			context: {
 				page: {
 					path: '/content/posts/123',
@@ -286,7 +291,7 @@ describe('createUiStream', () => {
 			const result = await createUiStream([{ id: '1', role: 'user', parts: [{ type: 'text', text: 'Read items' }] }], {
 				provider: 'openrouter',
 				model: 'anthropic/claude-sonnet-5.5',
-				aiSettings: { ...aiSettings, openrouterApiKey: 'openrouter-key' },
+				aiSettings: { ...aiSettings, ai_openrouter_api_key: 'openrouter-key' },
 				tools: {
 					items: ai.tool({
 						inputSchema: ai.jsonSchema({ type: 'object', properties: {} }),
@@ -372,8 +377,7 @@ describe('createUiStream', () => {
 			provider: 'openai',
 			model: 'gpt-4o-mini',
 			tools: {},
-			aiSettings,
-			systemPrompt: '',
+			aiSettings: { ...aiSettings, ai_system_prompt: '' },
 		});
 
 		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'DEFAULT_SYSTEM_PROMPT' }));

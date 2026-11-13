@@ -1,4 +1,5 @@
-import type { OpenAICompatibleHeader, OpenAICompatibleModel, StandardProviderType } from '@directus/ai';
+import type { Settings } from '@directus/types';
+import type { AI_SETTINGS_FIELDS } from './settings.js';
 
 interface OpenAIConfig {
 	type: 'openai';
@@ -28,16 +29,8 @@ interface OpenAICompatibleConfig {
 
 export type ProviderConfig = OpenAIConfig | AnthropicConfig | GoogleConfig | OpenRouterConfig | OpenAICompatibleConfig;
 
-export interface AISettings {
-	openaiApiKey: string | null;
-	anthropicApiKey: string | null;
-	googleApiKey: string | null;
-	openrouterApiKey: string | null;
-	openaiCompatibleApiKey: string | null;
-	openaiCompatibleBaseUrl: string | null;
-	openaiCompatibleName: string | null;
-	openaiCompatibleModels: OpenAICompatibleModel[] | null;
-	openaiCompatibleHeaders: OpenAICompatibleHeader[] | null;
-	allowedModels: Record<StandardProviderType, string[]>;
-	systemPrompt: string | null;
-}
+type AISettingsField = (typeof AI_SETTINGS_FIELDS)[number];
+type AIApiKeyField = Extract<AISettingsField, `${string}_api_key`>;
+
+/** AI settings as stored in `directus_settings`. `Settings` masks the API keys, these have them decrypted. */
+export type AISettings = Omit<Pick<Settings, AISettingsField>, AIApiKeyField> & Record<AIApiKeyField, string | null>;
