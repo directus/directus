@@ -501,6 +501,9 @@ triggers:
   webhook:
     method: विधि
 operations:
+  ai-text:
+    type_text: Text
+    view_json: JSON
   log:
     message: संदेश
   notification:
