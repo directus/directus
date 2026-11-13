@@ -920,6 +920,9 @@ catalogs:
     p-queue:
       specifier: 8.1.0
       version: 8.1.0
+    p-retry:
+      specifier: 8.0.1
+      version: 8.0.1
     papaparse:
       specifier: 5.5.3
       version: 5.5.3
@@ -1500,6 +1503,9 @@ importers:
       p-queue:
         specifier: 'catalog:'
         version: 8.1.0
+      p-retry:
+        specifier: 'catalog:'
+        version: 8.0.1
       papaparse:
         specifier: 'catalog:'
         version: 5.5.3
@@ -9950,6 +9956,10 @@ packages:
   is-module@1.0.0:
     resolution: {integrity: sha512-51ypPSPCoTEIN9dy5Oy+h4pShgJmPCygKfyRCISBI+JoWT/2oJvK8QPxmwv7b/p239jXrm9M1mlQbyKJ5A152g==}
 
+  is-network-error@1.3.2:
+    resolution: {integrity: sha512-PhBY86zaxNZUuWP6h13Vu5oFe0XY6/UlKzQnYFELzGVHygP3MxmvTfYSG7GN3aIab/iWudSMgjSnG9Dq+nHrgA==}
+    engines: {node: '>=16'}
+
   is-number@7.0.0:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
@@ -11062,6 +11072,10 @@ packages:
   p-queue@8.1.1:
     resolution: {integrity: sha512-aNZ+VfjobsWryoiPnEApGGmf5WmNsCo9xu8dfaYamG5qaLP7ClhLN6NgsFe6SwJ2UbLEBK5dv9x8Mn5+RVhMWQ==}
     engines: {node: '>=18'}
+
+  p-retry@8.0.1:
+    resolution: {integrity: sha512-NAigyu8hfvJe7MsS18mnc4is0MZtau3QMdBklaJKK23oBQb6occO3UPM3vHmTckW8KhfyjMZaUOqdTFEYliHgg==}
+    engines: {node: '>=22'}
 
   p-timeout@6.1.4:
     resolution: {integrity: sha512-MyIV3ZA/PmyBN/ud8vV9XzwTrNtR4jFrObymZYnZqMmW0zA8Z17vnT0rBgFE/TlohB+YCHqXMgZzb3Csp49vqg==}
@@ -20245,6 +20259,8 @@ snapshots:
 
   is-module@1.0.0: {}
 
+  is-network-error@1.3.2: {}
+
   is-number@7.0.0: {}
 
   is-path-inside@4.0.0: {}
@@ -21335,6 +21351,10 @@ snapshots:
     dependencies:
       eventemitter3: 5.0.4
       p-timeout: 6.1.4
+
+  p-retry@8.0.1:
+    dependencies:
+      is-network-error: 1.3.2
 
   p-timeout@6.1.4: {}
 

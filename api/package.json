@@ -167,6 +167,7 @@
 		"otplib": "catalog:",
 		"p-limit": "catalog:",
 		"p-queue": "catalog:",
+		"p-retry": "catalog:",
 		"papaparse": "catalog:",
 		"pino": "catalog:",
 		"pino-http": "catalog:",
