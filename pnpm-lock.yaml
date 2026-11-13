@@ -770,6 +770,9 @@ catalogs:
     graphql-ws:
       specifier: 6.0.6
       version: 6.0.6
+    happy-dom:
+      specifier: 21.0.4
+      version: 21.0.4
     helmet:
       specifier: 8.1.0
       version: 8.1.0
@@ -1125,15 +1128,12 @@ catalogs:
 overrides:
   js-beautify>editorconfig: 4.0.0
   js-beautify>glob: 14.0.3
-  js-yaml@3: 3.15.2
   unplugin-yaml>yaml: 2.9.0
   uuid: 11.1.1
   '@ai-sdk/provider-utils': 4.0.51
   '@opentelemetry/core': 2.11.0
   '@directus/mock-license-server>fastify': 5.12.7
   zod: 4.6.7
-  happy-dom: 21.0.4
-  '@azure/identity>@azure/msal-node': 7.1.1
   '@ai-sdk/devtools>@hono/node-server': 2.1.6
   archiver>readdir-glob: 4.0.0
 
@@ -2050,7 +2050,7 @@ importers:
         specifier: 'catalog:'
         version: 0.5.0
       happy-dom:
-        specifier: 21.0.4
+        specifier: 'catalog:'
         version: 21.0.4
       html-entities:
         specifier: 'catalog:'
@@ -3430,7 +3430,7 @@ importers:
         specifier: workspace:*
         version: link:../utils
       happy-dom:
-        specifier: 21.0.4
+        specifier: 'catalog:'
         version: 21.0.4
       tsdown:
         specifier: 'catalog:'
@@ -13243,7 +13243,7 @@ packages:
       '@vitest/coverage-istanbul': 4.1.12
       '@vitest/coverage-v8': 4.1.12
       '@vitest/ui': 4.1.12
-      happy-dom: 21.0.4
+      happy-dom: '*'
       jsdom: '*'
       vite: ^6.0.0 || ^7.0.0 || ^8.0.0
     peerDependenciesMeta:
