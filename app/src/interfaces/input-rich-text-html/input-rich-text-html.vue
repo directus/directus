@@ -676,10 +676,14 @@ onKeyStroke('Escape', () => {
 		margin: 0;
 	}
 
-	a {
+	a[href] {
 		color: var(--theme--primary-accent);
 		text-decoration: underline;
 		cursor: pointer;
+	}
+
+	a[name]:not([href]) {
+		text-decoration: underline dotted var(--theme--foreground-subdued);
 	}
 
 	b,
@@ -730,7 +734,7 @@ onKeyStroke('Escape', () => {
 	// `.range-selected` (RangeSelectedAtoms) covers selections that merely span the leaf, which
 	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image.
 	// A linked image renders as `<a><img></a>`, so the class lands on the anchor, not the img
-	:is(img, hr, .page-break, .style-tag):is(.ProseMirror-selectednode, .range-selected),
+	:is(img, hr, .page-break, .style-tag, .named-anchor):is(.ProseMirror-selectednode, .range-selected),
 	a:is(.ProseMirror-selectednode, .range-selected) > img {
 		outline: 2px solid var(--theme--primary);
 	}
@@ -755,6 +759,24 @@ onKeyStroke('Escape', () => {
 			font-size: 0.6875rem;
 			text-transform: uppercase;
 			letter-spacing: 0.05em;
+		}
+	}
+
+	.named-anchor {
+		display: inline-block;
+		vertical-align: middle;
+		color: var(--theme--foreground-subdued);
+		border-radius: var(--theme--border-radius);
+		user-select: none;
+
+		&::before {
+			content: 'anchor';
+			display: block;
+			font-family: 'Material Symbols';
+			font-size: 1em;
+			font-style: normal;
+			font-weight: normal;
+			line-height: 1;
 		}
 	}
 
