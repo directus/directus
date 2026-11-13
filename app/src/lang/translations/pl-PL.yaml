@@ -2306,6 +2306,16 @@ a_flow_uuid: Wybierz przepływ do wyzwalacza...
 any_string_or_json: Dowolny ciąg znaków lub JSON...
 item_payload_placeholder: To jest JSON używany do aktualizacji wartości pola elementu...
 operations:
+  ai-image:
+    background: Tło
+    emit_events: Wydaj wydarzenia
+    starting_points:
+      icon: Ikona
+  ai-text:
+    files: Pliki
+    type_text: Tekst
+    view_fields: Pola
+    view_json: JSON
   condition:
     name: Warunek
   exec:
