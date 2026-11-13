@@ -2385,6 +2385,16 @@ a_flow_uuid: Vyberte tok pro spuštění...
 any_string_or_json: Jakýkoliv řetězec nebo JSON...
 item_payload_placeholder: Toto je JSON používaný k aktualizaci hodnot polí položky...
 operations:
+  ai-image:
+    background: Pozadí
+    emit_events: Povolit události
+    starting_points:
+      icon: Ikona
+  ai-text:
+    files: Soubory
+    type_text: Text
+    view_fields: Pole
+    view_json: JSON
   condition:
     name: Podmínka
   exec:
