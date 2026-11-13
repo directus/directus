@@ -244,3 +244,22 @@ test('RTL icon mirroring with different RTL icons', () => {
 		expect(wrapper.classes()).not.toContain('mirrored');
 	}
 });
+
+test.each(['lorem ipsum', '<details open ontoggle=alert(1)>', 'not_an_icon'])(
+	'renders nothing for the unknown icon name "%s"',
+	(name) => {
+		const wrapper = mount(VIcon, {
+			props: { name },
+			global: {
+				plugins: [
+					createTestingPinia({
+						createSpy: vi.fn,
+					}),
+				],
+			},
+		});
+
+		expect(wrapper.find('i').exists()).toBe(false);
+		expect(wrapper.text()).toBe('');
+	},
+);
