@@ -89,7 +89,8 @@ export async function bootstrap(opts: Options, env: Env, logger: Logger) {
 	logger.pipe(bootstrap.stdout, 'debug');
 	logger.pipe(bootstrap.stderr, 'error');
 
-	await new Promise((resolve) => bootstrap.on('close', resolve));
+	const code = await new Promise<number | null>((resolve) => bootstrap.on('close', resolve));
+	if (code !== 0) throw new Error(`Bootstraping the database failed with exit code ${code}`);
 	const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 	logger.info(`Completed Bootstraping Database ${time}`);
 }
