@@ -1189,6 +1189,12 @@ panels:
   label:
     name: Tikedenn
 operations:
+  ai-image:
+    starting_points:
+      icon: Arlun
+  ai-text:
+    files: Restroù
+    type_text: Testenn
   json-web-token:
     options: Arventennoù
   mail:
