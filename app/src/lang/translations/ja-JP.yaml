@@ -2137,6 +2137,14 @@ triggers:
     name: マニュアル
 operation_variables_note: フロー内のデータを利用するには、*{'{'}{'{'}$last{'}'}{'}'}** 、**{'{'}{'{'}$trigger{'}'}{'}'}** や **{'{'}{'{'}$accountability{'}'}{'}'}** といった変数を使用します。前のステップの結果を使いたい場合は、そのオペレーションのキー **{'{'}{'{'}operation_key{'}'}{'}'}** を指定して参照してください。
 operations:
+  ai-image:
+    starting_points:
+      icon: アイコン
+  ai-text:
+    files: ファイル
+    output: 出力
+    type_text: テキスト
+    view_json: JSON
   exec:
     description: 任意のコードを実行し、受け取ったデータ内容を加工・修正することができます
     modules: '以下の **Node modules** を使用することができます：'
