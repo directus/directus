@@ -94,6 +94,7 @@
 		"@directus/storage-driver-s3": "workspace:*",
 		"@directus/storage-driver-supabase": "workspace:*",
 		"@directus/system-data": "workspace:*",
+		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@directus/validation": "workspace:*",
 		"@godaddy/terminus": "catalog:",
@@ -199,7 +200,6 @@
 	"devDependencies": {
 		"@directus/schema-builder": "workspace:*",
 		"@directus/tsconfig": "catalog:",
-		"@directus/types": "workspace:*",
 		"@ngneat/falso": "catalog:",
 		"@types/archiver": "catalog:",
 		"@types/async": "catalog:",
