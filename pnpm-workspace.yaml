@@ -15,13 +15,11 @@ savePrefix: ''
 overrides:
   js-beautify>editorconfig: 4.0.0
   js-beautify>glob: 14.0.3
-  js-yaml@4: 4.3.2
   js-yaml@3: 3.15.2
   unplugin-yaml>yaml: 2.9.0
   uuid: 11.1.1
   '@ai-sdk/provider-utils': 4.0.51
   '@opentelemetry/core': 2.11.0
-  get-uri>basic-ftp: 6.2.6
   '@directus/mock-license-server>fastify': 5.12.7
   zod: 4.6.7
   happy-dom: 21.0.4
@@ -313,7 +311,7 @@ catalog:
   pino-http: 10.5.0
   pino-http-print: 3.1.0
   pino-pretty: 13.1.2
-  pm2: 7.0.4
+  pm2: 7.1.2
   postcss-html: 2.0.0
   prettier: 3.6.2
   prom-client: 15.1.3
