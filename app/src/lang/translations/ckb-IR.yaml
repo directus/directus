@@ -2346,6 +2346,16 @@ a_flow_uuid: لێشاوێک دیاری بکە بۆ وروژاندن...
 any_string_or_json: هەر دەقێک یان JSONێک...
 item_payload_placeholder: ئەمە ئەو JSONەیە کە بەکاردێت بۆ نوێکردنەوەی بەهاکانی خانەی مادەکە...
 operations:
+  ai-image:
+    background: پاشبنەما
+    emit_events: دەرکردنی ڕووداوەکان
+    starting_points:
+      icon: ئایکۆن
+  ai-text:
+    files: پەڕگەکان
+    type_text: نوسین
+    view_fields: خانەکان
+    view_json: JSON
   condition:
     name: مەرج
   exec:
