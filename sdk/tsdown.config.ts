@@ -1,17 +1,17 @@
 import { systemCollectionNames } from '@directus/system-data';
 import { defineConfig } from 'tsdown';
+import { baseConfig } from '../tsdown.config.ts';
 
 const env = process.env.NODE_ENV;
 
 export default defineConfig({
+	...baseConfig,
 	sourcemap: env === 'production', // source map is only available in prod
 	dts: true, // generate dts file for main module
 	format: ['cjs', 'esm'], // generate cjs and esm files
 	minify: env === 'production',
 	watch: env === 'development',
 	unbundle: true,
-	fixedExtension: false,
-	deps: { dts: { neverBundle: true } },
 	target: 'es2022',
 	entry: ['src/index.ts'],
 	define: {

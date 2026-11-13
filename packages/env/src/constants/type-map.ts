@@ -333,7 +333,10 @@ export const TYPE_MAP = {
 	'AUTH_.+_COOKIE_SECURE': 'boolean',
 } as const;
 
-export const TYPE_MAP_REGEX: [RegExp, TypeMapEntry][] = Object.entries(TYPE_MAP).map(([name, value]) => [
+// Checks the entries, as `satisfies` on `TYPE_MAP` isn't supported with isolated declarations
+const TYPE_MAP_ENTRIES: Record<string, TypeMapEntry> = TYPE_MAP;
+
+export const TYPE_MAP_REGEX: [RegExp, TypeMapEntry][] = Object.entries(TYPE_MAP_ENTRIES).map(([name, value]) => [
 	new RegExp(`^${name}$`),
 	value,
 ]);

@@ -5,4 +5,5 @@
 '@directus/update-check': patch
 ---
 
-Updated TypeScript to 6.0
+Updated TypeScript to 6.0 and switched the TypeScript extension template from the deprecated `node` module resolution to
+`bundler`

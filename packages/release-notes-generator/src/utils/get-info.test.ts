@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { Changesets, Config } from '../types.js';
+import type { Changesets, Config } from '../types.js';
 import { getInfo } from './get-info.js';
 
 vi.mock('../config.js', () => {

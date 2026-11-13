@@ -33,7 +33,7 @@ export async function findWorkspacePackages(workspaceRoot: string): Promise<Proj
 	return projects.sort((a, b) => a.rootDir.localeCompare(b.rootDir));
 }
 
-export async function readWorkspacePatterns(workspaceRoot: string) {
+export async function readWorkspacePatterns(workspaceRoot: string): Promise<{ include: string[]; exclude: string[] }> {
 	const raw = await readFile(join(workspaceRoot, 'pnpm-workspace.yaml'), 'utf8');
 	const parsed = load(raw) as { packages?: string[] } | undefined;
 	const patterns = parsed?.packages ?? [];
