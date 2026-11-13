@@ -1849,6 +1849,15 @@ a_flow_uuid: Odaberite tok za okinuti...
 any_string_or_json: Bilo koji string ili JSON...
 item_payload_placeholder: Ovo je JSON koji se koristi za ažuriranje vrijednosti polja stavke...
 operations:
+  ai-image:
+    background: Pozadina
+    emit_events: Emituje događaje
+    starting_points:
+      icon: Ikona
+  ai-text:
+    files: Fajlovi
+    type_text: Tekst
+    view_fields: Polja
   condition:
     name: Uslov
   exec:
