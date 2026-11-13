@@ -2033,6 +2033,14 @@ triggers:
   webhook:
     method: الطريقة
 operations:
+  ai-image:
+    starting_points:
+      icon: أيقونة
+  ai-text:
+    files: الملفات
+    type_text: نص
+    view_fields: حقول
+    view_json: JSON
   item-create:
     name: إنشاء بيانات
     description: إنشاء عناصر في قاعدة البيانات
