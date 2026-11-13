@@ -1,7 +1,9 @@
 import { describe, expect, test } from 'vitest';
 import { staticToken } from '../../src/auth/static.js';
+import { createDirectus } from '../../src/index.js';
 import { realtime } from '../../src/realtime/composable.js';
 import { createClient, openSocket, watchUnhandledRejections } from './helpers/fake-websocket.js';
+import { FakeWebSocket } from './helpers/fake-websocket.js';
 
 /** openConnection() can't be used here: the handshake needs an authenticated client. */
 function createAuthedClient() {
@@ -34,6 +36,24 @@ describe('realtime handshake authentication', () => {
 		await socket.receive({ type: 'auth', status: 'error', error: { code: 'AUTH_FAILED', message: 'nope' } });
 
 		await refused;
+
+		client.disconnect();
+	});
+
+	test('preserves subpath in websocket URL when connecting', async () => {
+		const client = createDirectus('http://example.com/directus', {
+			globals: { WebSocket: FakeWebSocket },
+		})
+			.with(staticToken('test-token'))
+			.with(realtime({ reconnect: false }));
+
+		const connecting = client.connect();
+		const socket = await openSocket();
+
+		expect(socket.url).toBe('ws://example.com/directus/websocket');
+
+		await socket.receive({ type: 'auth', status: 'ok' });
+		await expect(connecting).resolves.toBe(socket);
 
 		client.disconnect();
 	});

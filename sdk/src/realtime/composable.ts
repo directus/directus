@@ -87,8 +87,8 @@ export function realtime(config: WebSocketConfig = {}) {
 			// try filling in the defaults based on the main URL
 			const newUrl = new client.globals.URL(client.url.toString());
 			newUrl.protocol = client.url.protocol === 'https:' ? 'wss:' : 'ws:';
-			newUrl.pathname = '/websocket';
-
+			const basePath = client.url.pathname.replace(/\/+$/, '');
+			newUrl.pathname = `${basePath}/websocket`;
 			return await withStrictAuth(newUrl, currentClient);
 		};
 

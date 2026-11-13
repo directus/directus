@@ -25,6 +25,7 @@ import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import type { ContentVersionMaybeNew } from '@/types/versions';
+import { getRootPath } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 
 type InitMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.INIT }>;
@@ -59,6 +60,7 @@ const SESSION_COLOR_KEY = 'collab-color';
 
 const sdk: SdkClient & WebSocketClient<unknown> = baseSDK.with(
 	realtime({
+		url: `${baseSDK.url.protocol === 'https:' ? 'wss' : 'ws'}://${baseSDK.url.host}${getRootPath()}websocket`,
 		authMode: 'strict',
 		connect: false,
 		reconnect: {
