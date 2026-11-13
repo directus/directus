@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 
-ARG NODE_VERSION=26.13.0
+ARG NODE_VERSION=26.13.1
 
 ####################################################################################################
 ## Build Packages
