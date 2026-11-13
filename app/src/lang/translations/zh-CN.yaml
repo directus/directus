@@ -2140,6 +2140,8 @@ show_more: 显示更多
 show_less: 显示更少
 retry: 重试
 ai:
+  flow_operations:
+    model: 模型
   thinking: 思考中……
   input: Input
   output: 输出
@@ -3162,6 +3164,19 @@ any_string_or_json: 任意字符串或JSON对象...
 item_payload_placeholder: 这是用于更新条目字段值的 JSON对象...
 operation_variables_note: 您可以使用诸如 **{'{'}{'{'}$last{'}'}{'}'}**、**{'{'}{'{'}$trigger{'}'}{'}'}** 和 **{'{'}{'{'}$accountability{'}'}{'}'}** 之类的变量来访问 Flow 数据，也可以通过 **{'{'}{'{'}operation_key{'}'}{'}'}** 引用之前的操作。
 operations:
+  ai-image:
+    background: 背景
+    emit_events: 发出事件
+    starting_points:
+      icon: 图标
+  ai-text:
+    files: 多个文件
+    output: 输出
+    type_text: 文本
+    view_fields: 字段
+    view_json: JSON
+    starting_points:
+      translate: 翻译
   condition:
     name: 条件
     description: 路由一个基于如果/其他逻辑的流程
