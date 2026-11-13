@@ -22,7 +22,7 @@ overrides:
   uuid: 11.1.1
   '@ai-sdk/provider-utils': 4.0.51
   '@opentelemetry/core': 2.11.0
-  get-uri>basic-ftp: 6.2.2
+  get-uri>basic-ftp: 6.2.6
   '@directus/mock-license-server>fastify': 5.12.7
   zod: 4.6.7
   happy-dom: 21.0.4
