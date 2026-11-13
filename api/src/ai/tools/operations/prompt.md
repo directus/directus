@@ -63,6 +63,7 @@ Omit `position_x`/`position_y` - positions are handled automatically (see Positi
 
 <available_operations> Core operations available in Directus:
 
+- **ai-image** - Generate images with a configured AI provider and save them to the file library
 - **ai-text** - Generate text or structured data with a configured AI provider
 - **condition** - Evaluate filter rules to determine execution path
 - **exec** - Execute custom JavaScript/TypeScript code in sandboxed environment
@@ -164,8 +165,24 @@ same row, `reject` one row down. Wiring up the chain is all it takes to keep the
 Explicit positions are applied as-is (no layout pass) and re-derived on the next link change. Grid: 14x14 panels,
 columns every 18 units, rows every 16, first operation at (19,1). </positioning_system>
 
-<operation_examples> **ai-text** - Generate text or structured data. `model` is `provider:model-id` and the provider
-needs an API key in AI settings. Returns `{ text }`, or `{ output }` when `output` is `object`.
+<operation_examples> **ai-image** - Generate images and save them as files. OpenAI and Google only. Returns `{ files }`
+(array of file ids).
+
+```json
+{
+	"type": "ai-image",
+	"options": {
+		"model": "openai:gpt-image-2.5-flare",
+		"prompt": "Hero image for: {{ $trigger.payload.title }}",
+		"aspectRatio": "16:9",
+		"folder": "folder-uuid"
+	}
+}
+// Optional: "count" (1-4), "referenceImages" (up to 20 PNG, JPEG, or WebP file ids, "aspectRatio": "reference" matches the first), "transparent" (OpenAI models that support it), "quality" ("low", "medium", "high"; OpenAI), "title", "permissions", "emitEvents" (default false; leave off in flows triggered by file uploads)
+```
+
+**ai-text** - Generate text or structured data. `model` is `provider:model-id` and the provider needs an API key in AI
+settings. Returns `{ text }`, or `{ output }` when `output` is `object`.
 
 ```json
 {

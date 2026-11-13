@@ -4,7 +4,14 @@
  * strings count, so other bracketed text, like a Markdown link, is fine. Checked in the editor only, since flow data
  * could contain them too.
  */
-export const PLACEHOLDER_MARKERS: string[] = ['[your content]', '[language]'];
+export const PLACEHOLDER_MARKERS: string[] = [
+	'[your content]',
+	'[language]',
+	'[topic]',
+	'[product]',
+	'[subject]',
+	'[a style, like a watercolor painting]',
+];
 
 /** The first marker left in a prompt, or null when every marker has been replaced. */
 export function findPlaceholderMarker(prompt: string): string | null {

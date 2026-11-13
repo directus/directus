@@ -3379,6 +3379,48 @@ operation_variables_note:
   **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using
   **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  ai-image:
+    name: AI Image
+    model_note: 'Image models from the providers set up in Settings → AI. To use another model, type provider:model-id.'
+    prompt_note:
+      Describe the subject, style, and composition. Insert flow data with {'{'}{'{'} … {'}'}{'}'}. See the [data
+      chain](https://directus.com/docs/guides/flows/data-chain) and
+      [triggers](https://directus.com/docs/guides/flows/triggers) docs for what each flow has.
+    count_note: 1 to 4. Each image is saved as its own file.
+    quality_note: Higher quality costs more and takes longer.
+    transparent_note: Saves a PNG with no background. Good for icons and logos.
+    permissions_note:
+      Whose access is used to read reference images and save the new files. With Full Access, any image id in the flow
+      data can be sent to the AI provider, and images can be saved to any folder.
+    file_title_note: Defaults to "AI image". Multiple images are numbered.
+    aspect_ratio_reference_note: Match reference image uses the shape of the first reference image.
+    description: Generate images with an AI model and save them to Files
+    no_providers: No image providers configured. Add an OpenAI or Google API key in Settings → AI.
+    prompt_placeholder: Describe the image you want
+    reference_images: Reference Images
+    reference_images_note: Optional. The model edits or combines these instead of starting from scratch.
+    reference_images_placeholder: File IDs or {'{'}{'{'}$trigger.key{'}'}{'}'}
+    choose_files_disabled: 'Images come from flow data. Clear the value to pick images from the library.'
+    aspect_ratio_note: Only the ratios this model supports are listed.
+    match_reference: Match reference image
+    count: Images
+    quality_placeholder: Model default
+    low: Low
+    high: High
+    background: Background
+    transparent: Transparent background
+    folder_note: Where to save the new files.
+    file_title: File Title
+    emit_events: Emit Events
+    emit_events_note:
+      Run other flows that start on file uploads for the new files. If this flow starts on file uploads, turning this on
+      makes it run again for every image it makes, in a loop that never stops, and every run is billed.
+    starting_points:
+      hero: Article hero
+      product: Product photo
+      social: Social card
+      restyle: Restyle reference
+      icon: Icon
   ai-text:
     name: AI Text
     model_note: 'Models from the providers set up in Settings → AI. To use another model, type provider:model-id.'

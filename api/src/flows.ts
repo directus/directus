@@ -62,7 +62,7 @@ const LAST_KEY = '$last';
 const ENV_KEY = '$env';
 
 /** Log and the AI steps are often given whole trigger objects, so secrets are redacted before they're logged or sent out */
-const REDACTED_OPERATIONS = ['log', 'ai-text'];
+const REDACTED_OPERATIONS = ['log', 'ai-text', 'ai-image'];
 
 /** Retries of a failed flows read on reload, waiting 1s then 2s */
 const RELOAD_READ_RETRIES = 2;
