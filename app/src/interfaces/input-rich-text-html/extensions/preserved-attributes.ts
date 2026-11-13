@@ -64,7 +64,7 @@ export function hasPreservedAttributes(element: HTMLElement): boolean {
 }
 
 /** A plain string attribute round-tripped verbatim; empty → dropped so it never churns. */
-function passthroughAttribute(name: string) {
+export function passthroughAttribute(name: string) {
 	return {
 		default: null,
 		parseHTML: (element: HTMLElement) => element.getAttribute(name) || null,

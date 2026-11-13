@@ -541,3 +541,97 @@ describe('wrapper elements', () => {
 		expect(keys.size).toBe(4);
 	});
 });
+
+describe('named anchors', () => {
+	const UNCHANGED: Record<string, string> = {
+		'empty anchor': '<p><a name="section-2"></a>Section 2</p>',
+		'empty anchor between text': '<p>before<a name="mid"></a>after</p>',
+		'anchor wrapping text': '<p><a name="section-2">Section 2</a> body</p>',
+		'anchor wrapping marked text': '<p><a name="intro"><strong>Intro</strong></a></p>',
+		'anchor wrapping a non-breaking space': '<p>a<a name="gap">&nbsp;</a>b</p>',
+		'empty anchor in a heading': '<h2><a name="part-1"></a>Part 1</h2>',
+		'empty anchor with id and class': '<p><a class="anchor" id="top" name="top"></a>text</p>',
+		'anchor next to a link to it': '<p><a name="faq"></a>FAQ <a href="#faq">jump</a></p>',
+		'anchor wrapping a space between words': '<p>a<a name="gap"> </a>b</p>',
+	};
+
+	test.each(Object.entries(UNCHANGED))('%s survives round-trip unchanged', (_name, html) => {
+		expect(roundTrip(html)).toBe(html);
+	});
+
+	test.each(Object.entries(UNCHANGED))('%s does not trip the normalization check', (_name, html) => {
+		const { extensions, key } = buildFieldSchema();
+
+		expect(computeValueNormalizationDiff(html, extensions, key)).toBeNull();
+	});
+
+	test('an anchor with an empty name is not kept', () => {
+		expect(roundTrip('<p>a<a name=""></a>b</p>')).toBe('<p>ab</p>');
+	});
+
+	test('a top-level anchor is kept inside a paragraph', () => {
+		expect(roundTrip('<a name="top"></a><h2>Title</h2>')).toBe('<p><a name="top"></a></p><h2>Title</h2>');
+	});
+
+	test('a link with a name is still a link', () => {
+		expect(roundTrip('<p><a href="https://directus.io" name="x">link</a></p>')).toBe(
+			'<p><a href="https://directus.io">link</a></p>',
+		);
+	});
+
+	test('an anchor without a name is not kept', () => {
+		expect(roundTrip('<p><a>text</a></p>')).toBe('<p>text</p>');
+	});
+
+	test('the editor shows an empty anchor as a marker with its name', () => {
+		const editor = new Editor({ extensions: editorExtensions, content: '<p><a name="section-2"></a>text</p>' });
+		const marker = editor.view.dom.querySelector('.named-anchor');
+
+		expect(marker?.getAttribute('title')).toBe('section-2');
+		expect(marker?.getAttribute('contenteditable')).toBe('false');
+		editor.destroy();
+	});
+
+	describe('editing anchored text', () => {
+		function edit(html: string, change: (editor: Editor) => void): string {
+			const editor = new Editor({ extensions: editorExtensions, content: html });
+			change(editor);
+			const out = editor.getHTML();
+			editor.destroy();
+			return out;
+		}
+
+		test('adding a link keeps the anchor as an empty anchor before the link', () => {
+			const out = edit('<p><a name="s">hello</a> world</p>', (editor) =>
+				editor.chain().setTextSelection({ from: 1, to: 6 }).setLink({ href: 'https://directus.io' }).run(),
+			);
+
+			expect(out).toBe('<p><a name="s"></a><a href="https://directus.io">hello</a> world</p>');
+			expect(roundTrip(out)).toBe(out);
+		});
+
+		test('clearing formatting keeps the anchor as an empty anchor', () => {
+			const out = edit('<p><a class="anchor" name="s"><strong>hello</strong></a> world</p>', (editor) =>
+				editor.chain().selectAll().unsetAllMarks().run(),
+			);
+
+			expect(out).toBe('<p><a class="anchor" name="s"></a>hello world</p>');
+		});
+
+		test('clearing formatting on part of the anchored text keeps the anchor on the rest', () => {
+			const out = edit('<p><a name="s">hello</a></p>', (editor) =>
+				editor.chain().setTextSelection({ from: 4, to: 6 }).unsetAllMarks().run(),
+			);
+
+			expect(out).toBe('<p><a name="s">hel</a>lo</p>');
+		});
+
+		test('deleting the anchored text deletes the anchor', () => {
+			const out = edit('<p>a <a name="s">hello</a> b</p>', (editor) =>
+				editor.chain().setTextSelection({ from: 3, to: 8 }).deleteSelection().run(),
+			);
+
+			expect(out).toBe('<p>a  b</p>');
+		});
+	});
+});

@@ -9,6 +9,7 @@ import { figureExtensions } from './figure';
 import { CustomImage } from './image';
 import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
+import { namedAnchorExtensions } from './named-anchor';
 import { buildContainerParagraphSchema } from './no-container-paragraphs';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
@@ -46,6 +47,7 @@ export const editorExtensions = [
 	CharacterCount,
 	...figureExtensions,
 	...semanticHtml,
+	...namedAnchorExtensions,
 	PreservedAttributes,
 ];
 
