@@ -19,6 +19,7 @@ import { get } from 'micromustache';
 import PQueue from 'p-queue';
 import pRetry from 'p-retry';
 import { useBus } from './bus/index.js';
+import { FLOW_SECRET_KEYS } from './constants.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import { useLogger } from './logger/index.js';
@@ -516,22 +517,7 @@ class FlowManager {
 						data: redactObject(
 							keyedData,
 							{
-								keys: [
-									['**', 'headers', 'authorization'],
-									['**', 'headers', 'cookie'],
-									['**', 'query', 'access_token'],
-									['**', 'payload', 'password'],
-									['**', 'payload', 'token'],
-									['**', 'payload', 'tfa_secret'],
-									['**', 'payload', 'external_identifier'],
-									['**', 'payload', 'auth_data'],
-									['**', 'payload', 'credentials'],
-									['**', 'payload', 'ai_openai_api_key'],
-									['**', 'payload', 'ai_anthropic_api_key'],
-									['**', 'payload', 'ai_google_api_key'],
-									['**', 'payload', 'ai_openrouter_api_key'],
-									['**', 'payload', 'ai_openai_compatible_api_key'],
-								],
+								keys: FLOW_SECRET_KEYS,
 								values: this.envs,
 							},
 							getRedactedString,
@@ -589,22 +575,7 @@ class FlowManager {
 			optionData = redactObject(
 				keyedData,
 				{
-					keys: [
-						['**', 'headers', 'authorization'],
-						['**', 'headers', 'cookie'],
-						['**', 'query', 'access_token'],
-						['**', 'payload', 'password'],
-						['**', 'payload', 'token'],
-						['**', 'payload', 'tfa_secret'],
-						['**', 'payload', 'external_identifier'],
-						['**', 'payload', 'auth_data'],
-						['**', 'payload', 'credentials'],
-						['**', 'payload', 'ai_openai_api_key'],
-						['**', 'payload', 'ai_anthropic_api_key'],
-						['**', 'payload', 'ai_google_api_key'],
-						['**', 'payload', 'ai_openrouter_api_key'],
-						['**', 'payload', 'ai_openai_compatible_api_key'],
-					],
+					keys: FLOW_SECRET_KEYS,
 				},
 				getRedactedString,
 			);
