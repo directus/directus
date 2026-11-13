@@ -74,12 +74,12 @@ const emit = defineEmits(['update:modelValue']);
 const fieldsStore = useFieldsStore();
 
 const fieldDefinitions = computed<Field[]>(() => {
-	if (props.collection) {
-		return fieldsStore.getFieldsForCollection(props.collection);
-	}
-
 	if (props.fields) {
 		return props.fields;
+	}
+
+	if (props.collection) {
+		return fieldsStore.getFieldsForCollection(props.collection);
 	}
 
 	return [];
@@ -262,12 +262,12 @@ function useForm() {
 	}
 
 	function getFields(): Field[] {
-		if (props.collection) {
-			return fieldsStore.getFieldsForCollection(props.collection);
-		}
-
 		if (props.fields) {
 			return props.fields;
+		}
+
+		if (props.collection) {
+			return fieldsStore.getFieldsForCollection(props.collection);
 		}
 
 		throw new Error('[v-form]: You need to pass either the collection or fields prop.');

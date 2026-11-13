@@ -127,6 +127,28 @@ function createRelation(field: string, relatedCollection: string) {
 }
 
 describe('VForm', () => {
+	describe('fields prop', () => {
+		it('renders the passed fields instead of the collection fields when both are given', () => {
+			const fieldsStore = useFieldsStore(global.plugins[1] as any);
+			const storeField = createField({ field: 'store_field', name: 'Store Field' });
+			const passedField = createField({ field: 'passed_field', name: 'Passed Field' });
+
+			vi.spyOn(fieldsStore, 'getFieldsForCollection').mockReturnValue([storeField]);
+
+			const wrapper = mount(VForm, {
+				props: {
+					collection: 'test_collection',
+					fields: [passedField],
+					primaryKey: '+',
+				},
+				global,
+			});
+
+			const renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+			expect(renderedFields).toEqual(['passed_field']);
+		});
+	});
+
 	describe('comparison mode with showDifferencesOnly', () => {
 		it('updates visible fields when showDifferencesOnly toggles', async () => {
 			const modifiedField = createField({ field: 'modified_field', name: 'Modified Field' });

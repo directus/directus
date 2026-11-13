@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
+import type { Field } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isObject, omit } from 'lodash-es';
 import { computed, ref, toRefs } from 'vue';
@@ -27,6 +28,7 @@ const props = defineProps<{
 	active?: boolean;
 	edits?: Record<string, any>;
 	stageOnSave?: boolean;
+	fields?: Field[];
 }>();
 
 const emit = defineEmits<{
@@ -252,6 +254,7 @@ function useTranslationsFields() {
 			<VForm
 				v-model="internalEdits"
 				:collection="collection"
+				:fields="fields"
 				batch-mode
 				primary-key="+"
 				:validation-errors="validationErrors"
