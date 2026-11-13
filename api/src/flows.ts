@@ -13,10 +13,11 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
-import type { Knex } from 'knex';
+import knex, { type Knex } from 'knex';
 import { pick } from 'lodash-es';
 import { get } from 'micromustache';
 import PQueue from 'p-queue';
+import pRetry from 'p-retry';
 import { useBus } from './bus/index.js';
 import { FLOW_SECRET_KEYS } from './constants.js';
 import getDatabase from './database/index.js';
@@ -36,6 +37,7 @@ import { isUnauthenticated } from './utils/is-unauthenticated.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 import { getCollectionFromSchema } from './utils/schema/get-collection-from-schema.js';
+import { TimeoutError } from './utils/with-timeout.js';
 
 let flowManager: FlowManager | undefined;
 
@@ -62,12 +64,18 @@ const ENV_KEY = '$env';
 /** Log and the AI steps are often given whole trigger objects, so secrets are redacted before they're logged or sent out */
 const REDACTED_OPERATIONS = ['log', 'ai-text', 'ai-image'];
 
+/** Retries of a failed flows read on reload, waiting 1s then 2s */
+const RELOAD_READ_RETRIES = 2;
+
 interface FlowMessage {
 	type: 'reload';
 }
 
 class FlowManager {
-	private isLoaded = false;
+	/**
+	 * Set once the initial load completes and never reset, so a failed reload doesn't block later ones
+	 */
+	private isInitialized = false;
 
 	private flows: Record<string, Flow> = {};
 	private operations: Map<string, OperationHandler> = new Map();
@@ -87,30 +95,62 @@ class FlowManager {
 		const messenger = useBus();
 		const logger = useLogger();
 
-		messenger.subscribe<FlowMessage>('flows', (event) => {
-			if (event.type === 'reload') {
+		messenger
+			.subscribe<FlowMessage>('flows', (event) => {
+				// A reload still waiting in the queue reads the latest flows when it starts, so another one is redundant
+				if (event?.type !== 'reload' || this.reloadQueue.size !== 0) return;
+
 				this.reloadQueue.add(async () => {
-					if (this.isLoaded) {
+					if (!this.isInitialized) {
+						logger.warn('Flow manager is not initialized yet, skipping reload');
+						return;
+					}
+
+					try {
+						// Read before unloading, so a failed read doesn't leave the manager empty
+						// TODO: Improve message handling so a failed reload can't leave this instance out of sync
+						const flows = await pRetry(() => this.readFlows(), {
+							retries: RELOAD_READ_RETRIES,
+							shouldRetry: ({ error, attemptNumber }) => {
+								// Timeouts already waited long before failing, retrying would hold the queue even longer
+								if (error instanceof knex.KnexTimeoutError || error instanceof TimeoutError) return false;
+
+								logger.warn(error, `Failed to read flows on reload (attempt ${attemptNumber}), retrying`);
+								return true;
+							},
+						});
+
 						await this.unload();
-						await this.load();
-					} else {
-						logger.warn('Flows have to be loaded before they can be reloaded');
+						this.load(flows);
+					} catch (error) {
+						logger.error(error, 'Failed to reload flows, flows on this instance may be outdated until the next reload');
 					}
 				});
-			}
-		});
+			})
+			.catch((error) => {
+				logger.error(error, 'Failed to subscribe to flow messages');
+			});
 	}
 
 	public async initialize(): Promise<void> {
-		if (!this.isLoaded) {
-			await this.load();
-		}
+		const logger = useLogger();
+
+		// Ensure change/reload requested during initialize are not skipped
+		await this.reloadQueue.add(async () => {
+			if (this.isInitialized) {
+				logger.warn('Flow manager is already initialized, skipping initialization');
+				return;
+			}
+
+			const flows = await this.readFlows();
+			this.load(flows);
+
+			this.isInitialized = true;
+		});
 	}
 
 	public async reload(): Promise<void> {
-		const messenger = useBus();
-
-		messenger.publish<FlowMessage>('flows', { type: 'reload' });
+		await useBus().publish<FlowMessage>('flows', { type: 'reload' });
 	}
 
 	public addOperation(id: string, operation: OperationHandler): void {
@@ -159,9 +199,10 @@ class FlowManager {
 		return this.flows[id];
 	}
 
-	private async load(): Promise<void> {
-		const logger = useLogger();
-
+	/**
+	 * Read the active flows with their operations from the database, constructed into flow trees.
+	 */
+	private async readFlows(): Promise<Flow[]> {
 		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
 		const flows = await flowsService.readByQuery({
@@ -170,9 +211,16 @@ class FlowManager {
 			limit: -1,
 		});
 
-		const flowTrees = flows.map((flow) => constructFlowTree(flow));
+		return flows.map((flow) => constructFlowTree(flow));
+	}
 
-		for (const flow of flowTrees) {
+	/**
+	 * Load the given flows into the manager and register their triggers
+	 */
+	private load(flows: Flow[]): void {
+		const logger = useLogger();
+
+		for (const flow of flows) {
 			this.flows[flow.id] = flow;
 
 			if (flow.trigger === 'event') {
@@ -261,7 +309,10 @@ class FlowManager {
 					}
 
 					if (flow.options['async']) {
-						this.executeFlow(flow, data, context);
+						this.executeFlow(flow, data, context).catch((error) => {
+							logger.error(error, `Failed to run flow "${flow.id}"`);
+						});
+
 						return { result: undefined, cacheEnabled };
 					} else {
 						return { result: await this.executeFlow(flow, data, context), cacheEnabled };
@@ -354,7 +405,10 @@ class FlowManager {
 					}
 
 					if (flow.options['async']) {
-						this.executeFlow(flow, data, context);
+						this.executeFlow(flow, data, context).catch((error) => {
+							logger.error(error, `Failed to run flow "${flow.id}"`);
+						});
+
 						return { result: undefined };
 					} else {
 						return { result: await this.executeFlow(flow, data, context) };
@@ -367,11 +421,11 @@ class FlowManager {
 				this.webhookFlowHandlers[`POST-${flow.id}`] = handler;
 			}
 		}
-
-		this.isLoaded = true;
 	}
 
 	private async unload(): Promise<void> {
+		const logger = useLogger();
+
 		for (const trigger of this.triggerHandlers) {
 			for (const event of trigger.events) {
 				switch (event.type) {
@@ -382,7 +436,12 @@ class FlowManager {
 						emitter.offAction(event.name, event.handler);
 						break;
 					case 'schedule':
-						await event.job.stop();
+						// stop() halts the job, only the clock reset can fail here.
+						// The leftover clock value is harmless, as later ticks always set a larger one
+						await event.job.stop().catch((error) => {
+							logger.error(error, `Failed to stop schedule for flow "${trigger.id}"`);
+						});
+
 						break;
 				}
 			}
@@ -392,8 +451,6 @@ class FlowManager {
 		this.triggerHandlers = [];
 		this.operationFlowHandlers = {};
 		this.webhookFlowHandlers = {};
-
-		this.isLoaded = false;
 	}
 
 	private async executeFlow(flow: Flow, data: unknown = null, context: Record<string, unknown> = {}): Promise<unknown> {

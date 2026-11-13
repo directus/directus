@@ -1,0 +1,84 @@
+@mixin card-select-interface($root-selector) {
+	.card-select-interface {
+		--card-min-width: 12rem;
+
+		padding: 0;
+
+		&.size-small {
+			--card-min-width: 9rem;
+		}
+
+		&.size-large {
+			--card-min-width: 16rem;
+		}
+
+		.grid {
+			--card-track-min-width: min(var(--card-min-width), 100%);
+			--focus-ring-space: calc(var(--focus-ring-width) + var(--focus-ring-offset));
+			--card-select-focus-ring-color: var(--theme--primary-subdued);
+
+			display: grid;
+			inline-size: 100%;
+			gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
+			grid-template-columns: repeat(auto-fill, minmax(var(--card-track-min-width), 1fr));
+			padding: var(--focus-ring-space);
+			margin: calc(-1 * var(--focus-ring-space));
+
+			&.two-column-floor {
+				--card-track-min-width: min(var(--card-min-width), calc((100% - var(--theme--form--column-gap)) / 2));
+			}
+		}
+
+		:deep(#{$root-selector}) {
+			--border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
+			display: flex;
+			flex-direction: column;
+			padding: 0;
+			background: none;
+			border: none;
+			cursor: pointer;
+			transition: opacity var(--fast) var(--transition);
+
+			&:hover:not(:disabled) {
+				--border-color: var(--theme--form--field--input--border-color-hover);
+			}
+
+			&:focus {
+				--border-color: var(--theme--primary);
+			}
+
+			&[data-state='checked'] {
+				--border-color: var(--theme--primary);
+			}
+
+			&.unselected {
+				opacity: 0.8;
+			}
+
+			&:disabled {
+				cursor: not-allowed;
+				opacity: 0.5;
+			}
+		}
+
+		.v-input {
+			margin-block-end: var(--theme--form--row-gap);
+		}
+	}
+
+	:deep(#{$root-selector}) {
+		inline-size: 100%;
+		outline: none;
+		display: block;
+		text-align: start;
+
+		&:focus-visible {
+			outline: none;
+
+			.preview {
+				outline: var(--focus-ring-width) solid var(--card-select-focus-ring-color);
+				outline-offset: var(--focus-ring-offset);
+			}
+		}
+	}
+}
