@@ -1641,6 +1641,17 @@ triggers:
   webhook:
     method: Metode
 operations:
+  ai-image:
+    background: Bakgrunn
+    starting_points:
+      icon: Ikon
+  ai-text:
+    files: Filer
+    type_text: Tekst
+    view_fields: Felt
+    view_json: JSON
+    starting_points:
+      translate: Oversett
   json-web-token:
     options: Alternativer
   log:
