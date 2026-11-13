@@ -4,6 +4,7 @@ import PanelMetricList from './panel-metric-list.vue';
 import PreviewSVG from './preview.svg?raw';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 export default definePanel({
 	id: 'metric-list',
@@ -47,15 +48,56 @@ export default definePanel({
 			panelQuery.query.filter = options.filter;
 		}
 
+		if (options.groupByDisplayField) {
+			const relationsStore = useRelationsStore();
+			const fieldsStore = useFieldsStore();
+			const relation = relationsStore.getRelationForField(options.collection, options.groupByField);
+
+			if (relation?.related_collection) {
+				const relatedPrimaryKey = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection);
+
+				const displayQuery: PanelQuery = {
+					collection: relation.related_collection,
+					query: {
+						fields: [relatedPrimaryKey?.field ?? 'id', options.groupByDisplayField],
+						limit: -1,
+					},
+				};
+
+				return [panelQuery, displayQuery];
+			}
+		}
+
 		return panelQuery;
 	},
 	options: ({ options }) => {
 		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
 
 		const fieldType = computed(() => {
 			return options?.collection && options?.aggregateField
 				? fieldsStore.getField(options.collection, options.aggregateField)?.type
 				: null;
+		});
+
+		const groupByRelation = computed(() => {
+			if (!options?.collection || !options?.groupByField) return null;
+			const relation = relationsStore.getRelationForField(options.collection, options.groupByField);
+			if (!relation?.related_collection) return null;
+
+			return relation.related_collection;
+		});
+
+		const groupByDisplayFieldChoices = computed(() => {
+			if (!groupByRelation.value) return [];
+			const fields = fieldsStore.getFieldsForCollection(groupByRelation.value);
+
+			return fields
+				.filter((field) => !field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
+				.map((field) => ({
+					text: field.name,
+					value: field.field,
+				}));
 		});
 
 		const fieldIsNumber = computed(() =>
@@ -101,6 +143,21 @@ export default definePanel({
 						allowNone: true,
 					},
 					width: 'half',
+				},
+			},
+			{
+				field: 'groupByDisplayField',
+				name: 'GroupBy Display Field',
+				type: 'string',
+				meta: {
+					interface: 'select-dropdown',
+					width: 'half',
+					options: {
+						choices: groupByDisplayFieldChoices.value,
+						allowNone: true,
+						placeholder: '$t:select_a_field',
+					},
+					hidden: !groupByRelation.value,
 				},
 			},
 			{
