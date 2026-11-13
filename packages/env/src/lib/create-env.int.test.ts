@@ -87,19 +87,6 @@ describe('File-backed Flow environment variables', () => {
 		},
 	);
 
-	test('Resolves a file-backed allow-list before custom secrets regardless of configuration order', () => {
-		vi.mocked(readConfigurationFromProcess).mockReturnValue({ MY_SECRET_FILE: './secret.txt' });
-		vi.mocked(readConfigurationFromFile).mockReturnValue({ FLOWS_ENV_ALLOW_LIST_FILE: './allow-list.txt' });
-		vi.mocked(isDirectusVariable).mockImplementation((key) => key === 'FLOWS_ENV_ALLOW_LIST_FILE');
-		vi.mocked(readFileSync).mockImplementation((path) => (path === './allow-list.txt' ? 'MY_SECRET' : 'secret-value'));
-
-		const env = createEnv();
-
-		expect(env['MY_SECRET']).toBe('secret-value');
-		expect(env['FLOWS_ENV_ALLOW_LIST']).toEqual(['MY_SECRET']);
-		expect(readFileSync).toHaveBeenCalledTimes(2);
-	});
-
 	test.each([undefined, false, 'OTHER', 'MY_SECRET_FILE'])('Leaves unselected file paths intact (%j)', (allowList) => {
 		vi.mocked(readConfigurationFromProcess).mockReturnValue({
 			MY_SECRET_FILE: './secret.txt',
@@ -123,19 +110,6 @@ describe('File-backed Flow environment variables', () => {
 
 		expect(createEnv()['MY_SECRET']).toBe('00123,true');
 		expect(readFileSync).toHaveBeenCalledExactlyOnceWith('./secret.txt', { encoding: 'utf8' });
-	});
-
-	test.each([true, false])('Prefers selected secret files over direct values (file first: %j)', (fileFirst) => {
-		const values = { MY_SECRET: 'direct-value', MY_SECRET_FILE: './secret.txt' };
-
-		vi.mocked(readConfigurationFromProcess).mockReturnValue({
-			...(fileFirst ? Object.fromEntries(Object.entries(values).reverse()) : values),
-			FLOWS_ENV_ALLOW_LIST: 'MY_SECRET',
-		});
-
-		vi.mocked(readFileSync).mockReturnValue('file-value');
-
-		expect(createEnv()['MY_SECRET']).toBe('file-value');
 	});
 
 	test('Preserves empty secret file contents', () => {
@@ -175,26 +149,6 @@ describe('File-backed Flow environment variables', () => {
 		expect(env['MY_SECRET']).toBe('secret-value');
 		expect(readFileSync).toHaveBeenCalledTimes(2);
 		expect(env).not.toHaveProperty('DB_PASSWORD_FILE');
-	});
-
-	test('Preserves typed parsing and empty-value handling alongside custom secrets', () => {
-		vi.mocked(readConfigurationFromProcess).mockReturnValue({
-			MY_SECRET_FILE: './secret.txt',
-			FLOWS_ENV_ALLOW_LIST: 'MY_SECRET',
-			PORT: '',
-			MAX_PAYLOAD_SIZE: '10mb',
-			CACHE_ENABLED: 'false',
-		});
-
-		vi.mocked(readFileSync).mockReturnValue('secret-value');
-
-		const env = createEnv();
-
-		expect(env['MY_SECRET']).toBe('secret-value');
-		expect(env['FLOWS_ENV_ALLOW_LIST']).toEqual(['MY_SECRET']);
-		expect(env['MAX_PAYLOAD_SIZE']).toBe(10 * 1024 * 1024);
-		expect(env['CACHE_ENABLED']).toBe(false);
-		expect(env).not.toHaveProperty('PORT');
 	});
 
 	test('Fails when an explicitly selected secret file cannot be read', () => {

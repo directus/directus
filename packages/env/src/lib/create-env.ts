@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { toArray } from '@directus/utils';
 import { DEFAULTS } from '../constants/defaults.js';
 import type { Env } from '../types/env.js';
 import { getConfigPath } from '../utils/get-config-path.js';
@@ -17,10 +18,12 @@ import { readConfigurationFromFile } from './read-configuration-from-file.js';
 export function createEnv(): Env {
 	const rawConfiguration = { ...readConfigurationFromProcess(), ...readConfigurationFromFile(getConfigPath()) };
 
+	const flowsEnvAllowList = toArray(rawConfiguration['FLOWS_ENV_ALLOW_LIST']);
+
 	const output: Record<string, unknown> = {};
 
 	for (const [rawKey, rawValue] of Object.entries(rawConfiguration)) {
-		const [key, value] = isDirectusVariable(rawKey) ? resolveFileValue(rawKey, rawValue) : [rawKey, rawValue];
+		const [key, value] = resolveFileValue(rawKey, rawValue, flowsEnvAllowList);
 		const parsedValue = parseValue(key, value);
 
 		if (parsedValue !== undefined) output[key] = parsedValue;
@@ -31,38 +34,27 @@ export function createEnv(): Env {
 		output[key] = getDefaultType(key) ? cast(value, key) : value;
 	}
 
-	const flowEnvAllowList = output['FLOWS_ENV_ALLOW_LIST'];
-
-	if (Array.isArray(flowEnvAllowList)) {
-		for (const [rawKey, rawValue] of Object.entries(rawConfiguration)) {
-			if (!isFileKey(rawKey) || isDirectusVariable(rawKey) || typeof rawValue !== 'string') continue;
-			if (!flowEnvAllowList.includes(removeFileSuffix(rawKey))) continue;
-
-			const [key, value] = resolveFileValue(rawKey, rawValue);
-			const parsedValue = parseValue(key, value);
-
-			if (parsedValue !== undefined) output[key] = parsedValue;
-			else delete output[key];
-
-			delete output[rawKey];
-		}
-	}
-
 	return output as Env;
 }
 
 /**
- * Replaces `*_FILE` variables with the content of the file they point to, keeping the cast prefix if present
+ * Replaces `*_FILE` variables with the content of the file they point to, keeping the cast prefix if present.
  */
-function resolveFileValue(key: string, value: unknown): [string, unknown] {
+function resolveFileValue(key: string, value: unknown, extraAllowed: unknown[]): [string, unknown] {
 	if (!isFileKey(key) || typeof value !== 'string') return [key, value];
 
+	if (!isDirectusVariable(key) && !extraAllowed.includes(removeFileSuffix(key))) return [key, value];
+
+	return [removeFileSuffix(key), readFileValue(key, value)];
+}
+
+function readFileValue(key: string, value: string): string {
 	const castFlag = getCastFlag(value);
 	const castPrefix = castFlag ? castFlag + ':' : '';
 	const filePath = castFlag ? value.replace(castPrefix, '') : value;
 
 	try {
-		return [removeFileSuffix(key), castPrefix + readFileSync(filePath, { encoding: 'utf8' })];
+		return castPrefix + readFileSync(filePath, { encoding: 'utf8' });
 	} catch {
 		throw new Error(`Failed to read value from file "${value}", defined in environment variable "${key}".`);
 	}
