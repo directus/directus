@@ -1127,14 +1127,14 @@ catalogs:
 
 overrides:
   js-beautify>editorconfig: 4.0.0
-  js-beautify>glob: 14.0.3
-  unplugin-yaml>yaml: 2.9.0
+  js-beautify>glob: 14.0.6
+  unplugin-yaml>yaml: 2.9.1
   uuid: 11.1.1
   '@ai-sdk/provider-utils': 4.0.51
   '@opentelemetry/core': 2.11.0
-  '@directus/mock-license-server>fastify': 5.12.7
+  '@directus/mock-license-server>fastify': 5.12.8
   zod: 4.6.7
-  '@ai-sdk/devtools>@hono/node-server': 2.1.6
+  '@hono/node-server': 2.1.8
   archiver>readdir-glob: 4.0.0
 
 importers:
@@ -4886,8 +4886,8 @@ packages:
   '@hapi/topo@6.0.2':
     resolution: {integrity: sha512-KR3rD5inZbGMrHmgPxsJ9dbi6zEK+C3ZwUwTa+eMwWLz7oijWUTWD2pMSNNYJAU6Qq+65NkxXjqHr/7LM2Xkqg==}
 
-  '@hono/node-server@2.1.6':
-    resolution: {integrity: sha512-p/KH9MnfNcsm3sR6x4lNgm5j+QN4Et8srKredl9DZfXiyZ1UQ3aQ2YVpFLbqktYN5JI+DB+VZFKM2PqE5hLKjQ==}
+  '@hono/node-server@2.1.8':
+    resolution: {integrity: sha512-jdf7FHh6A1lzjpHHQUgxsg2GeER2vMetnAOfeActzcoli6jamlK+NAwL6Dsr5Fl3BS3tYUQzCdtZjU8Qxv7bEA==}
     engines: {node: '>=20'}
     peerDependencies:
       hono: ^4 || ^5.0.0-0
@@ -9316,8 +9316,8 @@ packages:
     resolution: {integrity: sha512-eRnCtTTtGZFpQCwhJiUOuxPQWRXVKYDn0b2PeHfXL6/Zi53SLAzAHfVhVWK2AryC/WH05kGfxhFIPvTF0SXQzg==}
     engines: {node: '>= 4.9.1'}
 
-  fastify@5.12.7:
-    resolution: {integrity: sha512-v4pEPsTRPuqlDIYiQFB+BHjVN4SdHX9u0ABk0ZDUKbbdY1vsNryUd1j4Z+jQEZajvYIVk047Kimva9/AJ79GYw==}
+  fastify@5.12.8:
+    resolution: {integrity: sha512-moP8exb2sCHLUbJkwp+I6C0padhy4D8lp0SdmzY7HhSdZuqm7O/u3o2aq7u8okaQ//33QDzj3G/u+FsSdB8Qzw==}
 
   fastq@1.20.3:
     resolution: {integrity: sha512-XKv5nnLs6nLF71NgiKJLIZFLkPyIEuOselLG7ujZnGrRfQK8HpvY+WqKhAJUAdLomwVHErVS4LfxFlPq0/FTAw==}
@@ -9570,8 +9570,8 @@ packages:
   glob-to-regexp@0.4.1:
     resolution: {integrity: sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==}
 
-  glob@14.0.3:
-    resolution: {integrity: sha512-A1vjIwC3qpdCso45Iw127gnp7sPhqgY8lUQhDrArIs+GbmfaaVPFuoyy7WyLT9EPZCRZ7j7aLdwUhQmHWesEow==}
+  glob@14.0.6:
+    resolution: {integrity: sha512-OwXjVP2svY5EyLY75Vek96C8qK43gqrt4xsZ+qSILdnaEiJPXkd62mcfUSNx/TQErQRdu5uM5kF67sfONragKw==}
     engines: {node: 18 || 20 || >=22}
 
   global-modules@2.0.0:
@@ -13515,11 +13515,6 @@ packages:
     resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
     engines: {node: '>=18'}
 
-  yaml@2.9.0:
-    resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
-    engines: {node: '>= 14.6'}
-    hasBin: true
-
   yaml@2.9.1:
     resolution: {integrity: sha512-3NxN8+78OdzbT7C/WjGsyfPAtJaN3FNDsWxv7Y7mcDsT/oOmgW8BpyQQFFBnvZE3j9Y2Sdz1ULFLezL7Eb2yFw==}
     engines: {node: '>= 14.6'}
@@ -13582,7 +13577,7 @@ snapshots:
   '@ai-sdk/devtools@0.0.15':
     dependencies:
       '@ai-sdk/provider': 3.0.8
-      '@hono/node-server': 2.1.6(hono@4.13.16)
+      '@hono/node-server': 2.1.8(hono@4.13.16)
       hono: 4.13.16
 
   '@ai-sdk/gateway@3.0.66(zod@4.6.7)':
@@ -14621,7 +14616,7 @@ snapshots:
     dependencies:
       '@directus/license': 0.6.0(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))
       '@directus/types': 15.0.3(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0(mysql2@3.24.4(@types/node@26.2.0))(pg@8.16.3)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2)))(mysql2@3.24.4(@types/node@26.2.0))(openapi3-ts@4.5.0)(pg@8.16.3)(pino@9.7.0)(sqlite3@6.0.1)(supports-color@10.2.2)(tedious@18.6.1(supports-color@10.2.2))(vue-router@4.6.3(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))
-      fastify: 5.12.7
+      fastify: 5.12.8
       jose: 6.2.3
       lodash-es: 4.18.1
       typebox: 1.1.37
@@ -15163,7 +15158,7 @@ snapshots:
     dependencies:
       '@hapi/hoek': 11.0.7
 
-  '@hono/node-server@2.1.6(hono@4.13.16)':
+  '@hono/node-server@2.1.8(hono@4.13.16)':
     dependencies:
       hono: 4.13.16
 
@@ -15753,7 +15748,7 @@ snapshots:
 
   '@modelcontextprotocol/sdk@1.32.1(supports-color@10.2.2)(zod@4.6.7)':
     dependencies:
-      '@hono/node-server': 2.1.6(hono@4.13.16)
+      '@hono/node-server': 2.1.8(hono@4.13.16)
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
       content-type: 1.0.5
@@ -19540,7 +19535,7 @@ snapshots:
 
   fastest-levenshtein@1.0.16: {}
 
-  fastify@5.12.7:
+  fastify@5.12.8:
     dependencies:
       '@fastify/ajv-compiler': 4.0.7
       '@fastify/error': 4.2.1
@@ -19838,9 +19833,9 @@ snapshots:
 
   glob-to-regexp@0.4.1: {}
 
-  glob@14.0.3:
+  glob@14.0.6:
     dependencies:
-      minimatch: 11.0.4
+      minimatch: 11.0.8
       minipass: 7.1.3
       path-scurry: 3.0.0
 
@@ -20292,7 +20287,7 @@ snapshots:
     dependencies:
       config-chain: 1.1.13
       editorconfig: 4.0.0
-      glob: 14.0.3
+      glob: 14.0.6
       js-cookie: 3.0.8
       nopt: 7.2.1
 
@@ -23639,7 +23634,7 @@ snapshots:
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.59.0)
       unplugin: 2.3.10
-      yaml: 2.9.0
+      yaml: 2.9.1
     optionalDependencies:
       esbuild: 0.28.2
       rolldown: 1.2.16
@@ -24293,8 +24288,6 @@ snapshots:
   yallist@4.0.0: {}
 
   yallist@5.0.0: {}
-
-  yaml@2.9.0: {}
 
   yaml@2.9.1: {}
 

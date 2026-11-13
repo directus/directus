@@ -14,14 +14,14 @@ savePrefix: ''
 
 overrides:
   js-beautify>editorconfig: 4.0.0
-  js-beautify>glob: 14.0.3
-  unplugin-yaml>yaml: 2.9.0
+  js-beautify>glob: 14.0.6
+  unplugin-yaml>yaml: 2.9.1
   uuid: 11.1.1
   '@ai-sdk/provider-utils': 4.0.51
   '@opentelemetry/core': 2.11.0
-  '@directus/mock-license-server>fastify': 5.12.7
+  '@directus/mock-license-server>fastify': 5.12.8
   zod: 4.6.7
-  '@ai-sdk/devtools>@hono/node-server': 2.1.6
+  '@hono/node-server': 2.1.8
   archiver>readdir-glob: 4.0.0
 
 allowBuilds:
