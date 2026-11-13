@@ -16,7 +16,7 @@ describe('No value', () => {
 });
 
 describe('Valid value (primitive)', () => {
-	const types: FilterOperator[] = ['eq', 'lt', 'lte', 'gt', 'gte'];
+	const types: FilterOperator[] = ['eq', 'ieq', 'lt', 'lte', 'gt', 'gte'];
 
 	/** Can't be randomized, as we're using snapshot tests */
 	const valid = 15;
@@ -40,7 +40,7 @@ describe('Valid value (list)', () => {
 });
 
 describe('Invalid value (primitive)', () => {
-	const types: FilterOperator[] = ['neq'];
+	const types: FilterOperator[] = ['neq', 'nieq'];
 
 	/** Can't be randomized, as we're using snapshot tests */
 	const invalid = 15;
@@ -64,7 +64,7 @@ describe('Invalid value (list)', () => {
 });
 
 describe('Substring', () => {
-	const types: FilterOperator[] = ['contains', 'icontains', 'ncontains'];
+	const types: FilterOperator[] = ['contains', 'icontains', 'ncontains', 'nicontains'];
 
 	/** Can't be randomized, as we're using snapshot tests */
 	const substring = 'test_substring';
