@@ -1827,6 +1827,15 @@ triggers:
   webhook:
     method: Metodă
 operations:
+  ai-image:
+    background: Fundal
+    starting_points:
+      icon: Pictogramă
+  ai-text:
+    files: Fişiere
+    type_text: Text
+    view_fields: Câmpuri
+    view_json: JSON
   json-web-token:
     token: Token
     options: Opţiuni
