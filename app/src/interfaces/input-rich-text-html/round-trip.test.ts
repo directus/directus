@@ -356,6 +356,11 @@ describe('round-trip: inline image', () => {
 		'linked image opening in a new tab':
 			'<p><a target="_blank" rel="noopener noreferrer" href="https://directus.io"><img src="/assets/abc" alt="a"></a></p>',
 		'link around text and an image': '<p><a href="https://directus.io">before<img src="/assets/abc" alt="a"></a></p>',
+		'image in a figure caption':
+			'<figure><img src="/assets/abc" alt="photo"><figcaption>c<img src="/assets/x" alt="x">ap</figcaption></figure>',
+		'image in a description term': '<dl><dt>term <img src="/assets/abc" alt="a"></dt><dd><p>definition</p></dd></dl>',
+		'image in a details summary':
+			'<details><summary>more <img src="/assets/abc" alt="a"></summary><p>body</p></details>',
 	};
 
 	test.each(Object.entries(UNCHANGED))('%s survives round-trip unchanged', (_name, html) => {
@@ -399,12 +404,12 @@ describe('round-trip: inline image', () => {
 		editor.destroy();
 	});
 
-	test('an image in a paragraph, heading or list item is inline', () => {
-		expect(imageTypes('<p><img src="/a"></p><h3><img src="/b"></h3><ul><li><img src="/c"></li></ul>')).toEqual([
-			'inlineImage',
-			'inlineImage',
-			'inlineImage',
-		]);
+	test('an image in a paragraph, heading, list item, caption, term or summary is inline', () => {
+		expect(
+			imageTypes(
+				'<p><img src="/a"></p><h3><img src="/b"></h3><ul><li><img src="/c"></li></ul><figure><img src="/d"><figcaption><img src="/e"></figcaption></figure><dl><dt><img src="/f"></dt><dd><p>d</p></dd></dl><details><summary><img src="/g"></summary><p>b</p></details>',
+			),
+		).toEqual(['inlineImage', 'inlineImage', 'inlineImage', 'image', 'inlineImage', 'inlineImage', 'inlineImage']);
 	});
 
 	test('an image anywhere else stays a block image', () => {

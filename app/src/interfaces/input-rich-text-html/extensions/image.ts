@@ -4,7 +4,8 @@ import { isAllowedUri } from '@tiptap/extension-link';
 import type { DOMOutputSpec, Node as ProseMirrorNode, TagParseRule } from '@tiptap/pm/model';
 
 /**
- * Block image (`InlineImage` below takes `<img>` in paragraph, heading and list item text), extended with:
+ * Block image (`InlineImage` below takes `<img>` in the text of paragraphs, headings, list items, captions,
+ * `<dt>` and `<summary>`), extended with:
  *
  * - `loading`, so the drawer's lazy-loading option and legacy `loading="lazy"` markup survive
  *   parse → serialize (the base node only models src/alt/title/width/height).
@@ -128,7 +129,8 @@ export const CustomImage = Image.extend<ImageOptions & { linkProtocols: string[]
 	},
 });
 
-const INLINE_IMAGE_HOSTS = new Set(['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI']);
+// every tag whose node holds `inline*`, or the inline image an author put there reloads as a block image
+const INLINE_IMAGE_HOSTS = new Set(['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI', 'FIGCAPTION', 'DT', 'SUMMARY']);
 
 const BLOCK_ANCESTORS = [
 	...Array.from(INLINE_IMAGE_HOSTS, (tag) => tag.toLowerCase()),
@@ -141,8 +143,6 @@ const BLOCK_ANCESTORS = [
 	'details',
 	'div',
 	'dl',
-	'dt',
-	'figcaption',
 	'figure',
 	'footer',
 	'header',
@@ -151,7 +151,6 @@ const BLOCK_ANCESTORS = [
 	'ol',
 	'pre',
 	'section',
-	'summary',
 	'table',
 	'td',
 	'th',
@@ -180,7 +179,7 @@ function followsBlockInListItem(img: HTMLElement, item: Element): boolean {
 }
 
 /**
- * The inline variant of a block image node, for `<img>` in paragraph, heading and list item text.
+ * The inline variant of a block image node, for `<img>` in the text of any `INLINE_IMAGE_HOSTS` tag.
  * Its link is the Link mark, and it has no commands, so `setImage` always inserts a block image.
  */
 export function inlineImageOf(blockImage: Node) {

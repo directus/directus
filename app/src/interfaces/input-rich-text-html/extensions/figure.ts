@@ -77,6 +77,9 @@ export const Figure = Node.create({
 							if (!dispatch) return true;
 
 							const caption = findCaption(figure.node);
+							// the drawer edits plain text, so rewriting an unchanged caption would drop its marks and inline images
+							if (caption && caption.node.textContent.trim() === text) return true;
+
 							const content = text ? Fragment.from(state.schema.text(text)) : Fragment.empty;
 
 							if (caption) {

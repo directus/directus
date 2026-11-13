@@ -160,6 +160,16 @@ describe('setFigureCaption', () => {
 		);
 	});
 
+	test('keeps the rich content of a caption whose text is unchanged', () => {
+		const caption = '<figcaption>c<strong>a</strong><img src="/assets/x" alt="x">p</figcaption>';
+		const editor = setup(`<figure><img src="/assets/abc" alt="photo">${caption}</figure>`);
+
+		selectNode(editor, 'image');
+		editor.commands.setFigureCaption('cap');
+
+		expect(html(editor)).toBe(`<figure><img src="/assets/abc" alt="photo">${caption}</figure>`);
+	});
+
 	test('keeps the figure attributes when adding a caption', () => {
 		const editor = setup('<figure class="float-left"><img src="/assets/abc" alt="photo"></figure>');
 

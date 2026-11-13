@@ -33,6 +33,10 @@ const SAMPLES: Record<string, string> = {
 	'inline image': '<p>a<img src="/assets/abc" alt="alt">b</p>',
 	'inline image alone': '<p><img src="/assets/abc" alt="alt"></p>',
 	'linked inline image': '<h2>t <a href="https://directus.io"><img src="/assets/abc" alt="alt"></a></h2>',
+	'inline image in a figure caption':
+		'<figure><img src="/assets/abc" alt="alt"><figcaption>c<img src="/assets/x" alt="x">ap</figcaption></figure>',
+	'inline image in a details summary':
+		'<details><summary>s <img src="/assets/abc" alt="alt"></summary><p>b</p></details>',
 	'block image in a list item': '<ul><li><p>one</p><img src="/assets/abc" alt="alt"></li></ul>',
 };
 
