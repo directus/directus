@@ -624,8 +624,8 @@ catalogs:
       specifier: 8.0.1
       version: 8.0.1
     braintrust:
-      specifier: 3.37.0
-      version: 3.37.0
+      specifier: 3.44.0
+      version: 3.44.0
     busboy:
       specifier: 1.6.0
       version: 1.6.0
@@ -714,8 +714,8 @@ catalogs:
       specifier: 10.1.8
       version: 10.1.8
     eslint-plugin-import-x:
-      specifier: 4.17.1
-      version: 4.17.1
+      specifier: 4.18.1
+      version: 4.18.1
     eslint-plugin-vue:
       specifier: 10.10.0
       version: 10.10.0
@@ -861,8 +861,8 @@ catalogs:
       specifier: 3.0.1
       version: 3.0.1
     minimatch:
-      specifier: 10.2.6
-      version: 10.2.6
+      specifier: 11.0.8
+      version: 11.0.8
     mitt:
       specifier: 3.0.1
       version: 3.0.1
@@ -1121,7 +1121,7 @@ catalogs:
 
 overrides:
   tar: 7.5.22
-  js-beautify>editorconfig: 3.0.2
+  js-beautify>editorconfig: 4.0.0
   js-beautify>glob: 14.0.3
   js-yaml@4: 4.3.2
   js-yaml@3: 3.15.2
@@ -1135,6 +1135,7 @@ overrides:
   happy-dom: 21.0.4
   '@azure/identity>@azure/msal-node': 7.1.1
   '@ai-sdk/devtools>@hono/node-server': 2.1.6
+  archiver>readdir-glob: 4.0.0
 
 importers:
 
@@ -1157,7 +1158,7 @@ importers:
         version: 10.1.8(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))
       eslint-plugin-import-x:
         specifier: 'catalog:'
-        version: 4.17.1(@typescript-eslint/utils@8.66.0(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)
+        version: 4.18.1(@typescript-eslint/utils@8.66.0(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)
       eslint-plugin-vue:
         specifier: 'catalog:'
         version: 10.10.0(@typescript-eslint/parser@8.66.0(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(vue-eslint-parser@10.4.1(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))
@@ -1220,7 +1221,7 @@ importers:
         version: 3.1111.0
       '@braintrust/otel':
         specifier: 'catalog:'
-        version: 0.2.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.0))(@opentelemetry/exporter-trace-otlp-http@0.202.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.0))(braintrust@3.37.0(@aws-sdk/credential-provider-web-identity@3.972.87)(supports-color@10.2.2)(zod@4.6.7))
+        version: 0.2.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.0))(@opentelemetry/exporter-trace-otlp-http@0.202.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.0))(braintrust@3.44.0(@aws-sdk/credential-provider-web-identity@3.972.87)(@types/react@18.3.31)(supports-color@10.2.2)(zod@4.6.7))
       '@directus/ai':
         specifier: workspace:*
         version: link:../packages/ai
@@ -1466,7 +1467,7 @@ importers:
         version: 3.0.1
       minimatch:
         specifier: 'catalog:'
-        version: 10.2.6
+        version: 11.0.8
       mnemonist:
         specifier: 'catalog:'
         version: 0.40.3
@@ -1702,7 +1703,7 @@ importers:
         version: 3.0.1(supports-color@10.2.2)
       braintrust:
         specifier: 'catalog:'
-        version: 3.37.0(@aws-sdk/credential-provider-web-identity@3.972.87)(supports-color@10.2.2)(zod@4.6.7)
+        version: 3.44.0(@aws-sdk/credential-provider-web-identity@3.972.87)(@types/react@18.3.31)(supports-color@10.2.2)(zod@4.6.7)
       mailtrap:
         specifier: 'catalog:'
         version: 4.9.0(@types/nodemailer@8.0.1)(debug@4.3.7(supports-color@10.2.2))(nodemailer@10.1.7)(supports-color@10.2.2)
@@ -5239,6 +5240,9 @@ packages:
   '@isaacs/nonrecursive-glob-match@1.0.3':
     resolution: {integrity: sha512-SI7kyKHq4XXDRozw+r9GlRZkia1ZkFrpLW98r2IC2Bpr8YkFGE3fvjzmxCG0x78A++69HmDNrDvSMYBZmHGpKA==}
 
+  '@isaacs/nonrecursive-glob-match@1.1.0':
+    resolution: {integrity: sha512-GPm/Dbvk5RLmhRnxXIa7nTpK0xtl4E0wj0MslsuNiJ1FIROU+2+9lgUC/dgF7Ey4QCWhfEsgxilMRMCdHPfDfw==}
+
   '@joeattardi/emoji-button@4.6.4':
     resolution: {integrity: sha512-vXji10ZwgxRG6xGQ93SIBUQEltWYTs3do/FSEn3qrRWUuavrqIUhh1oMEPmhKARF0pokW6bNRCvVKI6wq//H6w==}
     deprecated: Emoji Button is now PicMo! Please install the 'picmo' package, see https://picmojs.com for details
@@ -5532,8 +5536,8 @@ packages:
     resolution: {integrity: sha512-humQVe2BrWR7Yum5hGDYBnIPnnZJvKSOH/I4QN1ZL2bdb4c4zQHaHupEJ3cOkSJ07G3YfN793ptbNh196BWLgA==}
     engines: {node: '>=18.6.0'}
 
-  '@one-ini/wasm@0.2.1':
-    resolution: {integrity: sha512-TUqERXGNTifZ9y2g3wPxQrw3HpHv/02DsW3D90T9x0hhonrL1ZqpSmNrU2XkoIq0fP1N6gZfVQzy2Fw1ZvGBNg==}
+  '@one-ini/wasm@0.2.3':
+    resolution: {integrity: sha512-IGdUwmS5uJy9w+OSXIYtmZf6yMtYz18NZ4bm2Rg2oTCt/Cvp24VhpjhtaGG+bwwDs61T4rwAZAnxIOChy9AFiA==}
 
   '@opentelemetry/api-logs@0.202.0':
     resolution: {integrity: sha512-fTBjMqKCfotFWfLzaKyhjLvyEyq5vDKTTFfBmx21btv3gvy8Lq6N5Dh2OzqeuN4DjtpSvNT1uNVfg08eD2Rfxw==}
@@ -8085,11 +8089,15 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
-  braintrust@3.37.0:
-    resolution: {integrity: sha512-c3U1p0vNQUYijmOqEw2s+TrVYhai/P9QQ8awvyRnfip/IHhHHhUe7aAixqTFZDtjDYHBuvsCtDp3GVbL9LVQ7A==}
+  braintrust@3.44.0:
+    resolution: {integrity: sha512-QMjlci0l0EHTET+kBAkT8xtih16QAVR9Z0kHxS4AYwdRoVzGmA7r52dgiOzC8WfV8cYHIII3CaQH/Hvt7G0bxQ==}
     hasBin: true
     peerDependencies:
+      '@types/react': '>=18'
       zod: 4.6.7
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   browserslist@4.29.5:
     resolution: {integrity: sha512-khTmKu5NGYTotqcYo8Bew2k4RAE9PuXRSFRXG2lQBrCEQHyeQ/vX6gKMxfokwywBsLiXZMnHsmWMG1pnO8J7uQ==}
@@ -8358,9 +8366,9 @@ packages:
     resolution: {integrity: sha512-TywoWNNRbhoD0BXs1P3ZEScW8W5iKrnbithIl0YH+uCmBd0QpPOA8yc82DS3BIE5Ma6FnBVUsJ7wVUDz4dvOWQ==}
     engines: {node: '>=20'}
 
-  commander@14.0.3:
-    resolution: {integrity: sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==}
-    engines: {node: '>=20'}
+  commander@15.1.0:
+    resolution: {integrity: sha512-cgnQ88TRrWcC7pVq46RzJVRMktu3W2RcbnoidnfBsl1bmDCBwJS/udcIZpKoCrbAYYaCqsz1yZCVIgbIaU3ddQ==}
+    engines: {node: '>=22.12.0'}
 
   commander@2.15.1:
     resolution: {integrity: sha512-VlfT9F3V0v+jr4yxPc5gg9s62/fIVWsd2Bk2iD435um1NlGMYdVCq+MjcXnhYq2icNOizHr1kK+5TI6H0Hy0ag==}
@@ -8966,9 +8974,9 @@ packages:
   ecdsa-sig-formatter@1.0.11:
     resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
 
-  editorconfig@3.0.2:
-    resolution: {integrity: sha512-T0ix8GhtxyKVfUFEcvdNDt3YGqlwkFHbD4/5bgFUDgFmxhI/cSRAeJ87/Sz//Cq8Eam6JX/e23RkoFO71P7aAA==}
-    engines: {node: '>=20'}
+  editorconfig@4.0.0:
+    resolution: {integrity: sha512-DqSt8I59+zZHLUEfQILpW7roWN5YJGH8NpKobfvApVY7IKPk4RgWA96D1YJtkS3MhAYV5eVP9BQ19aoDUZC3AQ==}
+    engines: {node: '>=22'}
     hasBin: true
 
   editorjs-toggle-block@0.3.16:
@@ -9045,6 +9053,9 @@ packages:
   es-module-lexer@2.3.2:
     resolution: {integrity: sha512-poHGpORABojJJucnV9KbOavETW8lBVnphkW77ER5/BQ5Fz7oXSoCNek7IH3vR5nRjdsEz926ibFYX8KtLQmdyw==}
 
+  es-module-lexer@3.0.4:
+    resolution: {integrity: sha512-BldNY5mwkVu+cQ5Ymn3e6hB9Sx8XHx4ZevWbiUyZbfKxJxYO27Hf0wfzkxIaD5CAJMaGl3YspKELj0ff/7nCMA==}
+
   es-object-atoms@1.1.2:
     resolution: {integrity: sha512-HWcBoN6NileqtSydK2FqHbS/LoDd2pqrnQHLyJzBj4kOp/ky2MWMN694xOfkK8/SnUsW2DH7EfyVlydKCsm1Zw==}
     engines: {node: '>= 0.4'}
@@ -9102,8 +9113,8 @@ packages:
       unrs-resolver:
         optional: true
 
-  eslint-plugin-import-x@4.17.1:
-    resolution: {integrity: sha512-4cdstYkKCyjumM2Q9NSI03K8D2a9F4Ssz33K2lv2hQa4KmR9jPLwk3uWGtNvclfqBrPGfGuMBwsGMbe6dMRbfg==}
+  eslint-plugin-import-x@4.18.1:
+    resolution: {integrity: sha512-D1h++38NS2Z40zf8jbd2OHqDrnIFRKpdp8sL0jP4xSDGZj6MNwEQua8F+r3tOWjcHrsWuhHOJ7wASWioJ31tfg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       '@typescript-eslint/utils': ^8.56.0
@@ -10682,6 +10693,10 @@ packages:
     resolution: {integrity: sha512-/UJ1dEoVQTjPNDh6SGlUo+ueLMmoHTas4q+8yaAR/5t6nLAIiBDJtoYUh20IYleix7ehiQkgczb84PE3uzHkxg==}
     engines: {node: 20 || >=22}
 
+  minimatch@11.0.8:
+    resolution: {integrity: sha512-nFQuYSTVrGvysVBps5Ih+0BdnYFN/Cj3C816r6+p7yK+FHrVLGE4O4N9AFwykrlNlvM2HYt+Rad1Uiro6h88Ig==}
+    engines: {node: 20 || >=22}
+
   minimist-options@4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
     engines: {node: '>= 6'}
@@ -11774,9 +11789,9 @@ packages:
     resolution: {integrity: sha512-2jhTTU3Eilp/2DMT71gbcoqC35eQHasMJH0RHkYxwlxIv3+FR6Y5xAFZIwEGLxKkjZYEFlsiMNIdwUqjK2lLHQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  readdir-glob@3.0.0:
-    resolution: {integrity: sha512-AhNB2KgKeVJr16nK9LLZbJNWnYoT23ZrumNKFDebHBdkC8KHSqWo871JAUhoWC/RtjEVdqNMFpM6qrwRbaUqpw==}
-    engines: {node: '>=18'}
+  readdir-glob@4.0.0:
+    resolution: {integrity: sha512-TG+tPOT85yLmgnlsp6xIu7/cOZsFYs74utMOZRahGQ1HAm3QGT63MSUD64WyzbQg/WN8hciv/+43XTzeIgn83w==}
+    engines: {node: '>=20'}
 
   readdirp@3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
@@ -12748,6 +12763,7 @@ packages:
 
   tldts-core@7.4.20:
     resolution: {integrity: sha512-C630TWXZCZmLq0F2bW4QqwnaaxCQ/svpAqvJwnC4JvgEM5ohhBnGsEzTLSOXcN+xjz+kEaHS5uoWIw2klnqd0A==}
+    deprecated: Partial release, see https://github.com/remusao/tldts/issues/2735. Use >=7.4.22.
 
   tldts@7.4.19:
     resolution: {integrity: sha512-48dH6aSpQnpbzDUc4vIQZ1VjB8tkK+e8c1yx05/SZK+rkssgjEOlxDd/yU8/a4vGYQ9vRgJr9dwMq9TJ0b3X2Q==}
@@ -14360,13 +14376,13 @@ snapshots:
   '@braintrust/bt-win32-x64@0.12.0':
     optional: true
 
-  '@braintrust/otel@0.2.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.0))(@opentelemetry/exporter-trace-otlp-http@0.202.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.0))(braintrust@3.37.0(@aws-sdk/credential-provider-web-identity@3.972.87)(supports-color@10.2.2)(zod@4.6.7))':
+  '@braintrust/otel@0.2.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.0))(@opentelemetry/exporter-trace-otlp-http@0.202.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.0))(braintrust@3.44.0(@aws-sdk/credential-provider-web-identity@3.972.87)(@types/react@18.3.31)(supports-color@10.2.2)(zod@4.6.7))':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 2.11.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/exporter-trace-otlp-http': 0.202.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 2.11.0(@opentelemetry/api@1.9.0)
-      braintrust: 3.37.0(@aws-sdk/credential-provider-web-identity@3.972.87)(supports-color@10.2.2)(zod@4.6.7)
+      braintrust: 3.44.0(@aws-sdk/credential-provider-web-identity@3.972.87)(@types/react@18.3.31)(supports-color@10.2.2)(zod@4.6.7)
 
   '@bramus/specificity@2.4.3':
     dependencies:
@@ -15621,6 +15637,8 @@ snapshots:
 
   '@isaacs/nonrecursive-glob-match@1.0.3': {}
 
+  '@isaacs/nonrecursive-glob-match@1.1.0': {}
+
   '@joeattardi/emoji-button@4.6.4':
     dependencies:
       '@fortawesome/fontawesome-svg-core': 1.3.0
@@ -15935,7 +15953,7 @@ snapshots:
 
   '@npm/types@2.1.0': {}
 
-  '@one-ini/wasm@0.2.1': {}
+  '@one-ini/wasm@0.2.3': {}
 
   '@opentelemetry/api-logs@0.202.0':
     dependencies:
@@ -17287,7 +17305,8 @@ snapshots:
     dependencies:
       '@types/node': 26.2.0
 
-  '@types/prop-types@15.7.15': {}
+  '@types/prop-types@15.7.15':
+    optional: true
 
   '@types/proxy-addr@2.0.3':
     dependencies:
@@ -17305,6 +17324,7 @@ snapshots:
     dependencies:
       '@types/prop-types': 15.7.15
       csstype: 3.2.3
+    optional: true
 
   '@types/readable-stream@4.0.25':
     dependencies:
@@ -18152,7 +18172,7 @@ snapshots:
       lazystream: 1.0.1
       normalize-path: 3.0.0
       readable-stream: 4.8.0
-      readdir-glob: 3.0.0
+      readdir-glob: 4.0.0
       tar-stream: 3.2.2(bare-buffer@3.7.1)
       zip-stream: 7.0.5
     transitivePeerDependencies:
@@ -18419,10 +18439,9 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  braintrust@3.37.0(@aws-sdk/credential-provider-web-identity@3.972.87)(supports-color@10.2.2)(zod@4.6.7):
+  braintrust@3.44.0(@aws-sdk/credential-provider-web-identity@3.972.87)(@types/react@18.3.31)(supports-color@10.2.2)(zod@4.6.7):
     dependencies:
       '@next/env': 14.2.35
-      '@types/react': 18.3.31
       '@vercel/functions': 1.6.0(@aws-sdk/credential-provider-web-identity@3.972.87)
       acorn: 8.19.0
       acorn-import-attributes: 1.9.5(acorn@8.19.0)
@@ -18440,7 +18459,7 @@ snapshots:
       express: 5.3.0(supports-color@10.2.2)
       http-errors: 2.0.1
       meriyah: 6.1.4
-      minimatch: 10.2.6
+      minimatch: 11.0.8
       module-details-from-path: 1.0.4
       mustache: 4.2.0
       pluralize: 8.0.0
@@ -18459,6 +18478,7 @@ snapshots:
       '@braintrust/bt-linux-x64-musl': 0.12.0
       '@braintrust/bt-win32-arm64': 0.12.0
       '@braintrust/bt-win32-x64': 0.12.0
+      '@types/react': 18.3.31
     transitivePeerDependencies:
       - '@aws-sdk/credential-provider-web-identity'
       - supports-color
@@ -18721,7 +18741,7 @@ snapshots:
 
   commander@14.0.2: {}
 
-  commander@14.0.3: {}
+  commander@15.1.0: {}
 
   commander@2.15.1: {}
 
@@ -19122,11 +19142,11 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  editorconfig@3.0.2:
+  editorconfig@4.0.0:
     dependencies:
-      '@one-ini/wasm': 0.2.1
-      commander: 14.0.3
-      minimatch: 10.2.6
+      '@one-ini/wasm': 0.2.3
+      commander: 15.1.0
+      minimatch: 11.0.4
       semver: 7.8.6
 
   editorjs-toggle-block@0.3.16:
@@ -19181,6 +19201,8 @@ snapshots:
   es-module-lexer@1.7.0: {}
 
   es-module-lexer@2.3.2: {}
+
+  es-module-lexer@3.0.4: {}
 
   es-object-atoms@1.1.2:
     dependencies:
@@ -19280,15 +19302,17 @@ snapshots:
     optionalDependencies:
       unrs-resolver: 1.13.0
 
-  eslint-plugin-import-x@4.17.1(@typescript-eslint/utils@8.66.0(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2):
+  eslint-plugin-import-x@4.18.1(@typescript-eslint/utils@8.66.0(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2):
     dependencies:
       '@typescript-eslint/types': 8.72.1
+      cjs-module-lexer: 2.3.0
       comment-parser: 1.4.9
       debug: 4.4.3(supports-color@10.2.2)
+      es-module-lexer: 3.0.4
       eslint: 10.8.0(jiti@2.7.0)(supports-color@10.2.2)
       eslint-import-context: 0.1.9(unrs-resolver@1.13.0)
       is-glob: 4.0.3
-      minimatch: 10.2.6
+      minimatch: 11.0.4
       semver: 7.8.6
       stable-hash-x: 0.2.0
       unrs-resolver: 1.13.0
@@ -20369,7 +20393,7 @@ snapshots:
   js-beautify@1.15.4:
     dependencies:
       config-chain: 1.1.13
-      editorconfig: 3.0.2
+      editorconfig: 4.0.0
       glob: 14.0.3
       js-cookie: 3.0.8
       nopt: 7.2.1
@@ -20968,6 +20992,11 @@ snapshots:
   minimatch@11.0.4:
     dependencies:
       '@isaacs/nonrecursive-glob-match': 1.0.3
+      brace-expansion: 5.0.12
+
+  minimatch@11.0.8:
+    dependencies:
+      '@isaacs/nonrecursive-glob-match': 1.1.0
       brace-expansion: 5.0.12
 
   minimist-options@4.1.0:
@@ -22230,9 +22259,9 @@ snapshots:
       process: 0.11.10
       string_decoder: 1.3.0
 
-  readdir-glob@3.0.0:
+  readdir-glob@4.0.0:
     dependencies:
-      minimatch: 10.2.6
+      minimatch: 11.0.8
 
   readdirp@3.6.0:
     dependencies:
