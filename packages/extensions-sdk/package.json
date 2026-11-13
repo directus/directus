@@ -63,6 +63,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@types/fs-extra": "catalog:",
 		"@types/inquirer": "catalog:",
+		"@types/node": "catalog:",
 		"@types/semver": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"typescript": "catalog:",

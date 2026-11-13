@@ -39,6 +39,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@types/node": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:"
 	}

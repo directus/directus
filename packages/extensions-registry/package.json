@@ -35,6 +35,7 @@
 	"devDependencies": {
 		"@directus/types": "workspace:*",
 		"@directus/tsconfig": "catalog:",
+		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
