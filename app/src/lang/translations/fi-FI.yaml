@@ -1830,6 +1830,13 @@ triggers:
   webhook:
     method: Metodi
 operations:
+  ai-image:
+    starting_points:
+      icon: Kuvake
+  ai-text:
+    files: Tiedostot
+    type_text: Teksti
+    view_json: JSON
   item-create:
     payload: Tietosisältö
   item-update:
