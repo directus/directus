@@ -310,6 +310,10 @@ triggers:
   webhook:
     method: Метод
 operations:
+  ai-text:
+    files: Фајлови
+    type_text: Текст
+    view_json: JSON
   mail:
     template: Шаблон
   request:
