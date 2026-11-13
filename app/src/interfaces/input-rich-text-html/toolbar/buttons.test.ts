@@ -43,6 +43,18 @@ describe('link buttons on a selected image', () => {
 	});
 });
 
+describe('image button', () => {
+	test('is active on a selected block or inline image', () => {
+		const block = editorWithSelectedImage('<img src="/assets/abc" alt="a"><p>y</p>');
+		const inline = new Editor({ extensions: editorExtensions, content: '<p>x <img src="/assets/abc" alt="a"></p>' });
+		editors.push(inline);
+		selectNode(inline, 'inlineImage');
+
+		expect(toolbarButtons.customImage!.isActive!(block, ctx)).toBe(true);
+		expect(toolbarButtons.customImage!.isActive!(inline, ctx)).toBe(true);
+	});
+});
+
 describe('font-family toolbar button', () => {
 	// The revert-to-default entry (value null → unsetFontFamily) must be the first item so users can
 	// clear a custom font and fall back to the editor's base font.

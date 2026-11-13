@@ -326,7 +326,112 @@ describe('round-trip: image', () => {
 	test('an anchor wrapping text and an image is still a text link', () => {
 		const out = roundTrip('<p><a href="https://directus.io">before<img src="/assets/abc" alt="a"></a></p>');
 
-		expect(out).toContain('<a href="https://directus.io">before</a>');
+		expect(out).toContain('<a href="https://directus.io">before');
+	});
+});
+
+describe('round-trip: inline image', () => {
+	function imageTypes(html: string): string[] {
+		const editor = new Editor({ extensions: editorExtensions, content: html });
+		const types: string[] = [];
+
+		editor.state.doc.descendants((node) => {
+			if (node.type.name === 'image' || node.type.name === 'inlineImage') types.push(node.type.name);
+		});
+
+		editor.destroy();
+		return types;
+	}
+
+	const UNCHANGED: Record<string, string> = {
+		'image between text in a paragraph': '<p>before <img src="/assets/abc" alt="a"> after</p>',
+		'image alone in a paragraph': '<p><img src="/assets/abc" alt="a"></p>',
+		'two images in one paragraph': '<p><img src="/assets/a" alt="a"><img src="/assets/b" alt="b"></p>',
+		'image in a heading': '<h2>Title <img src="/assets/abc" alt="a"></h2>',
+		'image in a list item paragraph': '<ul><li><p>item <img src="/assets/abc" alt="a"></p></li></ul>',
+		'lazy image': '<p><img src="/assets/abc" alt="a" loading="lazy"></p>',
+		'image with size': '<p><img src="/assets/abc" alt="a" width="16" height="16"></p>',
+		'image with preserved attributes': '<p><img class="icon" id="i1" data-x="1" src="/assets/abc" alt="a"></p>',
+		'linked image': '<p>see <a href="https://directus.io"><img src="/assets/abc" alt="a"></a> here</p>',
+		'linked image opening in a new tab':
+			'<p><a target="_blank" rel="noopener noreferrer" href="https://directus.io"><img src="/assets/abc" alt="a"></a></p>',
+		'link around text and an image': '<p><a href="https://directus.io">before<img src="/assets/abc" alt="a"></a></p>',
+		'image in a figure caption':
+			'<figure><img src="/assets/abc" alt="photo"><figcaption>c<img src="/assets/x" alt="x">ap</figcaption></figure>',
+		'image in a description term': '<dl><dt>term <img src="/assets/abc" alt="a"></dt><dd><p>definition</p></dd></dl>',
+		'image in a details summary':
+			'<details><summary>more <img src="/assets/abc" alt="a"></summary><p>body</p></details>',
+	};
+
+	test.each(Object.entries(UNCHANGED))('%s survives round-trip unchanged', (_name, html) => {
+		expect(roundTrip(html)).toBe(html);
+	});
+
+	test.each(Object.entries(UNCHANGED))('%s does not trip the normalization check', (_name, html) => {
+		expect(computeValueNormalizationDiff(html)).toBeNull();
+	});
+
+	// the form Tiptap stored before inline images: a block image after the item's paragraph
+	test.each([
+		['after the item paragraph', '<ul><li><p>item</p><img src="/assets/abc" alt="a"></li></ul>'],
+		[
+			'between the paragraph and a nested list',
+			'<ul><li><p>item</p><img src="/assets/abc" alt="a"><ul><li><p>b</p></li></ul></li></ul>',
+		],
+		['two images after the paragraph', '<ul><li><p>item</p><img src="/a" alt="a"><img src="/b" alt="b"></li></ul>'],
+	])('a block image %s in a list item stays a block image', (_name, html) => {
+		expect(roundTrip(html)).toBe(html);
+		expect(imageTypes(html).every((type) => type === 'image')).toBe(true);
+		expect(computeValueNormalizationDiff(html)).toBeNull();
+	});
+
+	test('an image in a bare list item stays in the item text', () => {
+		expect(roundTrip('<ul><li>item <img src="/assets/abc" alt="a"></li></ul>')).toBe(
+			'<ul><li><p>item <img src="/assets/abc" alt="a"></p></li></ul>',
+		);
+	});
+
+	test.each([
+		['alone', '<ul><li>item <img src="/assets/abc" alt="a"></li></ul>'],
+		['before a nested list', '<ul><li>item <img src="/assets/abc" alt="a"><ul><li>b</li></ul></li></ul>'],
+		['before a second paragraph', '<ul><li><img src="/assets/abc" alt="a"><p>b</p></li></ul>'],
+	])('an image in a bare list item survives with noContainerParagraphs (%s)', (_name, html) => {
+		const { extensions, key } = buildFieldSchema({ noContainerParagraphs: true });
+		const editor = new Editor({ extensions: fieldEditorExtensions(extensions), content: html });
+
+		expect(editor.getHTML()).toBe(html);
+		expect(computeValueNormalizationDiff(html, extensions, key)).toBeNull();
+		editor.destroy();
+	});
+
+	test('an image in a paragraph, heading, list item, caption, term or summary is inline', () => {
+		expect(
+			imageTypes(
+				'<p><img src="/a"></p><h3><img src="/b"></h3><ul><li><img src="/c"></li></ul><figure><img src="/d"><figcaption><img src="/e"></figcaption></figure><dl><dt><img src="/f"></dt><dd><p>d</p></dd></dl><details><summary><img src="/g"></summary><p>b</p></details>',
+			),
+		).toEqual(['inlineImage', 'inlineImage', 'inlineImage', 'image', 'inlineImage', 'inlineImage', 'inlineImage']);
+	});
+
+	test('an image anywhere else stays a block image', () => {
+		expect(
+			imageTypes(
+				'<img src="/a"><figure><img src="/b"><figcaption>c</figcaption></figure><div><img src="/c"></div><table><tbody><tr><td><img src="/d"></td></tr></tbody></table>',
+			),
+		).toEqual(['image', 'image', 'image', 'image']);
+	});
+
+	test('a linked inline image uses the Link mark, not node attributes', () => {
+		const editor = new Editor({
+			extensions: editorExtensions,
+			content: '<p><a href="https://directus.io"><img src="/assets/abc" alt="a"></a></p>',
+		});
+
+		const image = editor.state.doc.firstChild!.firstChild!;
+
+		expect(image.type.name).toBe('inlineImage');
+		expect(image.attrs.href).toBeUndefined();
+		expect(image.marks.map((mark) => mark.type.name)).toEqual(['link']);
+		editor.destroy();
 	});
 });
 

@@ -1,4 +1,5 @@
 import { Extension, Mark, mergeAttributes, Node } from '@tiptap/core';
+import { Image } from '@tiptap/extension-image';
 import { Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test } from 'vitest';
 import { computeNormalizationDiff, computeValueNormalizationDiff } from './composables/normalization-diff';
@@ -250,5 +251,30 @@ describe('contributed markup in the normalization checks', () => {
 
 		expect(computeValueNormalizationDiff(callout, withCallout.extensions, withCallout.key)).toBeNull();
 		expect(computeValueNormalizationDiff(callout, withKbd.extensions, withKbd.key)).not.toBeNull();
+	});
+});
+
+describe('a contributed image extension', () => {
+	const ContributedImage = Image.extend({
+		renderHTML: ({ HTMLAttributes }) => ['img', mergeAttributes(HTMLAttributes, { class: 'contributed' })],
+	});
+
+	function render(html: string, additions = [ContributedImage]) {
+		const editor = new Editor({ extensions: fieldEditorExtensions(additions), content: html });
+		const out = editor.getHTML();
+		editor.destroy();
+		return out;
+	}
+
+	test('also renders the images in a line of text, which stay inline', () => {
+		expect(render('<p>a <img src="https://x.test/a.png"> b</p>')).toBe(
+			'<p>a <img src="https://x.test/a.png" class="contributed"> b</p>',
+		);
+	});
+
+	test('renders a block image', () => {
+		expect(render('<img src="https://x.test/a.png">')).toContain(
+			'<img src="https://x.test/a.png" class="contributed">',
+		);
 	});
 });

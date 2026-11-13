@@ -18,6 +18,7 @@ import NormalizationWarningDialog from './drawers/normalization-warning-dialog.v
 import PasteWarningDialog from './drawers/paste-warning-dialog.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { buildFieldSchema, fieldEditorExtensions } from './extensions';
+import { isImageNode } from './extensions/image';
 import { LinkShortcut } from './extensions/link-shortcut';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 import ContributedBubbleMenu from './toolbar/menus/contributed-bubble-menu.vue';
@@ -180,7 +181,7 @@ const editor = useEditor({
 		attributes: { class: 'richtext-content' },
 		// media nodes handle dblclick themselves in their node view
 		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
-			if (node.type.name === 'image') {
+			if (isImageNode(node)) {
 				editor.value?.commands.setNodeSelection(nodePos);
 				openImageDrawer();
 				return true;

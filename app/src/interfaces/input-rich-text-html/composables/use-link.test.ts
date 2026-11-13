@@ -322,6 +322,93 @@ describe('image link', () => {
 	});
 });
 
+describe('inline image link', () => {
+	const IMAGE = '<img src="/assets/abc" alt="a">';
+
+	test('openLinkDrawer on an unlinked inline image is image mode, not editing, with an empty url', () => {
+		const { editor, targetsImage, isEditingLink, linkSelection, openLinkDrawer } = setup(`<p>x ${IMAGE}</p>`);
+		selectNode(editor.value, 'inlineImage');
+
+		openLinkDrawer();
+
+		expect(targetsImage.value).toBe(true);
+		expect(isEditingLink.value).toBe(false);
+		expect(linkSelection.value.url).toBeNull();
+	});
+
+	test('openLinkDrawer on a linked inline image prefills from the link', () => {
+		const { editor, isEditingLink, linkSelection, openLinkDrawer } = setup(
+			`<p><a href="https://directus.io" target="_blank" title="Home">${IMAGE}</a></p>`,
+		);
+
+		selectNode(editor.value, 'inlineImage');
+		openLinkDrawer();
+
+		expect(isEditingLink.value).toBe(true);
+		expect(linkSelection.value).toMatchObject({ url: 'https://directus.io', title: 'Home', newTab: true });
+	});
+
+	test('saveLink links an inline image with the Link mark and keeps it in its line', () => {
+		const { editor, linkSelection, openLinkDrawer, saveLink } = setup(`<p>a ${IMAGE} b</p>`);
+		selectNode(editor.value, 'inlineImage');
+		openLinkDrawer();
+
+		linkSelection.value = { ...linkSelection.value, url: 'https://directus.io', newTab: false };
+		saveLink();
+
+		expect(editor.value.getHTML()).toBe(`<p>a <a href="https://directus.io">${IMAGE}</a> b</p>`);
+	});
+
+	test('saveLink changes the link of a linked inline image', () => {
+		const { editor, linkSelection, openLinkDrawer, saveLink } = setup(
+			`<p>a <a href="https://directus.io">${IMAGE}</a></p>`,
+		);
+
+		selectNode(editor.value, 'inlineImage');
+		openLinkDrawer();
+
+		linkSelection.value = { ...linkSelection.value, url: 'https://directus.io/new' };
+		saveLink();
+
+		expect(editor.value.getHTML()).toBe(`<p>a <a href="https://directus.io/new">${IMAGE}</a></p>`);
+	});
+
+	test('saveLink changes the whole link around text and an inline image', () => {
+		const { editor, linkSelection, openLinkDrawer, saveLink } = setup(
+			`<p><a href="https://directus.io">text${IMAGE}</a></p>`,
+		);
+
+		selectNode(editor.value, 'inlineImage');
+		openLinkDrawer();
+
+		linkSelection.value = { ...linkSelection.value, url: 'https://directus.io/new' };
+		saveLink();
+
+		expect(editor.value.getHTML()).toBe(`<p><a href="https://directus.io/new">text${IMAGE}</a></p>`);
+	});
+
+	test('saveLink on an inline image refuses a script href', () => {
+		const { editor, linkSelection, openLinkDrawer, saveLink } = setup(`<p>a ${IMAGE}</p>`);
+		selectNode(editor.value, 'inlineImage');
+		openLinkDrawer();
+
+		linkSelection.value = { ...linkSelection.value, url: 'javascript:alert(1)' };
+		saveLink();
+
+		expect(editor.value.getHTML()).toBe(`<p>a ${IMAGE}</p>`);
+	});
+
+	test('unlink on a linked inline image drops the anchor and keeps the image', () => {
+		const { editor, openLinkDrawer, unlink } = setup(`<p>a <a href="https://directus.io">${IMAGE}</a></p>`);
+		selectNode(editor.value, 'inlineImage');
+		openLinkDrawer();
+
+		unlink();
+
+		expect(editor.value.getHTML()).toBe(`<p>a ${IMAGE}</p>`);
+	});
+});
+
 test('isLinkSaveable reflects whether a url is present', () => {
 	const { linkSelection, isLinkSaveable } = setup();
 

@@ -2,6 +2,7 @@ import { Extension, findParentNode, Node } from '@tiptap/core';
 import { Fragment, type Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { type EditorState, Plugin, type Selection, type Transaction } from '@tiptap/pm/state';
 import { Mapping, ReplaceStep } from '@tiptap/pm/transform';
+import { IMAGE_NODE } from './image';
 
 export const FIGURE_NODE = 'figure';
 
@@ -76,6 +77,9 @@ export const Figure = Node.create({
 							if (!dispatch) return true;
 
 							const caption = findCaption(figure.node);
+							// the drawer edits plain text, so rewriting an unchanged caption would drop its marks and inline images
+							if (caption && caption.node.textContent.trim() === text) return true;
+
 							const content = text ? Fragment.from(state.schema.text(text)) : Fragment.empty;
 
 							if (caption) {
@@ -195,7 +199,7 @@ function isCaptionNode(node: ProseMirrorNode): boolean {
 }
 
 function isImage(node: ProseMirrorNode): boolean {
-	return node.type.name === 'image';
+	return node.type.name === IMAGE_NODE;
 }
 
 /** The figure the selection sits in, if any. `pos` is the position before the figure node. */
