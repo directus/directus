@@ -6,6 +6,8 @@ import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { MetaService } from '../services/meta.js';
+import { pickFields, VersionedItemsService } from '../services/version-items.js';
+import { VERSION_META_FIELD } from '../services/version-tables/constants.js';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
@@ -270,6 +272,136 @@ router.post(
 		});
 
 		res.locals['payload'] = { data: updatedItemKey || null };
+
+		return next();
+	}),
+	respond,
+);
+
+/**
+ * Versions stored in the shadow table of a versioned collection
+ */
+
+async function respondWithVersion(
+	service: VersionedItemsService,
+	versionId: PrimaryKey,
+	req: express.Request,
+	res: express.Response,
+) {
+	try {
+		res.locals['payload'] = { data: await service.readOne(versionId, req.sanitizedQuery) };
+	} catch (error: any) {
+		if (!isDirectusError(error, ErrorCode.Forbidden)) throw error;
+	}
+}
+
+router.post(
+	'/:collection',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const versionId = await service.createOne(req.body);
+
+		await respondWithVersion(service, versionId, req, res);
+
+		return next();
+	}),
+	respond,
+);
+
+router.patch(
+	'/:collection/:id',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const versionId = await service.updateOne(req.params['id']!, req.body);
+
+		await respondWithVersion(service, versionId, req, res);
+
+		return next();
+	}),
+	respond,
+);
+
+router.delete(
+	'/:collection/:id',
+	asyncHandler(async (req, _res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.deleteOne(req.params['id']!);
+
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/:collection/:id/publish',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const deleteVersion = req.body?.['delete_references'] === true;
+
+		const liveKey = await service.publish(req.params['id']!, { deleteVersion });
+
+		if (deleteVersion) {
+			const { primary } = req.schema.collections[service.collection]!;
+
+			res.locals['payload'] = {
+				data: pickFields(
+					{ [primary]: liveKey, [VERSION_META_FIELD]: { id: null, type: 'published' } },
+					req.sanitizedQuery.fields,
+				),
+			};
+		} else {
+			await respondWithVersion(service, req.params['id']!, req, res);
+		}
+
+		return next();
+	}),
+	respond,
+);
+
+router.delete(
+	'/:collection/:id/publish',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const versionId = await service.unpublish(req.params['id']!);
+
+		await respondWithVersion(service, versionId, req, res);
+
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/:collection/:id/archive',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const versionId = await service.archive(req.params['id']!);
+
+		await respondWithVersion(service, versionId, req, res);
 
 		return next();
 	}),

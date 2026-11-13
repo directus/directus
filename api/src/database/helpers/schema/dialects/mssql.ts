@@ -59,6 +59,10 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		rootQuery.orderBy(1);
 	}
 
+	override castToString(sql: string): string {
+		return `CAST(${sql} AS NVARCHAR(255))`;
+	}
+
 	override formatUUID(uuid: string): string {
 		return uuid.toUpperCase();
 	}

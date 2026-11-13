@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import type { Accountability, Filter, Item, Permission, Query, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { cloneDeep, merge } from 'lodash-es';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
@@ -43,7 +44,7 @@ export async function runAst(
 
 		return results;
 	} else {
-		return await run(ast.name, ast.children, options?.query || ast.query, ast.cases, accountability);
+		return await run(ast.name, ast.children, options?.query || ast.query, ast.cases, accountability, options?.source);
 	}
 
 	async function run(
@@ -52,6 +53,7 @@ export async function runAst(
 		query: Query,
 		cases: Filter[],
 		accountability: Accountability | null,
+		source?: Knex.QueryBuilder,
 	) {
 		const env = useEnv();
 
@@ -81,6 +83,7 @@ export async function runAst(
 				query,
 				cases,
 				permissions,
+				source,
 			},
 			{ schema, knex },
 		);
