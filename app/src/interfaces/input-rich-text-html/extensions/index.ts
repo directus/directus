@@ -6,6 +6,7 @@ import { buildCustomFormats, type CustomFormat } from './custom-formats';
 import { Direction } from './direction';
 import { DropCursor } from './drop-cursor';
 import { figureExtensions } from './figure';
+import { FormLabel } from './form-label';
 import { CustomImage } from './image';
 import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
@@ -14,6 +15,7 @@ import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
 import { PreservedAttributes, styleRules } from './preserved-attributes';
 import { RangeSelectedAtoms } from './range-selected-atoms';
+import { RawHtmlBlock, RawHtmlInline } from './raw-html';
 import { semanticHtml } from './semantic-html';
 import { BaseStarterKit, buildLegacyEmphasisSchema } from './starter-kit';
 import { StyleTag } from './style-tag';
@@ -46,6 +48,8 @@ export const editorExtensions = [
 	CharacterCount,
 	...figureExtensions,
 	...semanticHtml,
+	RawHtmlBlock,
+	RawHtmlInline,
 	PreservedAttributes,
 ];
 
@@ -92,6 +96,8 @@ export interface FieldSchemaOptions {
 	noContainerParagraphs?: boolean;
 	/** Field `keepWrapperElements` option: keep `div`, `aside`, `header`, `footer`, `nav` and `main` instead of unwrapping them. */
 	keepWrapperElements?: unknown;
+	/** Field `keepFormElements` option: keep `<form>` and loose form controls as non-editable blocks, and loose `<label>` as a mark. */
+	keepFormElements?: unknown;
 	comparisonMode?: boolean;
 }
 
@@ -108,7 +114,7 @@ export interface FieldSchema {
 
 /**
  * The one place a field's schema additions are assembled: the richtext extensions the field opted
- * into, its custom formats, its link protocols, its inline styles, its legacy emphasis tags, its wrapper elements, and the comparison-diff mark in
+ * into, its custom formats, its link protocols, its inline styles, its legacy emphasis tags, its wrapper elements, its form elements, and the comparison-diff mark in
  * comparison mode. The live editor, the save-time round-trip check, the source-code drawer and the
  * comparison view all build from this result. A site that composed the list by hand could miss a contribution and report its markup as
  * dropped even though the editor renders it.
@@ -121,11 +127,22 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 	const wrappers = buildWrapperElementSchema(options.keepWrapperElements);
 	const containerParagraphs = buildContainerParagraphSchema(options.noContainerParagraphs, wrappers.tags);
 
+	const rawHtmlOptions = {
+		keepInlineStyles: Boolean(options.keepInlineStyles),
+		linkProtocols: links.protocols,
+		formElements: options.keepFormElements === true,
+	};
+
+	const needsRawHtmlConfig =
+		rawHtmlOptions.keepInlineStyles || rawHtmlOptions.linkProtocols.length > 0 || rawHtmlOptions.formElements;
+
 	return {
 		extensions: [
 			...contributed.flatMap((config) => config.extensions),
 			...customFormats.extensions,
 			...links.extensions,
+			...(needsRawHtmlConfig ? [RawHtmlBlock.configure(rawHtmlOptions), RawHtmlInline.configure(rawHtmlOptions)] : []),
+			...(rawHtmlOptions.formElements ? [FormLabel] : []),
 			...(options.keepInlineStyles
 				? [
 						PreservedAttributes.configure({ inlineStyles: true }),
@@ -146,6 +163,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			legacyEmphasis.key,
 			containerParagraphs.key,
 			wrappers.key,
+			rawHtmlOptions.formElements ? 'form-elements' : '',
 			contributed.map((config) => config.key).join('\u0000'),
 		].join('\u0000'),
 		formats: customFormats.formats,

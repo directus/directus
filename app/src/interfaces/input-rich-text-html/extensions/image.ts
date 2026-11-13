@@ -72,6 +72,11 @@ export const CustomImage = Image.extend<ImageOptions & { linkProtocols: string[]
 				parseHTML: (element) => element.getAttribute('loading'),
 				renderHTML: (attributes) => (attributes.loading ? { loading: attributes.loading } : {}),
 			},
+			usemap: {
+				default: null,
+				parseHTML: (element) => element.getAttribute('usemap'),
+				renderHTML: (attributes) => (attributes.usemap ? { usemap: attributes.usemap } : {}),
+			},
 			href: linkAttribute('href', this.options.linkProtocols),
 			target: linkAttribute('target', this.options.linkProtocols),
 			rel: linkAttribute('rel', this.options.linkProtocols),
