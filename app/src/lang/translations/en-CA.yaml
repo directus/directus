@@ -2141,6 +2141,8 @@ show_more: Show More
 show_less: Show Less
 retry: Retry
 ai:
+  flow_operations:
+    model: Model
   thinking: Thinking...
   input: Input
   output: Output
@@ -3156,6 +3158,19 @@ any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
 operation_variables_note: You can access Flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  ai-image:
+    background: Background
+    emit_events: Emit Events
+    starting_points:
+      icon: Icon
+  ai-text:
+    files: Files
+    output: Output
+    type_text: Text
+    view_fields: Fields
+    view_json: JSON
+    starting_points:
+      translate: Translate
   condition:
     name: Condition
     description: Route a Flow based on If / Else logic
