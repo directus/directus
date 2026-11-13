@@ -2543,6 +2543,17 @@ any_string_or_json: Alguna cadena o JSON...
 item_payload_placeholder: Este es el JSON usado para actualizar los valores del campo del elemento...
 operation_variables_note: Puedes acceder a los datos del flujo con variables como **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** y **{'{'}{'{'}$accountability{'}'}{'}'}**, o hacer referencia a previas operaciones usando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  ai-image:
+    background: Fondo
+    emit_events: Emitir eventos
+    starting_points:
+      icon: Ícono
+  ai-text:
+    files: Archivos
+    output: Salida
+    type_text: Texto
+    view_fields: Campos
+    view_json: JSON
   condition:
     name: Condición
     description: Encaminar un Flow según lógica If / Else
