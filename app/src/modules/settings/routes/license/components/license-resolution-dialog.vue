@@ -118,7 +118,7 @@ const seats = computed<LicensePendingResolutionLimitSeats | undefined>(
 
 const currentAdminCandidate = computed<SeatCandidate | null>(() => {
 	const user = userStore.currentUser;
-	if (!user || 'share' in user) return null;
+	if (!user) return null;
 
 	return {
 		id: user.id,

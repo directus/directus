@@ -36,14 +36,12 @@ test('Returns all permissions for all collections if admin', async () => {
 			read: { access: 'full', fields: ['*'] },
 			update: { access: 'full', fields: ['*'] },
 			delete: { access: 'full', fields: ['*'] },
-			share: { access: 'full', fields: ['*'] },
 		},
 		'collection-b': {
 			create: { access: 'full', fields: ['*'] },
 			read: { access: 'full', fields: ['*'] },
 			update: { access: 'full', fields: ['*'] },
 			delete: { access: 'full', fields: ['*'] },
-			share: { access: 'full', fields: ['*'] },
 		},
 	});
 });
@@ -64,14 +62,12 @@ test('Returns permissions for collections for accountability if not admin', asyn
 			read: { access: 'full', fields: ['field-a', 'field-b'] },
 			update: { access: 'none' },
 			delete: { access: 'none' },
-			share: { access: 'none' },
 		},
 		'collection-b': {
 			create: { access: 'none' },
 			read: { access: 'none' },
 			update: { access: 'full', fields: ['field-c'] },
 			delete: { access: 'none' },
-			share: { access: 'none' },
 		},
 	});
 });
@@ -101,7 +97,6 @@ test('Returns permissions with partial access if permissions have filters', asyn
 			},
 			update: { access: 'none' },
 			delete: { access: 'none' },
-			share: { access: 'none' },
 		},
 	});
 });
@@ -122,7 +117,6 @@ test('Returns fields with * if any permission has *', async () => {
 			read: { access: 'full', fields: ['*'] },
 			update: { access: 'none' },
 			delete: { access: 'none' },
-			share: { access: 'none' },
 		},
 	});
 });
@@ -148,7 +142,27 @@ test('Returns combined presets', async () => {
 			read: { access: 'full', fields: ['*'], presets: { 'field-a': 3, 'field-b': 2, 'field-c': 4 } },
 			update: { access: 'none' },
 			delete: { access: 'none' },
-			share: { access: 'none' },
+		},
+	});
+});
+
+test('Ignores permissions with an unknown action', async () => {
+	const permissions = [
+		{ collection: 'collection-a', action: 'read', fields: ['*'] },
+		{ collection: 'collection-a', action: 'share', fields: ['*'] },
+		{ collection: 'collection-b', action: 'share', fields: ['*'] },
+	] as unknown as Permission[];
+
+	vi.mocked(fetchPermissions).mockResolvedValue(permissions);
+
+	const result = await fetchAccountabilityCollectionAccess({} as unknown as Accountability, {} as unknown as Context);
+
+	expect(result).toEqual({
+		'collection-a': {
+			create: { access: 'none' },
+			read: { access: 'full', fields: ['*'] },
+			update: { access: 'none' },
+			delete: { access: 'none' },
 		},
 	});
 });

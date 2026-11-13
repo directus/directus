@@ -13,8 +13,6 @@ fields:
     width: half
   - field: origin
     width: half
-  - field: share
-    width: half
   - field: next_token
     width: half
   - field: oauth_client

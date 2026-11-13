@@ -3,14 +3,13 @@ import type { Context } from '../types.js';
 import { extractRequiredDynamicVariableContextForPermissions } from '../utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../utils/fetch-dynamic-variable-data.js';
 import { fetchRawPermissions } from '../utils/fetch-raw-permissions.js';
-import { getPermissionsForShare } from '../utils/get-permissions-for-share.js';
 import { processPermissions } from '../utils/process-permissions.js';
 
 export interface FetchPermissionsOptions {
 	action?: PermissionsAction;
 	policies: string[];
 	collections?: string[];
-	accountability?: Pick<Accountability, 'user' | 'role' | 'roles' | 'app' | 'share' | 'ip'>;
+	accountability?: Pick<Accountability, 'user' | 'role' | 'roles' | 'app' | 'ip'>;
 	bypassDynamicVariableProcessing?: boolean;
 }
 
@@ -33,17 +32,11 @@ export async function fetchPermissions(options: FetchPermissionsOptions, context
 		);
 
 		// Replace dynamic variables with their actual values
-		const processedPermissions = processPermissions({
+		return processPermissions({
 			permissions,
 			accountability: options.accountability,
 			permissionsContext,
 		});
-
-		if (options.accountability.share && (options.action === undefined || options.action === 'read')) {
-			return await getPermissionsForShare(options.accountability, options.collections, context);
-		}
-
-		return processedPermissions;
 	}
 
 	return permissions;

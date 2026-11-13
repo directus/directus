@@ -41,7 +41,7 @@ watch(
 	(open) => {
 		if (!open) return;
 		const user = userStore.currentUser;
-		admin.email = user && !('share' in user) ? (user.email ?? '') : '';
+		admin.email = user ? (user.email ?? '') : '';
 		admin.password = '';
 	},
 );

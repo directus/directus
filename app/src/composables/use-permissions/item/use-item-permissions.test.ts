@@ -39,11 +39,10 @@ describe('isVersion', () => {
 		expect(updateAllowed.value).toBe(true);
 	});
 
-	it('should not bypass delete/share permissions for versions', () => {
-		const { deleteAllowed, shareAllowed } = useItemPermissions(sample.collection, sample.primaryKey, false, true);
+	it('should not bypass delete permissions for versions', () => {
+		const { deleteAllowed } = useItemPermissions(sample.collection, sample.primaryKey, false, true);
 
 		expect(deleteAllowed.value).toBe(false);
-		expect(shareAllowed.value).toBe(false);
 	});
 
 	it('should not bypass update permission for new items even when isVersion is true', () => {

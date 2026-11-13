@@ -365,7 +365,6 @@ describe('non-admin users', () => {
 			fetchedItemPermissions = computed(() => ({
 				update: { access: false },
 				delete: { access: false },
-				share: { access: false },
 			}));
 
 			const fields = getFields(sample.collection, false, fetchedItemPermissions);
@@ -387,7 +386,6 @@ describe('non-admin users', () => {
 			fetchedItemPermissions = computed(() => ({
 				update: { access: true }, // item passes condition
 				delete: { access: false },
-				share: { access: false },
 			}));
 
 			const fields = getFields(sample.collection, false, fetchedItemPermissions);
@@ -410,7 +408,6 @@ describe('non-admin users', () => {
 			fetchedItemPermissions = computed(() => ({
 				update: { access: true },
 				delete: { access: false },
-				share: { access: false },
 			}));
 
 			const fields = getFields(sample.collection, false, fetchedItemPermissions);
@@ -432,7 +429,6 @@ describe('non-admin users', () => {
 			fetchedItemPermissions = computed(() => ({
 				update: { access: false },
 				delete: { access: false },
-				share: { access: false },
 			}));
 
 			const fields = getFields(sample.collection, false, fetchedItemPermissions);
@@ -453,7 +449,6 @@ describe('non-admin users', () => {
 			fetchedItemPermissions = computed(() => ({
 				update: { access: false }, // main item fails condition
 				delete: { access: false },
-				share: { access: false },
 			}));
 
 			const fields = getFields(sample.collection, false, fetchedItemPermissions, true);
@@ -476,7 +471,6 @@ describe('non-admin users', () => {
 			fetchedItemPermissions = computed(() => ({
 				update: { access: false }, // main item fails condition
 				delete: { access: false },
-				share: { access: false },
 			}));
 
 			const fields = getFields(sample.collection, false, fetchedItemPermissions, true);
@@ -498,7 +492,6 @@ describe('non-admin users', () => {
 			fetchedItemPermissions = computed(() => ({
 				update: { access: false },
 				delete: { access: false },
-				share: { access: false },
 			}));
 
 			const fields = getFields(sample.collection, true, fetchedItemPermissions);

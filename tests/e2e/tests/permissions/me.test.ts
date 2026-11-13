@@ -24,7 +24,6 @@ test('get permissions for admin', async () => {
 
 	expect(result).toEqual({
 		delete: { access: true },
-		share: { access: true },
 		update: { access: true },
 	});
 });
@@ -39,7 +38,6 @@ test('get permissions for user', async () => {
 
 	expect(result).toEqual({
 		delete: { access: false },
-		share: { access: false },
 		update: { access: false },
 	});
 
@@ -56,7 +54,6 @@ test('get permissions for user', async () => {
 
 	expect(result).toEqual({
 		delete: { access: false },
-		share: { access: false },
 		update: { access: true },
 	});
 });
@@ -81,7 +78,6 @@ test('get permissions for user on singleton', async () => {
 
 	expect(result).toEqual({
 		delete: { access: false },
-		share: { access: false },
 		update: { access: true, fields: ['title'], presets: {} },
 	});
 });

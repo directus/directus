@@ -73,7 +73,6 @@ import LivePreview from '@/views/private/components/live-preview.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 
 interface Props {
@@ -238,7 +237,7 @@ const validationErrors = computed(() => {
 
 const {
 	collectionPermissions: { createAllowed, revisionsAllowed },
-	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, shareAllowed, fields },
+	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, fields },
 } = permissions;
 
 const { templateData } = useTemplateData(collectionInfo, primaryKeyParam);
@@ -1405,12 +1404,6 @@ function useAutoSwitchToDraft() {
 					v-if="currentVersion === null"
 					:collection="collection"
 					:primary-key="resolvedPrimaryKey"
-				/>
-				<SharesSidebarDetail
-					v-if="currentVersion === null"
-					:collection="collection"
-					:primary-key="resolvedPrimaryKey"
-					:allowed="shareAllowed"
 				/>
 				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows="sidebarManualFlows" />
 			</template>

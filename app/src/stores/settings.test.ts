@@ -52,8 +52,6 @@ const mockSettings: Settings = {
 
 const mockUser = { id: 'e7f7a94d-5b38-4978-8450-de0e38859fec', role: { admin_access: false } } as any;
 
-const mockShareUser = { share: 'a6eff2c1-d26b-43b2-bafd-84bb58c3b8ce', role: { admin_access: false } } as any;
-
 vi.mock('@/api', () => {
 	return {
 		default: {
@@ -95,17 +93,6 @@ afterEach(() => {
 
 describe('hydrate action', async () => {
 	test('should not fetch anything for public (no logged in user)', async () => {
-		const settingsStore = useSettingsStore();
-		await settingsStore.hydrate();
-
-		expect(apiGetSpy).not.toHaveBeenCalled();
-		expect(settingsStore.settings).toEqual(null);
-	});
-
-	test('should not fetch anything for share user', async () => {
-		const userStore = useUserStore();
-		userStore.currentUser = mockShareUser;
-
 		const settingsStore = useSettingsStore();
 		await settingsStore.hydrate();
 

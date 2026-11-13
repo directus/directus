@@ -661,7 +661,6 @@ x_axis_display_field: X-Axis Display Field
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
-delete_share: Delete Share
 functions:
   year: Year
   month: Month
@@ -1856,7 +1855,6 @@ directus_collection:
   directus_roles: Permission groups for system users
   directus_sessions: User session information
   directus_settings: Project configuration options
-  directus_shares: Tracks externally shared items
   directus_users: System users for the platform
   directus_translations: Custom translations
   directus_versions: Content Versions for items
@@ -2111,14 +2109,6 @@ fields:
     ai_provider_options_note: Provider-specific options passed to AI endpoints.
     ai_header_name: Header
 
-  directus_shares:
-    name: Name
-    role: Role
-    password: Password
-    date_start: Date Start
-    date_end: Date End
-    max_uses: Max Uses
-    times_used: Times Used
   directus_fields:
     collection: Collection Name
     icon: Collection Icon
@@ -2278,11 +2268,6 @@ live_preview:
   display_options: Display Options
   exit_full_width: Exit Full Width
   open_in_visual_editor: Open in Visual Editor
-shares: Shares
-unlimited_usage: Unlimited usage
-uses_left: No uses left | One use left | {n} uses left
-no_shares: No shares to show
-new_share: New Share
 show_more: Show More
 show_less: Show Less
 retry: Retry
@@ -2409,29 +2394,7 @@ mcp_prompts_collection_schema:
     'Prompts are reusable templates that you can use with LLMs through the Directus MCP server, Flows, or other AI
     applications. <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">Learn more about creating
     effective prompts.</a>'
-expired: Expired
-upcoming: Upcoming
-share: Share
-share_item: Share Item
-shared_with_you: An item has been shared with you
-shared_enter_passcode: Enter your passcode to continue...
 generate: Generate
-shared_leave_blank_for_passwordless_access: Leave blank for passwordless access
-shared_leave_blank_for_unlimited: Leave blank for unlimited
-shared_times_remaining: This link can only be used {n} times
-shared_last_remaining: This link can only be used once
-shared_uses_left:
-  For added security, this shared page has been configured with a limited number of views. There are currently {n} views
-  remaining, after which, the page will no longer be accessible.
-share_access_page: Access Shared Page
-share_access_not_found:
-  This shared page either does not exist or has already exceeded the maximum number of allowed uses.
-share_access_not_found_desc: Please contact an authorized user of this project to request access.
-share_access_not_found_title: Unknown Share Page
-share_copy_link: Copy Link
-share_copy_link_success: Link Copied
-share_copy_link_error: Unable to Copy Link
-share_send_link: Send Link
 relational_triggers: Relational Triggers
 referential_action_field_label_m2o: On Delete of {collection}...
 referential_action_field_label_o2m: On Deselect of {collection}...

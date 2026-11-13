@@ -172,7 +172,7 @@ export type Permission = {
 	system?: true;
 };
 
-export type PermissionsAction = 'create' | 'read' | 'update' | 'delete' | 'share';
+export type PermissionsAction = 'create' | 'read' | 'update' | 'delete';
 
 export type DataPermission = Partial<Permission> & Pick<Permission, 'collection' | 'action'>;
 

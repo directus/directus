@@ -420,9 +420,6 @@ describe('Integration Tests', () => {
 				user_external_identifier: null,
 				user_auth_data: null,
 				user_role: mockUser.role,
-				share_id: null,
-				share_start: null,
-				share_end: null,
 			};
 
 			let mockRefreshProvider: {

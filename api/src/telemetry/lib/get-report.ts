@@ -21,7 +21,6 @@ const basicCountTasks = [
 		where: ['status', '=', 'active'],
 	},
 	{ collection: 'directus_roles' },
-	{ collection: 'directus_shares' },
 ] as const;
 
 /**
@@ -64,7 +63,6 @@ export const getReport = async (): Promise<TelemetryReport> => {
 		files: basicCounts.directus_files,
 		flows: basicCounts.directus_flows,
 		roles: basicCounts.directus_roles,
-		shares: basicCounts.directus_shares,
 
 		admin_users: userCounts.admin,
 		app_users: userCounts.app,

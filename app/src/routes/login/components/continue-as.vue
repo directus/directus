@@ -8,7 +8,6 @@ import { onMounted, ref } from 'vue';
 import { I18nT } from 'vue-i18n';
 import { RouterLink, useRouter } from 'vue-router';
 import api from '@/api';
-import { logout } from '@/auth';
 import VButton from '@/components/v-button.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { hydrate } from '@/hydrate';
@@ -42,10 +41,6 @@ async function fetchUser() {
 				fields: ['email', 'first_name', 'last_name', 'last_page'],
 			},
 		});
-
-		if (response.data.data.share) {
-			await logout();
-		}
 
 		name.value = userName(response.data.data);
 		lastPage.value = response.data.data.last_page;

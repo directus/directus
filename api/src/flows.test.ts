@@ -303,10 +303,6 @@ describe('FlowManager', () => {
 					accountability: { role: null, user: null, roles: [], admin: false, app: false, ip: null },
 				},
 				{ name: 'undefined accountability', accountability: undefined },
-				{
-					name: 'share-only accountability',
-					accountability: { role: null, user: null, roles: [], admin: false, app: false, ip: null, share: 'share-id' },
-				},
 			];
 
 			const ALLOWED_CASES = [

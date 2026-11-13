@@ -170,52 +170,6 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		fields: ['*'],
 	},
 	{
-		collection: 'directus_shares',
-		action: 'read',
-		permissions: {
-			_or: [
-				{
-					// TODO should this be _in $CURRENT_ROLES?
-					role: {
-						_eq: '$CURRENT_ROLE',
-					},
-				},
-				{
-					role: {
-						_null: true,
-					},
-				},
-			],
-		},
-		fields: ['*'],
-	},
-	{
-		collection: 'directus_shares',
-		action: 'create',
-		permissions: {},
-		fields: ['*'],
-	},
-	{
-		collection: 'directus_shares',
-		action: 'update',
-		permissions: {
-			user_created: {
-				_eq: '$CURRENT_USER',
-			},
-		},
-		fields: ['name', 'collection', 'item', 'role', 'password', 'date_start', 'date_end', 'max_uses', 'times_used'],
-	},
-	{
-		collection: 'directus_shares',
-		action: 'delete',
-		permissions: {
-			user_created: {
-				_eq: '$CURRENT_USER',
-			},
-		},
-		fields: ['*'],
-	},
-	{
 		collection: 'directus_flows',
 		action: 'read',
 		permissions: {

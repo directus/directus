@@ -415,19 +415,6 @@ interface ServerService {
 }
 
 /**
- * The SharesService
- */
-interface SharesService {
-	login(
-		payload: Record<string, any>,
-		options?: Partial<{
-			session: boolean;
-		}>,
-	): Promise<Omit<LoginResult, 'id'>>;
-	invite(payload: { emails: string[]; share: PrimaryKey }): Promise<void>;
-}
-
-/**
  * The SpecificationService
  */
 interface OASSpecsService {
@@ -766,10 +753,6 @@ export interface ExtensionsServices {
 	 * The SettingsService
 	 */
 	SettingsService: new (options: AbstractServiceOptions) => AbstractService;
-	/**
-	 * The SharesService
-	 */
-	SharesService: new (options: AbstractServiceOptions) => AbstractService & SharesService;
 	/**
 	 * The SpecificationService
 	 */

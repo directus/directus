@@ -132,14 +132,12 @@ export class PermissionsService extends ItemsService {
 			return {
 				update: { access: true },
 				delete: { access: true },
-				share: { access: true },
 			};
 		}
 
 		const itemPermissions: ItemPermissions = {
 			update: { access: false },
 			delete: { access: false },
-			share: { access: false },
 		};
 
 		let updateAction: 'update' | 'create' = 'update';

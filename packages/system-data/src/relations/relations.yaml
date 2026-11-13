@@ -172,10 +172,6 @@ data:
     many_field: user
     one_collection: directus_users
 
-  - many_collection: directus_sessions
-    many_field: share
-    one_collection: directus_shares
-
   ### Dashboards
   - many_collection: directus_dashboards
     many_field: user_created
@@ -188,19 +184,6 @@ data:
 
   - many_collection: directus_notifications
     many_field: sender
-    one_collection: directus_users
-
-  ### Shares
-  - many_collection: directus_shares
-    many_field: role
-    one_collection: directus_roles
-
-  - many_collection: directus_shares
-    many_field: collection
-    one_collection: directus_collections
-
-  - many_collection: directus_shares
-    many_field: user_created
     one_collection: directus_users
 
   ### Versions

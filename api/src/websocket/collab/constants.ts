@@ -9,5 +9,4 @@ export const IRRELEVANT_COLLECTIONS = [
 	'directus_presets',
 	'directus_revisions',
 	'directus_sessions',
-	'directus_shares',
 ];

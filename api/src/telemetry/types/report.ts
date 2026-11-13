@@ -65,11 +65,6 @@ export interface TelemetryReport {
 	files: number;
 
 	/**
-	 * Number of shares in the system
-	 */
-	shares: number;
-
-	/**
 	 * Maximum number of fields in a collection
 	 */
 	fields_max: number;

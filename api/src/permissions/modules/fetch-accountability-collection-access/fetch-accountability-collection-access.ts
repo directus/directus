@@ -36,6 +36,9 @@ export async function fetchAccountabilityCollectionAccess(
 	const infos: CollectionAccess = {};
 
 	for (const perm of permissions) {
+		// Rows with an unknown action (e.g. the removed "share" action, synced from an older instance) are ignored
+		if (!PERMISSION_ACTIONS.includes(perm.action)) continue;
+
 		// Ensure that collection is in infos
 		if (!infos[perm.collection]) {
 			infos[perm.collection] = {
@@ -43,7 +46,6 @@ export async function fetchAccountabilityCollectionAccess(
 				create: { access: 'none' },
 				update: { access: 'none' },
 				delete: { access: 'none' },
-				share: { access: 'none' },
 			};
 		}
 

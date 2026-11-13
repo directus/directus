@@ -80,15 +80,6 @@ const requests = [
 		params: { method: 'POST', originalUrl: graphQlUrl, accountability, body: { query: 'query { test { name } }' } },
 		key: '358336a2c61f7ea2b41b5c1566bbebe692be601d',
 	},
-	{
-		name: 'a share request',
-		params: {
-			method,
-			originalUrl: restUrl,
-			accountability: { user: null, share: '11111111-1111-1111-1111-111111111111' },
-		},
-		key: '442ab20e367c8c6a9f996e9bbccd844b8dd2de12',
-	},
 ];
 
 const cases = requests.map(({ name, params, key }) => [name, params, key]);
@@ -266,37 +257,6 @@ describe('get cache key', async () => {
 		};
 
 		expect(await getCacheKey(gqlReqWithQuery)).toEqual(await getCacheKey(gqlReqWithoutCustom));
-	});
-
-	describe('share scoping', async () => {
-		const shareA = '11111111-1111-1111-1111-111111111111';
-		const shareB = '22222222-2222-2222-2222-222222222222';
-
-		const anonReq: any = { method, originalUrl: restUrl };
-		const shareAReq: any = { method, originalUrl: restUrl, accountability: { user: null, share: shareA } };
-		const userReq: any = { method, originalUrl: restUrl, accountability };
-
-		test('two different shares on the same URL produce different keys', async () => {
-			const shareBReq: any = { method, originalUrl: restUrl, accountability: { user: null, share: shareB } };
-			expect(await getCacheKey(shareAReq)).not.toEqual(await getCacheKey(shareBReq));
-		});
-
-		test('a share request does not collide with an anonymous request on the same URL', async () => {
-			expect(await getCacheKey(shareAReq)).not.toEqual(await getCacheKey(anonReq));
-		});
-
-		test('a share request does not collide with an authenticated user on the same URL', async () => {
-			expect(await getCacheKey(shareAReq)).not.toEqual(await getCacheKey(userReq));
-		});
-
-		test('anonymous requests continue to share a bucket with each other', async () => {
-			const anonReq2: any = { method, originalUrl: restUrl };
-			expect(await getCacheKey(anonReq)).toEqual(await getCacheKey(anonReq2));
-		});
-
-		test('the same share token hitting the same URL hits the same bucket', async () => {
-			expect(await getCacheKey(shareAReq)).toEqual(await getCacheKey(shareAReq));
-		});
 	});
 
 	test('it should create a unique key for requests which match a policy ip_access filter', async () => {

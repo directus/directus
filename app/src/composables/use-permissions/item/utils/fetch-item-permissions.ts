@@ -12,9 +12,6 @@ const defaultPermissions: ItemPermissions = {
 	delete: {
 		access: false,
 	},
-	share: {
-		access: false,
-	},
 };
 
 export const fetchItemPermissions = (collection: Collection, primaryKey: PrimaryKey) => {
@@ -44,9 +41,6 @@ export const fetchItemPermissions = (collection: Collection, primaryKey: Primary
 						access: true,
 					},
 					delete: {
-						access: true,
-					},
-					share: {
 						access: true,
 					},
 				};

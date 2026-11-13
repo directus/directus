@@ -11,7 +11,6 @@ import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
 import RegisterRoute from '@/routes/register/register.vue';
 import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
 import Setup from '@/routes/setup/setup.vue';
-import ShareRoute from '@/routes/shared/shared.vue';
 import TFASetup from '@/routes/tfa-setup.vue';
 import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
@@ -104,14 +103,6 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		},
 	},
 	{
-		name: 'shared',
-		path: '/shared/:id([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})',
-		component: ShareRoute,
-		meta: {
-			public: true,
-		},
-	},
-	{
 		name: 'license-recovery',
 		path: '/license-recovery',
 		component: LicenseRecoveryRoute,
@@ -176,12 +167,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 			if (appStore.authenticated === true) {
 				await hydrate();
 
-				if (
-					userStore.currentUser &&
-					to.fullPath === '/tfa-setup' &&
-					!('share' in userStore.currentUser) &&
-					userStore.currentUser.tfa_secret !== null
-				) {
+				if (userStore.currentUser && to.fullPath === '/tfa-setup' && userStore.currentUser.tfa_secret !== null) {
 					return userStore.currentUser.last_page || '/login';
 				}
 
@@ -195,7 +181,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 			}
 		}
 
-		if (userStore.currentUser && !('share' in userStore.currentUser)) {
+		if (userStore.currentUser) {
 			if (to.path !== '/tfa-setup') {
 				// Check for role-based enforcement
 				if (userStore.currentUser.enforce_tfa && userStore.currentUser.tfa_secret === null) {

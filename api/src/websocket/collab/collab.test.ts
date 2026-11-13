@@ -99,14 +99,6 @@ describe('CollabHandler', () => {
 	});
 
 	describe('onJoin', () => {
-		test('rejects joins from shares', async () => {
-			mockClient.accountability!.share = 'test-share';
-
-			await expect(
-				handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any),
-			).rejects.toHaveProperty('extensions.reason', 'Collaborative editing is not supported for shares');
-		});
-
 		test('rejects access if validateItemAccess returns false', async () => {
 			vi.mocked(getSchema).mockResolvedValue({ collections: { articles: {} }, relations: [] } as any);
 			vi.mocked(validateItemAccess).mockResolvedValue({ accessAllowed: false });

@@ -11,7 +11,6 @@ export type UsableItemPermissions = {
 	refresh: () => void;
 	updateAllowed: ComputedRef<boolean>;
 	deleteAllowed: ComputedRef<boolean>;
-	shareAllowed: ComputedRef<boolean>;
 	archiveAllowed: ComputedRef<boolean>;
 	fields: ComputedRef<Field[]>;
 };
@@ -27,11 +26,10 @@ export function useItemPermissions(
 
 	const updateAllowed = isActionAllowed(collection, isNew, fetchedItemPermissions, 'update', isVersion);
 	const deleteAllowed = isActionAllowed(collection, isNew, fetchedItemPermissions, 'delete');
-	const shareAllowed = isActionAllowed(collection, isNew, fetchedItemPermissions, 'share');
 
 	const archiveAllowed = isArchiveAllowed(collection, updateAllowed);
 
 	const fields = getFields(collection, isNew, fetchedItemPermissions, isVersion);
 
-	return { loading, refresh, updateAllowed, deleteAllowed, shareAllowed, archiveAllowed, fields };
+	return { loading, refresh, updateAllowed, deleteAllowed, archiveAllowed, fields };
 }

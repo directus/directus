@@ -15,7 +15,7 @@ export const useSettingsStore = defineStore({
 	actions: {
 		async hydrate() {
 			const userStore = useUserStore();
-			if (!userStore.currentUser || 'share' in userStore.currentUser) return;
+			if (!userStore.currentUser) return;
 
 			const response = await api.get(`/settings`);
 			this.settings = response.data.data;

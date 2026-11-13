@@ -320,12 +320,6 @@ export class CollabHandler {
 	 * Join a collaborative editing room
 	 */
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
-		if (client.accountability?.share) {
-			throw new ForbiddenError({
-				reason: 'Collaborative editing is not supported for shares',
-			});
-		}
-
 		const schema = await getSchema();
 		const db = getDatabase();
 

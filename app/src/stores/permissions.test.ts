@@ -34,7 +34,7 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-const actions: PermissionsAction[] = ['create', 'read', 'update', 'delete', 'share'];
+const actions: PermissionsAction[] = ['create', 'read', 'update', 'delete'];
 
 describe('actions', () => {
 	describe('getPermission', () => {
@@ -65,7 +65,7 @@ describe('actions', () => {
 	});
 
 	describe('hasPermission', () => {
-		const actions: PermissionsAction[] = ['create', 'read', 'update', 'delete', 'share'];
+		const actions: PermissionsAction[] = ['create', 'read', 'update', 'delete'];
 
 		describe('admin users', () => {
 			it.each(actions)('should always return true for %s permission', (action) => {

@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto';
 import {
-	authenticateShare,
 	compareContentVersion,
 	createCollection,
 	createContentVersion,
@@ -8,7 +7,6 @@ import {
 	createField,
 	createItem,
 	createRelation,
-	createShare,
 	deleteCollection,
 	deleteItem,
 	promoteContentVersion,
@@ -21,9 +19,6 @@ import {
 	readRelationByCollection,
 	readRevision,
 	readRevisions,
-	readShare,
-	readShareInfo,
-	readShares,
 	readSingleton,
 	rest,
 	saveToContentVersion,
@@ -374,7 +369,6 @@ describe('stored references to a collection that later went inactive', () => {
 
 	let itemId: number;
 	let versionId: string;
-	let shareId: string;
 
 	beforeAll(async () => {
 		await api.request(
@@ -396,9 +390,6 @@ describe('stored references to a collection that later went inactive', () => {
 		// with "no changes to promote" before it ever touches the item.
 		await api.request(saveToContentVersion(versionId, { title: 'Drafted' }));
 
-		const share = await api.request(createShare({ collection, item: String(itemId), name: 'inactive share' }));
-		shareId = share['id'];
-
 		await setStatus(collection, 'inactive');
 	});
 
@@ -414,22 +405,6 @@ describe('stored references to a collection that later went inactive', () => {
 		await expect(api.request(compareContentVersion(versionId))).rejects.toMatchObject(inactive);
 		await expect(api.request(saveToContentVersion(versionId, { title: 'Edited' }))).rejects.toMatchObject(inactive);
 		await expect(api.request(promoteContentVersion(versionId, 'nope'))).rejects.toMatchObject(inactive);
-	});
-
-	test('keeps share metadata readable but blocks item access through the share', async () => {
-		await expect(api.request(readShares())).resolves.toEqual(expect.any(Array));
-		await expect(api.request(readShare(shareId))).resolves.toMatchObject({ id: shareId, collection });
-		await expect(api.request(readShareInfo(shareId))).resolves.toMatchObject({ id: shareId });
-
-		// A share token is still issued, but it grants no access to the inactive collection.
-		const auth = await api.request(authenticateShare(shareId, undefined, 'json'));
-		expect(auth.access_token).toEqual(expect.any(String));
-
-		const shared = createDirectus(`http://localhost:${port}`)
-			.with(rest())
-			.with(staticToken(auth.access_token as string));
-
-		await expect(shared.request(readItem(collection, itemId))).rejects.toMatchObject(inactive);
 	});
 });
 

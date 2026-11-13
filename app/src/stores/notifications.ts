@@ -20,7 +20,7 @@ export const useNotificationsStore = defineStore({
 		async hydrate() {
 			const userStore = useUserStore();
 
-			if (userStore.currentUser && !('share' in userStore.currentUser)) {
+			if (userStore.currentUser) {
 				await this.refreshUnreadCount();
 			}
 		},

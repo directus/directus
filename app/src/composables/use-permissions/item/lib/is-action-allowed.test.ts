@@ -36,9 +36,6 @@ beforeEach(() => {
 			delete: {
 				access: true,
 			},
-			share: {
-				access: true,
-			},
 		};
 	});
 });
@@ -47,7 +44,7 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-const actions = ['update', 'delete', 'share'] as const;
+const actions = ['update', 'delete'] as const;
 
 const sharedTests = (action: (typeof actions)[number]) => {
 	it('should be disallowed if no collection is given', () => {
@@ -168,7 +165,7 @@ describe('non-admin users', () => {
 		});
 	});
 
-	describe.each(['delete', 'share'] as const)('%s', (action) => {
+	describe.each(['delete'] as const)('%s', (action) => {
 		it('should not bypass permissions for versions', () => {
 			const permissionsStore = mockedStore(usePermissionsStore());
 			permissionsStore.getPermission.mockReturnValue(null);

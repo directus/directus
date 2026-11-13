@@ -65,13 +65,13 @@ watch(
 // Check if the current user is an OAuth user
 const isOAuthUser = computed(() => {
 	const user = userStore.currentUser;
-	return user && !('share' in user) && user.provider !== DEFAULT_AUTH_DRIVER;
+	return user && user.provider !== DEFAULT_AUTH_DRIVER;
 });
 
 // Check if the user has role that requires TFA
 const roleRequiresTFA = computed(() => {
 	const user = userStore.currentUser;
-	if (!user || 'share' in user) return false;
+	if (!user) return false;
 	return !!(user as any).enforce_tfa;
 });
 

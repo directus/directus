@@ -123,7 +123,7 @@ export function useTFASetup(initialEnabled: boolean) {
 			error.value = null;
 			const currentUser = userStore.currentUser;
 
-			if (currentUser && !('share' in currentUser) && currentUser.id === pk) {
+			if (currentUser && currentUser.id === pk) {
 				requireTfaSetup.value = null;
 			}
 		} catch (err: any) {
@@ -144,7 +144,7 @@ export function useTFASetup(initialEnabled: boolean) {
 
 		try {
 			const currentUser = userStore.currentUser;
-			requireTfaSetup.value = currentUser && !('share' in currentUser) ? currentUser.id : null;
+			requireTfaSetup.value = currentUser ? currentUser.id : null;
 			success = true;
 			error.value = null;
 			await logout();

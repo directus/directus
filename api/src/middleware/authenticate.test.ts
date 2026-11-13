@@ -99,7 +99,6 @@ test('Uses default public accountability when no token is given', async () => {
 test('Sets accountability to payload contents if valid token is passed', async () => {
 	const userID = '3fac3c02-607f-4438-8d6e-6b8b25109b52';
 	const roleID = '38269fc6-6eb6-475a-93cb-479d97f73039';
-	const share = 'ca0ad005-f4ad-4bfe-b428-419ee8784790';
 
 	const appAccess = true;
 	const adminAccess = false;
@@ -110,7 +109,6 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			role: roleID,
 			app_access: appAccess,
 			admin_access: adminAccess,
-			share,
 		},
 		'test',
 		{ issuer: 'directus' },
@@ -138,7 +136,6 @@ test('Sets accountability to payload contents if valid token is passed', async (
 		roles: [roleID],
 		app: appAccess,
 		admin: adminAccess,
-		share,
 		ip: '127.0.0.1',
 		userAgent: 'fake-user-agent',
 		origin: 'fake-origin',
@@ -155,7 +152,6 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			role: roleID,
 			app_access: 1,
 			admin_access: 0,
-			share,
 		},
 		'test',
 		{ issuer: 'directus' },
@@ -169,7 +165,6 @@ test('Sets accountability to payload contents if valid token is passed', async (
 		roles: [roleID],
 		app: appAccess,
 		admin: adminAccess,
-		share,
 		ip: '127.0.0.1',
 		userAgent: 'fake-user-agent',
 		origin: 'fake-origin',

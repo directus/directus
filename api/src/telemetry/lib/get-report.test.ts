@@ -135,7 +135,6 @@ test('Runs and returns basic counts', async () => {
 		directus_files: 45,
 		directus_flows: 60,
 		directus_roles: 75,
-		directus_shares: 90,
 	};
 
 	vi.mocked(getItemCount).mockResolvedValue(mockItemCount);
@@ -147,14 +146,12 @@ test('Runs and returns basic counts', async () => {
 		{ collection: 'directus_files' },
 		{ collection: 'directus_flows', where: ['status', '=', 'active'] },
 		{ collection: 'directus_roles' },
-		{ collection: 'directus_shares' },
 	]);
 
 	expect(report.dashboards).toBe(mockItemCount.directus_dashboards);
 	expect(report.files).toBe(mockItemCount.directus_files);
 	expect(report.flows).toBe(mockItemCount.directus_flows);
 	expect(report.roles).toBe(mockItemCount.directus_roles);
-	expect(report.shares).toBe(mockItemCount.directus_shares);
 });
 
 test('Runs and returns user counts', async () => {

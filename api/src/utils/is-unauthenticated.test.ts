@@ -4,11 +4,6 @@ import { isUnauthenticated } from './is-unauthenticated.js';
 
 const UNAUTHENTICATED_CASES = [
 	{ input: createDefaultAccountability(), expected: true, name: 'default accountability (role=null, user=null)' },
-	{
-		input: createDefaultAccountability({ share: 'some-share-id' }),
-		expected: true,
-		name: 'share is set but role and user are null',
-	},
 ];
 
 const AUTHENTICATED_CASES = [

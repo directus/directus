@@ -7,19 +7,19 @@ import api, { RequestConfig } from '@/api';
 import { RTL_LANGUAGES } from '@/constants/text-direction';
 import { setLanguage } from '@/lang/set-language';
 import { useServerStore } from '@/stores/server';
-import { AppUser, ShareUser } from '@/types/user';
+import { AppUser } from '@/types/user';
 import { userName } from '@/utils/user-name';
 
 export const useUserStore = defineStore('userStore', () => {
 	const serverStore = useServerStore();
 
-	const currentUser = ref<AppUser | ShareUser | null>(null);
+	const currentUser = ref<AppUser | null>(null);
 	const loading = ref(false);
 	const error = ref(null);
 
 	const fullName = computed(() => {
 		const user = unref(currentUser);
-		if (user === null || 'share' in user) return null;
+		if (user === null) return null;
 		return userName(user);
 	});
 
@@ -123,7 +123,7 @@ export const useUserStore = defineStore('userStore', () => {
 
 		const user = unref(currentUser);
 
-		if (user && !('share' in user)) {
+		if (user) {
 			user.last_page = to.fullPath;
 		}
 	};

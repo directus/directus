@@ -32,7 +32,6 @@ export * from './roles.js';
 export * from './schema.js';
 export * from './server.js';
 export * from './settings.js';
-export * from './shares.js';
 export * from './specifications.js';
 export * from './tfa.js';
 export * from './translations.js';

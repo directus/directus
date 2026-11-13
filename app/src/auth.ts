@@ -1,11 +1,4 @@
-import {
-	authenticateShare,
-	AuthenticationData,
-	getAuthEndpoint,
-	LoginOptions,
-	readMe,
-	RestCommand,
-} from '@directus/sdk';
+import { AuthenticationData, getAuthEndpoint, LoginOptions, readMe, RestCommand } from '@directus/sdk';
 import { useAppStore } from '@directus/stores';
 import Cookies from 'universal-cookie';
 import { RouteLocationRaw } from 'vue-router';
@@ -22,56 +15,45 @@ type LoginCredentials = {
 	email?: string;
 	password?: string;
 	otp?: string;
-	share?: string;
 };
 
 type LoginParams = {
 	credentials: LoginCredentials;
 	provider?: string;
-	share?: boolean;
 };
 
 // Plain universal-cookie instead of the reactive useCookies() composable, whose module-scoped
 // change listener would leak a permanent document.cookie polling interval.
 const cookies = new Cookies();
 
-export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
+export async function login({ credentials, provider }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
 
 	let response: AuthenticationData;
 
-	if (share) {
-		const { share, password } = credentials;
-		if (!share) throw new Error('Missing share ID');
+	const { email, identifier, password, otp } = credentials;
 
-		await sdk.request(authenticateShare(share, password, 'session'));
+	if (!password) throw new Error('Missing password');
+
+	const loginOptions: LoginOptions = { otp, ...(provider !== DEFAULT_AUTH_PROVIDER && { provider }) };
+
+	if (email) {
+		response = await sdk.login({ email, password }, loginOptions);
+	} else if (identifier) {
+		const login =
+			<Schema extends object>(): RestCommand<AuthenticationData, Schema> =>
+			() => {
+				const path = getAuthEndpoint(loginOptions.provider);
+				const data = { identifier, password, otp, mode: 'session' };
+				return { path, method: 'POST', body: JSON.stringify(data) };
+			};
+
+		await sdk.request(login());
 		// To initialize auto-refresh
 		response = await sdk.refresh();
 	} else {
-		const { email, identifier, password, otp } = credentials;
-
-		if (!password) throw new Error('Missing password');
-
-		const loginOptions: LoginOptions = { otp, ...(provider !== DEFAULT_AUTH_PROVIDER && { provider }) };
-
-		if (email) {
-			response = await sdk.login({ email, password }, loginOptions);
-		} else if (identifier) {
-			const login =
-				<Schema extends object>(): RestCommand<AuthenticationData, Schema> =>
-				() => {
-					const path = getAuthEndpoint(loginOptions.provider);
-					const data = { identifier, password, otp, mode: 'session' };
-					return { path, method: 'POST', body: JSON.stringify(data) };
-				};
-
-			await sdk.request(login());
-			// To initialize auto-refresh
-			response = await sdk.refresh();
-		} else {
-			throw new Error('Missing email or identifier');
-		}
+		throw new Error('Missing email or identifier');
 	}
 
 	appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);

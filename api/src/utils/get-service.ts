@@ -21,7 +21,6 @@ import {
 	RevisionsService,
 	RolesService,
 	SettingsService,
-	SharesService,
 	TranslationsService,
 	UsersService,
 	VersionsService,
@@ -65,8 +64,6 @@ export function getService(collection: string, opts: AbstractServiceOptions): It
 			return new RolesService(opts);
 		case 'directus_settings':
 			return new SettingsService(opts);
-		case 'directus_shares':
-			return new SharesService(opts);
 		case 'directus_translations':
 			return new TranslationsService(opts);
 		case 'directus_users':

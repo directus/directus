@@ -24,7 +24,6 @@ export type AuthData = Record<string, any> | null;
 export interface Session {
 	token: string;
 	expires: Date;
-	share: string;
 }
 
 export type DirectusTokenPayload = {
@@ -32,20 +31,10 @@ export type DirectusTokenPayload = {
 	role: string | null;
 	app_access: boolean | number;
 	admin_access: boolean | number;
-	share?: string;
 	session?: string;
 	enforce_tfa?: boolean;
 	scope?: string;
 	aud?: string;
-};
-
-export type ShareData = {
-	share_id: string;
-	share_start: Date;
-	share_end: Date;
-	share_times_used: number | null;
-	share_max_uses?: number;
-	share_password?: string;
 };
 
 export type AuthenticationMode = 'json' | 'cookie' | 'session';

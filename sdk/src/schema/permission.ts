@@ -8,7 +8,7 @@ export type DirectusPermission<Schema = any> = MergeCoreCollection<
 		id: number;
 		policy: DirectusPolicy<Schema> | string | null;
 		collection: CollectionName<Schema>;
-		action: StringLiteralUnion<'create' | 'read' | 'update' | 'delete' | 'share'>;
+		action: StringLiteralUnion<'create' | 'read' | 'update' | 'delete'>;
 		permissions: Record<string, any> | null;
 		validation: Record<string, any> | null;
 		presets: Record<string, any> | null;

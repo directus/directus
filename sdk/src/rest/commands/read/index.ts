@@ -21,7 +21,6 @@ export * from './relations.js';
 export * from './revisions.js';
 export * from './roles.js';
 export * from './settings.js';
-export * from './shares.js';
 export * from './singleton.js';
 export * from './translations.js';
 export * from './users.js';

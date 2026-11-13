@@ -343,29 +343,19 @@ export class AuthenticationService {
 				user_external_identifier: 'u.external_identifier',
 				user_auth_data: 'u.auth_data',
 				user_role: 'u.role',
-				share_id: 'd.id',
-				share_start: 'd.date_start',
-				share_end: 'd.date_end',
 			})
 			.from('directus_sessions AS s')
 			.leftJoin('directus_users AS u', 's.user', 'u.id')
-			.leftJoin('directus_shares AS d', 's.share', 'd.id')
 			.where('s.token', refreshToken)
 			.andWhere('s.expires', '>=', new Date())
 			.andWhere('s.oauth_client', null)
-			.andWhere((subQuery) => {
-				subQuery.whereNull('d.date_end').orWhere('d.date_end', '>=', new Date());
-			})
-			.andWhere((subQuery) => {
-				subQuery.whereNull('d.date_start').orWhere('d.date_start', '<=', new Date());
-			})
 			.first();
 
-		if (!record || (!record.share_id && !record.user_id)) {
+		if (!record?.user_id) {
 			throw new InvalidCredentialsError();
 		}
 
-		if (record.user_id && record.user_status !== 'active') {
+		if (record.user_status !== 'active') {
 			await this.knex('directus_sessions').where({ token: refreshToken }).del();
 
 			if (record.user_status === 'suspended') {
@@ -390,24 +380,22 @@ export class AuthenticationService {
 			});
 		}
 
-		if (record.user_id) {
-			const provider = getAuthProvider(record.user_provider);
+		const provider = getAuthProvider(record.user_provider);
 
-			await provider.refresh({
-				id: record.user_id,
-				first_name: record.user_first_name,
-				last_name: record.user_last_name,
-				email: record.user_email,
-				password: record.user_password,
-				status: record.user_status,
-				provider: record.user_provider,
-				external_identifier: record.user_external_identifier,
-				auth_data: record.user_auth_data,
-				role: record.user_role,
-				app_access: globalAccess.app,
-				admin_access: globalAccess.admin,
-			});
-		}
+		await provider.refresh({
+			id: record.user_id,
+			first_name: record.user_first_name,
+			last_name: record.user_last_name,
+			email: record.user_email,
+			password: record.user_password,
+			status: record.user_status,
+			provider: record.user_provider,
+			external_identifier: record.user_external_identifier,
+			auth_data: record.user_auth_data,
+			role: record.user_role,
+			app_access: globalAccess.app,
+			admin_access: globalAccess.admin,
+		});
 
 		let newRefreshToken = record.session_next_token ?? nanoid(64);
 		const sessionDuration = options?.session ? env.SESSION_COOKIE_TTL : env.REFRESH_TOKEN_TTL;
@@ -433,16 +421,6 @@ export class AuthenticationService {
 				.where({ token: refreshToken });
 		}
 
-		if (record.share_id) {
-			tokenPayload.share = record.share_id;
-			tokenPayload.role = null;
-
-			tokenPayload.app_access = false;
-			tokenPayload.admin_access = false;
-
-			delete tokenPayload.id;
-		}
-
 		const customClaims = await emitter.emitFilter(
 			'auth.jwt',
 			tokenPayload,
@@ -466,18 +444,10 @@ export class AuthenticationService {
 			issuer: 'directus',
 		});
 
-		if (record.user_id) {
-			await this.knex('directus_users').update({ last_access: new Date() }).where({ id: record.user_id });
-		}
+		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: record.user_id });
 
 		// Clear expired sessions for the current user
-		await this.knex('directus_sessions')
-			.delete()
-			.where({
-				user: record.user_id,
-				share: record.share_id,
-			})
-			.andWhere('expires', '<', new Date());
+		await this.knex('directus_sessions').delete().where({ user: record.user_id }).andWhere('expires', '<', new Date());
 
 		return {
 			accessToken,
@@ -535,7 +505,6 @@ export class AuthenticationService {
 		await this.knex('directus_sessions').insert({
 			token: newSessionToken,
 			user: sessionRecord['user_id'],
-			share: sessionRecord['share_id'],
 			expires: sessionExpiration,
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,

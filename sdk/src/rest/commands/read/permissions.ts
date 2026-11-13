@@ -12,13 +12,12 @@ export type ReadPermissionOutput<
 export type ReadItemPermissionsOutput = {
 	update: { access: boolean; presets?: Record<string, any> | null; fields?: string[] | null };
 	delete: { access: boolean };
-	share: { access: boolean };
 };
 
 export type ReadUserPermissionsOutput = Record<
 	string,
 	Record<
-		'create' | 'update' | 'delete' | 'read' | 'share',
+		'create' | 'update' | 'delete' | 'read',
 		{
 			access: 'none' | 'partial' | 'full';
 			fields?: string[];

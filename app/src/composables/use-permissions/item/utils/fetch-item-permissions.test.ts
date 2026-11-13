@@ -21,9 +21,6 @@ beforeEach(() => {
 			delete: {
 				access: false,
 			},
-			share: {
-				access: true,
-			},
 		},
 	};
 });
@@ -50,13 +47,11 @@ it('should fetch item permissions only once for same item', async () => {
 	// initial render
 	expect(fetchedItemPermissions.value.update.access).toBe(false);
 	expect(fetchedItemPermissions.value.delete.access).toBe(false);
-	expect(fetchedItemPermissions.value.share.access).toBe(false);
 
 	await flushPromises();
 
 	expect(fetchedItemPermissions.value.update.access).toBe(sample.itemPermissions.update.access);
 	expect(fetchedItemPermissions.value.delete.access).toBe(sample.itemPermissions.delete.access);
-	expect(fetchedItemPermissions.value.share.access).toBe(sample.itemPermissions.share.access);
 
 	expect(apiSpy).toHaveBeenCalledTimes(1);
 });

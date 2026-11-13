@@ -15,7 +15,6 @@ import type { DirectusPreset } from './preset.js';
 import type { DirectusRelation } from './relation.js';
 import type { DirectusRole } from './role.js';
 import type { DirectusSettings } from './settings.js';
-import type { DirectusShare } from './share.js';
 import type { DirectusUser } from './user.js';
 import type { DirectusVersion } from './version.js';
 
@@ -37,7 +36,6 @@ export interface CoreSchema<Schema = any> {
 	directus_relations: DirectusRelation<Schema>[];
 	directus_roles: DirectusRole<Schema>[];
 	directus_settings: DirectusSettings<Schema>;
-	directus_shares: DirectusShare<Schema>[];
 	directus_users: DirectusUser<Schema>[];
 	directus_versions: DirectusVersion<Schema>[];
 }

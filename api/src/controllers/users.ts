@@ -88,16 +88,6 @@ router.search('/', validateBatch('read'), readHandler, respond);
 router.get(
 	'/me',
 	asyncHandler(async (req, res, next) => {
-		if (req.accountability?.share) {
-			res.locals['payload'] = {
-				data: {
-					share: req.accountability?.share,
-				},
-			};
-
-			return next();
-		}
-
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsError();
 		}
