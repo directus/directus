@@ -13,7 +13,6 @@ shellEmulator: true
 savePrefix: ''
 
 overrides:
-  tar: 7.5.22
   js-beautify>editorconfig: 4.0.0
   js-beautify>glob: 14.0.3
   js-yaml@4: 4.3.2
@@ -344,7 +343,7 @@ catalog:
   stylelint-config-standard-vue: 1.0.0
   stylelint-use-logical: 2.1.3
   swagger-cli: 4.0.4
-  tar: 7.5.8
+  tar: 7.5.23
   tedious: 18.6.1
   three: 0.184.0
   tmp: 0.2.7
