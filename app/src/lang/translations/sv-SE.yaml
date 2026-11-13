@@ -2099,6 +2099,15 @@ triggers:
     collection_page: Samlingssida
 any_string_or_json: Valfri sträng eller JSON...
 operations:
+  ai-image:
+    background: Bakgrund
+    starting_points:
+      icon: Ikon
+  ai-text:
+    files: Filer
+    type_text: Text
+    view_fields: Fält
+    view_json: JSON
   condition:
     name: Villkor
   exec:
