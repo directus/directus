@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Collection, Permission, PermissionsAction } from '@directus/types';
+import { Permission, PermissionsAction } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import VChip from '@/components/v-chip.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -11,6 +11,7 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useLicenseStore } from '@/stores/license';
+import { Collection } from '@/types/collections';
 import LicenseUpgradeModal from '@/views/private/components/license-upgrade-modal.vue';
 
 const props = defineProps<{
@@ -19,6 +20,10 @@ const props = defineProps<{
 	permission?: Permission;
 	loading?: boolean;
 	appMinimal?: Partial<Permission>;
+	// The API restricts this action to admins regardless of policy; render it read-only.
+	restricted?: boolean;
+	// The API requires an authenticated user for this action, which a public policy never reaches unauthenticated.
+	requiresUser?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -57,6 +62,11 @@ const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
 
 const saving = ref(false);
 
+// A restricted action can still have a permission stored from before it was blocked, which only removal can clear.
+const hasStalePermission = computed(() => props.restricted && permission.value !== undefined);
+
+const hasUserOnlyPermission = computed(() => props.requiresUser && permission.value !== undefined);
+
 const appMinimalLevel = computed(() => {
 	if (!props.appMinimal) return null;
 
@@ -74,16 +84,44 @@ const appMinimalLevel = computed(() => {
 <template>
 	<div
 		v-tooltip="
-			(appMinimal && $t('required_for_app_access')) || $t(`permissionsLevel.${permissionLevel}`, { action: $t(action) })
+			(hasStalePermission &&
+				$t('hardcoded_admin_only_stale_permission_note', { action: $t(action), collection: collection.name })) ||
+			(restricted && $t('hardcoded_admin_only_action_note', { action: $t(action), collection: collection.name })) ||
+			(hasUserOnlyPermission &&
+				$t('hardcoded_user_only_action_note', { action: $t(action), collection: collection.name })) ||
+			(appMinimal && $t('required_for_app_access')) ||
+			$t(`permissionsLevel.${permissionLevel}`, { action: $t(action) })
 		"
 		:class="[{ 'has-app-minimal': !!appMinimal }, appMinimalLevel]"
 	>
-		<VChip v-if="appMinimalLevel === 'full'" small class="toggle all">{{ $t(action) }}</VChip>
+		<VChip v-if="restricted && !hasStalePermission" small disabled class="toggle restricted">{{ $t(action) }}</VChip>
+
+		<VMenu v-else-if="hasStalePermission" show-arrow>
+			<template #activator="{ toggle, active }">
+				<VChip small clickable class="toggle restricted stale" :class="{ active }" @click="toggle">
+					{{ $t(action) }}
+				</VChip>
+			</template>
+
+			<VList>
+				<VListItem clickable @click="emit('setNoAccess')">
+					<VListItemIcon>
+						<VIcon name="delete" />
+					</VListItemIcon>
+					<VListItemContent>
+						{{ $t('remove_permission') }}
+					</VListItemContent>
+				</VListItem>
+			</VList>
+		</VMenu>
+
+		<VChip v-else-if="appMinimalLevel === 'full'" small class="toggle all">{{ $t(action) }}</VChip>
 
 		<VMenu v-else show-arrow>
 			<template #activator="{ toggle, active }">
 				<VChip small clickable class="toggle" :class="[permissionLevel, { active }]" @click="toggle">
 					<VProgressCircular v-if="loading || saving" indeterminate small />
+
 					<template v-else>{{ $t(action) }}</template>
 				</VChip>
 			</template>
@@ -179,6 +217,23 @@ const appMinimalLevel = computed(() => {
 			--v-chip-color: var(--theme--foreground);
 			--v-chip-background-color: transparent;
 			--v-chip-border-color: var(--theme--border-color);
+		}
+	}
+
+	&.restricted {
+		--v-chip-color: var(--theme--foreground-subdued);
+		--v-chip-background-color: var(--theme--background-subdued);
+		--v-chip-border-color: var(--theme--border-color-subdued);
+		cursor: not-allowed;
+
+		&.stale {
+			--v-chip-color: var(--theme--warning);
+			--v-chip-color-hover: var(--theme--warning);
+			--v-chip-background-color: var(--theme--warning-background);
+			--v-chip-background-color-hover: var(--theme--warning-background);
+			--v-chip-border-color: var(--theme--warning);
+			--v-chip-border-color-hover: var(--theme--warning-accent);
+			cursor: pointer;
 		}
 	}
 }

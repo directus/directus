@@ -36,6 +36,7 @@ import emitter from '../emitter.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { assertHardcodedAdmin } from '../permissions/utils/assert-hardcoded-auth.js';
 import getDefaultValue from '../utils/get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
 import getLocalType from '../utils/get-local-type.js';
@@ -360,9 +361,7 @@ export class FieldsService {
 		table?: Knex.CreateTableBuilder, // allows collection creation to
 		opts?: FieldMutationOptions,
 	): Promise<void> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+		assertHardcodedAdmin(this.accountability, 'directus_fields', 'create');
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
@@ -499,9 +498,7 @@ export class FieldsService {
 	}
 
 	async updateField(collection: string, field: RawField, opts?: FieldMutationOptions): Promise<string> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+		assertHardcodedAdmin(this.accountability, 'directus_fields', 'update');
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
@@ -693,9 +690,7 @@ export class FieldsService {
 	}
 
 	async deleteField(collection: string, field: string, opts?: MutationOptions): Promise<void> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+		assertHardcodedAdmin(this.accountability, 'directus_fields', 'delete');
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];

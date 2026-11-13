@@ -1,17 +1,36 @@
 <script setup lang="ts">
 import { Permission, PermissionsAction } from '@directus/types';
+import { computed } from 'vue';
 import PermissionsToggle from './permissions-toggle.vue';
-import { editablePermissionActions, EditablePermissionsAction } from '@/app-permissions.js';
+import {
+	editablePermissionActions,
+	EditablePermissionsAction,
+	getStoredDisabledActions,
+	getStoredUserOnlyActions,
+} from '@/app-permissions.js';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { Collection } from '@/types/collections';
-import ValueNull from '@/views/private/components/value-null.vue';
 
-defineProps<{
+const props = defineProps<{
 	collection: Collection;
 	disabledActions?: EditablePermissionsAction[];
+	userOnlyActions?: EditablePermissionsAction[];
 	permissions: Permission[];
 	appMinimal?: Partial<Permission>[];
 }>();
+
+const warnings = computed(() =>
+	[
+		{
+			note: 'hardcoded_admin_only_collection_note',
+			actions: getStoredDisabledActions(props.collection.collection, props.permissions),
+		},
+		{
+			note: 'hardcoded_user_only_collection_note',
+			actions: props.userOnlyActions ? getStoredUserOnlyActions(props.collection.collection, props.permissions) : [],
+		},
+	].filter(({ actions }) => actions.length > 0),
+);
 
 const emit = defineEmits<{
 	editItem: [action: PermissionsAction];
@@ -27,7 +46,23 @@ const emit = defineEmits<{
 	<tr class="permissions-row" :data-collection="collection.collection">
 		<td class="collection">
 			<div>
-				<div v-tooltip.left="collection.name" class="name">{{ collection.collection }}</div>
+				<div class="name">
+					<span v-tooltip.left="collection.name" class="text">{{ collection.collection }}</span>
+
+					<VIcon
+						v-if="warnings.length > 0"
+						v-tooltip.left="
+							warnings
+								.map(({ note, actions }) =>
+									$t(note, { actions: actions.map((action) => $t(action)).join(', '), collection: collection.name }),
+								)
+								.join(' ')
+						"
+						class="permission-warning"
+						name="warning"
+						small
+					/>
+				</div>
 				<div class="shortcuts">
 					<button type="button" class="all" @click="emit('setFullAccessAll')">{{ $t('all') }}</button>
 					<span class="divider">/</span>
@@ -38,16 +73,16 @@ const emit = defineEmits<{
 
 		<td v-for="action in editablePermissionActions" :key="action" class="action">
 			<PermissionsToggle
-				v-if="!disabledActions?.includes(action)"
 				:action="action"
 				:collection="collection"
+				:restricted="disabledActions?.includes(action)"
+				:requires-user="userOnlyActions?.includes(action)"
 				:permission="permissions.find((permission) => permission.action === action)"
 				:app-minimal="appMinimal && appMinimal.find((permission) => permission.action === action)"
 				@edit="emit('editItem', action)"
 				@set-full-access="emit('setFullAccess', action)"
 				@set-no-access="emit('setNoAccess', action)"
 			/>
-			<ValueNull v-else />
 		</td>
 		<td class="remove">
 			<VIcon v-tooltip="$t('remove')" name="close" clickable @click="emit('removeRow')" />
@@ -68,12 +103,24 @@ const emit = defineEmits<{
 	}
 
 	.name {
+		display: flex;
 		flex: 1;
+		gap: 0.375rem;
+		align-items: center;
 		inline-size: 0.0625rem;
 		padding: 0 0.6875rem;
 		font-family: var(--theme--fonts--monospace--font-family);
+	}
+
+	.text {
+		min-inline-size: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+
+	.permission-warning {
+		flex-shrink: 0;
+		color: var(--theme--warning);
 	}
 
 	.shortcuts {
@@ -122,14 +169,6 @@ const emit = defineEmits<{
 
 	.action + .action {
 		padding-inline-start: 0.25rem;
-	}
-
-	.null {
-		cursor: not-allowed;
-	}
-
-	:is(.permissions-overview-toggle, .null) + :is(.permissions-overview-toggle, .null) {
-		margin-inline-start: 1.125rem;
 	}
 
 	& + .permissions-row td {
