@@ -286,7 +286,7 @@ catalog:
   micromustache: 8.0.3
   mime: 4.1.0
   mime-types: 3.0.1
-  minimatch: 10.2.6
+  minimatch: 11.0.1
   mitt: 3.0.1
   mnemonist: 0.40.3
   ms: 2.1.3
