@@ -6,6 +6,7 @@ import { camelCase, upperFirst } from 'lodash-es';
 import { computed, defineAsyncComponent } from 'vue';
 import { RTL_REVERSE_ICONS } from '../../constants/text-direction';
 import { components } from './custom-icons';
+import { isKnownIcon } from './known-icons';
 import { socialIcons } from './social-icons';
 import { useUserStore } from '@/stores/user';
 
@@ -71,6 +72,9 @@ const socialIconName = computed<IconName | null>(() => {
 	return null;
 });
 
+// the font draws a name it has no ligature for as plain text, so unknown names render nothing
+const materialIconName = computed(() => (props.name && isKnownIcon(props.name) ? props.name : null));
+
 const mirrored = computed(() => userStore.textDirection === 'rtl' && isIn(props.name, RTL_REVERSE_ICONS));
 
 function emitClick(event: MouseEvent) {
@@ -91,7 +95,7 @@ function emitClick(event: MouseEvent) {
 	>
 		<component :is="customIconName" v-if="customIconName" class="custom-icon-svg" />
 		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
-		<i v-else-if="name" :class="{ filled }" :data-icon="name"></i>
+		<i v-else-if="materialIconName" :class="{ filled }" :data-icon="materialIconName"></i>
 	</component>
 </template>
 

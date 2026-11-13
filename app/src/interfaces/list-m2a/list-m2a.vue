@@ -24,6 +24,7 @@ import { useRelationPermissionsM2A } from '@/composables/use-relation-permission
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isCollectionInactive } from '@/utils/collection-status';
+import { getM2ACollectionTemplates } from '@/utils/get-m2a-collection-templates';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
@@ -73,17 +74,7 @@ const allowedCollections = computed(() => {
 	return relationInfo.value.allowedCollections.filter((collection) => collection.meta?.singleton !== true);
 });
 
-const templates = computed(() => {
-	if (!relationInfo.value) return {};
-	const templates: Record<string, string> = {};
-
-	for (const collection of allowedCollections.value) {
-		const primaryKeyField = relationInfo.value.relationPrimaryKeyFields[collection.collection];
-		templates[collection.collection] = collection.meta?.display_template || `{{${primaryKeyField?.field}}}`;
-	}
-
-	return templates;
-});
+const templates = computed(() => (relationInfo.value ? getM2ACollectionTemplates(relationInfo.value) : {}));
 
 const fields = computed(() => {
 	if (!relationInfo.value) return [];
