@@ -1437,6 +1437,13 @@ triggers:
   webhook:
     method: Metoda
 operations:
+  ai-image:
+    starting_points:
+      icon: Ikona
+  ai-text:
+    files: Datoteke
+    type_text: Tekst
+    view_json: JSON
   json-web-token:
     token: Žeton
     options: Možnosti
