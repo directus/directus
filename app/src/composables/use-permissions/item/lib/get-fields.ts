@@ -33,9 +33,13 @@ export function getFields(
 			fields = fields.filter((field) => readableFields.includes(field.field));
 		}
 
-		// Version editing bypasses underlying collection write permissions entirely.
-		// Field-level access is enforced by the backend at promote time.
-		if (unref(isVersion)) return fields;
+		// Item-level rules are checked at promote time, since the version can change the values they depend on.
+		// Without any create/update permission nothing is locked, so users can still draft changes for a reviewer.
+		if (unref(isVersion)) {
+			const versionPermission = getPermission(collectionValue, unref(isNew) ? 'create' : 'update');
+			if (versionPermission && versionPermission.access !== 'none') lockFieldsOutside(fields, versionPermission.fields);
+			return fields;
+		}
 
 		let permission;
 
@@ -57,22 +61,10 @@ export function getFields(
 
 		if (!permission || permission.access === false || permission.access === 'none') {
 			for (const field of fields) {
-				(field as FormField).meta = {
-					...(field.meta || {}),
-					readonly: true,
-					non_editable: true,
-				};
+				lockField(field);
 			}
-		} else if (permission.fields && !permission.fields.includes('*')) {
-			for (const field of fields) {
-				if (!permission.fields.includes(field.field)) {
-					(field as FormField).meta = {
-						...(field.meta || {}),
-						readonly: true,
-						non_editable: true,
-					};
-				}
-			}
+		} else {
+			lockFieldsOutside(fields, permission.fields);
 		}
 
 		const presets = permission?.presets;
@@ -90,4 +82,20 @@ export function getFields(
 
 		return fields;
 	});
+}
+
+function lockField(field: Field) {
+	(field as FormField).meta = {
+		...(field.meta || {}),
+		readonly: true,
+		non_editable: true,
+	};
+}
+
+function lockFieldsOutside(fields: Field[], allowedFields: string[] | null | undefined) {
+	if (!allowedFields || allowedFields.includes('*')) return;
+
+	for (const field of fields) {
+		if (!allowedFields.includes(field.field)) lockField(field);
+	}
 }

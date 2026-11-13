@@ -21,8 +21,8 @@ export const isActionAllowed = (
 
 		if (unref(isNew)) return false;
 
-		// Version editing bypasses underlying collection write permissions.
-		// Field-level access is enforced by the backend at promote time.
+		// Versions stay savable regardless of the item's write permissions. Fields the user can't write are locked
+		// individually in getFields, and item-level rules are checked at promote time.
 		if (action === 'update' && unref(isVersion)) return true;
 
 		if (userStore.isAdmin) return true;
