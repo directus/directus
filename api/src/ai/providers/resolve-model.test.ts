@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { getDevToolsMiddleware } from '../devtools/index.js';
 import { getProviderOptions } from './options.js';
 import { buildProviderConfigs, createAIProviderRegistry } from './registry.js';
-import { resolveLanguageModel } from './resolve-model.js';
+import { resolveImageModel, resolveLanguageModel } from './resolve-model.js';
 import type { AISettings } from './types.js';
 
 vi.mock('ai', () => ({
@@ -26,6 +26,7 @@ vi.mock('./registry.js', () => ({
 
 const settings = { ai_openai_api_key: 'test-key', ai_openai_allowed_models: ['gpt-5'] } as AISettings;
 const languageModel = vi.fn(() => 'mock-model');
+const imageModel = vi.fn(() => 'mock-image-model');
 
 beforeEach(() => {
 	vi.clearAllMocks();
@@ -35,7 +36,7 @@ beforeEach(() => {
 		{ type: 'openai', apiKey: 'test-key' },
 	]);
 
-	vi.mocked(createAIProviderRegistry).mockReturnValue({ languageModel } as unknown as ReturnType<
+	vi.mocked(createAIProviderRegistry).mockReturnValue({ languageModel, imageModel } as unknown as ReturnType<
 		typeof createAIProviderRegistry
 	>);
 
@@ -79,5 +80,20 @@ describe('resolveLanguageModel', () => {
 		resolveLanguageModel('openai', 'gpt-5', settings);
 
 		expect(wrapLanguageModel).not.toHaveBeenCalled();
+	});
+});
+
+describe('resolveImageModel', () => {
+	it('returns the registry image model', () => {
+		const result = resolveImageModel('openai', 'gpt-image-2.5-flare', settings);
+
+		expect(imageModel).toHaveBeenCalledWith('openai:gpt-image-2.5-flare');
+		expect(result).toBe('mock-image-model');
+	});
+
+	it('throws ServiceUnavailableError when the provider has no API key', () => {
+		vi.mocked(buildProviderConfigs).mockReturnValue([]);
+
+		expect(() => resolveImageModel('google', 'gemini-nano-banana-2.1', settings)).toThrow(ServiceUnavailableError);
 	});
 });

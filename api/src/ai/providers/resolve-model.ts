@@ -1,6 +1,6 @@
-import type { ProviderType } from '@directus/ai';
+import type { ImageProviderType, ProviderType } from '@directus/ai';
 import { ServiceUnavailableError } from '@directus/errors';
-import { wrapLanguageModel } from 'ai';
+import { type ImageModel, wrapLanguageModel } from 'ai';
 import { getDevToolsMiddleware } from '../devtools/index.js';
 import { getProviderOptions } from './options.js';
 import { buildProviderConfigs, createAIProviderRegistry } from './registry.js';
@@ -20,13 +20,7 @@ export function resolveLanguageModel(
 ): ResolvedLanguageModel {
 	validateModelAllowed(provider, model, settings);
 
-	const config = buildProviderConfigs(settings).find((config) => config.type === provider);
-
-	if (!config) {
-		throw new ServiceUnavailableError({ service: provider, reason: 'No API key configured for LLM provider' });
-	}
-
-	const registry = createAIProviderRegistry([config], settings);
+	const registry = createRegistryFor(provider, settings);
 	let languageModel = registry.languageModel(`${provider}:${model}`);
 	const devToolsMiddleware = getDevToolsMiddleware();
 
@@ -38,4 +32,18 @@ export function resolveLanguageModel(
 		model: languageModel,
 		providerOptions: getProviderOptions(provider, model, settings),
 	};
+}
+
+export function resolveImageModel(provider: ImageProviderType, model: string, settings: AISettings): ImageModel {
+	return createRegistryFor(provider, settings).imageModel(`${provider}:${model}`);
+}
+
+function createRegistryFor(provider: ProviderType, settings: AISettings) {
+	const config = buildProviderConfigs(settings).find((config) => config.type === provider);
+
+	if (!config) {
+		throw new ServiceUnavailableError({ service: provider, reason: 'No API key configured for AI provider' });
+	}
+
+	return createAIProviderRegistry([config], settings);
 }
