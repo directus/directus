@@ -1,8 +1,10 @@
 import { defineConfig } from 'tsdown';
+import { baseConfig } from '../../tsdown.config.ts';
 
 const env = process.env.NODE_ENV;
 
 const shared = {
+	...baseConfig,
 	sourcemap: env === 'production', // source map is only available in prod
 	clean: true, // clean dist before build
 	globalName: 'DirectusVisualEditing', // global variable name for iife
@@ -16,7 +18,6 @@ export default defineConfig(() => [
 	{
 		...shared,
 		dts: true, // generate dts file for main module
-		fixedExtension: false, // use .js/.cjs based on package type
 		entry: ['src/index.ts', 'src/types.ts'],
 		format: ['esm', 'cjs'],
 	},

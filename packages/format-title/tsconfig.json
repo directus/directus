@@ -1,5 +1,10 @@
 {
-	"extends": "@directus/tsconfig/node22",
+	"extends": "@directus/tsconfig/node26",
+	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["ES2023"],
+		"types": []
+	},
 	"include": ["src"],
 	"typedocOptions": {
 		"entryPoints": ["./src"]
