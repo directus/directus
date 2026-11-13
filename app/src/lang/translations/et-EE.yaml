@@ -1491,6 +1491,13 @@ triggers:
   webhook:
     method: Meetod
 operations:
+  ai-image:
+    starting_points:
+      icon: Ikoon
+  ai-text:
+    files: Failid
+    type_text: Tekst
+    view_json: JSON
   json-web-token:
     token: Kontrollkood
     options: Valikud
