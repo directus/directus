@@ -137,6 +137,14 @@ type Options = {
 	run?: (service: VersionTablesService) => Promise<void>;
 };
 
+/** Relation meta of the m2o from articles to authors, with an o2m on authors */
+const AUTHOR_O2M: Partial<RelationMeta> = {
+	many_collection: 'articles',
+	many_field: 'author',
+	one_collection: 'authors',
+	one_field: 'articles',
+};
+
 /** The m2o from articles to authors, as it exists on the live table */
 const LIVE_FOREIGN_KEYS = [foreignKey('articles', 'author', 'authors', 'SET NULL')];
 
@@ -241,7 +249,7 @@ describe('VersionTablesService.syncCollections', () => {
 	});
 
 	test('creates link tables and version references for related versioned collections', async () => {
-		const { sql, bindings } = await sync({ versioned: ['articles', 'authors'] });
+		const { sql, bindings } = await sync({ versioned: ['articles', 'authors'], relations: [AUTHOR_O2M] });
 
 		expect(sql).toMatchInlineSnapshot(`
 			"create table "directus_shadow_articles" (
@@ -493,6 +501,7 @@ describe('scoped changes', () => {
 		const { sql, introspected } = await sync({
 			versioned: ['articles', 'authors'],
 			shadow: ARTICLES_SHADOW,
+			relations: [AUTHOR_O2M],
 			run: (service) => service.syncCollections(['authors'], { includeRelating: true }),
 		});
 

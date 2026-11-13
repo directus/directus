@@ -11,6 +11,7 @@ import {
 	staticToken,
 	updateCollection,
 	updateField,
+	updateRelation,
 } from '@directus/sdk';
 import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
@@ -87,8 +88,9 @@ test('mirrors field updates and deletions', async () => {
 	expect(await getColumns(api, SHADOW + collections.posts)).not.toContain('summary');
 });
 
-test('creates link tables only for collections referencing versioned collections', async () => {
-	expect(await getColumns(api, LINK + collections.posts)).toEqual(columns('id', 'author', 'parent', 'attachment'));
+test('creates link tables only for collections with an o2m from a versioned collection', async () => {
+	// posts only has m2o / a2o relations to versioned collections, without an o2m pointing back
+	expect(await getColumns(api, LINK + collections.posts)).toBeNull();
 	expect(await getColumns(api, LINK + collections.notes)).toEqual(columns('id', 'post_id'));
 	expect(await getColumns(api, LINK + collections.links)).toEqual(columns('id', 'post_id'));
 	expect(await getColumns(api, LINK + collections.posts_tags_junction)).toEqual(columns('id', 'posts_id', 'tags_id'));
@@ -113,14 +115,27 @@ test('mirrors relations that are added and removed', async () => {
 	);
 
 	expect(await getColumns(api, SHADOW + collections.posts)).toContain('version_ref_editor');
-	expect(await getColumns(api, LINK + collections.posts)).toContain('editor');
+	expect(await getColumns(api, LINK + collections.posts)).toBeNull();
 
 	// Deleting the field removes its relation as well
 	await api.request(deleteField(collections.posts, 'editor'));
 
 	expect(await getColumns(api, SHADOW + collections.posts)).not.toContain('version_ref_editor');
-	expect(await getColumns(api, LINK + collections.posts)).not.toContain('editor');
 	expect(await getColumns(api, SHADOW + collections.posts)).not.toContain('editor');
+});
+
+test('adding and removing an o2m creates and drops the link table', async () => {
+	await api.request(
+		createField(collections.authors, { field: 'posts', type: 'alias', meta: { special: ['o2m'] }, schema: null }),
+	);
+
+	await api.request(updateRelation(collections.posts, 'author', { meta: { one_field: 'posts' } }));
+
+	expect(await getColumns(api, LINK + collections.posts)).toEqual(columns('id', 'author', 'parent', 'attachment'));
+
+	await api.request(deleteField(collections.authors, 'posts'));
+
+	expect(await getColumns(api, LINK + collections.posts)).toBeNull();
 });
 
 test('hides version tables from the collections', async () => {
@@ -135,13 +150,12 @@ test('enabling and disabling versioning creates and drops the tables', async () 
 
 	expect(await getColumns(api, SHADOW + collections.categories)).toEqual(columns(...META, 'id', 'name'));
 	expect(await getColumns(api, SHADOW + collections.posts)).toContain('version_ref_category');
-	expect(await getColumns(api, LINK + collections.posts)).toContain('category');
+	expect(await getColumns(api, LINK + collections.posts)).toBeNull();
 
 	await api.request(updateCollection(collections.categories, { meta: { versioning: false } }));
 
 	expect(await getColumns(api, SHADOW + collections.categories)).toBeNull();
 	expect(await getColumns(api, SHADOW + collections.posts)).not.toContain('version_ref_category');
-	expect(await getColumns(api, LINK + collections.posts)).not.toContain('category');
 });
 
 test('deleting a versioned collection drops its version tables', async () => {
@@ -168,6 +182,7 @@ test('disabling versioning on a related collection updates the link tables', asy
 
 	expect(await getColumns(api, SHADOW + collections.posts)).toBeNull();
 	expect(await getColumns(api, LINK + collections.notes)).toBeNull();
-	expect(await getColumns(api, LINK + collections.posts_tags_junction)).toEqual(columns('id', 'tags_id'));
+	// The junction's only o2m is from posts, so its live items can no longer belong to a version
+	expect(await getColumns(api, LINK + collections.posts_tags_junction)).toBeNull();
 	expect(await getColumns(api, SHADOW + collections.posts_tags_junction)).not.toContain('version_ref_posts_id');
 });

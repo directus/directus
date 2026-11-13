@@ -16,13 +16,21 @@ function column(table: string, name: string, data_type = 'integer'): Column {
 	} as Column;
 }
 
-function m2o(collection: string, field: string, related: string | null, allowed?: string[]): Relation {
+function m2o(
+	collection: string,
+	field: string,
+	related: string | null,
+	options: { allowed?: string[]; oneField?: string } = {},
+): Relation {
 	return {
 		collection,
 		field,
 		related_collection: related,
 		schema: related ? ({ on_delete: 'SET NULL', foreign_key_column: 'id' } as Relation['schema']) : null,
-		meta: allowed ? ({ one_allowed_collections: allowed } as Relation['meta']) : null,
+		meta: {
+			one_allowed_collections: options.allowed ?? null,
+			one_field: options.oneField ?? null,
+		} as Relation['meta'],
 	};
 }
 
@@ -32,6 +40,7 @@ const columns = {
 	tags: [column('tags', 'id'), column('tags', 'article')],
 	comments: [
 		column('comments', 'id'),
+		column('comments', 'article'),
 		column('comments', 'item', 'varchar'),
 		column('comments', 'collection', 'varchar'),
 	],
@@ -40,11 +49,18 @@ const columns = {
 const collectionList: LiveCollection[] = [
 	{ collection: 'articles', columns: columns.articles, relations: [m2o('articles', 'author', 'authors')] },
 	{ collection: 'authors', columns: columns.authors, relations: [] },
-	{ collection: 'tags', columns: columns.tags, relations: [m2o('tags', 'article', 'articles')] },
+	{
+		collection: 'tags',
+		columns: columns.tags,
+		relations: [m2o('tags', 'article', 'articles', { oneField: 'tags' })],
+	},
 	{
 		collection: 'comments',
 		columns: columns.comments,
-		relations: [m2o('comments', 'item', null, ['articles', 'authors'])],
+		relations: [
+			m2o('comments', 'article', 'articles', { oneField: 'comments' }),
+			m2o('comments', 'item', null, { allowed: ['articles', 'authors'] }),
+		],
 	},
 	// Version tables are ignored
 	{
@@ -107,6 +123,8 @@ describe('planVersionTables', () => {
 		const tables = planShadowTables(collections, new Set(['articles']));
 		const shadow = tables['directus_shadow_articles']!;
 
+		console.log(tables);
+
 		expect(shadow.columns.map((column) => column.name)).not.toContain('version_ref_author');
 	});
 
@@ -137,12 +155,51 @@ describe('planVersionTables', () => {
 		]);
 	});
 
-	test('does not add foreign keys for a2o references', () => {
+	test('does not create link tables for m2o relations without an o2m on the versioned collection', () => {
 		const tables = planShadowTables(collections, new Set(['authors']));
+
+		expect(Object.keys(tables)).toEqual(['directus_shadow_authors']);
+	});
+
+	test('does not create link tables for a2o relations alone', () => {
+		const tables = planShadowTables(collections, new Set(['authors']));
+
+		expect(tables['directus_link_comments']).toBeUndefined();
+	});
+
+	test('does not create link tables for o2m relations on unversioned collections', () => {
+		const tables = planShadowTables(collections, new Set(['tags']));
+
+		expect(Object.keys(tables)).toEqual(['directus_shadow_tags']);
+	});
+
+	test('references all versioned collections once a link table is needed', () => {
+		const junction: LiveCollections = {
+			junction: {
+				collection: 'junction',
+				columns: [column('junction', 'id'), column('junction', 'articles_id'), column('junction', 'authors_id')],
+				relations: [
+					m2o('junction', 'articles_id', 'articles', { oneField: 'authors' }),
+					m2o('junction', 'authors_id', 'authors'),
+				],
+			},
+		};
+
+		const tables = planShadowTables(junction, new Set(['articles', 'authors']));
+
+		expect(tables['directus_link_junction']!.columns.map((column) => column.name)).toEqual([
+			'id',
+			'articles_id',
+			'authors_id',
+		]);
+	});
+
+	test('does not add foreign keys for a2o references', () => {
+		const tables = planShadowTables(collections, new Set(['articles', 'authors']));
 		const link = tables['directus_link_comments']!;
 
-		expect(link.columns.map((column) => column.name)).toEqual(['id', 'item']);
-		expect(link.foreignKeys.map((foreignKey) => foreignKey.column)).toEqual(['id']);
+		expect(link.columns.map((column) => column.name)).toEqual(['id', 'article', 'item']);
+		expect(link.foreignKeys.map((foreignKey) => foreignKey.column)).toEqual(['id', 'article']);
 	});
 
 	test('throws when a live field conflicts with a version field', () => {

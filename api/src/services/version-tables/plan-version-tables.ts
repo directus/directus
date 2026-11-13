@@ -168,15 +168,24 @@ function planShadowTable(liveCollection: LiveCollection, versioned: Set<string>)
 }
 
 /**
- * Link tables store references from live items to versions of related collections, which is needed for o2m relations
- * on versioned collections without having to modify the live table.
- * Only created when at least one m2o / a2o of the collection points to a versioned collection.
+ * Link tables store references from live items to versions of related collections.
+ * Only created when a versioned collection has an o2m to the collection.
  */
 function planLinkTable(liveCollection: LiveCollection, versioned: Set<string>): VersionTable | null {
 	const { collection, relations } = liveCollection;
 	const source = getPrimaryKey(liveCollection);
 
 	if (!source) return null;
+
+	const hasVersionedO2M = relations.some(
+		(relation) =>
+			relation.field !== source.name &&
+			relation.meta?.one_field &&
+			relation.related_collection &&
+			versioned.has(relation.related_collection),
+	);
+
+	if (!hasVersionedO2M) return null;
 
 	const primary = source.name;
 

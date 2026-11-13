@@ -755,6 +755,8 @@ export class FieldsService {
 						await trx('directus_relations')
 							.update({ one_field: null })
 							.where({ many_collection: relation.collection, many_field: relation.field });
+
+						change.sync([relation.collection]);
 					}
 				}
 
