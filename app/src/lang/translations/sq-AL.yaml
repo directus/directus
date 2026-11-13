@@ -2333,6 +2333,16 @@ a_flow_uuid: Zgjidh një rrjedhë për të shkaktuar...
 any_string_or_json: Çdo varg ose JSON...
 item_payload_placeholder: Kjo është JSON që përdoret për të përditësuar vlerat e fushës së artikullit...
 operations:
+  ai-image:
+    background: Sfond
+    emit_events: Lësho Ngjarje
+    starting_points:
+      icon: Ikonë
+  ai-text:
+    files: Skedarë
+    type_text: Tekst
+    view_fields: Fusha
+    view_json: JSON
   condition:
     name: Kusht
   exec:
