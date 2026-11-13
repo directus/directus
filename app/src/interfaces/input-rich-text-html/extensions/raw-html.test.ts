@@ -2,6 +2,7 @@
 import { Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test } from 'vitest';
 import { computeValueNormalizationDiff, roundTrip } from '../composables/normalization-diff';
+import { RAW_HTML_NODE_NAMES } from './raw-html';
 import { htmlToElement } from './raw-html-sanitize';
 import { buildFieldSchema, editorExtensions } from './index';
 
@@ -99,6 +100,14 @@ test('a DOM attribute named html cannot replace the sanitized value', () => {
 });
 
 test('preserved attributes are not added to raw html nodes', () => {
+	const { schema } = mount('');
+
+	for (const name of RAW_HTML_NODE_NAMES) {
+		expect(Object.keys(schema.nodes[name]!.spec.attrs ?? {})).toEqual(['html']);
+	}
+});
+
+test('attributes on svg round-trip through the stored html', () => {
 	expect(roundTrip('<svg class="a" id="b" data-x="1"></svg>')).toBe('<svg class="a" id="b" data-x="1"></svg>');
 });
 
