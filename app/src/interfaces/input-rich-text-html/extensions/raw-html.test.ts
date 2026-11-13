@@ -291,6 +291,14 @@ describe('form elements', () => {
 		['label beside its control', '<p><label for="q">Name</label> <input id="q" name="q"></p>'],
 		['label around its control', '<p><label>搜索<input type="search"></label></p>'],
 		['label with a form attribute', '<p><label for="q" form="f">Name</label></p>'],
+		[
+			'label with bold text',
+			'<p><label for="full-name"><strong>Na</strong>me</label> <input id="full-name" name="full-name"></p>',
+		],
+		[
+			'label with italic and a link',
+			'<p><label for="q"><em>Name</em> <a href="https://example.com">info</a></label></p>',
+		],
 	])('%s round-trips unchanged', (_n, html) => {
 		expect(roundTrip(html, FORMS)).toBe(html);
 		expect(computeValueNormalizationDiff(html, FORMS, 'forms')).toBeNull();
