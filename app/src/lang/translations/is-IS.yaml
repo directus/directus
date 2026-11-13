@@ -674,6 +674,11 @@ triggers:
     method: Aðferð
     async: Ólínulegt
 operations:
+  ai-image:
+    background: Bakgrunnur
+  ai-text:
+    files: Skrár
+    type_text: Texti
   condition:
     name: Ástand
   item-create:
