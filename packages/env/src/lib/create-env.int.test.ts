@@ -87,6 +87,19 @@ describe('File-backed Flow environment variables', () => {
 		},
 	);
 
+	test('Resolves a file-backed allow-list before custom secrets regardless of configuration order', () => {
+		vi.mocked(readConfigurationFromProcess).mockReturnValue({ MY_SECRET_FILE: './secret.txt' });
+		vi.mocked(readConfigurationFromFile).mockReturnValue({ FLOWS_ENV_ALLOW_LIST_FILE: './allow-list.txt' });
+		vi.mocked(isDirectusVariable).mockImplementation((key) => key === 'FLOWS_ENV_ALLOW_LIST_FILE');
+		vi.mocked(readFileSync).mockImplementation((path) => (path === './allow-list.txt' ? 'MY_SECRET' : 'secret-value'));
+
+		const env = createEnv();
+
+		expect(env['MY_SECRET']).toBe('secret-value');
+		expect(env['FLOWS_ENV_ALLOW_LIST']).toEqual(['MY_SECRET']);
+		expect(readFileSync).toHaveBeenCalledTimes(2);
+	});
+
 	test.each([undefined, false, 'OTHER', 'MY_SECRET_FILE'])('Leaves unselected file paths intact (%j)', (allowList) => {
 		vi.mocked(readConfigurationFromProcess).mockReturnValue({
 			MY_SECRET_FILE: './secret.txt',
