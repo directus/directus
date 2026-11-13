@@ -39,6 +39,7 @@ describe('loadSettings', () => {
 			ai_openai_api_key: 'test-openai-key',
 			ai_anthropic_api_key: 'test-anthropic-key',
 			ai_google_api_key: 'test-google-key',
+			ai_openrouter_api_key: 'test-openrouter-key',
 			ai_openai_compatible_api_key: 'test-custom-key',
 			ai_openai_compatible_base_url: 'http://localhost:11434/v1',
 			ai_openai_compatible_name: 'Ollama',
@@ -47,6 +48,7 @@ describe('loadSettings', () => {
 			ai_openai_allowed_models: ['gpt-5'],
 			ai_anthropic_allowed_models: ['claude-sonnet-4-5'],
 			ai_google_allowed_models: null,
+			ai_openrouter_models: [{ id: 'openai/gpt-6-luna', name: 'GPT-6 Luna' }],
 			ai_system_prompt: 'You are Directus.',
 		});
 
@@ -59,6 +61,7 @@ describe('loadSettings', () => {
 				'ai_openai_api_key',
 				'ai_anthropic_api_key',
 				'ai_google_api_key',
+				'ai_openrouter_api_key',
 				'ai_openai_compatible_api_key',
 				'ai_openai_compatible_base_url',
 				'ai_openai_compatible_name',
@@ -67,6 +70,7 @@ describe('loadSettings', () => {
 				'ai_openai_allowed_models',
 				'ai_anthropic_allowed_models',
 				'ai_google_allowed_models',
+				'ai_openrouter_models',
 				'ai_system_prompt',
 			],
 		});
@@ -77,14 +81,18 @@ describe('loadSettings', () => {
 					openaiApiKey: 'test-openai-key',
 					anthropicApiKey: 'test-anthropic-key',
 					googleApiKey: 'test-google-key',
+					openrouterApiKey: 'test-openrouter-key',
 					openaiCompatibleApiKey: 'test-custom-key',
 					openaiCompatibleBaseUrl: 'http://localhost:11434/v1',
 					openaiCompatibleName: 'Ollama',
 					openaiCompatibleModels: [{ id: 'llama3', name: 'Llama 3' }],
 					openaiCompatibleHeaders: [{ header: 'X-Custom', value: 'value' }],
-					openaiAllowedModels: ['gpt-5'],
-					anthropicAllowedModels: ['claude-sonnet-4-5'],
-					googleAllowedModels: DEFAULT_ALLOWED_MODELS.google,
+					allowedModels: {
+						openai: ['gpt-5'],
+						anthropic: ['claude-sonnet-4-5'],
+						google: DEFAULT_ALLOWED_MODELS.google,
+						openrouter: ['openai/gpt-6-luna'],
+					},
 					systemPrompt: 'You are Directus.',
 				},
 				systemPrompt: 'You are Directus.',
@@ -99,8 +107,8 @@ describe('loadSettings', () => {
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
 
-		expect(mockResponse.locals!['ai'].settings.openaiAllowedModels).toEqual([]);
-		expect(mockResponse.locals!['ai'].settings.anthropicAllowedModels).toEqual(DEFAULT_ALLOWED_MODELS.anthropic);
+		expect(mockResponse.locals!['ai'].settings.allowedModels.openai).toEqual([]);
+		expect(mockResponse.locals!['ai'].settings.allowedModels.anthropic).toEqual(DEFAULT_ALLOWED_MODELS.anthropic);
 	});
 
 	test('should handle missing settings with null defaults', async () => {
@@ -108,6 +116,7 @@ describe('loadSettings', () => {
 			ai_openai_api_key: undefined,
 			ai_anthropic_api_key: undefined,
 			ai_google_api_key: undefined,
+			ai_openrouter_api_key: undefined,
 			ai_openai_compatible_api_key: undefined,
 			ai_openai_compatible_base_url: undefined,
 			ai_openai_compatible_name: undefined,
@@ -116,6 +125,7 @@ describe('loadSettings', () => {
 			ai_openai_allowed_models: undefined,
 			ai_anthropic_allowed_models: undefined,
 			ai_google_allowed_models: undefined,
+			ai_openrouter_models: undefined,
 			ai_system_prompt: undefined,
 		});
 
@@ -127,14 +137,18 @@ describe('loadSettings', () => {
 					openaiApiKey: null,
 					anthropicApiKey: null,
 					googleApiKey: null,
+					openrouterApiKey: null,
 					openaiCompatibleApiKey: null,
 					openaiCompatibleBaseUrl: null,
 					openaiCompatibleName: null,
 					openaiCompatibleModels: null,
 					openaiCompatibleHeaders: null,
-					openaiAllowedModels: DEFAULT_ALLOWED_MODELS.openai,
-					anthropicAllowedModels: DEFAULT_ALLOWED_MODELS.anthropic,
-					googleAllowedModels: DEFAULT_ALLOWED_MODELS.google,
+					allowedModels: {
+						openai: DEFAULT_ALLOWED_MODELS.openai,
+						anthropic: DEFAULT_ALLOWED_MODELS.anthropic,
+						google: DEFAULT_ALLOWED_MODELS.google,
+						openrouter: [],
+					},
 					systemPrompt: null,
 				},
 				systemPrompt: undefined,
@@ -149,6 +163,7 @@ describe('loadSettings', () => {
 			ai_openai_api_key: 'test-openai-key',
 			ai_anthropic_api_key: null,
 			ai_google_api_key: null,
+			ai_openrouter_api_key: null,
 			ai_openai_compatible_api_key: null,
 			ai_openai_compatible_base_url: null,
 			ai_openai_compatible_name: null,
@@ -157,6 +172,7 @@ describe('loadSettings', () => {
 			ai_openai_allowed_models: null,
 			ai_anthropic_allowed_models: null,
 			ai_google_allowed_models: null,
+			ai_openrouter_models: null,
 			ai_system_prompt: 'System prompt here',
 		});
 
@@ -168,14 +184,18 @@ describe('loadSettings', () => {
 					openaiApiKey: 'test-openai-key',
 					anthropicApiKey: null,
 					googleApiKey: null,
+					openrouterApiKey: null,
 					openaiCompatibleApiKey: null,
 					openaiCompatibleBaseUrl: null,
 					openaiCompatibleName: null,
 					openaiCompatibleModels: null,
 					openaiCompatibleHeaders: null,
-					openaiAllowedModels: DEFAULT_ALLOWED_MODELS.openai,
-					anthropicAllowedModels: DEFAULT_ALLOWED_MODELS.anthropic,
-					googleAllowedModels: DEFAULT_ALLOWED_MODELS.google,
+					allowedModels: {
+						openai: DEFAULT_ALLOWED_MODELS.openai,
+						anthropic: DEFAULT_ALLOWED_MODELS.anthropic,
+						google: DEFAULT_ALLOWED_MODELS.google,
+						openrouter: [],
+					},
 					systemPrompt: 'System prompt here',
 				},
 				systemPrompt: 'System prompt here',
@@ -190,6 +210,7 @@ describe('loadSettings', () => {
 			ai_openai_api_key: null,
 			ai_anthropic_api_key: null,
 			ai_google_api_key: null,
+			ai_openrouter_api_key: null,
 			ai_openai_compatible_api_key: 'ollama-key',
 			ai_openai_compatible_base_url: 'http://localhost:11434/v1',
 			ai_openai_compatible_name: 'Ollama',
@@ -198,6 +219,7 @@ describe('loadSettings', () => {
 			ai_openai_allowed_models: null,
 			ai_anthropic_allowed_models: null,
 			ai_google_allowed_models: null,
+			ai_openrouter_models: null,
 			ai_system_prompt: null,
 		});
 
@@ -209,14 +231,18 @@ describe('loadSettings', () => {
 					openaiApiKey: null,
 					anthropicApiKey: null,
 					googleApiKey: null,
+					openrouterApiKey: null,
 					openaiCompatibleApiKey: 'ollama-key',
 					openaiCompatibleBaseUrl: 'http://localhost:11434/v1',
 					openaiCompatibleName: 'Ollama',
 					openaiCompatibleModels: [{ id: 'llama3', name: 'Llama 3', context: 8192 }],
 					openaiCompatibleHeaders: null,
-					openaiAllowedModels: DEFAULT_ALLOWED_MODELS.openai,
-					anthropicAllowedModels: DEFAULT_ALLOWED_MODELS.anthropic,
-					googleAllowedModels: DEFAULT_ALLOWED_MODELS.google,
+					allowedModels: {
+						openai: DEFAULT_ALLOWED_MODELS.openai,
+						anthropic: DEFAULT_ALLOWED_MODELS.anthropic,
+						google: DEFAULT_ALLOWED_MODELS.google,
+						openrouter: [],
+					},
 					systemPrompt: null,
 				},
 				systemPrompt: null,
@@ -246,6 +272,7 @@ describe('loadSettings', () => {
 			ai_openai_api_key: 'test-key',
 			ai_anthropic_api_key: null,
 			ai_google_api_key: null,
+			ai_openrouter_api_key: null,
 			ai_openai_compatible_api_key: null,
 			ai_openai_compatible_base_url: null,
 			ai_openai_compatible_name: null,
@@ -254,6 +281,7 @@ describe('loadSettings', () => {
 			ai_openai_allowed_models: null,
 			ai_anthropic_allowed_models: null,
 			ai_google_allowed_models: null,
+			ai_openrouter_models: null,
 			ai_system_prompt: null,
 		});
 
@@ -271,6 +299,7 @@ describe('loadSettings', () => {
 			ai_openai_api_key: null,
 			ai_anthropic_api_key: null,
 			ai_google_api_key: null,
+			ai_openrouter_api_key: null,
 			ai_openai_compatible_api_key: null,
 			ai_openai_compatible_base_url: null,
 			ai_openai_compatible_name: null,
@@ -279,6 +308,7 @@ describe('loadSettings', () => {
 			ai_openai_allowed_models: null,
 			ai_anthropic_allowed_models: null,
 			ai_google_allowed_models: null,
+			ai_openrouter_models: null,
 			ai_system_prompt: null,
 		});
 
@@ -290,14 +320,18 @@ describe('loadSettings', () => {
 					openaiApiKey: null,
 					anthropicApiKey: null,
 					googleApiKey: null,
+					openrouterApiKey: null,
 					openaiCompatibleApiKey: null,
 					openaiCompatibleBaseUrl: null,
 					openaiCompatibleName: null,
 					openaiCompatibleModels: null,
 					openaiCompatibleHeaders: null,
-					openaiAllowedModels: DEFAULT_ALLOWED_MODELS.openai,
-					anthropicAllowedModels: DEFAULT_ALLOWED_MODELS.anthropic,
-					googleAllowedModels: DEFAULT_ALLOWED_MODELS.google,
+					allowedModels: {
+						openai: DEFAULT_ALLOWED_MODELS.openai,
+						anthropic: DEFAULT_ALLOWED_MODELS.anthropic,
+						google: DEFAULT_ALLOWED_MODELS.google,
+						openrouter: [],
+					},
 					systemPrompt: null,
 				},
 				systemPrompt: null,
@@ -312,6 +346,7 @@ describe('loadSettings', () => {
 			ai_openai_api_key: '',
 			ai_anthropic_api_key: '',
 			ai_google_api_key: '',
+			ai_openrouter_api_key: '',
 			ai_openai_compatible_api_key: '',
 			ai_openai_compatible_base_url: '',
 			ai_openai_compatible_name: '',
@@ -320,6 +355,7 @@ describe('loadSettings', () => {
 			ai_openai_allowed_models: null,
 			ai_anthropic_allowed_models: null,
 			ai_google_allowed_models: null,
+			ai_openrouter_models: null,
 			ai_system_prompt: '',
 		});
 
@@ -331,14 +367,18 @@ describe('loadSettings', () => {
 					openaiApiKey: '',
 					anthropicApiKey: '',
 					googleApiKey: '',
+					openrouterApiKey: '',
 					openaiCompatibleApiKey: '',
 					openaiCompatibleBaseUrl: '',
 					openaiCompatibleName: '',
 					openaiCompatibleModels: null,
 					openaiCompatibleHeaders: null,
-					openaiAllowedModels: DEFAULT_ALLOWED_MODELS.openai,
-					anthropicAllowedModels: DEFAULT_ALLOWED_MODELS.anthropic,
-					googleAllowedModels: DEFAULT_ALLOWED_MODELS.google,
+					allowedModels: {
+						openai: DEFAULT_ALLOWED_MODELS.openai,
+						anthropic: DEFAULT_ALLOWED_MODELS.anthropic,
+						google: DEFAULT_ALLOWED_MODELS.google,
+						openrouter: [],
+					},
 					systemPrompt: '',
 				},
 				systemPrompt: '',
