@@ -2504,6 +2504,17 @@ a_flow_uuid: Selecteer een Flow om te triggeren...
 any_string_or_json: Elke string of JSON...
 item_payload_placeholder: Dit is de JSON die wordt gebruikt om de veldwaarden van het item bij te werken...
 operations:
+  ai-image:
+    background: Achtergrond
+    emit_events: Events verzenden
+    starting_points:
+      icon: Icoon
+  ai-text:
+    files: Bestanden
+    output: Output
+    type_text: Tekst
+    view_fields: Velden
+    view_json: JSON
   condition:
     name: Conditie
   exec:
