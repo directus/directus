@@ -1473,6 +1473,13 @@ triggers:
   webhook:
     method: เมธอด
 operations:
+  ai-image:
+    starting_points:
+      icon: ไอคอน
+  ai-text:
+    files: ไฟล์
+    type_text: ข้อความแบบยาว
+    view_json: JSON
   json-web-token:
     token: โทเค็น
     options: ตัวเลือก
