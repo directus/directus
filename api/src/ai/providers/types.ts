@@ -23,7 +23,7 @@ interface OpenRouterConfig {
 
 interface OpenAICompatibleConfig {
 	type: 'openai-compatible';
-	apiKey: string;
+	apiKey?: string;
 	baseUrl: string;
 }
 

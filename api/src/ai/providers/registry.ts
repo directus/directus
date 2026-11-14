@@ -52,10 +52,11 @@ export function buildProviderConfigs(settings: ProviderCredentials): ProviderCon
 		});
 	}
 
-	if (settings.ai_openai_compatible_api_key && settings.ai_openai_compatible_base_url) {
+	// The API key is optional for OpenAI-compatible servers, e.g. a local Ollama or LM Studio
+	if (settings.ai_openai_compatible_base_url) {
 		configs.push({
 			type: 'openai-compatible',
-			apiKey: settings.ai_openai_compatible_api_key,
+			apiKey: settings.ai_openai_compatible_api_key || undefined,
 			baseUrl: settings.ai_openai_compatible_base_url,
 		});
 	}

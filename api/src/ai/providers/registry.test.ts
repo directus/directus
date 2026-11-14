@@ -100,7 +100,7 @@ describe('buildProviderConfigs', () => {
 		expect(configs[0]).toEqual({ type: 'openrouter', apiKey: 'sk-or-key' });
 	});
 
-	it('includes OpenAI-compatible only when both API key and base URL are set', () => {
+	it('includes OpenAI-compatible when both API key and base URL are set', () => {
 		const configs = buildProviderConfigs({
 			...baseSettings,
 			ai_openai_compatible_api_key: 'custom-key',
@@ -125,13 +125,19 @@ describe('buildProviderConfigs', () => {
 		expect(configs).toHaveLength(0);
 	});
 
-	it('excludes OpenAI-compatible when only base URL is set', () => {
+	it('includes OpenAI-compatible without an API key when only base URL is set', () => {
 		const configs = buildProviderConfigs({
 			...baseSettings,
 			ai_openai_compatible_base_url: 'http://localhost:11434/v1',
 		});
 
-		expect(configs).toHaveLength(0);
+		expect(configs).toHaveLength(1);
+
+		expect(configs[0]).toEqual({
+			type: 'openai-compatible',
+			apiKey: undefined,
+			baseUrl: 'http://localhost:11434/v1',
+		});
 	});
 
 	it('includes multiple providers when configured', () => {
@@ -239,6 +245,16 @@ describe('createAIProviderRegistry', () => {
 					Authorization: 'Bearer token123',
 				},
 			}),
+		);
+	});
+
+	it('creates OpenAI-compatible provider without an API key', () => {
+		const configs: ProviderConfig[] = [{ type: 'openai-compatible', baseUrl: 'http://localhost:11434/v1' }];
+
+		createAIProviderRegistry(configs);
+
+		expect(createOpenAICompatible).toHaveBeenCalledWith(
+			expect.objectContaining({ apiKey: undefined, baseURL: 'http://localhost:11434/v1' }),
 		);
 	});
 
