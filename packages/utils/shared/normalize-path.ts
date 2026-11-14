@@ -32,7 +32,7 @@ export const normalizePath = (
 
 	const normalizedPath = prefix + segments.join('/');
 
-	if (removeLeading && path.startsWith('/')) {
+	if (removeLeading && normalizedPath.startsWith('/')) {
 		return normalizedPath.substring(1);
 	}
 
