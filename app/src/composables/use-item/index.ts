@@ -113,6 +113,17 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
+	// Clear cached item and edits synchronously on collection change to prevent stale data
+	// (such as UUIDs from previous records) from leaking into subsequent queries or singletons.
+	watch(
+		collection,
+		() => {
+			item.value = null;
+			edits.value = {};
+		},
+		{ flush: 'sync' },
+	);
+
 	watch([collection, primaryKey], refresh);
 
 	watch(query, () => {

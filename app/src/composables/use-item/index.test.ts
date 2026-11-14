@@ -1063,3 +1063,24 @@ describe('Save As Copy with M2M relation', () => {
 		expect(saveBody.children.update).toEqual([]);
 	});
 });
+
+describe('Collection change', () => {
+	test('should synchronously clear cached item and edits when collection changes', async () => {
+		const collection = ref('articles');
+		const primaryKey = ref<PrimaryKey | null>('uuid-1234');
+		const { item, edits } = useItem(collection, primaryKey);
+
+		await flushPromises();
+
+		expect(item.value).toEqual({ id: 1 });
+		edits.value = { title: 'Draft title' };
+
+		// Change collection to a singleton collection
+		collection.value = 'settings_singleton';
+		primaryKey.value = '+';
+
+		// Stale item and edits must be cleared synchronously so child components/queries don't see previous UUID
+		expect(item.value).toBeNull();
+		expect(edits.value).toEqual({});
+	});
+});
