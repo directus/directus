@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/types';
-import { computed } from 'vue';
+import { isNil } from 'lodash-es';
+import { computed, h, renderSlot, type Slots } from 'vue';
 import type { Header, Item } from './types';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -18,6 +19,9 @@ const props = withDefaults(
 		sortedManually?: boolean;
 		hasClickListener?: boolean;
 		height?: number;
+		itemSlots?: Slots;
+		/** Comma-separated names of the slots in `itemSlots`, so the row re-renders when they change */
+		slotNames?: string;
 	}>(),
 	{
 		showSelect: 'none',
@@ -27,6 +31,8 @@ const props = withDefaults(
 		sortedManually: false,
 		hasClickListener: false,
 		height: 48,
+		itemSlots: () => ({}),
+		slotNames: '',
 	},
 );
 
@@ -37,6 +43,18 @@ const rowStyle = computed(() => ({
 	'--table-row-height': props.height + 2 + 'px',
 	'--table-row-image-height': props.height - 16 + 'px',
 }));
+
+const hasItemAppendSlot = computed(() => props.slotNames.split(',').includes('item-append'));
+
+// The table's item slots come in as a prop rather than as slots on this component. vuedraggable renders
+// rows with plain render functions, so Vue re-renders any row that receives slots whenever the list
+// re-renders. Without slots, a row only re-renders when its own props change.
+function renderCell(header: Header) {
+	return renderSlot(props.itemSlots, `item.${header.value}`, { item: props.item }, () => {
+		const value = header.value.split('.').reduce((acc, val) => acc?.[val], props.item);
+		return [isNil(value) || value === '' ? h(ValueNull) : h(VTextOverflow, { text: value })];
+	});
+}
 
 function onKeydown(e: KeyboardEvent) {
 	if (e.metaKey) return;
@@ -82,26 +100,12 @@ function onClick(event: MouseEvent) {
 			class="cell"
 			:class="[`align-${header.align}`, { inactive: header.inactive }]"
 		>
-			<slot :name="`item.${header.value}`" :item="item">
-				<VTextOverflow
-					v-if="
-						header.value.split('.').reduce((acc, val) => {
-							return acc[val];
-						}, item)
-					"
-					:text="
-						header.value.split('.').reduce((acc, val) => {
-							return acc[val];
-						}, item)
-					"
-				/>
-				<ValueNull v-else />
-			</slot>
+			<component :is="renderCell(header)" />
 		</td>
 
 		<td class="spacer cell" />
-		<td v-if="$slots['item-append']" class="append cell" data-row-action>
-			<slot name="item-append" />
+		<td v-if="hasItemAppendSlot" class="append cell" data-row-action>
+			<component :is="renderSlot(itemSlots, 'item-append', { item })" />
 		</td>
 	</tr>
 </template>
