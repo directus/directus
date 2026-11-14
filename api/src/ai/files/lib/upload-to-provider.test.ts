@@ -19,18 +19,20 @@ describe('uploadToProvider', () => {
 	};
 
 	const baseSettings: AISettings = {
-		openaiApiKey: null,
-		anthropicApiKey: null,
-		googleApiKey: null,
-		openaiCompatibleApiKey: null,
-		openaiCompatibleBaseUrl: null,
-		openaiCompatibleName: null,
-		openaiCompatibleModels: null,
-		openaiCompatibleHeaders: null,
-		openaiAllowedModels: null,
-		anthropicAllowedModels: null,
-		googleAllowedModels: null,
-		systemPrompt: null,
+		ai_openai_api_key: null,
+		ai_anthropic_api_key: null,
+		ai_google_api_key: null,
+		ai_openrouter_api_key: null,
+		ai_openai_compatible_api_key: null,
+		ai_openai_compatible_base_url: null,
+		ai_openai_compatible_name: null,
+		ai_openai_compatible_models: null,
+		ai_openai_compatible_headers: null,
+		ai_openai_allowed_models: [],
+		ai_anthropic_allowed_models: [],
+		ai_google_allowed_models: [],
+		ai_openrouter_models: [],
+		ai_system_prompt: null,
 	};
 
 	beforeEach(() => {
@@ -68,7 +70,7 @@ describe('uploadToProvider', () => {
 
 	describe('OpenAI', () => {
 		it('should call uploadToOpenAI with correct arguments', async () => {
-			const settings = { ...baseSettings, openaiApiKey: 'sk-openai-key' };
+			const settings = { ...baseSettings, ai_openai_api_key: 'sk-openai-key' };
 
 			await uploadToProvider(mockFile, 'openai', settings);
 
@@ -84,7 +86,7 @@ describe('uploadToProvider', () => {
 
 	describe('Anthropic', () => {
 		it('should call uploadToAnthropic with correct arguments', async () => {
-			const settings = { ...baseSettings, anthropicApiKey: 'sk-anthropic-key' };
+			const settings = { ...baseSettings, ai_anthropic_api_key: 'sk-anthropic-key' };
 
 			await uploadToProvider(mockFile, 'anthropic', settings);
 
@@ -102,7 +104,7 @@ describe('uploadToProvider', () => {
 
 	describe('Google', () => {
 		it('should call uploadToGoogle with correct arguments', async () => {
-			const settings = { ...baseSettings, googleApiKey: 'google-api-key' };
+			const settings = { ...baseSettings, ai_google_api_key: 'google-api-key' };
 
 			await uploadToProvider(mockFile, 'google', settings);
 

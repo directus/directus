@@ -1,3 +1,4 @@
+import CustomIconAiMagic from './custom-icons/ai_magic.vue';
 import CustomIconBookmarkSave from './custom-icons/bookmark_save.vue';
 import CustomIconBox from './custom-icons/box.vue';
 import CustomIconCommitNode from './custom-icons/commit_node.vue';
@@ -27,6 +28,7 @@ import CustomIconLogoAnthropic from '@/ai/components/logos/claude.vue';
 import CustomIconLogoCustomProvider from '@/ai/components/logos/custom.vue';
 import CustomIconLogoGoogle from '@/ai/components/logos/google.vue';
 import CustomIconLogoOpenai from '@/ai/components/logos/openai.vue';
+import CustomIconLogoOpenrouter from '@/ai/components/logos/openrouter.vue';
 
 export const components: Record<string, any> = {
 	CustomIconDirectus,
@@ -51,10 +53,12 @@ export const components: Record<string, any> = {
 	CustomIconFolderMove,
 	CustomIconFolderLock,
 	CustomIconFunctionF,
+	CustomIconAiMagic,
 	CustomIconLogoAnthropic,
 	CustomIconLogoCustomProvider,
 	CustomIconLogoGoogle,
 	CustomIconLogoOpenai,
+	CustomIconLogoOpenrouter,
 	CustomIconLogout,
 	CustomIconNetlify,
 	CustomIconVercel,

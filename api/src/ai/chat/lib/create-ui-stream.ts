@@ -1,22 +1,8 @@
 import type { ProviderType } from '@directus/ai';
-import { ServiceUnavailableError } from '@directus/errors';
-import {
-	convertToModelMessages,
-	stepCountIs,
-	streamText,
-	type StreamTextResult,
-	type Tool,
-	type UIMessage,
-	wrapLanguageModel,
-} from 'ai';
+import { convertToModelMessages, stepCountIs, streamText, type StreamTextResult, type Tool, type UIMessage } from 'ai';
 import { useLogger } from '../../../logger/index.js';
-import { getDevToolsMiddleware } from '../../devtools/index.js';
-import {
-	type AISettings,
-	buildProviderConfigs,
-	createAIProviderRegistry,
-	getProviderOptions,
-} from '../../providers/index.js';
+import { resolveLanguageModel } from '../../providers/resolve-model.js';
+import type { AISettings } from '../../providers/types.js';
 import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 import type { ChatContext } from '../models/chat-request.js';
@@ -25,8 +11,10 @@ import {
 	applyAnthropicConversationCaching,
 	buildCacheAwareSystemPrompt,
 	formatUsageWithCacheTokens,
+	getOpenRouterAutomaticCacheOptions,
 	type PromptCachingUsage,
 	sortToolsByName,
+	usesAnthropicCaching,
 } from '../utils/prompt-caching.js';
 import { ipValidatedDownload } from './ip-validated-download.js';
 import { transformFilePartsForProvider } from './transform-file-parts.js';
@@ -36,7 +24,6 @@ export interface CreateUiStreamOptions {
 	model: string;
 	tools: { [x: string]: Tool };
 	aiSettings: AISettings;
-	systemPrompt?: string;
 	userId?: string | null;
 	role?: string | null;
 	context?: ChatContext;
@@ -45,44 +32,27 @@ export interface CreateUiStreamOptions {
 
 export const createUiStream = async (
 	messages: UIMessage[],
-	{ provider, model, tools, aiSettings, systemPrompt, userId, role, context, onUsage }: CreateUiStreamOptions,
+	{ provider, model, tools, aiSettings, userId, role, context, onUsage }: CreateUiStreamOptions,
 ): Promise<StreamTextResult<Record<string, Tool<any, any>>, any>> => {
-	const configs = buildProviderConfigs(aiSettings);
-	const providerConfig = configs.find((c) => c.type === provider);
+	const { model: languageModel, providerOptions } = resolveLanguageModel(provider, model, aiSettings);
 
-	if (!providerConfig) {
-		throw new ServiceUnavailableError({ service: provider, reason: 'No API key configured for LLM provider' });
-	}
-
-	const registry = createAIProviderRegistry(configs, aiSettings);
-
-	const baseSystemPrompt = systemPrompt || SYSTEM_PROMPT;
+	const baseSystemPrompt = aiSettings.ai_system_prompt || SYSTEM_PROMPT;
 	const contextBlock = context ? formatContextForSystemPrompt(context) : null;
-	const providerOptions = getProviderOptions(provider, model, aiSettings);
-	let languageModel = registry.languageModel(`${provider}:${model}`);
-	const devToolsMiddleware = getDevToolsMiddleware();
 
-	if (devToolsMiddleware) {
-		languageModel = wrapLanguageModel({
-			model: languageModel,
-			middleware: devToolsMiddleware,
-		});
-	}
-
-	// For Anthropic, keep `system` as the stable base prompt only (so the tools+system prefix
+	// For Anthropic models, keep `system` as the stable base prompt only (so the tools+system prefix
 	// caches across page changes) and inject context after a cache breakpoint on the last
 	// existing message. For other providers, keep context inside `system` as before.
 	const systemPromptText =
-		provider === 'anthropic' || !contextBlock ? baseSystemPrompt : baseSystemPrompt + contextBlock;
+		usesAnthropicCaching(provider, model) || !contextBlock ? baseSystemPrompt : baseSystemPrompt + contextBlock;
 
-	const streamSystemPrompt = buildCacheAwareSystemPrompt(provider, systemPromptText);
+	const streamSystemPrompt = buildCacheAwareSystemPrompt(provider, model, systemPromptText);
 
 	const finalTools = sortToolsByName(tools);
 	const telemetryConfig = getAITelemetryConfig({ provider, model, userId, role });
 	const logger = useLogger();
 
 	const modelMessages = await convertToModelMessages(transformFilePartsForProvider(messages));
-	const streamMessages = applyAnthropicConversationCaching(provider, modelMessages, contextBlock);
+	const streamMessages = applyAnthropicConversationCaching(provider, model, modelMessages, contextBlock);
 
 	const stream = streamText({
 		system: streamSystemPrompt,
@@ -91,6 +61,13 @@ export const createUiStream = async (
 		stopWhen: [stepCountIs(10)],
 		experimental_download: ipValidatedDownload,
 		providerOptions,
+		...(provider === 'openrouter'
+			? {
+					prepareStep: ({ messages }) => ({
+						providerOptions: { ...providerOptions, ...getOpenRouterAutomaticCacheOptions(provider, model, messages) },
+					}),
+				}
+			: {}),
 		tools: finalTools,
 		...(telemetryConfig ? { experimental_telemetry: telemetryConfig } : {}),
 		onError(error) {

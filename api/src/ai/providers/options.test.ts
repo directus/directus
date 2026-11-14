@@ -3,18 +3,20 @@ import { getModelDefinition, getProviderOptions } from './options.js';
 import type { AISettings } from './types.js';
 
 const baseSettings: AISettings = {
-	openaiApiKey: null,
-	anthropicApiKey: null,
-	googleApiKey: null,
-	openaiCompatibleApiKey: null,
-	openaiCompatibleBaseUrl: null,
-	openaiCompatibleName: null,
-	openaiCompatibleModels: null,
-	openaiCompatibleHeaders: null,
-	openaiAllowedModels: null,
-	anthropicAllowedModels: null,
-	googleAllowedModels: null,
-	systemPrompt: null,
+	ai_openai_api_key: null,
+	ai_anthropic_api_key: null,
+	ai_google_api_key: null,
+	ai_openrouter_api_key: null,
+	ai_openai_compatible_api_key: null,
+	ai_openai_compatible_base_url: null,
+	ai_openai_compatible_name: null,
+	ai_openai_compatible_models: null,
+	ai_openai_compatible_headers: null,
+	ai_openai_allowed_models: [],
+	ai_anthropic_allowed_models: [],
+	ai_google_allowed_models: [],
+	ai_openrouter_models: [],
+	ai_system_prompt: null,
 };
 
 describe('getModelDefinition', () => {
@@ -35,7 +37,7 @@ describe('getModelDefinition', () => {
 	it('finds custom model from settings', () => {
 		const settings: AISettings = {
 			...baseSettings,
-			openaiCompatibleModels: [{ id: 'llama3', name: 'Llama 3' }],
+			ai_openai_compatible_models: [{ id: 'llama3', name: 'Llama 3' }],
 		};
 
 		const result = getModelDefinition('openai-compatible', 'llama3', settings);
@@ -80,7 +82,7 @@ describe('getProviderOptions', () => {
 	it('returns providerOptions for openai-compatible model with custom options', () => {
 		const settings: AISettings = {
 			...baseSettings,
-			openaiCompatibleModels: [
+			ai_openai_compatible_models: [
 				{
 					id: 'llama3',
 					name: 'Llama 3',
@@ -99,8 +101,8 @@ describe('getProviderOptions', () => {
 	it('uses custom provider name in providerOptions key', () => {
 		const settings: AISettings = {
 			...baseSettings,
-			openaiCompatibleName: 'ollama',
-			openaiCompatibleModels: [
+			ai_openai_compatible_name: 'ollama',
+			ai_openai_compatible_models: [
 				{
 					id: 'llama3',
 					name: 'Llama 3',
@@ -119,7 +121,7 @@ describe('getProviderOptions', () => {
 	it('returns empty object for openai-compatible model without providerOptions', () => {
 		const settings: AISettings = {
 			...baseSettings,
-			openaiCompatibleModels: [{ id: 'llama3', name: 'Llama 3' }],
+			ai_openai_compatible_models: [{ id: 'llama3', name: 'Llama 3' }],
 		};
 
 		const result = getProviderOptions('openai-compatible', 'llama3', settings);
