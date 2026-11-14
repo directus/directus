@@ -77,6 +77,10 @@ describe('normalizePath', () => {
 			expect(normalizePath('/a/b/c', { removeLeading: true })).toBe('a/b/c');
 		});
 
+		it('removes leading backslash when removeLeading is true', () => {
+			expect(normalizePath('\\a\\b\\c', { removeLeading: true })).toBe('a/b/c');
+		});
+
 		it('keeps leading slash when removeLeading is false', () => {
 			expect(normalizePath('/a/b/c', { removeLeading: false })).toBe('/a/b/c');
 		});
