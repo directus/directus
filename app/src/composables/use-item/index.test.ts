@@ -1072,7 +1072,7 @@ describe('Collection change', () => {
 
 		await flushPromises();
 
-		expect(item.value).toEqual({ id: 1 });
+		expect(item.value).toEqual({ id: 1, name: 'Test Item' });
 		edits.value = { title: 'Draft title' };
 
 		// Change collection to a singleton collection
