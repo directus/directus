@@ -621,10 +621,28 @@ describe('legacy attributes', () => {
 	test('event handlers stay dropped', () => {
 		const out = legacyRoundTrip('<table onclick="x()"><tbody><tr><td onmouseover="x()">a</td></tr></tbody></table>');
 
-		expect(out).not.toContain('on');
+		expect(out).not.toMatch(/\son\w+=/);
 	});
 
-	test('the checkbox turns the option off', () => {
+	test('a video does not keep iframe attributes', () => {
+		const out = legacyRoundTrip(
+			'<video allow="camera" frameborder="0" controls src="https://example.com/a.mp4"></video>',
+		);
+
+		expect(out).toBe('<video controls=""><source src="https://example.com/a.mp4"></video>');
+	});
+
+	test('a cell width attribute does not conflict with colwidth', () => {
+		const out = legacyRoundTrip(
+			'<table><tbody><tr><td width="50%">a</td><td colwidth="120">b</td></tr></tbody></table>',
+		);
+
+		expect(out).toBe(
+			'<table style="min-width: 145px;"><colgroup><col style="min-width: 25px;"><col style="width: 120px;"></colgroup><tbody><tr><td width="50%" colspan="1" rowspan="1"><p>a</p></td><td colspan="1" rowspan="1" colwidth="120"><p>b</p></td></tr></tbody></table>',
+		);
+	});
+
+	test('without the option, legacy attributes are dropped', () => {
 		const out = legacyRoundTrip(TABLE + IFRAME, buildFieldSchema({ keepLegacyAttributes: false }));
 
 		for (const name of ['border', 'cellpadding', 'cellspacing', 'bgcolor', 'valign', 'frameborder', 'allow']) {
