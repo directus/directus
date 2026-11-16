@@ -27,7 +27,7 @@
 	],
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
+		"dev": "tsc --watch --project tsconfig.prod.json",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},

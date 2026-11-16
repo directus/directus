@@ -2,6 +2,7 @@
 	"extends": "@directus/tsconfig/node26",
 	"include": ["src"],
 	"compilerOptions": {
+		"lib": ["ES2023"],
 		"isolatedDeclarations": false
 	},
 	"typedocOptions": {

@@ -13,6 +13,5 @@ export default defineConfig({
 		'!src/database/run-ast/lib/apply-query/mock.ts',
 	],
 	unbundle: true,
-	dts: false,
 	tsconfig: 'tsconfig.prod.json',
 });

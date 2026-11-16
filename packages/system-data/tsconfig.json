@@ -1,6 +1,7 @@
 {
 	"extends": "@directus/tsconfig/node26",
 	"compilerOptions": {
+		"lib": ["ES2023"],
 		"types": ["unplugin-yaml/types"]
 	},
 	"include": ["src"],
