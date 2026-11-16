@@ -1,10 +1,12 @@
 import { ForbiddenError } from '@directus/errors';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability, Permission } from '@directus/types';
 import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
 import type { Context } from '../../permissions/types.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { validateDeleteEventAccess, validateSubscriptionAccess } from './validate-subscription-access.js';
 
 vi.mock('../../permissions/modules/validate-access/validate-access.js', () => ({
@@ -12,52 +14,65 @@ vi.mock('../../permissions/modules/validate-access/validate-access.js', () => ({
 }));
 
 vi.mock('../../permissions/lib/fetch-policies.js', () => ({
-	fetchPolicies: vi.fn().mockResolvedValue([]),
+	fetchPolicies: vi.fn(),
 }));
 
 vi.mock('../../permissions/lib/fetch-permissions.js', () => ({
-	fetchPermissions: vi.fn().mockResolvedValue([{ permissions: null, fields: ['*'] }]),
+	fetchPermissions: vi.fn(async () => [{ permissions: null, fields: ['id'] }]),
 }));
 
-const accountability = {
-	role: null,
-	user: 'a5e0e0b0-0000-4000-8000-000000000000',
-	roles: [],
-	admin: false,
-	app: false,
-	ip: null,
-} satisfies Accountability;
+const SYSTEM_COLLECTIONS = ['directus_collections', 'directus_fields', 'directus_relations'];
 
-const schema = {
-	collections: Object.fromEntries(
-		['articles', 'directus_collections', 'directus_fields', 'directus_relations'].map((collection) => [
-			collection,
-			{ primary: 'id' },
-		]),
-	),
-} as unknown as SchemaOverview;
+const accountability = createDefaultAccountability({ user: 'a5e0e0b0-0000-4000-8000-000000000000' });
 
-const context = { knex: {} as Knex, schema } satisfies Context;
+const schema = new SchemaBuilder()
+	.collection('articles', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+	})
+	.collection('languages', (c) => {
+		c.field('code').string().primary();
+	});
 
-const rowRule = { permissions: { owner: { _eq: '$CURRENT_USER' } }, fields: ['*'] } as any;
+for (const collection of SYSTEM_COLLECTIONS) {
+	schema.collection(collection, (c) => {
+		c.field('id').id();
+	});
+}
+
+const context = { knex: {} as Knex, schema: schema.build() } satisfies Context;
+
+function permission(fields: string[] | null, rules: Permission['permissions'] = null) {
+	return { fields, permissions: rules } as Permission;
+}
+
+const rowRule = permission(['id'], { owner: { _eq: '$CURRENT_USER' } });
 
 afterEach(() => {
-	vi.clearAllMocks();
+	vi.resetAllMocks();
 });
 
-test('skips validation when access control is disabled', async () => {
-	await validateSubscriptionAccess({ accountability: null, collection: 'articles' }, context);
+describe.each([
+	[
+		'validateSubscriptionAccess',
+		(accountability: Accountability | null) =>
+			validateSubscriptionAccess({ accountability, collection: 'articles', event: 'delete' }, context),
+	],
+	[
+		'validateDeleteEventAccess',
+		(accountability: Accountability | null) =>
+			validateDeleteEventAccess({ accountability, collection: 'articles', itemScoped: false }, context),
+	],
+] as const)('%s', (_name, validate) => {
+	test.each([
+		['access control is disabled', null],
+		['admins', { ...accountability, admin: true }],
+	])('skips validation when %s', async (_label, accountability) => {
+		await validate(accountability);
 
-	expect(validateAccess).not.toBeCalled();
-});
-
-test('skips validation for admins', async () => {
-	await validateSubscriptionAccess(
-		{ accountability: { ...accountability, admin: true }, collection: 'articles' },
-		context,
-	);
-
-	expect(validateAccess).not.toBeCalled();
+		expect(validateAccess).not.toBeCalled();
+		expect(fetchPermissions).not.toBeCalled();
+	});
 });
 
 test('validates read access to the collection', async () => {
@@ -75,14 +90,20 @@ test('validates read access to the item for item scoped subscriptions', async ()
 	);
 });
 
-describe.each(['directus_collections', 'directus_fields', 'directus_relations'])(
-	'"%s" has no item level access control',
-	(collection) => {
-		test('so only the collection is validated', async () => {
-			await validateSubscriptionAccess({ accountability, collection, item: 'articles' }, context);
+test.each(SYSTEM_COLLECTIONS)(
+	'"%s" has no item level access control, so only the collection is validated and deletes are admin only',
+	async (collection) => {
+		await validateSubscriptionAccess({ accountability, collection, item: 'articles' }, context);
 
-			expect(validateAccess).toBeCalledWith({ accountability, action: 'read', collection }, context);
-		});
+		expect(validateAccess).toBeCalledWith({ accountability, action: 'read', collection }, context);
+
+		await expect(
+			validateSubscriptionAccess({ accountability, collection, event: 'delete' }, context),
+		).rejects.toBeInstanceOf(ForbiddenError);
+
+		await expect(
+			validateDeleteEventAccess({ accountability, collection, itemScoped: true }, context),
+		).rejects.toBeInstanceOf(ForbiddenError);
 	},
 );
 
@@ -108,80 +129,50 @@ test('propagates the error when access is denied', async () => {
 	await expect(validateSubscriptionAccess({ accountability, collection: 'articles' }, context)).rejects.toThrow(error);
 });
 
+test('skips the row rule check for item scoped delete subscriptions', async () => {
+	vi.mocked(fetchPermissions).mockResolvedValueOnce([rowRule]);
+
+	await expect(
+		validateSubscriptionAccess({ accountability, collection: 'articles', event: 'delete', item: '5' }, context),
+	).resolves.toBeUndefined();
+});
+
 describe('delete rules', () => {
-	describe.each([
-		[
-			'validateSubscriptionAccess',
-			(item?: string) =>
-				validateSubscriptionAccess({ accountability, collection: 'articles', event: 'delete', item }, context),
-		],
-		[
-			'validateDeleteEventAccess',
-			(item?: string) =>
-				validateDeleteEventAccess({ accountability, collection: 'articles', itemScoped: item !== undefined }, context),
-		],
-	] as const)('%s', (_name, validate) => {
-		test('allows collection wide deletes with unrestricted read access', async () => {
-			await expect(validate()).resolves.toBeUndefined();
-		});
+	function validate({ collection = 'articles', itemScoped = false } = {}) {
+		return validateDeleteEventAccess({ accountability, collection, itemScoped }, context);
+	}
 
-		test('rejects collection wide deletes when a read permission has row rules', async () => {
-			vi.mocked(fetchPermissions).mockResolvedValueOnce([rowRule]);
+	test.each([
+		['an unrestricted permission', [permission(['*'])]],
+		['one of several permissions', [permission(['title']), permission(['id'])]],
+	])('allows collection wide deletes when %s can read the primary key', async (_label, permissions) => {
+		vi.mocked(fetchPermissions).mockResolvedValueOnce(permissions);
 
-			await expect(validate()).rejects.toBeInstanceOf(ForbiddenError);
-		});
-
-		test('rejects collection wide deletes when any read permission has row rules', async () => {
-			vi.mocked(fetchPermissions).mockResolvedValueOnce([rowRule, { permissions: {}, fields: ['*'] } as any]);
-
-			await expect(validate()).rejects.toBeInstanceOf(ForbiddenError);
-		});
-
-		test('skips the row rule check for item scoped deletes', async () => {
-			vi.mocked(fetchPermissions).mockResolvedValueOnce([rowRule]);
-
-			await expect(validate('5')).resolves.toBeUndefined();
-		});
-
-		test.each([undefined, '5'])('rejects deletes without read access to the primary key (item: %s)', async (item) => {
-			vi.mocked(fetchPermissions).mockResolvedValueOnce([{ permissions: null, fields: ['title'] } as any]);
-
-			await expect(validate(item)).rejects.toBeInstanceOf(ForbiddenError);
-		});
-
-		test.each([undefined, '5'])('allows deletes with read access to the primary key (item: %s)', async (item) => {
-			vi.mocked(fetchPermissions).mockResolvedValueOnce([
-				{ permissions: null, fields: ['title'] } as any,
-				{ permissions: null, fields: ['id'] } as any,
-			]);
-
-			await expect(validate(item)).resolves.toBeUndefined();
-		});
+		await expect(validate()).resolves.toBeUndefined();
 	});
 
-	describe.each(['directus_collections', 'directus_fields', 'directus_relations'])('"%s"', (collection) => {
-		test('rejects deletes for non-admins', async () => {
-			await expect(
-				validateSubscriptionAccess({ accountability, collection, event: 'delete' }, context),
-			).rejects.toBeInstanceOf(ForbiddenError);
+	test('rejects collection wide deletes when any read permission has row rules', async () => {
+		vi.mocked(fetchPermissions).mockResolvedValueOnce([rowRule, permission(['*'])]);
 
-			await expect(
-				validateDeleteEventAccess({ accountability, collection, itemScoped: true }, context),
-			).rejects.toBeInstanceOf(ForbiddenError);
-		});
+		await expect(validate()).rejects.toBeInstanceOf(ForbiddenError);
+	});
 
-		test('allows deletes for admins', async () => {
-			await expect(
-				validateDeleteEventAccess(
-					{ accountability: { ...accountability, admin: true }, collection, itemScoped: false },
-					context,
-				),
-			).resolves.toBeUndefined();
-		});
+	test('rejects item scoped deletes without read access to the primary key', async () => {
+		vi.mocked(fetchPermissions).mockResolvedValueOnce([permission(['title']), permission(null)]);
+
+		await expect(validate({ itemScoped: true })).rejects.toBeInstanceOf(ForbiddenError);
+	});
+
+	test('checks read access to the primary key of the collection rather than an "id" field', async () => {
+		vi.mocked(fetchPermissions).mockResolvedValueOnce([permission(['id'])]);
+		await expect(validate({ collection: 'languages' })).rejects.toBeInstanceOf(ForbiddenError);
+
+		vi.mocked(fetchPermissions).mockResolvedValueOnce([permission(['code'])]);
+		await expect(validate({ collection: 'languages' })).resolves.toBeUndefined();
 	});
 
 	test('does not re-validate the deleted item on dispatch', async () => {
-		await validateDeleteEventAccess({ accountability, collection: 'articles', itemScoped: true }, context);
+		await validate({ itemScoped: true });
 
 		expect(validateAccess).toBeCalledWith({ accountability, action: 'read', collection: 'articles' }, context);
 	});

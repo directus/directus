@@ -6,6 +6,7 @@ import { hasItemPermissions } from '../../permissions/modules/process-ast/utils/
 import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
 import type { Context } from '../../permissions/types.js';
 import { isAdmin } from '../../utils/is-admin.js';
+import { getCollectionFromSchema } from '../../utils/schema/get-collection-from-schema.js';
 import type { SubscriptionEvent } from '../types.js';
 
 /**
@@ -90,12 +91,10 @@ async function validateDeleteRules(
 	);
 
 	// Delete events contain the primary keys of the deleted items, so they require read access to the primary key field
-	const primaryKeyField = context.schema.collections[collection]?.primary;
+	const primaryKeyField = getCollectionFromSchema(context.schema, collection).primary;
 
 	const canReadPrimaryKey = permissions.some(
-		(permission) =>
-			permission.fields?.includes('*') ||
-			(primaryKeyField !== undefined && permission.fields?.includes(primaryKeyField)),
+		(permission) => permission.fields?.includes('*') || permission.fields?.includes(primaryKeyField),
 	);
 
 	if (!canReadPrimaryKey) {
