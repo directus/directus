@@ -1,5 +1,5 @@
 import type { RichTextBubbleMenu, RichTextToolbarButton } from '@directus/extensions';
-import type { AnyExtension } from '@tiptap/core';
+import type { AnyExtension, Node } from '@tiptap/core';
 import { CharacterCount } from '@tiptap/extensions';
 import { ComparisonDiff } from './comparison-diff';
 import { buildCustomFormats, type CustomFormat } from './custom-formats';
@@ -8,7 +8,7 @@ import { DropCursor } from './drop-cursor';
 import { figureExtensions } from './figure';
 import { FormLabel } from './form-label';
 import { buildHtmlCommentSchema } from './html-comments';
-import { CustomImage } from './image';
+import { CustomImage, IMAGE_NODE, INLINE_IMAGE_NODE, InlineImage, inlineImageOf } from './image';
 import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
 import { buildContainerParagraphSchema } from './no-container-paragraphs';
@@ -36,6 +36,7 @@ export const editorExtensions = [
 	BaseLink,
 	DropCursor,
 	CustomImage,
+	InlineImage,
 	Media,
 	TextAlignment,
 	Direction,
@@ -58,10 +59,18 @@ export const editorExtensions = [
  * The complete extension list for a field's editor: `editorExtensions` plus the field's additions,
  * with PreservedAttributes told about every other attribute so a `data-*` or `aria-*` name that
  * another attribute parses has one owner. Every site that builds a field editor must use this.
- * An addition with a base extension's name replaces it in place.
+ * An addition with a base extension's name replaces it in place; an `image` addition also gives the
+ * inline image its schema, unless an `inlineImage` addition replaces that too.
  */
 export function fieldEditorExtensions(additions: AnyExtension[]): AnyExtension[] {
 	const byName = new Map(additions.map((extension) => [extension.name, extension]));
+	const contributedImage = byName.get(IMAGE_NODE);
+
+	// otherwise the built-in inline image keeps claiming every <img> in text, bypassing the replacement
+	if (contributedImage?.type === 'node' && !byName.has(INLINE_IMAGE_NODE)) {
+		byName.set(INLINE_IMAGE_NODE, inlineImageOf(contributedImage as Node));
+	}
+
 	const base = editorExtensions.map((extension) => byName.get(extension.name) ?? extension);
 	const appended = additions.filter((extension) => !base.includes(extension));
 	const isPreserved = (extension: AnyExtension) => extension.name === PreservedAttributes.name;

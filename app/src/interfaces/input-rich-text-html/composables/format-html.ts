@@ -4,6 +4,8 @@
  * the result re-parses to the same document (see format-html.test.ts).
  */
 
+import { isInInlineImageHost } from '../extensions/image';
+
 const INDENT = '  ';
 
 const BLOCK_TAGS = new Set([
@@ -45,7 +47,9 @@ const VOID_TAGS = new Set(['hr', 'img', 'br']);
 const PRESERVE_TAGS = new Set(['pre']);
 
 function isBlock(node: Node): node is HTMLElement {
-	return node.nodeType === Node.ELEMENT_NODE && BLOCK_TAGS.has((node as HTMLElement).tagName.toLowerCase());
+	if (node.nodeType !== Node.ELEMENT_NODE) return false;
+	const tag = (node as HTMLElement).tagName.toLowerCase();
+	return BLOCK_TAGS.has(tag) && !(tag === 'img' && isInInlineImageHost(node as HTMLElement));
 }
 
 // ASCII whitespace HTML collapses at a textblock boundary; excludes &nbsp; / Unicode spaces, which
@@ -53,24 +57,30 @@ function isBlock(node: Node): node is HTMLElement {
 const LEADING_WS = /^[ \t\n\r\f]+/;
 const TRAILING_WS = /[ \t\n\r\f]+$/;
 
-function firstTextNode(el: Node): Text | null {
-	for (const child of Array.from(el.childNodes)) {
+function isVoid(node: Node): boolean {
+	return node.nodeType === Node.ELEMENT_NODE && VOID_TAGS.has((node as HTMLElement).tagName.toLowerCase());
+}
+
+// `undefined` keeps searching; `null` means a void element (an inline image) sits at the boundary
+function edgeTextNode(el: Node, fromEnd: boolean): Text | null | undefined {
+	const children = Array.from(el.childNodes);
+
+	for (const child of fromEnd ? children.reverse() : children) {
 		if (child.nodeType === Node.TEXT_NODE) return child as Text;
-		const nested = firstTextNode(child);
-		if (nested) return nested;
+		if (isVoid(child)) return null;
+		const nested = edgeTextNode(child, fromEnd);
+		if (nested !== undefined) return nested;
 	}
 
-	return null;
+	return undefined;
+}
+
+function firstTextNode(el: Node): Text | null {
+	return edgeTextNode(el, false) ?? null;
 }
 
 function lastTextNode(el: Node): Text | null {
-	for (const child of Array.from(el.childNodes).reverse()) {
-		if (child.nodeType === Node.TEXT_NODE) return child as Text;
-		const nested = lastTextNode(child);
-		if (nested) return nested;
-	}
-
-	return null;
+	return edgeTextNode(el, true) ?? null;
 }
 
 // Drop the leading/trailing whitespace Tiptap trims at a textblock boundary (possibly nested inside
