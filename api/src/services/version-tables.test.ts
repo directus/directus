@@ -707,6 +707,32 @@ describe('dialects', () => {
 		`);
 	});
 
+	test('keeps fixed length uuid keys on oracle, so the link table can reference them', async () => {
+		const { sql } = await sync({
+			client: 'oracle',
+			versioned: ['authors'],
+			relations: [AUTHOR_O2M],
+			live: LIVE_COLUMNS.map((live) =>
+				live.table === 'articles' && live.name === 'id' ? { ...live, data_type: 'CHAR', max_length: 36 } : live,
+			),
+			shadow: { tables: [], columns: [], foreignKeys: [] },
+			run: (service) => service.syncCollections(['articles']),
+		});
+
+		expect(sql).toMatchInlineSnapshot(`
+			"create table "directus_link_articles" ("id" CHAR(36) not null, "author" integer null);
+
+			alter table "directus_link_articles"
+			add constraint "directus_link_articles_pkey" primary key ("id");
+
+			alter table "directus_link_articles"
+			add constraint "directus_link_articles_id_foreign" foreign key ("id") references "articles" ("id") on delete CASCADE;
+
+			alter table "directus_link_articles"
+			add constraint "directus_link_articles_author_foreign" foreign key ("author") references "directus_shadow_authors" ("version_id") on delete SET NULL"
+		`);
+	});
+
 	test('keeps unbounded numerics on postgres', async () => {
 		const { sql } = await sync({
 			versioned: ['articles'],

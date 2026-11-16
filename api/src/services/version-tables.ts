@@ -471,6 +471,10 @@ function getExactType(column: Column): string | null {
 		return `NUMBER(${precision ?? '*'},${scale ?? 0})`;
 	}
 
+	// Fixed length strings (like uuids on Oracle / MySQL) would be mirrored as varchar, Oracle rejects foreign keys
+	// between the two
+	if (dataType === 'char' && column.max_length !== null) return `${column.data_type}(${column.max_length})`;
+
 	const type = getLocalType(column);
 
 	// Unbounded Postgres / CockroachDB numerics are treated as integers by Directus
