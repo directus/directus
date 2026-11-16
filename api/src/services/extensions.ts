@@ -7,6 +7,7 @@ import { isObject } from '@directus/utils';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
 import { getExtensionManager } from '../extensions/index.js';
+import { useLogger } from '../logger/index.js';
 import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 
@@ -43,8 +44,8 @@ export class ExtensionsService {
 
 		const describeOptions: DescribeOptions = {};
 
-		if (typeof env['MARKETPLACE_REGISTRY'] === 'string') {
-			describeOptions.registry = env['MARKETPLACE_REGISTRY'];
+		if (env.MARKETPLACE_REGISTRY) {
+			describeOptions.registry = env.MARKETPLACE_REGISTRY;
 		}
 
 		const extension = await describe(extensionId, describeOptions);
@@ -54,7 +55,8 @@ export class ExtensionsService {
 			throw new ForbiddenError();
 		}
 
-		const limit = env['EXTENSIONS_LIMIT'] ? Number(env['EXTENSIONS_LIMIT']) : null;
+		// `0` means no limit
+		const limit = env.EXTENSIONS_LIMIT || null;
 
 		if (limit !== null) {
 			const currentlyInstalledCount = this.extensionsManager.extensions.length;
@@ -227,9 +229,12 @@ export class ExtensionsService {
 			return extension;
 		});
 
-		this.extensionsManager.reload().then(() => {
-			this.extensionsManager.broadcastReloadNotification();
-		});
+		this.extensionsManager
+			.reload()
+			.then(() => this.extensionsManager.broadcastReloadNotification())
+			.catch((error) => {
+				useLogger().error(error, 'Failed to notify other instances to reload extensions');
+			});
 
 		return result;
 	}

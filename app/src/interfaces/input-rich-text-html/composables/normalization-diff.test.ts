@@ -2,6 +2,7 @@ import { mergeAttributes, Node } from '@tiptap/core';
 import { describe, expect, test } from 'vitest';
 import { buildFieldSchema } from '../extensions';
 import { buildCustomFormats } from '../extensions/custom-formats';
+import { buildLinkProtocolSchema } from '../extensions/link-protocols';
 import { computeNormalizationDiff, computeValueNormalizationDiff } from './normalization-diff';
 
 function removedText(code: string): string {
@@ -144,6 +145,15 @@ describe('computeValueNormalizationDiff', () => {
 		expect(computeValueNormalizationDiff(value, highlight.extensions, highlight.key)).not.toBeNull();
 	});
 
+	test('keeps the verdicts of two link-protocol schemas apart', () => {
+		const myapp = buildLinkProtocolSchema(['myapp']);
+		const other = buildLinkProtocolSchema(['other']);
+		const value = '<p><a href="myapp://some/route">open</a></p>';
+
+		expect(computeValueNormalizationDiff(value, myapp.extensions, myapp.key)).toBeNull();
+		expect(computeValueNormalizationDiff(value, other.extensions, other.key)).not.toBeNull();
+	});
+
 	test('does not cache a schema it cannot identify', () => {
 		const { extensions } = buildCustomFormats([{ title: 'Cite', inline: 'cite', classes: 'src' }]);
 		const value = '<p><cite class="other">b</cite></p>';
@@ -159,5 +169,14 @@ describe('comparison-mode schema', () => {
 
 		expect(computeValueNormalizationDiff(value, extensions, key)).toBeNull();
 		expect(computeValueNormalizationDiff(value)).not.toBeNull();
+	});
+
+	test('accepts links with the allowed custom schemes of the field', () => {
+		const value = '<p><a href="myapp://some/route">open</a></p>';
+		const allowed = buildFieldSchema({ linkProtocols: ['myapp'], comparisonMode: true });
+		const base = buildFieldSchema({ comparisonMode: true });
+
+		expect(computeValueNormalizationDiff(value, allowed.extensions, allowed.key)).toBeNull();
+		expect(computeValueNormalizationDiff(value, base.extensions, base.key)).not.toBeNull();
 	});
 });

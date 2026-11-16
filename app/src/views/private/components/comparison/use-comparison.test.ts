@@ -285,6 +285,24 @@ describe('useComparison', () => {
 			expect(comparisonData.value?.displayIncoming?.body).toContain('<iframe src="https://example.com"></iframe>');
 		});
 
+		it('should diff-mark links with a custom scheme the field allows', async () => {
+			mockFieldsStore.getFieldsForCollection.mockImplementation(() =>
+				getFieldData().map((field) =>
+					field.field === 'body' ? { ...field, meta: { ...field.meta, options: { linkProtocols: ['myapp'] } } } : field,
+				),
+			);
+
+			const link = '<p><a href="myapp://some/route">open</a></p>';
+			const testCase = getRichTextTestCase(`<p>hello</p>${link}`, `<p>hello world</p>${link}`);
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			expect(comparisonData.value?.displayIncoming?.body).toContain('comparison-diff--added');
+		});
+
 		describe('with a contributed richtext node', () => {
 			const Callout = Node.create({
 				name: 'callout',
