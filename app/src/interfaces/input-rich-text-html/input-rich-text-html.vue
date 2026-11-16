@@ -940,7 +940,6 @@ onKeyStroke('Escape', () => {
 	}
 }
 
-/* Comments are hidden until the toolbar's Show HTML Comments toggle is on. */
 .wysiwyg:not(.show-html-comments) :deep(.html-comment) {
 	display: none;
 }

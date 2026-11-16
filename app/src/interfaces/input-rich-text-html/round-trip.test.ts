@@ -631,6 +631,57 @@ describe('html comments', () => {
 		editor.destroy();
 	});
 
+	test('pasting a copy from the same editor keeps its comments', () => {
+		const editor = commentEditor('<p>a<!-- c --></p><p>b</p>');
+		editor.commands.setTextSelection({ from: 1, to: 3 });
+		const { dom } = editor.view.serializeForClipboard(editor.state.selection.content());
+		editor.commands.setTextSelection(6);
+		editor.view.pasteHTML(dom.innerHTML);
+
+		expect(editor.getHTML()).toBe('<p>a<!-- c --></p><p>ba<!-- c --></p>');
+		editor.destroy();
+	});
+
+	test.each([
+		[
+			'Backspace after an inline comment deletes the character before it',
+			'<p>ab<!-- c -->d</p>',
+			4,
+			'Backspace',
+			'<p>a<!-- c -->d</p>',
+		],
+		[
+			'Delete before an inline comment deletes the character after it',
+			'<p>ab<!-- c -->d</p>',
+			3,
+			'Delete',
+			'<p>ab<!-- c --></p>',
+		],
+		[
+			'Backspace after a block comment joins the paragraphs and keeps the comment',
+			'<p>a</p><!-- c --><p>b</p><p>z</p>',
+			5,
+			'Backspace',
+			'<p>ab</p><!-- c --><p>z</p>',
+		],
+		[
+			'Delete before a block comment joins the paragraphs and keeps the comment',
+			'<p>a</p><!-- c --><p>b</p>',
+			2,
+			'Delete',
+			'<!-- c --><p>ab</p>',
+		],
+		['Backspace after a leading comment keeps it', '<!-- c --><p>a</p>', 2, 'Backspace', '<!-- c --><p>a</p>'],
+	])('%s', (_name, html, cursor, key, expected) => {
+		const editor = commentEditor(html);
+		editor.commands.setTextSelection(cursor);
+		// Tiptap's keyboardShortcut command replays captured steps, which drops part of a multi-step change
+		editor.view.someProp('handleKeyDown', (handle) => handle(editor.view, new KeyboardEvent('keydown', { key })));
+
+		expect(editor.getHTML()).toBe(expected);
+		editor.destroy();
+	});
+
 	test('the schema key tells the option apart', () => {
 		expect(buildFieldSchema({ keepHtmlComments: true }).key).not.toBe(buildFieldSchema({}).key);
 	});
