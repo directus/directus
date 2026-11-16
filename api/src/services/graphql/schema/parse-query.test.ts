@@ -467,6 +467,57 @@ describe('parseFields', () => {
 		expect(query.fields).toContain('parent:child.id');
 		expect(query.fields).toContain('parentAlias:child.id');
 	});
+
+	test('should parse multiple aliased relational fields inside M2A InlineFragment', async () => {
+		const customSchema = {
+			relations: [
+				{
+					collection: 'test_collection',
+					field: 'parent',
+					related_collection: null,
+					meta: {
+						one_collection_field: 'collection',
+						one_allowed_collections: ['child'],
+						one_field: null,
+					},
+				},
+				{
+					collection: 'child',
+					field: 'cover_image',
+					related_collection: 'directus_files',
+					meta: { one_field: null, one_collection_field: null, one_allowed_collections: null },
+				},
+				{
+					collection: 'child',
+					field: 'cover_video',
+					related_collection: 'directus_files',
+					meta: { one_field: null, one_collection_field: null, one_allowed_collections: null },
+				},
+			],
+		} as any;
+
+		const selections = [
+			buildField('parent', {
+				children: [
+					buildInlineFragment('child', [
+						buildField('cover_image', { alias: 'coverImage', children: [buildField('id')] }),
+						buildField('cover_video', { alias: 'coverVideo', children: [buildField('id')] }),
+					]),
+				],
+			}),
+		];
+
+		const query = await getQuery({}, customSchema, selections, mockVariableValues, mockAccountability, 'test_collection');
+
+		expect(query.deep).toEqual({
+			parent__child: {
+				_alias: {
+					coverImage: 'cover_image',
+					coverVideo: 'cover_video',
+				},
+			},
+		});
+	});
 });
 
 /**
