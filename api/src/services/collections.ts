@@ -36,6 +36,7 @@ import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.j
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
+import { assertVersionFieldNames } from './version-tables/assert-field-names.js';
 import { isShadowTable } from './version-tables/constants.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
 
@@ -168,6 +169,15 @@ export class CollectionsService {
 
 						return field;
 					});
+
+					if (payload.meta?.versioning) {
+						assertVersionFieldNames(
+							payload.collection,
+							payload.fields
+								.filter((field) => field.type && ALIAS_TYPES.includes(field.type) === false)
+								.map((field) => field.field),
+						);
+					}
 
 					const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
 

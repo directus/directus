@@ -378,6 +378,7 @@ describe('Integration Tests', () => {
 				});
 
 				tracker.on.select('directus_fields').response([]);
+				tracker.on.select('directus_collections').response([]);
 				tracker.on.select('max').response([{ max: 1 }]);
 				// Mock any DDL queries
 				tracker.on.any(/alter table/i).response([]);
@@ -417,6 +418,29 @@ describe('Integration Tests', () => {
 
 				expect(createOneSpy).toHaveBeenCalled();
 			});
+
+			test.each(['version_type', 'version_ref_author'])(
+				'should reject reserved versioning field name "%s" in a versioned collection before altering the table',
+				async (fieldName) => {
+					const service = new FieldsService({
+						knex: db,
+						schema,
+						accountability: null,
+					});
+
+					tracker.on.select('directus_fields').response([]);
+					tracker.on.select('directus_collections').response([{ collection: 'test_collection' }]);
+
+					const alterTableSpy = vi.fn();
+					db.schema.alterTable = alterTableSpy;
+
+					await expect(service.createField('test_collection', { field: fieldName, type: 'string' })).rejects.toThrow(
+						InvalidPayloadError,
+					);
+
+					expect(alterTableSpy).not.toHaveBeenCalled();
+				},
+			);
 
 			test('should not create schema column for alias fields', async () => {
 				const service = new FieldsService({
@@ -479,6 +503,7 @@ describe('Integration Tests', () => {
 				});
 
 				tracker.on.select('directus_fields').response([]);
+				tracker.on.select('directus_collections').response([]);
 				tracker.on.select('max').response([{ max: 1 }]);
 				// Mock any DDL queries
 				tracker.on.any(/alter table/i).response([]);

@@ -48,6 +48,7 @@ import { getCollectionRelationList } from './fields/get-collection-relation-list
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
+import { assertVersionFieldNames } from './version-tables/assert-field-names.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
@@ -414,6 +415,14 @@ export class FieldsService {
 						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
+					const versioned = await trx
+						.select('collection')
+						.from('directus_collections')
+						.where({ collection, versioning: true })
+						.first();
+
+					if (versioned) assertVersionFieldNames(collection, [hookAdjustedField.field]);
+
 					if (table) {
 						this.addColumnToTable(table, collection, hookAdjustedField as Field, {
 							attemptConcurrentIndex,
