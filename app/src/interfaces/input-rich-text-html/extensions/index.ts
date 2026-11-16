@@ -11,6 +11,7 @@ import { buildHtmlCommentSchema } from './html-comments';
 import { CustomImage, IMAGE_NODE, INLINE_IMAGE_NODE, InlineImage, inlineImageOf } from './image';
 import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
+import { namedAnchorExtensions } from './named-anchor';
 import { buildContainerParagraphSchema } from './no-container-paragraphs';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
@@ -50,6 +51,7 @@ export const editorExtensions = [
 	CharacterCount,
 	...figureExtensions,
 	...semanticHtml,
+	...namedAnchorExtensions,
 	RawHtmlBlock,
 	RawHtmlInline,
 	PreservedAttributes,
