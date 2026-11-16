@@ -2,6 +2,7 @@
 	"extends": "@directus/tsconfig/node26",
 	"compilerOptions": {
 		"lib": ["ES2023", "DOM"],
+		"types": [],
 		"allowImportingTsExtensions": true,
 		"isolatedDeclarations": false,
 		"noEmit": true
