@@ -1,7 +1,13 @@
 import { type JSONSchema7 } from 'ai';
 import { z } from 'zod';
 import { zodJsonSchema7Parser } from '../utils/zod-jsonschema7-parser.js';
-import { ProviderAnthropic, ProviderGoogle, ProviderOpenAi, ProviderOpenAiCompatible } from './providers.js';
+import {
+	ProviderAnthropic,
+	ProviderGoogle,
+	ProviderOpenAi,
+	ProviderOpenAiCompatible,
+	ProviderOpenRouter,
+} from './providers.js';
 
 export const ChatRequestTool = z.union([
 	z.string(),
@@ -83,7 +89,13 @@ export const ChatContext = z.object({
 export type ChatContext = z.infer<typeof ChatContext>;
 
 export const ChatRequest = z.intersection(
-	z.discriminatedUnion('provider', [ProviderOpenAi, ProviderAnthropic, ProviderGoogle, ProviderOpenAiCompatible]),
+	z.discriminatedUnion('provider', [
+		ProviderOpenAi,
+		ProviderAnthropic,
+		ProviderGoogle,
+		ProviderOpenRouter,
+		ProviderOpenAiCompatible,
+	]),
 	z.object({
 		tools: z.array(ChatRequestTool),
 		messages: z.array(z.looseObject({})),

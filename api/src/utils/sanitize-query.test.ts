@@ -1,23 +1,28 @@
-import { DEFAULTS, useEnv } from '@directus/env';
+import { DEFAULTS, type Env, useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
+import { mockEnv } from '../test-utils/env.js';
 import { sanitizeQuery } from './sanitize-query.js';
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
-vi.mock('@directus/env', async (importOriginal) => ({
-	...(await importOriginal<typeof import('@directus/env')>()),
-	useEnv: vi.fn().mockReturnValue({}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
+});
 
 vi.mock('../database/index.js');
 vi.mock('../database/helpers/index.js');
 vi.mock('../permissions/lib/fetch-policies.js');
 vi.mock('../permissions/utils/fetch-dynamic-variable-data.js');
 
+// Some cases below stub only the keys they exercise, to cover the fallbacks for the rest. `Env`
+// models a fully built env, so it can't describe them.
+const envWith = (values: Record<string, unknown>) => values as Env;
+
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({});
+	vi.mocked(useEnv).mockReturnValue(mockEnv({}));
 });
 
 afterEach(() => {
@@ -42,7 +47,7 @@ describe('limit', () => {
 
 describe('max limit', () => {
 	test('should replace -1', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ QUERY_LIMIT_MAX: 100 }));
 
 		const sanitizedQuery = await sanitizeQuery({ limit: -1 }, null as any);
 
@@ -50,7 +55,7 @@ describe('max limit', () => {
 	});
 
 	test.each([1, 25, 150])('should accept number %i', async (limit) => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ QUERY_LIMIT_MAX: 100 }));
 
 		const sanitizedQuery = await sanitizeQuery({ limit }, null as any);
 
@@ -58,7 +63,7 @@ describe('max limit', () => {
 	});
 
 	test('should apply max if no limit passed in request', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 }));
 
 		const sanitizedQuery = await sanitizeQuery({}, null as any);
 
@@ -66,7 +71,7 @@ describe('max limit', () => {
 	});
 
 	test('should apply lower value if no limit passed in request', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100, QUERY_LIMIT_DEFAULT: 25 });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ QUERY_LIMIT_MAX: 100, QUERY_LIMIT_DEFAULT: 25 }));
 
 		const sanitizedQuery = await sanitizeQuery({}, null as any);
 
@@ -80,7 +85,7 @@ describe('max limit', () => {
 	});
 
 	test('should apply limit from request if max is unlimited', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: -1 });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ QUERY_LIMIT_MAX: -1 }));
 
 		const sanitizedQuery = await sanitizeQuery({ limit: 150 }, null as any);
 
@@ -257,7 +262,7 @@ describe('filter', () => {
 	test.each(['$CURRENT_USER', '$CURRENT_ROLE', '$CURRENT_ROLES', '$CURRENT_POLICIES'])(
 		'rejects a %s path deeper than the max relational depth before fetching it',
 		async (variable) => {
-			vi.mocked(useEnv).mockReturnValue({ MAX_RELATIONAL_DEPTH: 3 });
+			vi.mocked(useEnv).mockReturnValue(envWith({ MAX_RELATIONAL_DEPTH: 3 }));
 
 			const filter = { id: { _eq: `${variable}.role.users.role.id` } };
 
@@ -270,7 +275,7 @@ describe('filter', () => {
 	);
 
 	test('fetches a dynamic variable path at the max relational depth', async () => {
-		vi.mocked(useEnv).mockReturnValue({ MAX_RELATIONAL_DEPTH: 3 });
+		vi.mocked(useEnv).mockReturnValue(envWith({ MAX_RELATIONAL_DEPTH: 3 }));
 		vi.mocked(fetchDynamicVariableData).mockResolvedValue({ $CURRENT_USER: { role: { users: [{ id: 'a' }] } } });
 
 		const filter = { id: { _in: '$CURRENT_USER.role.users.id' } };
@@ -305,7 +310,7 @@ describe('query limits', () => {
 
 	describe('filter nodes', () => {
 		test('should accept a filter at the node limit', async () => {
-			vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: 6 });
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_NODES: 6 }));
 
 			const sanitizedQuery = await sanitizeQuery({ filter: filterWithLeaves(5) }, null as any);
 
@@ -321,7 +326,7 @@ describe('query limits', () => {
 		});
 
 		test('should reject a filter one node over the limit', async () => {
-			vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: 5 });
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_NODES: 5 }));
 
 			await expect(sanitizeQuery({ filter: filterWithLeaves(5) }, null as any)).rejects.toThrowError(InvalidQueryError);
 		});
@@ -329,7 +334,7 @@ describe('query limits', () => {
 
 	describe('filter depth', () => {
 		test('should accept a filter at the depth limit', async () => {
-			vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_DEPTH: 5 });
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_DEPTH: 5 }));
 
 			const sanitizedQuery = await sanitizeQuery({ filter: filterOfDepth(5) }, null as any);
 
@@ -337,7 +342,7 @@ describe('query limits', () => {
 		});
 
 		test('should reject a filter one level over the depth limit', async () => {
-			vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_DEPTH: 5 });
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_DEPTH: 5 }));
 
 			await expect(sanitizeQuery({ filter: filterOfDepth(6) }, null as any)).rejects.toThrowError(InvalidQueryError);
 		});
@@ -351,7 +356,7 @@ describe('query limits', () => {
 
 	describe('deep depth', () => {
 		test('should accept `deep` at the depth limit', async () => {
-			vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_DEPTH: 3 });
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_DEPTH: 3 }));
 
 			const sanitizedQuery = await sanitizeQuery({ deep: deepOfDepth(3, { _limit: 1 }) }, null as any);
 
@@ -359,7 +364,7 @@ describe('query limits', () => {
 		});
 
 		test('should reject `deep` one level over the depth limit', async () => {
-			vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_DEPTH: 3 });
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_DEPTH: 3 }));
 
 			await expect(sanitizeQuery({ deep: deepOfDepth(4, { _limit: 1 }) }, null as any)).rejects.toThrowError(
 				InvalidQueryError,
@@ -390,21 +395,21 @@ describe('query limits', () => {
 				},
 			};
 
-			vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: 20 });
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_NODES: 20 }));
 			await expect(sanitizeQuery({ deep: oneLevel }, null as any)).resolves.toBeDefined();
 
 			// Five copies that each fit on their own: a per-call allowance would admit this
-			vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: 20 });
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_NODES: 20 }));
 			await expect(sanitizeQuery({ deep: fiveLevels }, null as any)).rejects.toThrowError(InvalidQueryError);
 
 			// Enough for all five, confirming nothing else rejected it
-			vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: 100 });
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_NODES: 100 }));
 			await expect(sanitizeQuery({ deep: fiveLevels }, null as any)).resolves.toBeDefined();
 		});
 	});
 
 	test('should leave a relational query within the shipped limits untouched', async () => {
-		vi.mocked(useEnv).mockReturnValue(DEFAULTS);
+		vi.mocked(useEnv).mockReturnValue(envWith(DEFAULTS));
 
 		const filter = { author: { role: { name: { _eq: 'admin' } } } };
 		const deep = { translations: { _filter: filter, _limit: 10 } };
@@ -418,7 +423,7 @@ describe('query limits', () => {
 	// The app's filter builder wraps every relational level in an `_and` group. Counting the
 	// group's array as a level takes this to depth 33, rejecting it under the shipped limits.
 	test('should accept a fully grouped relational filter at the shipped limits', async () => {
-		vi.mocked(useEnv).mockReturnValue(DEFAULTS);
+		vi.mocked(useEnv).mockReturnValue(envWith(DEFAULTS));
 
 		let filter: Record<string, any> = { _and: [{ name: { _eq: 'admin' } }] };
 
@@ -569,7 +574,7 @@ describe('deep', () => {
 	});
 
 	test('should work in combination with query limit', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 }));
 
 		const deep = { deep: { relational_field_a: { _sort: ['name'] } } };
 

@@ -15,7 +15,7 @@ export function createRateLimiter(
 ): RateLimiterAbstract {
 	const env = useEnv();
 
-	switch (env['RATE_LIMITER_STORE']) {
+	switch (env.RATE_LIMITER_STORE) {
 		case 'redis':
 			return new RateLimiterRedis(getConfig('redis', configPrefix, configOverrides));
 		case 'memory':
@@ -48,7 +48,7 @@ function getConfig(
 
 		const env = useEnv();
 
-		config.storeClient = new Redis(env[`REDIS`] || getConfigFromEnv(`REDIS_`));
+		config.storeClient = new Redis(env[`REDIS`] || getConfigFromEnv(`REDIS_`, { omitSuffix: '_NAMESPACE' }));
 	}
 
 	delete config.enabled;

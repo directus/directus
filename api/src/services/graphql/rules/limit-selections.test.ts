@@ -5,10 +5,9 @@ import { resetEnv, setEnv } from '../../../test-utils/env.js';
 import { createMockLogger } from '../../../test-utils/logger.js';
 import { countSelections, limitSelections } from './limit-selections.js';
 
-// Keep the real module so DEFAULTS stays available to the limit lookup
-vi.mock('@directus/env', async (importOriginal) => {
-	const { mockEnv } = await import('../../../test-utils/env.js');
-	return { ...(await importOriginal<typeof import('@directus/env')>()), ...mockEnv() };
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../../../test-utils/env.js');
+	return mockUseEnv();
 });
 
 vi.mock('../../../logger/index.js');

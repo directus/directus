@@ -13,7 +13,7 @@ export interface GetValidationRulesOptions {
  * Build the GraphQL validation rules.
  */
 export function getValidationRules({ operationName }: GetValidationRulesOptions = {}): ValidationRule[] {
-	const env = useEnv();
+	const { GRAPHQL_INTROSPECTION } = useEnv();
 
 	const rules: ValidationRule[] = [
 		...specifiedRules,
@@ -21,7 +21,7 @@ export function getValidationRules({ operationName }: GetValidationRulesOptions 
 		limitSelections(operationName),
 	];
 
-	if (env['GRAPHQL_INTROSPECTION'] === false) {
+	if (!GRAPHQL_INTROSPECTION) {
 		rules.push(NoSchemaIntrospectionCustomRule);
 		rules.push(BlockFieldSuggestionsRule);
 	}

@@ -3,10 +3,9 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { resetEnv, setEnv } from '../../../test-utils/env.js';
 import { BlockFieldSuggestionsRule, getValidationRules } from './index.js';
 
-// Keep the real module so DEFAULTS stays available to limit-selections
-vi.mock('@directus/env', async (importOriginal) => {
-	const { mockEnv } = await import('../../../test-utils/env.js');
-	return { ...(await importOriginal<typeof import('@directus/env')>()), ...mockEnv() };
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../../../test-utils/env.js');
+	return mockUseEnv();
 });
 
 beforeEach(() => {

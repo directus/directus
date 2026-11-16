@@ -1,4 +1,4 @@
-import { DEFAULTS, useEnv } from '@directus/env';
+import { DEFAULTS, type Env, useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLogger } from '../logger/index.js';
@@ -13,11 +13,15 @@ vi.mock('@directus/env', async (importOriginal) => ({
 
 vi.mock('../logger/index.js');
 
+// These tests feed values that are deliberately absent or unusable, to cover the fallbacks. `Env`
+// models a fully built env, so it can't describe them.
+const envWith = (values: Record<string, unknown>) => values as Env;
+
 let logger: ReturnType<typeof createMockLogger>;
 
 beforeEach(() => {
 	// The state production reads limits from; tests that care about a value override it
-	vi.mocked(useEnv).mockReturnValue(DEFAULTS);
+	vi.mocked(useEnv).mockReturnValue(envWith(DEFAULTS));
 
 	logger = createMockLogger();
 	vi.mocked(useLogger).mockReturnValue(logger as any);
@@ -34,10 +38,12 @@ function limits(overrides: Partial<QueryMaximums> = {}): QueryLimits {
 
 describe('fromEnv', () => {
 	test('should read the limits from the environment', () => {
-		vi.mocked(useEnv).mockReturnValue({
-			QUERY_FILTER_MAX_NODES: 222,
-			QUERY_FILTER_MAX_DEPTH: 33,
-		});
+		vi.mocked(useEnv).mockReturnValue(
+			envWith({
+				QUERY_FILTER_MAX_NODES: 222,
+				QUERY_FILTER_MAX_DEPTH: 33,
+			}),
+		);
 
 		expect(getQueryLimits()).toMatchObject({ maxNodes: 222, maxDepth: 33 });
 	});
@@ -56,7 +62,7 @@ describe('fromEnv', () => {
 
 	test('should fall back silently when the key is absent', () => {
 		// Only reachable when the env was never built, so it is not a misconfiguration
-		vi.mocked(useEnv).mockReturnValue({});
+		vi.mocked(useEnv).mockReturnValue(envWith({}));
 
 		expect(getQueryLimits().maxNodes).toBe(10_000);
 		expect(logger.warn).not.toHaveBeenCalled();
@@ -69,7 +75,7 @@ describe('fromEnv', () => {
 		['a negative number', -1],
 		['null', null],
 	])('should fall back when the value is %s', (_label, value) => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: value });
+		vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_NODES: value }));
 
 		expect(getQueryLimits().maxNodes).toBe(10_000);
 	});
@@ -77,7 +83,7 @@ describe('fromEnv', () => {
 	// The memo of reported keys is module level and never cleared. No other test configures this
 	// key to an unusable value, so the assertion does not depend on ordering.
 	test('should warn once for a configured value that is unusable', () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_DEPTH: 'not-a-number' });
+		vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_DEPTH: 'not-a-number' }));
 
 		getQueryLimits();
 		getQueryLimits();
@@ -87,13 +93,13 @@ describe('fromEnv', () => {
 	});
 
 	test('should accept a numeric string', () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: '500' });
+		vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_NODES: '500' }));
 
 		expect(getQueryLimits().maxNodes).toBe(500);
 	});
 
 	test('should honor `Infinity` as an explicit opt-out', () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: Infinity });
+		vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_NODES: Infinity }));
 
 		expect(getQueryLimits().maxNodes).toBe(Infinity);
 	});

@@ -11,10 +11,9 @@ import type { ConnectionParams } from '../messages.js';
 import type { GraphQLSocket, UpgradeContext } from '../types.js';
 import { GraphQLSubscriptionController, onSubscribe } from './graphql.js';
 
-// Keep the real module so DEFAULTS stays available to the validation rules
-vi.mock('@directus/env', async (importOriginal) => {
-	const { mockEnv } = await import('../../test-utils/env.js');
-	return { ...(await importOriginal<typeof import('@directus/env')>()), ...mockEnv() };
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../../test-utils/env.js');
+	return mockUseEnv();
 });
 
 vi.mock('graphql-ws', async (importOriginal) => {
