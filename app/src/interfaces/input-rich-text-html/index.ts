@@ -424,6 +424,22 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'keepFormElements',
+				name: '$t:interfaces.input-rich-text-html.keep_form_elements',
+				type: 'boolean',
+				meta: {
+					width: 'full',
+					interface: 'boolean',
+					note: '$t:interfaces.input-rich-text-html.keep_form_elements_note',
+					options: {
+						label: '$t:interfaces.input-rich-text-html.keep_form_elements_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
 				field: 'customFormats',
 				name: '$t:interfaces.input-rich-text-html.custom_formats',
 				type: 'json',

@@ -318,6 +318,7 @@ export function useComparison(options: UseComparisonOptions) {
 					keepLegacyEmphasisTags: field.meta?.options?.['keepLegacyEmphasisTags'],
 					noContainerParagraphs: field.meta?.options?.['noContainerParagraphs'],
 					keepWrapperElements: field.meta?.options?.['keepWrapperElements'],
+					keepFormElements: field.meta?.options?.['keepFormElements'],
 					comparisonMode: true,
 				});
 

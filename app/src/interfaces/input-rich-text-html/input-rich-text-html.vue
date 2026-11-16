@@ -18,6 +18,7 @@ import NormalizationWarningDialog from './drawers/normalization-warning-dialog.v
 import PasteWarningDialog from './drawers/paste-warning-dialog.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { buildFieldSchema, fieldEditorExtensions } from './extensions';
+import { isImageNode } from './extensions/image';
 import { LinkShortcut } from './extensions/link-shortcut';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 import ContributedBubbleMenu from './toolbar/menus/contributed-bubble-menu.vue';
@@ -59,6 +60,8 @@ const props = withDefaults(
 		noContainerParagraphs?: boolean;
 		/** Keep `div` and other wrapper elements instead of unwrapping them; see extensions/wrapper-elements.ts. */
 		keepWrapperElements?: boolean;
+		/** Keep `<form>` and loose form controls as non-editable blocks; see extensions/raw-html.ts. */
+		keepFormElements?: boolean;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -105,6 +108,7 @@ const fieldSchema = buildFieldSchema({
 	keepLegacyEmphasisTags: props.keepLegacyEmphasisTags,
 	noContainerParagraphs: props.noContainerParagraphs,
 	keepWrapperElements: props.keepWrapperElements,
+	keepFormElements: props.keepFormElements,
 	comparisonMode: props.comparisonMode,
 });
 
@@ -180,7 +184,7 @@ const editor = useEditor({
 		attributes: { class: 'richtext-content' },
 		// media nodes handle dblclick themselves in their node view
 		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
-			if (node.type.name === 'image') {
+			if (isImageNode(node)) {
 				editor.value?.commands.setNodeSelection(nodePos);
 				openImageDrawer();
 				return true;
@@ -734,7 +738,7 @@ onKeyStroke('Escape', () => {
 	// `.range-selected` (RangeSelectedAtoms) covers selections that merely span the leaf, which
 	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image.
 	// A linked image renders as `<a><img></a>`, so the class lands on the anchor, not the img
-	:is(img, hr, .page-break, .style-tag, .named-anchor):is(.ProseMirror-selectednode, .range-selected),
+	:is(img, hr, .page-break, .style-tag, .named-anchor, .raw-html):is(.ProseMirror-selectednode, .range-selected),
 	a:is(.ProseMirror-selectednode, .range-selected) > img {
 		outline: 2px solid var(--theme--primary);
 	}
@@ -801,6 +805,34 @@ onKeyStroke('Escape', () => {
 			color: var(--theme--foreground-subdued);
 			white-space: pre-wrap;
 		}
+	}
+
+	// the app base styles make every label a block
+	label {
+		display: inline;
+	}
+
+	.raw-html {
+		background-color: var(--theme--background-normal);
+		border-radius: var(--theme--border-radius);
+		color: var(--theme--foreground-subdued);
+		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		font-size: 0.6875rem;
+		user-select: none;
+
+		&::before {
+			content: '<' attr(data-raw-html) '>';
+		}
+	}
+
+	span.raw-html {
+		display: inline-block;
+		padding-inline: 0.5em;
+	}
+
+	div.raw-html {
+		display: block;
+		padding: 0.25em 1em;
 	}
 
 	hr {

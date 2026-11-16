@@ -21,7 +21,15 @@ describe('findMarkupLoss', () => {
 			['implied paragraph in a blockquote', '<blockquote>quoted</blockquote>'],
 			['implied paragraphs in a nested list', '<ul><li>a<ul><li>b</li></ul></li></ul>'],
 			['ordered list start and type', '<ol start="3" type="a"><li>c</li></ol>'],
-			['image lifted out of its paragraph', '<p>before<img src="https://x.test/a.png" alt="A">after</p>'],
+			['image inside a paragraph', '<p>before<img src="https://x.test/a.png" alt="A">after</p>'],
+			[
+				'linked image inside a heading',
+				'<h2>t <a href="https://x.test"><img src="https://x.test/a.png" alt="A"></a></h2>',
+			],
+			[
+				'image lifted out of a table cell',
+				'<table><tr><td>before<img src="https://x.test/a.png" alt="A">after</td></tr></table>',
+			],
 			['reserialized CSS', '<p><span style="font-size:11pt;color:#FF0000">w</span></p>'],
 			[
 				'styles that become marks',
@@ -44,6 +52,12 @@ describe('findMarkupLoss', () => {
 	});
 
 	describe('genuine loss', () => {
+		test('an inline style on an inline image', () => {
+			expect(loss('<p>a<img src="https://x.test/a.png" style="float: left;">b</p>')).toEqual([
+				'<img style="float: left">',
+			]);
+		});
+
 		test('an inline style no rule claims', () => {
 			expect(loss('<p><span style="white-space: pre-wrap;" data-metadata="figma">Grass</span></p>')).toEqual([
 				'<span style="white-space: pre-wrap">',
