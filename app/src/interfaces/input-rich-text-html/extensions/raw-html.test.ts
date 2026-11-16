@@ -132,6 +132,14 @@ test('an image map keeps usemap and its map', () => {
 	expect(roundTrip(html)).toBe(html);
 });
 
+test('an inline image map keeps usemap and its map', () => {
+	const html =
+		'<p>see <img src="/assets/abc" alt="a" usemap="#m"></p><map name="m"><area shape="rect" coords="0,0,10,10" href="/x"></map>';
+
+	expect(roundTrip(html)).toBe(html);
+	expect(computeValueNormalizationDiff(html)).toBeNull();
+});
+
 describe('normalization warning', () => {
 	test.each([
 		['Font Awesome icon in a link', `<p><a href="https://directus.io">${FA_ICON}</a></p>`],

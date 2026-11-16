@@ -1492,6 +1492,8 @@ wysiwyg_options:
   rtl: Right to Left
   lazy_loading: Lazy Load Image
   lazy_loading_label: Enable Lazy Loading
+  inline_image: Inline Image
+  inline_image_label: Show in the line of text
 dropdown: Dropdown
 choices: Choices
 choices_option_configured_incorrectly: Choices configured incorrectly
