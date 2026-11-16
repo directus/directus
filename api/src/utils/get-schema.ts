@@ -125,6 +125,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 			collection,
 			primary: info.primary,
 			singleton: toBoolean(collectionMeta?.singleton),
+			versioned: toBoolean(collectionMeta?.versioning),
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
 			accountability: collectionMeta ? collectionMeta.accountability : 'all',

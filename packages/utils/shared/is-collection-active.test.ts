@@ -7,6 +7,7 @@ function collection(status?: string): CollectionOverview {
 		collection: 'articles',
 		primary: 'id',
 		singleton: false,
+		versioned: false,
 		sortField: null,
 		note: null,
 		accountability: 'all',

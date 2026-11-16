@@ -409,9 +409,9 @@ export class UsersService extends ItemsService {
 		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
 		await this.knex('directus_versions').update({ user_updated: null }).whereIn('user_updated', keys);
 
-		const versionedCollections = (
-			await this.knex.select('collection').from('directus_collections').where('versioning', true)
-		).map(({ collection }) => collection);
+		const versionedCollections = Object.values(this.schema.collections)
+			.filter(({ versioned }) => versioned)
+			.map(({ collection }) => collection);
 
 		for (const versionedCollection of versionedCollections) {
 			for (const field of [VERSION_META_FIELDS.userCreated, VERSION_META_FIELDS.userUpdated]) {

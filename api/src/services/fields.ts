@@ -420,13 +420,9 @@ export class FieldsService {
 						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
-					const versioned = await trx
-						.select('collection')
-						.from('directus_collections')
-						.where({ collection, versioning: true })
-						.first();
-
-					if (versioned) assertVersionFieldNames(collection, [hookAdjustedField.field]);
+					if (this.schema.collections[collection]?.versioned) {
+						assertVersionFieldNames(collection, [hookAdjustedField.field]);
+					}
 
 					if (table) {
 						this.addColumnToTable(table, collection, hookAdjustedField as Field, {

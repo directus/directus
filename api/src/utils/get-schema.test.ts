@@ -40,11 +40,16 @@ vi.mock('../services/relations.js', () => ({
 
 const SCHEMA: SchemaOverview = { collections: {}, relations: [] };
 
-const database = { select: () => ({ from: async () => [] }) } as unknown as Knex;
+const rows = { collections: [] as Record<string, unknown>[] };
+
+const database = {
+	select: () => ({ from: async (table: string) => (table === 'directus_collections' ? rows.collections : []) }),
+} as unknown as Knex;
 
 afterEach(() => {
 	vi.clearAllMocks();
 	inspector.overview = {};
+	rows.collections = [];
 });
 
 describe('getSchema', () => {
@@ -97,5 +102,19 @@ describe('getSchema', () => {
 		const schema = await getSchema({ database });
 
 		expect(Object.keys(schema.collections)).toEqual(['articles']);
+	});
+
+	test('marks collections with versioning enabled as versioned', async () => {
+		vi.mocked(runExclusive).mockImplementation(async (_key, fn) => ({ result: await fn(), leader: true }));
+
+		const table = { primary: 'id', columns: {} };
+
+		inspector.overview = { articles: table, authors: table };
+		rows.collections = [{ collection: 'articles', versioning: true }];
+
+		const schema = await getSchema({ database });
+
+		expect(schema.collections['articles']?.versioned).toBe(true);
+		expect(schema.collections['authors']?.versioned).toBe(false);
 	});
 });

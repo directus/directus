@@ -378,7 +378,6 @@ describe('Integration Tests', () => {
 				});
 
 				tracker.on.select('directus_fields').response([]);
-				tracker.on.select('directus_collections').response([]);
 				tracker.on.select('max').response([{ max: 1 }]);
 				// Mock any DDL queries
 				tracker.on.any(/alter table/i).response([]);
@@ -422,14 +421,20 @@ describe('Integration Tests', () => {
 			test.each(['version_type', 'version_ref_author'])(
 				'should reject reserved versioning field name "%s" in a versioned collection before altering the table',
 				async (fieldName) => {
+					const versionedSchema = new SchemaBuilder()
+						.collection('test_collection', (c) => {
+							c.field('id').integer().primary();
+						})
+						.options({ versioning: true })
+						.build();
+
 					const service = new FieldsService({
 						knex: db,
-						schema,
+						schema: versionedSchema,
 						accountability: null,
 					});
 
 					tracker.on.select('directus_fields').response([]);
-					tracker.on.select('directus_collections').response([{ collection: 'test_collection' }]);
 
 					const alterTableSpy = vi.fn();
 					db.schema.alterTable = alterTableSpy;
@@ -503,7 +508,6 @@ describe('Integration Tests', () => {
 				});
 
 				tracker.on.select('directus_fields').response([]);
-				tracker.on.select('directus_collections').response([]);
 				tracker.on.select('max').response([{ max: 1 }]);
 				// Mock any DDL queries
 				tracker.on.any(/alter table/i).response([]);
