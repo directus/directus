@@ -10,6 +10,7 @@ import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
  * passthrough — the schema is the source of truth; anything it can't represent is restored by an
  * extension (semantic tags, preserved attributes) or normalized away (see snapshots).
  */
+// svg and image map round-trips live in extensions/raw-html.test.ts: DOMPurify needs jsdom, and this file needs happy-dom
 function roundTrip(html: string): string {
 	// same comment ↔ element boundary as input-rich-text-html.vue, so page breaks round-trip identically
 	const editor = new Editor({ extensions: editorExtensions, content: decodePageBreaks(html) });

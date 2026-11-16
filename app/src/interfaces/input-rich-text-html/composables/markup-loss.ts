@@ -4,7 +4,9 @@ import {
 	type StyleParseRule,
 	type TagParseRule,
 } from '@tiptap/pm/model';
+import { RAW_HTML_NODE_NAMES } from '../extensions/raw-html';
 import { StyleTag } from '../extensions/style-tag';
+import { parseBody, removeDroppedWhitespace, sortAttributes } from './canonical-html';
 
 /**
  * What the schema drops from `input`, given `normalized` (the same HTML after a round trip). A
@@ -23,14 +25,19 @@ export function findMarkupLoss(input: string, normalized: string, schema: Schema
 	const rules = parseRules(schema);
 	// a schema with a StyleTag node keeps <style>, so its CSS is content, not markup to drop
 	const nonContent = schema.nodes[StyleTag.name] ? NON_CONTENT_TAGS.filter((tag) => tag !== 'style') : NON_CONTENT_TAGS;
-	const before = parseBody(input, nonContent);
-	const after = parseBody(normalized, nonContent);
+	const { body: before, keptRoots: keptBefore } = parseContent(input, nonContent, rules);
+	const { body: after, keptRoots: keptAfter } = parseContent(normalized, nonContent, rules);
 
-	const survivors = Array.from(after.querySelectorAll('*')).map((el) => describe(el as HTMLElement, rules));
+	const survivors = Array.from(after.querySelectorAll('*'))
+		.filter((el) => !isInside(el, keptAfter))
+		.map((el) => describe(el as HTMLElement, rules));
+
 	const survivingTypes = new Set(survivors.flatMap((s) => [s.type, ...s.marks]));
 	const lost: string[] = [];
 
 	for (const node of Array.from(before.querySelectorAll('*'))) {
+		if (isInside(node, keptBefore)) continue;
+
 		const el = node as HTMLElement;
 		const { type, attrs, marks } = describe(el, rules);
 
@@ -53,6 +60,12 @@ export function findMarkupLoss(input: string, normalized: string, schema: Schema
 		);
 
 		lost.push(openTag(el, missing.size > 0 ? missing : attrs));
+	}
+
+	const keptOutput = new Set(keptAfter.map((root) => sortAttributes(root.outerHTML)));
+
+	for (const root of keptBefore) {
+		if (!keptOutput.has(sortAttributes(root.outerHTML))) lost.push(openTag(root, describe(root, rules).attrs));
 	}
 
 	if (visibleText(before) !== visibleText(after)) lost.push('#text');
@@ -134,10 +147,31 @@ function parseRules(schema: Schema): Rules {
 	};
 }
 
-function parseBody(html: string, nonContent: string[]): HTMLElement {
-	const body = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html').body;
-	for (const el of Array.from(body.querySelectorAll(nonContent.join(',')))) el.remove();
-	return body;
+// a kept root (svg, map, form) is stored whole, so its descendants, non-content ones included, belong to it
+function parseContent(
+	html: string,
+	nonContent: string[],
+	rules: Rules,
+): { body: HTMLElement; keptRoots: HTMLElement[] } {
+	const body = parseBody(html);
+	const keptRoots: HTMLElement[] = [];
+
+	for (const el of Array.from(body.querySelectorAll<HTMLElement>('*'))) {
+		if (isInside(el, keptRoots)) continue;
+		if (RAW_HTML_NODE_NAMES.has(matchType(el, rules) ?? '')) keptRoots.push(el);
+	}
+
+	removeDroppedWhitespace(keptRoots);
+
+	for (const el of Array.from(body.querySelectorAll(nonContent.join(',')))) {
+		if (!isInside(el, keptRoots)) el.remove();
+	}
+
+	return { body, keptRoots };
+}
+
+function isInside(el: Element, roots: Element[]): boolean {
+	return roots.some((root) => root.contains(el));
 }
 
 // mirrors the parser's matchTag: first rule whose selector fits and whose getAttrs does not refuse
