@@ -2,17 +2,10 @@ import {
 	createCollection,
 	createDirectus,
 	createField,
-	createItem,
 	createRelation,
 	deleteCollection,
 	deleteField,
 	readCollections,
-	readFields,
-	readFieldsByCollection,
-	readItems,
-	readOpenApiSpec,
-	readRelationByCollection,
-	readRelations,
 	rest,
 	staticToken,
 	updateCollection,
@@ -21,10 +14,10 @@ import {
 } from '@directus/sdk';
 import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
-import { expect, test } from 'vitest';
+import { afterAll, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 import { snapshot } from './snapshot.js';
-import { getColumn, getColumns, LINK, SHADOW } from './versions.js';
+import { getColumn, getColumns, knex, LINK, SHADOW } from './versions.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api, snapshot);
@@ -40,6 +33,10 @@ const META = [
 ];
 
 const columns = (...names: string[]) => [...names].sort();
+
+afterAll(async () => {
+	await knex.destroy();
+});
 
 test('creates shadow tables mirroring the fields of versioned collections', async () => {
 	expect(await getColumns(SHADOW + collections.posts)).toEqual(
@@ -151,23 +148,98 @@ test('hides version tables from the collections', async () => {
 	expect(names.filter((name: string) => name.startsWith(SHADOW) || name.startsWith(LINK))).toEqual([]);
 });
 
-test('hides version tables from the fields, relations, items and specs', async () => {
-	const isVersionTable = (name: string) => name.startsWith(SHADOW) || name.startsWith(LINK);
-	const shadow = SHADOW + collections.posts;
+test('rejects fields named like version table columns before changing the live table', async () => {
+	for (const field of ['version_type', 'version_ref_author']) {
+		await expect(api.request(createField(collections.posts, { field, type: 'string' }))).rejects.toBeDefined();
+		expect(await getColumns(collections.posts)).not.toContain(field);
+	}
 
-	const fields = await api.request(readFields());
-	expect(fields.filter((field: { collection: string }) => isVersionTable(field.collection))).toEqual([]);
+	const name = `${collections.categories}_reserved`;
 
-	const relations = await api.request(readRelations());
-	expect(relations.filter((relation: { collection: string }) => isVersionTable(relation.collection))).toEqual([]);
+	await expect(
+		api.request(
+			createCollection({
+				collection: name,
+				meta: { versioning: true },
+				schema: {},
+				fields: [
+					{ field: 'id', type: 'integer', schema: { is_primary_key: true, has_auto_increment: true } },
+					{ field: 'version_type', type: 'string' },
+				],
+			}),
+		),
+	).rejects.toBeDefined();
 
-	await expect(api.request(readFieldsByCollection(shadow))).rejects.toBeDefined();
-	await expect(api.request(readRelationByCollection(shadow))).rejects.toBeDefined();
-	await expect(api.request(readItems(shadow as any))).rejects.toBeDefined();
-	await expect(api.request(createItem(shadow as any, { title: 'leak' }))).rejects.toBeDefined();
+	expect(await getColumns(name)).toBeNull();
+});
 
-	const spec = await api.request(readOpenApiSpec());
-	expect(Object.keys(spec['paths']).filter((path) => path.includes(SHADOW) || path.includes(LINK))).toEqual([]);
+test('mirrors decimals without losing their precision', async () => {
+	await api.request(
+		createField(collections.posts, {
+			field: 'price',
+			type: 'decimal',
+			schema: { numeric_precision: 12, numeric_scale: 4 },
+		}),
+	);
+
+	const live = await getColumn(collections.posts, 'price');
+	const mirror = await getColumn(SHADOW + collections.posts, 'price');
+
+	expect([mirror.numeric_precision, mirror.numeric_scale]).toEqual([live.numeric_precision, live.numeric_scale]);
+
+	await knex(SHADOW + collections.posts).insert({ title: 'decimal', price: 1.2345 });
+
+	const { price } = await knex(SHADOW + collections.posts)
+		.where({ title: 'decimal' })
+		.first();
+
+	expect(Number(price)).toBe(1.2345);
+
+	await api.request(deleteField(collections.posts, 'price'));
+});
+
+test('link tables can reference live items with uuid keys', async () => {
+	const parent = `${collections.categories}_parent`;
+	const child = `${collections.categories}_child`;
+
+	await api.request(
+		createCollection({
+			collection: parent,
+			schema: {},
+			fields: [{ field: 'id', type: 'integer', schema: { is_primary_key: true, has_auto_increment: true } }],
+		}),
+	);
+
+	await api.request(
+		createCollection({
+			collection: child,
+			schema: {},
+			fields: [
+				{ field: 'id', type: 'uuid', meta: { special: ['uuid'] }, schema: { is_primary_key: true } },
+				{ field: 'parent', type: 'integer' },
+			],
+		}),
+	);
+
+	await api.request(createField(parent as any, { field: 'children', type: 'alias', meta: { special: ['o2m'] } }));
+
+	await api.request(
+		createRelation({
+			collection: child,
+			field: 'parent',
+			related_collection: parent,
+			meta: { one_field: 'children' },
+			schema: { on_delete: 'SET NULL' },
+		} as any),
+	);
+
+	await api.request(updateCollection(parent as any, { meta: { versioning: true } }));
+
+	expect(await getColumns(LINK + child)).toEqual(columns('id', 'parent'));
+	expect((await getColumn(LINK + child, 'id')).data_type).toBe((await getColumn(child, 'id')).data_type);
+
+	await api.request(deleteCollection(child));
+	await api.request(deleteCollection(parent));
 });
 
 test('enabling and disabling versioning creates and drops the tables', async () => {

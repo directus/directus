@@ -55,7 +55,9 @@ export async function readVersion(
 }
 
 // Version tables aren't exposed through the API, so they are inspected in the database directly
-const inspector = createInspector(createKnex(env, options));
+export const knex = createKnex(env, options);
+
+const inspector = createInspector(knex);
 
 /**
  * Names of the columns of a table, or null if the table doesn't exist
