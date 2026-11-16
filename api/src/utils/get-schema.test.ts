@@ -11,6 +11,7 @@ vi.mock('@directus/env', async () => {
 	return mockUseEnv({
 		CACHE_SCHEMA: true,
 		CACHE_SCHEMA_SYNC_TIMEOUT: 10000,
+		DB_EXCLUDE_TABLES: [],
 	});
 });
 
@@ -25,8 +26,10 @@ vi.mock('../logger/index.js', () => ({
 	useLogger: () => ({ trace: vi.fn(), warn: vi.fn() }),
 }));
 
+const inspector = vi.hoisted(() => ({ overview: {} as Record<string, unknown> }));
+
 vi.mock('@directus/schema', () => ({
-	createInspector: () => ({ overview: async () => ({}) }),
+	createInspector: () => ({ overview: async () => inspector.overview }),
 }));
 
 vi.mock('../services/relations.js', () => ({
@@ -41,6 +44,7 @@ const database = { select: () => ({ from: async () => [] }) } as unknown as Knex
 
 afterEach(() => {
 	vi.clearAllMocks();
+	inspector.overview = {};
 });
 
 describe('getSchema', () => {
@@ -77,5 +81,21 @@ describe('getSchema', () => {
 
 		expect(runExclusive).toHaveBeenCalledOnce();
 		expect(setMemorySchemaCache).not.toHaveBeenCalled();
+	});
+
+	test('leaves out version tables', async () => {
+		vi.mocked(runExclusive).mockImplementation(async (_key, fn) => ({ result: await fn(), leader: true }));
+
+		const table = { primary: 'id', columns: {} };
+
+		inspector.overview = {
+			articles: table,
+			directus_shadow_articles: table,
+			directus_link_articles: table,
+		};
+
+		const schema = await getSchema({ database });
+
+		expect(Object.keys(schema.collections)).toEqual(['articles']);
 	});
 });

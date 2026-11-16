@@ -49,6 +49,7 @@ import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
 import { assertVersionFieldNames } from './version-tables/assert-field-names.js';
+import { isShadowTable } from './version-tables/constants.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
@@ -280,6 +281,8 @@ export class FieldsService {
 	}
 
 	async readOne(collection: string, field: string): Promise<Record<string, any>> {
+		if (isShadowTable(collection)) throw new ForbiddenError();
+
 		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
 				{
@@ -364,6 +367,8 @@ export class FieldsService {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
+
+		if (isShadowTable(collection)) throw new ForbiddenError();
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -505,6 +510,8 @@ export class FieldsService {
 	}
 
 	async updateField(collection: string, field: RawField, opts?: FieldMutationOptions): Promise<string> {
+		if (isShadowTable(collection)) throw new ForbiddenError();
+
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -696,6 +703,8 @@ export class FieldsService {
 	}
 
 	async deleteField(collection: string, field: string, opts?: MutationOptions): Promise<void> {
+		if (isShadowTable(collection)) throw new ForbiddenError();
+
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}

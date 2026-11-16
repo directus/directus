@@ -259,6 +259,13 @@ export async function sandboxes(
 	return { sandboxes, stop, restartApis };
 }
 
+/**
+ * Open a Knex connection to the database of an already running sandbox, like `sandbox.knex` does
+ */
+export function createKnex(env: Env, options: Options): Knex {
+	return createDatabase(env, createLogger(env, options));
+}
+
 export async function sandbox(database: Database, options?: DeepPartial<Options>): Promise<Sandbox> {
 	if (!databases.includes(database)) throw new Error('Invalid database provided');
 	const opts = await getOptions(options);

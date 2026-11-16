@@ -2,11 +2,17 @@ import {
 	createCollection,
 	createDirectus,
 	createField,
+	createItem,
 	createRelation,
 	deleteCollection,
 	deleteField,
 	readCollections,
-	readField,
+	readFields,
+	readFieldsByCollection,
+	readItems,
+	readOpenApiSpec,
+	readRelationByCollection,
+	readRelations,
 	rest,
 	staticToken,
 	updateCollection,
@@ -18,7 +24,7 @@ import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 import { snapshot } from './snapshot.js';
-import { getColumns, LINK, SHADOW } from './versions.js';
+import { getColumn, getColumns, LINK, SHADOW } from './versions.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api, snapshot);
@@ -36,7 +42,7 @@ const META = [
 const columns = (...names: string[]) => [...names].sort();
 
 test('creates shadow tables mirroring the fields of versioned collections', async () => {
-	expect(await getColumns(api, SHADOW + collections.posts)).toEqual(
+	expect(await getColumns(SHADOW + collections.posts)).toEqual(
 		columns(
 			...META,
 			'id',
@@ -53,13 +59,13 @@ test('creates shadow tables mirroring the fields of versioned collections', asyn
 		),
 	);
 
-	expect(await getColumns(api, SHADOW + collections.posts_blocks)).toEqual(
+	expect(await getColumns(SHADOW + collections.posts_blocks)).toEqual(
 		columns(...META, 'id', 'posts_id', 'item', 'collection', 'version_ref_posts_id', 'version_ref_item'),
 	);
 
-	expect(await getColumns(api, SHADOW + collections.authors)).toEqual(columns(...META, 'id', 'name'));
-	expect(await getColumns(api, SHADOW + collections.categories)).toBeNull();
-	expect(await getColumns(api, SHADOW + collections.languages)).toBeNull();
+	expect(await getColumns(SHADOW + collections.authors)).toEqual(columns(...META, 'id', 'name'));
+	expect(await getColumns(SHADOW + collections.categories)).toBeNull();
+	expect(await getColumns(SHADOW + collections.languages)).toBeNull();
 });
 
 test('removes constraints from mirrored fields', async () => {
@@ -71,9 +77,9 @@ test('removes constraints from mirrored fields', async () => {
 		}),
 	);
 
-	const field = await api.request(readField(SHADOW + collections.posts, 'subtitle'));
+	const column = await getColumn(SHADOW + collections.posts, 'subtitle');
 
-	expect(field.schema).toMatchObject({ is_nullable: true, default_value: null, is_unique: false, max_length: 50 });
+	expect(column).toMatchObject({ is_nullable: true, default_value: null, is_unique: false, max_length: 50 });
 });
 
 test('mirrors field updates and deletions', async () => {
@@ -81,24 +87,24 @@ test('mirrors field updates and deletions', async () => {
 	await api.request(createField(collections.posts, { field: 'summary', type: 'string', schema: { max_length: 50 } }));
 	await api.request(updateField(collections.posts, 'summary', { schema: { max_length: 100 } }));
 
-	expect((await api.request(readField(SHADOW + collections.posts, 'summary'))).schema?.max_length).toBe(100);
+	expect((await getColumn(SHADOW + collections.posts, 'summary')).max_length).toBe(100);
 
 	await api.request(deleteField(collections.posts, 'summary'));
 
-	expect(await getColumns(api, SHADOW + collections.posts)).not.toContain('summary');
+	expect(await getColumns(SHADOW + collections.posts)).not.toContain('summary');
 });
 
 test('creates link tables only for collections with an o2m from a versioned collection', async () => {
 	// posts only has m2o / a2o relations to versioned collections, without an o2m pointing back
-	expect(await getColumns(api, LINK + collections.posts)).toBeNull();
-	expect(await getColumns(api, LINK + collections.notes)).toEqual(columns('id', 'post_id'));
-	expect(await getColumns(api, LINK + collections.links)).toEqual(columns('id', 'post_id'));
-	expect(await getColumns(api, LINK + collections.posts_tags_junction)).toEqual(columns('id', 'posts_id', 'tags_id'));
-	expect(await getColumns(api, LINK + collections.posts_blocks)).toEqual(columns('id', 'posts_id', 'item'));
-	expect(await getColumns(api, LINK + collections.posts_translations)).toEqual(columns('id', 'posts_id'));
+	expect(await getColumns(LINK + collections.posts)).toBeNull();
+	expect(await getColumns(LINK + collections.notes)).toEqual(columns('id', 'post_id'));
+	expect(await getColumns(LINK + collections.links)).toEqual(columns('id', 'post_id'));
+	expect(await getColumns(LINK + collections.posts_tags_junction)).toEqual(columns('id', 'posts_id', 'tags_id'));
+	expect(await getColumns(LINK + collections.posts_blocks)).toEqual(columns('id', 'posts_id', 'item'));
+	expect(await getColumns(LINK + collections.posts_translations)).toEqual(columns('id', 'posts_id'));
 
-	expect(await getColumns(api, LINK + collections.authors)).toBeNull();
-	expect(await getColumns(api, LINK + collections.categories)).toBeNull();
+	expect(await getColumns(LINK + collections.authors)).toBeNull();
+	expect(await getColumns(LINK + collections.categories)).toBeNull();
 });
 
 test('mirrors relations that are added and removed', async () => {
@@ -114,14 +120,14 @@ test('mirrors relations that are added and removed', async () => {
 		}),
 	);
 
-	expect(await getColumns(api, SHADOW + collections.posts)).toContain('version_ref_editor');
-	expect(await getColumns(api, LINK + collections.posts)).toBeNull();
+	expect(await getColumns(SHADOW + collections.posts)).toContain('version_ref_editor');
+	expect(await getColumns(LINK + collections.posts)).toBeNull();
 
 	// Deleting the field removes its relation as well
 	await api.request(deleteField(collections.posts, 'editor'));
 
-	expect(await getColumns(api, SHADOW + collections.posts)).not.toContain('version_ref_editor');
-	expect(await getColumns(api, SHADOW + collections.posts)).not.toContain('editor');
+	expect(await getColumns(SHADOW + collections.posts)).not.toContain('version_ref_editor');
+	expect(await getColumns(SHADOW + collections.posts)).not.toContain('editor');
 });
 
 test('adding and removing an o2m creates and drops the link table', async () => {
@@ -131,11 +137,11 @@ test('adding and removing an o2m creates and drops the link table', async () => 
 
 	await api.request(updateRelation(collections.posts, 'author', { meta: { one_field: 'posts' } }));
 
-	expect(await getColumns(api, LINK + collections.posts)).toEqual(columns('id', 'author', 'parent', 'attachment'));
+	expect(await getColumns(LINK + collections.posts)).toEqual(columns('id', 'author', 'parent', 'attachment'));
 
 	await api.request(deleteField(collections.authors, 'posts'));
 
-	expect(await getColumns(api, LINK + collections.posts)).toBeNull();
+	expect(await getColumns(LINK + collections.posts)).toBeNull();
 });
 
 test('hides version tables from the collections', async () => {
@@ -145,17 +151,36 @@ test('hides version tables from the collections', async () => {
 	expect(names.filter((name: string) => name.startsWith(SHADOW) || name.startsWith(LINK))).toEqual([]);
 });
 
+test('hides version tables from the fields, relations, items and specs', async () => {
+	const isVersionTable = (name: string) => name.startsWith(SHADOW) || name.startsWith(LINK);
+	const shadow = SHADOW + collections.posts;
+
+	const fields = await api.request(readFields());
+	expect(fields.filter((field: { collection: string }) => isVersionTable(field.collection))).toEqual([]);
+
+	const relations = await api.request(readRelations());
+	expect(relations.filter((relation: { collection: string }) => isVersionTable(relation.collection))).toEqual([]);
+
+	await expect(api.request(readFieldsByCollection(shadow))).rejects.toBeDefined();
+	await expect(api.request(readRelationByCollection(shadow))).rejects.toBeDefined();
+	await expect(api.request(readItems(shadow as any))).rejects.toBeDefined();
+	await expect(api.request(createItem(shadow as any, { title: 'leak' }))).rejects.toBeDefined();
+
+	const spec = await api.request(readOpenApiSpec());
+	expect(Object.keys(spec['paths']).filter((path) => path.includes(SHADOW) || path.includes(LINK))).toEqual([]);
+});
+
 test('enabling and disabling versioning creates and drops the tables', async () => {
 	await api.request(updateCollection(collections.categories, { meta: { versioning: true } }));
 
-	expect(await getColumns(api, SHADOW + collections.categories)).toEqual(columns(...META, 'id', 'name'));
-	expect(await getColumns(api, SHADOW + collections.posts)).toContain('version_ref_category');
-	expect(await getColumns(api, LINK + collections.posts)).toBeNull();
+	expect(await getColumns(SHADOW + collections.categories)).toEqual(columns(...META, 'id', 'name'));
+	expect(await getColumns(SHADOW + collections.posts)).toContain('version_ref_category');
+	expect(await getColumns(LINK + collections.posts)).toBeNull();
 
 	await api.request(updateCollection(collections.categories, { meta: { versioning: false } }));
 
-	expect(await getColumns(api, SHADOW + collections.categories)).toBeNull();
-	expect(await getColumns(api, SHADOW + collections.posts)).not.toContain('version_ref_category');
+	expect(await getColumns(SHADOW + collections.categories)).toBeNull();
+	expect(await getColumns(SHADOW + collections.posts)).not.toContain('version_ref_category');
 });
 
 test('deleting a versioned collection drops its version tables', async () => {
@@ -170,19 +195,19 @@ test('deleting a versioned collection drops its version tables', async () => {
 		}),
 	);
 
-	expect(await getColumns(api, SHADOW + name)).toEqual(columns(...META, 'id'));
+	expect(await getColumns(SHADOW + name)).toEqual(columns(...META, 'id'));
 
 	await api.request(deleteCollection(name));
 
-	expect(await getColumns(api, SHADOW + name)).toBeNull();
+	expect(await getColumns(SHADOW + name)).toBeNull();
 });
 
 test('disabling versioning on a related collection updates the link tables', async () => {
 	await api.request(updateCollection(collections.posts, { meta: { versioning: false } }));
 
-	expect(await getColumns(api, SHADOW + collections.posts)).toBeNull();
-	expect(await getColumns(api, LINK + collections.notes)).toBeNull();
+	expect(await getColumns(SHADOW + collections.posts)).toBeNull();
+	expect(await getColumns(LINK + collections.notes)).toBeNull();
 	// The junction's only o2m is from posts, so its live items can no longer belong to a version
-	expect(await getColumns(api, LINK + collections.posts_tags_junction)).toBeNull();
-	expect(await getColumns(api, SHADOW + collections.posts_tags_junction)).not.toContain('version_ref_posts_id');
+	expect(await getColumns(LINK + collections.posts_tags_junction)).toBeNull();
+	expect(await getColumns(SHADOW + collections.posts_tags_junction)).not.toContain('version_ref_posts_id');
 });

@@ -779,9 +779,6 @@ export class CollectionsService {
 					}
 
 					const relations = this.schema.relations.filter((relation) => {
-						// Version tables have already been cleaned up above
-						if (isShadowTable(relation.collection)) return false;
-
 						return relation.collection === collectionKey || relation.related_collection === collectionKey;
 					});
 

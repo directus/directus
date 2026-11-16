@@ -522,6 +522,19 @@ describe('Integration Tests', () => {
 			});
 		});
 
+		describe('version tables', () => {
+			const service = () => new FieldsService({ knex: db, schema, accountability: null });
+
+			test('should reject reading and changing fields of version tables', async () => {
+				const table = 'directus_shadow_test_collection';
+
+				await expect(service().readOne(table, 'id')).rejects.toThrow(ForbiddenError);
+				await expect(service().createField(table, { field: 'x', type: 'string' })).rejects.toThrow(ForbiddenError);
+				await expect(service().updateField(table, { field: 'id', type: 'integer' })).rejects.toThrow(ForbiddenError);
+				await expect(service().deleteField(table, 'id')).rejects.toThrow(ForbiddenError);
+			});
+		});
+
 		describe('updateField', () => {
 			beforeEach(() => {
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);

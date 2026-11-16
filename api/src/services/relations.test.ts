@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import type { ForeignKey } from '@directus/schema';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { RelationMeta } from '@directus/types';
@@ -82,6 +83,35 @@ describe('Integration Tests', () => {
 	});
 
 	describe('Services / Relations', () => {
+		describe('version tables', () => {
+			const shadowForeignKey = {
+				table: 'directus_shadow_articles_authors',
+				column: 'authors_id',
+				foreign_key_table: 'authors',
+				foreign_key_column: 'id',
+				constraint_name: 'directus_shadow_articles_authors_authors_id_foreign',
+				on_update: 'NO ACTION',
+				on_delete: 'SET NULL',
+			} as ForeignKey;
+
+			test('readAll should leave out the foreign keys of version tables', async () => {
+				const service = new RelationsService({ knex: db, schema: buildSchema() });
+
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([]);
+				vi.spyOn(service, 'foreignKeys').mockResolvedValue([shadowForeignKey]);
+
+				const relations = await service.readAll();
+
+				expect(relations.map((relation) => relation.collection)).not.toContain(shadowForeignKey.table);
+			});
+
+			test('readOne should reject version tables', async () => {
+				const service = new RelationsService({ knex: db, schema: buildSchema() });
+
+				await expect(service.readOne(shadowForeignKey.table, 'authors_id')).rejects.toThrow(ForbiddenError);
+			});
+		});
+
 		describe('updateOne', () => {
 			let schema: ReturnType<typeof buildSchema>;
 			let foreignKey: { onDelete: ReturnType<typeof vi.fn>; onUpdate: ReturnType<typeof vi.fn> };
