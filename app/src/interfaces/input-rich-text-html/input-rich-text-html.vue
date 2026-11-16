@@ -61,6 +61,8 @@ const props = withDefaults(
 		keepWrapperElements?: boolean;
 		/** Keep `<form>` and loose form controls as non-editable blocks; see extensions/raw-html.ts. */
 		keepFormElements?: boolean;
+		/** Keep HTML comments from stored content as hidden atoms; see extensions/html-comments.ts. */
+		keepHtmlComments?: boolean;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -108,6 +110,7 @@ const fieldSchema = buildFieldSchema({
 	noContainerParagraphs: props.noContainerParagraphs,
 	keepWrapperElements: props.keepWrapperElements,
 	keepFormElements: props.keepFormElements,
+	keepHtmlComments: props.keepHtmlComments,
 	comparisonMode: props.comparisonMode,
 });
 
@@ -382,6 +385,7 @@ watch(
 
 const fullscreen = ref(false);
 const visualaid = ref(false);
+const showHtmlComments = ref(false);
 
 onKeyStroke('Escape', () => {
 	if (fullscreen.value) fullscreen.value = false;
@@ -401,7 +405,13 @@ onKeyStroke('Escape', () => {
 	</VNotice>
 	<div
 		class="wysiwyg"
-		:class="{ disabled, 'non-editable': nonEditable || comparisonMode, fullscreen, visualaid }"
+		:class="{
+			disabled,
+			'non-editable': nonEditable || comparisonMode,
+			fullscreen,
+			visualaid,
+			'show-html-comments': showHtmlComments,
+		}"
 		:style="{ '--editor-font-family': fontFamily, '--page-break-label': pageBreakLabel }"
 	>
 		<Toolbar
@@ -414,8 +424,11 @@ onKeyStroke('Escape', () => {
 			:disabled="disabled || normalizationLocked"
 			:fullscreen="fullscreen"
 			:visualaid="visualaid"
+			:html-comments="keepHtmlComments"
+			:show-html-comments="showHtmlComments"
 			@toggle-fullscreen="fullscreen = !fullscreen"
 			@toggle-visualaid="visualaid = !visualaid"
+			@toggle-html-comments="showHtmlComments = !showHtmlComments"
 			@open-image="openImageDrawer"
 			@open-media="openMediaDrawer"
 			@open-link="openLinkDrawer"
@@ -733,7 +746,7 @@ onKeyStroke('Escape', () => {
 	// `.range-selected` (RangeSelectedAtoms) covers selections that merely span the leaf, which
 	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image.
 	// A linked image renders as `<a><img></a>`, so the class lands on the anchor, not the img
-	:is(img, hr, .page-break, .style-tag, .raw-html):is(.ProseMirror-selectednode, .range-selected),
+	:is(img, hr, .page-break, .style-tag, .raw-html, .html-comment):is(.ProseMirror-selectednode, .range-selected),
 	a:is(.ProseMirror-selectednode, .range-selected) > img {
 		outline: 2px solid var(--theme--primary);
 	}
@@ -782,6 +795,27 @@ onKeyStroke('Escape', () => {
 			color: var(--theme--foreground-subdued);
 			white-space: pre-wrap;
 		}
+	}
+
+	.html-comment {
+		display: inline-block;
+		max-inline-size: 100%;
+		overflow: hidden;
+		padding-inline: 0.375em;
+		border-radius: var(--theme--border-radius);
+		background-color: var(--theme--background-normal);
+		color: var(--theme--foreground-subdued);
+		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		font-size: 0.6875rem;
+		text-overflow: ellipsis;
+		vertical-align: middle;
+		white-space: nowrap;
+		user-select: none;
+	}
+
+	div.html-comment {
+		display: block;
+		inline-size: fit-content;
 	}
 
 	// the app base styles make every label a block
@@ -904,6 +938,11 @@ onKeyStroke('Escape', () => {
 		padding: 0.125rem;
 		border-radius: var(--theme--border-radius);
 	}
+}
+
+/* Comments are hidden until the toolbar's Show HTML Comments toggle is on. */
+.wysiwyg:not(.show-html-comments) :deep(.html-comment) {
+	display: none;
 }
 
 /* `visualaid` toggle: dashed guides so borderless tables stay visible while editing. */

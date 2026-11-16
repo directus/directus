@@ -1,5 +1,5 @@
 import { type AnyExtension, Extension } from '@tiptap/core';
-import { DOMSerializer, type Fragment, type Schema } from '@tiptap/pm/model';
+import { addSerializerHook, type SerializerHook } from './serializer-hooks';
 
 const CONTAINER_TAGS = ['li', 'blockquote', 'td', 'th'];
 
@@ -8,33 +8,19 @@ function toNodeNames(tags: string[]): ReadonlySet<string> {
 }
 
 // `renderHTML` must return a real element, so a paragraph cannot drop its own wrapper there
-class NoContainerParagraphSerializer extends DOMSerializer {
-	constructor(
-		schema: Schema,
-		private readonly containerTags: ReadonlySet<string>,
-	) {
-		super(DOMSerializer.nodesFromSchema(schema), DOMSerializer.marksFromSchema(schema));
-	}
-
-	override serializeFragment(
-		fragment: Fragment,
-		options?: { document?: Document },
-		target?: HTMLElement | DocumentFragment,
-	): HTMLElement | DocumentFragment {
-		const dom = super.serializeFragment(fragment, options, target);
+function unwrapFirstParagraph(containerTags: ReadonlySet<string>): SerializerHook {
+	return (_dom, fragment, target) => {
 		const first = fragment.firstChild;
 
-		if (!target || !this.containerTags.has(target.nodeName)) return dom;
-		if (first?.type.name !== 'paragraph' || first.attrs['keepWrapper']) return dom;
+		if (!target || !containerTags.has(target.nodeName)) return;
+		if (first?.type.name !== 'paragraph' || first.attrs['keepWrapper']) return;
 		// with no `<p>`, an empty first paragraph disappears on reload
-		if (first.content.size === 0 && fragment.childCount > 1) return dom;
+		if (first.content.size === 0 && fragment.childCount > 1) return;
 
 		const paragraph = target.firstChild as Element;
 		// unwrapping would lose the paragraph's alignment, class, or other attributes
 		if (paragraph.attributes.length === 0) paragraph.replaceWith(...paragraph.childNodes);
-
-		return dom;
-	}
+	};
 }
 
 export interface NoContainerParagraphsOptions {
@@ -43,7 +29,6 @@ export interface NoContainerParagraphsOptions {
 
 /**
  * Never adds `<p>` as the first child of the `tags` elements. A stored `<p>` there stays.
- * Only one serializer can be seeded, so every option that needs this shares one configured instance.
  */
 export const NoContainerParagraphs = Extension.create<NoContainerParagraphsOptions>({
 	name: 'noContainerParagraphs',
@@ -72,10 +57,7 @@ export const NoContainerParagraphs = Extension.create<NoContainerParagraphsOptio
 	},
 
 	onBeforeCreate() {
-		this.editor.schema.cached['domSerializer'] = new NoContainerParagraphSerializer(
-			this.editor.schema,
-			toNodeNames(this.options.tags),
-		);
+		addSerializerHook(this.editor.schema, unwrapFirstParagraph(toNodeNames(this.options.tags)));
 	},
 });
 

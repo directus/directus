@@ -157,6 +157,18 @@ describe('normalization warning wiring', () => {
 		expect(editor.isEditable).toBe(false);
 	});
 
+	test('a stored HTML comment mounts the editor read-only', async () => {
+		const { editor } = await mountWithValue('<p>a</p><!-- note -->');
+
+		expect(editor.isEditable).toBe(false);
+	});
+
+	test('a stored HTML comment stays editable with keepHtmlComments', async () => {
+		const { editor } = await mountWithValue('<p>a</p><!-- note -->', { keepHtmlComments: true });
+
+		expect(editor.isEditable).toBe(true);
+	});
+
 	test('a list item without <p> stays editable with noContainerParagraphs', async () => {
 		const { editor } = await mountWithValue('<ul><li>a</li></ul>', { noContainerParagraphs: true });
 

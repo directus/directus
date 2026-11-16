@@ -440,6 +440,38 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'keepHtmlComments',
+				name: '$t:interfaces.input-rich-text-html.keep_html_comments',
+				type: 'boolean',
+				meta: {
+					width: 'full',
+					interface: 'boolean',
+					note: '$t:interfaces.input-rich-text-html.keep_html_comments_note',
+					options: {
+						label: '$t:interfaces.input-rich-text-html.keep_html_comments_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'keepHtmlCommentsWarning',
+				type: 'alias',
+				meta: {
+					width: 'full',
+					interface: 'presentation-notice',
+					special: ['alias', 'no-data'],
+					options: {
+						color: 'warning',
+						icon: 'warning',
+						text: '$t:interfaces.input-rich-text-html.keep_html_comments_warning',
+					},
+					hidden: true,
+					conditions: [{ rule: { keepHtmlComments: { _eq: true } }, hidden: false }],
+				},
+			},
+			{
 				field: 'customFormats',
 				name: '$t:interfaces.input-rich-text-html.custom_formats',
 				type: 'json',

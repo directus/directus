@@ -7,6 +7,7 @@ import { Direction } from './direction';
 import { DropCursor } from './drop-cursor';
 import { figureExtensions } from './figure';
 import { FormLabel } from './form-label';
+import { buildHtmlCommentSchema } from './html-comments';
 import { CustomImage } from './image';
 import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
@@ -98,6 +99,8 @@ export interface FieldSchemaOptions {
 	keepWrapperElements?: unknown;
 	/** Field `keepFormElements` option: keep `<form>` and loose form controls as non-editable blocks, and loose `<label>` as a mark. */
 	keepFormElements?: unknown;
+	/** Field `keepHtmlComments` option: keep HTML comments from stored content. */
+	keepHtmlComments?: unknown;
 	comparisonMode?: boolean;
 }
 
@@ -114,7 +117,7 @@ export interface FieldSchema {
 
 /**
  * The one place a field's schema additions are assembled: the richtext extensions the field opted
- * into, its custom formats, its link protocols, its inline styles, its legacy emphasis tags, its wrapper elements, its form elements, and the comparison-diff mark in
+ * into, its custom formats, its link protocols, its inline styles, its legacy emphasis tags, its wrapper elements, its form elements, its HTML comments, and the comparison-diff mark in
  * comparison mode. The live editor, the save-time round-trip check, the source-code drawer and the
  * comparison view all build from this result. A site that composed the list by hand could miss a contribution and report its markup as
  * dropped even though the editor renders it.
@@ -126,6 +129,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 	const legacyEmphasis = buildLegacyEmphasisSchema(options.keepLegacyEmphasisTags);
 	const wrappers = buildWrapperElementSchema(options.keepWrapperElements);
 	const containerParagraphs = buildContainerParagraphSchema(options.noContainerParagraphs, wrappers.tags);
+	const htmlComments = buildHtmlCommentSchema(options.keepHtmlComments);
 
 	const rawHtmlOptions = {
 		keepInlineStyles: Boolean(options.keepInlineStyles),
@@ -153,6 +157,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			...legacyEmphasis.extensions,
 			...wrappers.extensions,
 			...containerParagraphs.extensions,
+			...htmlComments.extensions,
 			...(options.comparisonMode ? [ComparisonDiff] : []),
 		],
 		key: [
@@ -164,6 +169,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			containerParagraphs.key,
 			wrappers.key,
 			rawHtmlOptions.formElements ? 'form-elements' : '',
+			htmlComments.key,
 			contributed.map((config) => config.key).join('\u0000'),
 		].join('\u0000'),
 		formats: customFormats.formats,

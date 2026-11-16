@@ -319,6 +319,7 @@ export function useComparison(options: UseComparisonOptions) {
 					noContainerParagraphs: field.meta?.options?.['noContainerParagraphs'],
 					keepWrapperElements: field.meta?.options?.['keepWrapperElements'],
 					keepFormElements: field.meta?.options?.['keepFormElements'],
+					keepHtmlComments: field.meta?.options?.['keepHtmlComments'],
 					comparisonMode: true,
 				});
 
