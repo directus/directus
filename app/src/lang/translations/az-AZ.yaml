@@ -234,6 +234,8 @@ interfaces:
     fill_width: Tam en
   presentation-links:
     primary: Əsas
+  input-rich-text-html:
+    extensions: Əlavələr
   input-block-editor:
     tools_options:
       table: Cədvəl

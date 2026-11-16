@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { DEFAULT_ALLOWED_MODELS, type StandardProviderType } from '@directus/ai';
 import { useCollection, useShortcut } from '@directus/composables';
 import type { Field } from '@directus/types';
-import { clone } from 'lodash-es';
+import { clone, isEqual } from 'lodash-es';
 import { computed, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import { getMcpSettingsField } from './mcp-settings';
@@ -22,6 +24,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 
+const { t } = useI18n();
 const router = useRouter();
 
 const settingsStore = useSettingsStore();
@@ -42,12 +45,49 @@ const aiTranslationInputs = new Set([
 	'ai_translation_style_guide',
 ]);
 
+const allowedModelsFields = {
+	ai_openai_allowed_models: 'openai',
+	ai_anthropic_allowed_models: 'anthropic',
+	ai_google_allowed_models: 'google',
+} as const satisfies Record<string, StandardProviderType>;
+
+const allowedModelsFieldKeys = Object.keys(allowedModelsFields) as (keyof typeof allowedModelsFields)[];
+
 const { fields: allFields } = useCollection('directus_settings');
 
-const initialValues = ref(clone(settingsStore.settings));
+const initialValues = ref(getInitialValues());
 
 const aiEdits = ref<Record<string, any> | null>(null);
 const mcpEdits = ref<Record<string, any> | null>(null);
+
+// A cleared allowed models field is saved as null but displays the defaults it falls back to
+const aiFormEdits = computed({
+	get() {
+		if (!aiEdits.value) return aiEdits.value;
+
+		const edits = { ...aiEdits.value };
+
+		for (const field of allowedModelsFieldKeys) {
+			if (edits[field] === null) edits[field] = DEFAULT_ALLOWED_MODELS[allowedModelsFields[field]];
+		}
+
+		return edits;
+	},
+	set(edits) {
+		if (edits) {
+			for (const field of allowedModelsFieldKeys) {
+				if (
+					aiEdits.value?.[field] === null &&
+					isEqual(edits[field], DEFAULT_ALLOWED_MODELS[allowedModelsFields[field]])
+				) {
+					edits[field] = null;
+				}
+			}
+		}
+
+		aiEdits.value = edits;
+	},
+});
 
 const effectiveAiSettings = computed(() => ({ ...(settingsStore.settings ?? {}), ...(aiEdits.value ?? {}) }));
 
@@ -82,6 +122,10 @@ const aiFields = computed(() =>
 						},
 					},
 				} as Field;
+			}
+
+			if (isAllowedModelsField(field.field) && effectiveAiSettings.value[field.field] === null) {
+				return { ...field, meta: { ...field.meta, note: t('ai_allowed_models_default_note') } } as Field;
 			}
 
 			if (licenseStore.aiTranslationsEnabled === false && aiTranslationInputs.has(field.field)) {
@@ -123,7 +167,23 @@ async function save() {
 	aiEdits.value = null;
 	mcpEdits.value = null;
 	saving.value = false;
-	initialValues.value = clone(settingsStore.settings);
+	initialValues.value = getInitialValues();
+}
+
+function isAllowedModelsField(field: string): field is keyof typeof allowedModelsFields {
+	return field in allowedModelsFields;
+}
+
+// Show the code defaults as selected while a provider's allowed models are null, without saving them
+function getInitialValues() {
+	const values = clone(settingsStore.settings);
+	if (!values) return values;
+
+	for (const field of allowedModelsFieldKeys) {
+		values[field] ??= DEFAULT_ALLOWED_MODELS[allowedModelsFields[field]];
+	}
+
+	return values;
 }
 
 function discardAndLeave() {
@@ -156,7 +216,7 @@ function discardAndLeave() {
 				{{ $t('ai_disabled_by_env') }}
 			</VNotice>
 			<VForm
-				v-model="aiEdits"
+				v-model="aiFormEdits"
 				:initial-values="initialValues"
 				:fields="aiFields"
 				:primary-key="1"

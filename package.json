@@ -22,7 +22,6 @@
 		"globals": "catalog:",
 		"postcss-html": "catalog:",
 		"prettier": "catalog:",
-		"rimraf": "catalog:",
 		"stylelint": "catalog:",
 		"stylelint-config-standard": "catalog:",
 		"stylelint-config-standard-scss": "catalog:",

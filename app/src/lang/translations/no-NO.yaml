@@ -1512,6 +1512,8 @@ interfaces:
     user: Bruker
     modes:
       dropdown: Rullegardinmeny
+  input-rich-text-html:
+    extensions: Utvidelser
   input-block-editor:
     tools_options:
       embed: Embed

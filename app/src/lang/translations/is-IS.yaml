@@ -545,6 +545,8 @@ interfaces:
     modes:
       auto: Sjálfvirkt
       dropdown: Fellilisti
+  input-rich-text-html:
+    extensions: Viðbætur
   input-block-editor:
     tools_options:
       header: Haus

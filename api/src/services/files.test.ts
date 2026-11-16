@@ -1,5 +1,4 @@
 import { PassThrough, Readable } from 'node:stream';
-import { useEnv } from '@directus/env';
 import { ForbiddenError, InternalServerError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { Driver, StorageManager } from '@directus/storage';
 import { afterEach, beforeEach, describe, expect, it, type MockInstance, test, vi } from 'vitest';
@@ -17,8 +16,8 @@ vi.mock('./items.js', async () => {
 const mockEnvOverrides = vi.hoisted(
 	() =>
 		({
-			FILES_MIME_TYPE_ALLOW_LIST: '*/*',
-			STORAGE_LOCATIONS: 'local',
+			FILES_MIME_TYPE_ALLOW_LIST: ['*/*'],
+			STORAGE_LOCATIONS: ['local'],
 		}) as Record<string, unknown>,
 );
 
@@ -52,7 +51,6 @@ describe('Service / Files', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		vi.resetModules();
-		vi.mocked(useEnv).mockReset();
 	});
 
 	afterEach(() => {
@@ -284,7 +282,7 @@ describe('Service / Files', () => {
 
 		describe('storage default behavior', () => {
 			it('should default to the first STORAGE_LOCATIONS when storage is not provided', async () => {
-				mockEnvOverrides['STORAGE_LOCATIONS'] = 'local,s3';
+				mockEnvOverrides['STORAGE_LOCATIONS'] = ['local', 's3'];
 
 				tracker.on
 					.select(
@@ -305,7 +303,7 @@ describe('Service / Files', () => {
 			});
 
 			it('should use the provided storage when explicitly set', async () => {
-				mockEnvOverrides['STORAGE_LOCATIONS'] = 'local,s3';
+				mockEnvOverrides['STORAGE_LOCATIONS'] = ['local', 's3'];
 
 				tracker.on
 					.select(
@@ -327,7 +325,7 @@ describe('Service / Files', () => {
 			});
 
 			it('should preserve the existing file storage on re-upload without storage', async () => {
-				mockEnvOverrides['STORAGE_LOCATIONS'] = 'local,s3';
+				mockEnvOverrides['STORAGE_LOCATIONS'] = ['local', 's3'];
 
 				tracker.on
 					.select(
@@ -352,7 +350,7 @@ describe('Service / Files', () => {
 			});
 
 			it('should override the existing file storage when explicitly provided', async () => {
-				mockEnvOverrides['STORAGE_LOCATIONS'] = 'local,s3';
+				mockEnvOverrides['STORAGE_LOCATIONS'] = ['local', 's3'];
 
 				tracker.on
 					.select(
@@ -379,7 +377,7 @@ describe('Service / Files', () => {
 
 			describe('storage path validation', () => {
 				const extensionsEnv = {
-					STORAGE_LOCATIONS: 'local,extstore',
+					STORAGE_LOCATIONS: ['local', 'extstore'],
 					STORAGE_EXTSTORE_DRIVER: 'local',
 					STORAGE_EXTSTORE_ROOT: './extstore',
 					EXTENSIONS_LOCATION: 'extstore',
@@ -590,10 +588,7 @@ describe('Service / Files', () => {
 		});
 
 		test('should delete original file when remote file exists and FILES_DELETE_ORIGINAL_ON_MOVE is true', async () => {
-			vi.mocked(useEnv).mockReturnValue({
-				STORAGE_LOCATIONS: 'local',
-				FILES_DELETE_ORIGINAL_ON_MOVE: 'true',
-			});
+			mockEnvOverrides['FILES_DELETE_ORIGINAL_ON_MOVE'] = true;
 
 			const { FilesService } = await import('./files.js');
 
@@ -625,10 +620,7 @@ describe('Service / Files', () => {
 		});
 
 		test('should not delete original file when remote file exists and FILES_DELETE_ORIGINAL_ON_MOVE is false', async () => {
-			vi.mocked(useEnv).mockReturnValue({
-				STORAGE_LOCATIONS: 'local',
-				FILES_DELETE_ORIGINAL_ON_MOVE: 'false',
-			});
+			mockEnvOverrides['FILES_DELETE_ORIGINAL_ON_MOVE'] = false;
 
 			const { FilesService } = await import('./files.js');
 
@@ -743,7 +735,7 @@ describe('Service / Files', () => {
 
 		describe('storage path validation', () => {
 			const extensionsEnv = {
-				STORAGE_LOCATIONS: 'local,extstore',
+				STORAGE_LOCATIONS: ['local', 'extstore'],
 				STORAGE_EXTSTORE_DRIVER: 'local',
 				STORAGE_EXTSTORE_ROOT: './extstore',
 				EXTENSIONS_LOCATION: 'extstore',
@@ -935,8 +927,8 @@ describe('Service / Files', () => {
 		let mockAxiosGet: ReturnType<typeof vi.fn>;
 
 		beforeEach(() => {
-			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = '*/*';
-			mockEnvOverrides['STORAGE_LOCATIONS'] = 'local';
+			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = ['*/*'];
+			mockEnvOverrides['STORAGE_LOCATIONS'] = ['local'];
 
 			service = new FilesService({
 				knex: db,
@@ -955,7 +947,7 @@ describe('Service / Files', () => {
 		});
 
 		test('throws InvalidPayloadError when MIME type is blocked by the global allow list', async () => {
-			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'image/*';
+			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = ['image/*'];
 
 			mockAxiosGet.mockResolvedValue({
 				headers: { 'content-type': 'application/pdf' },
@@ -968,7 +960,7 @@ describe('Service / Files', () => {
 		});
 
 		test('succeeds when MIME type is permitted by the global allow list', async () => {
-			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'image/*';
+			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = ['image/*'];
 
 			mockAxiosGet.mockResolvedValue({
 				headers: { 'content-type': 'image/jpeg' },
@@ -1023,7 +1015,7 @@ describe('Service / Files', () => {
 		 * import is rejected, so it has to be destroyed or the connection is held for good.
 		 */
 		test('destroys the response body when the MIME type is blocked by the global allow list', async () => {
-			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'image/*';
+			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = ['image/*'];
 
 			const body = new PassThrough();
 
@@ -1092,7 +1084,7 @@ describe('Service / Files', () => {
 		});
 
 		test('strips content-type parameters before checking MIME type', async () => {
-			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'image/*';
+			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = ['image/*'];
 
 			mockAxiosGet.mockResolvedValue({
 				headers: { 'content-type': 'image/jpeg; charset=utf-8' },
@@ -1105,7 +1097,7 @@ describe('Service / Files', () => {
 		});
 
 		test('falls back to application/octet-stream when the content-type header is absent', async () => {
-			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'application/octet-stream';
+			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = ['application/octet-stream'];
 
 			mockAxiosGet.mockResolvedValue({
 				headers: {},

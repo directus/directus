@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useMediaQuery } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { computed, defineAsyncComponent } from 'vue';
 import VImage from '@/components/v-image.vue';
@@ -25,6 +26,9 @@ const { info } = storeToRefs(serverStore);
 const hasCustomBackground = computed(() => {
 	return !!info.value?.project?.public_background;
 });
+
+// Matches the `.art` breakpoint below. CSS alone would still download and run the shader while hidden.
+const artVisible = useMediaQuery('(width >= 28.125rem)');
 
 const customBackgroundIsVideo = computed(() => info.value?.project?.public_background?.type?.startsWith('video/'));
 const customBackgroundUrl = computed(() => getAssetUrl(info.value?.project?.public_background?.id ?? ''));
@@ -86,9 +90,9 @@ const logoURL = computed<string | null>(() => {
 			</div>
 		</div>
 		<div class="art" :style="artStyles">
-			<ShaderBackground v-if="!hasCustomBackground" :project-color="info?.project?.project_color" />
+			<ShaderBackground v-if="!hasCustomBackground && artVisible" :project-color="info?.project?.project_color" />
 
-			<video v-else-if="customBackgroundIsVideo" :src="customBackgroundUrl" autoplay muted loop />
+			<video v-else-if="customBackgroundIsVideo && artVisible" :src="customBackgroundUrl" autoplay muted loop />
 
 			<Transition name="scale">
 				<VImage v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="info?.project?.project_name" />

@@ -23,6 +23,14 @@ import { localizedFormat } from '@/utils/localized-format';
 
 export const GRACE_DANGER_THRESHOLD_DAYS = 3;
 
+const WARNING_REASONS = ['invalid_key', 'activation_limit', 'binding_mismatch', 'unavailable'] as const;
+
+export type LicenseWarning = {
+	reason: (typeof WARNING_REASONS)[number] | 'generic';
+	severity: 'warning' | 'danger';
+	daysRemaining: number;
+};
+
 export type LicenseBoundary = {
 	type: 'renewal' | 'expiration';
 	timestamp: number;
@@ -32,6 +40,10 @@ type LicenseLimit = {
 	remaining: number | null;
 	hasRemaining: boolean;
 };
+
+function daysUntil(date: Date): number {
+	return Math.max(0, Math.ceil((date.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+}
 
 export const useLicenseStore = defineStore('licenseStore', () => {
 	const info = ref<ReadLicenseOutput | null>(null);
@@ -119,11 +131,30 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		graceDeadline.value ? localizedFormat(graceDeadline.value, String(i18n.global.t('date-fns_date_short'))) : '',
 	);
 
-	const gracePeriodDaysRemaining = computed<number | null>(() => {
-		if (!graceDeadline.value) return null;
-		const nowSec = Date.now() / 1000;
-		return Math.max(0, Math.ceil((graceDeadline.value.getTime() / 1000 - nowSec) / (60 * 60 * 24)));
+	const gracePeriodDaysRemaining = computed<number | null>(() =>
+		graceDeadline.value ? daysUntil(graceDeadline.value) : null,
+	);
+
+	const licenseWarning = computed<LicenseWarning | null>(() => {
+		if (warningReason.value === null || tokenExpiresAt.value === null) return null;
+
+		const reason = (WARNING_REASONS as readonly string[]).includes(warningReason.value)
+			? (warningReason.value as LicenseWarning['reason'])
+			: 'generic';
+
+		return {
+			reason,
+			// The licensing service being unreachable is usually transient
+			severity: reason === 'unavailable' ? 'warning' : 'danger',
+			daysRemaining: daysUntil(tokenExpiresAt.value),
+		};
 	});
+
+	const hasPinnedNotice = computed(
+		() =>
+			!isLocked.value &&
+			(licenseWarning.value !== null || gracePeriodDaysRemaining.value !== null || isCoreGrace.value),
+	);
 
 	function isEntitlementEnabled(key: string) {
 		const ent = info.value?.entitlements[key];
@@ -258,6 +289,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		downgradeReason,
 		warningReason,
 		tokenExpiresAt,
+		licenseWarning,
+		hasPinnedNotice,
 		customPermissionRulesEnabled,
 		isLicensed,
 		customLLMEnabled,

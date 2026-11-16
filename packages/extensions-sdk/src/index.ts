@@ -6,6 +6,7 @@ export {
 	useFilterFields,
 	useItems,
 	useLayout,
+	useRichTextEditable,
 	useStores,
 	useSync,
 } from '@directus/composables';
@@ -19,6 +20,17 @@ export {
 	defineOperationApi,
 	defineOperationApp,
 	definePanel,
+	defineRichText,
 } from '@directus/extensions';
 export { defineTheme } from '@directus/themes';
 export { getFieldsFromTemplate, getRelationType } from '@directus/utils';
+export type {
+	RichTextBubbleMenu,
+	RichTextCommandButton,
+	RichTextConfig,
+	RichTextMenuButton,
+	RichTextMenuItem,
+	RichTextOptionValues,
+	RichTextPerField,
+	RichTextToolbarButton,
+} from '@directus/extensions';

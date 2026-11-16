@@ -498,6 +498,8 @@ interfaces:
     icon: Εικονίδιο
   tags:
     tags: Ετικέτες
+  input-rich-text-html:
+    extensions: Επεκτάσεις
   input-block-editor:
     tools_options:
       embed: Ενσωμάτωση
