@@ -357,8 +357,10 @@ export class VersionTablesService {
 		const isUnboundedString =
 			type === 'string' && source.max_length === null && !this.helpers.schema.isOneOfClients(['mssql']);
 
-		if (requiresExactType(source) || isUnboundedString) {
-			const columnBuilder = builder.specificType(column.name, source.data_type);
+		const exactType = getExactType(source);
+
+		if (exactType || isUnboundedString) {
+			const columnBuilder = builder.specificType(column.name, exactType ?? source.data_type);
 
 			if (column.primary) columnBuilder.primary().notNullable();
 			else columnBuilder.nullable();
@@ -455,20 +457,38 @@ function getColumnChanges(planned: VersionTables, existingColumns: ColumnsByTabl
 }
 
 /**
- * Whether a column has to be created with its raw database type: types without a Directus equivalent, and MySQL
- * unsigned integers (Directus would create them signed, which breaks foreign keys to them).
+ * Raw database type for columns that would lose information when mirrored through their Directus type, or `null`
  */
-function requiresExactType(column: Column) {
+function getExactType(column: Column): string | null {
+	const dataType = column.data_type.toLowerCase();
+
+	// Oracle reports every NUMBER(p,s) as `NUMBER`, which Directus treats as an integer regardless of its scale
+	if (dataType === 'number') {
+		const { numeric_precision: precision, numeric_scale: scale } = column;
+
+		if (precision === null && scale === null) return 'NUMBER';
+
+		return `NUMBER(${precision ?? '*'},${scale ?? 0})`;
+	}
+
 	const type = getLocalType(column);
 
-	return type === 'unknown' || type === 'alias' || column.data_type.toLowerCase().includes('unsigned');
+	// Unbounded Postgres / CockroachDB numerics are treated as integers by Directus
+	if (dataType === 'numeric' && type !== 'decimal') return column.data_type;
+
+	if (type === 'unknown' || type === 'alias' || dataType.includes('unsigned')) return column.data_type;
+
+	return null;
 }
 
 function hasTypeChanged(source: Column, existing: Column) {
 	if (getLocalType(source) !== getLocalType(existing)) return true;
 
-	if (requiresExactType(source) || requiresExactType(existing)) {
-		return source.data_type.toLowerCase() !== existing.data_type.toLowerCase();
+	const sourceExactType = getExactType(source);
+	const existingExactType = getExactType(existing);
+
+	if (sourceExactType || existingExactType) {
+		return sourceExactType?.toLowerCase() !== existingExactType?.toLowerCase();
 	}
 
 	return (

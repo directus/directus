@@ -679,6 +679,47 @@ describe('dialects', () => {
 		`);
 	});
 
+	// Oracle reports decimals as `NUMBER` with a precision and scale, which Directus would otherwise mirror as integer
+	const ORACLE_DECIMAL_COLUMNS = [
+		...LIVE_COLUMNS,
+		column('articles', 'price', 'NUMBER', { numeric_precision: 10, numeric_scale: 5 }),
+		column('articles', 'amount', 'NUMBER', { numeric_precision: null, numeric_scale: 0 }),
+	];
+
+	test('keeps the precision and scale of oracle numbers', async () => {
+		const { sql } = await sync({
+			client: 'oracle',
+			versioned: ['articles'],
+			live: ORACLE_DECIMAL_COLUMNS,
+			shadow: {
+				...ARTICLES_SHADOW,
+				columns: [
+					...ARTICLES_SHADOW.columns,
+					column('directus_shadow_articles', 'price', 'NUMBER', { numeric_precision: null, numeric_scale: 0 }),
+					column('directus_shadow_articles', 'amount', 'NUMBER', { numeric_precision: null, numeric_scale: 0 }),
+				],
+			},
+		});
+
+		expect(sql).toMatchInlineSnapshot(`
+			"alter table "directus_shadow_articles"
+			modify "price" NUMBER(10, 5) null"
+		`);
+	});
+
+	test('keeps unbounded numerics on postgres', async () => {
+		const { sql } = await sync({
+			versioned: ['articles'],
+			live: [...LIVE_COLUMNS, column('articles', 'price', 'numeric')],
+			shadow: ARTICLES_SHADOW,
+		});
+
+		expect(sql).toMatchInlineSnapshot(`
+			"alter table "directus_shadow_articles"
+			add column "price" numeric null"
+		`);
+	});
+
 	test('mssql', async () => {
 		const { sql } = await sync({ client: 'mssql', versioned: ['articles'] });
 
