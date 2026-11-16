@@ -23,6 +23,8 @@ function replaceInSelections(
 		// A named (spread) fragment and an inline one are essentially the same, except for fragment location.
 		// Unknown fragments are rejected before this during schema validation.
 		if (selection.kind === Kind.FRAGMENT_SPREAD || selection.kind === Kind.INLINE_FRAGMENT) {
+			// Every spread is expanded, however often it repeats. What that can cost is bounded before
+			// any resolver runs, by the `limitSelections` validation rule.
 			const fragment = selection.kind === Kind.FRAGMENT_SPREAD ? info.fragments[selection.name.value]! : selection;
 			const { typeCondition } = fragment;
 			const conditionType = typeCondition ? getNamedType(info.schema.getType(typeCondition.name.value)) : undefined;
