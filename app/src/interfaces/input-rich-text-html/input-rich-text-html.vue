@@ -59,6 +59,8 @@ const props = withDefaults(
 		noContainerParagraphs?: boolean;
 		/** Keep `div` and other wrapper elements instead of unwrapping them; see extensions/wrapper-elements.ts. */
 		keepWrapperElements?: boolean;
+		/** Keep presentational iframe and table attributes; see extensions/legacy-attributes.ts. */
+		keepLegacyAttributes?: boolean;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -105,6 +107,7 @@ const fieldSchema = buildFieldSchema({
 	keepLegacyEmphasisTags: props.keepLegacyEmphasisTags,
 	noContainerParagraphs: props.noContainerParagraphs,
 	keepWrapperElements: props.keepWrapperElements,
+	keepLegacyAttributes: props.keepLegacyAttributes,
 	comparisonMode: props.comparisonMode,
 });
 

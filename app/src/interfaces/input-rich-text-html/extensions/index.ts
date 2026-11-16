@@ -7,6 +7,7 @@ import { Direction } from './direction';
 import { DropCursor } from './drop-cursor';
 import { figureExtensions } from './figure';
 import { CustomImage } from './image';
+import { buildLegacyAttributeSchema } from './legacy-attributes';
 import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
 import { buildContainerParagraphSchema } from './no-container-paragraphs';
@@ -92,6 +93,8 @@ export interface FieldSchemaOptions {
 	noContainerParagraphs?: boolean;
 	/** Field `keepWrapperElements` option: keep `div`, `aside`, `header`, `footer`, `nav` and `main` instead of unwrapping them. */
 	keepWrapperElements?: unknown;
+	/** Field `keepLegacyAttributes` option: keep presentational iframe and table attributes such as `frameborder` and `cellpadding`. */
+	keepLegacyAttributes?: unknown;
 	comparisonMode?: boolean;
 }
 
@@ -108,7 +111,7 @@ export interface FieldSchema {
 
 /**
  * The one place a field's schema additions are assembled: the richtext extensions the field opted
- * into, its custom formats, its link protocols, its inline styles, its legacy emphasis tags, its wrapper elements, and the comparison-diff mark in
+ * into, its custom formats, its link protocols, its inline styles, its legacy emphasis tags, its wrapper elements, its legacy attributes, and the comparison-diff mark in
  * comparison mode. The live editor, the save-time round-trip check, the source-code drawer and the
  * comparison view all build from this result. A site that composed the list by hand could miss a contribution and report its markup as
  * dropped even though the editor renders it.
@@ -119,6 +122,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 	const links = buildLinkProtocolSchema(options.linkProtocols);
 	const legacyEmphasis = buildLegacyEmphasisSchema(options.keepLegacyEmphasisTags);
 	const wrappers = buildWrapperElementSchema(options.keepWrapperElements);
+	const legacyAttributes = buildLegacyAttributeSchema(options.keepLegacyAttributes);
 	const containerParagraphs = buildContainerParagraphSchema(options.noContainerParagraphs, wrappers.tags);
 
 	return {
@@ -135,6 +139,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 				: []),
 			...legacyEmphasis.extensions,
 			...wrappers.extensions,
+			...legacyAttributes.extensions,
 			...containerParagraphs.extensions,
 			...(options.comparisonMode ? [ComparisonDiff] : []),
 		],
@@ -146,6 +151,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			legacyEmphasis.key,
 			containerParagraphs.key,
 			wrappers.key,
+			legacyAttributes.key,
 			contributed.map((config) => config.key).join('\u0000'),
 		].join('\u0000'),
 		formats: customFormats.formats,

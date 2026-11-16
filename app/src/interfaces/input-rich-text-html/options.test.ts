@@ -33,6 +33,7 @@ describe('options compat', () => {
 			'keepLegacyEmphasisTags',
 			'noContainerParagraphs',
 			'keepWrapperElements',
+			'keepLegacyAttributes',
 			'customFormats',
 			'tinymceOverrides',
 		]);
@@ -48,6 +49,12 @@ describe('options compat', () => {
 		const { advanced } = resolveOptions();
 
 		expect(advanced.find((f) => f.field === 'keepWrapperElements')?.schema?.default_value).toBe(false);
+	});
+
+	test('keepLegacyAttributes is opt-in', () => {
+		const { advanced } = resolveOptions();
+
+		expect(advanced.find((f) => f.field === 'keepLegacyAttributes')?.schema?.default_value).toBe(false);
 	});
 
 	test('keeps all legacy toolbar choice values', () => {
