@@ -2,7 +2,6 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, InvalidQueryError } from '@directus/errors';
 import { Router } from 'express';
 import { z } from 'zod';
-import { fromZodError } from 'zod-validation-error';
 import { resolveLoginRedirect } from '../auth/utils/resolve-login-redirect.js';
 import { clearSystemCache } from '../cache.js';
 import { getDatabase } from '../database/index.js';
@@ -36,7 +35,7 @@ router.get(
 
 		const { data: value, error } = randomStringSchema.safeParse(req.query);
 
-		if (error) throw new InvalidQueryError({ reason: fromZodError(error).message });
+		if (error) throw new InvalidQueryError(error);
 
 		return res.json({ data: nanoid(value.length) });
 	}),
@@ -55,7 +54,7 @@ router.post(
 	collectionActive('update'),
 	asyncHandler(async (req, res) => {
 		const { error } = SortSchema.safeParse(req.body);
-		if (error) throw new InvalidPayloadError({ reason: fromZodError(error).message });
+		if (error) throw new InvalidPayloadError(error);
 
 		const service = new UtilsService({
 			accountability: req.accountability,
@@ -119,7 +118,7 @@ router.post(
 	readFileUploadBody({ maxFileSize: env.IMPORT_MAX_FILE_SIZE }),
 	asyncHandler(async (req, res, next) => {
 		const { data: value, error } = ImportBatchSchema.safeParse(req.body);
-		if (error) throw new InvalidPayloadError({ reason: fromZodError(error).message });
+		if (error) throw new InvalidPayloadError(error);
 
 		if (req.query['mode'] !== undefined && ['add', 'merge'].includes(String(req.query['mode'])) === false) {
 			throw new InvalidQueryError({ reason: `"mode" must be one of ["add", "merge"]` });

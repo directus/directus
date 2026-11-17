@@ -1,18 +1,20 @@
 import type { Server as httpServer } from 'http';
 import type { IncomingMessage } from 'http';
 import type internal from 'stream';
-import { useEnv } from '@directus/env';
 import { buildSchema, GraphQLError, NoSchemaIntrospectionCustomRule, validate } from 'graphql';
 import type { Context, SubscribePayload } from 'graphql-ws';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { GraphQLService } from '../../services/index.js';
-import { mockEnv } from '../../test-utils/env.js';
+import { resetEnv, setEnv } from '../../test-utils/env.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { ConnectionParams } from '../messages.js';
 import type { GraphQLSocket, UpgradeContext } from '../types.js';
 import { GraphQLSubscriptionController, onSubscribe } from './graphql.js';
 
-vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../../test-utils/env.js');
+	return mockUseEnv();
+});
 
 vi.mock('graphql-ws', async (importOriginal) => {
 	const actual = await importOriginal<typeof import('graphql-ws')>();
@@ -42,6 +44,7 @@ vi.mock('../../logger/index.js', () => ({
 
 afterEach(() => {
 	vi.clearAllMocks();
+	resetEnv();
 });
 
 const schema = buildSchema(/* GraphQL */ `
@@ -68,12 +71,10 @@ function payload(overrides: Partial<SubscribePayload> = {}): SubscribePayload {
 
 describe('GraphQL WebSocket onSubscribe', () => {
 	beforeEach(() => {
-		vi.mocked(useEnv).mockReturnValue(
-			mockEnv({
-				GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
-				GRAPHQL_INTROSPECTION: true,
-			}),
-		);
+		setEnv({
+			GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
+			GRAPHQL_INTROSPECTION: true,
+		});
 
 		vi.mocked(getSchema).mockResolvedValue({} as any);
 
@@ -121,12 +122,10 @@ describe('GraphQL WebSocket onSubscribe', () => {
 	});
 
 	test('applies GRAPHQL_QUERY_TOKEN_LIMIT as maxTokens when parsing', async () => {
-		vi.mocked(useEnv).mockReturnValue(
-			mockEnv({
-				GRAPHQL_QUERY_TOKEN_LIMIT: 1,
-				GRAPHQL_INTROSPECTION: true,
-			}),
-		);
+		setEnv({
+			GRAPHQL_QUERY_TOKEN_LIMIT: 1,
+			GRAPHQL_INTROSPECTION: true,
+		});
 
 		const result = await onSubscribe(mockContext(), '1', payload({ query: 'subscription { foo }' }));
 
@@ -134,12 +133,10 @@ describe('GraphQL WebSocket onSubscribe', () => {
 	});
 
 	test('honours GRAPHQL_INTROSPECTION=false by adding the no-introspection rule', async () => {
-		vi.mocked(useEnv).mockReturnValue(
-			mockEnv({
-				GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
-				GRAPHQL_INTROSPECTION: false,
-			}),
-		);
+		setEnv({
+			GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
+			GRAPHQL_INTROSPECTION: false,
+		});
 
 		await onSubscribe(mockContext(), '1', payload());
 
@@ -157,12 +154,10 @@ describe('GraphQL WebSocket onSubscribe', () => {
 	});
 
 	test('strips field suggestions from validation errors when introspection is disabled', async () => {
-		vi.mocked(useEnv).mockReturnValue(
-			mockEnv({
-				GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
-				GRAPHQL_INTROSPECTION: false,
-			}),
-		);
+		setEnv({
+			GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
+			GRAPHQL_INTROSPECTION: false,
+		});
 
 		// `fool` is a near-miss for the schema's `foo` field, which would normally be suggested back.
 		const result = await onSubscribe(mockContext(), '1', payload({ query: 'subscription { fool }' }));
@@ -193,14 +188,12 @@ describe('GraphQLSubscriptionController handshake upgrade', () => {
 	let controller: InstanceType<typeof GraphQLSubscriptionController>;
 
 	beforeEach(() => {
-		vi.mocked(useEnv).mockReturnValue(
-			mockEnv({
-				WEBSOCKETS_GRAPHQL_PATH: '/graphql',
-				WEBSOCKETS_GRAPHQL_AUTH: 'handshake',
-				WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT: 10,
-				RATE_LIMITER_ENABLED: false,
-			}),
-		);
+		setEnv({
+			WEBSOCKETS_GRAPHQL_PATH: '/graphql',
+			WEBSOCKETS_GRAPHQL_AUTH: 'handshake',
+			WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT: 10,
+			RATE_LIMITER_ENABLED: false,
+		});
 
 		controller = new GraphQLSubscriptionController(getMockServer());
 	});
