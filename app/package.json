@@ -87,6 +87,7 @@
 		"@tiptap/extension-image": "catalog:",
 		"@tiptap/extension-italic": "catalog:",
 		"@tiptap/extension-link": "catalog:",
+		"@tiptap/extension-paragraph": "catalog:",
 		"@tiptap/extension-subscript": "catalog:",
 		"@tiptap/extension-superscript": "catalog:",
 		"@tiptap/extension-table": "catalog:",

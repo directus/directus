@@ -7,7 +7,8 @@ export const MCP_ACCESS_SCOPE = 'mcp:access';
  * Canonical MCP resource and discovery URLs derived from PUBLIC_URL.
  */
 export function getMcpUrls(): { issuerUrl: string; resourceUrl: string; metadataUrl: string } {
-	const base = (useEnv()['PUBLIC_URL'] as string).replace(/\/+$/, '');
+	const { PUBLIC_URL } = useEnv();
+	const base = PUBLIC_URL.replace(/\/+$/, '');
 
 	return {
 		issuerUrl: base || '/',

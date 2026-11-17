@@ -5,8 +5,8 @@ import run from './run.js';
 
 // No .env during `directus init`. Schema cache off so every `getSchema()` call hits the guard
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../../test-utils/env.js');
-	return mockEnv({ CACHE_SCHEMA: false });
+	const { mockUseEnv } = await import('../../test-utils/env.js');
+	return mockUseEnv({ CACHE_SCHEMA: false });
 });
 
 // Migrations must only use the passed connection

@@ -13,7 +13,7 @@ import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 
-const env = useEnv();
+const { PUBLIC_URL } = useEnv();
 const logger = useLogger();
 
 export class CommentsService extends ItemsService<Comment> {
@@ -131,9 +131,7 @@ export class CommentsService extends ItemsService<Comment> {
 
 				comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
 
-				const href = new Url(env['PUBLIC_URL'] as string)
-					.addPath('admin', 'content', data['collection'], data['item'])
-					.toString();
+				const href = new Url(PUBLIC_URL).addPath('admin', 'content', data['collection'], data['item']).toString();
 
 				const message = `
 Hello ${userName(user)},
