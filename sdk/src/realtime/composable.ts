@@ -1,6 +1,7 @@
 import type { AuthenticationClient } from '../auth/types.js';
 import type { ConsoleInterface, ExtendedQuery, WebSocketInterface } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
+import { getRequestUrl } from '../utils/get-request-url.js';
 import { queryToParams } from '../utils/query-to-params.js';
 import { auth } from './commands/auth.js';
 import { pong } from './commands/pong.js';
@@ -85,10 +86,9 @@ export function realtime(config: WebSocketConfig = {}) {
 			}
 
 			// try filling in the defaults based on the main URL
-			const newUrl = new client.globals.URL(client.url.toString());
+			const newUrl = getRequestUrl(client.url, '/websocket');
 			newUrl.protocol = client.url.protocol === 'https:' ? 'wss:' : 'ws:';
-			const basePath = client.url.pathname.replace(/\/+$/, '');
-			newUrl.pathname = `${basePath}/websocket`;
+
 			return await withStrictAuth(newUrl, currentClient);
 		};
 

@@ -58,10 +58,10 @@ export class FakeWebSocket implements WebSocketInterface {
  * A client wired to FakeWebSocket, before any composables are applied, so tests that need
  * extra ones (auth for the handshake) can chain their own.
  */
-export function createClient<Schema = any>(): DirectusClient<Schema> {
+export function createClient<Schema = any>(url = 'http://localhost:8055'): DirectusClient<Schema> {
 	FakeWebSocket.instances = [];
 
-	return createDirectus<Schema>('http://localhost:8055', {
+	return createDirectus<Schema>(url, {
 		globals: { WebSocket: FakeWebSocket },
 	});
 }

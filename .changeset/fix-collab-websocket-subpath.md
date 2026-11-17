@@ -2,4 +2,4 @@
 '@directus/sdk': patch
 ---
 
-Preserve subpath in realtime WebSocket URL
+Fixed realtime WebSocket URL ignoring the client URL subpath
