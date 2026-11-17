@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { File } from '@directus/types';
+import { getFocalPointCrop } from '@directus/utils';
 import Cropper from 'cropperjs';
 import { isEqual, throttle } from 'lodash-es';
 import { nanoid } from 'nanoid/non-secure';
@@ -313,9 +314,15 @@ const localDragMode = ref<'move' | 'crop' | 'focal_point'>('move');
 
 const storageAssetPresets = settingsStore.settings?.storage_asset_presets ?? [];
 
-const showPresetPreviews = computed(
-	() => localDragMode.value === 'focal_point' && !!imageData.value?.width && !!imageData.value?.height,
-);
+// Whether a preset crops depends only on the image and preset sizes, so the focal point doesn't matter here
+const croppingPresets = computed(() => {
+	const { width, height } = imageData.value ?? {};
+	if (!width || !height) return [];
+
+	return storageAssetPresets.filter((preset) => getFocalPointCrop({ w: width, h: height }, null, preset));
+});
+
+const showPresetPreviews = computed(() => localDragMode.value === 'focal_point' && croppingPresets.value.length > 0);
 
 const previewFocalPoint = computed(() => {
 	if (localDragMode.value === 'focal_point' && cropping.value && liveFocalPoint.value) return liveFocalPoint.value;
@@ -636,7 +643,7 @@ function setAspectRatio() {
 					:width="imageData.width!"
 					:height="imageData.height!"
 					:focal-point="previewFocalPoint"
-					:presets="storageAssetPresets"
+					:presets="croppingPresets"
 					:has-image-edits="hasImageTransforms"
 				/>
 			</div>

@@ -97,13 +97,6 @@ describe('ImagePresetPreviews', () => {
 		expect(wrapper.findAll('.ratio').map((ratio) => ratio.text())).toEqual(['3:1']);
 	});
 
-	it('shows an empty state when no presets crop the image', () => {
-		const wrapper = mountPreviews(null, presets.slice(5));
-
-		expect(wrapper.find('.groups').exists()).toBe(false);
-		expect(wrapper.find('.empty').exists()).toBe(true);
-	});
-
 	it('replaces the previews with a notice while the image has unsaved edits', async () => {
 		const wrapper = mountPreviews();
 

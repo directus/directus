@@ -90,8 +90,6 @@ function greatestCommonDivisor(a: number, b: number): number {
 	<section class="image-preset-previews" :aria-label="$t('preset_previews')">
 		<VNotice v-if="hasImageEdits" type="warning" class="notice">{{ $t('preset_previews_image_edits') }}</VNotice>
 
-		<p v-else-if="groups.length === 0" class="empty">{{ $t('preset_previews_empty') }}</p>
-
 		<ul v-else class="groups">
 			<li
 				v-for="group in groups"
@@ -127,13 +125,8 @@ function greatestCommonDivisor(a: number, b: number): number {
 	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
-.empty,
 .notice {
 	flex-grow: 1;
-}
-
-.empty {
-	color: var(--theme--foreground-subdued);
 }
 
 .groups {
