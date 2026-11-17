@@ -30,6 +30,9 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 	const messenger = useBus();
 	const logger = useLogger();
 
+	// Extensions are only synced from a remote storage location
+	if (!EXTENSIONS_LOCATION) return;
+
 	if (options?.forceSync !== true && (await isSynchronizing())) {
 		logger.debug('Extensions are already being synced to this directory from another process.');
 		return;

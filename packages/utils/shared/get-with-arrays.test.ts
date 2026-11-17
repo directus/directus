@@ -40,3 +40,35 @@ test('Returns values spread across multiple places in multi-array path as flatte
 	const input = { test: [{ path: [{ test: 'example' }, { test: 'example2' }] }, { path: [{ test: 'another' }] }] };
 	expect(get(input, 'test.path.test')).toEqual(['example', 'example2', 'another']);
 });
+
+/** An object `depth` levels deep, with `leaf` at the bottom of a path of `a` keys */
+function nest(depth: number, leaf: unknown) {
+	let object: Record<string, any> = { a: leaf };
+
+	for (let level = 1; level < depth; level++) {
+		object = { a: object };
+	}
+
+	return object;
+}
+
+test('Follows a path at the depth limit', () => {
+	const path = Array.from({ length: 25 }, () => 'a').join('.');
+
+	expect(get(nest(25, 'example'), path)).toBe('example');
+});
+
+test('Returns default value for a path one segment past the depth limit', () => {
+	const path = Array.from({ length: 26 }, () => 'a').join('.');
+
+	expect(get(nest(26, 'example'), path, 'default value')).toBe('default value');
+});
+
+// The quadratic shape. The depth cap rejects it first, so this covers the cap only — the walk is
+// never entered at this length.
+test('Returns default value for a pathological path without stalling or overflowing', () => {
+	const depth = 20_000;
+	const path = Array.from({ length: depth }, () => 'a').join('.');
+
+	expect(get(nest(depth, 'example'), path, 'default value')).toBe('default value');
+});
