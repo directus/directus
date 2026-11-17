@@ -3,7 +3,6 @@ import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, RouteN
 import { format } from 'date-fns';
 import { Router } from 'express';
 import z from 'zod';
-import { fromZodError } from 'zod-validation-error';
 import { getLicenseManager } from '../license/manager.js';
 import { respond } from '../middleware/respond.js';
 import { SettingsService } from '../services/index.js';
@@ -126,7 +125,7 @@ router.post(
 		const { error, data } = SetupSchema.safeParse(req.body);
 
 		if (error) {
-			throw new InvalidPayloadError({ reason: fromZodError(error).message });
+			throw new InvalidPayloadError(error);
 		}
 
 		const licenseManager = getLicenseManager();

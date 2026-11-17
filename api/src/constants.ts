@@ -125,3 +125,35 @@ export const CUSTOM_LLM_FIELDS = [
 	'ai_openai_compatible_models',
 	'ai_openai_compatible_headers',
 ] as const satisfies readonly (keyof Settings)[];
+
+/**
+ * Key paths redacted from flow logs. Secrets under `body` and `payload` match at any depth, since the sender controls
+ * their shape
+ */
+export const FLOW_SECRET_KEYS: string[][] = [
+	['**', 'headers', 'authorization'],
+	['**', 'headers', 'cookie'],
+	['**', 'query', 'access_token'],
+	['**', 'payload', '**', 'password'],
+	['**', 'payload', '**', 'token'],
+	['**', 'payload', '**', 'tfa_secret'],
+	['**', 'payload', '**', 'external_identifier'],
+	['**', 'payload', '**', 'auth_data'],
+	['**', 'payload', '**', 'credentials'],
+	['**', 'payload', '**', 'ai_openai_api_key'],
+	['**', 'payload', '**', 'ai_anthropic_api_key'],
+	['**', 'payload', '**', 'ai_google_api_key'],
+	['**', 'payload', '**', 'ai_openrouter_api_key'],
+	['**', 'payload', '**', 'ai_openai_compatible_api_key'],
+	['**', 'body', '**', 'password'],
+	['**', 'body', '**', 'token'],
+	['**', 'body', '**', 'tfa_secret'],
+	['**', 'body', '**', 'external_identifier'],
+	['**', 'body', '**', 'auth_data'],
+	['**', 'body', '**', 'credentials'],
+	['**', 'body', '**', 'ai_openai_api_key'],
+	['**', 'body', '**', 'ai_anthropic_api_key'],
+	['**', 'body', '**', 'ai_google_api_key'],
+	['**', 'body', '**', 'ai_openrouter_api_key'],
+	['**', 'body', '**', 'ai_openai_compatible_api_key'],
+];

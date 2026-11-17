@@ -11,7 +11,6 @@ import type {
 	Type,
 } from '@directus/types';
 import { z } from 'zod';
-import { fromZodError } from 'zod-validation-error';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { CollectionsService } from '../services/collections.js';
@@ -68,7 +67,7 @@ export async function generateTranslations(
 	const parseResult = GenerateTranslationsInput.safeParse(input);
 
 	if (!parseResult.success) {
-		throw new InvalidPayloadError({ reason: fromZodError(parseResult.error).message });
+		throw new InvalidPayloadError(parseResult.error);
 	}
 
 	if (!options.knex) {
