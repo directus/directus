@@ -7,7 +7,7 @@ import type { RequestBodyObject, SchemaObject } from 'openapi3-ts/oas30';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
-import { SpecificationService } from './index.js';
+import { INTERNAL_EXTENSIONS, SpecificationService } from './index.js';
 
 vi.mock('../permissions/lib/fetch-policies.js', () => ({
 	fetchPolicies: vi.fn().mockResolvedValue([]),
@@ -532,6 +532,83 @@ describe('Integration Tests', () => {
 						expect(spec.components?.schemas?.['Collections']).toBeDefined();
 						expect(spec.components?.schemas?.['Fields']).toBeDefined();
 						expect(spec.components?.schemas?.['Relations']).toBeDefined();
+					});
+				});
+
+				describe('internal authoring directives', () => {
+					// INTERNAL_EXTENSIONS are generator-internal: read during generation (auth gating,
+					// schema inclusion) but not meant for consumers, so they must not surface in the spec.
+					const METHODS = ['get', 'post', 'patch', 'delete', 'put', 'head', 'options'] as const;
+
+					const mixedSchema = new SchemaBuilder()
+						.collection('test_table', (c) => {
+							c.field('id').integer().primary().options({ nullable: false });
+						})
+						.collection('directus_files', (c) => {
+							c.field('id').uuid().primary();
+						})
+						.build();
+
+					it('strips them from every emitted tag', async () => {
+						const service = new SpecificationService({
+							knex: db,
+							schema: mixedSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						// Covers a non-system tag (x-collection: ItemsTestTable), a system-collection
+						// tag (x-collection: Files), and collection-less system tags (x-schemas +
+						// x-authentication: Schema, Utilities).
+						for (const tag of spec.tags ?? []) {
+							for (const key of INTERNAL_EXTENSIONS) {
+								expect(tag).not.toHaveProperty(key);
+							}
+						}
+					});
+
+					it('strips them from every emitted operation while preserving the security that encodes them', async () => {
+						const service = new SpecificationService({
+							knex: db,
+							schema: mixedSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						for (const pathItem of Object.values(spec.paths ?? {})) {
+							for (const method of METHODS) {
+								const operation = (pathItem as any)?.[method];
+								if (!operation) continue;
+
+								for (const key of INTERNAL_EXTENSIONS) {
+									expect(operation).not.toHaveProperty(key);
+								}
+							}
+						}
+
+						// x-authentication: none is consumed to mark hardcoded-open operations; the
+						// consumer-facing encoding of that is security: [], which must survive the strip.
+						expect(spec.paths['/auth/login']?.post?.security).toEqual([]);
+					});
+
+					it('strips them from every emitted schema component', async () => {
+						const service = new SpecificationService({
+							knex: db,
+							schema: mixedSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						// generateComponents stamps x-collection onto schemas (the collection they
+						// represent); strip it so the internal collection name doesn't reach consumers.
+						for (const schema of Object.values(spec.components?.schemas ?? {})) {
+							for (const key of INTERNAL_EXTENSIONS) {
+								expect(schema).not.toHaveProperty(key);
+							}
+						}
 					});
 				});
 			});
