@@ -1,3 +1,5 @@
+import type { CompleteSchema, ItemType } from './schema.js';
+
 /**
  * Makes types mutable
  */
@@ -58,14 +60,24 @@ type Builtin = Primitive | Date | RegExp;
 export type RelationPrimaryKey<Item> = Item extends { id: infer PK } ? NonNullable<PK> : string | number;
 
 /**
+ * The members of `Item` that are collection items in `Schema`. An `any` Schema keeps all, a missing one none.
+ */
+type ExtractSchemaItem<Schema, Item> = IfAny<
+	Schema,
+	Item,
+	unknown extends Schema ? never : Extract<Item, ItemType<CompleteSchema<Schema>>>
+>;
+
+/**
  * The API's "Detailed" object syntax for relation array fields: create/update/delete by key,
- * alongside the plain nested-array shorthand NestedPartial already allows.
+ * alongside the plain nested-array shorthand. Limited to arrays of collection items in `Schema`,
+ * since JSON fields store it as-is.
  */
 export type NestedItemsInput<RawItem, Schema = unknown, Item = Exclude<Extract<RawItem, object>, Builtin>> = [
 	Item,
 ] extends [never]
 	? never
-	: NestedItemsObject<Item, Schema>;
+	: IfNever<ExtractSchemaItem<Schema, Item>, never, NestedItemsObject<Item, Schema>>;
 
 type NestedItemsObject<Item, Schema> = {
 	create?: NestedPartial<Item, Schema>[];
