@@ -2940,6 +2940,12 @@ interfaces:
       By default, the editor removes `<form>`, `<button>`, `<input>`, `<select>`, `<textarea>` and `<label>` and keeps
       only their text. Enable this to keep them. Forms and controls show as blocks that you edit in the source code
       view, and label text stays editable. Event handlers and `javascript:` URLs are removed.
+    keep_legacy_attributes: Legacy Attributes
+    keep_legacy_attributes_label: Keep legacy iframe and table attributes
+    keep_legacy_attributes_note:
+      By default, the editor removes presentational attributes such as `frameborder` and `allow` on `<iframe>`, and
+      `border`, `cellpadding`, `cellspacing`, `align`, `valign` and `bgcolor` on tables, rows and cells. Enable this to
+      keep them.
     link_protocols: Allowed Link Protocols
     link_protocols_note:
       Extra URL schemes that links may use, such as `myapp` for `myapp://` deep links. Standard schemes such as `http`,

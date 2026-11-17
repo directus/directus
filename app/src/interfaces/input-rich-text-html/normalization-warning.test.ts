@@ -191,4 +191,27 @@ describe('normalization warning wiring', () => {
 
 		expect(wrapper.emitted('input')?.at(-1)).toEqual(['<div class="box">ab</div><p></p>']);
 	});
+
+	test('an iframe frameborder locks the editor without legacy attributes', async () => {
+		const { editor } = await mountWithValue('<iframe frameborder="0" src="https://example.com"></iframe>');
+
+		expect(editor.isEditable).toBe(false);
+	});
+
+	test('an edit keeps the iframe frameborder with legacy attributes', async () => {
+		const { wrapper, editor } = await mountWithValue(
+			'<p>a</p><iframe frameborder="0" src="https://example.com"></iframe>',
+			{ keepLegacyAttributes: true },
+		);
+
+		await vi.waitFor(() => expect(editor.getText().trim()).toBe('a'));
+
+		expect(editor.isEditable).toBe(true);
+
+		editor.chain().setTextSelection(2).insertContent('b').run();
+
+		expect(wrapper.emitted('input')?.at(-1)).toEqual([
+			'<p>ab</p><iframe frameborder="0" src="https://example.com"></iframe><p></p>',
+		]);
+	});
 });

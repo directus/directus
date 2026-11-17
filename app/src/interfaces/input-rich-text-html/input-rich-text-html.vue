@@ -62,6 +62,8 @@ const props = withDefaults(
 		keepWrapperElements?: boolean;
 		/** Keep `<form>` and loose form controls as non-editable blocks; see extensions/raw-html.ts. */
 		keepFormElements?: boolean;
+		/** Keep presentational iframe and table attributes; see extensions/legacy-attributes.ts. */
+		keepLegacyAttributes?: boolean;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -109,6 +111,7 @@ const fieldSchema = buildFieldSchema({
 	noContainerParagraphs: props.noContainerParagraphs,
 	keepWrapperElements: props.keepWrapperElements,
 	keepFormElements: props.keepFormElements,
+	keepLegacyAttributes: props.keepLegacyAttributes,
 	comparisonMode: props.comparisonMode,
 });
 
