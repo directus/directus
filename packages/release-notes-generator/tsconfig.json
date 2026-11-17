@@ -1,7 +1,6 @@
 {
 	"extends": "@directus/tsconfig/node26",
 	"compilerOptions": {
-		"types": ["node"],
 		"rootDir": "src",
 		"outDir": "dist"
 	},

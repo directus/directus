@@ -29,4 +29,4 @@
 '@directus/visual-editing': patch
 ---
 
-Updated the shared TypeScript config from the Node.js 22 preset to the Node.js 26 preset
+Updated `@directus/tsconfig` to 6.0.0, moving Node.js packages to the `node26` preset and browser-facing packages to the `shared` preset

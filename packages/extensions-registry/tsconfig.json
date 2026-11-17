@@ -1,8 +1,7 @@
 {
-	"extends": "@directus/tsconfig/node26",
+	"extends": "@directus/tsconfig/shared",
 	"include": ["src"],
 	"compilerOptions": {
-		"lib": ["ES2023"],
 		"isolatedDeclarations": false
 	},
 	"typedocOptions": {
