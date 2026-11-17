@@ -27,7 +27,9 @@ describe('options compat', () => {
 
 		expect(fieldKeys(advanced)).toEqual([
 			'softLength',
+			'customFormats',
 			'advancedGroup',
+			'advancedGroupWarning',
 			'linkProtocols',
 			'keepInlineStyles',
 			'keepInlineStylesWarning',
@@ -38,7 +40,6 @@ describe('options compat', () => {
 			'keepHtmlComments',
 			'keepHtmlCommentsWarning',
 			'keepLegacyAttributes',
-			'customFormats',
 			'tinymceOverrides',
 		]);
 	});

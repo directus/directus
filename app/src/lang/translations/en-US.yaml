@@ -2963,6 +2963,9 @@ interfaces:
     imageToken_label: Static access token is appended to the assets' URL
     media_preview_iframe_title: Media Preview
     embed_invalid: The embed markup could not be parsed as media (video, audio, or iframe)
+    advanced_group_warning:
+      These options change how the editor reads and saves HTML. Change them at your own risk and test the result on
+      existing content first.
     preserve: Preserve
     do_not_wrap: Do not wrap
     no_container_paragraphs: Paragraph Wrapping

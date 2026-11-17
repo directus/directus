@@ -331,6 +331,40 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'customFormats',
+				name: '$t:interfaces.input-rich-text-html.custom_formats',
+				type: 'json',
+				meta: {
+					interface: 'code',
+					note: '$t:interfaces.input-rich-text-html.custom_formats_note',
+					options: {
+						language: 'json',
+						template: JSON.stringify(
+							[
+								{
+									title: 'My Custom Format',
+									inline: 'span',
+									classes: 'custom-wrapper',
+									styles: { color: '#00ff00', 'font-size': '20px' },
+									attributes: { title: 'My Custom Wrapper' },
+								},
+								{
+									title: 'My Custom Block',
+									block: 'p',
+									classes: 'lead-paragraph',
+								},
+								{
+									title: 'My Custom Group',
+									items: [{ title: 'Subheading', selector: 'h2', classes: 'subheading' }],
+								},
+							],
+							null,
+							4,
+						),
+					},
+				},
+			},
+			{
 				field: 'advancedGroup',
 				name: '$t:advanced',
 				type: 'alias',
@@ -341,6 +375,21 @@ export default defineInterface({
 					special: ['alias', 'no-data', 'group'],
 					options: {
 						start: 'closed',
+					},
+				},
+			},
+			{
+				field: 'advancedGroupWarning',
+				type: 'alias',
+				meta: {
+					group: 'advancedGroup',
+					width: 'full',
+					interface: 'presentation-notice',
+					special: ['alias', 'no-data'],
+					options: {
+						color: 'warning',
+						icon: 'warning',
+						text: '$t:interfaces.input-rich-text-html.advanced_group_warning',
 					},
 				},
 			},
@@ -509,40 +558,6 @@ export default defineInterface({
 				},
 				schema: {
 					default_value: false,
-				},
-			},
-			{
-				field: 'customFormats',
-				name: '$t:interfaces.input-rich-text-html.custom_formats',
-				type: 'json',
-				meta: {
-					interface: 'code',
-					note: '$t:interfaces.input-rich-text-html.custom_formats_note',
-					options: {
-						language: 'json',
-						template: JSON.stringify(
-							[
-								{
-									title: 'My Custom Format',
-									inline: 'span',
-									classes: 'custom-wrapper',
-									styles: { color: '#00ff00', 'font-size': '20px' },
-									attributes: { title: 'My Custom Wrapper' },
-								},
-								{
-									title: 'My Custom Block',
-									block: 'p',
-									classes: 'lead-paragraph',
-								},
-								{
-									title: 'My Custom Group',
-									items: [{ title: 'Subheading', selector: 'h2', classes: 'subheading' }],
-								},
-							],
-							null,
-							4,
-						),
-					},
 				},
 			},
 			// deprecated + inert; only rendered for fields that still carry a stored value
