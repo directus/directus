@@ -20,7 +20,7 @@ export type UpdateCommentOutput<
 export const updateComments =
 	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
 		keysOrQuery: DirectusComment<Schema>['id'][] | Query<Schema, DirectusComment<Schema>>,
-		item: NestedPartial<DirectusComment<Schema>>,
+		item: NestedPartial<DirectusComment<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateCommentOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -52,7 +52,7 @@ export const updateComments =
  */
 export const updateCommentsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
-		items: NestedPartial<DirectusComment<Schema>>[],
+		items: NestedPartial<DirectusComment<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdateCommentOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -73,7 +73,7 @@ export const updateCommentsBatch =
 export const updateComment =
 	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
 		key: DirectusComment<Schema>['id'],
-		item: NestedPartial<DirectusComment<Schema>>,
+		item: NestedPartial<DirectusComment<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateCommentOutput<Schema, TQuery>, Schema> =>
 	() => {

@@ -18,7 +18,7 @@ export type CreateNotificationOutput<
  */
 export const createNotifications =
 	<Schema, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
-		items: NestedPartial<DirectusNotification<Schema>>[],
+		items: NestedPartial<DirectusNotification<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreateNotificationOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createNotifications =
  */
 export const createNotification =
 	<Schema, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
-		item: NestedPartial<DirectusNotification<Schema>>,
+		item: NestedPartial<DirectusNotification<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateNotificationOutput<Schema, TQuery>, Schema> =>
 	() => ({

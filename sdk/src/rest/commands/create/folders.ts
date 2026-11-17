@@ -18,7 +18,7 @@ export type CreateFolderOutput<
  */
 export const createFolders =
 	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
-		items: NestedPartial<DirectusFolder<Schema>>[],
+		items: NestedPartial<DirectusFolder<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreateFolderOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createFolders =
  */
 export const createFolder =
 	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
-		item: NestedPartial<DirectusFolder<Schema>>,
+		item: NestedPartial<DirectusFolder<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateFolderOutput<Schema, TQuery>, Schema> =>
 	() => ({

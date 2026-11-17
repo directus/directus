@@ -20,7 +20,7 @@ export type UpdatePanelOutput<
 export const updatePanels =
 	<Schema, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
 		keys: DirectusPanel<Schema>['id'][],
-		item: NestedPartial<DirectusPanel<Schema>>,
+		item: NestedPartial<DirectusPanel<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdatePanelOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -42,7 +42,7 @@ export const updatePanels =
  */
 export const updatePanelsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
-		items: NestedPartial<DirectusPanel<Schema>>[],
+		items: NestedPartial<DirectusPanel<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdatePanelOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -63,7 +63,7 @@ export const updatePanelsBatch =
 export const updatePanel =
 	<Schema, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
 		key: DirectusPanel<Schema>['id'],
-		item: NestedPartial<DirectusPanel<Schema>>,
+		item: NestedPartial<DirectusPanel<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdatePanelOutput<Schema, TQuery>, Schema> =>
 	() => {

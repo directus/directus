@@ -20,7 +20,7 @@ export type UpdateFlowOutput<
 export const updateFlows =
 	<Schema, const TQuery extends Query<Schema, DirectusFlow<Schema>>>(
 		keys: DirectusFlow<Schema>['id'][],
-		item: NestedPartial<DirectusFlow<Schema>>,
+		item: NestedPartial<DirectusFlow<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateFlowOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -42,7 +42,7 @@ export const updateFlows =
  */
 export const updateFlowsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusFlow<Schema>>>(
-		items: NestedPartial<DirectusFlow<Schema>>[],
+		items: NestedPartial<DirectusFlow<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdateFlowOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -63,7 +63,7 @@ export const updateFlowsBatch =
 export const updateFlow =
 	<Schema, const TQuery extends Query<Schema, DirectusFlow<Schema>>>(
 		key: DirectusFlow<Schema>['id'],
-		item: NestedPartial<DirectusFlow<Schema>>,
+		item: NestedPartial<DirectusFlow<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateFlowOutput<Schema, TQuery>, Schema> =>
 	() => {

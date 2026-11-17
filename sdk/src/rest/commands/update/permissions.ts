@@ -20,7 +20,7 @@ export type UpdatePermissionOutput<
 export const updatePermissions =
 	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
 		keys: DirectusPermission<Schema>['id'][],
-		item: NestedPartial<DirectusPermission<Schema>>,
+		item: NestedPartial<DirectusPermission<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdatePermissionOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -42,7 +42,7 @@ export const updatePermissions =
  */
 export const updatePermissionsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
-		items: NestedPartial<DirectusPermission<Schema>>[],
+		items: NestedPartial<DirectusPermission<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdatePermissionOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -63,7 +63,7 @@ export const updatePermissionsBatch =
 export const updatePermission =
 	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
 		key: DirectusPermission<Schema>['id'],
-		item: NestedPartial<DirectusPermission<Schema>>,
+		item: NestedPartial<DirectusPermission<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdatePermissionOutput<Schema, TQuery>, Schema> =>
 	() => {

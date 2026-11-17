@@ -22,7 +22,7 @@ export type UpdateDeploymentOutput<
 export const updateDeployment =
 	<Schema, const TQuery extends Query<Schema, DirectusDeployment<Schema>>>(
 		provider: string,
-		item: NestedPartial<DirectusDeployment<Schema>>,
+		item: NestedPartial<DirectusDeployment<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateDeploymentOutput<Schema, TQuery>, Schema> =>
 	() => {

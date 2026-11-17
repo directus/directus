@@ -18,7 +18,7 @@ export type CreateContentVersionOutput<
  */
 export const createContentVersions =
 	<Schema, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
-		items: NestedPartial<DirectusVersion<Schema>>[],
+		items: NestedPartial<DirectusVersion<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreateContentVersionOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createContentVersions =
  */
 export const createContentVersion =
 	<Schema, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
-		item: NestedPartial<DirectusVersion<Schema>>,
+		item: NestedPartial<DirectusVersion<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateContentVersionOutput<Schema, TQuery>, Schema> =>
 	() => ({

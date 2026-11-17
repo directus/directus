@@ -21,7 +21,7 @@ export type UpdateFileOutput<
 export const updateFiles =
 	<Schema, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		keys: DirectusFile<Schema>['id'][],
-		item: NestedPartial<DirectusFile<Schema>>,
+		item: NestedPartial<DirectusFile<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateFileOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -43,7 +43,7 @@ export const updateFiles =
  */
 export const updateFilesBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
-		items: NestedPartial<DirectusFile<Schema>>[],
+		items: NestedPartial<DirectusFile<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdateFileOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -64,7 +64,7 @@ export const updateFilesBatch =
 export const updateFile =
 	<Schema, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		key: DirectusFile<Schema>['id'],
-		item: NestedPartial<DirectusFile<Schema>> | FormData,
+		item: NestedPartial<DirectusFile<Schema>, Schema> | FormData,
 		query?: TQuery,
 	): RestCommand<UpdateFileOutput<Schema, TQuery>, Schema> =>
 	() => {

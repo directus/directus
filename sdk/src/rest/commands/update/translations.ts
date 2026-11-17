@@ -20,7 +20,7 @@ export type UpdateTranslationOutput<
 export const updateTranslations =
 	<Schema, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
 		keys: DirectusTranslation<Schema>['id'][],
-		item: NestedPartial<DirectusTranslation<Schema>>,
+		item: NestedPartial<DirectusTranslation<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateTranslationOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -42,7 +42,7 @@ export const updateTranslations =
  */
 export const updateTranslationsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
-		items: NestedPartial<DirectusTranslation<Schema>>[],
+		items: NestedPartial<DirectusTranslation<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdateTranslationOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -63,7 +63,7 @@ export const updateTranslationsBatch =
 export const updateTranslation =
 	<Schema, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
 		key: DirectusTranslation<Schema>['id'],
-		item: NestedPartial<DirectusTranslation<Schema>>,
+		item: NestedPartial<DirectusTranslation<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateTranslationOutput<Schema, TQuery>, Schema> =>
 	() => {

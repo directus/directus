@@ -18,7 +18,7 @@ export type CreatePanelOutput<
  */
 export const createPanels =
 	<Schema, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
-		items: NestedPartial<DirectusPanel<Schema>>[],
+		items: NestedPartial<DirectusPanel<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreatePanelOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createPanels =
  */
 export const createPanel =
 	<Schema, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
-		item: NestedPartial<DirectusPanel<Schema>>,
+		item: NestedPartial<DirectusPanel<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreatePanelOutput<Schema, TQuery>, Schema> =>
 	() => ({

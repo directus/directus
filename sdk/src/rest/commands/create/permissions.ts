@@ -18,7 +18,7 @@ export type CreatePermissionOutput<
  */
 export const createPermissions =
 	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
-		items: NestedPartial<DirectusPermission<Schema>>[],
+		items: NestedPartial<DirectusPermission<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreatePermissionOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createPermissions =
  */
 export const createPermission =
 	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
-		item: NestedPartial<DirectusPermission<Schema>>,
+		item: NestedPartial<DirectusPermission<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreatePermissionOutput<Schema, TQuery>, Schema> =>
 	() => ({

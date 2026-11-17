@@ -20,7 +20,7 @@ export type UpdateDashboardOutput<
 export const updateDashboards =
 	<Schema, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
 		keys: DirectusDashboard<Schema>['id'][],
-		item: NestedPartial<DirectusDashboard<Schema>>,
+		item: NestedPartial<DirectusDashboard<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateDashboardOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -42,7 +42,7 @@ export const updateDashboards =
  */
 export const updateDashboardsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
-		items: NestedPartial<DirectusDashboard<Schema>>[],
+		items: NestedPartial<DirectusDashboard<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdateDashboardOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -63,7 +63,7 @@ export const updateDashboardsBatch =
 export const updateDashboard =
 	<Schema, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
 		key: DirectusDashboard<Schema>['id'],
-		item: NestedPartial<DirectusDashboard<Schema>>,
+		item: NestedPartial<DirectusDashboard<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateDashboardOutput<Schema, TQuery>, Schema> =>
 	() => {
