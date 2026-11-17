@@ -1,4 +1,5 @@
 import { SchemaBuilder } from '@directus/schema-builder';
+import { HARDCODED_AUTH_REQUIREMENTS } from '@directus/system-data';
 import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -355,6 +356,253 @@ describe('Integration Tests', () => {
 					});
 				});
 
+				describe('x-authentication operation-level override', () => {
+					// The `self` cases below also cover the inline-`x-authentication` read path
+					// (`declaredAuth ?? table lookup`): `self` is never table-derived, so they fail
+					// if the resolver stops reading the operation's own value.
+
+					it('excludes an x-authentication: admin operation for a non-admin caller with matching RBAC permission', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_fields', action: 'update' } as any,
+						]);
+
+						const fieldsSchema = new SchemaBuilder()
+							.collection('directus_fields', (c) => {
+								c.field('id').integer().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: fieldsSchema,
+							accountability: { role: 'editor', admin: false } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/fields/{collection}/{field}']?.patch).toBeUndefined();
+					});
+
+					it('includes an x-authentication: admin operation for an admin caller', async () => {
+						const collectionsSchema = new SchemaBuilder()
+							.collection('directus_collections', (c) => {
+								c.field('collection').string().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: collectionsSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/collections']?.post).toBeDefined();
+					});
+
+					it('excludes an x-authentication: user operation for a public/unauthenticated caller with matching RBAC permission', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_comments', action: 'create' } as any,
+						]);
+
+						const commentsSchema = new SchemaBuilder()
+							.collection('directus_comments', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: commentsSchema,
+							accountability: null,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/comments']?.post).toBeUndefined();
+					});
+
+					it('includes an x-authentication: user operation for an authenticated non-admin caller with matching RBAC permission', async () => {
+						// A read permission is required too: without it the collection is stripped from
+						// the schema entirely, hiding the Comments tag before the x-authentication check
+						// even runs.
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_comments', action: 'create' } as any,
+							{ collection: 'directus_comments', action: 'read', fields: ['*'] } as any,
+						]);
+
+						const commentsSchema = new SchemaBuilder()
+							.collection('directus_comments', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: commentsSchema,
+							accountability: { role: 'editor', admin: false, user: 'test-user' } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/comments']?.post).toBeDefined();
+					});
+
+					it('excludes an x-authentication: user operation for an authenticated non-admin caller without matching RBAC permission', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_comments', action: 'read', fields: ['*'] } as any,
+						]);
+
+						const commentsSchema = new SchemaBuilder()
+							.collection('directus_comments', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: commentsSchema,
+							accountability: { role: 'editor', admin: false, user: 'test-user' } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/comments']?.post).toBeUndefined();
+					});
+
+					it('includes an x-authentication: self operation for an authenticated caller regardless of RBAC on the tied collection', async () => {
+						// 'read' only keeps the Permissions tag from being stripped; no create/update/delete
+						// permission is granted, since requiredAuth: 'self' replaces RBAC, not adds to it.
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_permissions', action: 'read', fields: ['*'] } as any,
+						]);
+
+						const permissionsSchema = new SchemaBuilder()
+							.collection('directus_permissions', (c) => {
+								c.field('id').integer().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: permissionsSchema,
+							accountability: { role: 'editor', admin: false, user: 'test-user' } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/permissions/me']?.get).toBeDefined();
+					});
+
+					it('excludes an x-authentication: self operation for an unauthenticated caller', async () => {
+						const permissionsSchema = new SchemaBuilder()
+							.collection('directus_permissions', (c) => {
+								c.field('id').integer().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: permissionsSchema,
+							accountability: null,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/permissions/me']?.get).toBeUndefined();
+					});
+
+					it('does not stamp optional-auth security on /users/me even when the public role can read directus_users', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_users', action: 'read' } as any,
+						]);
+
+						const usersSchema = new SchemaBuilder()
+							.collection('directus_users', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: usersSchema,
+							accountability: { role: 'admin', admin: true, user: 'test-user' } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/users/me']?.get).toBeDefined();
+						expect(spec.paths['/users/me']?.get?.security).toBeUndefined();
+					});
+
+					it('does not stamp optional-auth security on POST /collections even when the public role can create directus_collections', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_collections', action: 'create' } as any,
+						]);
+
+						const collectionsSchema = new SchemaBuilder()
+							.collection('directus_collections', (c) => {
+								c.field('collection').string().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: collectionsSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/collections']?.post?.security).toBeUndefined();
+					});
+
+					it('excludes every operation carrying an inline x-authentication: admin from a non-admin with full RBAC', async () => {
+						// Discovers the inline-marked operations from generated output rather than naming
+						// them, so a future inline `admin` marking is covered without editing this test.
+						const usersSchema = new SchemaBuilder()
+							.collection('directus_users', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const adminSpec = await new SpecificationService({
+							knex: db,
+							schema: usersSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						}).oas.generate();
+
+						const adminOnly = Object.entries(adminSpec.paths).flatMap(([path, item]) =>
+							Object.entries(item ?? {})
+								.filter(([, op]) => op && typeof op === 'object' && (op as any)['x-authentication'] === 'admin')
+								.map(([method]) => ({ method, path })),
+						);
+
+						expect(adminOnly.length).toBeGreaterThan(0);
+
+						vi.mocked(fetchPermissions).mockResolvedValueOnce(
+							['create', 'read', 'update', 'delete'].map((action) => ({
+								collection: 'directus_users',
+								action,
+								fields: ['*'],
+							})) as any,
+						);
+
+						const nonAdminSpec = await new SpecificationService({
+							knex: db,
+							schema: usersSchema,
+							accountability: { role: 'editor', admin: false, user: 'u1' } as Accountability,
+						}).oas.generate();
+
+						const leaked = adminOnly.filter(
+							({ method, path }) => (nonAdminSpec.paths as any)[path]?.[method] !== undefined,
+						);
+
+						expect(leaked).toEqual([]);
+					});
+				});
+
 				describe('CookieAuth / RefreshTokenCookieAuth scheme coverage', () => {
 					it('carries the static security declaration through for /auth/refresh and /auth/logout', async () => {
 						const service = new SpecificationService({
@@ -536,5 +784,53 @@ describe('Integration Tests', () => {
 				});
 			});
 		});
+	});
+
+	describe('HARDCODED_AUTH_REQUIREMENTS gating', () => {
+		// Operations the spec marks reachable without auth (a `security` entry of `{}`).
+		const reachableWithoutAuth = (spec: Awaited<ReturnType<SpecificationService['oas']['generate']>>) =>
+			Object.entries(spec.paths).flatMap(([path, pathItem]) =>
+				Object.entries(pathItem ?? {})
+					.filter(
+						([, operation]) =>
+							operation &&
+							typeof operation === 'object' &&
+							'security' in operation &&
+							(operation.security as object[] | undefined)?.some((scheme) => Object.keys(scheme).length === 0),
+					)
+					.map(([method]) => `${method.toUpperCase()} ${path}`),
+			);
+
+		it.each(HARDCODED_AUTH_REQUIREMENTS)(
+			'never marks $collection $action reachable without auth even if the public role holds it',
+			async ({ collection, action }) => {
+				const schema = new SchemaBuilder()
+					.collection(collection, (c) => {
+						c.field('id').integer().primary();
+					})
+					.build();
+
+				// Admin caller so the collection's operations are all present; only the public-access
+				// stamp is under test, and a missing hardcoded gate is what would add it.
+				const stampsFor = async (permissions: unknown[]) => {
+					vi.mocked(fetchPermissions).mockResolvedValueOnce(permissions as any);
+
+					const service = new SpecificationService({
+						knex: db,
+						schema,
+						accountability: { role: 'admin', admin: true, user: 'test-admin' } as Accountability,
+					});
+
+					return new Set(reachableWithoutAuth(await service.oas.generate()));
+				};
+
+				const baseline = await stampsFor([]);
+				const withPublicGrant = await stampsFor([{ collection, action, fields: ['*'] }]);
+
+				const leaked = [...withPublicGrant].filter((operation) => !baseline.has(operation));
+
+				expect(leaked).toEqual([]);
+			},
+		);
 	});
 });

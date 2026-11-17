@@ -2,6 +2,7 @@ post:
   summary: Enable 2FA
   description: Enables two-factor authentication for the currently authenticated user.
   operationId: meTfaEnable
+  x-authentication: self
   requestBody:
     content:
       application/json:

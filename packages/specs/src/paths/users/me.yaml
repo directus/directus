@@ -2,6 +2,7 @@ get:
   summary: Retrieve Current User
   description: Retrieve the currently authenticated user.
   operationId: getMe
+  x-authentication: self
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
   responses:
@@ -25,6 +26,8 @@ patch:
   summary: Update Current User
   description: Update the currently authenticated user.
   operationId: updateMe
+  # No x-authentication: unlike the other /users/me operations, this one runs the update through
+  # UsersService with the caller's accountability, so RBAC on directus_users still applies.
   responses:
     '200':
       description: Successful request

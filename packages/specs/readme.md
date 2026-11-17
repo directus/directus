@@ -25,9 +25,27 @@ src/
 
 ## Custom (`x-*`) Extension Fields
 
-- `x-authentication`: on a tag, `admin` | `user`; restricts inclusion to requesters meeting that authentication level.
-  On an operation, `none`; the operation runs with no accountability at all, so the generator stamps `security: []` onto
-  it (e.g. `/auth/login`, `/users/register`).
+- `x-action`: `create` | `read` | `update` | `delete`; overrides the RBAC action an operation with an `x-collection`
+  override is checked against, for the (uncommon) case where the operation's HTTP method doesn't match what it actually
+  does - e.g. a `POST` that only reads and archives existing items shouldn't be gated on `create` access. Defaults to
+  the action implied by the HTTP method (`post` → `create`, `get` → `read`, `patch` → `update`, `delete` → `delete`);
+  only set this when that default is wrong for the specific operation.
+- `x-authentication`: an auth level the requester must meet. On a **tag** (`admin` | `user`), the system collection and
+  all its paths appear in the generated spec only for requesters at that level. On an **operation** (`none` | `self` |
+  `admin` | `user`), only that one operation is gated, for when the service layer enforces an auth check independent of
+  collection RBAC:
+  - `none`: the operation runs with no accountability at all (e.g. `POST /users/register`); the generator stamps
+    `security: []`.
+  - `self`: full RBAC bypass, gated only on `accountability.user`. For an operation that acts on the caller's own record
+    and never consults collection RBAC at runtime (`GET /users/me`, `/users/me/tfa/*`, `GET /permissions/me`).
+  - `admin` | `user`: `admin` bypasses RBAC, gated on `accountability.admin`; `user` requires `accountability.user`
+    **and** the caller's own RBAC permission, since the service check is additive to RBAC. The generator derives these
+    from `HARDCODED_AUTH_REQUIREMENTS` (`@directus/system-data`), keyed by collection + action; set it on an operation
+    only when no table row matches.
+
+  An `admin`/`user`/`self` requirement, derived or explicit, also stops the generator's public-access stamp (see
+  [Security](#security)) from applying to that operation.
+
 - `x-collection`: links a tag (and its associated schema component) to the system collection it documents (e.g.
   `directus_presets`). Used to resolve permissions/field-filtering per collection at generation time.
 - `x-schemas`: extra `components.schemas` names a tag's operations `$ref` but that aren't picked up automatically (only
@@ -46,10 +64,10 @@ operation's actual requirement differs from that default. The cases where it dif
 - **Always public, no auth accepted or required (`x-authentication: none`)**: required for endpoints that run with no
   accountability at all (e.g. `/auth/login`, `/server/ping`, `/users/register/verify-email`) - the dynamic generator
   never overwrites this override with the public-access stamp, unlike the others below.
-- **Restricted to admin/user (`x-authentication`)**: `admin` | `user`. Set on the tag for system collections that should
-  only appear in the generated spec at all when the requester meets that authentication level, e.g.
-  `x-authentication: admin` on the `Schema` tag. This gates whether the path is included, not which security schemes it
-  lists.
+- **Restricted to admin/user/self (`x-authentication`)**: see the `x-authentication` reference above. `admin`/`user`
+  requirements come from `HARDCODED_AUTH_REQUIREMENTS`, tag-level `x-authentication` restricts a whole system collection
+  (e.g. the `Schema` tag), and `x-authentication: self` is set on the current-user endpoints. It controls whether an
+  operation is generated, not which `security` schemes it lists.
 - **Optionally authenticated, response may differ (`security: [{}, {Auth: []}, {KeyAuth: []}, {CookieAuth: []}]`)**: for
   endpoints the public role can reach but that return more/different data to an authenticated caller (e.g. a
   publicly-readable collection). Usually the dynamic generator stamps this onto generated operations via

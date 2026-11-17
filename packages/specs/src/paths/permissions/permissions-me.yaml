@@ -2,6 +2,7 @@ get:
   summary: List My Permissions
   description: List the permissions that apply to the current user.
   operationId: getMyPermissions
+  x-authentication: self
   responses:
     '200':
       description: Successful request
