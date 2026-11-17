@@ -8,9 +8,8 @@
 		"format": "prettier --cache --check .",
 		"lint": "eslint --cache .",
 		"lint:style": "stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore --cache",
-		"test": "pnpm --recursive --filter '!tests-blackbox' test",
-		"test:blackbox": "rimraf ./dist && pnpm --filter directus deploy --legacy --prod dist && pnpm --filter tests-blackbox test",
-		"test:coverage": "pnpm --recursive --filter '!tests-blackbox' test:coverage"
+		"test": "pnpm --recursive test",
+		"test:coverage": "pnpm --recursive test:coverage"
 	},
 	"devDependencies": {
 		"@changesets/cli": "catalog:",
@@ -19,11 +18,11 @@
 		"eslint": "catalog:",
 		"eslint-config-prettier": "catalog:",
 		"eslint-plugin-import-x": "catalog:",
+		"eslint-plugin-regexp": "catalog:",
 		"eslint-plugin-vue": "catalog:",
 		"globals": "catalog:",
 		"postcss-html": "catalog:",
 		"prettier": "catalog:",
-		"rimraf": "catalog:",
 		"stylelint": "catalog:",
 		"stylelint-config-standard": "catalog:",
 		"stylelint-config-standard-scss": "catalog:",
@@ -33,20 +32,9 @@
 		"typescript-eslint": "catalog:",
 		"vue-eslint-parser": "catalog:"
 	},
-	"pnpm": {
-		"overrides": {
-			"fast-xml-parser": "5.10.1",
-			"@yarnpkg/shell>cross-spawn": "7.0.6",
-			"tar": "7.5.22",
-			"minimatch@9": "9.0.9",
-			"express@4>path-to-regexp": "0.1.13",
-			"adm-zip": "0.6.0",
-			"js-yaml@4": "4.3.0"
-		}
-	},
-	"packageManager": "pnpm@10.27.0",
 	"engines": {
-		"node": "22",
-		"pnpm": ">=10 <11"
-	}
+		"node": "26",
+		"pnpm": ">=12 <13"
+	},
+	"packageManager": "pnpm@12.4.1"
 }

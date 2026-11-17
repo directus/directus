@@ -1,4 +1,3 @@
-import url from 'url';
 import { toArray } from '@directus/utils';
 import { ipInNetworks } from '@directus/utils/node';
 import { version } from 'directus/version';
@@ -9,13 +8,14 @@ import getDatabase from '../database/index.js';
 import { getFlowManager } from '../flows.js';
 import { fetchPoliciesIpAccess } from '../permissions/modules/fetch-policies-ip-access/fetch-policies-ip-access.js';
 import { getGraphqlQueryAndVariables } from './get-graphql-query-and-variables.js';
+import { parseRequestUrl } from './parse-request-url.js';
 
 // Match /flows/trigger/<uuid> and extract the UUID
 const FLOW_TRIGGER_PATTERN = /^\/flows\/trigger\/([0-9a-f-]+)/i;
 
 export async function getCacheKey(req: Request) {
-	const path = url.parse(req.originalUrl).pathname;
-	const isGraphQl = path?.startsWith('/graphql');
+	const path = parseRequestUrl(req.originalUrl).pathname;
+	const isGraphQl = path.startsWith('/graphql');
 
 	let flowTriggerQuery: Record<string, any> | undefined = undefined;
 

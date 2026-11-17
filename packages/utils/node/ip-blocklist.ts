@@ -8,7 +8,7 @@ import ipaddr from 'ipaddr.js';
  * "::ffff:1.2.3.4"). Returns null if the input is not a valid IPv6 address.
  */
 function ipv6ToBytes(address: string): number[] | null {
-	const input = address.split('%')[0]; // drop any zone identifier, e.g. fe80::1%eth0
+	const input = address.split('%')[0]!; // drop any zone identifier, e.g. fe80::1%eth0
 
 	if (!ipaddr.isValid(input)) return null;
 
@@ -101,15 +101,12 @@ export class IpBlocklist extends BlockList {
 	 * @throws {Error} Throws 'ERR_INVALID_SUBNET' if the input format is invalid
 	 */
 	parseSubnet(input: string): void {
-		const parts = input.split('/');
-
-		if (parts.length !== 2 || !parts[0] || !parts[1]) {
+		if (!IpBlocklist.isSubnet(input)) {
 			throw new Error('ERR_INVALID_SUBNET');
 		}
 
-		const subnet = parseInt(parts[1], 10);
-		const ipVersion = this.getIpVersion(parts[0]);
-		this.addSubnet(parts[0], subnet, ipVersion);
+		const [ip, subnet] = input.split('/') as [string, string];
+		this.addSubnet(ip, parseInt(subnet, 10), this.getIpVersion(ip));
 	}
 
 	/**
@@ -118,14 +115,30 @@ export class IpBlocklist extends BlockList {
 	 * @throws {Error} Throws 'ERR_INVALID_RANGE' if the input format is invalid
 	 */
 	parseRange(input: string): void {
-		const parts = input.split('-');
-
-		if (parts.length !== 2 || !parts[0] || !parts[1]) {
+		if (!IpBlocklist.isRange(input)) {
 			throw new Error('ERR_INVALID_RANGE');
 		}
 
-		const ipVersion = this.getIpVersion(parts[0]);
-		this.addRange(parts[0], parts[1], ipVersion);
+		const [start, end] = input.split('-') as [string, string];
+		this.addRange(start, end, this.getIpVersion(start));
+	}
+
+	/**
+	 * Parsing of a Range, Subnet or Address combined into 1 function
+	 * @see {@link parseRange}, {@link parseSubnet} and {@link parseAddress}
+	 */
+	parseNetwork(input: string): void {
+		if (IpBlocklist.isRange(input)) {
+			this.parseRange(input);
+			return;
+		}
+
+		if (IpBlocklist.isSubnet(input)) {
+			this.parseSubnet(input);
+			return;
+		}
+
+		this.parseAddress(input);
 	}
 
 	/**
@@ -149,4 +162,51 @@ export class IpBlocklist extends BlockList {
 
 		return false;
 	}
+
+	/** Validates if a given string is a ip range (e.g. `111.44.23.0-112.0.0.1`)  */
+	static isRange(ip: string): boolean {
+		const parts = ip.split('-');
+
+		if (parts.length !== 2) return false;
+		const ipMin = isIP(parts[0]!);
+		const ipMax = isIP(parts[1]!);
+		if (ipMin === 0 || ipMax === 0) return false;
+		if (ipMin !== ipMax) return false;
+		if (!isIpLessOrEqual(ipaddr.parse(parts[0]!), ipaddr.parse(parts[1]!))) return false;
+
+		return true;
+	}
+
+	/** Validates if a given string is a ip address (e.g. `111.44.23.0`)  */
+	static isAddress(ip: string): boolean {
+		return isIP(ip) !== 0;
+	}
+
+	/** Validates if a given string is a ip subnet (e.g. `111.44.23.0/8`)  */
+	static isSubnet(ip: string): boolean {
+		const parts = ip.split('/');
+
+		if (parts.length !== 2) return false;
+		if (isIP(parts[0]!) === 0) return false;
+		if (!ipaddr.isValidCIDR(ip)) return false;
+
+		return true;
+	}
+
+	/**
+	 * Validates a string as a Range, Subnet or Address
+	 * @see {@link IpBlocklist.isAddress}, {@link IpBlocklist.isRange} and {@link IpBlocklist.isSubnet}
+	 */
+	static isNetwork(ip: string): boolean {
+		return IpBlocklist.isAddress(ip) || IpBlocklist.isRange(ip) || IpBlocklist.isSubnet(ip);
+	}
+}
+
+type IP = ipaddr.IPv4 | ipaddr.IPv6;
+
+function isIpLessOrEqual(ipA: IP, ipB: IP) {
+	const bytesA = Buffer.from(ipA.toByteArray());
+	const bytesB = Buffer.from(ipB.toByteArray());
+
+	return bytesA.compare(bytesB) !== 1;
 }

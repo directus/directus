@@ -1,16 +1,20 @@
-import { InvalidPayloadError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { type Bus } from '@directus/memory';
 import { useBus } from '../../bus/index.js';
+import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
+import { assertCollectionActive } from '../../permissions/modules/assert-collection-active/assert-collection-active.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
-import { handleWebSocketError, WebSocketError } from '../errors.js';
+import { handleWebSocketError } from '../errors.js';
 import type { WebSocketEvent } from '../messages.js';
 import { WebSocketSubscribeMessage } from '../messages.js';
 import type { Subscription, SubscriptionEvent, WebSocketClient } from '../types.js';
 import { getPayload } from '../utils/items.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
+import { validateDeleteEventAccess, validateSubscriptionAccess } from '../utils/validate-subscription-access.js';
 
 /**
  * Handler responsible for subscriptions
@@ -49,7 +53,7 @@ export class SubscribeHandler {
 			try {
 				this.onMessage(client, WebSocketSubscribeMessage.parse(message));
 			} catch (error) {
-				handleWebSocketError(client, error, 'subscribe');
+				handleWebSocketError(client, error, { type: 'subscribe' });
 			}
 		});
 
@@ -124,13 +128,28 @@ export class SubscribeHandler {
 			}
 
 			try {
+				// manually check delete events permissions, create and update are checked by getPayload
+				if (event.action === 'delete') {
+					await validateDeleteEventAccess(
+						{
+							accountability: client.accountability,
+							collection: subscription.collection,
+							itemScoped: 'item' in subscription,
+						},
+						{ knex: getDatabase(), schema },
+					);
+				}
+
 				const result = await getPayload(subscription, client.accountability, schema, event);
 
 				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) continue;
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
-				handleWebSocketError(client, err, 'subscribe');
+				// don't notify the client of permission errors, as that would leak the existence of the event
+				if (isDirectusError(err, ErrorCode.Forbidden)) continue;
+
+				handleWebSocketError(client, err, { type: 'subscribe', uid: subscription.uid });
 			}
 		}
 	}
@@ -145,14 +164,14 @@ export class SubscribeHandler {
 				const accountability = client.accountability;
 				const schema = await getSchema();
 
-				if (!accountability?.admin && !schema.collections[collection]) {
-					throw new WebSocketError(
-						'subscribe',
-						'INVALID_COLLECTION',
-						'The provided collection does not exists or is not accessible.',
-						message.uid,
-					);
-				}
+				await assertCollectionActive(
+					{
+						accountability: accountability ?? createDefaultAccountability(),
+						collection,
+						action: 'read',
+					},
+					{ schema, knex: getDatabase() },
+				);
 
 				const subscription: Subscription = {
 					client,
@@ -170,6 +189,14 @@ export class SubscribeHandler {
 
 				if ('item' in message) subscription.item = String(message.item);
 
+				// subscriptions on specific events skip getPayload, validate access here
+				if (subscription.event) {
+					await validateSubscriptionAccess(
+						{ accountability, collection, event: subscription.event, item: subscription.item },
+						{ knex: getDatabase(), schema },
+					);
+				}
+
 				if ('uid' in message) {
 					subscription.uid = String(message.uid);
 					// remove the subscription if it already exists
@@ -185,7 +212,7 @@ export class SubscribeHandler {
 				// send an initial response
 				client.send(fmtMessage('subscription', data, subscription.uid));
 			} catch (err) {
-				handleWebSocketError(client, err, 'subscribe');
+				handleWebSocketError(client, err, { type: 'subscribe', uid: message.uid });
 			}
 		}
 
@@ -195,7 +222,7 @@ export class SubscribeHandler {
 
 				client.send(fmtMessage('subscription', { event: 'unsubscribe' }, message.uid));
 			} catch (err) {
-				handleWebSocketError(client, err, 'unsubscribe');
+				handleWebSocketError(client, err, { type: 'unsubscribe', uid: message.uid });
 			}
 		}
 	}

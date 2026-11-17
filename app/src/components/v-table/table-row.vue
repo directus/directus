@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/types';
-import { computed } from 'vue';
+import { isNil } from 'lodash-es';
+import { computed, h, renderSlot, type Slots } from 'vue';
 import type { Header, Item } from './types';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -18,6 +19,9 @@ const props = withDefaults(
 		sortedManually?: boolean;
 		hasClickListener?: boolean;
 		height?: number;
+		itemSlots?: Slots;
+		/** Comma-separated names of the slots in `itemSlots`, so the row re-renders when they change */
+		slotNames?: string;
 	}>(),
 	{
 		showSelect: 'none',
@@ -27,21 +31,44 @@ const props = withDefaults(
 		sortedManually: false,
 		hasClickListener: false,
 		height: 48,
+		itemSlots: () => ({}),
+		slotNames: '',
 	},
 );
 
 const emit = defineEmits(['click', 'item-selected']);
 
-const cssHeight = computed(() => {
-	return {
-		tableRow: props.height + 2 + 'px',
-		renderTemplateImage: props.height - 16 + 'px',
-	};
-});
+// Inline vars instead of CSS v-bind(): v-bind() adds a MutationObserver and a document-wide query per row
+const rowStyle = computed(() => ({
+	'--table-row-height': props.height + 2 + 'px',
+	'--table-row-image-height': props.height - 16 + 'px',
+}));
+
+const hasItemAppendSlot = computed(() => props.slotNames.split(',').includes('item-append'));
+
+// The table's item slots come in as a prop rather than as slots on this component. vuedraggable renders
+// rows with plain render functions, so Vue re-renders any row that receives slots whenever the list
+// re-renders. Without slots, a row only re-renders when its own props change.
+function renderCell(header: Header) {
+	return renderSlot(props.itemSlots, `item.${header.value}`, { item: props.item }, () => {
+		const value = header.value.split('.').reduce((acc, val) => acc?.[val], props.item);
+		return [isNil(value) || value === '' ? h(ValueNull) : h(VTextOverflow, { text: value })];
+	});
+}
 
 function onKeydown(e: KeyboardEvent) {
 	if (e.metaKey) return;
 	if ((e.target as HTMLElement)?.tagName === 'TR' && ['Enter', ' '].includes(e.key)) emit('click', e);
+}
+
+function onClick(event: MouseEvent) {
+	const rowAction = (event.target as HTMLElement | null)?.closest('[data-row-action]');
+
+	if (rowAction && (event.currentTarget as HTMLElement).contains(rowAction)) {
+		return;
+	}
+
+	emit('click', event);
 }
 </script>
 
@@ -49,15 +76,16 @@ function onKeydown(e: KeyboardEvent) {
 	<tr
 		class="table-row"
 		:class="{ subdued: subdued, clickable: hasClickListener }"
+		:style="rowStyle"
 		:tabindex="hasClickListener ? 0 : undefined"
-		@click="$emit('click', $event)"
+		@click="onClick"
 		@keydown="onKeydown"
 	>
-		<td v-if="showManualSort" class="manual cell" @click.stop>
+		<td v-if="showManualSort" class="manual cell" data-row-action>
 			<VIcon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
 
-		<td v-if="showSelect !== 'none'" class="select cell" @click.stop>
+		<td v-if="showSelect !== 'none'" class="select cell" data-row-action>
 			<VCheckbox
 				:icon-on="showSelect === 'one' ? 'radio_button_checked' : undefined"
 				:icon-off="showSelect === 'one' ? 'radio_button_unchecked' : undefined"
@@ -66,27 +94,18 @@ function onKeydown(e: KeyboardEvent) {
 			/>
 		</td>
 
-		<td v-for="header in headers" :key="header.value" class="cell" :class="`align-${header.align}`">
-			<slot :name="`item.${header.value}`" :item="item">
-				<VTextOverflow
-					v-if="
-						header.value.split('.').reduce((acc, val) => {
-							return acc[val];
-						}, item)
-					"
-					:text="
-						header.value.split('.').reduce((acc, val) => {
-							return acc[val];
-						}, item)
-					"
-				/>
-				<ValueNull v-else />
-			</slot>
+		<td
+			v-for="header in headers"
+			:key="header.value"
+			class="cell"
+			:class="[`align-${header.align}`, { inactive: header.inactive }]"
+		>
+			<component :is="renderCell(header)" />
 		</td>
 
 		<td class="spacer cell" />
-		<td v-if="$slots['item-append']" class="append cell" @click.stop>
-			<slot name="item-append" />
+		<td v-if="hasItemAppendSlot" class="append cell" data-row-action>
+			<component :is="renderSlot(itemSlots, 'item-append', { item })" />
 		</td>
 	</tr>
 </template>
@@ -95,7 +114,7 @@ function onKeydown(e: KeyboardEvent) {
 .table-row {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
 
-	block-size: v-bind('cssHeight.tableRow');
+	block-size: var(--table-row-height);
 
 	.cell {
 		display: flex;
@@ -114,6 +133,11 @@ function onKeydown(e: KeyboardEvent) {
 		&.select {
 			display: flex;
 			align-items: center;
+		}
+
+		/* Columns of an inactive collection stay readable, but are muted */
+		&.inactive {
+			color: var(--theme--foreground-subdued);
 		}
 	}
 
@@ -145,10 +169,10 @@ function onKeydown(e: KeyboardEvent) {
 	}
 
 	:deep(.render-template) {
-		block-size: v-bind('cssHeight.tableRow');
+		block-size: var(--table-row-height);
 
 		img {
-			block-size: v-bind('cssHeight.renderTemplateImage');
+			block-size: var(--table-row-image-height);
 		}
 	}
 }

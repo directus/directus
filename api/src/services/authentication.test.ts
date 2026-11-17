@@ -1,10 +1,14 @@
 import { InvalidCredentialsError, InvalidOtpError, ServiceUnavailableError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability } from '@directus/types';
+import jwt from 'jsonwebtoken';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
 import { getAuthProvider } from '../auth.js';
 import emitter from '../emitter.js';
+import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { fetchAccountabilityPolicyGlobals } from '../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
 import { ActivityService } from './activity.js';
 import { AuthenticationService } from './authentication.js';
 import { SettingsService } from './settings.js';
@@ -62,6 +66,12 @@ vi.mock('../permissions/modules/fetch-global-access/fetch-global-access.js', () 
 	fetchGlobalAccess: vi.fn().mockResolvedValue({ app: false, admin: false }),
 }));
 
+vi.mock('../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js', () => ({
+	fetchAccountabilityPolicyGlobals: vi
+		.fn()
+		.mockResolvedValue({ app_access: false, admin_access: false, enforce_tfa: false }),
+}));
+
 vi.mock('../license/manager.js', () => ({
 	getLicenseManager: vi.fn().mockReturnValue({
 		isLocked: vi.fn().mockResolvedValue(false),
@@ -72,19 +82,15 @@ vi.mock('../utils/get-secret.js', () => ({
 	getSecret: vi.fn().mockReturnValue('test-secret'),
 }));
 
-vi.mock('../utils/get-milliseconds.js', () => ({
-	getMilliseconds: vi.fn().mockReturnValue(900000),
-}));
-
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
-		EMAIL_TEMPLATES_PATH: './templates',
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({
 		LOGIN_STALL_TIME: 0,
-		ACCESS_TOKEN_TTL: '15m',
-		REFRESH_TOKEN_TTL: '7d',
-		SESSION_COOKIE_TTL: '1d',
-	}),
-}));
+		ACCESS_TOKEN_TTL: 900_000,
+		REFRESH_TOKEN_TTL: 604_800_000,
+		SESSION_COOKIE_TTL: 86_400_000,
+	});
+});
 
 vi.mock('jsonwebtoken', () => ({
 	default: {
@@ -153,7 +159,6 @@ describe('Integration Tests', () => {
 
 		const setupHappyPathTracker = () => {
 			tracker.on.select('directus_users').responseOnce([mockUser]);
-			tracker.on.select('directus_users').responseOnce([]);
 			tracker.on.insert('directus_sessions').response([1]);
 			tracker.on.delete('directus_sessions').response(1);
 			tracker.on.update('directus_users').response([1]);
@@ -171,6 +176,36 @@ describe('Integration Tests', () => {
 					expires: 900000,
 					id: mockUser.id,
 				});
+
+				expect(vi.mocked(jwt.sign).mock.calls[0]?.[0]).not.toHaveProperty('enforce_tfa');
+			});
+
+			it('should include enforce_tfa from the effective user policies', async () => {
+				service.accountability = { ip: '127.0.0.1' } as Accountability;
+				vi.mocked(fetchRolesTree).mockResolvedValueOnce(['parent-role-id', mockUser.role]);
+
+				vi.mocked(fetchAccountabilityPolicyGlobals).mockResolvedValueOnce({
+					app_access: false,
+					admin_access: false,
+					enforce_tfa: true,
+				});
+
+				setupHappyPathTracker();
+
+				await service.login('default', { email: 'john@example.com', password: 'password' });
+
+				expect(fetchAccountabilityPolicyGlobals).toHaveBeenCalledWith(
+					{
+						user: mockUser.id,
+						roles: ['parent-role-id', mockUser.role],
+						ip: '127.0.0.1',
+						app: false,
+						admin: false,
+					},
+					{ knex: db, schema },
+				);
+
+				expect(vi.mocked(jwt.sign).mock.calls[0]?.[0]).toMatchObject({ enforce_tfa: true });
 			});
 
 			it('should call provider.getUserID with the payload', async () => {
@@ -320,7 +355,6 @@ describe('Integration Tests', () => {
 
 			it('should login successfully when TFA OTP is valid', async () => {
 				tracker.on.select('directus_users').responseOnce([{ ...mockUser, tfa_secret: 'some-secret' }]);
-				tracker.on.select('directus_users').responseOnce([]);
 				tracker.on.insert('directus_sessions').response([1]);
 				tracker.on.delete('directus_sessions').response(1);
 				tracker.on.update('directus_users').response([1]);
@@ -338,6 +372,9 @@ describe('Integration Tests', () => {
 					refreshToken: 'test-refresh-token',
 					id: mockUser.id,
 				});
+
+				expect(fetchAccountabilityPolicyGlobals).not.toHaveBeenCalled();
+				expect(vi.mocked(jwt.sign).mock.calls[0]?.[0]).not.toHaveProperty('enforce_tfa');
 			});
 
 			it('should reset rate limiter to zero on successful login when attempts are configured', async () => {

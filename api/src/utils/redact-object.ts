@@ -28,13 +28,26 @@ export function redactObject(
 	const clone = JSON.parse(JSON.stringify(input, getReplacer(replacement, redact.values)));
 
 	if (redact.keys) {
-		traverse(clone, redact.keys);
+		// traverse removes matched paths from the list it gets, so give it a copy and leave the caller's keys alone
+		traverse(clone, [...redact.keys]);
 	}
 
 	return clone;
 
-	function traverse(object: UnknownObject, checkKeyPaths: Keys): void {
+	function traverse(object: unknown, checkKeyPaths: Keys): void {
 		if (checkKeyPaths.length === 0) {
+			return;
+		}
+
+		if (Array.isArray(object)) {
+			for (const item of object) {
+				traverse(item, [...checkKeyPaths]);
+			}
+
+			return;
+		}
+
+		if (!isObject(object)) {
 			return;
 		}
 
@@ -44,7 +57,8 @@ export function redactObject(
 		for (const key of Object.keys(object)) {
 			const localCheckPaths = [];
 
-			for (const [index, path] of [...checkKeyPaths].entries()) {
+			for (let index = checkKeyPaths.length - 1; index >= 0; index--) {
+				const path = checkKeyPaths[index]!;
 				const [current, ...remaining] = path;
 
 				const escapedKey = wildcardChars.includes(key) ? `\\${key}` : key;
@@ -91,11 +105,7 @@ export function redactObject(
 				}
 			}
 
-			const value = object[key];
-
-			if (isObject(value)) {
-				traverse(value, [...globalCheckPaths, ...localCheckPaths]);
-			}
+			traverse(object[key], [...globalCheckPaths, ...localCheckPaths]);
 		}
 	}
 }

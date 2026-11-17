@@ -19,7 +19,8 @@ import type {
 	Transformation,
 	TransformationSet,
 } from '@directus/types';
-import archiver from 'archiver';
+import { isValidUuid } from '@directus/utils';
+import { ZipArchive } from 'archiver';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
 import { contentType, extension } from 'mime-types';
@@ -30,8 +31,6 @@ import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
-import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { assertTransformsAllowed, toDimension } from './assets/assert-transforms-allowed.js';
 import { NameDeduper } from './assets/name-deduper.js';
@@ -79,7 +78,7 @@ export class AssetsService {
 			throw new InvalidPayloadError({ reason: 'No files found in the selected folders tree' });
 		}
 
-		const archive = archiver('zip');
+		const archive = new ZipArchive();
 
 		// Streams the archive was handed but hasn't finished reading, so they can be released if it dies early
 		const pendingStreams = new Set<Readable>();
@@ -149,7 +148,10 @@ export class AssetsService {
 
 					const folderName = folder ? options.folders?.get(folder) : undefined;
 
-					archive.append(assetStream, { name: dedupedFileName, prefix: folderName });
+					archive.append(assetStream, {
+						name: dedupedFileName,
+						...(folderName !== undefined && { prefix: folderName }),
+					});
 				}
 
 				// add any empty folders, does not override already filled folder
@@ -396,7 +398,7 @@ export class AssetsService {
 			// limitInputPixels, but we should have that check applied before starting the read streams
 			const { width, height } = file;
 
-			const maxInputDimension = toDimension(env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION']) ?? 6000;
+			const maxInputDimension = toDimension(env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION) ?? 6000;
 
 			if (!width || !height || width > maxInputDimension || height > maxInputDimension) {
 				logger.warn(`Image is too large to be transformed, or image size couldn't be determined.`);
@@ -408,7 +410,7 @@ export class AssetsService {
 
 			const { queue, process } = sharp.counters();
 
-			if (queue + process > (env['ASSETS_TRANSFORM_MAX_CONCURRENT'] as number)) {
+			if (queue + process > env.ASSETS_TRANSFORM_MAX_CONCURRENT) {
 				throw new ServiceUnavailableError({
 					service: 'files',
 					reason: 'Server too busy',
@@ -418,7 +420,7 @@ export class AssetsService {
 			const transformer = getSharpInstance();
 
 			transformer.timeout({
-				seconds: clamp(Math.round(getMilliseconds(env['ASSETS_TRANSFORM_TIMEOUT'], 0) / 1000), 1, 3600),
+				seconds: clamp(Math.round(env.ASSETS_TRANSFORM_TIMEOUT / 1000), 1, 3600),
 			});
 
 			if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();

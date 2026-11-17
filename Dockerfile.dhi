@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 
-ARG NODE_VERSION=22
+ARG NODE_VERSION=26.13.0
 
 # Pin alpine version so libs are in sync between builder and runtime
 ARG ALPINE_VERSION=3.23
@@ -16,13 +16,11 @@ FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS builder
 
 RUN apk --no-cache add python3 py3-setuptools build-base
 
-# Install pm2 here so the hardened runtime image can copy it
-RUN npm install --global pm2@6
-
 WORKDIR /directus
 
 COPY package.json .
-RUN corepack enable && corepack prepare
+
+RUN npm install --global "$(node -p "require('./package.json').packageManager")"
 
 # Deploy as 'node' user to match pnpm setups in production image
 # (see https://github.com/directus/directus/issues/23822)
@@ -31,14 +29,14 @@ USER node
 
 ENV NODE_OPTIONS=--max-old-space-size=8192
 
-COPY pnpm-lock.yaml .
+COPY --chown=node:node pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm fetch
 
 COPY --chown=node:node . .
 RUN <<EOF
 	set -ex
 	pnpm install --recursive --offline --frozen-lockfile
-	npm_config_workspace_concurrency=2 pnpm run build
+	pnpm_config_workspace_concurrency=2 pnpm --recursive --filter '!e2e' run build
 	pnpm --filter directus deploy --legacy --prod dist
 	cd dist
 	# drop the prebuilds and recompile from source
@@ -69,12 +67,12 @@ WORKDIR /directus
 ENV \
 	DB_CLIENT="sqlite3" \
 	DB_FILENAME="/directus/database/database.sqlite" \
+	LIBC="musl" \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false" \
 	PM2_HOME="/directus/.pm2" \
 	PIDUSAGE_SILENT="true"
 
-COPY --from=builder --chown=node:node /usr/local/lib/node_modules/pm2 /directus/pm2
 COPY --from=builder --chown=node:node /directus/ecosystem.config.cjs .
 COPY --from=builder --chown=node:node /directus/dist .
 COPY --chown=node:node docker-entrypoint.cjs .

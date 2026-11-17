@@ -67,7 +67,7 @@ const CalendarRoot = {
 			<slot :weekDays="['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" :grid="[]" :date="mockDate" />
 		</div>
 	`,
-	props: ['modelValue', 'disabled', 'fixedWeeks', 'weekdayFormat', 'dir'],
+	props: ['modelValue', 'disabled', 'fixedWeeks', 'weekdayFormat', 'locale', 'dir'],
 	emits: ['update:modelValue'],
 	data() {
 		return {
@@ -1269,6 +1269,24 @@ describe('v-date-picker', () => {
 
 			const timeField = wrapper.findComponent(TimeFieldRoot);
 			expect(timeField.props('dir')).toBe('rtl');
+		});
+	});
+
+	describe('locale support', () => {
+		it('passes the user language to the calendar', () => {
+			const wrapper = createWrapper({ type: 'date' });
+
+			const calendarRoot = wrapper.findComponent(CalendarRoot);
+			expect(calendarRoot.props('locale')).toBe('en-US');
+		});
+
+		it('passes the user language to the calendar when it is not English', () => {
+			mockUserStore.language = 'fr-FR';
+
+			const wrapper = createWrapper({ type: 'date' });
+
+			const calendarRoot = wrapper.findComponent(CalendarRoot);
+			expect(calendarRoot.props('locale')).toBe('fr-FR');
 		});
 	});
 

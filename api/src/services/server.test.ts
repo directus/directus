@@ -1,26 +1,29 @@
-import { useEnv } from '@directus/env';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import getMailer from '../mailer.js';
+import { resetEnv, setEnv } from '../test-utils/env.js';
 import { ServerService } from './server.js';
 
-const mockEnv = vi.hoisted(() => ({
-	EMAIL_TEMPLATES_PATH: './templates',
-	MCP_ENABLED: true,
-	AI_ENABLED: true,
-	MCP_OAUTH_ENABLED: true,
-	MCP_OAUTH_DCR_ENABLED: false,
-	MCP_OAUTH_CIMD_ENABLED: true,
-}));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn(() => mockEnv),
-}));
+	return mockUseEnv({
+		PROJECT_OWNER_ENABLED: true,
+		MCP_ENABLED: true,
+		AI_ENABLED: true,
+		MCP_OAUTH_ENABLED: true,
+		MCP_OAUTH_DCR_ENABLED: false,
+		MCP_OAUTH_CIMD_ENABLED: true,
+	});
+});
 
 vi.mock('./settings.js', () => ({
-	SettingsService: vi.fn().mockImplementation(() => ({
-		readSingleton: vi.fn().mockResolvedValue({ project_name: 'Directus' }),
-	})),
+	SettingsService: vi.fn().mockImplementation(function () {
+		return {
+			readSingleton: vi.fn().mockResolvedValue({ project_name: 'Directus' }),
+		};
+	}),
 }));
 
 vi.mock('../cache.js', () => ({
@@ -65,16 +68,26 @@ describe('ServerService', () => {
 		db = knex({ client: MockClient });
 		tracker = createTracker(db);
 
-		Object.assign(mockEnv, {
-			EMAIL_TEMPLATES_PATH: './templates',
-			MCP_ENABLED: true,
-			AI_ENABLED: true,
-			MCP_OAUTH_ENABLED: true,
-			MCP_OAUTH_DCR_ENABLED: false,
-			MCP_OAUTH_CIMD_ENABLED: true,
+		resetEnv();
+	});
+
+	test('health reports an email error when the transport cannot be built', async () => {
+		setEnv({ HEALTHCHECK_SERVICES: ['email'], EMAIL_VERIFY_SETUP: true });
+
+		vi.mocked(getMailer).mockImplementation(() => {
+			throw new Error('The EMAIL_MAILTRAP_TOKEN env var is required for the mailtrap transport');
 		});
 
-		vi.mocked(useEnv).mockReturnValue(mockEnv as any);
+		const service = new ServerService({
+			knex: db,
+			schema: {} as any,
+			accountability: { user: 'user-id', admin: true } as any,
+		});
+
+		const health = (await service.health()) as any;
+
+		expect(health.status).toBe('error');
+		expect(health.checks['email:connection'][0].status).toBe('error');
 	});
 
 	test('serverInfo includes MCP OAuth env capability flags for authenticated users', async () => {
@@ -108,7 +121,7 @@ describe('ServerService', () => {
 	});
 
 	test('serverInfo respects PROJECT_OWNER_ENABLED=false for authenticated users', async () => {
-		Object.assign(mockEnv, { PROJECT_OWNER_ENABLED: false });
+		setEnv({ PROJECT_OWNER_ENABLED: false });
 
 		tracker.on.select('directus_users').response([{ id: 'user-id' }]);
 

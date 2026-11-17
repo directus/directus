@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
 import { spec as staticSpec } from '@directus/specs';
@@ -14,7 +15,6 @@ import type {
 import { getRelation, getRelationType } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
-import hash from 'object-hash';
 import type {
 	OpenAPIObject,
 	ParameterObject,
@@ -30,8 +30,9 @@ import type { FieldMap } from '../permissions/modules/fetch-allowed-field-map/fe
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
+import { getSpecFingerprint } from './specifications/get-spec-fingerprint.js';
 
-const env = useEnv();
+const { PUBLIC_URL } = useEnv();
 
 // Documents that a path is reachable both without authentication and with it (an authenticated
 // caller may see a broader response than the public role, e.g. more fields).
@@ -95,13 +96,12 @@ class OASSpecsService implements SpecificationSubService {
 		const paths = await this.generatePaths(schemaForSpec, userCollectionAccess, publicCollectionAccess, tags);
 		const components = await this.generateComponents(schemaForSpec, tags, paths);
 
-		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
-		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
+		const isDefaultPublicUrl = PUBLIC_URL === '/';
+		const url = isDefaultPublicUrl && host ? host : PUBLIC_URL;
 
-		const hashedVersion = hash({
-			now: new Date().toISOString(),
-			user: this.accountability?.user,
-		});
+		const hashedVersion = createHash('sha256')
+			.update(getSpecFingerprint(schemaForSpec, permissions, tags))
+			.digest('hex');
 
 		const spec: OpenAPIObject = {
 			openapi: '3.0.1',

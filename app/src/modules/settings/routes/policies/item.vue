@@ -4,7 +4,12 @@ import { Policy } from '@directus/types';
 import { ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import { getSystemPermissionChanges } from './get-system-permission-changes';
 import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
+import PublicPolicyNotice from './public-policy-notice.vue';
+import SystemPermissionsDialog from './system-permissions-dialog.vue';
+import { useIsAttachedToPublicRole } from './use-is-attached-to-public-role';
+import { useSystemPermissionsGuard } from './use-system-permissions-guard';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -37,14 +42,26 @@ const { edits, hasEdits, item, saving, loading, save, remove, deleting, validati
 	primaryKey,
 );
 
+const isAttachedToPublicRole = useIsAttachedToPublicRole(primaryKey);
+
+const {
+	confirmSystemPermissions,
+	changes: systemPermissionChanges,
+	guardSave,
+	confirmSave,
+} = useSystemPermissionsGuard(
+	() => (isAttachedToPublicRole.value !== false ? getSystemPermissionChanges(edits.value.permissions) : []),
+	saving,
+);
+
 const confirmDelete = ref(false);
 
 useShortcut('meta+s', () => {
-	if (hasEdits.value) saveAndStay();
+	if (hasEdits.value) guardSave(saveAndStay);
 });
 
 useShortcut('meta+shift+s', () => {
-	if (hasEdits.value) saveAndAddNew();
+	if (hasEdits.value) guardSave(saveAndAddNew);
 });
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
@@ -151,13 +168,13 @@ function discardAndStay() {
 				icon="check"
 				:loading="saving"
 				:disabled="!hasEdits"
-				@click="saveAndQuit"
+				@click="guardSave(saveAndQuit)"
 			>
 				<template #split-menu>
 					<SaveOptions
 						:disabled-options="['save-and-quit', 'save-as-copy']"
-						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
+						@save-and-stay="guardSave(saveAndStay)"
+						@save-and-add-new="guardSave(saveAndAddNew)"
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
@@ -169,6 +186,8 @@ function discardAndStay() {
 		</template>
 
 		<div class="content">
+			<PublicPolicyNotice v-if="isAttachedToPublicRole" />
+
 			<VForm
 				v-model="edits"
 				collection="directus_policies"
@@ -187,6 +206,13 @@ function discardAndStay() {
 				:primary-key="primaryKey"
 			/>
 		</template>
+
+		<SystemPermissionsDialog
+			v-model="confirmSystemPermissions"
+			:changes="systemPermissionChanges"
+			:saving
+			@confirm="confirmSave"
+		/>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<VCard>

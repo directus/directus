@@ -15,13 +15,15 @@ vi.mock('../../database/index.js', () => ({
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		PUBLIC_URL: 'https://example.com',
-		ACCESS_TOKEN_TTL: '15m',
-		REFRESH_TOKEN_TTL: '7d',
+		ACCESS_TOKEN_TTL: 900_000,
+		REFRESH_TOKEN_TTL: 604_800_000,
 		MCP_OAUTH_MAX_CLIENTS: 10000,
-		MCP_OAUTH_CLIENT_UNUSED_TTL: '3d',
-		MCP_OAUTH_CLIENT_IDLE_TTL: '0',
+		MCP_OAUTH_CLIENT_UNUSED_TTL: 259_200_000,
+		MCP_OAUTH_CLIENT_IDLE_TTL: 0,
 		MCP_OAUTH_DCR_ENABLED: true,
 		MCP_OAUTH_CIMD_ENABLED: true,
+		MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+		MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 	}),
 }));
 
@@ -52,9 +54,11 @@ vi.mock('../../permissions/modules/fetch-global-access/fetch-global-access.js', 
 const mockActivityCreateOne = vi.fn().mockResolvedValue('activity-id');
 
 vi.mock('../activity.js', () => ({
-	ActivityService: vi.fn().mockImplementation(() => ({
-		createOne: mockActivityCreateOne,
-	})),
+	ActivityService: vi.fn().mockImplementation(function () {
+		return {
+			createOne: mockActivityCreateOne,
+		};
+	}),
 }));
 
 vi.mock('../../logger/index.js', () => ({
@@ -198,13 +202,15 @@ describe('McpOAuthService', () => {
 
 		useEnv.mockReturnValue({
 			PUBLIC_URL: TEST_PUBLIC_URL,
-			ACCESS_TOKEN_TTL: '15m',
-			REFRESH_TOKEN_TTL: '7d',
+			ACCESS_TOKEN_TTL: 900_000,
+			REFRESH_TOKEN_TTL: 604_800_000,
 			MCP_OAUTH_MAX_CLIENTS: 10000,
-			MCP_OAUTH_CLIENT_UNUSED_TTL: '3d',
-			MCP_OAUTH_CLIENT_IDLE_TTL: '0',
+			MCP_OAUTH_CLIENT_UNUSED_TTL: 259_200_000,
+			MCP_OAUTH_CLIENT_IDLE_TTL: 0,
 			MCP_OAUTH_DCR_ENABLED: true,
 			MCP_OAUTH_CIMD_ENABLED: true,
+			MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+			MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 		} as any);
 
 		mockNanoid.mockReturnValue('a'.repeat(64));
@@ -308,6 +314,8 @@ describe('McpOAuthService', () => {
 				PUBLIC_URL: 'https://example.com/directus',
 				MCP_OAUTH_DCR_ENABLED: true,
 				MCP_OAUTH_CIMD_ENABLED: false,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 			} as any);
 
 			const svc = new McpOAuthService({ knex: db, schema });
@@ -323,6 +331,8 @@ describe('McpOAuthService', () => {
 				PUBLIC_URL: 'https://example.com/directus',
 				MCP_OAUTH_DCR_ENABLED: true,
 				MCP_OAUTH_CIMD_ENABLED: false,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 			} as any);
 
 			const svc = new McpOAuthService({ knex: db, schema });
@@ -407,6 +417,8 @@ describe('McpOAuthService', () => {
 				PUBLIC_URL: TEST_PUBLIC_URL,
 				MCP_OAUTH_DCR_ENABLED: false,
 				MCP_OAUTH_CIMD_ENABLED: false,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 			} as any);
 
 			mockSettings({ mcp_oauth_dcr_enabled: true });
@@ -433,6 +445,8 @@ describe('McpOAuthService', () => {
 				PUBLIC_URL: 'https://example.com/directus',
 				MCP_OAUTH_DCR_ENABLED: true,
 				MCP_OAUTH_CIMD_ENABLED: false,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 			} as any);
 
 			const svc = new McpOAuthService({ knex: db, schema });
@@ -453,6 +467,8 @@ describe('McpOAuthService', () => {
 				PUBLIC_URL: TEST_PUBLIC_URL,
 				MCP_OAUTH_DCR_ENABLED: true,
 				MCP_OAUTH_CIMD_ENABLED: false,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 			} as any);
 
 			mockSettings({ mcp_oauth_cimd_enabled: true });
@@ -700,10 +716,11 @@ describe('McpOAuthService', () => {
 					useEnv.mockReturnValue({
 						PUBLIC_URL: 'https://example.com',
 						MCP_OAUTH_MAX_CLIENTS: 10000,
-						MCP_OAUTH_CLIENT_UNUSED_TTL: '3d',
-						MCP_OAUTH_CLIENT_IDLE_TTL: '0',
+						MCP_OAUTH_CLIENT_UNUSED_TTL: 259_200_000,
+						MCP_OAUTH_CLIENT_IDLE_TTL: 0,
 						MCP_OAUTH_DCR_ENABLED: true,
 						MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: ['cursor.com', '*.anthropic.com'],
+						MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
 					} as any);
 				});
 
@@ -819,6 +836,8 @@ describe('McpOAuthService', () => {
 				PUBLIC_URL: 'https://example.com',
 				MCP_OAUTH_MAX_CLIENTS: 10001,
 				MCP_OAUTH_DCR_ENABLED: true,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 			} as any);
 
 			tracker.on.select('directus_oauth_clients').response([{ count: 10000 }]);
@@ -836,6 +855,8 @@ describe('McpOAuthService', () => {
 				PUBLIC_URL: 'https://example.com',
 				MCP_OAUTH_MAX_CLIENTS: 0,
 				MCP_OAUTH_DCR_ENABLED: true,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 			} as any);
 
 			tracker.on.select('directus_oauth_clients').response([{ count: 50000 }]);
@@ -908,6 +929,8 @@ describe('McpOAuthService', () => {
 			useEnv.mockReturnValue({
 				PUBLIC_URL: TEST_PUBLIC_URL,
 				MCP_OAUTH_DCR_ENABLED: false,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 			} as any);
 
 			await assertOAuthError(() => service.registerClient(createTestClient()), {
@@ -1136,6 +1159,8 @@ describe('McpOAuthService', () => {
 			useEnv.mockReturnValue({
 				PUBLIC_URL: TEST_PUBLIC_URL,
 				MCP_OAUTH_REQUIRE_RESOURCE: true,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 			} as any);
 
 			mockClientLookup(clientId);
@@ -1292,6 +1317,8 @@ describe('McpOAuthService', () => {
 			useEnv.mockReturnValue({
 				PUBLIC_URL: TEST_PUBLIC_URL,
 				MCP_OAUTH_CIMD_ENABLED: true,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 			} as any);
 
 			// Settings gate
@@ -2332,6 +2359,8 @@ describe('McpOAuthService', () => {
 			useEnv.mockReturnValue({
 				PUBLIC_URL: TEST_PUBLIC_URL,
 				MCP_OAUTH_REQUIRE_RESOURCE: true,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 			} as any);
 
 			mockClientLookup(clientId);
@@ -3208,7 +3237,7 @@ describe('McpOAuthService', () => {
 			const { useEnv } = await import('@directus/env');
 			const env = useEnv() as Record<string, unknown>;
 			const originalIdleTtl = env['MCP_OAUTH_CLIENT_IDLE_TTL'];
-			env['MCP_OAUTH_CLIENT_IDLE_TTL'] = '30d';
+			env['MCP_OAUTH_CLIENT_IDLE_TTL'] = 2_592_000_000;
 
 			try {
 				const idleClientId = crypto.randomUUID();
@@ -3240,7 +3269,7 @@ describe('McpOAuthService', () => {
 			const { useEnv } = await import('@directus/env');
 			const env = useEnv() as Record<string, unknown>;
 			const originalIdleTtl = env['MCP_OAUTH_CLIENT_IDLE_TTL'];
-			env['MCP_OAUTH_CLIENT_IDLE_TTL'] = '30d';
+			env['MCP_OAUTH_CLIENT_IDLE_TTL'] = 2_592_000_000;
 
 			try {
 				// Steps 1-4
@@ -3466,6 +3495,8 @@ describe('McpOAuthService', () => {
 			useEnv.mockReturnValue({
 				PUBLIC_URL: TEST_PUBLIC_URL,
 				MCP_OAUTH_CIMD_ENABLED: false,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 			} as any);
 
 			await assertOAuthError(() => service.resolveClientWithFetch(cimdClientId), {
@@ -3727,6 +3758,8 @@ describe('McpOAuthService', () => {
 			useEnv.mockReturnValue({
 				PUBLIC_URL: TEST_PUBLIC_URL,
 				MCP_OAUTH_CIMD_ENABLED: false,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [],
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 			} as any);
 
 			const result = await service.resolveClientFromDb(cimdClientId);

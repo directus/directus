@@ -246,7 +246,15 @@ export function deepMapWithSchema(
 
 			// After processing recursion, run callback
 			return maybeAwait(processedValue, (finalValue) => {
-				return callback([key, finalValue], { collection, field, ...relationInfo, leaf, object, action });
+				return callback([key, finalValue], {
+					collection,
+					field,
+					relation: relationInfo.relation,
+					relationType: relationInfo.relationType,
+					leaf,
+					object,
+					action,
+				});
 			});
 		});
 

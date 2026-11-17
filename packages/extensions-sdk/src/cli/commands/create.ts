@@ -19,6 +19,7 @@ import getPackageManager from '../utils/get-package-manager.js';
 import { isLanguage, languageToShort } from '../utils/languages.js';
 import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
+import getDefaultHost from './helpers/get-default-host.js';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 
 type CreateOptions = {
@@ -138,7 +139,7 @@ async function createExtension({
 	await fse.ensureDir(targetPath);
 	await copyTemplate(type, targetPath, 'src', language);
 
-	const host = `^${LAST_BREAKING_RELEASE}`;
+	const host = getDefaultHost(type);
 
 	const options: ExtensionOptions = isIn(type, HYBRID_EXTENSION_TYPES)
 		? {

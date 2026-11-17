@@ -27,7 +27,6 @@
 	"author": "Nils Twelker (nils@directus.io)",
 	"license": "MIT",
 	"private": true,
-	"packageManager": "pnpm@10.14.0",
 	"dependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
@@ -36,10 +35,10 @@
 		"@types/node": "catalog:",
 		"chalk": "catalog:",
 		"commander": "catalog:",
-		"copyfiles": "catalog:",
 		"get-port": "catalog:",
 		"knex": "catalog:",
 		"lodash-es": "catalog:",
+		"native-copyfiles": "catalog:",
 		"tsdown": "catalog:",
 		"tsx": "catalog:",
 		"typedoc": "catalog:",
@@ -47,7 +46,7 @@
 		"typescript": "catalog:"
 	},
 	"engines": {
-		"node": ">=22"
+		"node": ">=26"
 	},
 	"optionalDependencies": {
 		"mysql2": "catalog:",

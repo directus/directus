@@ -22,7 +22,7 @@ export class LogsController extends SocketController {
 			this.bindEvents(this.createClient(ws, auth));
 		});
 
-		logger.info(`Logs WebSocket Server started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
+		logger.info(`Logs WebSocket Server started at ws://${env.HOST}:${env.PORT}${this.endpoint}`);
 	}
 
 	override getEnvironmentConfig(configPrefix: string) {
@@ -48,7 +48,7 @@ export class LogsController extends SocketController {
 			try {
 				emitter.emitAction('websocket.logs', { message, client });
 			} catch (error) {
-				handleWebSocketError(client, error, 'server');
+				handleWebSocketError(client, error, { type: 'server' });
 				return;
 			}
 		});

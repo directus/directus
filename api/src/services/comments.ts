@@ -1,22 +1,22 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, Comment, MutationOptions, PrimaryKey } from '@directus/types';
+import { isValidUuid } from '@directus/utils';
 import { uniq } from 'lodash-es';
 import { useLogger } from '../logger/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { isValidUuid } from '../utils/is-valid-uuid.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 
-const env = useEnv();
+const { PUBLIC_URL } = useEnv();
 const logger = useLogger();
 
-export class CommentsService extends ItemsService {
+export class CommentsService extends ItemsService<Comment> {
 	notificationsService: NotificationsService;
 	usersService: UsersService;
 
@@ -131,9 +131,7 @@ export class CommentsService extends ItemsService {
 
 				comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
 
-				const href = new Url(env['PUBLIC_URL'] as string)
-					.addPath('admin', 'content', data['collection'], data['item'])
-					.toString();
+				const href = new Url(PUBLIC_URL).addPath('admin', 'content', data['collection'], data['item']).toString();
 
 				const message = `
 Hello ${userName(user)},
@@ -165,15 +163,51 @@ ${comment}
 		return result;
 	}
 
-	override updateOne(key: PrimaryKey, data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async updateMany(keys: PrimaryKey[], data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (!this.accountability?.user) throw new ForbiddenError();
 
-		return super.updateOne(key, data, opts);
+		if ('user_created' in data) {
+			throw new InvalidPayloadError({ reason: `You can't change the "user_created" value manually` });
+		}
+
+		if ('item' in data || 'collection' in data) {
+			let comments: Partial<Comment>[] = [data];
+
+			if (!('item' in data) || !('collection' in data)) {
+				comments = await this.knex.select('collection', 'item').from('directus_comments').whereIn('id', keys);
+			}
+
+			const itemsByCollection = new Map<string, Set<PrimaryKey>>();
+
+			for (const comment of comments) {
+				const collection = 'collection' in data ? data['collection']! : comment['collection']!;
+				const item = 'item' in data ? data['item']! : comment['item']!;
+
+				itemsByCollection.set(collection, (itemsByCollection.get(collection) ?? new Set()).add(item));
+			}
+
+			for (const [collection, items] of itemsByCollection) {
+				await validateAccess(
+					{
+						accountability: this.accountability,
+						action: 'read',
+						collection,
+						primaryKeys: [...items],
+					},
+					{
+						schema: this.schema,
+						knex: this.knex,
+					},
+				);
+			}
+		}
+
+		return super.updateMany(keys, data, opts);
 	}
 
-	override deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (!this.accountability?.user) throw new ForbiddenError();
 
-		return super.deleteOne(key, opts);
+		return super.deleteMany(keys, opts);
 	}
 }

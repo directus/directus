@@ -1,5 +1,5 @@
 import { isSystemCollection } from '@directus/system-data';
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';

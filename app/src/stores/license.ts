@@ -15,11 +15,21 @@ import {
 } from '@directus/license';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { i18n } from '@/lang';
 import sdk from '@/sdk';
 import { useUserStore } from '@/stores/user';
 import { formatTimeframe } from '@/utils/format-timeframe';
+import { localizedFormat } from '@/utils/localized-format';
 
 export const GRACE_DANGER_THRESHOLD_DAYS = 3;
+
+const WARNING_REASONS = ['invalid_key', 'activation_limit', 'binding_mismatch', 'unavailable'] as const;
+
+export type LicenseWarning = {
+	reason: (typeof WARNING_REASONS)[number] | 'generic';
+	severity: 'warning' | 'danger';
+	daysRemaining: number;
+};
 
 export type LicenseBoundary = {
 	type: 'renewal' | 'expiration';
@@ -30,6 +40,10 @@ type LicenseLimit = {
 	remaining: number | null;
 	hasRemaining: boolean;
 };
+
+function daysUntil(date: Date): number {
+	return Math.max(0, Math.ceil((date.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+}
 
 export const useLicenseStore = defineStore('licenseStore', () => {
 	const info = ref<ReadLicenseOutput | null>(null);
@@ -76,7 +90,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const isCore = computed(() => info.value?.source === null);
 
-	const wasDowngraded = computed(() => info.value?.downgrade_reason != null);
+	const downgradeReason = computed(() => (isCore.value ? (info.value?.invalid_reason ?? null) : null));
+	const warningReason = computed(() => (isCore.value ? null : (info.value?.invalid_reason ?? null)));
 
 	const customPermissionRulesEnabled = computed(() => isEntitlementEnabled('custom_permission_rules_enabled'));
 
@@ -106,15 +121,40 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return new Date((info.value.expires_at + info.value.grace_period) * 1000);
 	});
 
+	const tokenExpiresAt = computed<Date | null>(() => {
+		const expiresAt = info.value?.token_expires_at;
+		if (expiresAt == null) return null;
+		return new Date(expiresAt * 1000);
+	});
+
 	const formattedGraceDeadline = computed(() =>
-		graceDeadline.value ? Intl.DateTimeFormat().format(graceDeadline.value) : '',
+		graceDeadline.value ? localizedFormat(graceDeadline.value, String(i18n.global.t('date-fns_date_short'))) : '',
 	);
 
-	const gracePeriodDaysRemaining = computed<number | null>(() => {
-		if (!graceDeadline.value) return null;
-		const nowSec = Date.now() / 1000;
-		return Math.max(0, Math.ceil((graceDeadline.value.getTime() / 1000 - nowSec) / (60 * 60 * 24)));
+	const gracePeriodDaysRemaining = computed<number | null>(() =>
+		graceDeadline.value ? daysUntil(graceDeadline.value) : null,
+	);
+
+	const licenseWarning = computed<LicenseWarning | null>(() => {
+		if (warningReason.value === null || tokenExpiresAt.value === null) return null;
+
+		const reason = (WARNING_REASONS as readonly string[]).includes(warningReason.value)
+			? (warningReason.value as LicenseWarning['reason'])
+			: 'generic';
+
+		return {
+			reason,
+			// The licensing service being unreachable is usually transient
+			severity: reason === 'unavailable' ? 'warning' : 'danger',
+			daysRemaining: daysUntil(tokenExpiresAt.value),
+		};
 	});
+
+	const hasPinnedNotice = computed(
+		() =>
+			!isLocked.value &&
+			(licenseWarning.value !== null || gracePeriodDaysRemaining.value !== null || isCoreGrace.value),
+	);
 
 	function isEntitlementEnabled(key: string) {
 		const ent = info.value?.entitlements[key];
@@ -246,7 +286,11 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		isLocked,
 		isCoreGrace,
 		isCore,
-		wasDowngraded,
+		downgradeReason,
+		warningReason,
+		tokenExpiresAt,
+		licenseWarning,
+		hasPinnedNotice,
 		customPermissionRulesEnabled,
 		isLicensed,
 		customLLMEnabled,

@@ -217,8 +217,6 @@ logoutReason:
   SESSION_EXPIRED: Sesión expirada
 public_label: Público
 public_description: Control de datos disponibles por API sin autentificación.
-public_role_info: >-
-  El rol público controla qué datos de la API están disponibles para los usuarios no autenticados o para los usuarios sin un rol. Las solicitudes con el rol público no pueden tener acceso de aplicación o de administrador. Si se otorgan accesos de aplicación o de administrador a una política asignada al rol público, serán ignorados.
 admin_description: Descripción_administrador.
 admin_policy_description: Política administrativa inicial con acceso sin restricciones a la aplicación/API.
 no_description: Sin descripción...
@@ -1269,7 +1267,6 @@ settings_ai: IA
 model_context_protocol: Model Context Protocol
 ai_assistant: Asistente de IA
 ai_disabled_by_env: Las funciones de Asistente de IA han sido deshabilitadas desde las variables de entorno.
-settings_flows: Flujos
 settings_system_logs: Registros del Sistema
 settings_presets: Marcadores
 settings_translations: Traducciónes
@@ -2163,6 +2160,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Un editor de texto rich escribiendo contenido HTML
     toolbar: Barra de Herramientas
+    extensions: Extensiones
     custom_formats: Formatos Personalizados
     folder_note: Carpeta para los archivos subidos. No afecta a los archivos existentes.
     imageToken: Token de acceso estático

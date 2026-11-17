@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { DeepPartial, Field } from '@directus/types';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';

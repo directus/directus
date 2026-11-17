@@ -108,7 +108,7 @@ router.patch(
 			schema: req.schema,
 		});
 
-		let keys: PrimaryKey[] = [];
+		let keys: PrimaryKey[];
 
 		if (Array.isArray(req.body)) {
 			keys = await service.updateBatch(req.body);
@@ -213,7 +213,7 @@ router.get(
 			throw new ForbiddenError({ reason: `Version with key ${req.params['pk']} does not have an associated item` });
 		}
 
-		const { outdated, mainHash } = await service.verifyHash(version['collection'], version['item'], version['hash']);
+		const { outdated, mainHash } = await service.verifyHash(version['collection'], version['item'], version['hash']!);
 
 		const delta = version.delta ?? {};
 		delta[req.schema.collections[version.collection]!.primary] = version.item;

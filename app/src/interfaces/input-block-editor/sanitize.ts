@@ -1,7 +1,7 @@
 import { isObject } from '@directus/utils';
 import { OutputBlockData } from '@editorjs/editorjs';
 import dompurify from 'dompurify';
-import { cloneDeep, isString } from 'lodash';
+import { cloneDeep, isString } from 'lodash-es';
 
 export function sanitizeValue(value: any): EditorJS.OutputData | null {
 	if (!value || typeof value !== 'object' || !value.blocks || value.blocks.length === 0) return null;

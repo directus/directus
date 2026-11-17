@@ -1,15 +1,13 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
+import { ForbiddenError, InvalidCredentialsError, InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Item, LoginResult, MutationOptions, PrimaryKey } from '@directus/types';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import type { StringValue } from 'ms';
 import { nanoid } from 'nanoid';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { DirectusTokenPayload, ShareData } from '../types/index.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { getSecret } from '../utils/get-secret.js';
 import { md } from '../utils/md.js';
 import { Url } from '../utils/url.js';
@@ -46,6 +44,41 @@ export class SharesService extends ItemsService {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if ('user_created' in data) {
+			throw new InvalidPayloadError({ reason: `You can't change the "user_created" value manually` });
+		}
+
+		if (('item' in data || 'collection' in data) && this.accountability) {
+			let shares = [data];
+
+			if (!('item' in data) || !('collection' in data)) {
+				shares = await this.knex.select('collection', 'item').from('directus_shares').whereIn('id', keys);
+			}
+
+			const itemsByCollection = new Map<string, Set<PrimaryKey>>();
+
+			for (const share of shares) {
+				const collection = 'collection' in data ? data['collection'] : share['collection'];
+				const item = 'item' in data ? data['item'] : share['item'];
+				itemsByCollection.set(collection, (itemsByCollection.get(collection) ?? new Set()).add(item));
+			}
+
+			for (const [collection, items] of itemsByCollection) {
+				await validateAccess(
+					{
+						accountability: this.accountability,
+						action: 'share',
+						collection,
+						primaryKeys: [...items],
+					},
+					{
+						schema: this.schema,
+						knex: this.knex,
+					},
+				);
+			}
+		}
+
 		const primaryKeys = await super.updateMany(keys, data, opts);
 
 		await clearPermissionsCache();
@@ -98,7 +131,7 @@ export class SharesService extends ItemsService {
 		}
 
 		await this.knex('directus_shares')
-			.update({ times_used: record.share_times_used + 1 })
+			.update({ times_used: (record.share_times_used ?? 0) + 1 })
 			.where('id', record.share_id);
 
 		const tokenPayload: DirectusTokenPayload = {
@@ -109,16 +142,16 @@ export class SharesService extends ItemsService {
 		};
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
+		const refreshTokenExpiration = new Date(Date.now() + env.REFRESH_TOKEN_TTL);
 
 		if (options?.session) {
 			tokenPayload.session = refreshToken;
 		}
 
-		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as StringValue | number;
+		const TTL = options?.session ? env.SESSION_COOKIE_TTL : env.ACCESS_TOKEN_TTL;
 
 		const accessToken = jwt.sign(tokenPayload, getSecret(), {
-			expiresIn: TTL,
+			expiresIn: Math.floor(TTL / 1000),
 			issuer: 'directus',
 		});
 
@@ -136,7 +169,7 @@ export class SharesService extends ItemsService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: getMilliseconds(TTL),
+			expires: TTL,
 		};
 	}
 
@@ -165,7 +198,7 @@ Hello!
 
 ${userName(userInfo)} has invited you to view an item in ${share['collection']}.
 
-[Open](${new Url(env['PUBLIC_URL'] as string).addPath('admin', 'shared', payload.share).toString()})
+[Open](${new Url(env.PUBLIC_URL).addPath('admin', 'shared', payload.share).toString()})
 `;
 
 		for (const email of payload.emails) {

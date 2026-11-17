@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import { Redis } from 'ioredis';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { mockEnv } from '../../test-utils/env.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { createRedis } from './create-redis.js';
 
@@ -12,7 +13,10 @@ let mockRedis: Redis;
 
 beforeEach(() => {
 	mockRedis = new Redis();
-	vi.mocked(Redis).mockReturnValue(mockRedis);
+
+	vi.mocked(Redis).mockImplementation(function () {
+		return mockRedis;
+	} as unknown as typeof Redis);
 });
 
 afterEach(() => {
@@ -22,8 +26,8 @@ afterEach(() => {
 describe('createRedis', () => {
 	test('Creates and returns new Redis instance from connection string', () => {
 		const connectionString = 'test-connection-string';
-		const mockEnv = { REDIS: connectionString };
-		vi.mocked(useEnv).mockReturnValue(mockEnv);
+		const envValues = { REDIS: connectionString };
+		vi.mocked(useEnv).mockReturnValue(mockEnv(envValues));
 
 		const redis = createRedis();
 
@@ -33,8 +37,8 @@ describe('createRedis', () => {
 
 	test('Uses Redis connection object if Redis connection string is missing', () => {
 		const redisHost = 'test-host';
-		const mockEnv = { REDIS_HOST: redisHost };
-		vi.mocked(useEnv).mockReturnValue(mockEnv);
+		const envValues = { REDIS_HOST: redisHost };
+		vi.mocked(useEnv).mockReturnValue(mockEnv(envValues));
 
 		const mockConfig = { host: redisHost };
 
@@ -42,7 +46,7 @@ describe('createRedis', () => {
 
 		const redis = createRedis();
 
-		expect(getConfigFromEnv).toHaveBeenCalledWith('REDIS');
+		expect(getConfigFromEnv).toHaveBeenCalledWith('REDIS', { omitSuffix: '_NAMESPACE' });
 		expect(Redis).toHaveBeenCalledWith(mockConfig);
 		expect(redis).toBe(mockRedis);
 	});

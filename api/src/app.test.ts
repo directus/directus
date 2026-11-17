@@ -4,6 +4,7 @@ import { useEnv } from '@directus/env';
 import { Router } from 'express';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import createApp from './app.js';
+import { mockEnv } from './test-utils/env.js';
 
 const { mockMcpOAuthGuard } = vi.hoisted(() => ({
 	mockMcpOAuthGuard: vi.fn((_req: unknown, _res: unknown, next: () => void) => next()),
@@ -22,13 +23,10 @@ vi.mock('./telemetry/index.js');
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
-		EXTENSIONS_PATH: './extensions',
-		STORAGE_LOCATIONS: ['local'],
-		EMAIL_TEMPLATES_PATH: './templates',
-	}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('./test-utils/env.js');
+	return mockUseEnv();
+});
 
 const mockGetEndpointRouter = vi.fn().mockReturnValue(Router());
 const mockGetEmbeds = vi.fn().mockReturnValue({ head: '', body: '' });
@@ -51,11 +49,14 @@ vi.mock('./flows', () => ({
 	}),
 }));
 
+const licenseManager = vi.hoisted(() => ({
+	initialize: vi.fn(),
+	getLicense: vi.fn().mockResolvedValue({ meta: { validation_interval: -1 } }),
+	scheduleCheck: vi.fn(),
+}));
+
 vi.mock('./license/index.js', () => ({
-	getLicenseManager: vi.fn().mockImplementation(() => ({
-		initialize: vi.fn(),
-		getLicense: vi.fn().mockResolvedValue({ meta: { validation_interval: -1 } }),
-	})),
+	getLicenseManager: () => licenseManager,
 	getEntitlementManager: vi.fn().mockImplementation(() => ({
 		initialize: vi.fn(),
 		isEntitled: vi.fn().mockReturnValue(false),
@@ -63,10 +64,7 @@ vi.mock('./license/index.js', () => ({
 }));
 
 vi.mock('./license/manager.js', () => ({
-	getLicenseManager: vi.fn().mockImplementation(() => ({
-		initialize: vi.fn(),
-		getLicense: vi.fn().mockResolvedValue({ meta: { validation_interval: -1 } }),
-	})),
+	getLicenseManager: () => licenseManager,
 }));
 
 vi.mock('./middleware/schema', () => ({
@@ -86,22 +84,20 @@ vi.mock('./deployment.js', () => ({
 	ensureDeploymentWebhooks: vi.fn(),
 }));
 
-vi.mock('./utils/validate-env.js');
-
 function mockAppEnv(overrides: Partial<ReturnType<typeof useEnv>> = {}) {
-	vi.mocked(useEnv).mockReturnValue({
-		SECRET: 'abcdef',
-		SERVE_APP: 'true',
-		PUBLIC_URL: 'http://localhost:8055/directus',
-		TELEMETRY: 'false',
-		LOG_STYLE: 'raw',
-		EXTENSIONS_PATH: './extensions',
-		STORAGE_LOCATIONS: ['local'],
-		ROBOTS_TXT: 'User-agent: *\nDisallow: /',
-		ROOT_REDIRECT: './admin',
-		IP_TRUST_PROXY: true,
-		...overrides,
-	});
+	vi.mocked(useEnv).mockReturnValue(
+		mockEnv({
+			SECRET: 'abcdef',
+			SERVE_APP: true,
+			PUBLIC_URL: 'http://localhost:8055/directus',
+			TELEMETRY: false,
+			LOG_STYLE: 'raw',
+			ROBOTS_TXT: 'User-agent: *\nDisallow: /',
+			ROOT_REDIRECT: './admin',
+			IP_TRUST_PROXY: true,
+			...overrides,
+		}),
+	);
 }
 
 beforeEach(() => {
@@ -127,6 +123,12 @@ const request = async (path: string = '') => {
 };
 
 describe('createApp', async () => {
+	test('Should schedule the license check', async () => {
+		await createApp();
+
+		expect(licenseManager.scheduleCheck).toHaveBeenCalledOnce();
+	});
+
 	describe('Content Security Policy', () => {
 		test('Should set content-security-policy header by default', async () => {
 			const response = await request();

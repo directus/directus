@@ -8,7 +8,6 @@ import { isDirectusError } from '@directus/errors';
 import type { Driver, TusDriver } from '@directus/storage';
 import { supportsTus } from '@directus/storage';
 import type { Accountability, File, SchemaOverview } from '@directus/types';
-import { toArray } from '@directus/utils';
 import { Server } from '@tus/server';
 import { pick } from 'lodash-es';
 import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../../constants.js';
@@ -29,7 +28,7 @@ type Context = {
 async function createTusStore(context: Context) {
 	const env = useEnv();
 	const storage = await getStorage();
-	const location = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
+	const location = env.STORAGE_LOCATIONS[0]!;
 	const driver: Driver | TusDriver = storage.location(location);
 
 	if (!supportsTus(driver)) {
@@ -53,7 +52,7 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 		path: '/files/tus',
 		datastore: store,
 		locker: getTusLocker(),
-		...(FILE_UPLOADS.MAX_SIZE !== null && { maxSize: FILE_UPLOADS.MAX_SIZE }),
+		...(FILE_UPLOADS.MAX_SIZE !== undefined && { maxSize: FILE_UPLOADS.MAX_SIZE }),
 		async onUploadFinish(_req: any, upload) {
 			const schema = await getSchema();
 
@@ -87,7 +86,9 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 
 			const metadata = await extractMetadata(targetFile.storage, { ...targetFile, ...uploadFields });
 
-			await service.updateOne(targetId, { ...uploadFields, ...metadata });
+			const fileUpdates = { ...uploadFields, ...metadata, uploaded_on: new Date().toISOString() };
+
+			await service.updateOne(targetId, fileUpdates);
 
 			// Remove the tmp db record created for replacement
 			if (isReplacement) {
@@ -95,7 +96,7 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 			}
 
 			// Reconstruct full data for event payload
-			const fileData = { ...targetFile, ...uploadFields, ...metadata, id: targetId };
+			const fileData = { ...targetFile, ...fileUpdates, id: targetId };
 
 			emitter.emitAction(
 				'files.upload',
@@ -121,13 +122,15 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 			if (isDirectusError(err)) {
 				return { status_code: err.status, body: err.message + '\n' };
 			}
+
+			return;
 		},
 		generateUrl(_req, opts) {
-			return env['PUBLIC_URL'] + '/files/tus/' + opts.id;
+			return env.PUBLIC_URL + '/files/tus/' + opts.id;
 		},
-		allowedHeaders: env['CORS_ALLOWED_HEADERS'] as string[],
-		exposedHeaders: env['CORS_EXPOSED_HEADERS'] as string[],
-		relativeLocation: String(env['PUBLIC_URL']).startsWith('http'),
+		allowedHeaders: env.CORS_ALLOWED_HEADERS,
+		exposedHeaders: env.CORS_EXPOSED_HEADERS,
+		relativeLocation: env.PUBLIC_URL.startsWith('http'),
 	});
 
 	return [server, cleanup];

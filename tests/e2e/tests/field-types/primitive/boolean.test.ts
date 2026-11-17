@@ -1,0 +1,33 @@
+import { createDirectus, createItem, rest, staticToken } from '@directus/sdk';
+import { database, port } from '@utils/constants.js';
+import { useSnapshot } from '@utils/use-snapshot.js';
+import { expect, test } from 'vitest';
+import type { Schema } from './schema.js';
+import { snapshot } from './snapshot.js';
+
+const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
+const { collections } = await useSnapshot<Schema>(api, snapshot);
+
+for (const bool of [true, false]) {
+	test(`valid boolean ${bool}`, async () => {
+		const result = await api.request(
+			createItem(collections.fields, {
+				boolean: bool,
+			}),
+		);
+
+		expect(result.boolean).toBe(bool);
+	});
+}
+
+if (database !== 'sqlite') {
+	test(`invalid value for boolean`, async () => {
+		await expect(() =>
+			api.request(
+				createItem(collections.fields, {
+					boolean: 'test' as any,
+				}),
+			),
+		).rejects.toThrowError();
+	});
+}

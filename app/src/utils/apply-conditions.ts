@@ -1,6 +1,6 @@
 import { Field } from '@directus/types';
 import { validatePayload } from '@directus/utils';
-import { isArray, mergeWith } from 'lodash';
+import { isArray, mergeWith } from 'lodash-es';
 import type { ContentVersionMaybeNew } from '@/types/versions';
 import { parseFilter } from '@/utils/parse-filter';
 
@@ -18,7 +18,7 @@ export function applyConditions(
 			// because $version is not an item field, we need to add it to the validation context
 			const validationContext = {
 				...item,
-				$version: version?.name ?? null,
+				$version: version?.key ?? null,
 			};
 
 			const rule = parseFilter(condition.rule);

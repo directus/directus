@@ -21,7 +21,9 @@ const mockAuthenticationService = {
 
 // Mock the authentication service to prevent cascade imports
 vi.mock('../../services/authentication.js', () => ({
-	AuthenticationService: vi.fn(() => mockAuthenticationService),
+	AuthenticationService: vi.fn(function () {
+		return mockAuthenticationService;
+	}),
 }));
 
 // Mock the middleware to prevent cascade imports
@@ -73,13 +75,13 @@ vi.mock('ldapts', () => {
 	};
 });
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../../test-utils/env.js');
+	return mockUseEnv({
 		REFRESH_TOKEN_COOKIE_NAME: 'directus_refresh_token',
 		SESSION_COOKIE_NAME: 'directus_session_token',
-		EMAIL_TEMPLATES_PATH: './templates',
-	}),
-}));
+	});
+});
 
 vi.mock('../../logger/index.js', () => ({
 	useLogger: vi.fn().mockReturnValue({
@@ -110,10 +112,12 @@ const mockUpdateOne = vi.fn().mockResolvedValue(undefined);
 // Mock the services that would cause import issues
 vi.mock('../../services/users.js', () => {
 	return {
-		UsersService: vi.fn(() => ({
-			createOne: mockCreateOne,
-			updateOne: mockUpdateOne,
-		})),
+		UsersService: vi.fn(function () {
+			return {
+				createOne: mockCreateOne,
+				updateOne: mockUpdateOne,
+			};
+		}),
 	};
 });
 

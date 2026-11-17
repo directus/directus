@@ -9,10 +9,10 @@ import { Focus } from '@/__utils__/focus';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 
-vi.mock('lodash', async () => {
-	const mod = await vi.importActual<{ default: typeof import('lodash') }>('lodash');
+vi.mock('lodash-es', async () => {
+	const mod = await vi.importActual<typeof import('lodash-es')>('lodash-es');
 	return {
-		...mod.default,
+		...mod,
 		debounce: (fn: any) => fn,
 	};
 });
@@ -106,6 +106,20 @@ test('should render with string items', () => {
 	});
 
 	expect(wrapper.html()).toMatchSnapshot();
+});
+
+test('shows choice icons in the list when other values are allowed', () => {
+	const wrapper = mount(VSelect, {
+		props: {
+			items: [{ text: 'Item 1', value: 'item1', icon: 'star' }],
+			itemIcon: 'icon',
+			allowOther: true,
+			multiple: false,
+		},
+		global,
+	});
+
+	expect(wrapper.find('v-list-item-icon-stub').exists()).toBe(true);
 });
 
 describe('SelectListItemGroup', () => {

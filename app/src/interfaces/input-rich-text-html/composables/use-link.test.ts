@@ -1,7 +1,9 @@
 import { Editor } from '@tiptap/vue-3';
-import { afterEach, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from 'vitest';
 import { shallowRef } from 'vue';
-import { editorExtensions } from '../extensions';
+import { fieldEditorExtensions } from '../extensions';
+import { buildLinkProtocolSchema } from '../extensions/link-protocols';
+import { selectNode } from '../test-utils';
 import { useLink } from './use-link';
 
 const editors: Editor[] = [];
@@ -10,10 +12,11 @@ afterEach(() => {
 	while (editors.length) editors.pop()!.destroy();
 });
 
-function setup(content = '<p></p>') {
-	const editor = shallowRef(new Editor({ extensions: editorExtensions, content }));
+function setup(content = '<p></p>', linkProtocols: string[] = []) {
+	const { extensions, protocols } = buildLinkProtocolSchema(linkProtocols);
+	const editor = shallowRef(new Editor({ extensions: fieldEditorExtensions(extensions), content }));
 	editors.push(editor.value);
-	const usable = useLink(editor);
+	const usable = useLink(editor, protocols);
 	return { editor, ...usable };
 }
 
@@ -191,6 +194,134 @@ test('unlink removes the link mark from the link under the cursor', () => {
 	expect(html).toContain('hello');
 });
 
+describe('image link', () => {
+	const IMAGE = '<img src="/assets/abc" alt="a">';
+	const LINKED_IMAGE = `<a href="https://directus.io" target="_blank" rel="noopener noreferrer nofollow">${IMAGE}</a>`;
+	// a block after the image keeps StarterKit's trailing-node paragraph out of the expected HTML
+	const AFTER = '<p>y</p>';
+
+	test('openLinkDrawer on an unlinked image is image mode, not editing, with an empty url', () => {
+		const { editor, targetsImage, isEditingLink, linkSelection, openLinkDrawer } = setup(`<p>x</p>${IMAGE}`);
+		selectNode(editor.value, 'image');
+
+		openLinkDrawer();
+
+		expect(targetsImage.value).toBe(true);
+		expect(isEditingLink.value).toBe(false);
+		expect(linkSelection.value.url).toBeNull();
+		expect(linkSelection.value.displayText).toBeNull();
+	});
+
+	test('openLinkDrawer on a text link is not image mode', () => {
+		const { editor, targetsImage, openLinkDrawer } = setup('<p><a href="https://directus.io">hello</a></p>');
+		editor.value.commands.setTextSelection(3);
+
+		openLinkDrawer();
+
+		expect(targetsImage.value).toBe(false);
+	});
+
+	test('openLinkDrawer on a linked image prefills url, title and newTab and is editing', () => {
+		const { editor, targetsImage, isEditingLink, linkSelection, openLinkDrawer } = setup(
+			`<a href="https://directus.io" target="_blank"><img src="/assets/abc" alt="a" title="Home"></a>`,
+		);
+
+		selectNode(editor.value, 'image');
+
+		openLinkDrawer();
+
+		expect(targetsImage.value).toBe(true);
+		expect(isEditingLink.value).toBe(true);
+		expect(linkSelection.value).toMatchObject({ url: 'https://directus.io', title: 'Home', newTab: true });
+	});
+
+	test('saveLink wraps the selected image in an anchor instead of inserting text', () => {
+		const { editor, linkSelection, openLinkDrawer, saveLink } = setup(`<p>x</p>${IMAGE}${AFTER}`);
+		selectNode(editor.value, 'image');
+		openLinkDrawer();
+
+		linkSelection.value = { ...linkSelection.value, url: 'https://directus.io', title: 'Home', newTab: true };
+
+		saveLink();
+
+		expect(editor.value.getHTML()).toBe(
+			`<p>x</p><a href="https://directus.io" target="_blank" rel="noopener noreferrer"><img title="Home" src="/assets/abc" alt="a"></a>${AFTER}`,
+		);
+	});
+
+	test('saveLink on an image omits target and rel when newTab is false', () => {
+		const { editor, linkSelection, openLinkDrawer, saveLink } = setup(`${IMAGE}${AFTER}`);
+		selectNode(editor.value, 'image');
+		openLinkDrawer();
+
+		linkSelection.value = { ...linkSelection.value, url: 'https://directus.io', newTab: false };
+
+		saveLink();
+
+		expect(editor.value.getHTML()).toBe(`<a href="https://directus.io">${IMAGE}</a>${AFTER}`);
+	});
+
+	test('saveLink on a linked image keeps author rel tokens and its preserved attributes', () => {
+		const { editor, linkSelection, openLinkDrawer, saveLink } = setup(
+			`<a href="https://directus.io" target="_blank" rel="noopener noreferrer nofollow"><img class="hero" src="/assets/abc" alt="a"></a>${AFTER}`,
+		);
+
+		selectNode(editor.value, 'image');
+		openLinkDrawer();
+
+		linkSelection.value = { ...linkSelection.value, url: 'https://directus.io/new' };
+
+		saveLink();
+
+		expect(editor.value.getHTML()).toBe(
+			`<a href="https://directus.io/new" target="_blank" rel="noopener noreferrer nofollow"><img class="hero" src="/assets/abc" alt="a"></a>${AFTER}`,
+		);
+	});
+
+	test('saveLink on an image refuses a script href', () => {
+		const { editor, linkSelection, openLinkDrawer, saveLink } = setup(`${IMAGE}${AFTER}`);
+		selectNode(editor.value, 'image');
+		openLinkDrawer();
+
+		linkSelection.value = { ...linkSelection.value, url: 'javascript:alert(1)' };
+
+		saveLink();
+
+		expect(editor.value.getHTML()).toBe(`${IMAGE}${AFTER}`);
+	});
+
+	test('unlink on a linked image drops the anchor and keeps the image', () => {
+		const { editor, openLinkDrawer, unlink } = setup(`${LINKED_IMAGE}${AFTER}`);
+		selectNode(editor.value, 'image');
+		openLinkDrawer();
+
+		unlink();
+
+		expect(editor.value.getHTML()).toBe(`${IMAGE}${AFTER}`);
+	});
+
+	test('unlink on a linked image also removes the tooltip the link drawer set', () => {
+		const titled = '<img src="/assets/abc" alt="a" title="Tip">';
+		const { editor, openLinkDrawer, unlink } = setup(`<a href="https://directus.io">${titled}</a>${AFTER}`);
+		selectNode(editor.value, 'image');
+		openLinkDrawer();
+
+		unlink();
+
+		expect(editor.value.getHTML()).toBe(`${IMAGE}${AFTER}`);
+	});
+
+	test('closeLinkDrawer resets image mode', () => {
+		const { editor, targetsImage, openLinkDrawer, closeLinkDrawer } = setup(IMAGE);
+		selectNode(editor.value, 'image');
+		openLinkDrawer();
+
+		closeLinkDrawer();
+
+		expect(targetsImage.value).toBe(false);
+	});
+});
+
 test('isLinkSaveable reflects whether a url is present', () => {
 	const { linkSelection, isLinkSaveable } = setup();
 
@@ -198,4 +329,91 @@ test('isLinkSaveable reflects whether a url is present', () => {
 
 	linkSelection.value = { url: 'https://directus.io', displayText: null, title: null, newTab: true };
 	expect(isLinkSaveable.value).toBe(true);
+});
+
+describe('link protocols', () => {
+	const CUSTOM = { url: 'myapp://some/route', displayText: 'Open', title: null, newTab: false };
+
+	test('a url with a custom scheme that is not allowed is flagged and not saveable', () => {
+		const { linkSelection, isLinkSaveable, linkUrlError } = setup();
+
+		linkSelection.value = CUSTOM;
+
+		expect(linkUrlError.value).toBe('not_allowed');
+		expect(isLinkSaveable.value).toBe(false);
+	});
+
+	test('saveLink does not store an empty href for a custom scheme that is not allowed', () => {
+		const { editor, linkSelection, saveLink } = setup('<p></p>');
+
+		linkSelection.value = CUSTOM;
+		saveLink();
+
+		expect(editor.value.getHTML()).not.toContain('<a');
+	});
+
+	test('saveLink stores a link with an allowed custom scheme', () => {
+		const { editor, linkSelection, linkUrlError, saveLink } = setup('<p></p>', ['myapp']);
+
+		linkSelection.value = CUSTOM;
+
+		expect(linkUrlError.value).toBeNull();
+		saveLink();
+		expect(editor.value.getHTML()).toBe('<p><a href="myapp://some/route">Open</a></p>');
+	});
+
+	test('saveLink on an image stores a link with an allowed custom scheme', () => {
+		const { editor, linkSelection, openLinkDrawer, saveLink } = setup('<img src="/assets/abc"><p>y</p>', ['myapp']);
+		selectNode(editor.value, 'image');
+		openLinkDrawer();
+
+		linkSelection.value = { ...linkSelection.value, url: 'myapp://some/route', newTab: false };
+		saveLink();
+
+		expect(editor.value.getHTML()).toBe('<a href="myapp://some/route"><img src="/assets/abc"></a><p>y</p>');
+	});
+
+	test.each([
+		['myapp://some/route', 'not_allowed'],
+		['javascript:alert(1)', 'blocked'],
+	] as const)('an image link to %s is flagged as %s and saveLink leaves the image unlinked', (url, error) => {
+		const content = '<img src="/assets/abc"><p>y</p>';
+		const { editor, linkSelection, linkUrlError, isLinkSaveable, openLinkDrawer, saveLink } = setup(content);
+		selectNode(editor.value, 'image');
+		openLinkDrawer();
+
+		linkSelection.value = { ...linkSelection.value, url };
+
+		expect(linkUrlError.value).toBe(error);
+		expect(isLinkSaveable.value).toBe(false);
+		saveLink();
+		expect(editor.value.getHTML()).toBe(content);
+	});
+
+	test('saveLink stores a link with an allowed dotted scheme', () => {
+		const { editor, linkSelection, linkUrlError, saveLink } = setup('<p></p>', ['com.example.app']);
+
+		linkSelection.value = { ...CUSTOM, url: 'com.example.app://some/route' };
+
+		expect(linkUrlError.value).toBeNull();
+		saveLink();
+		expect(editor.value.getHTML()).toBe('<p><a href="com.example.app://some/route">Open</a></p>');
+	});
+
+	test.each(['javascript:alert(1)', ' JavaScript://x', 'data:text/html,hi', 'vbscript:x'])(
+		'a url with a script scheme is flagged as blocked: %s',
+		(url) => {
+			const { linkSelection, linkUrlError } = setup('<p></p>', ['myapp']);
+
+			linkSelection.value = { ...CUSTOM, url };
+
+			expect(linkUrlError.value).toBe('blocked');
+		},
+	);
+
+	test('an empty url is not flagged', () => {
+		const { linkUrlError } = setup();
+
+		expect(linkUrlError.value).toBeNull();
+	});
 });

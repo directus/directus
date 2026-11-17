@@ -1,4 +1,4 @@
-import type { MergeCoreCollection } from '../index.js';
+import type { MergeCoreCollection, StringLiteralUnion } from '../index.js';
 import type { DirectusUser } from './user.js';
 
 /**
@@ -50,7 +50,7 @@ export type DirectusDeploymentRun<Schema = any> = MergeCoreCollection<
 		id: string;
 		project: DirectusDeploymentProject<Schema> | string;
 		external_id: string;
-		status: 'building' | 'ready' | 'error' | 'canceled' | string | null;
+		status: StringLiteralUnion<'building' | 'ready' | 'error' | 'canceled'> | null;
 		target: string;
 		url: string | null;
 		started_at: 'datetime' | null;

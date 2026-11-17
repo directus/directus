@@ -8,10 +8,9 @@ import { withCache } from '../../utils/with-cache.js';
 
 interface FetchGlobalAccessContext {
 	knex: Knex;
-	ip?: Accountability['ip'];
 }
 
-export const fetchGlobalAccess = withCache('global-access', _fetchGlobalAccess, ({ user, roles }, { ip }) => ({
+export const fetchGlobalAccess = withCache('global-access', _fetchGlobalAccess, ({ user, roles, ip }) => ({
 	user,
 	roles,
 	ip,

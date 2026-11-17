@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { TabsContent } from 'reka-ui';
 import { computed } from 'vue';
 import type { ComparisonContext } from '@/components/v-form/types';

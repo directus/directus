@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { defineComponent } from 'vue';
 import { createI18n } from 'vue-i18n';
 import ExportSidebarDetail from './export-sidebar-detail.vue';
@@ -20,11 +20,21 @@ vi.mock('@directus/composables', async () => {
 	};
 });
 
-vi.mock('@/composables/use-permissions', () => ({
-	useCollectionPermissions: () => ({
-		createAllowed: false,
-	}),
+const permissionsState = vi.hoisted(() => ({
+	readFoldersAllowed: true,
+	createFilesAllowed: true,
 }));
+
+vi.mock('@/composables/use-permissions', async () => {
+	const { computed } = await import('vue');
+
+	return {
+		useCollectionPermissions: (collection: string) => ({
+			createAllowed: computed(() => collection === 'directus_files' && permissionsState.createFilesAllowed),
+			readAllowed: computed(() => (collection === 'directus_folders' ? permissionsState.readFoldersAllowed : true)),
+		}),
+	};
+});
 
 vi.mock('@/stores/server', () => ({
 	useServerStore: () => ({
@@ -33,6 +43,17 @@ vi.mock('@/stores/server', () => ({
 				max: 5000,
 			},
 		},
+	}),
+}));
+
+const settingsState = vi.hoisted(() => ({
+	default_exports_folder: null as string | null,
+	storage_default_folder: null as string | null,
+}));
+
+vi.mock('@/stores/settings', () => ({
+	useSettingsStore: () => ({
+		settings: settingsState,
 	}),
 }));
 
@@ -86,9 +107,17 @@ function mountComponent(props: Record<string, unknown> = {}) {
 					template: '<div><slot /></div>',
 				},
 				VDrawer: {
-					template: '<div><slot /><slot name="actions" /></div>',
+					template: '<div><slot /><slot name="actions" /><slot name="actions:primary" /></div>',
 				},
 				VInput: {
+					template: '<div />',
+				},
+				VNotice: {
+					template: '<div><slot /></div>',
+				},
+				VSelect: {
+					name: 'VSelect',
+					props: ['items', 'modelValue', 'disabled'],
 					template: '<div />',
 				},
 				InterfaceSystemFields: InterfaceSystemFieldsStub,
@@ -144,5 +173,113 @@ describe('export-sidebar-detail default export fields', () => {
 		expect(fieldFilter?.({ field: '$thumbnail' })).toBe(false);
 		expect(fieldFilter?.({ field: 'thumbnail' })).toBe(true);
 		expect(fieldFilter?.({ field: 'id' })).toBe(true);
+	});
+});
+
+describe('export-sidebar-detail file library warning', () => {
+	beforeEach(() => {
+		collectionState.fields = [{ field: 'id', type: 'uuid' }];
+	});
+
+	test('shows the warning when the export is forced to the file library', async () => {
+		const wrapper = mountComponent({ layoutQuery: { limit: 3000 } });
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.find('.files-access-notice').exists()).toBe(true);
+	});
+
+	test('hides the warning for local downloads', async () => {
+		const wrapper = mountComponent();
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.find('.files-access-notice').exists()).toBe(false);
+	});
+});
+
+describe('export-sidebar-detail default exports folder', () => {
+	beforeEach(() => {
+		collectionState.fields = [{ field: 'id', type: 'uuid' }];
+		settingsState.storage_default_folder = 'storage-folder';
+	});
+
+	afterEach(() => {
+		settingsState.default_exports_folder = null;
+		settingsState.storage_default_folder = null;
+		permissionsState.readFoldersAllowed = true;
+	});
+
+	test('pre-selects the default exports folder', async () => {
+		settingsState.default_exports_folder = 'exports-folder';
+
+		const wrapper = mountComponent({ layoutQuery: { limit: 3000 } });
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.findComponent({ name: 'FolderPicker' }).props('modelValue')).toBe('exports-folder');
+	});
+
+	test('falls back to the default storage folder', async () => {
+		const wrapper = mountComponent({ layoutQuery: { limit: 3000 } });
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.findComponent({ name: 'FolderPicker' }).props('modelValue')).toBe('storage-folder');
+	});
+
+	test('hides the folder picker when folders cannot be read', async () => {
+		permissionsState.readFoldersAllowed = false;
+
+		const wrapper = mountComponent({ layoutQuery: { limit: 3000 } });
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.findComponent({ name: 'FolderPicker' }).exists()).toBe(false);
+		expect(wrapper.find('.folder-not-selectable-notice').text()).toBe('exporting_folder_not_selectable');
+	});
+
+	test('says the export goes to the root when no default folder is set', async () => {
+		permissionsState.readFoldersAllowed = false;
+		settingsState.storage_default_folder = null;
+
+		const wrapper = mountComponent({ layoutQuery: { limit: 3000 } });
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.find('.folder-not-selectable-notice').text()).toBe('exporting_folder_root');
+	});
+});
+
+describe('export-sidebar-detail without file create permission', () => {
+	beforeEach(() => {
+		collectionState.fields = [{ field: 'id', type: 'uuid' }];
+		permissionsState.createFilesAllowed = false;
+	});
+
+	afterEach(() => {
+		permissionsState.createFilesAllowed = true;
+	});
+
+	test('does not offer the file library as an export location', async () => {
+		const wrapper = mountComponent();
+
+		await wrapper.vm.$nextTick();
+
+		const locationSelect = wrapper
+			.findAllComponents({ name: 'VSelect' })
+			.find((select) => (select.props('items') as { value: string }[]).some((item) => item.value === 'download'));
+
+		expect((locationSelect?.props('items') as { value: string }[]).map((item) => item.value)).toEqual(['download']);
+	});
+
+	test('blocks exports that are too large to download', async () => {
+		const wrapper = mountComponent({ layoutQuery: { limit: 3000 } });
+
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.find('.export-blocked-hint').exists()).toBe(true);
+		expect(wrapper.find('.files-access-notice').exists()).toBe(false);
+		expect(wrapper.findComponent({ name: 'PrivateViewHeaderBarActionButton' }).props('disabled')).toBe(true);
 	});
 });

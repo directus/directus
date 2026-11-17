@@ -25,13 +25,15 @@ const mockCreateMany = vi.fn();
 const mockDeleteMany = vi.fn();
 
 vi.mock('../../services/extensions.js', () => ({
-	ExtensionsService: vi.fn(() => ({
-		extensionsItemService: {
-			readByQuery: mockReadByQuery,
-			createMany: mockCreateMany,
-			deleteMany: mockDeleteMany,
-		},
-	})),
+	ExtensionsService: vi.fn(function () {
+		return {
+			extensionsItemService: {
+				readByQuery: mockReadByQuery,
+				createMany: mockCreateMany,
+				deleteMany: mockDeleteMany,
+			},
+		};
+	}),
 }));
 
 const MOCK_EXTENSION_ID = 'test-marketplace-id';

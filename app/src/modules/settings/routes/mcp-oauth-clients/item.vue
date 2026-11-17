@@ -3,7 +3,6 @@ import { ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/deprecated/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -45,16 +44,6 @@ async function revokeClient() {
 
 <template>
 	<PrivateView :title="item?.client_name ?? '...'" icon="key" show-back back-to="/settings/mcp-oauth-clients">
-		<template #headline>
-			<VBreadcrumb
-				:items="[
-					{ name: $t('settings'), to: '/settings' },
-					{ name: $t('settings_ai'), to: '/settings/ai' },
-					{ name: $t('mcp_oauth_clients'), to: '/settings/mcp-oauth-clients' },
-				]"
-			/>
-		</template>
-
 		<template #actions>
 			<VDialog v-model="confirmRevoke" @esc="confirmRevoke = false" @apply="revokeClient">
 				<template #activator="{ on }">

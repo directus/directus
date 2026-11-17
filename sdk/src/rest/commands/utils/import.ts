@@ -1,17 +1,23 @@
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 /**
  * Import multiple records from a JSON or CSV file into a collection.
  * @returns Nothing
+ * @throws Will throw if collection is empty
  */
 export const utilsImport =
 	<Schema>(collection: keyof Schema, data: FormData): RestCommand<void, Schema> =>
-	() => ({
-		path: `/utils/import/${collection as string}`,
-		method: 'POST',
-		body: data,
-		headers: { 'Content-Type': 'multipart/form-data' },
-	});
+	() => {
+		throwIfEmpty(collection as string, 'Collection cannot be empty');
+
+		return {
+			path: `/utils/import/${collection as string}`,
+			method: 'POST',
+			body: data,
+			headers: { 'Content-Type': 'multipart/form-data' },
+		};
+	};
 
 export interface ImportBatchOptions {
 	mode?: 'add' | 'merge';

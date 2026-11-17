@@ -39,7 +39,7 @@ export async function onSubscribe(
 	let document;
 
 	try {
-		document = parse(payload.query, { maxTokens: Number(env['GRAPHQL_QUERY_TOKEN_LIMIT']) });
+		document = parse(payload.query, { maxTokens: env.GRAPHQL_QUERY_TOKEN_LIMIT });
 	} catch {
 		return [new GraphQLError('Failed to parse GraphQL document.')];
 	}
@@ -131,7 +131,7 @@ export class GraphQLSubscriptionController extends SocketController {
 
 							await cb(JSON.stringify(message));
 						} catch (error) {
-							handleWebSocketError(client, error, MessageType.Error);
+							handleWebSocketError(client, error, { type: MessageType.Error });
 						}
 					});
 				},

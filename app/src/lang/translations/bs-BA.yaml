@@ -878,7 +878,6 @@ licensing:
   entitlements:
     collections: Kolekcije
     flows: Tokovi
-settings_flows: Tokovi
 settings_translations: Prijevodi
 one_or_more_options_are_missing: Nedostaje jedna ili više opcija
 scope: Opseg
@@ -1561,6 +1560,7 @@ interfaces:
   input-rich-text-html:
     description: Uređivač bogatog teksta koji piše HTML sadržaj
     toolbar: Alatna traka
+    extensions: Ekstenzije
     custom_formats: Prilagođeni formati
     folder_note: Folder za učitane fajlove. Ne utječe na postojeće fajlove.
     imageToken: Statički pristupni token

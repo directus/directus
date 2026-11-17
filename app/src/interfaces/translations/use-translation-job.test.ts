@@ -140,6 +140,21 @@ describe('useTranslationJob', () => {
 		expect(applyTranslatedFields).toHaveBeenCalledWith({ title: 'Bonjour' }, 'es');
 	});
 
+	test('applies fields from the same stream snapshot atomically', async () => {
+		const { job, applyTranslatedFields } = createJob();
+
+		mockFetchStream('{"title":"Bonjour","slug":"bonjour","description":"Corps"}');
+		job.start(multiFieldConfig);
+		await flushPromises();
+
+		expect(applyTranslatedFields).toHaveBeenCalledTimes(1);
+
+		expect(applyTranslatedFields).toHaveBeenCalledWith(
+			{ title: 'Bonjour', slug: 'bonjour', description: 'Corps' },
+			'fr',
+		);
+	});
+
 	test('cancel aborts requests and resets state', async () => {
 		const { job, applyTranslatedFields } = createJob();
 
@@ -429,8 +444,7 @@ describe('useTranslationJob', () => {
 		controller!.enqueue(encoder.encode('{"title":"Bonjour","content":"<p>Bon'));
 		await flushPromises();
 
-		expect(applyTranslatedFields).toHaveBeenCalledWith({ title: 'Bonjour' }, 'fr');
-		expect(applyTranslatedFields).toHaveBeenCalledWith({ content: '<p>Bon' }, 'fr');
+		expect(applyTranslatedFields).toHaveBeenCalledWith({ title: 'Bonjour', content: '<p>Bon' }, 'fr');
 
 		controller!.enqueue(encoder.encode('jour le monde</p>"}'));
 		controller!.close();

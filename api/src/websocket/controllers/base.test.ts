@@ -2,6 +2,8 @@ import type { Server as httpServer } from 'http';
 import { useEnv } from '@directus/env';
 import type { Accountability } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { getLicenseManager } from '../../license/manager.js';
+import { createRateLimiter } from '../../rate-limiter.js';
 import { authenticateConnection } from '../authenticate.js';
 import type { WebSocketAuthMessage } from '../messages.js';
 import type { WebSocketClient } from '../types.js';
@@ -56,6 +58,7 @@ function mockClient(accountability: Accountability | null): WebSocketClient {
 		close: vi.fn(),
 		on: vi.fn(),
 		off: vi.fn(),
+		emit: vi.fn(),
 	} as unknown as WebSocketClient;
 }
 
@@ -68,12 +71,13 @@ const PUBLIC_ACCOUNTABILITY: Accountability = {
 	ip: '127.0.0.1',
 };
 
-function setupController(mode: 'public' | 'strict' | 'handshake') {
+function setupController(mode: 'public' | 'strict' | 'handshake', env: Record<string, unknown> = {}) {
 	(useEnv as ReturnType<typeof vi.fn>).mockReturnValue({
 		WEBSOCKETS_REST_PATH: '/websocket',
 		WEBSOCKETS_REST_AUTH: mode,
 		WEBSOCKETS_REST_AUTH_TIMEOUT: 10,
 		RATE_LIMITER_ENABLED: false,
+		...env,
 	});
 
 	return new TestController(mockHttpServer(), 'WEBSOCKETS_REST');
@@ -163,5 +167,69 @@ describe('WebSocket SocketController auth failure handling', () => {
 		expect(client.accountability).not.toBeNull();
 		expect(client.accountability).toMatchObject({ role: null, user: null, admin: false });
 		expect(client.expires_at).toBeNull();
+	});
+});
+
+describe('WebSocket SocketController rate limiter configuration', () => {
+	test('RATE_LIMITER_WEBSOCKETS_KEY_PREFIX overrides the default key prefix', () => {
+		setupController('public', {
+			RATE_LIMITER_ENABLED: true,
+			RATE_LIMITER_WEBSOCKETS_KEY_PREFIX: 'project-1:websocket',
+		});
+
+		expect(createRateLimiter).toHaveBeenCalledWith('RATE_LIMITER', { keyPrefix: 'project-1:websocket' });
+	});
+
+	test('keeps the default key prefix while passing other RATE_LIMITER_WEBSOCKETS_ options through', () => {
+		setupController('public', { RATE_LIMITER_ENABLED: true, RATE_LIMITER_WEBSOCKETS_POINTS: 10 });
+
+		expect(createRateLimiter).toHaveBeenCalledWith('RATE_LIMITER', { keyPrefix: 'websocket', points: 10 });
+	});
+});
+
+describe('WebSocket SocketController message handling', () => {
+	afterEach(() => {
+		vi.clearAllMocks();
+	});
+
+	/** The listener `createClient` registers for incoming messages */
+	function onMessage(client: WebSocketClient) {
+		setupController('public').createClient(client, { accountability: PUBLIC_ACCOUNTABILITY, expires_at: null });
+
+		const registered = vi.mocked(client.on).mock.calls.find(([event]) => event === 'message');
+
+		return registered![1] as (data: Buffer) => Promise<void>;
+	}
+
+	test('passes a message on to the parsed-message listeners', async () => {
+		const client = mockClient(PUBLIC_ACCOUNTABILITY);
+
+		await onMessage(client)(Buffer.from('{"type":"ping"}'));
+
+		expect(client.emit).toHaveBeenCalledWith('parsed-message', { type: 'ping' });
+	});
+
+	test('reports a message that cannot be parsed and passes nothing on', async () => {
+		const client = mockClient(PUBLIC_ACCOUNTABILITY);
+
+		await expect(onMessage(client)(Buffer.from('not json'))).resolves.toBeUndefined();
+
+		expect(client.send).toHaveBeenCalledWith(expect.stringContaining('INVALID_PAYLOAD'));
+		expect(client.emit).not.toHaveBeenCalled();
+		expect(client.close).not.toHaveBeenCalled();
+	});
+
+	test('reports an unexpected error rather than rejecting', async () => {
+		(getLicenseManager as ReturnType<typeof vi.fn>).mockReturnValue({
+			isLocked: vi.fn().mockRejectedValue(new RangeError('Maximum call stack size exceeded')),
+		});
+
+		const client = mockClient(PUBLIC_ACCOUNTABILITY);
+
+		// `ws` discards the promise this returns, so a rejection would end the process
+		await expect(onMessage(client)(Buffer.from('{"type":"ping"}'))).resolves.toBeUndefined();
+
+		expect(client.emit).not.toHaveBeenCalled();
+		expect(client.close).not.toHaveBeenCalled();
 	});
 });

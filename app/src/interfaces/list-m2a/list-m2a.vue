@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ContentVersion, Filter } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
-import { clamp, get, isEmpty, isNil, set } from 'lodash';
+import { clamp, get, isEmpty, isNil, set } from 'lodash-es';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
@@ -23,6 +23,8 @@ import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/compo
 import { useRelationPermissionsM2A } from '@/composables/use-relation-permissions';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { isCollectionInactive } from '@/utils/collection-status';
+import { getM2ACollectionTemplates } from '@/utils/get-m2a-collection-templates';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
@@ -72,23 +74,15 @@ const allowedCollections = computed(() => {
 	return relationInfo.value.allowedCollections.filter((collection) => collection.meta?.singleton !== true);
 });
 
-const templates = computed(() => {
-	if (!relationInfo.value) return {};
-	const templates: Record<string, string> = {};
-
-	for (const collection of allowedCollections.value) {
-		const primaryKeyField = relationInfo.value.relationPrimaryKeyFields[collection.collection];
-		templates[collection.collection] = collection.meta?.display_template || `{{${primaryKeyField?.field}}}`;
-	}
-
-	return templates;
-});
+const templates = computed(() => (relationInfo.value ? getM2ACollectionTemplates(relationInfo.value) : {}));
 
 const fields = computed(() => {
 	if (!relationInfo.value) return [];
 	const fields: string[] = [];
 
 	for (const collection of allowedCollections.value) {
+		if (isCollectionInactive(collection)) continue;
+
 		const displayFields: string[] = adjustFieldsForDisplays(
 			getFieldsFromTemplate(templates.value[collection.collection]),
 			collection.collection,
@@ -201,6 +195,8 @@ function createItem(collection: string) {
 
 function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
+	// The row renders as a non-clickable list item, but the click listener stays bound to it
+	if (isInactiveItem(item)) return;
 
 	const relationPkField =
 		relationInfo.value.relationPrimaryKeyFields[item[relationInfo.value.collectionField.field]]!.field;
@@ -258,6 +254,12 @@ function hasAllowedCollection(item: DisplayItem) {
 			(coll) => relationInfo && coll.collection === item[info.collectionField.field],
 		) !== -1
 	);
+}
+
+function isInactiveItem(item: DisplayItem) {
+	const info = relationInfo.value;
+	if (!info) return false;
+	return isCollectionInactive(item[info.collectionField.field]);
 }
 
 function getPrefix(item: DisplayItem) {
@@ -387,8 +389,8 @@ const menuActive = computed(
 						block
 						:disabled="disabled && !nonEditable"
 						:dense="totalItemCount > 4"
-						:class="{ deleted: element.$type === 'deleted' }"
-						clickable
+						:class="{ deleted: element.$type === 'deleted', inactive: isInactiveItem(element) }"
+						:clickable="!isInactiveItem(element)"
 						@click="editItem(element)"
 					>
 						<VIcon v-if="allowDrag && !nonEditable" class="drag-handle" left name="drag_handle" :disabled @click.stop />
@@ -406,7 +408,7 @@ const menuActive = computed(
 						<div v-if="!nonEditable" class="item-actions">
 							<VRemove
 								v-if="deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element)"
-								:disabled
+								:disabled="disabled || isInactiveItem(element)"
 								:item-type="element.$type"
 								:item-info="relationInfo"
 								:item-is-local="isLocalItem(element)"
@@ -457,6 +459,7 @@ const menuActive = computed(
 						v-for="availableCollection of allowedCollections"
 						:key="availableCollection.collection"
 						clickable
+						:disabled="isCollectionInactive(availableCollection)"
 						@click="createItem(availableCollection.collection)"
 					>
 						<VListItemIcon>
@@ -480,6 +483,7 @@ const menuActive = computed(
 						v-for="availableCollection of allowedCollections"
 						:key="availableCollection.collection"
 						clickable
+						:disabled="isCollectionInactive(availableCollection)"
 						@click="selectingFrom = availableCollection.collection"
 					>
 						<VListItemIcon>
@@ -557,6 +561,16 @@ const menuActive = computed(
 
 	&.disabled {
 		background-color: var(--theme--form--field--input--background-subdued);
+	}
+
+	/* Styled rather than disabled, so the row stays draggable */
+	&.inactive {
+		background-color: var(--theme--form--field--input--background-subdued);
+
+		.collection,
+		:deep(.render-template) {
+			color: var(--theme--foreground-subdued);
+		}
 	}
 }
 

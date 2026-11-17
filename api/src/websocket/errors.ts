@@ -1,7 +1,6 @@
-import { type DirectusError, isDirectusError } from '@directus/errors';
+import { type DirectusError, formatZodError, isDirectusError } from '@directus/errors';
 import type { WebSocket } from 'ws';
 import { ZodError } from 'zod';
-import { fromZodError } from 'zod-validation-error';
 import { useLogger } from '../logger/index.js';
 import type { WebSocketResponse } from './messages.js';
 import type { WebSocketClient } from './types.js';
@@ -38,21 +37,36 @@ export class WebSocketError extends Error {
 		return JSON.stringify(this.toJSON());
 	}
 
-	static fromError(error: DirectusError<unknown>, type = 'unknown') {
-		return new WebSocketError(type, error.code, error.message);
+	static fromError(error: DirectusError<unknown>, type = 'unknown', uid?: string | number) {
+		return new WebSocketError(type, error.code, error.message, uid);
 	}
 
-	static fromZodError(error: ZodError, type = 'unknown') {
-		const zError = fromZodError(error);
-		return new WebSocketError(type, 'INVALID_PAYLOAD', zError.message);
+	static fromZodError(error: ZodError, type = 'unknown', uid?: string | number) {
+		return new WebSocketError(type, 'INVALID_PAYLOAD', formatZodError(error), uid);
 	}
 }
 
-export function handleWebSocketError(client: WebSocketClient | WebSocket, error: unknown, type?: string): void {
+export interface HandleWebSocketErrorOptions {
+	type?: string | undefined;
+	uid?: string | number | undefined;
+}
+
+/**
+ * Send an error to the client
+ *
+ * Pass the `uid` of the message being handled so the client can tie the error back to it. A
+ * WebSocketError carries its own uid and ignores the one passed here
+ */
+export function handleWebSocketError(
+	client: WebSocketClient | WebSocket,
+	error: unknown,
+	options: HandleWebSocketErrorOptions = {},
+): void {
+	const { type, uid } = options;
 	const logger = useLogger();
 
 	if (isDirectusError(error)) {
-		client.send(WebSocketError.fromError(error, type).toMessage());
+		client.send(WebSocketError.fromError(error, type, uid).toMessage());
 		return;
 	}
 
@@ -62,7 +76,7 @@ export function handleWebSocketError(client: WebSocketClient | WebSocket, error:
 	}
 
 	if (error instanceof ZodError) {
-		client.send(WebSocketError.fromZodError(error, type).toMessage());
+		client.send(WebSocketError.fromZodError(error, type, uid).toMessage());
 		return;
 	}
 

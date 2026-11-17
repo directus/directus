@@ -21,7 +21,9 @@ export function useDuplicate({ source, name, onSuccess }: UseDuplicateOptions) {
 	return { duplicating, duplicate };
 
 	async function duplicate() {
-		if (!source.value || !name.value || duplicating.value) return;
+		const newName = name.value.trim();
+
+		if (!source.value || !newName || duplicating.value) return;
 
 		const item = source.value;
 		duplicating.value = true;
@@ -38,7 +40,7 @@ export function useDuplicate({ source, name, onSuccess }: UseDuplicateOptions) {
 			const permissions: Permission[] = permissionsResponse.data.data;
 
 			const newPolicyResponse = await api.post('/policies', {
-				name: name.value,
+				name: newName,
 				icon: item.icon,
 				description: item.description,
 				enforce_tfa: item.enforce_tfa,

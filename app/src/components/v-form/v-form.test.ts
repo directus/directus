@@ -1,20 +1,26 @@
-import type { Field } from '@directus/types';
+import type { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
+import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { nextTick } from 'vue';
+import { defineComponent, h, nextTick, onUpdated } from 'vue';
 import FormField from './components/form-field.vue';
 import VForm from './v-form.vue';
 import { ClickOutside } from '@/__utils__/click-outside';
 import { Md } from '@/__utils__/md';
 import { Tooltip } from '@/__utils__/tooltip';
 import { i18n } from '@/lang';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 const global = {
 	plugins: [
 		i18n,
 		createTestingPinia({
 			createSpy: vi.fn,
+			// VForm resolves each field's related collection through the relations store
+			stubActions: false,
 		}),
 	],
 	directives: {
@@ -93,6 +99,31 @@ function createField(overrides: Partial<Field> = {}): Field {
 		},
 		...overrides,
 	};
+}
+
+function createRelationalField(field: string, relatedCollection: string): Field {
+	return createField({
+		field,
+		name: field,
+		type: 'integer',
+		schema: { ...createField().schema!, name: field, foreign_key_table: relatedCollection },
+		meta: { ...createField().meta!, field, special: ['m2o'] },
+	});
+}
+
+function createRelation(field: string, relatedCollection: string) {
+	return {
+		collection: 'test_collection',
+		field,
+		related_collection: relatedCollection,
+		schema: null,
+		meta: {
+			many_collection: 'test_collection',
+			many_field: field,
+			one_collection: relatedCollection,
+			one_field: null,
+		},
+	} as unknown as Relation;
 }
 
 describe('VForm', () => {
@@ -517,6 +548,42 @@ describe('VForm', () => {
 			expect(emitted?.[0]?.[0]).toEqual({ editable: 'new' });
 		});
 
+		it('disables a field relating to an inactive collection', async () => {
+			const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
+			setActivePinia(pinia);
+
+			const inactiveRelation = createRelationalField('inactive_rel', 'inactive_collection');
+			const activeRelation = createRelationalField('active_rel', 'active_collection');
+
+			useFieldsStore().fields = [inactiveRelation, activeRelation];
+
+			useRelationsStore().relations = [
+				createRelation('inactive_rel', 'inactive_collection'),
+				createRelation('active_rel', 'active_collection'),
+			];
+
+			useCollectionsStore().collections = [
+				{ collection: 'inactive_collection', meta: { status: 'inactive' }, schema: {} },
+				{ collection: 'active_collection', meta: { status: 'active' }, schema: {} },
+			] as any;
+
+			const wrapper = mount(VForm, {
+				props: { fields: [inactiveRelation, activeRelation], primaryKey: '+' },
+				global: { ...global, plugins: [i18n, pinia] },
+			});
+
+			await nextTick();
+
+			const disabledByField = Object.fromEntries(
+				wrapper
+					.findAllComponents(FormField)
+					.map((formField) => [formField.props('field').field, formField.props('disabled')]),
+			);
+
+			expect(disabledByField['inactive_rel']).toBe(true);
+			expect(disabledByField['active_rel']).toBe(false);
+		});
+
 		it('preserves conditionally readonly field values when nested form passes through unchanged values', async () => {
 			const toggleField = createField({
 				field: 'toggle',
@@ -576,6 +643,195 @@ describe('VForm', () => {
 			const emitted = wrapper.emitted('update:modelValue');
 			expect(emitted).toBeTruthy();
 			expect(emitted?.[0]?.[0]).toEqual({ toggle: true, conditional_readonly: 'preserved', grouped_field: 'new' });
+		});
+	});
+
+	describe('field identity across value changes', () => {
+		function getFieldProps(wrapper: ReturnType<typeof mount>) {
+			return Object.fromEntries(
+				wrapper
+					.findAllComponents(FormField)
+					.map((formField) => [formField.props('field').field, formField.props('field')]),
+			);
+		}
+
+		it('keeps field objects when values change and no field has conditions', async () => {
+			const title = createField({ field: 'title', meta: { ...createField().meta!, field: 'title', width: 'half' } });
+			const body = createField({ field: 'body', meta: { ...createField().meta!, field: 'body', width: 'half' } });
+
+			const wrapper = mount(VForm, {
+				props: { fields: [title, body], modelValue: { title: 'a' }, primaryKey: '+' },
+				global,
+			});
+
+			const before = getFieldProps(wrapper);
+
+			await wrapper.setProps({ modelValue: { title: 'ab' } });
+
+			const after = getFieldProps(wrapper);
+
+			expect(after['title']).toBe(before['title']);
+			expect(after['body']).toBe(before['body']);
+			expect(after['body']!.meta?.width).toBe('half-right');
+		});
+
+		it('keeps field objects for existing fields when a field is added', async () => {
+			const title = createField({ field: 'title', meta: { ...createField().meta!, field: 'title', sort: 1 } });
+			const body = createField({ field: 'body', meta: { ...createField().meta!, field: 'body', sort: 3 } });
+			const added = createField({ field: 'added', meta: { ...createField().meta!, field: 'added', sort: 2 } });
+
+			const wrapper = mount(VForm, {
+				props: { fields: [title, body], modelValue: {}, primaryKey: '+' },
+				global,
+			});
+
+			const before = getFieldProps(wrapper);
+
+			await wrapper.setProps({ fields: [title, added, body] });
+
+			const after = getFieldProps(wrapper);
+
+			expect(after['added']).toBeDefined();
+			expect(after['title']).toBe(before['title']);
+			expect(after['body']).toBe(before['body']);
+		});
+
+		it('applies conditions on value changes and keeps unaffected field objects', async () => {
+			const toggle = createField({
+				field: 'toggle',
+				type: 'boolean',
+				meta: { ...createField().meta!, field: 'toggle' },
+			});
+
+			const other = createField({ field: 'other', meta: { ...createField().meta!, field: 'other' } });
+
+			const conditional = createField({
+				field: 'conditional',
+				meta: {
+					...createField().meta!,
+					field: 'conditional',
+					conditions: [
+						{ name: 'Readonly', rule: { toggle: { _eq: true } }, readonly: true, hidden: false, options: {} },
+					],
+				},
+			});
+
+			const wrapper = mount(VForm, {
+				props: { fields: [toggle, other, conditional], modelValue: { toggle: false }, primaryKey: '+' },
+				global,
+			});
+
+			const before = getFieldProps(wrapper);
+			expect(before['conditional']!.meta?.readonly).toBe(false);
+
+			await wrapper.setProps({ modelValue: { toggle: true } });
+
+			const after = getFieldProps(wrapper);
+
+			expect(after['conditional']!.meta?.readonly).toBe(true);
+			expect(after['conditional']).not.toBe(before['conditional']);
+			expect(after['other']).toBe(before['other']);
+			expect(after['toggle']).toBe(before['toggle']);
+		});
+	});
+
+	describe('group fields', () => {
+		it('does not re-render groups when the form re-renders for something they do not use', async () => {
+			const onGroupUpdated = vi.fn();
+
+			// The form swaps unknown interfaces for the type default, which is `input` for alias fields
+			const InterfaceStub = defineComponent({
+				inheritAttrs: false,
+				setup(_, { attrs }) {
+					onUpdated(() => onGroupUpdated((attrs['field'] as Field).field));
+					return () => h('div', { class: `interface-stub-${(attrs['field'] as Field).field}` });
+				},
+			});
+
+			const group = createField({
+				field: 'group',
+				type: 'alias',
+				meta: {
+					...createField().meta!,
+					field: 'group',
+					special: ['alias', 'no-data', 'group'],
+					interface: 'group-detail',
+				},
+			});
+
+			const child = createField({ field: 'child', meta: { ...createField().meta!, field: 'child', group: 'group' } });
+			const title = createField({ field: 'title', meta: { ...createField().meta!, field: 'title' } });
+
+			const wrapper = mount(VForm, {
+				props: { fields: [title, group, child], modelValue: null, initialValues: null, primaryKey: '+' },
+				global: { ...global, components: { 'interface-input': InterfaceStub } },
+			});
+
+			expect(wrapper.find('.interface-stub-group').exists()).toBe(true);
+
+			await wrapper.setProps({ autofocus: true });
+
+			expect(onGroupUpdated).not.toHaveBeenCalledWith('group');
+		});
+	});
+
+	describe('initial values', () => {
+		it('keeps unedited object values when typing in another field', async () => {
+			const title = createField({ field: 'title', meta: { ...createField().meta!, field: 'title' } });
+
+			const data = createField({
+				field: 'data',
+				type: 'json',
+				meta: { ...createField().meta!, field: 'data', interface: 'input-code' },
+			});
+
+			const wrapper = mount(VForm, {
+				props: {
+					fields: [title, data],
+					initialValues: { data: { a: 1 } },
+					modelValue: { title: 'a' },
+					primaryKey: '+',
+				},
+				global,
+			});
+
+			const dataValue = () =>
+				wrapper
+					.findAllComponents(FormField)
+					.find((formField) => formField.props('field').field === 'data')!
+					.props('modelValue');
+
+			const before = dataValue();
+
+			await wrapper.setProps({ modelValue: { title: 'ab' } });
+
+			expect(dataValue()).toBe(before);
+		});
+
+		it('shows the original value again after an edit that mutated it in place is undone', async () => {
+			const comments = createField({
+				field: 'comments',
+				type: 'alias',
+				meta: { ...createField().meta!, field: 'comments', special: ['o2m'] },
+			});
+
+			const initialValues = { comments: { create: [{ text: 'one' }], update: [], delete: [] } };
+
+			const wrapper = mount(VForm, {
+				props: { fields: [comments], initialValues, modelValue: {}, primaryKey: '+' },
+				global,
+			});
+
+			const commentsValue = () => wrapper.findComponent(FormField).props('modelValue');
+
+			// Relational interfaces push into the value they were given before emitting a copy
+			const value = commentsValue();
+			value.create.push({ text: 'two' });
+			await wrapper.setProps({ modelValue: { comments: structuredClone(value) } });
+
+			await wrapper.setProps({ modelValue: {} });
+
+			expect(commentsValue()).toEqual(initialValues.comments);
 		});
 	});
 });

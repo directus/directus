@@ -24,17 +24,17 @@ vi.mock('./mail', () => {
 	return { MailService };
 });
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
-		EMAIL_TEMPLATES_PATH: './templates',
-		EMAIL_VERIFICATION_TOKEN_TTL: '1d',
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({
+		EMAIL_VERIFICATION_TOKEN_TTL: 86_400_000,
 		REGISTER_STALL_TIME: 0,
 		USER_REGISTER_URL_ALLOW_LIST: 'https://example.com/verify',
 		USERS_ADMIN_ACCESS_LIMIT: 3,
 		USERS_APP_ACCESS_LIMIT: 3,
 		USERS_API_ACCESS_LIMIT: 3,
-	}),
-}));
+	});
+});
 
 vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js');
 vi.mock('../permissions/modules/validate-access/validate-access.js');
@@ -626,13 +626,48 @@ describe('Integration Tests', () => {
 					{ email: 'test@example.com', scope: 'pending-registration' },
 					expect.any(String),
 					{
-						expiresIn: '1d',
+						expiresIn: 86_400,
 						issuer: 'directus',
 					},
 				);
 
 				expect(signSpy.mock.calls[0]![1]).not.toBe('');
 				expect(mailService.send).toHaveBeenCalledTimes(1);
+				expect(mailService.send).toHaveBeenCalledWith(expect.objectContaining({ to: 'test@example.com' }));
+			});
+
+			it('should verify the email address stored on the matched user, not the one provided', async () => {
+				vi.spyOn(SettingsService.prototype, 'readSingleton').mockResolvedValueOnce({
+					public_registration: true,
+					public_registration_verify_email: true,
+					public_registration_role: 'role-id',
+				});
+
+				// An accent variation of the stored email, which the lookup can match on MySQL/MariaDB
+				mockGetUserByEmail({
+					id: 'user-id-19',
+					status: 'unverified',
+					email: 'test@example.com',
+				});
+
+				const mailService = new MailService({ schema });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.registerUser({
+					email: 'tëst@example.com',
+					password: 'Password123!',
+					verification_url: 'https://example.com/verify',
+				});
+
+				const mail = vi.mocked(mailService.send).mock.lastCall![0];
+				const token = new URL(mail.template!.data['url']).searchParams.get('token');
+
+				expect(mail.to).toBe('test@example.com');
+				expect(jwt.decode(token!)).toEqual(expect.objectContaining({ email: 'test@example.com' }));
 			});
 		});
 

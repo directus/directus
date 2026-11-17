@@ -931,7 +931,6 @@ licensing:
   entitlements:
     collections: Pengumpulan
     flows: Kumpulan Alur
-settings_flows: Kumpulan Alur
 settings_presets: Markah
 settings_translations: Terjemahan
 one_or_more_options_are_missing: Satu atau lebih opsi hilang

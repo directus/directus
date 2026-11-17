@@ -2,7 +2,6 @@ import { useEnv } from '@directus/env';
 import { ServiceUnavailableError } from '@directus/errors';
 import type { ActionHandler } from '@directus/types';
 import { WebSocketMessage } from '@directus/types';
-import { toBoolean } from '@directus/utils';
 import emitter from '../../emitter.js';
 import { getWebSocketController, WebSocketController } from '../controllers/index.js';
 import type { WebSocketClient } from '../types.js';
@@ -10,7 +9,7 @@ import { fmtMessage, getMessageType } from '../utils/message.js';
 
 const env = useEnv();
 
-const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_PERIOD']) * 1000;
+const HEARTBEAT_FREQUENCY = env.WEBSOCKETS_HEARTBEAT_PERIOD * 1000;
 
 export class HeartbeatHandler {
 	private pulse: NodeJS.Timeout | undefined;
@@ -33,7 +32,7 @@ export class HeartbeatHandler {
 			}
 		});
 
-		if (toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']) === true) {
+		if (env.WEBSOCKETS_HEARTBEAT_ENABLED) {
 			emitter.onAction('websocket.connect', () => this.checkClients());
 			emitter.onAction('websocket.error', () => this.checkClients());
 			emitter.onAction('websocket.close', () => this.checkClients());
@@ -64,21 +63,20 @@ export class HeartbeatHandler {
 
 	pingClients() {
 		const pendingClients = new Set<WebSocketClient>(this.controller.clients);
-		const activeClients = new Set<WebSocketClient>();
+		if (pendingClients.size === 0) return;
 
 		const timeout = setTimeout(() => {
 			// close connections that haven't responded
 			for (const client of pendingClients) {
 				client.close();
 			}
+
+			emitter.offAction('websocket.message', messageWatcher);
 		}, HEARTBEAT_FREQUENCY);
 
 		const messageWatcher: ActionHandler = ({ client }) => {
 			// any message means this connection is still open
-			if (!activeClients.has(client)) {
-				pendingClients.delete(client);
-				activeClients.add(client);
-			}
+			pendingClients.delete(client);
 
 			if (pendingClients.size === 0) {
 				clearTimeout(timeout);

@@ -1,6 +1,7 @@
 import type { AuthenticationClient } from '../auth/types.js';
 import type { ConsoleInterface, ExtendedQuery, WebSocketInterface } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
+import { getRequestUrl } from '../utils/get-request-url.js';
 import { queryToParams } from '../utils/query-to-params.js';
 import { auth } from './commands/auth.js';
 import { pong } from './commands/pong.js';
@@ -85,9 +86,8 @@ export function realtime(config: WebSocketConfig = {}) {
 			}
 
 			// try filling in the defaults based on the main URL
-			const newUrl = new client.globals.URL(client.url.toString());
+			const newUrl = getRequestUrl(client.url, '/websocket');
 			newUrl.protocol = client.url.protocol === 'https:' ? 'wss:' : 'ws:';
-			newUrl.pathname = '/websocket';
 
 			return await withStrictAuth(newUrl, currentClient);
 		};
@@ -411,14 +411,15 @@ export function realtime(config: WebSocketConfig = {}) {
 					options.query = queryToParams(options.query as ExtendedQuery<Schema, Schema[Collection]>);
 				}
 
-				subscriptions.add({ ...options, collection, type: 'subscribe' });
+				const subscription = { ...options, collection, type: 'subscribe' };
+				subscriptions.add(subscription);
 
 				if (state.code !== 'open') {
 					debug('info', 'No connection available for subscribing!');
 					await this.connect();
 				}
 
-				this.sendMessage({ ...options, collection, type: 'subscribe' });
+				this.sendMessage(subscription);
 				let subscribed = true;
 
 				async function* subscriptionGenerator(): AsyncGenerator<
@@ -457,7 +458,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 						if (state.code === 'open') {
 							// re-subscribe on the new connection
-							state.connection.send(JSON.stringify({ ...options, collection, type: 'subscribe' }));
+							state.connection.send(JSON.stringify(subscription));
 
 							yield* subscriptionGenerator();
 						}
@@ -465,7 +466,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				}
 
 				const unsubscribe = () => {
-					subscriptions.delete({ ...options, collection, type: 'subscribe' });
+					subscriptions.delete(subscription);
 					this.sendMessage({ uid: options.uid, type: 'unsubscribe' });
 					subscribed = false;
 				};

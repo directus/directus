@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
 import { Field, ValidationError } from '@directus/types';
-import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
-import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
+import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash-es';
+import { computed, provide, ref, watch } from 'vue';
 import VDivider from '../v-divider.vue';
 import VInfo from '../v-info.vue';
 import type { MenuOptions } from './components/form-field-menu.vue';
@@ -18,6 +18,7 @@ import { CollabContext } from '@/composables/use-collab';
 import { useFieldsStore } from '@/stores/fields';
 import type { ContentVersionMaybeNew } from '@/types/versions';
 import { applyConditions } from '@/utils/apply-conditions';
+import { isFieldCollectionInactive } from '@/utils/collection-status';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
@@ -88,12 +89,22 @@ const fieldDefinitionsMap = computed<Record<string, Field | undefined>>(() => {
 	return Object.fromEntries(fieldDefinitions.value.map((field) => [field.field, field]));
 });
 
+const editedFieldKeys = computed(() =>
+	Object.keys(props.modelValue ?? {})
+		.sort()
+		.join(','),
+);
+
+// Relational interfaces push into the value they get before emitting a copy, which changes this clone. Re-clone when
+// a field joins or leaves the edits, so undoing an edit shows the original value. Re-cloning on every keystroke
+// would re-render every object-valued field.
+const clonedInitialValues = computed(() => {
+	void editedFieldKeys.value;
+	return selectiveClone(props.initialValues, fieldDefinitionsMap.value);
+});
+
 const values = computed(() => {
-	return Object.assign(
-		{},
-		selectiveClone(props.initialValues, fieldDefinitionsMap.value),
-		selectiveClone(props.modelValue, fieldDefinitionsMap.value),
-	);
+	return Object.assign({}, clonedInitialValues.value, selectiveClone(props.modelValue, fieldDefinitionsMap.value));
 });
 
 const el = ref<Element>();
@@ -112,11 +123,26 @@ const gridClass = computed<string | null>(() => {
 	}
 });
 
-const formFieldEls = ref<Record<string, any>>({});
+// Only read by scrollToField, so it doesn't need to be reactive
+const formFieldEls: Record<string, any> = {};
 
-onBeforeUpdate(() => {
-	formFieldEls.value = {};
-});
+// Group interfaces get every prop compared, so a new ref function or `{}` on each render would re-render them
+const fieldElSetters = new Map<string, (el: any) => void>();
+const emptyValues = {};
+
+function setFieldEl(fieldName: string) {
+	let setter = fieldElSetters.get(fieldName);
+
+	if (!setter) {
+		setter = (el) => {
+			formFieldEls[fieldName] = el;
+		};
+
+		fieldElSetters.set(fieldName, setter);
+	}
+
+	return setter;
+}
 
 const {
 	fields: finalFields,
@@ -193,8 +219,14 @@ function useForm() {
 
 	const formFields = getFormFields(fields);
 
-	const fieldsWithConditions = computed(() => {
-		const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
+	const hasConditions = computed(() =>
+		formFields.value.some((field) => Array.isArray(field.meta?.conditions) && field.meta.conditions.length > 0),
+	);
+
+	// Reads values only when a field has conditions, and reuses unchanged field objects,
+	// so typing doesn't hand every field (and nested group form) a new object
+	const fieldsWithConditions = computed<Field[]>((previous) => {
+		const valuesWithDefaults = hasConditions.value ? Object.assign({}, defaultValues.value, values.value) : {};
 
 		let fields = formFields.value.map((field) =>
 			applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field), props.version),
@@ -204,7 +236,18 @@ function useForm() {
 		updateSystemDivider(fields, isFieldVisible);
 		updateFieldWidths(fields, isFieldVisible);
 
-		return fields;
+		if (!previous) return fields;
+
+		const previousByName = new Map(previous.map((field) => [field.field, field]));
+
+		fields = fields.map((field) => {
+			const previousField = previousByName.get(field.field);
+			return previousField && isEqual(field, previousField) ? previousField : field;
+		});
+
+		return fields.length === previous.length && fields.every((field, index) => field === previous[index])
+			? previous
+			: fields;
 	});
 
 	const fieldsMap = computed<Record<string, TFormField | undefined>>(() => {
@@ -223,6 +266,10 @@ function useForm() {
 		return fieldNames.value.map((name) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null));
 	});
 
+	const fieldsWithInactiveRelation = computed(() => {
+		return new Set(fields.value.filter(isFieldCollectionInactive).map((field) => field.field));
+	});
+
 	return { fields, fieldNames, fieldsMap, fieldsForGroup, isDisabled, getFieldsForGroup, isFieldVisible };
 
 	function isDisabled(field: TFormField | undefined) {
@@ -233,6 +280,7 @@ function useForm() {
 			props.disabled === true ||
 			meta?.readonly === true ||
 			field.schema?.is_generated === true ||
+			fieldsWithInactiveRelation.value.has(field.field) ||
 			(props.batchMode && batchActiveFields.value.includes(field.field) === false)
 		);
 	}
@@ -397,8 +445,8 @@ function useBatch() {
 
 function scrollToField(fieldKey: string) {
 	const { field } = extractFieldFromFunction(fieldKey);
-	if (!formFieldEls.value[field]) return;
-	formFieldEls.value[field].$el.scrollIntoView({ behavior: 'smooth' });
+	if (!formFieldEls[field]) return;
+	formFieldEls[field].$el.scrollIntoView({ behavior: 'smooth' });
 }
 
 function useRawEditor() {
@@ -475,11 +523,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 						fieldsMap[fieldName]!.meta?.special?.includes('group') &&
 						isGroupFieldVisible(fieldsMap[fieldName]!, fieldsForGroup[index] || [])
 					"
-					:ref="
-						(el: Element) => {
-							formFieldEls[fieldName] = el;
-						}
-					"
+					:ref="setFieldEl(fieldName)"
 					:class="[
 						fieldsMap[fieldName]!.meta?.width || 'full',
 						getFirstVisibleFieldClass(index),
@@ -487,8 +531,8 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					]"
 					:field="fieldsMap[fieldName]"
 					:fields="fieldsForGroup[index] || []"
-					:values="modelValue || {}"
-					:initial-values="initialValues || {}"
+					:values="modelValue || emptyValues"
+					:initial-values="initialValues || emptyValues"
 					:disabled="disabled || nonEditable"
 					:non-editable="nonEditable"
 					:batch-mode="batchMode"
@@ -508,11 +552,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 
 				<FormField
 					v-else-if="isFieldVisible(fieldsMap[fieldName])"
-					:ref="
-						(el) => {
-							formFieldEls[fieldName] = el;
-						}
-					"
+					:ref="setFieldEl(fieldName)"
 					:class="[getFirstVisibleFieldClass(index), getComparisonIndicatorClasses(fieldsMap[fieldName]!)]"
 					:field="fieldsMap[fieldName]!"
 					:autofocus="index === firstEditableFieldIndex && autofocus"
