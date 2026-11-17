@@ -539,7 +539,7 @@ class OASSpecsService implements SpecificationSubService {
 
 	/** Prevents mergeWith from corrupting $refs and overwriting array items by index. */
 	private mergePathItemCustomizer(obj: unknown, src: unknown): unknown {
-		if (src !== null && typeof src === 'object' && !Array.isArray(src) && '$ref' in src) return src;
+		if (src !== null && typeof src === 'object' && !Array.isArray(src) && ('$ref' in src || 'oneOf' in src)) return src;
 		if (Array.isArray(obj)) return obj.concat(src);
 		return undefined;
 	}
