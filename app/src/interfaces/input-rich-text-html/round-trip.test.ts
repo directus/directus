@@ -649,7 +649,7 @@ describe('wrapper elements', () => {
 		const { extensions } = buildFieldSchema({ keepWrapperElements: false });
 		const editor = new Editor({ extensions: fieldEditorExtensions(extensions), content: '<div class="box">a</div>' });
 
-		expect(editor.getHTML()).toBe('<p>a</p>');
+		expect(editor.getHTML()).toBe('<p class="box">a</p>');
 		editor.destroy();
 	});
 
