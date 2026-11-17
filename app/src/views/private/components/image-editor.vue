@@ -470,12 +470,40 @@ function useCropper() {
 		localCropping.value = false;
 		localDragMode.value = 'move';
 
+		let boxDragStart: { x: number; y: number; left: number; top: number } | null = null;
+
 		cropperInstance.value = new Cropper(imageElement.value as HTMLImageElement, {
 			autoCrop: false,
 			autoCropArea: 0.5,
 			toggleDragModeOnDblclick: false,
 			dragMode: 'move',
 			viewMode: 1,
+			cropstart(event) {
+				const pointer = getPointer(event.detail.originalEvent);
+
+				if (event.detail.action !== 'all' || !pointer || !cropperInstance.value) {
+					boxDragStart = null;
+					return;
+				}
+
+				const { left, top } = cropperInstance.value.getCropBoxData();
+				boxDragStart = { ...pointer, left, top };
+			},
+			// Cropper moves the box by each pointer step and drops whatever the image edge clamps off,
+			// so the box drifts from the cursor. Position it from where the drag started instead.
+			cropmove(event) {
+				if (!boxDragStart || event.detail.action !== 'all') return;
+
+				const pointer = getPointer(event.detail.originalEvent);
+				if (!pointer) return;
+
+				event.preventDefault();
+
+				cropperInstance.value?.setCropBoxData({
+					left: boxDragStart.left + pointer.x - boxDragStart.x,
+					top: boxDragStart.top + pointer.y - boxDragStart.y,
+				});
+			},
 			crop: throttle((event) => {
 				if (!imageData.value) return;
 
@@ -505,6 +533,11 @@ function useCropper() {
 				}
 			}, 50),
 		});
+	}
+
+	function getPointer(event: PointerEvent | TouchEvent | MouseEvent) {
+		const point = 'touches' in event ? event.touches[0] : event;
+		return point ? { x: point.clientX, y: point.clientY } : null;
 	}
 
 	function flip(type: 'horizontal' | 'vertical') {
