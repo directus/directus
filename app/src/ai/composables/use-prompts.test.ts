@@ -55,6 +55,46 @@ describe('usePrompts', () => {
 			expect(vars).toContain('name');
 			expect(vars).toContain('age');
 		});
+
+		test('removes a description containing an opening brace', () => {
+			const { extractVariables } = usePrompts();
+
+			const prompt: MCPPrompt = {
+				id: '1',
+				name: 'test',
+				status: 'published',
+				system_prompt: '{{ payload: use { for objects }}',
+			};
+
+			const vars = extractVariables(prompt);
+			expect(vars).toEqual(['payload']);
+		});
+
+		test('does not stall on a long run of braces', () => {
+			const { extractVariables } = usePrompts();
+
+			const prompt: MCPPrompt = {
+				id: '1',
+				name: 'test',
+				status: 'published',
+				system_prompt: '{'.repeat(50_000),
+			};
+
+			expect(extractVariables(prompt)).toEqual([]);
+		});
+
+		test('does not stall on a long run of whitespace', () => {
+			const { extractVariables } = usePrompts();
+
+			const prompt: MCPPrompt = {
+				id: '1',
+				name: 'test',
+				status: 'published',
+				system_prompt: '{{' + ' '.repeat(50_000),
+			};
+
+			expect(extractVariables(prompt)).toEqual([]);
+		});
 	});
 
 	describe('extractVariables', () => {

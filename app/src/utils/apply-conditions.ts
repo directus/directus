@@ -18,7 +18,7 @@ export function applyConditions(
 			// because $version is not an item field, we need to add it to the validation context
 			const validationContext = {
 				...item,
-				$version: version?.name ?? null,
+				$version: version?.key ?? null,
 			};
 
 			const rule = parseFilter(condition.rule);
