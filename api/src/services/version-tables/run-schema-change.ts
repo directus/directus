@@ -7,8 +7,10 @@ import { VersionTablesService } from '../version-tables.js';
 export type SchemaChange = {
 	/**
 	 * Sync the version tables of the given collections once all changes are done.
+	 * Set `versioningChanged` when the change toggles versioning, as the sync is skipped otherwise if no collection of
+	 * the schema is versioned.
 	 */
-	sync(collections: string[]): void;
+	sync(collections: string[], options?: { versioningChanged?: boolean }): void;
 	/**
 	 * Remove the version tables of a live collection, as well as the references to it from the version tables of other
 	 * collections.
@@ -37,13 +39,16 @@ export async function runSchemaChange<T>(
 			const service = new VersionTablesService({ knex: trx, schema });
 			const pending = new Set<string>();
 			const dropped = new Set<string>();
+			let shouldSync = Object.values(schema.collections).some((c) => c.versioned);
 
 			const change: SchemaChange = {
-				sync: (collections) => {
+				sync: (collections, options) => {
 					for (const collection of collections) pending.add(collection);
+					if (options?.versioningChanged) shouldSync = true;
 				},
 				beforeDrop: async (collection) => {
 					dropped.add(collection);
+					if (!shouldSync) return;
 					await service.syncCollections([collection], { includeRelating: true, exclude: [collection] });
 				},
 			};
@@ -58,7 +63,7 @@ export async function runSchemaChange<T>(
 				activeChanges.delete(trx);
 			}
 
-			if (pending.size > 0) {
+			if (pending.size > 0 && shouldSync) {
 				await service.syncCollections([...pending], { includeRelating: true, exclude: [...dropped] });
 			}
 

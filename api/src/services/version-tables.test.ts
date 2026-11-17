@@ -1,6 +1,7 @@
 import type { Column, ForeignKey } from '@directus/schema';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { RelationMeta, SchemaOverview } from '@directus/types';
+import { mapValues } from 'lodash-es';
 import { describe, expect, test, vi } from 'vitest';
 import { up as syncAllVersionTables } from '../database/migrations/20261106A-sync-version-tables.js';
 import { createMockDialectKnex, formatSql } from '../test-utils/knex.js';
@@ -133,6 +134,8 @@ type Options = {
 	relations?: Partial<RelationMeta>[];
 	/** Schema overview passed to the service */
 	schema?: SchemaOverview;
+	/** Collections marked as versioned in the schema overview, defaults to `versioned` */
+	schemaVersioned?: string[];
 	/** Method of the service to run, defaults to the migration syncing all version tables */
 	run?: (service: VersionTablesService) => Promise<void>;
 };
@@ -179,7 +182,17 @@ async function sync(options: Options = {}) {
 	inspector.columns = [...(options.live ?? LIVE_COLUMNS), ...shadow.columns];
 	inspector.foreignKeys = [...(options.liveForeignKeys ?? LIVE_FOREIGN_KEYS), ...shadow.foreignKeys];
 
-	const service = new VersionTablesService({ knex: db, schema: options.schema ?? schema });
+	const baseSchema = options.schema ?? schema;
+
+	const serviceSchema: SchemaOverview = {
+		...baseSchema,
+		collections: mapValues(baseSchema.collections, (collection) => ({
+			...collection,
+			versioned: (options.schemaVersioned ?? options.versioned ?? []).includes(collection.collection),
+		})),
+	};
+
+	const service = new VersionTablesService({ knex: db, schema: serviceSchema });
 
 	if (options.run) {
 		await options.run(service);
@@ -201,6 +214,7 @@ async function sync(options: Options = {}) {
 			.join(';\n\n'),
 		bindings: statements.map((query) => query.bindings),
 		introspected: [...new Set(inspector.introspected)],
+		queries: tracker.history.all,
 	};
 }
 

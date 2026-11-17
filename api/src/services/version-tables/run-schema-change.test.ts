@@ -42,7 +42,12 @@ vi.mock('../../database/helpers/index.js', () => ({
 }));
 
 const db = {} as Knex;
-const schema = { collections: {}, relations: [] } as unknown as SchemaOverview;
+const schema = { collections: { articles: { versioned: true } }, relations: [] } as unknown as SchemaOverview;
+
+const unversionedSchema = {
+	collections: { articles: { versioned: false } },
+	relations: [],
+} as unknown as SchemaOverview;
 
 beforeEach(() => {
 	calls.length = 0;
@@ -123,6 +128,27 @@ describe('runSchemaChange', () => {
 			'commit',
 			'enable foreign keys',
 		]);
+	});
+
+	test('skips the syncs when the schema has no versioned collection', async () => {
+		await runSchemaChange({ knex: db, schema: unversionedSchema }, async (_trx, change) => {
+			change.sync(['articles']);
+			await change.beforeDrop('authors');
+		});
+
+		expect(calls).toEqual(['disable foreign keys', 'begin', 'commit', 'enable foreign keys']);
+	});
+
+	test('syncs without versioned collections when the change toggles versioning', async () => {
+		await runSchemaChange({ knex: db, schema: unversionedSchema }, async (trx, change) => {
+			change.sync(['articles']);
+
+			await runSchemaChange({ knex: trx, schema: unversionedSchema }, async (_trx, nested) => {
+				nested.sync(['authors'], { versioningChanged: true });
+			});
+		});
+
+		expect(calls).toContain('sync articles,authors {"includeRelating":true,"exclude":[]}');
 	});
 
 	test('does not sync when the change fails', async () => {
