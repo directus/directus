@@ -19,6 +19,7 @@ import { get } from 'micromustache';
 import PQueue from 'p-queue';
 import pRetry from 'p-retry';
 import { useBus } from './bus/index.js';
+import { FLOW_SECRET_KEYS } from './constants.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import { useLogger } from './logger/index.js';
@@ -59,6 +60,9 @@ const TRIGGER_KEY = '$trigger';
 const ACCOUNTABILITY_KEY = '$accountability';
 const LAST_KEY = '$last';
 const ENV_KEY = '$env';
+
+/** Log and the AI steps are often given whole trigger objects, so secrets are redacted before they're logged or sent out */
+const REDACTED_OPERATIONS = ['log', 'ai-text', 'ai-image'];
 
 /** Retries of a failed flows read on reload, waiting 1s then 2s */
 const RELOAD_READ_RETRIES = 2;
@@ -516,21 +520,7 @@ class FlowManager {
 						data: redactObject(
 							keyedData,
 							{
-								keys: [
-									['**', 'headers', 'authorization'],
-									['**', 'headers', 'cookie'],
-									['**', 'query', 'access_token'],
-									['**', 'payload', 'password'],
-									['**', 'payload', 'token'],
-									['**', 'payload', 'tfa_secret'],
-									['**', 'payload', 'external_identifier'],
-									['**', 'payload', 'auth_data'],
-									['**', 'payload', 'credentials'],
-									['**', 'payload', 'ai_openai_api_key'],
-									['**', 'payload', 'ai_anthropic_api_key'],
-									['**', 'payload', 'ai_google_api_key'],
-									['**', 'payload', 'ai_openai_compatible_api_key'],
-								],
+								keys: FLOW_SECRET_KEYS,
 								values: this.envs,
 							},
 							getRedactedString,
@@ -584,25 +574,11 @@ class FlowManager {
 
 		let optionData = keyedData;
 
-		if (operation.type === 'log') {
+		if (REDACTED_OPERATIONS.includes(operation.type)) {
 			optionData = redactObject(
 				keyedData,
 				{
-					keys: [
-						['**', 'headers', 'authorization'],
-						['**', 'headers', 'cookie'],
-						['**', 'query', 'access_token'],
-						['**', 'payload', 'password'],
-						['**', 'payload', 'token'],
-						['**', 'payload', 'tfa_secret'],
-						['**', 'payload', 'external_identifier'],
-						['**', 'payload', 'auth_data'],
-						['**', 'payload', 'credentials'],
-						['**', 'payload', 'ai_openai_api_key'],
-						['**', 'payload', 'ai_anthropic_api_key'],
-						['**', 'payload', 'ai_google_api_key'],
-						['**', 'payload', 'ai_openai_compatible_api_key'],
-					],
+					keys: FLOW_SECRET_KEYS,
 				},
 				getRedactedString,
 			);

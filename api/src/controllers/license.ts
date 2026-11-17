@@ -1,7 +1,6 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { type LicensePreviewOutput, type ReadLicenseOutput, ResolveInput } from '@directus/license';
 import express from 'express';
-import { fromZodError } from 'zod-validation-error';
 import { getEntitlementManager } from '../license/index.js';
 import { getLicenseManager } from '../license/manager.js';
 import { getCoreGraceExpiresAt, GRACE_PERIOD_MS } from '../license/utils/get-core-grace-expires-at.js';
@@ -228,7 +227,7 @@ router.post(
 		const { error, data } = ResolveInput.safeParse(req.body);
 
 		if (error) {
-			throw new InvalidPayloadError({ reason: fromZodError(error).message });
+			throw new InvalidPayloadError(error);
 		}
 
 		const licenseManager = getLicenseManager();

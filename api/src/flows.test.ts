@@ -45,6 +45,7 @@ vi.mock('./services/flows.js', () => ({
 
 vi.mock('./utils/get-schema.js', () => ({ getSchema }));
 vi.mock('./utils/schedule.js', () => ({ scheduleSynchronizedJob, validateCron: () => true }));
+vi.mock('./utils/redact-object.js', () => ({ redactObject: vi.fn((obj: unknown) => obj) }));
 
 function flushPromises() {
 	return new Promise((resolve) => setImmediate(resolve));
@@ -75,6 +76,24 @@ describe('FlowManager', () => {
 		vi.useRealTimers();
 		// Restores the mocks to their defaults, dropping any leftover once values
 		vi.resetAllMocks();
+	});
+
+	test.each([
+		['log', true],
+		['ai-text', true],
+		['item-read', false],
+	])('redacts secrets from flow data before a %s step: %s', async (type, redacted) => {
+		const { redactObject } = await import('./utils/redact-object.js');
+		const { FLOW_SECRET_KEYS } = await import('./constants.js');
+
+		const manager = getFlowManager();
+		manager.addOperation(type, vi.fn());
+
+		const operation = { type, options: {}, resolve: null, reject: null } as any;
+		await (manager as any).executeOperation(operation, { $trigger: {} });
+
+		const calls = vi.mocked(redactObject).mock.calls.filter(([, redact]) => redact.keys === FLOW_SECRET_KEYS);
+		expect(calls.length > 0).toBe(redacted);
 	});
 
 	async function initializeWith(flows: FlowRaw[]) {

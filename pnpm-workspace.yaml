@@ -17,7 +17,6 @@ overrides:
   js-beautify>glob: 14.0.6
   unplugin-yaml>yaml: 2.9.1
   uuid: 11.1.1
-  '@ai-sdk/provider-utils': 4.0.51
   '@opentelemetry/core': 2.11.0
   '@directus/mock-license-server>fastify': 5.12.8
   zod: 4.6.7
@@ -41,12 +40,12 @@ allowBuilds:
   vue-demi: true
 
 catalog:
-  '@ai-sdk/anthropic': 3.0.58
-  '@ai-sdk/devtools': 0.0.15
-  '@ai-sdk/google': 3.0.43
-  '@ai-sdk/openai': 3.0.41
-  '@ai-sdk/openai-compatible': 2.0.35
-  '@ai-sdk/vue': 3.0.116
+  '@ai-sdk/anthropic': 3.0.128
+  '@ai-sdk/devtools': 0.0.28
+  '@ai-sdk/google': 3.0.131
+  '@ai-sdk/openai': 3.0.124
+  '@ai-sdk/openai-compatible': 2.0.81
+  '@ai-sdk/vue': 3.0.302
   '@authenio/samlify-node-xmllint': 2.0.0
   '@aws-sdk/client-s3': 3.1111.0
   '@aws-sdk/client-sesv2': 3.1111.0
@@ -102,6 +101,7 @@ catalog:
   '@netlify/api': 14.0.14
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
+  '@openrouter/ai-sdk-provider': 2.10.0
   '@opentelemetry/sdk-trace-node': 2.11.0
   '@pinia/testing': 1.0.3
   '@pnpm/logger': 1001.0.1
@@ -188,7 +188,7 @@ catalog:
   '@vueuse/core': 14.0.0
   '@vueuse/integrations': 14.0.0
   '@vueuse/router': 14.0.0
-  ai: 6.0.116
+  ai: 6.0.302
   apexcharts: 4.7.0
   archiver: 8.0.0
   argon2: 0.44.0
@@ -229,6 +229,7 @@ catalog:
   eslint: 10.8.0
   eslint-config-prettier: 10.1.8
   eslint-plugin-import-x: 4.18.1
+  eslint-plugin-regexp: 2.10.0
   eslint-plugin-vue: 10.10.0
   eventemitter2: 6.4.9
   execa: 9.6.0
@@ -371,6 +372,5 @@ catalog:
   wellknown: 0.5.0
   ws: 8.21.0
   zod: 4.6.7
-  zod-validation-error: 4.0.2
 
 catalogMode: strict
