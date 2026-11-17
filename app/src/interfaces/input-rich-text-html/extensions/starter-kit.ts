@@ -101,6 +101,7 @@ const EditorStarterKit = StarterKit.extend<StarterKitOptions & LegacyTagOptions>
 const STARTER_KIT_OPTIONS: Partial<StarterKitOptions> = {
 	// replaced by DropCursor, which draws a vertical indicator between same-row inline-block nodes
 	dropcursor: false,
+	paragraph: false,
 	// standalone so buildLinkProtocolSchema can swap it for a per-field configured Link
 	link: false,
 };

@@ -36,7 +36,7 @@ export function getDBQuery(
 	{ knex, schema }: Context,
 ): Knex.QueryBuilder {
 	const aliasMap: AliasMap = Object.create(null);
-	const env = useEnv();
+	const { QUERY_LIMIT_DEFAULT } = useEnv();
 	const preProcess = getColumnPreprocessor(knex, schema, table, cases, permissions, aliasMap, permissionsOnly);
 	const queryCopy = cloneDeep(query);
 	const helpers = getHelpers(knex);
@@ -45,7 +45,7 @@ export function getDBQuery(
 		o2mNodes.some((node) => node.whenCase && node.whenCase.length > 0) ||
 		fieldNodes.some((node) => node.whenCase && node.whenCase.length > 0);
 
-	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : Number(env['QUERY_LIMIT_DEFAULT']);
+	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : QUERY_LIMIT_DEFAULT;
 
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {

@@ -72,6 +72,8 @@ jobs:
       - name: Validate Changeset Coverage
         if: steps.found_changeset.outputs.found == 'true'
         uses: actions/github-script@v7
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
         with:
           script: |
             const fs = require('fs');
@@ -79,12 +81,13 @@ jobs:
 
             try {
               const cwd = process.cwd();
-              
+              const baseRef = `origin/${process.env.BASE_REF}`;
+
               // 1. Get packages that actually changed in this PR/branch
-              core.info('🔍 Detecting changed packages since main...');
+              core.info(`🔍 Detecting changed packages since ${baseRef}...`);
               const changedPackages = await getChangedPackagesSinceRef({
                 cwd,
-                ref: 'origin/main'
+                ref: baseRef
               });
               
               // 2. Filter out private packages

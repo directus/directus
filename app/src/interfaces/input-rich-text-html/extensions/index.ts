@@ -15,6 +15,7 @@ import { Media } from './media';
 import { namedAnchorExtensions } from './named-anchor';
 import { buildContainerParagraphSchema } from './no-container-paragraphs';
 import { PageBreak } from './page-break';
+import { CustomParagraph } from './paragraph';
 import { PreKeymap } from './pre-keymap';
 import { PreservedAttributes, styleRules } from './preserved-attributes';
 import { RangeSelectedAtoms } from './range-selected-atoms';
@@ -35,6 +36,7 @@ import { contributedKey, enabledRichTexts } from '@/rich-text/register';
  */
 export const editorExtensions = [
 	BaseStarterKit,
+	CustomParagraph,
 	BaseLink,
 	DropCursor,
 	CustomImage,

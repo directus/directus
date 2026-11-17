@@ -25,7 +25,7 @@ vi.mock('@/api', () => {
 		default: {
 			get: (path: string) => {
 				// stub for `/fields/:collection/:field` route
-				if (/^\/fields\/.+\/.+$/.test(path)) return Promise.resolve({ data: {} });
+				if (/^\/fields\/[^/]+\/[^/]+$/.test(path)) return Promise.resolve({ data: {} });
 
 				return Promise.reject(new Error(`Path "${path}" is not mocked in this test`));
 			},

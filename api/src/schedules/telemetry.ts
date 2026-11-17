@@ -1,5 +1,4 @@
 import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import { getCache } from '../cache.js';
 import { getEntitlementManager } from '../license/index.js';
 import { track } from '../telemetry/index.js';
@@ -19,9 +18,9 @@ export const jobCallback = () => {
  * @returns Whether or not telemetry has been initialized
  */
 export default async function schedule(): Promise<boolean> {
-	const env = useEnv();
+	const { TELEMETRY } = useEnv();
 
-	if (!getEntitlementManager().isEntitled('telemetry_required') && !toBoolean(env['TELEMETRY'])) {
+	if (!getEntitlementManager().isEntitled('telemetry_required') && !TELEMETRY) {
 		return false;
 	}
 

@@ -2,6 +2,7 @@ export type LayoutOptions = {
 	template?: string;
 	startDateField?: string;
 	endDateField?: string;
+	colorField?: string;
 	firstDay?: number;
 	viewInfo?: {
 		type: string;
