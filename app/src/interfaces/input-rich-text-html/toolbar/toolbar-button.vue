@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import type { ToolbarButton, ToolbarContext } from './buttons';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { translate } from '@/utils/translate-literal';
 
 const props = defineProps<{
 	button: ToolbarButton;
@@ -17,6 +18,8 @@ const props = defineProps<{
 const { t } = useI18n();
 
 const placement = computed(() => props.tooltipPlacement ?? 'top');
+
+const label = computed(() => (props.button.literalLabel ? translate(props.button.label) : t(props.button.label)));
 </script>
 
 <template>
@@ -29,7 +32,7 @@ const placement = computed(() => props.tooltipPlacement ?? 'top');
 	/>
 	<VButton
 		v-else
-		v-tooltip:[placement]="t(button.label)"
+		v-tooltip:[placement]="label"
 		class="toolbar-button"
 		ghost
 		:active="!!(editor && button.isActive?.(editor, context))"

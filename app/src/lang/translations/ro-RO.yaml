@@ -1605,6 +1605,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Un editor de text formatat care scrie conţinut HTML
     toolbar: Bară de instrumente
+    extensions: Extensii
     custom_formats: Formate personalizate
     folder_note: Dosar pentru fișierele încărcate. Nu afectează fișierele existente.
     imageToken: Token acces static

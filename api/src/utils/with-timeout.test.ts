@@ -32,6 +32,17 @@ describe('withTimeout', () => {
 		await timedOut;
 	});
 
+	test('should wait indefinitely, without a timer, when the timeout is Infinity', async () => {
+		let settle!: (value: string) => void;
+		const waiting = withTimeout(new Promise<string>((resolve) => (settle = resolve)), Infinity);
+
+		expect(vi.getTimerCount()).toBe(0);
+
+		settle('result');
+
+		await expect(waiting).resolves.toBe('result');
+	});
+
 	test('should leave no pending timer once the promise settles', async () => {
 		await withTimeout(Promise.resolve('result'), 1000);
 

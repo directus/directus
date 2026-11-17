@@ -1,3 +1,4 @@
+import { FailedValidationError } from '@directus/validation';
 import { expect, test } from 'vitest';
 import config from './index.js';
 
@@ -191,6 +192,27 @@ test('Resolves when asynchronous function is valid', async () => {
 			},
 		} as any),
 	).resolves.toEqual({ result: 'Hello, I ran asynchronously' });
+});
+
+test('Resolves when data contains errors from a previous operation', async () => {
+	const testCode = `
+		module.exports = function (data) {
+			return data.$last.map((error) => ({ name: error.name, code: error.code, field: error.extensions.field }));
+		};
+	`;
+
+	await expect(
+		config.handler({ code: testCode }, {
+			data: {
+				$last: [new FailedValidationError({ field: 'missing_field', path: [], type: 'nnull' })],
+				$previous: new Error('Plain error'),
+			},
+			env: {
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
+			},
+		} as any),
+	).resolves.toEqual([{ name: 'DirectusError', code: 'FAILED_VALIDATION', field: 'missing_field' }]);
 });
 
 test('Rejects when wrong unit is passed to max memory config', async () => {

@@ -121,7 +121,8 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			return;
 		}
 
-		ctx.ui.success(convergedMessage('push', target, ctx.cwd, schema, dataResult !== undefined));
+		ctx.ui.success(convergedMessage('push', target, ctx.cwd, schema, dataResult !== undefined, dataResult?.skipped));
+
 		return;
 	}
 

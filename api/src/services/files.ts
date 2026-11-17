@@ -2,7 +2,6 @@ import type { Readable } from 'node:stream';
 import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
 import zlib from 'node:zlib';
 import path from 'path';
-import url from 'url';
 import { useEnv } from '@directus/env';
 import {
 	ContentTooLargeError,
@@ -21,7 +20,7 @@ import type {
 	Query,
 	QueryOptions,
 } from '@directus/types';
-import { normalizePath, toArray, toBoolean } from '@directus/utils';
+import { normalizePath } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import { clone, cloneDeep } from 'lodash-es';
@@ -75,7 +74,7 @@ export class FilesService extends ItemsService<File> {
 
 		// Merge the existing file's folder and filename_download with the new payload
 		const payload = {
-			storage: toArray(env['STORAGE_LOCATIONS'] as string)[0]!,
+			storage: env.STORAGE_LOCATIONS[0]!,
 			...(existingFile ?? {}),
 			...clone(data),
 		};
@@ -293,13 +292,13 @@ export class FilesService extends ItemsService<File> {
 		let mimeType: string;
 
 		try {
-			const parsedURL = url.parse(fileResponse.request.res.responseUrl);
-			filename = decodeURI(path.basename(parsedURL.pathname as string));
+			const parsedURL = new URL(fileResponse.request.res.responseUrl);
+			filename = decodeURI(path.basename(parsedURL.pathname));
 
 			mimeType = fileResponse.headers['content-type']?.split(';')[0]?.trim() || 'application/octet-stream';
 
 			// Check against global MIME type allow list from env
-			if (isMimeTypeAllowed(mimeType, env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]) === false) {
+			if (isMimeTypeAllowed(mimeType, env.FILES_MIME_TYPE_ALLOW_LIST) === false) {
 				throw new InvalidPayloadError({
 					reason: `File content type "${mimeType}" is not allowed for upload by your global file type restrictions`,
 				});
@@ -466,7 +465,7 @@ export class FilesService extends ItemsService<File> {
 								if (!remoteFileExists) {
 									await disk.move(filePath, updatedFilePath);
 									continue;
-								} else if (toBoolean(env['FILES_DELETE_ORIGINAL_ON_MOVE']) === false) {
+								} else if (!env.FILES_DELETE_ORIGINAL_ON_MOVE) {
 									continue;
 								}
 							}

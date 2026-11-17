@@ -1,8 +1,7 @@
 import { useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
 
-const env = useEnv();
-const MAX_JSON_QUERY_DEPTH = Number(env['MAX_JSON_QUERY_DEPTH']);
+const { MAX_JSON_QUERY_DEPTH } = useEnv();
 
 /**
  * Calculates the depth of a JSON path by counting the number of property accesses and array accesses.

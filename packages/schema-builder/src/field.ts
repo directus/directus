@@ -1,20 +1,23 @@
 import { ok as assert } from 'node:assert/strict';
-import type { FieldOverview, SchemaOverview } from '@directus/types';
+import type { Field, FieldOverview } from '@directus/types';
+import { cloneDeep } from 'lodash-es';
 import { SchemaBuilder } from './builder.js';
 import { CollectionBuilder } from './collection.js';
 import {
+	alias_field,
 	BIG_INTEGER_FIELD,
 	BOOLEAN_FIELD,
 	CSV_FIELD,
 	DATE_FIELD,
 	DATE_TIME_FIELD,
 	DECIMAL_FIELD,
-	FIELD_DEFAULTS,
+	type FieldDefaults,
 	FLOAT_FIELD,
 	HASH_FIELD,
 	ID_FIELD,
 	INTEGER_FIELD,
 	JSON_FIELD,
+	M2O_FIELD,
 	STRING_FIELD,
 	TEXT_FIELD,
 	TIME_FIELD,
@@ -23,12 +26,12 @@ import {
 } from './defaults.js';
 import { RelationBuilder } from './relation.js';
 
-type InitialFieldOverview = {
+type InitialField = {
 	field: string;
 	_kind: 'initial';
 };
 
-type FinishedFieldOverview = FieldOverview & { _kind: 'finished' };
+type FinishedField = FieldDefaults & { field: string; _kind: 'finished' };
 
 type M2AOptions = {
 	o2m_relation: RelationBuilder;
@@ -39,12 +42,12 @@ type M2MOptions = {
 	o2m_relation: RelationBuilder;
 	m2o_relation: RelationBuilder;
 };
-export type FieldOveriewBuilderOptions = Partial<Omit<FieldOverview, 'field' | 'type' | 'dbType'>>;
+export type FieldOveriewBuilderOptions = Partial<Omit<FieldOverview, 'field' | 'type' | 'dbType' | 'alias'>>;
 
 export class FieldBuilder {
 	_schema: SchemaBuilder | undefined;
 	_collection: CollectionBuilder | undefined;
-	_data: InitialFieldOverview | FinishedFieldOverview;
+	_data: InitialField | FinishedField;
 
 	constructor(name: string, schema?: SchemaBuilder, collection?: CollectionBuilder) {
 		this._data = {
@@ -58,11 +61,7 @@ export class FieldBuilder {
 
 	/** Shorthand for creating an integer field and marking it as the primary field */
 	id(): this {
-		this._data = {
-			field: this._data.field,
-			...ID_FIELD,
-			_kind: 'finished',
-		};
+		this.set_type(ID_FIELD);
 
 		if (this._collection) this.primary();
 
@@ -72,7 +71,26 @@ export class FieldBuilder {
 	options(options: FieldOveriewBuilderOptions): this {
 		assert(this._data._kind !== 'initial', 'Cannot configure field before specifing a type');
 
-		Object.assign(this._data, options);
+		const { schema, meta } = this._data;
+
+		if (schema) {
+			if (options.defaultValue !== undefined) {
+				const auto_increment = options.defaultValue === 'AUTO_INCREMENT';
+
+				schema.has_auto_increment = auto_increment;
+				schema.default_value = auto_increment ? null : options.defaultValue;
+			}
+
+			if (options.nullable !== undefined) schema.is_nullable = options.nullable;
+			if (options.generated !== undefined) schema.is_generated = options.generated;
+			if (options.precision !== undefined) schema.numeric_precision = options.precision;
+			if (options.scale !== undefined) schema.numeric_scale = options.scale;
+		}
+
+		if (options.special !== undefined) meta.special = options.special;
+		if (options.note !== undefined) meta.note = options.note;
+		if (options.validation !== undefined) meta.validation = options.validation;
+		if (options.searchable !== undefined) meta.searchable = options.searchable;
 
 		return this;
 	}
@@ -92,14 +110,11 @@ export class FieldBuilder {
 		assert(this._collection, 'Can only set to primary on a collection');
 
 		assert(
-			'primary' in this._collection._data === false,
+			this._collection._primary === undefined,
 			`The primary key is already set on the collection ${this._collection.get_name()}`,
 		);
 
-		this._collection._data = {
-			primary: this._data.field,
-			...this._collection._data,
-		};
+		this._collection._primary = this._data.field;
 
 		return this;
 	}
@@ -107,210 +122,83 @@ export class FieldBuilder {
 	/** Marks the field as the sort_field of the collection */
 	sort(): void {
 		assert(this._collection, 'Can only set to sort on a collection');
-		assert(this._collection._data.sortField === null, 'Can only set a sort field once');
+		assert(this._collection._data.sort_field === null, 'Can only set a sort field once');
 
-		this._collection._data = {
-			...this._collection._data,
-			sortField: this._data.field,
-		};
+		this._collection._data.sort_field = this._data.field;
 	}
 
 	boolean(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...BOOLEAN_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(BOOLEAN_FIELD);
 	}
 
 	bigInteger(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...BIG_INTEGER_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(BIG_INTEGER_FIELD);
 	}
 
 	date(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...DATE_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(DATE_FIELD);
 	}
 
 	dateTime(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...DATE_TIME_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(DATE_TIME_FIELD);
 	}
 
 	decimal(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...DECIMAL_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(DECIMAL_FIELD);
 	}
 
 	float(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...FLOAT_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(FLOAT_FIELD);
 	}
 
 	integer(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...INTEGER_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(INTEGER_FIELD);
 	}
 
 	json(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...JSON_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(JSON_FIELD);
 	}
 
 	string(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...STRING_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(STRING_FIELD);
 	}
 
 	text(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...TEXT_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(TEXT_FIELD);
 	}
 
 	time(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...TIME_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(TIME_FIELD);
 	}
 
 	timestamp(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...TIMESTAMP_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(TIMESTAMP_FIELD);
 	}
 
 	uuid(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...UUID_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(UUID_FIELD);
 	}
 
 	hash(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
-
-		this._data = {
-			field: this._data.field,
-			...HASH_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+		return this.set_type(HASH_FIELD);
 	}
 
 	csv(): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
+		return this.set_type(CSV_FIELD);
+	}
 
-		this._data = {
-			field: this._data.field,
-			...CSV_FIELD,
-			_kind: 'finished',
-		};
-
-		return this;
+	/** Creates an alias field without a database column */
+	alias(special: string[]): this {
+		return this.set_type(alias_field(special));
 	}
 
 	m2a(related_collections: string[], relation_callback?: (options: M2AOptions) => M2AOptions | void): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
+		this.set_type(alias_field(['m2a']));
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		this._data = {
-			field: this._data.field,
-			...FIELD_DEFAULTS,
-			type: 'alias',
-			dbType: null,
-			special: ['m2a'],
-			_kind: 'finished',
-		};
+		const junction_name = `${this._collection.get_name()}_${this.get_name()}`;
 
-		const junction_name = `${this._collection.get_name()}_builder`;
-
-		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name())
+		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema)
 			.o2m(junction_name, `${this._collection.get_name()}_id`)
 			.options({
 				meta: {
@@ -318,7 +206,7 @@ export class FieldBuilder {
 				},
 			});
 
-		let a2o_relation = new RelationBuilder(junction_name, 'item').a2o(related_collections).options({
+		let a2o_relation = new RelationBuilder(junction_name, 'item', this._schema).a2o(related_collections).options({
 			meta: {
 				junction_field: `${this._collection.get_name()}_id`,
 			},
@@ -339,22 +227,31 @@ export class FieldBuilder {
 		return this;
 	}
 
-	m2m(related_collection: string, relation_callback?: (options: M2MOptions) => M2MOptions | void): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
+	/**
+	 * Creates a m2m relation through a generated junction collection
+	 * @param related_field Name of the m2m alias field on the related collection, pointing back to this collection
+	 */
+	m2m(related_collection: string, relation_callback?: (options: M2MOptions) => M2MOptions | void): this;
+	m2m(
+		related_collection: string,
+		related_field?: string,
+		relation_callback?: (options: M2MOptions) => M2MOptions | void,
+	): this;
+
+	m2m(
+		related_collection: string,
+		related_field_or_callback?: string | ((options: M2MOptions) => M2MOptions | void),
+		callback?: (options: M2MOptions) => M2MOptions | void,
+	): this {
+		this.set_type(alias_field(['m2m']));
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		this._data = {
-			field: this._data.field,
-			...FIELD_DEFAULTS,
-			type: 'alias',
-			dbType: null,
-			special: ['m2m'],
-			_kind: 'finished',
-		};
+		const related_field = typeof related_field_or_callback === 'string' ? related_field_or_callback : undefined;
+		const relation_callback = typeof related_field_or_callback === 'function' ? related_field_or_callback : callback;
 
 		const junction_name = `${this._collection.get_name()}_${related_collection}_junction`;
 
-		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name())
+		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema)
 			.o2m(junction_name, `${this._collection.get_name()}_id`)
 			.options({
 				meta: {
@@ -362,11 +259,13 @@ export class FieldBuilder {
 				},
 			});
 
-		let m2o_relation = new RelationBuilder(junction_name, `${related_collection}_id`).m2o(related_collection).options({
-			meta: {
-				junction_field: `${this._collection.get_name()}_id`,
-			},
-		});
+		let m2o_relation = new RelationBuilder(junction_name, `${related_collection}_id`, this._schema)
+			.m2o(related_collection, related_field)
+			.options({
+				meta: {
+					junction_field: `${this._collection.get_name()}_id`,
+				},
+			});
 
 		if (relation_callback) {
 			const new_relations = relation_callback({ o2m_relation, m2o_relation });
@@ -387,27 +286,21 @@ export class FieldBuilder {
 		language_collection: string = 'languages',
 		relation_callback?: (options: M2MOptions) => M2MOptions | void,
 	): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
+		this.set_type(alias_field(['translations']));
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		this._data = {
-			field: this._data.field,
-			...FIELD_DEFAULTS,
-			type: 'alias',
-			dbType: null,
-			special: ['translations'],
-			_kind: 'finished',
-		};
-
-		this._schema.collection(language_collection, (c) => {
-			c.field('code').string().primary();
-			c.field('name').string();
-			c.field('direction').string().options({ defaultValue: 'ltr' });
-		});
+		// The language collection is shared between all translations fields and can also be defined by the user
+		if (this._schema._collections.some((collection) => collection.get_name() === language_collection) === false) {
+			this._schema.collection(language_collection, (c) => {
+				c.field('code').string().primary();
+				c.field('name').string();
+				c.field('direction').string().options({ defaultValue: 'ltr' });
+			});
+		}
 
 		const junction_name = `${this._collection.get_name()}_translations`;
 
-		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name())
+		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema)
 			.o2m(junction_name, `${this._collection.get_name()}_id`)
 			.options({
 				meta: {
@@ -415,7 +308,7 @@ export class FieldBuilder {
 				},
 			});
 
-		let m2o_relation = new RelationBuilder(junction_name, `${language_collection}_code`)
+		let m2o_relation = new RelationBuilder(junction_name, `${language_collection}_code`, this._schema)
 			.m2o(language_collection)
 			.options({
 				meta: {
@@ -443,19 +336,10 @@ export class FieldBuilder {
 		related_field: string,
 		relation_callback?: (relation: RelationBuilder) => RelationBuilder | void,
 	): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
+		this.set_type(alias_field(['o2m']));
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		this._data = {
-			field: this._data.field,
-			...FIELD_DEFAULTS,
-			type: 'alias',
-			dbType: null,
-			special: ['o2m'],
-			_kind: 'finished',
-		};
-
-		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).o2m(
+		let relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema).o2m(
 			related_collection,
 			related_field,
 		);
@@ -478,19 +362,10 @@ export class FieldBuilder {
 		related_field?: string,
 		relation_callback?: (relation: RelationBuilder) => RelationBuilder | void,
 	): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
+		this.set_type(M2O_FIELD);
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		this._data = {
-			field: this._data.field,
-			...FIELD_DEFAULTS,
-			type: 'integer',
-			dbType: 'integer',
-			special: ['m2o'],
-			_kind: 'finished',
-		};
-
-		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).m2o(
+		let relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema).m2o(
 			related_collection,
 			related_field,
 		);
@@ -509,19 +384,12 @@ export class FieldBuilder {
 	}
 
 	a2o(related_collections: string[], relation_callback?: (relation: RelationBuilder) => RelationBuilder | void): this {
-		assert(this._data._kind === 'initial', 'Field type was already set');
+		this.set_type(STRING_FIELD);
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
-		this._data = {
-			field: this._data.field,
-			...FIELD_DEFAULTS,
-			type: 'integer',
-			dbType: 'integer',
-			special: [],
-			_kind: 'finished',
-		};
-
-		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).a2o(related_collections);
+		let relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema).a2o(
+			related_collections,
+		);
 
 		if (relation_callback) {
 			const new_relation = relation_callback(relation);
@@ -540,11 +408,34 @@ export class FieldBuilder {
 		return this._data.field;
 	}
 
-	build(_schema: SchemaOverview): FieldOverview {
+	build(collection: string): Field {
 		assert(this._data._kind === 'finished', 'The collection needs at least 1 field configured');
 
-		const { _kind, ...field } = this._data;
+		const { field, type, schema, meta } = this._data;
+		const is_primary_key = this._collection?._primary === field;
 
-		return field;
+		return {
+			collection,
+			field,
+			name: field,
+			type,
+			schema: schema
+				? { name: field, table: collection, ...schema, is_primary_key, ...(is_primary_key && { is_nullable: false }) }
+				: null,
+			// The id is assigned once the whole schema is built
+			meta: { id: 0, collection, field, ...meta },
+		};
+	}
+
+	private set_type(definition: FieldDefaults): this {
+		assert(this._data._kind === 'initial', 'Field type was already set');
+
+		this._data = {
+			field: this._data.field,
+			...cloneDeep(definition),
+			_kind: 'finished',
+		};
+
+		return this;
 	}
 }

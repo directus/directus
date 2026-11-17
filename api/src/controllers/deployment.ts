@@ -1,5 +1,6 @@
 import { ErrorCode, InvalidPathParameterError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { DEPLOYMENT_PROVIDER_TYPES, type DeploymentConfig, type ProviderType } from '@directus/types';
+import { toMilliseconds } from '@directus/utils';
 import express from 'express';
 import Joi from 'joi';
 import getDatabase from '../database/index.js';
@@ -12,13 +13,12 @@ import { DeploymentRunsService } from '../services/deployment-runs.js';
 import { DeploymentService } from '../services/deployment.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { transaction } from '../utils/transaction.js';
 
 const router = express.Router();
 
 function parseRange(range: unknown, defaultMs: number): Date {
-	const ms = getMilliseconds(range, defaultMs);
+	const ms = toMilliseconds(range) ?? defaultMs;
 	return new Date(Date.now() - ms);
 }
 

@@ -230,6 +230,16 @@ describe('followers', () => {
 });
 
 describe('timeouts', () => {
+	test('should keep waiting on a leader with no timeout', async () => {
+		const { leader, finish } = await startLeader({ timeout: Infinity });
+
+		await vi.advanceTimersByTimeAsync(24 * 60 * 60 * 1000);
+
+		finish('done');
+
+		await expect(leader).resolves.toEqual({ result: 'done', leader: true });
+	});
+
 	test('should reject a follower that ran out of time, then stop retrying for leader and listening', async () => {
 		const { follower } = await startFollower({ timeout: 3000 });
 		const settled = expect(follower).rejects.toThrow('timed out after 3000ms');

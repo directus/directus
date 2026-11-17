@@ -3,9 +3,10 @@ import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { afterAll, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { snapshot } from './snapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(graphql()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api);
+const { collections } = await useSnapshot<Schema>(api, snapshot);
 
 /** The order items are inserted in, so that a correct result can never be the insertion order. */
 const INSERT_ORDER = [4, 2, 3, 5, 1];
@@ -186,6 +187,6 @@ test('sorts nested o2m items independently of the root sort', async () => {
 		}),
 	);
 
-	expect(asc!.links.map((link: any) => Number(link.link.slice(-1)))).toEqual([1, 2, 3, 4, 5]);
-	expect(desc!.links.map((link: any) => Number(link.link.slice(-1)))).toEqual([5, 4, 3, 2, 1]);
+	expect(asc!.links!.map((link: any) => Number(link.link.slice(-1)))).toEqual([1, 2, 3, 4, 5]);
+	expect(desc!.links!.map((link: any) => Number(link.link.slice(-1)))).toEqual([5, 4, 3, 2, 1]);
 });

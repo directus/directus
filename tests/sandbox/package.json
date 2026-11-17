@@ -27,7 +27,6 @@
 	"author": "Nils Twelker (nils@directus.io)",
 	"license": "MIT",
 	"private": true,
-	"packageManager": "pnpm@10.14.0",
 	"dependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
@@ -48,7 +47,7 @@
 		"uuid": "catalog:"
 	},
 	"engines": {
-		"node": ">=22"
+		"node": ">=26"
 	},
 	"optionalDependencies": {
 		"mysql2": "catalog:",

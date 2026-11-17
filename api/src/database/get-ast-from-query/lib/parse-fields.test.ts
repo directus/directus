@@ -713,7 +713,7 @@ test('parse fields with an aliased m2o nested inside an m2a block (#27772)', asy
 	const result = await parseFields(
 		{
 			accountability,
-			parentCollection: 'blog_builder',
+			parentCollection: 'blog_blocks',
 			fields: ['item:text.a.name'],
 			query: { alias: {} },
 			deep: { 'item:text': { _alias: { a: 'author' } } },
@@ -753,7 +753,7 @@ test('parse fields with an aliased m2o nested inside an m2a block (#27772)', asy
 			relatedKey: { text: 'id' },
 			parentKey: 'id',
 			fieldKey: 'item',
-			relation: getRelation(schemaM2A.relations, 'blog_builder', 'item'),
+			relation: getRelation(schemaM2A.relations, 'blog_blocks', 'item'),
 			cases: {},
 			whenCase: [],
 		},
@@ -766,7 +766,7 @@ test('parse fields with a non-aliased m2o nested inside an m2a block', async () 
 	const result = await parseFields(
 		{
 			accountability,
-			parentCollection: 'blog_builder',
+			parentCollection: 'blog_blocks',
 			fields: ['item:text.author.name'],
 			query: { alias: {} },
 			deep: {},
@@ -806,7 +806,7 @@ test('parse fields with a non-aliased m2o nested inside an m2a block', async () 
 			relatedKey: { text: 'id' },
 			parentKey: 'id',
 			fieldKey: 'item',
-			relation: getRelation(schemaM2A.relations, 'blog_builder', 'item'),
+			relation: getRelation(schemaM2A.relations, 'blog_blocks', 'item'),
 			cases: {},
 			whenCase: [],
 		},
@@ -822,7 +822,7 @@ test('parse fields rejects an inactive collection named through the a2o scope sy
 		parseFields(
 			{
 				accountability,
-				parentCollection: 'blog_builder',
+				parentCollection: 'blog_blocks',
 				fields: ['item:text.id'],
 				query: { alias: {} },
 			},
@@ -837,7 +837,7 @@ test('parse fields silently ignores an a2o scope naming a collection that does n
 	const result = await parseFields(
 		{
 			accountability,
-			parentCollection: 'blog_builder',
+			parentCollection: 'blog_blocks',
 			fields: ['item:nonexistent_collection.id'],
 			query: { alias: {} },
 		},
@@ -855,7 +855,7 @@ test('parse fields skips an inactive collection that was only reached through an
 	const result = await parseFields(
 		{
 			accountability,
-			parentCollection: 'blog_builder',
+			parentCollection: 'blog_blocks',
 			fields: ['item.*'],
 			query: { alias: {} },
 		},

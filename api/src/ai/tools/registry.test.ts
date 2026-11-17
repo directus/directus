@@ -7,13 +7,12 @@ import type { ToolConfig } from './types.js';
 
 // The registry itself only reads PUBLIC_URL; the remaining keys satisfy import-time
 // env access in the service graph pulled in by the schema tool.
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn(() => ({
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../../test-utils/env.js');
+	return mockUseEnv({
 		PUBLIC_URL: 'https://directus.example',
-		EMAIL_TEMPLATES_PATH: './templates',
-		EXTENSIONS_PATH: './extensions',
-	})),
-}));
+	});
+});
 
 const schema = { collections: {} } as any;
 
@@ -415,7 +414,7 @@ describe('ToolRegistry', () => {
 			type: 'object',
 			additionalProperties: false,
 			properties: {
-				query: { anyOf: [{ type: 'string' }, { type: 'null' }] },
+				query: { type: ['string', 'null'] },
 				names: { type: 'array', items: { type: 'string' } },
 			},
 		});

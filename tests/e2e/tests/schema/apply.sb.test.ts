@@ -36,8 +36,18 @@ const directus = await useSandbox(database, {
 	docker: { suffix: getUID() },
 });
 
+type Author = { id: number; name: string | null; articles: number[] | Article[] };
+type Article = { id: number; title: string | null; author_id: number | Author | null };
+type Extra = { id: number; name: string | null };
+
+type Schema = {
+	articles: Article[];
+	authors: Author[];
+	extra: Extra[];
+};
+
 const url = `http://localhost:${directus.apis[0]!.port}`;
-const api = createDirectus<any>(url).with(rest()).with(staticToken('admin'));
+const api = createDirectus<Schema>(url).with(rest()).with(staticToken('admin'));
 
 afterAll(async () => {
 	await directus.stop();
@@ -173,7 +183,7 @@ test('a yaml snapshot can be applied through a multipart request', async () => {
 	const apply = await fetch(`${url}/schema/apply`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json', Authorization: 'Bearer admin' },
-		body: JSON.stringify((await diff.json()).data),
+		body: JSON.stringify(((await diff.json()) as any).data),
 	});
 
 	expect(apply.status).toBe(204);
@@ -186,13 +196,13 @@ test('a diff whose left hand side is not an object applies cleanly', async () =>
 
 	await applySnapshot(original);
 
-	const collection = (await api.request(readCollections())).find((entry: any) => entry.collection === ARTICLES);
+	const collection = (await api.request(readCollections())).find((entry: any) => entry.collection === ARTICLES)!;
 
 	expect(collection.meta.color).toBeNull();
 });
 
 test('a diff of an array valued meta property applies cleanly', async () => {
-	const field = (await api.request(readFieldsByCollection(ARTICLES))).find((entry: any) => entry.field === 'title');
+	const field = (await api.request(readFieldsByCollection(ARTICLES))).find((entry: any) => entry.field === 'title')!;
 
 	field.meta.translations = [
 		{ language: 'en-US', translation: 'title' },
@@ -215,7 +225,7 @@ test('a diff of an array valued meta property applies cleanly', async () => {
 
 	const applied = (await api.request(readFieldsByCollection(ARTICLES))).find((entry: any) => entry.field === 'title');
 
-	expect(applied.meta.translations).toHaveLength(2);
+	expect(applied!.meta.translations).toHaveLength(2);
 });
 
 test('a diff of field meta only changes applies cleanly', async () => {
@@ -234,7 +244,7 @@ test('a diff of field meta only changes applies cleanly', async () => {
 	const applied = await api.request(readFieldsByCollection(ARTICLES));
 
 	for (const [index, field] of fields.entries()) {
-		expect(applied.find((entry: any) => entry.field === field).meta.sort).toBe(index + 1);
+		expect(applied.find((entry: any) => entry.field === field)!.meta.sort).toBe(index + 1);
 	}
 });
 
@@ -257,11 +267,11 @@ test('removing a relational field leaves the remaining relational data intact', 
 
 	await applySnapshot(original);
 
-	const after = await api.request(readItem(ARTICLES, article.id, { fields: ['*'] } as any));
+	const after = await api.request(readItem(ARTICLES, article.id, { fields: ['*'] }));
 
 	expect(after.author_id).toBe(author.id);
 
-	const authorAfter = await api.request(readItem(AUTHORS, author.id, { fields: ['*', 'articles'] } as any));
+	const authorAfter = await api.request(readItem(AUTHORS, author.id, { fields: ['*', 'articles'] }));
 
 	expect(authorAfter.articles).toEqual([article.id]);
 });
