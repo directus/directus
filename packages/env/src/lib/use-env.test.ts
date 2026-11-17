@@ -1,4 +1,5 @@
 import { afterEach, expect, test, vi } from 'vitest';
+import type { Env } from '../types/env.js';
 import { createEnv } from './create-env.js';
 import { _cache, useEnv } from './use-env.js';
 
@@ -11,7 +12,7 @@ afterEach(() => {
 });
 
 test('Returns cached env if exists', () => {
-	_cache.env = {};
+	_cache.env = {} as Env;
 
 	const env = useEnv();
 
@@ -19,7 +20,7 @@ test('Returns cached env if exists', () => {
 });
 
 test('Creates new cached env if not exists', () => {
-	const mockEnv = {};
+	const mockEnv = {} as Env;
 	vi.mocked(createEnv).mockReturnValue(mockEnv);
 
 	const env = useEnv();

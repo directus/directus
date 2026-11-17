@@ -24,17 +24,17 @@ vi.mock('./mail', () => {
 	return { MailService };
 });
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
-		EMAIL_TEMPLATES_PATH: './templates',
-		EMAIL_VERIFICATION_TOKEN_TTL: '1d',
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({
+		EMAIL_VERIFICATION_TOKEN_TTL: 86_400_000,
 		REGISTER_STALL_TIME: 0,
 		USER_REGISTER_URL_ALLOW_LIST: 'https://example.com/verify',
 		USERS_ADMIN_ACCESS_LIMIT: 3,
 		USERS_APP_ACCESS_LIMIT: 3,
 		USERS_API_ACCESS_LIMIT: 3,
-	}),
-}));
+	});
+});
 
 vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js');
 vi.mock('../permissions/modules/validate-access/validate-access.js');
@@ -626,7 +626,7 @@ describe('Integration Tests', () => {
 					{ email: 'test@example.com', scope: 'pending-registration' },
 					expect.any(String),
 					{
-						expiresIn: '1d',
+						expiresIn: 86_400,
 						issuer: 'directus',
 					},
 				);

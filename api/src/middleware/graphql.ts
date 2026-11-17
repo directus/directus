@@ -13,9 +13,9 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 		throw new MethodNotAllowedError({ allowed: ['GET', 'POST'], current: req.method });
 	}
 
-	let query: string | null = null;
-	let variables: Record<string, unknown> | null = null;
-	let operationName: string | null = null;
+	let query: string | null;
+	let variables: Record<string, unknown> | null;
+	let operationName: string | null;
 	let document: DocumentNode;
 
 	if (req.method === 'GET') {
@@ -43,10 +43,10 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 	}
 
 	try {
-		const env = useEnv();
+		const { GRAPHQL_QUERY_TOKEN_LIMIT } = useEnv();
 
 		document = parse(new Source(query), {
-			maxTokens: Number(env['GRAPHQL_QUERY_TOKEN_LIMIT']),
+			maxTokens: GRAPHQL_QUERY_TOKEN_LIMIT,
 		});
 	} catch (err: any) {
 		throw new GraphQLValidationError({
