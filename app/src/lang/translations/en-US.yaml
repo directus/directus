@@ -1450,6 +1450,7 @@ wysiwyg_options:
   table_split_cell: Split Cell
   table_delete: Delete Table
   visualaid: View invisible elements
+  show_html_comments: Show HTML Comments
   source_code: Edit Source Code
   source_code_normalization_notice: Markup that the editor can't represent is normalized when you save.
   source_code_normalize_title: Some markup will be removed
@@ -2940,6 +2941,13 @@ interfaces:
       By default, the editor removes `<form>`, `<button>`, `<input>`, `<select>`, `<textarea>` and `<label>` and keeps
       only their text. Enable this to keep them. Forms and controls show as blocks that you edit in the source code
       view, and label text stays editable. Event handlers and `javascript:` URLs are removed.
+    keep_html_comments: HTML Comments
+    keep_html_comments_label: Keep HTML comments
+    keep_html_comments_note:
+      By default, the editor removes HTML comments. Enable this to keep them. Pasted comments are always removed.
+    keep_html_comments_warning:
+      If your servers or CDN process server-side include (`<!--#include … -->`) or ESI comments, keep this setting off
+      unless you need it.
     keep_legacy_attributes: Legacy Attributes
     keep_legacy_attributes_label: Keep legacy iframe and table attributes
     keep_legacy_attributes_note:

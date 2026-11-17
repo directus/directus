@@ -34,6 +34,8 @@ describe('options compat', () => {
 			'noContainerParagraphs',
 			'keepWrapperElements',
 			'keepFormElements',
+			'keepHtmlComments',
+			'keepHtmlCommentsWarning',
 			'keepLegacyAttributes',
 			'customFormats',
 			'tinymceOverrides',
@@ -56,6 +58,12 @@ describe('options compat', () => {
 		const { advanced } = resolveOptions();
 
 		expect(advanced.find((f) => f.field === 'keepFormElements')?.schema?.default_value).toBe(false);
+	});
+
+	test('keepHtmlComments is opt-in', () => {
+		const { advanced } = resolveOptions();
+
+		expect(advanced.find((f) => f.field === 'keepHtmlComments')?.schema?.default_value).toBe(false);
 	});
 
 	test('keepLegacyAttributes is opt-in', () => {

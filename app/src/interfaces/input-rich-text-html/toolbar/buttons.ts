@@ -24,6 +24,10 @@ export interface ToolbarContext {
 		active: () => boolean;
 		toggle: () => void;
 	};
+	htmlComments: {
+		active: () => boolean;
+		toggle: () => void;
+	};
 	image: {
 		open: () => void;
 	};
@@ -375,6 +379,12 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		label: 'wysiwyg_options.visualaid',
 		command: (_e, ctx) => ctx.visualaid.toggle(),
 		isActive: (_e, ctx) => ctx.visualaid.active(),
+	},
+	htmlcomments: {
+		icon: 'comment',
+		label: 'wysiwyg_options.show_html_comments',
+		command: (_e, ctx) => ctx.htmlComments.toggle(),
+		isActive: (_e, ctx) => ctx.htmlComments.active(),
 	},
 	fullscreen: {
 		icon: 'zoom_out_map',

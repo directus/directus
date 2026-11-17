@@ -649,6 +649,150 @@ describe('wrapper elements', () => {
 	});
 });
 
+describe('html comments', () => {
+	function commentEditor(html: string, options: Parameters<typeof buildFieldSchema>[0] = {}) {
+		const { extensions } = buildFieldSchema({ keepHtmlComments: true, ...options });
+		return new Editor({ extensions: fieldEditorExtensions(extensions), content: decodePageBreaks(html) });
+	}
+
+	function commentRoundTrip(html: string, options: Parameters<typeof buildFieldSchema>[0] = {}) {
+		const editor = commentEditor(html, options);
+		const out = encodePageBreaks(editor.getHTML());
+		editor.destroy();
+		return out;
+	}
+
+	const KEPT: Record<string, string> = {
+		'between blocks': '<!-- top --><p>a</p><!-- bottom -->',
+		'inside text': '<p>a <!-- inline --> b</p>',
+		'after a mark': '<p><strong>x</strong><!-- after --></p>',
+		'in a heading': '<h2>T<!-- h --></h2>',
+		'in a list item': '<ul><li><p>x<!-- in li --></p></li></ul>',
+		'in a blockquote': '<blockquote><!-- q --><p>x</p></blockquote>',
+		'outlook conditional comment':
+			'<!--[if mso]><table><tr><td>Outlook</td></tr></table><![endif]--><p>a</p><!--[if !mso]><!--><p>b</p><!--<![endif]-->',
+		'text with dashes': '<p>a</p><!-- a -- b --->',
+		'next to a page break': '<p>a</p><!-- pagebreak --><!-- note -->',
+	};
+
+	test.each(Object.entries(KEPT))('%s survives round-trip unchanged', (_name, html) => {
+		expect(commentRoundTrip(html)).toBe(html);
+	});
+
+	test.each(Object.entries(KEPT))('%s does not trip the normalization check', (_name, html) => {
+		const { extensions, key } = buildFieldSchema({ keepHtmlComments: true });
+
+		expect(computeValueNormalizationDiff(html, extensions, key)).toBeNull();
+	});
+
+	test('setContent keeps comments', () => {
+		const editor = commentEditor('<p>a</p>');
+		editor.commands.setContent('<p>b<!-- kept --></p>');
+
+		expect(editor.getHTML()).toBe('<p>b<!-- kept --></p>');
+		editor.destroy();
+	});
+
+	test('pasted comments are removed', () => {
+		const editor = commentEditor('<p>a</p>');
+		editor.commands.setTextSelection(2);
+		editor.view.pasteHTML('<p>b<!-- #include virtual="/x" --></p><!--esi <esi:include src="/x"/> -->');
+
+		expect(editor.getHTML()).toContain('b');
+		expect(editor.getHTML()).not.toContain('<!--');
+		editor.destroy();
+	});
+
+	test('without the option, a stored comment is removed and trips the normalization check', () => {
+		const html = '<!-- top --><p>a <!-- inline --> b</p>';
+
+		expect(roundTrip(html)).toBe('<p>a b</p>');
+		expect(computeValueNormalizationDiff(html)).not.toBeNull();
+	});
+
+	// the schema has no place for these, so they are removed and the editor locks with the warning
+	test.each([
+		['between list items', '<ul><li><p>a</p></li><!-- c --><li><p>b</p></li></ul>'],
+		['before the first paragraph of a list item', '<ul><li><!-- c --><p>x</p></li></ul>'],
+		['in a code block', '<pre><code>a <!-- c --> b</code></pre>'],
+	])('a comment %s is removed without changing the structure', (_name, html) => {
+		const { extensions, key } = buildFieldSchema({ keepHtmlComments: true });
+
+		expect(commentRoundTrip(html)).toBe(html.replace(/<!-- c -->/, ''));
+		expect(computeValueNormalizationDiff(html, extensions, key)).not.toBeNull();
+	});
+
+	test('works together with noContainerParagraphs', () => {
+		const html = '<ul><li>a<!-- c --></li></ul><blockquote><!-- q --><p>b</p></blockquote>';
+
+		expect(commentRoundTrip(html, { noContainerParagraphs: true })).toBe(html);
+	});
+
+	test('copy keeps comments in the clipboard HTML', () => {
+		const editor = commentEditor('<p>a<!-- c --></p>');
+		editor.commands.selectAll();
+		const { dom } = editor.view.serializeForClipboard(editor.state.selection.content());
+
+		expect(dom.innerHTML).toContain('<!-- c -->');
+		editor.destroy();
+	});
+
+	test('pasting a copy from the same editor keeps its comments', () => {
+		const editor = commentEditor('<p>a<!-- c --></p><p>b</p>');
+		editor.commands.setTextSelection({ from: 1, to: 3 });
+		const { dom } = editor.view.serializeForClipboard(editor.state.selection.content());
+		editor.commands.setTextSelection(6);
+		editor.view.pasteHTML(dom.innerHTML);
+
+		expect(editor.getHTML()).toBe('<p>a<!-- c --></p><p>ba<!-- c --></p>');
+		editor.destroy();
+	});
+
+	test.each([
+		[
+			'Backspace after an inline comment deletes the character before it',
+			'<p>ab<!-- c -->d</p>',
+			4,
+			'Backspace',
+			'<p>a<!-- c -->d</p>',
+		],
+		[
+			'Delete before an inline comment deletes the character after it',
+			'<p>ab<!-- c -->d</p>',
+			3,
+			'Delete',
+			'<p>ab<!-- c --></p>',
+		],
+		[
+			'Backspace after a block comment joins the paragraphs and keeps the comment',
+			'<p>a</p><!-- c --><p>b</p><p>z</p>',
+			5,
+			'Backspace',
+			'<p>ab</p><!-- c --><p>z</p>',
+		],
+		[
+			'Delete before a block comment joins the paragraphs and keeps the comment',
+			'<p>a</p><!-- c --><p>b</p>',
+			2,
+			'Delete',
+			'<!-- c --><p>ab</p>',
+		],
+		['Backspace after a leading comment keeps it', '<!-- c --><p>a</p>', 2, 'Backspace', '<!-- c --><p>a</p>'],
+	])('%s', (_name, html, cursor, key, expected) => {
+		const editor = commentEditor(html);
+		editor.commands.setTextSelection(cursor);
+		// Tiptap's keyboardShortcut command replays captured steps, which drops part of a multi-step change
+		editor.view.someProp('handleKeyDown', (handle) => handle(editor.view, new KeyboardEvent('keydown', { key })));
+
+		expect(editor.getHTML()).toBe(expected);
+		editor.destroy();
+	});
+
+	test('the schema key tells the option apart', () => {
+		expect(buildFieldSchema({ keepHtmlComments: true }).key).not.toBe(buildFieldSchema({}).key);
+	});
+});
+
 describe('legacy attributes', () => {
 	function legacySchema() {
 		return buildFieldSchema({ keepLegacyAttributes: true });
