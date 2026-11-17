@@ -1,13 +1,21 @@
 import type { SettingsStorageAssetPreset } from '@directus/types';
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
+import type { Directive } from 'vue';
 import ImagePresetPreviews from './image-preset-previews.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 
+// Keeps the tooltip text on the element so tests can read it
+const tooltip: Directive<HTMLElement, string | null> = {
+	mounted: (el, { value }) => (el.dataset.tooltip = value ?? ''),
+	updated: (el, { value }) => (el.dataset.tooltip = value ?? ''),
+};
+
 const global: GlobalMountOptions = {
 	plugins: [i18n],
 	stubs: { VIcon: true },
+	directives: { tooltip },
 };
 
 function preset(overrides: Partial<SettingsStorageAssetPreset>): SettingsStorageAssetPreset {
@@ -52,10 +60,16 @@ describe('ImagePresetPreviews', () => {
 		expect(wrapper.findAll('.ratio').map((ratio) => ratio.text())).toEqual(['16:9', '1:1', '2:3']);
 
 		expect(wrapper.findAll('.group').map((group) => group.attributes('aria-label'))).toEqual([
-			'16:9, 2 Presets',
-			'1:1, 2 Presets',
-			'2:3, 1 Preset',
+			'16:9, 2 Presets: hero, social',
+			'1:1, 2 Presets: avatar, card',
+			'2:3, 1 Preset: portrait',
 		]);
+	});
+
+	it('names each group by its first preset and counts the others', () => {
+		const wrapper = mountPreviews();
+
+		expect(wrapper.findAll('.name').map((name) => name.text())).toEqual(['hero+1', 'avatar+1', 'portrait']);
 	});
 
 	it('renders one thumbnail per group', () => {
@@ -64,10 +78,14 @@ describe('ImagePresetPreviews', () => {
 		expect(wrapper.findAll('.frame img')).toHaveLength(3);
 	});
 
-	it('shows the preset keys of each group on hover', () => {
+	it('lists every preset of a shared group in a tooltip', () => {
 		const wrapper = mountPreviews();
 
-		expect(wrapper.find('.group').attributes('title')).toBe('hero, social');
+		expect(wrapper.findAll('.group').map((group) => group.attributes('data-tooltip'))).toEqual([
+			'hero, social',
+			'avatar, card',
+			'',
+		]);
 	});
 
 	it('groups by the dimensions capped by withoutEnlargement', () => {

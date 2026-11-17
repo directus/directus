@@ -2,6 +2,7 @@
 import type { SettingsStorageAssetPreset } from '@directus/types';
 import { getFocalPointCrop } from '@directus/utils';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VNotice from '@/components/v-notice.vue';
 
 type Crop = NonNullable<ReturnType<typeof getFocalPointCrop>>;
@@ -10,6 +11,7 @@ const THUMBNAIL_MAX_WIDTH = 96;
 const THUMBNAIL_MAX_HEIGHT = 52;
 
 const thumbnailStyle = { inlineSize: `${THUMBNAIL_MAX_WIDTH}px`, blockSize: `${THUMBNAIL_MAX_HEIGHT}px` };
+const labelStyle = { maxInlineSize: `${THUMBNAIL_MAX_WIDTH}px` };
 
 const props = defineProps<{
 	src: string;
@@ -19,6 +21,8 @@ const props = defineProps<{
 	presets: SettingsStorageAssetPreset[];
 	hasImageEdits?: boolean;
 }>();
+
+const { t } = useI18n();
 
 const groups = computed(() => {
 	const original = { w: props.width, h: props.height };
@@ -41,7 +45,18 @@ const groups = computed(() => {
 
 	return [...byRatio.values()]
 		.sort((a, b) => b.crop.width / b.crop.height - a.crop.width / a.crop.height)
-		.map((group) => ({ ...group, ...getThumbnailStyles(group.crop) }));
+		.map((group) => {
+			const names = group.keys.filter((key): key is string => !!key);
+
+			return {
+				...group,
+				...getThumbnailStyles(group.crop),
+				name: names[0] ?? null,
+				// Every other preset that crops the same way, listed in the tooltip
+				tooltip: group.keys.length > 1 ? names.join(', ') : null,
+				ariaLabel: `${group.ratio}, ${t('preset_count', group.keys.length)}: ${names.join(', ')}`,
+			};
+		});
 });
 
 function getThumbnailStyles(crop: Crop) {
@@ -81,9 +96,9 @@ function greatestCommonDivisor(a: number, b: number): number {
 			<li
 				v-for="group in groups"
 				:key="group.ratio"
+				v-tooltip="group.tooltip"
 				class="group"
-				:aria-label="`${group.ratio}, ${$t('preset_count', group.keys.length)}`"
-				:title="group.keys.join(', ')"
+				:aria-label="group.ariaLabel"
 			>
 				<span class="thumbnail" :style="thumbnailStyle">
 					<span class="frame" :style="group.frameStyle">
@@ -91,9 +106,12 @@ function greatestCommonDivisor(a: number, b: number): number {
 					</span>
 				</span>
 
-				<span class="label" aria-hidden="true">
-					<span class="ratio">{{ group.ratio }}</span>
-					<span class="count">×{{ group.keys.length }}</span>
+				<span class="label" :style="labelStyle" aria-hidden="true">
+					<span class="name">
+						<span class="key">{{ group.name ?? group.ratio }}</span>
+						<span v-if="group.keys.length > 1" class="more">+{{ group.keys.length - 1 }}</span>
+					</span>
+					<span v-if="group.name" class="ratio">{{ group.ratio }}</span>
 				</span>
 			</li>
 		</ul>
@@ -124,8 +142,10 @@ function greatestCommonDivisor(a: number, b: number): number {
 	flex-grow: 1;
 	min-inline-size: 0;
 	margin: 0;
-	padding: 0;
+	padding: 0 0 0.25rem;
 	overflow-x: auto;
+	scrollbar-width: thin;
+	scrollbar-color: var(--theme--border-color-accent) transparent;
 	list-style: none;
 }
 
@@ -163,17 +183,32 @@ function greatestCommonDivisor(a: number, b: number): number {
 
 .label {
 	display: flex;
-	gap: 0.375rem;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.25rem;
 	font-size: 0.75rem;
 	line-height: 1;
 }
 
-.ratio {
-	font-weight: 600;
-	font-feature-settings: 'tnum';
+.name {
+	display: flex;
+	gap: 0.25rem;
+	max-inline-size: 100%;
 }
 
-.count {
+.key {
+	font-weight: 600;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.more {
+	flex-shrink: 0;
+}
+
+.more,
+.ratio {
 	color: var(--theme--foreground-subdued);
 	font-feature-settings: 'tnum';
 }
