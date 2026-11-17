@@ -22,23 +22,19 @@
 about: درباره
 directus_mscl: Directus   MSCL-1.0-GPL
 data_processing_agreement: توافق‌نامه پردازش داده
-contact_support: تماس با پشتیبانی  
+contact_support: تماس با پشتیبانی
 setup_welcome: به دایرکتوس خوش آمدید
 setup_info: بیایید حساب مدیر شما را ایجاد کنیم و پروژه‌تان را راه‌اندازی کنیم.
-setup_license_key_notice: >
-  اگر کلید لایسنس دارید، آن را در زیر وارد کنید تا پلن کامل خود را فعال کنید. کسب‌وکارهای واجد شرایط با درآمد سالانه زیر ۵ میلیون دلار ممکن است مشمول {oig} ما شوند.
-setup_save_accept_license: >
-  با کلیک بر روی ذخیره، شما شرایط {directusMscl} و {privacyPolicy} را می‌پذیرید.
-setup_license_invalid: >
-  لایسنس نامعتبر است. لطفاً برای رفع این مشکل با {contactSupport} تماس بگیرید.
+setup_license_key_notice: اگر کلید لایسنس دارید، آن را در زیر وارد کنید تا پلن کامل خود را فعال کنید. کسب‌وکارهای واجد شرایط با درآمد سالانه زیر ۵ میلیون دلار ممکن است مشمول {oig} ما شوند.
+setup_save_accept_license: با کلیک بر روی ذخیره، شما شرایط {directusMscl} و {privacyPolicy} را می‌پذیرید.
+setup_license_invalid: لایسنس نامعتبر است. لطفاً برای رفع این مشکل با {contactSupport} تماس بگیرید.
 setup_license_invalid_format: فرمت لایسنس نامعتبر است.
 setup_accept_license: شرایط {directusMscl} و {privacyPolicy} را می‌پذیرم
 setup_marketing_emails: به‌روزرسانی‌های محصول و یادداشت‌های انتشار را برای من بفرست
 setup_launch: راه‌اندازی دایرکتوس
 setup_license_title: لایسنس خود را فعال کنید
 license_onboarding_title: آیا کلید لایسنس دارید؟
-license_onboarding_desc: >
-  آن را در زیر وارد کنید تا پلن کامل خود را قفل‌گشایی کنید. کسب‌وکارهای واجد شرایط با درآمد سالانه زیر ۵ میلیون دلار ممکن است مشمول {oig} ما شوند.
+license_onboarding_desc: آن را در زیر وارد کنید تا پلن کامل خود را قفل‌گشایی کنید. کسب‌وکارهای واجد شرایط با درآمد سالانه زیر ۵ میلیون دلار ممکن است مشمول {oig} ما شوند.
 project_usage: برای چه منظور از Directus استفاده می کنید؟
 project_usage_personal: شخصی / پروژه جانبی
 project_usage_commercial: تجاری / شرکتی
@@ -46,7 +42,7 @@ project_usage_community: متن باز / انجمن
 org_name: نام سازمان
 org_name_placeholder: Acme Inc.
 license_key_option: من یک کلید لایسنس دارم
-license_key_option_desc: 'پلن OIG، تیمی یا سازمانی'
+license_key_option_desc: پلن OIG، تیمی یا سازمانی
 core_option: من از پلن Core استفاده می‌کنم
 core_option_desc: رایگان، کلید نیاز نیست
 remind_later: بعدا یادآوری کن
@@ -99,8 +95,8 @@ condition_rules: استایل شرطی
 input: ورودی
 invalid_input: ورودی نامعتبر
 invalid_file_type: نوع فایل نامعتبر
-invalid_files_selected: 'هیچ فایل نامعتبر | فایل نامعتبر انتخاب شده | {count} فایل نامعتبر انتخاب شده'
-files_wrong_type: 'فایل‌های {files} که انتظار می‌رفت نوع {expected} داشته باشند، انواع نامعتبری دارند.'
+invalid_files_selected: هیچ فایل نامعتبر | فایل نامعتبر انتخاب شده | {count} فایل نامعتبر انتخاب شده
+files_wrong_type: فایل‌های {files} که انتظار می‌رفت نوع {expected} داشته باشند، انواع نامعتبری دارند.
 files_are_empty: 'فایل‌های مقابل خالی هستند و امکان بارگزاری ندارند: {files}'
 not_a_number: نا عدد
 invalid_range_min: مقدار از حداقل {value} پایین‌تر است
@@ -137,6 +133,7 @@ extension_layout: چیدمان
 extension_module: ماژول
 extension_panel: پنل
 extension_theme: پوسته
+extension_richtext: متن غنی
 extension_hook: هوک
 extension_endpoint: نقطه اتصال
 extension_operation: عملیات
@@ -147,6 +144,7 @@ extension_layouts: چیدمان‌ها
 extension_modules: ماژول‌ها
 extension_panels: پنل‌ها
 extension_themes: پوسته‌ها
+extension_richtexts: متن غنی
 extension_hooks: هوک‌ها
 extension_endpoints: نقاط اتصال
 extension_operations: عملیات‌ها
@@ -244,7 +242,7 @@ switch_version: تغییر نسخه
 switch_version_copy: مطمئنید که می‌خواهید به نسخه «{version}» بروید؟ تغییرات ذخیره‌نشده از دست می‌رود.
 create_version: ایجاد نسخه
 rename_version: ویرایش نسخه
-reserved_version_key: 'کلید نسخه «{key}» رزرو شده است و امکان استفاده ندارد.'
+reserved_version_key: کلید نسخه «{key}» رزرو شده است و امکان استفاده ندارد.
 compare_version: مقایسه نسخه
 save_version: ذخیره‌سازی نسخه
 publish: انتشار
@@ -255,8 +253,7 @@ select_all_differences: انتخاب همه تفاوت‌ها
 show_differences_only: تنها تفاوت‌ها را نشان بده
 published_updated_notice: آیتم منتشرشده از زمان ایجاد این نسخه تاکنون به‌روزرسانی شده است.
 delete_version: حذف نسخه
-delete_version_copy: >-
-  آیا از حذف نسخه «{version}» مطمئنید؟ این اقدام غیر قابل بازگشت است.
+delete_version_copy: آیا از حذف نسخه «{version}» مطمئنید؟ این اقدام غیر قابل بازگشت است.
 auto_save_failed: ذخیره‌سازی خودکار با خطا مواجه شد
 auto_save_failed_copy: در زمانی که ما تلاش می کنیم این صفحه را باز بگذارید!
 auto_save_enabled: ذخیره‌سازی خودکار روشن شد
@@ -264,8 +261,7 @@ content_edited: محتوا ویرایش شده
 reset_bookmark: بازنشانی نشانک
 update_bookmark: به روزرسانی نشانک
 delete_bookmark: حذف نشانک
-delete_bookmark_copy: >-
-  آیا مطمئن هستید که می‌خواهید نشانکِ {bookmark} را حذف کنید؟ این عملیات قابل بازگردانی نیست.
+delete_bookmark_copy: آیا مطمئن هستید که می‌خواهید نشانکِ {bookmark} را حذف کنید؟ این عملیات قابل بازگردانی نیست.
 delete_personal_bookmark: حذف بوکمارک شخصی
 delete_role_bookmark: حذف بوکمارک
 delete_global_bookmark: حذف بوکمارک بصورت کلی
@@ -281,8 +277,7 @@ reached_maximum_number_of_extensions: شما به حداکثر تعداد افز
 not_allowed: مجاز نیست
 archive: بایگانی
 archive_confirm: از بایگانی شدن این مورد مطمئنید؟
-archive_confirm_count: >-
-  هیچ موردی انتخاب نشده | آیا مطمئن هستید که می‌خواهید این مورد را بایگانی کنید؟ | آیا مطمئن هستید که می‌خواهید این {count} مورد را بایگانی کنید؟
+archive_confirm_count: هیچ موردی انتخاب نشده | آیا مطمئن هستید که می‌خواهید این مورد را بایگانی کنید؟ | آیا مطمئن هستید که می‌خواهید این {count} مورد را بایگانی کنید؟
 reset_system_permissions_to: 'بازنشانی مجوزهای سیستم به:'
 reset_system_permissions_copy: این عمل، مجوزهای سفارشی که ممکن است برای مجموعه‌های سیستمی اعمال کرده باشید را بازنویسی می کند. مطمئن هستید؟
 the_following_are_minimum_permissions: هنگامی‌که «دسترسی به برنامه» فعال باشد، حداقل مجوزهای زیر به‌طور خودکار اعمال می‌شوند. در صورت نیاز می‌توانید مجوزهای اضافی بدهید، اما نمی‌توانید مجوزها را کمتر از این سطح کاهش دهید.
@@ -295,6 +290,10 @@ delete_folder_dialog:
   move_content: محتوا را یک سطح بالاتر بیاور
   delete_content: حذف همه محتوا
   content_behavior: برای محتوای پوشه چه اتفاقی بیافتد؟
+delete_flow_folder_dialog:
+  content_behavior: چه اتفاقی برای زیرپوشه‌های این پوشه بیفتد؟ جریان‌های شما حذف نخواهند شد.
+  move_content: فقط حذف این پوشه
+  delete_content: حذف این پوشه و زیرپوشه‌های آن
 validation_errors_notice: 'فیلدهای زیر مقادیر غیرقابل قبولی دارند:'
 validation_value_is_invalid: مقدار نامعتبر است
 validationError:
@@ -310,7 +309,7 @@ validationError:
   lte: مقدار باید کمتر یا مساوی {valid} باشد
   empty: مقدار باید خالی باشد
   nempty: مقدار نمی تواند خالی باشد
-  null: مقدار باید null باشد
+  'null': مقدار باید null باشد
   nnull: مقدار نمی تواند خالی (نال) باشد
   required: مقدار الزامی است
   unique: مقدار باید یکتا باشد
@@ -349,15 +348,15 @@ item_permissions: مجوزهای آیتم
 field_permissions: مجوزهای فیلدها
 field_validation: اعتبار سنجی فیلدها
 field_presets: الگوهای فیلدها
-permissions_for_role: 'مواردی که نقش {role} میتواند {action}'
-permissions_for_policy: 'فیلدهایی که سیاست {policy} می‌تواند {action}.'
-fields_for_role: 'فیلدهایی که نقش {role} میتواند {action}'
-fields_for_policy: 'فیلدهایی که سیاست {policy} می‌تواند {action}.'
-validation_for_role: 'قوانین {action} مربوط به فیلد که نقش {role} باید رعایت کند.'
-validation_for_policy: 'قوانین {action} فیلد که سیاست {policy} باید رعایت کند.'
-presets_for_role: 'مقادیر پیش فرض فیلد برای نقش {role}.'
-presets_for_policy: 'مقادیر پیش‌فرض فیلد برای سیاست {policy}.'
-presets_field_warning: 'پیش‌تنظیم‌های رابطه‌ای برای فیلد «{field}» باید به شیوه «مفصل» تنظیم شود.'
+permissions_for_role: مواردی که نقش {role} میتواند {action}
+permissions_for_policy: فیلدهایی که سیاست {policy} می‌تواند {action}.
+fields_for_role: فیلدهایی که نقش {role} میتواند {action}
+fields_for_policy: فیلدهایی که سیاست {policy} می‌تواند {action}.
+validation_for_role: قوانین {action} مربوط به فیلد که نقش {role} باید رعایت کند.
+validation_for_policy: قوانین {action} فیلد که سیاست {policy} باید رعایت کند.
+presets_for_role: مقادیر پیش فرض فیلد برای نقش {role}.
+presets_for_policy: مقادیر پیش‌فرض فیلد برای سیاست {policy}.
+presets_field_warning: پیش‌تنظیم‌های رابطه‌ای برای فیلد «{field}» باید به شیوه «مفصل» تنظیم شود.
 presentation_and_aliases: نحوه نمایش و نامهای مستعار
 revision_post_create: شکل ظاهری این آیتم وقتی که ساخته شده به این صورت بوده است.
 revision_post_update: شکل ظاهری این آیتم پس از بروزرسانی، به این صورت بوده است.
@@ -401,7 +400,7 @@ iso: ISO
 focal_length: فاصله کانونی
 schema_setup_key: نام ستون پایگاه داده این فیلد و کلید API
 create_field: ایجاد فیلد
-creating_new_field: 'فیلد جدید ({collection})'
+creating_new_field: فیلد جدید ({collection})
 field_in_collection: '{field} ({collection})'
 reset_page_preferences: بازنشانی تنظیمات صفحه
 hidden_field: فیلد مخفی
@@ -458,8 +457,7 @@ this_will_auto_setup_fields_relations: کلیه فیلدها و روابط مو�
 click_here: اینجا کلیک کنید
 to_manually_setup_translations: راه اندازی دستی ترجمه ها.
 manage: مدیریت
-click_to_manage_translated_fields: >-
-  هنوز هیچ فیلد ترجمه شده ای وجود ندارد. برای ساخت آن، اینجا را کلیک کنید. | هیچ فیلد ترجمه شده ای وجود ندارد. برای مدیرت آن، اینجا را کلیک کنید. | تعداد {count} فیلد ترجمه شده وجود دارد. برای مدیریت آنها اینجا را کلیک کنید.
+click_to_manage_translated_fields: هنوز هیچ فیلد ترجمه شده ای وجود ندارد. برای ساخت آن، اینجا را کلیک کنید. | هیچ فیلد ترجمه شده ای وجود ندارد. برای مدیرت آن، اینجا را کلیک کنید. | تعداد {count} فیلد ترجمه شده وجود دارد. برای مدیریت آنها اینجا را کلیک کنید.
 fields_group: گروه فیلدها
 no_collections_found: مجموعه ای یافت نشد.
 new_data_alert: 'فیلدهای زیر به مدل داده ای شما اضافه خواهند شد:'
@@ -467,8 +465,8 @@ search_collection: جستجوی مجموعه...
 search_role: جستجوی نقش...
 search_policy: جستجوی سیاست‌ها...
 search_field: جستجوی فیلد...
-new_field: 'فیلد جدید'
-new_collection: 'مجموعه جدید'
+new_field: فیلد جدید
+new_collection: مجموعه جدید
 add_m2o_to_collection: 'اضافه کردن رابطه چند-به-یک به "{collection}"'
 add_o2m_to_collection: 'اضافه کردن رابطه یک-به-چند به "{collection}"'
 add_m2m_to_collection: 'اضافه کردن رابطه چند-به-چند به "{collection}"'
@@ -547,15 +545,15 @@ title: عنوان
 subtitle: زیرعنوان
 revision_delta_created: ایجاد شد
 revision_delta_created_externally: به شکل خارجی ایجاد شد
-revision_delta_updated: 'یک فیلد برورزسانی شد | {count} فیلد بروزرسانی شدند'
+revision_delta_updated: یک فیلد برورزسانی شد | {count} فیلد بروزرسانی شدند
 revision_delta_deleted: حذف شده
 revision_delta_reverted: بازگردانده شد
 revision_delta_update_message: این فیلد به روز شده است اما ارزش آن به دلایل امنیتی پنهان شده است.
 revision_delta_other: نسخه
-revision_delta_by: 'در {date} توسط {user}'
-differences_count: 'بدون تفاوت | ۱ تفاوت | {count} تفاوت'
-presentation_text_values_cannot_be_reimported: 'از متن ارائه استفاده می کند، مقادیر را نمی توان دوباره وارد کرد.'
-download_page_as_csv: 'دانلود صفحه به‌صورت CSV'
+revision_delta_by: در {date} توسط {user}
+differences_count: بدون تفاوت | ۱ تفاوت | {count} تفاوت
+presentation_text_values_cannot_be_reimported: از متن ارائه استفاده می کند، مقادیر را نمی توان دوباره وارد کرد.
+download_page_as_csv: دانلود صفحه به‌صورت CSV
 download_page_as_csv_unsupported: این چیدمان از دانلود کردن صفحه فعلی پشتیبانی نمی‌کند.
 private_user: کاربر خصوصی
 creation_preview: پیش نمایش ساخت
@@ -605,6 +603,14 @@ import_data_errors: خطا در واردسازی
 import_data_error: ساختار داده فایل با مجموعه همخوانی ندارد.
 import_data_validation_errors_notice: 'ردیف‌های زیر، مقادیر غیرقابل قبولی دارند:'
 import_data_error_row: 'ردیف {rows}{field}:'
+export_flow: صدور جریان
+export_flows: صدور جریان‌ها
+flow_import_input_placeholder: JSON...
+flow_import_success: جریان با موفقیت وارد شد.
+flow_import_failed: وارد کردن جریان ناموفق بود
+flow_import_not_json: این فایل یک JSON معتبر نیست.
+flow_import_invalid_file: این فایل خروجی یک جریان نیست.
+flow_import_foreign_operation: این فایل شامل عملیاتی است که به جریان دیگری تعلق دارد.
 snapshot:
   export: استخراج طرح‌واره
   download: دانلود لحظه‌نگار (JSON)
@@ -643,13 +649,13 @@ functions:
   count: تعداد
   json: JSON
 date-fns_date: PPP
-date-fns_time: 'h:mm:ss a'
-date-fns_time_no_seconds: 'h:mm a'
-date-fns_time_24hour: 'HH:mm:ss'
-date-fns_time_no_seconds_24hour: 'HH:mm'
-date-fns_date_short: 'MMM d, u'
-date-fns_time_short: 'h:mma'
-date-fns_time_short_seconds: 'h:mm:ssa'
+date-fns_time: h:mm:ss a
+date-fns_time_no_seconds: h:mm a
+date-fns_time_24hour: HH:mm:ss
+date-fns_time_no_seconds_24hour: HH:mm
+date-fns_date_short: MMM d, u
+date-fns_time_short: h:mma
+date-fns_time_short_seconds: h:mm:ssa
 date-fns_date_short_no_year: MMM d
 minutes: دقیقه
 hours: ساعت
@@ -700,7 +706,7 @@ zoom: بزرگنمايی
 download: دانلود
 open: باز
 open_in_new_window: باز کردن در پنجره جدید
-open_folder: باز کردن پوشه "{folder}"
+open_folder: 'باز کردن پوشه "{folder}"'
 foreground_color: رنگ روی‌زمینه
 background_color: رنگ پس زمینه
 upload_from_device: بارگذاری فایل از دستگاه
@@ -715,12 +721,16 @@ download_file: دانلود فایل
 open_file_in_tab: باز کردن فایل در تب جدید
 start_export: شروع برون بری
 not_available_for_local_downloads: برای دانلودهای محلی در دسترس نیست
+exporting_folder_not_selectable: فایل در پوشه پیش‌فرض پروژه ذخیره خواهد شد
+exporting_folder_root: فایل در ریشه کتابخانه فایل ذخیره خواهد شد
 exporting_all_items_in_collection: برون‌بری {total} مورد از {collection}.
 exporting_limited_items_in_collection: '{count} از {total} مورد از {collection} صادر خواهد شد.'
 exporting_no_items_to_export: موردی برای صدور نیست. تنظیمات صدور را تغییر دهید و/یا مواردی را به مجموعه اضافه کنید.
 exporting_download_hint: به محض این که فایل {format} ایجاد شد، روی دستگاه شما دانلود خواهد شد.
 exporting_library_hint: به محض این که فایل {format} ایجاد شد، در کتابخانه فایل ذخیره خواهد شد.
 exporting_library_hint_forced: این صدور باید به صورت گروهی انجام شود. به محض تکمیل، فایل {format} در کتابخانه فایل ذخیره خواهد شد.
+exporting_too_large_to_download: این خروجی برای دانلود مستقیم بیش از حد بزرگ است و باید در کتابخانه فایل ذخیره شود، اما شما مجوز انجام این کار را ندارید. محدودیت را کاهش دهید، فیلتر را تنظیم کنید یا با مدیر تماس بگیرید.
+exporting_library_access_warning: هر کسی که دسترسی خواندن فایل‌ها را داشته باشد، از جمله کاربران احراز هویت نشده در صورت مجاز بودن در سیاست عمومی، می‌تواند فایل خروجی را مشاهده و دانلود کند. برای اطلاعات بیشتر به {docs} مراجعه کنید.
 collection_key: کلید اصلی مجموعه
 name: نام
 primary_key_field: فیلد کلید اصلی
@@ -728,7 +738,7 @@ type: نوع
 creating_new_collection: ایجاد مجموعه جدید
 created_by: ایجاد شده توسط
 created_on: ایجاد شده در
-creating_collection_info: مجموعه را نامگذاری کنید و "کلید" یکتای آن را معین کنید...
+creating_collection_info: 'مجموعه را نامگذاری کنید و "کلید" یکتای آن را معین کنید...'
 creating_collection_system: هر یک از این فیلدهای اختیاری را فعال کرده و یا تغییر نام دهید.
 auto_increment_integer: عدد صحیح با افزایش خودکار
 auto_increment_big_integer: عدد صحیح بزرگ به صورت خودکار افزایش می یابد
@@ -772,19 +782,19 @@ reset_interface: بازنشانی رابط
 display_not_found: 'نمایش "{display}" یافت نشد.'
 reset_display: بازنشانی نمایشگر
 list-m2a: سازنده (M2A)
-item_count: 'بدون مقدار | يک آیتم | {count} آیتم'
-filtered_item_count: 'بدون مورد فیلتر شده | یک مورد فیلتر شده | {count} مورد فیلتر شده'
+item_count: بدون مقدار | يک آیتم | {count} آیتم
+filtered_item_count: بدون مورد فیلتر شده | یک مورد فیلتر شده | {count} مورد فیلتر شده
 no_items_copy: هنوز هیچ آیتمی در این مجموعه وجود ندارد.
 no_versions: 'نسخه "{version}" موجود نیست'
 no_versions_copy: 'در این مجموعه هنوز نسخه "{version}" ثبت نشده است.'
-file_count: 'بدون فایل | یک فایل | {count} فایل'
+file_count: بدون فایل | یک فایل | {count} فایل
 no_files_copy: فایلی برای نمایش موجود نمیباشد.
-user_count: 'بدون کاربر | یک کاربر | {count} کاربر'
+user_count: بدون کاربر | یک کاربر | {count} کاربر
 no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگرفته است.
 no_active_users: بدون کاربر فعال
 no_suspended_users: بدون کاربر معلق
 no_invited_users: بدون کاربر دعوت‌شده
-no_status_users_copy: 'کاربری با وضعیت {status} وجود ندارد.'
+no_status_users_copy: کاربری با وضعیت {status} وجود ندارد.
 no_notifications: اعلانی موجود نیست
 no_notifications_copy: شما همه اعلانها و پیامها را دیده اید!
 activity_log: لاگ فعالیت ها
@@ -797,7 +807,7 @@ create_collection: ساخت مجموعه
 no_collections_copy_admin: شما هنوز هیچ مجموعه ای ندارید. برای شروع روی دکمه زیر کلیک کنید.
 no_collections_copy: شما هنوز هیچ مجموعه‌ای ندارید. لطفا با مدیر کل سیستم خود تماس بگیرید.
 relationship_not_setup: رابطه به درستی پیکربندی نشده است یا شما مجوز دسترسی به آن را ندارید
-no_singleton_relations: Relationships to Singletons are not supported
+no_singleton_relations: روابط با مجموعه‌های تکی (Singleton) پشتیبانی نمی‌شود
 display_template_not_setup: گزینه نمایش قالب اشتباه پیکربندی شده است
 collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
 select_a_collection: انتخاب یک مجموعه
@@ -835,6 +845,8 @@ file_moved: فایل منتقل شد
 collection_created: مجموعه ساخته شد
 modified_on: ویرایش شده در
 card_size: سایز کارت
+small: کوچک
+large: بزرگ
 sort_field: فیلد مرتب سازی
 add_sort_field: افزودن فیلد مرتب سازی
 add_to_ai_context: افزودن به زمینه هوش مصنوعی
@@ -864,7 +876,8 @@ account_created_successfully: حساب کاربری با موفقیت ساخته
 auto_fill: پر کردن خودکار
 corresponding_field: فیلد متناظر
 errors:
-  COLLECTION_NOT_FOUND: "مجموعه مد نظر، وجود ندارد"
+  COLLECTION_INACTIVE: مجموعه غیرفعال است
+  COLLECTION_NOT_FOUND: مجموعه مد نظر، وجود ندارد
   CONTAINS_NULL_VALUES: فیلد حاوی مقدار null است
   CONTENT_TOO_LARGE: مورد/فایل ارسالی خیلی بزرگ است
   FAILED_VALIDATION: اعتبارسنجی ناموفق بود
@@ -887,13 +900,15 @@ errors:
   INVALID_USER: احراز هویت کاربر ناموفق بود
   ITEM_LIMIT_REACHED: رسیدن به حد مجاز
   ITEM_NOT_FOUND: آیتم پیدا نشد
-  LIMIT_EXCEEDED: 'از حد مجاز تجاوز شد'
+  LICENSE_INVALID: کلید لایسنس قابل اعمال نیست
+  LIMIT_EXCEEDED: از حد مجاز تجاوز شد
   METHOD_NOT_ALLOWED: روش مجاز نمی باشد
   NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
   PROJECT_LOCKED: پروژه قفل شده است. برای حل مشکل با مدیر سیستم خود تماس بگیرید.
   RANGE_NOT_SATISFIABLE: محدوده نامعتبر است
   RECORD_NOT_UNIQUE: موارد تکراری یافت شد
   REQUESTS_EXCEEDED: به محدودیت درخواست رسیده است
+  RESOURCE_RESTRICTED: منبع محدود شده است
   ROUTE_NOT_FOUND: یافت نشد
   SERVICE_UNAVAILABLE: سرویس در دسترس نیست
   TOKEN_EXPIRED: توکن منقضی شده است
@@ -912,6 +927,7 @@ edit_bookmark: ویرایش نشانک
 edit_personal_bookmark: ویرایش بوکمارک شخصی
 edit_role_bookmark: ویرایش بوکمارک نقش
 edit_global_bookmark: ویرایش کلی بوکمارک
+cannot_edit_personal_bookmarks: امکان ویرایش نشانک‌های شخصی وجود ندارد
 cannot_edit_role_bookmarks: نمی‌توان بوک مارکهای نقش را ویرایش کرد
 cannot_edit_global_bookmarks: نمی‌توان بوک مارکهای کلی را ویرایش کرد
 bookmarks: نشانک‌ها
@@ -938,6 +954,9 @@ active_users: کاربران فعال
 suspended_users: کاربران معلق
 invited_users: کاربران دعوت‌شده
 delete_collection: حذف مجموعه
+activate_collection: فعال‌سازی مجموعه
+deactivate_collection: غیرفعال‌سازی مجموعه
+deactivated_collections: مجموعه‌های غیرفعال‌شده
 update_collection_success: مجموعه های بروزرسانی شده
 delete_collection_success: مجموعه‌های حذف شده
 make_collection_visible: این مجموعه را هویدا کن
@@ -948,10 +967,9 @@ goto_collection_content: مشاهده محتوا
 count_of_total_items: '{count} از {total} مورد'
 start_end_of_count_items: '{start}-{end} از {count} مورد'
 start_end_of_count_filtered_items: '{start}-{end} از {count} مورد فیلتر شده'
-delete_collection_are_you_sure: >-
-  آیا مطمئن هستید که می خواهید مجموعه "{collection}" را حذف کنید؟ با این کار مجموعه و همه موارد موجود در آن حذف می شود. این عمل دائمی است.
-delete_folder_are_you_sure: آیا مطمئن هستید که می خواهید پوشه "{folder}" را حذف کنید؟ پوشه ها و مجموعه های تو در تو به بالاترین سطح منتقل می شوند.
-delete_collection_peer_dependencies: The following fields will be deleted as well, as they are related to the current collection.
+delete_collection_are_you_sure: 'آیا مطمئن هستید که می خواهید مجموعه "{collection}" را حذف کنید؟ با این کار مجموعه و همه موارد موجود در آن حذف می شود. این عمل دائمی است.'
+delete_folder_are_you_sure: 'آیا مطمئن هستید که می خواهید پوشه "{folder}" را حذف کنید؟ پوشه ها و مجموعه های تو در تو به بالاترین سطح منتقل می شوند.'
+delete_collection_peer_dependencies: فیلدهای زیر نیز حذف خواهند شد، زیرا به مجموعه فعلی مرتبط هستند.
 collections_shown: مجموعه های نشان داده شده
 visible_collections: مجموعه های هویدا
 hidden_collections: مجموعه های پنهان
@@ -972,7 +990,7 @@ divider: جدا کننده
 color: رنگ
 circle: دایره
 empty_item: آیتم خالی
-log_in_with: 'ورود توسط {provider}'
+log_in_with: ورود توسط {provider}
 conditional_styles: استایل شرطی
 advanced_settings: تنظیمات پیشرفته
 advanced_filter: فیلتر پیشرفته
@@ -988,7 +1006,7 @@ operators:
   gte: بیشتر یا مساوی است با
   in: یکی از این موارد است
   nin: هیچ یک از این موارد نیست
-  null: نال است
+  'null': نال است
   nnull: نال نیست
   contains: حاوی این مقدار است
   ncontains: حاوی این مقدار نیست
@@ -1022,7 +1040,8 @@ items: آیتمها
 upload_file: آپلود فایل
 upload_file_indeterminate: در حال آپلود فایل...
 upload_file_success: فایل آپلود شد
-upload_files_indeterminate: 'در حال آپلود فایلها {done}/{total}'
+upload_files_empty: فایلی برای بارگذاری وجود ندارد
+upload_files_indeterminate: در حال آپلود فایلها {done}/{total}
 upload_files_success: '{count} فایل آپلود شد'
 upload_pending: آپلود متوقف شده
 drag_file_here: فایلها را بکشید و در اینجا رها کنید
@@ -1041,9 +1060,10 @@ create_item: ساخت آیتم
 display_template: نمایش الگو
 language_display_template: قالب نمایش زبان
 translations_display_template: قالب نمایش ترجمه ها
-n_items_selected: 'موردی انتخاب نشده | یک مورد انتخاب شده | {n} مورد انتخاب شده'
+n_items_selected: موردی انتخاب نشده | یک مورد انتخاب شده | {n} مورد انتخاب شده
 per_page: هر صفحه
 all_files: تمامی فایلها
+all_flows: همه جریان‌ها
 my_files: فایلهای من
 recent_files: فایل‌های اخیر
 create_folder: ساخت پوشه
@@ -1096,6 +1116,7 @@ trigger_flow_success: جریان «{flow}» با موفقیت اجرا شد
 field_name_placeholder: ورود نام فیلد...
 field_key_placeholder: ورود کلید فیلد...
 trigger: راه‌انداز
+trigger_type: نوع راه‌انداز
 trigger_options: گزینه‌های راه‌انداز
 view_trigger: مشاهده محرک
 create_trigger: ایجاد راه‌انداز
@@ -1104,6 +1125,8 @@ change_trigger: تغییر راه‌انداز
 flow_delete_confirm: آیا از پاک کردن جریان {flow} اطمینان دارید؟ این رویداد غیرقابل بازگردانی است.
 set_flow_active: تنظیم جریان به فعال
 set_flow_inactive: بازگردانی جریان به غیرفعال
+set_flows_active: تنظیم جریان‌ها به فعال
+set_flows_inactive: تنظیم جریان‌ها به غیرفعال
 edit_flow: ویرایش جریان
 delete_flow: حذف جریان
 no_other_flows_copy: شما هنوز هیچ جریان دیگری ندارید.
@@ -1133,6 +1156,7 @@ visual_editor: ویرایشگر بصری
 toggle_navigation: تغییر وضعیت ناوبری
 toggle_sidebar: تغییر وضعیت نوار کناری
 toggle_editable_elements: تغییر وضعیت عناصر قابل ویرایش
+editing_draft_version: در حال ویرایش نسخه پیش‌نویس
 no_url: URLی ارائه نشده است
 no_url_copy: لطفا یک URL در تنظیمات اضافه کنید.
 invalid_url: URL اشتباه
@@ -1148,7 +1172,7 @@ deployment:
     provider_description: اجرای استقرارهای {provider} از داخل دایرکتوس
     projects: '{count} پروژه|{count} پروژه'
   provider:
-    setup_title: 'راه‌اندازی {provider}'
+    setup_title: راه‌اندازی {provider}
     credentials:
       notice: این اطلاعات را می‌توانید در تنظیمات حساب کاربری {provider} تان پیدا کنید.
       link: باز کردن تنظیمات {provider}
@@ -1157,7 +1181,7 @@ deployment:
       placeholder: توکن دسترسی خود را وارد کنید...
       encrypted_notice: این توکن به صورت امن در پیکربندی دایرکتوس شما رمزنگاری و ذخیره خواهد شد
     settings:
-      settings: 'پیکربندی {provider}'
+      settings: پیکربندی {provider}
       edit_configuration: ویرایش پیکربندی
       delete: حذف پیکربندی
       delete_confirm: این عمل دائمی است و قابل بازگشت نیست. آیا مطمئن هستید که می خواهید ادامه دهید؟
@@ -1276,14 +1300,14 @@ logs_session_paused: نشست رخدادها متوقف شد...
 logs_stream_disconnected: پخش رخدادها قطع شد...
 log_detail_filter_paths: 'فیلتر مسیرها (مثلا: req.method یا res.statusCode)'
 logs_beginning: این ابتدای نشست رخدادهای شماست...
-logs_waiting: 'در انتظار رخدادهای بیشتر...'
+logs_waiting: در انتظار رخدادهای بیشتر...
 logs_unread_count: '{count} خوانده نشده'
 clear_logs: حذف رخدادها
 search_logs: جستجوی رخدادها...
 all_instances: همه موارد
-instance_count: 'هیچ مورد | یک مورد | {count} مورد'
+instance_count: هیچ مورد | یک مورد | {count} مورد
 all_log_levels: همه سطوح رخداد
-log_level_count: 'بدون سطح رخداد | یک سطح رخداد | {count} سطح رخداد'
+log_level_count: بدون سطح رخداد | یک سطح رخداد | {count} سطح رخداد
 soft_wrap_lines: شکست نرم خطوط
 full_screen: تمام صفحه
 full_text_search: جستجوی تمام متن
@@ -1294,6 +1318,7 @@ right_align: راست چین
 fit_to_screen: هم اندازه با صفحه نمایش
 image_url: آدرس تصویر
 alt_text: متن جایگزین
+caption: زیرنویس
 media: رسانه
 quality: کیفیت
 width: عرض
@@ -1315,6 +1340,7 @@ unlimited: بدون محدودیت
 open_link_in: باز کردن پیوند در
 new_tab: زبانه جدید
 save_image: ذخیره تصویر
+save_link: ذخیره پیوند
 save_media: ذخیره رسانه
 wysiwyg_options:
   aligncenter: تراز به مرکز
@@ -1335,8 +1361,12 @@ wysiwyg_options:
   bullist: فهرست نقطه دار
   numlist: فهرست شماره‌دار
   hr: خط افقی
+  pagebreak: شکست صفحه
+  insertdatetime: درج تاریخ/زمان
   insertdatetime_date: تاریخ
   insertdatetime_time: زمان
+  insertdatetime_datetime: تاریخ و زمان
+  insertdatetime_locale: بومی‌سازی‌شده
   link: اضافه/ویرایش لینک
   unlink: حذف لینک
   media: اضافه/ویرایش رسانه
@@ -1355,6 +1385,7 @@ wysiwyg_options:
   pre: از پیش قالب‌بندی‌شده
   fontselect: انتخاب فونت
   fontsizeselect: انتخاب سایز فونت
+  styles: قالب‌ها
   indent: تورفتگی
   outdent: بیرون امدگی
   undo: برگشت
@@ -1363,8 +1394,45 @@ wysiwyg_options:
   removeformat: حذف فرمت
   selectall: انتخاب همه
   table: جدول
+  table_cell: سلول
+  table_row: ردیف
+  table_column: ستون
+  table_insert: درج جدول
+  table_insert_size: '{cols} × {rows}'
+  table_add_row_before: افزودن ردیف در بالا
+  table_add_row_after: افزودن ردیف در پایین
+  table_add_column_before: افزودن ستون در چپ
+  table_add_column_after: افزودن ستون در راست
+  table_delete_row: حذف ردیف
+  table_delete_column: حذف ستون
+  table_toggle_header_row: تغییر وضعیت ردیف سرستون
+  table_toggle_header_column: تغییر وضعیت ستون سرردیف
+  table_merge_cells: ادغام سلول‌ها
+  table_split_cell: تقسیم سلول
+  table_delete: حذف جدول
   visualaid: مشاهده عناصر نامرئی
   source_code: ویرایش کد سورس
+  source_code_normalization_notice: نشانه‌گذاری‌هایی که ویرایشگر قادر به نمایش آن‌ها نیست، هنگام ذخیره نرمال‌سازی می‌شوند.
+  source_code_normalize_title: برخی نشانه‌گذاری‌ها حذف خواهند شد
+  source_code_normalize_body: ویرایشگر نمی‌تواند نشانه‌گذاری‌های هایلایت‌شده را نمایش دهد، بنابراین هنگام ذخیره حذف خواهند شد.
+  save_anyway: ذخیره به هر حال
+  normalization_warning_title: برخی قالب‌بندی‌ها در اینجا پشتیبانی نمی‌شوند
+  normalization_warning_body: این محتوا شامل مواردی است که ویرایشگر جدید از آن‌ها پشتیبانی نمی‌کند، بنابراین این فیلد فعلاً فقط‌خواندنی است. اگر به هر حال ویرایش کنید، آن موارد هنگام ذخیره حذف خواهند شد. برای حفظ دقیق HTML ذخیره‌شده بدون تغییر، به جای آن HTML خام را ویرایش کنید. این هشدار پس از حذف موارد پشتیبانی‌نشده ناپدید خواهد شد. اگر قبلاً بدون آن‌ها ذخیره کرده‌اید، می‌توانید محتوای اصلی را از بخش تجدید نظرها بازگردانید.
+  normalization_warning_view_changes: مشاهده تغییرات
+  normalization_warning_keep_readonly: حفظ به صورت فقط‌خواندنی
+  normalization_warning_edit_anyway: ویرایش به هر حال
+  normalization_warning_edit_raw: ویرایش HTML خام
+  normalization_locked_notice: این فیلد شامل قالب‌بندی‌هایی است که ویرایشگر جدید از آن‌ها پشتیبانی نمی‌کند، بنابراین فقط‌خواندنی است. فیلد را انتخاب کنید تا نحوه ویرایش آن را مشخص نمایید.
+  normalization_locked_learn_more: ببینید چه چیزی تغییر کرده است
+  paste_warning_notice: نشانه‌گذاری‌های پشتیبانی‌نشده از متنی که چسباندید پاک‌سازی شدند. برخی برنامه‌ها محتوای کپی‌شده را با نشانه‌گذاری‌های اضافی همراه می‌کنند که این ویرایشگر پشتیبانی نمی‌کند.
+  paste_warning_see_removed: مشاهده موارد حذف‌شده
+  paste_warning_title: نشانه‌گذاری‌های پشتیبانی‌نشده از متن چسبانده‌شده حذف شدند
+  paste_warning_body: چسباندن پاک‌سازی‌شده، متن و قالب‌بندی شما را حفظ می‌کند. گزینه «واگرد چسباندن» آن را برمی‌گرداند. گزینه «چسباندن خام» کد HTML را دقیقاً همان‌طور که کپی شده نگه می‌دارد و این فیلد را به ویرایشگر HTML خام تغییر می‌دهد.
+  paste_warning_body_kept: چسباندن پاک‌سازی‌شده، متن و قالب‌بندی شما را حفظ می‌کند. از زمان چسباندن، محتوا تغییر کرده است و دیگر نمی‌توان آن را از اینجا واگرد کرد.
+  paste_warning_undo: واگرد چسباندن
+  paste_warning_paste_raw: چسباندن خام
+  paste_warning_keep: حفظ نسخه پاک‌سازی‌شده
+  normalization_comparison_notice: این نسخه شامل قالب‌بندی‌هایی است که ویرایشگر قادر به نمایش آن‌ها نیست، بنابراین HTML ذخیره‌شده بدون تغییر نمایش داده می‌شود. اعمال آن، محتوا را بدون تغییر بازیابی می‌کند.
   fullscreen: تمام صفحه
   directionality: جهت گیری
   ltr: چپ به راست
@@ -1388,40 +1456,145 @@ more_users: برای مشاهده بیشتر کلیک کنید
 unknown_user: کاربر ناشناس
 unknown_version: نسخه نامعلوم
 unknown_revision: بازنگری نامعلوم
-creating_in: 'ساخت یک آیتم در {collection}'
-editing_in: 'ویرایش یک آیتم در {collection}'
-viewing_in: 'مشاهده آیتم در {collection}'
-creating_unit: 'در حال ساخت {unit}'
-editing_unit: 'در حال ویرایش {unit}'
-editing_in_batch: 'در حال ویرایش جمعی {count} آیتم'
+creating_in: ساخت یک آیتم در {collection}
+editing_in: ویرایش یک آیتم در {collection}
+viewing_in: مشاهده آیتم در {collection}
+creating_unit: در حال ساخت {unit}
+editing_unit: در حال ویرایش {unit}
+editing_in_batch: در حال ویرایش جمعی {count} آیتم
 no_options_available: هیچ گزینه ای وجود ندارد
 settings_data_model: مدل داده
 settings_roles: نقش‌های کاربر
 settings_permissions: سیاست‌های دسترسی
 settings_project: تنظیمات
+settings_license: لایسنس
 licensing:
+  unlicensed: بدون لایسنس
+  current_plan: پلن فعلی
+  expires_on: 'تاریخ انقضا: {date}'
+  renews_on: 'تاریخ تمدید: {date}'
+  add: افزودن لایسنس
+  manage: مدیریت لایسنس
+  upgrade_plan: ارتقای پلن
+  included: شامل می‌شود
+  not_included: شامل نمی‌شود
   unlimited: بدون محدودیت
+  plan_usage: میزان مصرف پلن شما
+  addons: بسته‌های افزودنی
+  addon_purchase: خرید
   addon_manage: مدیریت
+  contact_sales: تماس با بخش فروش
+  addon_purchase_dialog_title: خرید {name} اضافی
+  addon_summary_purchase: مجموعاً {new}.
+  addon_summary_active: '{active} فعلی'
+  addon_summary_pending: '{active} فعلی ← {effective} از زمان تمدید بعدی ({date}) اعمال می‌شود. برای لغو غیرفعال‌سازی در انتظار، مقدار را افزایش دهید.'
+  addon_summary_upgrade: '{active} فعلی + {difference} واحد = مجموعاً {new} واحد'
+  addon_summary_downgrade: '{active} فعلی - {difference} واحد = مجموعاً {new} واحد'
+  addon_price_summary: '{ new } × ${ unitPrice }/واحد/{ interval } = ${ total }/{ interval }'
+  addon_prorated_notice: با تأیید، موافقت می‌کنید که از تاریخ {renewalDate} مبلغ ${total}/{interval} از شما دریافت شود. هزینه متناسب با باقیمانده دوره صورت‌حساب فعلی شما به مبلغ ${adjustedTotal} به فاکتور بعدی شما اضافه خواهد شد.
+  addon_renewal_notice_date: تغییرات در تمدید بعدی ({date}) اعمال خواهد شد.
   addon_update: بروزرسانی
+  addon_confirm_purchase: تأیید خرید
+  deactivate: غیرفعال‌سازی لایسنس
+  deactivate_confirm_title: لایسنس غیرفعال شود؟
+  deactivate_confirm_body: آیا از غیرفعال‌سازی لایسنس اطمینان دارید؟ نمونه شما به پلن Core تنزل خواهد یافت.
+  resolve_title_manual: غیرفعال‌سازی لایسنس
+  resolve_title_locked: رفع محدودیت‌های لایسنس
+  resolve_title_expired: انقضای لایسنس
+  resolve_title_suspended: تعلیق لایسنس
+  resolve_title_canceled: لغو لایسنس
+  resolve_title_invalid_key: کلید لایسنس نامعتبر
+  resolve_title_activation_limit: به سقف فعال‌سازی رسیده‌اید
+  resolve_title_binding_mismatch: لایسنس در جای دیگری ثبت شده است
+  resolve_title_verification: تأیید لایسنس امکان‌پذیر نبود
+  resolve_title_unavailable: بررسی لایسنس امکان‌پذیر نبود
+  resolve_title_env_removed: لایسنس حذف شد
+  resolve_title_grace: رفع محدودیت‌های لایسنس
+  resolve_title_no_resolution: لایسنس غیرفعال است
+  resolve_subtitle: اگر نیاز به به‌روزرسانی کلید لایسنس خود دارید، می‌توانید آن را در متغیر محیطی خود تغییر دهید.
+  resolve_notice_grace: میزان مصرف پروژه شما از محدودیت‌های پلن فراتر رفته است. پیش از پایان دوره ارفاق، این مورد را برطرف کنید؛ در غیر این صورت پروژه شما قفل خواهد شد. موارد غیرفعال‌شده همچنان در دایرکتوس ذخیره می‌مانند اما قفل می‌شوند و قوانین دسترسی سفارشی نیز قفل خواهند شد.
+  resolve_countdown: '{days} روز باقی‌مانده (تا {date}) | {days} روز باقی‌مانده (تا {date})'
+  resolve_notice_manual: برای غیرفعال‌سازی پروژه، ابتدا باید با محدودیت‌های پلن Core مطابقت داشته باشد. مواردی که از محدودیت‌های Core فراتر رفته‌اند و نیاز به تنظیم دارند در زیر نشان داده شده‌اند.
+  resolve_notice_locked: پروژه شما از محدودیت‌های پلن فراتر رفته و قفل شده است. مواردی که از محدودیت‌ها فراتر رفته‌اند و نیاز به تنظیم دارند در زیر نشان داده شده‌اند.
+  resolve_notice_env_removed: پروژه شما دیگر کلید لایسنس فعالی ندارد. مواردی که از محدودیت‌های Core فراتر رفته‌اند و نیاز به تنظیم دارند در زیر نشان داده شده‌اند.
+  resolve_notice_no_resolution: لایسنس شما دیگر فعال نیست و پروژه شما به پلن Core تنزل یافته است. ممکن است برخی ویژگی‌ها دیگر در دسترس نباشند و موارد فراتر از محدودیت‌های پلن Core همچنان در دایرکتوس ذخیره اما قفل بمانند. برای بازیابی دسترسی کامل، یک کلید لایسنس جدید اضافه کنید.
+  resolve_notice_expired: لایسنس شما منقضی شده و پروژه شما به پلن Core تنزل یافته است. ممکن است برخی ویژگی‌ها دیگر در دسترس نباشند و موارد فراتر از محدودیت‌های پلن Core همچنان در دایرکتوس ذخیره اما قفل بمانند. برای بازیابی دسترسی کامل، لایسنس خود را تمدید کنید یا کلید لایسنس جدیدی اضافه نمایید.
+  resolve_notice_canceled: اشتراک شما لغو شده و پروژه شما به پلن Core تنزل یافته است. ممکن است برخی ویژگی‌ها دیگر در دسترس نباشند و موارد فراتر از محدودیت‌های پلن Core همچنان در دایرکتوس ذخیره اما قفل بمانند. برای بازیابی دسترسی کامل، کلید لایسنس جدیدی اضافه کنید.
+  resolve_notice_suspended: لایسنس شما به حالت تعلیق درآمده و پروژه شما به پلن Core تنزل یافته است. ممکن است برخی ویژگی‌ها دیگر در دسترس نباشند و موارد فراتر از محدودیت‌های پلن Core همچنان در دایرکتوس ذخیره اما قفل بمانند. برای بازیابی لایسنس خود با پشتیبانی تماس بگیرید.
+  resolve_notice_invalid_key: کلید لایسنس شما پذیرفته نشد و پروژه شما به پلن Core تنزل یافته است. ممکن است برخی ویژگی‌ها دیگر در دسترس نباشند و موارد فراتر از محدودیت‌های پلن Core همچنان در دایرکتوس ذخیره اما قفل بمانند. کلید را از نظر خطای تایپی بررسی کنید یا یک کلید لایسنس جدید اضافه نمایید.
+  resolve_notice_activation_limit: کلید لایسنس شما دیگر فعال‌سازی باقی‌مانده ندارد، بنابراین پروژه شما به پلن Core تنزل یافته است. لایسنس را در پروژه‌ای که دیگر استفاده نمی‌کنید غیرفعال کرده و سپس دوباره کلید را در اینجا اضافه کنید.
+  resolve_notice_binding_mismatch: کلید لایسنس شما برای پروژه یا نشانی URL دیگری ثبت شده است، بنابراین پروژه شما به پلن Core تنزل یافته است. بررسی کنید که نشانی URL پروژه شما با نشانی که کلید روی آن فعال شده مطابقت داشته باشد، یا یک کلید لایسنس جدید اضافه کنید.
+  resolve_notice_verification: لایسنس ذخیره‌شده شما قابل تأیید نبود، بنابراین پروژه شما به پلن Core تنزل یافته است. کلید لایسنس شما بدون تغییر باقی مانده و هنگام راه‌اندازی مجدد پروژه دوباره بررسی خواهد شد.
+  resolve_notice_unavailable: به دلیل عدم دسترسی به سرویس لایسنس، بررسی لایسنس شما امکان‌پذیر نبود؛ بنابراین پروژه شما به پلن Core تنزل یافته است. ممکن است لایسنس شما همچنان معتبر باشد و هنگام راه‌اندازی مجدد پروژه دوباره بررسی خواهد شد.
   resolve_continue: ادامه
-  resolve_show_n_more: 'نمایش {count} بیشتر'
+  resolve_acknowledge: تأیید و پذیرش
+  resolve_submit: غیرفعال‌سازی موارد انتخاب‌شده
+  resolve_show_n_more: نمایش {count} بیشتر
+  resolve_available: در دسترس
+  resolve_section_collections: مجموعه‌های داده
+  resolve_section_seats: صندلی‌های کاربری
   resolve_section_flows: جریان‌ها
+  resolve_section_collections_caption: مجموعه(هایی) را برای غیرفعال‌سازی انتخاب کنید
+  resolve_section_seats_users_caption: صندلی(های) کاربری را برای غیرفعال‌سازی انتخاب کنید
+  resolve_section_seats_admins_caption: مدیر(هایی) را برای غیرفعال‌سازی انتخاب کنید
+  resolve_section_flows_caption: جریان(هایی) را برای غیرفعال‌سازی انتخاب کنید
+  resolve_section_sso: غیرفعال‌سازی SSO
+  resolve_sso_confirm: تأیید غیرفعال‌سازی SSO
+  resolve_sso_caption: با اعمال این تغییر، کاربرانی که فقط با SSO وارد می‌شوند غیرفعال خواهند شد. برای بازیابی دسترسی آن‌ها، باید آن‌ها را دوباره فعال کرده و از طریق فهرست کاربران، ایمیل و رمز عبور تنظیم کنید.
+  resolve_sso_admin_title: تأیید اطلاعات مدیر SSO
+  resolve_sso_admin_description: لطفاً تأیید کنید که ایمیل و رمز عبور شما صحیح است. پس از غیرفعال شدن SSO، برای ورود مجدد به هر دو نیاز خواهید داشت.
+  resolve_sso_admin_description_email_only: لطفاً تأیید کنید که ایمیل شما صحیح است. پس از غیرفعال شدن SSO، برای ورود مجدد به آن نیاز خواهید داشت.
   resolve_sso_admin_email: نشانی ایمیل
   resolve_sso_admin_password: رمز عبور
+  resolve_sso_admin_password_placeholder: یک رمز عبور تنظیم کنید...
+  resolve_sso_admin_confirm: تأیید
+  resolve_section_custom_llms: مدل زبانی سفارشی (LLM)
+  resolve_custom_llms_confirm: تأیید غیرفعال‌سازی مدل زبانی سفارشی
+  resolve_custom_llms_caption: با اعمال این تغییر، پیکربندی‌های مدل زبانی سفارشی غیرفعال خواهند شد.
+  resolve_section_custom_permissions: سیاست‌های دسترسی سفارشی
+  resolve_custom_permissions_confirm: تأیید غیرفعال‌سازی قوانین دسترسی سفارشی
+  resolve_custom_permissions_caption: هر سیاست یا مجوز دسترسی که توسط قوانین سفارشی کنترل می‌شود به حالت «بدون دسترسی» بازمی‌گردد.
+  resolve_section_ai_translations: ترجمه‌های هوش مصنوعی
+  resolve_ai_translations_confirm: تأیید غیرفعال‌سازی ترجمه‌های هوش مصنوعی
+  resolve_ai_translations_caption: ترجمه هوش مصنوعی غیرفعال خواهد شد و تنظیمات ترجمه شما دیگر استفاده نخواهد شد.
+  env_managed: کلید لایسنس شما از طریق متغیر محیطی مدیریت می‌شود و در اینجا قابل به‌روزرسانی نیست.
+  manage_license_disabled: مدیریت کلید لایسنس شما توسط تنظیمات محیطی غیرفعال شده است.
+  key_management: مدیریت کلید لایسنس
   key: کلید لایسنس
   entitlements:
     collections: مجموعه‌ها
+    seats: صندلی‌ها
     flows: جریان‌ها
+    activity_historical_timeframe: تاریخچه فعالیت‌ها
+    revisions_historical_timeframe: تاریخچه تجدید نظرها
+    sso_enabled: SSO
+    offline_enabled: حالت آفلاین
+    telemetry_opt_out: انصراف از تله‌متری
+    custom_llms_enabled: مدل زبانی سفارشی (LLM)
+    custom_permission_rules_enabled: قوانین سفارشی (سیاست‌های دسترسی)
+    ai_translations_enabled: ترجمه‌های هوش مصنوعی
+    display_powered_by: نمایش «قدرت‌گرفته از»
     production_enabled: تولید
   badge:
+    directus: قدرت‌گرفته از دایرکتوس
     oig: کمک‌هزینه نوآوری باز
     non_prod: غیرعملیاتی
+danger_zone: منطقه خطر
 settings_appearance: ظاهر
 settings_ai: هوش مصنوعی
 model_context_protocol: دستورالعمل زمینه مدل (MCP)
 ai_assistant: دستیار هوش مصنوعی
 ai_disabled_by_env: قابلیت‌های دستیار هوش مصنوعی از طریق متغیر محیطی غیر فعال شده است.
+ai_allowed_models_default_note: از مدل‌های پیشنهادی استفاده می‌شود که با انتشار نسخه‌های جدید دایرکتوس به‌روزرسانی می‌شوند. تغییر این فهرست، انتخاب شخصی شما را ذخیره می‌کند.
 mcp_disabled_by_env: قابلیت‌های MCP از طریق متغیر محیطی غیر فعال شده است.
+mcp_oauth_disabled_by_env: MCP OAuth توسط متغیر محیطی MCP_OAUTH_ENABLED غیرفعال شده است.
+mcp_oauth_dcr_disabled_by_env: ثبت پویای کلاینت توسط متغیر محیطی MCP_OAUTH_DCR_ENABLED غیرفعال شده است.
+mcp_oauth_cimd_disabled_by_env: اسناد فراداده شناسه کلاینت توسط متغیر محیطی MCP_OAUTH_CIMD_ENABLED غیرفعال شده است.
+mcp_oauth_clients: کلاینت‌های MCP OAuth
+manage_registered_clients: مدیریت کلاینت‌های ثبت‌شده
+no_oauth_clients: هنوز هیچ کلاینت OAuth ثبت نشده است.
+revoke_client: لغو دسترسی کلاینت
+revoke_client_confirm: آیا از لغو دسترسی این کلاینت اطمینان دارید؟ تمام توکن‌ها و نشست‌های مرتبط حذف خواهند شد.
 settings_system_logs: لاگ‌های سیستم
 settings_presets: نشانک‌ها
 settings_translations: ترجمه‌ها
@@ -1449,6 +1622,8 @@ cancel_anyway: به هر حال لغو کن
 discard_changes: لغو تغییرات
 discard_all_changes: لغو تمام تغییرات
 discard_changes_copy: آیا مطمئن هستید که می‌خواهید تمام تغییرات خود را لغو کنید؟
+published_item_has_changed: آیتم منتشرشده تغییر کرده است
+published_item_has_changed_copy: آیتم منتشرشده از زمان ایجاد این نسخه به‌روزرسانی شده است. انتشار در این لحظه، آن تغییرات را بازنویسی خواهد کرد.
 discard_changes_copy_collab: شما در حال ویرایش این مورد با دیگران هستید. لغو تغییرات، همه ویرایش‌های ذخیره نشده را برای هر کسی در این نشست مشارکتی پاک خواهد کرد.
 show_x_axis: نمایش محور X
 show_y_axis: نمایش محور Y
@@ -1459,9 +1634,58 @@ create_new: ساخت آیتم جدید
 all: همه
 none: هیچی
 no_layout_collection_selected_yet: هنوز طرح/مجموعه ای انتخاب نشده است
-batch_delete_confirm: >-
-  هیچ آیتمی انتخاب نشده است | آیا مطمئنید که میخواهید این آیتم را حذف کنید؟ این عمل غیرقابل بازگشت است. | آیا مطمئنید که میخواهید این {count} آیتم را پاک کنید؟ این عمل غیر قابل بازگشت است.
+batch_delete_confirm: هیچ آیتمی انتخاب نشده است | آیا مطمئنید که میخواهید این آیتم را حذف کنید؟ این عمل غیرقابل بازگشت است. | آیا مطمئنید که میخواهید این {count} آیتم را پاک کنید؟ این عمل غیر قابل بازگشت است.
 cancel: انصراف
+license:
+  seats_limit:
+    title: کاربر ایجاد خواهد شد اما در وضعیت غیرفعال قرار می‌گیرد.
+    body_admin: به حداکثر سقف مجاز پلن خود رسیده‌اید. برای ادامه نیاز به خرید بسته‌های افزودنی یا ارتقای پلن دارید.
+    body_member: به حداکثر سقف مجاز پلن خود رسیده‌اید. برای خرید بسته‌های افزودنی یا ارتقای پلن با مدیر تماس بگیرید.
+  collections_limit:
+    title: به سقف تعداد مجموعه‌ها رسیده‌اید
+    body: به حداکثر سقف مجاز پلن خود رسیده‌اید. برای ادامه نیاز به خرید بسته‌های افزودنی یا ارتقای پلن دارید.
+  max_capacity:
+    label: حداکثر ظرفیت
+    alert_danger_prefix: به حداکثر ظرفیت رسیده‌اید.
+    alert_danger_suffix: برای افزایش ظرفیت.
+    alert_warning: '{count} مورد باقی مانده است. برای افزایش ظرفیت، پلن خود را ارتقا دهید.'
+  manage_plan: مدیریت پلن
+  collections_remaining: '{n} مجموعه باقی‌مانده | {n} مجموعه باقی‌مانده'
+  flows_limit:
+    title: به سقف تعداد جریان‌ها رسیده‌اید
+    body: به حداکثر سقف مجاز پلن خود رسیده‌اید. برای ادامه نیاز به خرید بسته‌های افزودنی یا ارتقای پلن دارید.
+  flows_remaining: '{n} جریان باقی‌مانده | {n} جریان باقی‌مانده'
+  contact_sales: تماس با بخش فروش
+  upgrade_to_unlock: برای باز کردن این ویژگی، پلن خود را ارتقا دهید.
+  activity_history_notice: '{timeframe} تاریخچه فعالیت‌ها در پلن فعلی شما گنجانده شده است.'
+  revisions_history_notice: '{timeframe} تاریخچه تجدید نظرها در پلن فعلی شما گنجانده شده است.'
+  status_notice:
+    grace_period: '{daysLeft} تا اعمال محدودیت‌های منابع پلن Core باقی مانده است.'
+    grace_days: '{days} روز | {days} روز'
+  unlicensed_status_notice:
+    grace_period: '{daysLeft} از دوره ارفاق شما باقی مانده است — تا تاریخ {date}. پس از آن، محدودیت‌های منابع پلن Core اعمال خواهد شد. برای افزایش محدودیت‌ها، {retrieveLicenseKey} یا {upgrade}.'
+    grace_days_left: '{days} روز باقی‌مانده | {days} روز باقی‌مانده'
+    retrieve_license_key: کلید لایسنس را بازیابی کنید
+    upgrade: پلن را ارتقا دهید
+    oig_eligible: ممکن است واجد شرایط {oig} ما باشید. درخواست دهید و به صورت رایگان به تمام امکانات دایرکتوس دسترسی پیدا کنید.
+  locked_status_notice: نمونه دایرکتوس شما قفل شده است. برای رفع مشکل، لایسنس را مدیریت کنید یا با {contactSupport} تماس بگیرید.
+  warning_status_notice:
+    generic: تازه‌سازی وضعیت فعال لایسنس شما امکان‌پذیر نبود. لایسنس تا تاریخ {date} فعال باقی می‌ماند و سپس پروژه شما به پلن Core منتقل می‌شود. کلید لایسنس خود را در تنظیمات > لایسنس بررسی کنید.
+    invalid_key: کلید لایسنس شما دیگر معتبر نیست. لایسنس تا تاریخ {date} فعال باقی می‌ماند و سپس پروژه شما به پلن Core منتقل می‌شود. کلید خود را در تنظیمات > لایسنس بررسی کنید یا کلید جدیدی اضافه نمایید.
+    activation_limit: لایسنس شما به سقف فعال‌سازی رسیده و نتوانست برای این پروژه فعال شود. لایسنس تا تاریخ {date} فعال باقی می‌ماند و سپس پروژه شما به پلن Core منتقل می‌شود. پیش از تلاش مجدد برای فعال‌سازی در این پروژه، این لایسنس را در پروژه‌ای که دیگر استفاده نمی‌کنید غیرفعال نمایید.
+    binding_mismatch: لایسنس شما به پروژه یا نشانی URL دیگری متصل است و وضعیت فعال آن قابل تازه‌سازی نبود. لایسنس تا تاریخ {date} فعال باقی می‌ماند و سپس پروژه شما به پلن Core منتقل می‌شود. بررسی کنید نشانی URL پروژه شما با نشانی محل فعال‌سازی کلید مطابقت داشته باشد.
+    unavailable: برای تازه‌سازی وضعیت لایسنس شما نتوانستیم به سرویس لایسنس متصل شویم. به صورت دوره‌ای دوباره تلاش خواهیم کرد. لایسنس شما تا تاریخ {date} فعال می‌ماند و در صورت عدم امکان تازه‌سازی، پروژه شما به پلن Core منتقل خواهد شد.
+  pinned_status_notice:
+    grace_period_title: دوره ارفاق ({days} روز باقی‌مانده)
+    grace_period_body: کلید لایسنس خود را در تنظیمات > لایسنس مدیریت کنید.
+    warning_title:
+      generic: بررسی لایسنس ناموفق بود ({days} روز باقی‌مانده)
+      invalid_key: کلید لایسنس نامعتبر ({days} روز باقی‌مانده)
+      activation_limit: به سقف فعال‌سازی رسیده‌اید ({days} روز باقی‌مانده)
+      binding_mismatch: عدم تطابق نشانی URL لایسنس ({days} روز باقی‌مانده)
+      unavailable: سرویس لایسنس در دسترس نیست ({days} روز باقی‌مانده)
+  unlicensed_pinned_status_notice:
+    grace_period_title: دوره ارفاق ({days} روز باقی‌مانده)
 no_upscale: تصاویر را بالا نبرید
 no_extensions: بدون افزونه
 no_extensions_copy: هنوز هیچ افزونه‌ای نصب نشده است.
@@ -1476,6 +1700,8 @@ source_local: محلی
 source_module: ماژول‌های نود
 collection: مجموعه
 collections: مجموعه‌ها
+collection_inactive: این مجموعه غیرفعال است
+collection_inactive_copy: این نما به {collection} ارجاع می‌دهد که غیرفعال است.
 content: محتوا
 singleton: تک کالکشن یا Singleton
 singleton_label: به عنوان یک شی واحد رفتار کند
@@ -1507,6 +1733,10 @@ directus_collection:
   directus_translations: ترجمه های سفارشی
   directus_versions: نسخه‌های محتوا برای موارد
   directus_extensions: تنظیمات افزونه‌ها
+  directus_oauth_clients: برنامه‌های کلاینت OAuth ثبت‌شده
+  directus_oauth_codes: کدهای مجوز برای جریان‌های OAuth
+  directus_oauth_consents: مجوزهای رضایت کاربر برای کلاینت‌های OAuth
+  directus_oauth_tokens: توکن‌های دسترسی و تازه‌سازی برای کلاینت‌های OAuth
 fields:
   directus_activity:
     item: کلید اصلی مورد
@@ -1535,6 +1765,7 @@ fields:
     sort_field: فیلد مرتب سازی
     accountability: مشاهده Log ها و فعالیت ها
     versioning: نسخه‌بندی
+    autosave_revision_interval: فاصله زمانی ذخیره خودکار تجدید نظر
     archive_field: فیلد بایگانی
     item_duplication_fields: فیلدهای تکراری
   directus_files:
@@ -1585,6 +1816,7 @@ fields:
     status_active: فعال
     status_suspended: تعلیق شده
     status_archived: بایگانی شده
+    status_inactive_license_exceeded: غیرفعال (تجاوز از سقف لایسنس)
     role: نقش
     token: توکن
     provider: ارائه دهنده
@@ -1606,14 +1838,14 @@ fields:
     reporting: گزارش‌گیری
     mapping: نقشه برداری
     basemaps: نقشه‌های پایه
-    basemaps_raster: Raster
-    basemaps_tile: Raster TileJSON
+    basemaps_raster: رستر (Raster)
+    basemaps_tile: رستر TileJSON
     basemaps_style: سبک مپ‌باکس
     mapbox_key: کلید دسترسی Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: انتساب
-    attribution_placeholder: '© OpenStreetMap contributors'
-    transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
+    attribution_placeholder: © OpenStreetMap contributors
+    transforms_note: نام متد Sharp و آرگومان‌های آن. برای اطلاعات بیشتر به https://sharp.pixelplumbing.com/api-constructor مراجعه کنید.
     additional_transforms: تحولات اضافی
     project_name: نام پروژه
     project_descriptor: درباره پروژه
@@ -1634,6 +1866,8 @@ fields:
     auth_login_attempts: حداکثر تعداد ورود ناموفق
     files_and_thumbnails: فایلها و ذخیره سازی
     storage_default_folder: پوشه پيشفرض
+    default_exports_folder: پوشه پیش‌فرض خروجی‌ها
+    default_exports_folder_note: پوشه پیش‌فرض برای خروجی‌هایی که بدون تعیین پوشه در کتابخانه فایل ذخیره می‌شوند. در صورت نبود، از پوشه پیش‌فرض استفاده می‌شود.
     storage_asset_presets: کلید از پیش تعیین شده
     storage_asset_transform: تغییرات مجاز
     overrides: لغو برنامه
@@ -1654,6 +1888,9 @@ fields:
     public_registration_email_filter_note: فقط نشانی‌های ایمیل که با این فیلتر منطبق باشند می‌توانند ثبت نام کنند.
     public_registration_verify_email: تایید ایمیل
     public_registration_verify_email_note: ایمیلی برای کاربر در حال ثبت نام می‌فرستد که از آن‌ها می‌خواهد روی یک لینک تایید کلیک کنند تا به آن‌ها اجازه ثبت نام داده شود.
+    live_preview: پیش‌نمایش زنده
+    preview_base_url: نشانی پایه پیش‌نمایش
+    preview_base_url_note: قابل انتخاب به عنوان متغیر پویا برای نشانی پایه پیش‌نمایش در نشانی پیش‌نمایش یک مجموعه، تا هاست بتواند در هر محیط متفاوت باشد.
     visual_editor_urls: URLهای ویرایشگر بصری
     report_feature_url: نشانی گزارش قابلیت
     report_bug_url: نشانی گزارش باگ
@@ -1661,27 +1898,50 @@ fields:
     collaborative_editing: ویرایش مشارکتی
     collaborative_editing_enabled: فعال‌سازی ویرایش مشارکتی
     collaborative_editing_note: وب‌سوکت‌ها برای کار کردن ویرایش مشارکتی ضروری هستند.
+    ai_notice: 'دستیار هوش مصنوعی یک نوار کناری درون‌برنامه‌ای برای گفتگو با مدل زبانی (LLM) فراهم می‌کند. پس از فعال‌سازی، نوار کناری هوش مصنوعی را از نوار ابزار باز کنید تا سؤال بپرسید، محتوا تولید کنید و در کار با پروژه خود کمک بگیرید. <a href="https://directus.com/docs/guides/ai/assistant" target="_blank">درباره پیکربندی و استفاده از دستیار هوش مصنوعی بیشتر بدانید.</a>'
     mcp_enabled: سرور MCP
+    mcp_enabled_note: 'ابزارهای هوش مصنوعی/LLM را از طریق <a href="https://directus.com/docs/guides/ai/mcp" target="_blank">پروتکل زمینه مدل (MCP)</a> به پروژه دایرکتوس خود متصل کنید. این کار به دستیارهای هوش مصنوعی اجازه می‌دهد به صورت امن داده‌های دایرکتوس شما را بخوانند و با آن‌ها تعامل داشته باشند.'
+    mcp_notice: 'پروتکل زمینه مدل (MCP) استانداردی برای اتصال مدل‌های زبانی به برنامه‌هایی مانند دایرکتوس است. پس از فعال‌سازی، سرور MCP دایرکتوس در مسیر `/mcp` در دسترس خواهد بود. <a href="https://directus.com/docs/guides/ai/mcp" target="_blank">درباره MCP و نحوه اتصال بیشتر بدانید.</a>'
     mcp_allow_deletes: اجازه حذف
-    mcp_allow_deletes_note:
-      - ممکن است منجر به از دست رفتن داده شود.</strong> به طور پیش‌فرض به دلایل ایمنی غیرفعال شده است.'
+    mcp_allow_deletes_note: 'فعال‌سازی حذف آیتم‌ها، فایل‌ها، جریان‌ها، فیلدها، روابط و مجموعه‌ها از طریق ابزارهای MCP. <strong>هشدار: ممکن است باعث از دست رفتن داده‌ها شود.</strong> به صورت پیش‌فرض برای ایمنی غیرفعال است.'
     mcp_prompts_collection: مجموعه پرامپت‌های هوش مصنوعی
+    mcp_prompts_collection_note: 'مجموعه‌ای را برای ذخیره <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">قالب‌های پرامپت قابل استفاده مجدد</a> جهت تعاملات هوش مصنوعی انتخاب کنید.'
     mcp_system_prompt_divider: پیکربندی پرامپت سیستمی
     mcp_system_prompt_enabled: استفاده از پرامپت سیستمی
+    mcp_system_prompt_enabled_note: "از <a href='https://directus.com/docs/guides/ai/mcp#system-prompt' target='_blank'>پرامپت سیستمی پیش‌فرض</a> برای هدایت رفتار LLM استفاده کنید. برای حذف آن یا جایگزینی با پرامپت خود در زیر، این گزینه را غیرفعال کنید."
     mcp_system_prompt: پرامپت سیستمی سفارشی
-    mcp_system_prompt_note: 'پرامپت سیستمی سفارشی برای جایگزینی با پیش‌فرض. برای استفاده از مقدار پیش‌فرض خالی بگذارید (اگر بالا فعال شده).'
+    mcp_system_prompt_note: پرامپت سیستمی سفارشی برای جایگزینی با پیش‌فرض. برای استفاده از مقدار پیش‌فرض خالی بگذارید (اگر بالا فعال شده).
+    mcp_oauth_enabled: فعال‌سازی OAuth
+    mcp_oauth_enabled_note: اجازه احراز هویت کلاینت‌های MCP از طریق OAuth 2.1
+    mcp_oauth_dcr_enabled: ثبت پویای کلاینت (DCR)
+    mcp_oauth_cimd_enabled: سند فراداده شناسه کلاینت (CIMD)
     ai_system_prompt: دستورالعمل سیستمی هوش مصنوعی
-    ai_system_prompt_note: 'دستورالعمل سیستمی سفارشی هوش مصنوعی برای هدایت رفتار هوش مصنوعی در تعاملات دستیار هوش مصنوعی. برای استفاده از پیش‌فرض خالی بگذارید.'
-    ai_openai_api_key: OpenAI API Key
+    ai_system_prompt_note: دستورالعمل سیستمی سفارشی هوش مصنوعی برای هدایت رفتار هوش مصنوعی در تعاملات دستیار هوش مصنوعی. برای استفاده از پیش‌فرض خالی بگذارید.
+    ai_translation_default_model: مدل پیش‌فرض ترجمه
+    ai_translation_default_model_note: مدل پیش‌فرض مورد استفاده برای ترجمه‌های هوش مصنوعی را انتخاب کنید. فقط مدل‌های فعال‌شده در تنظیمات بالا در اینجا در دسترس هستند.
+    ai_glossary_term: اصطلاح
+    ai_glossary_term_placeholder: Directus Flows
+    ai_glossary_note: یادداشت ترجمه
+    ai_glossary_note_placeholder: هرگز ترجمه نشود، به همان شکل حفظ شود
+    ai_translation_glossary: واژه‌نامه ترجمه
+    ai_translation_glossary_note: اصطلاحات کلیدی و ترجمه‌های مصوب آن‌ها را در زبان‌های خود تعریف کنید تا نام محصولات، برچسب‌های رابط کاربری و سایر عبارات مهم در سراسر محتوای شما یکپارچه بمانند.
+    ai_translation_style_guide: راهنمای سبک ترجمه
+    ai_translation_style_guide_note: توضیح دهید محتوای شما چگونه باید ترجمه شود، از جمله لحن، رسمیت و قواعد نگارشی. جزئیاتی درباره کسب‌وکار، محصول و مخاطبان خود اضافه کنید تا هوش مصنوعی لحن برند شما را یکپارچه حفظ کند.
+    ai_translation_style_guide_placeholder: با لحنی مطمئن و صمیمی ترجمه کن. از خطاب غیررسمی استفاده کن، از عبارات عامیانه پرهیز کن و یکپارچگی اصطلاحات را حفظ کن.
+    ai_openai_api_key: کلید API اوپن‌ای‌آی (OpenAI)
     ai_openai_allowed_models: مدل‌های مجاز OpenAI
-    ai_anthropic_api_key: Anthropic API Key
+    ai_anthropic_api_key: کلید API آنتروپیک (Anthropic)
     ai_anthropic_allowed_models: مدل‌های مجاز Anthropic
-    ai_google_api_key: Google API Key
+    ai_google_api_key: کلید API گوگل (Google)
     ai_google_allowed_models: مدل‌های مجاز گوگل
+    ai_openrouter_api_key: کلید API اوپن‌روتر (OpenRouter)
+    ai_openrouter_models: مدل‌های OpenRouter
     ai_openai_compatible: ارائه‌دهنده سازگار با OpenAI
+    ai_translations_notice: پلن فعلی شما شامل ترجمه هوش مصنوعی نیست. برای باز کردن آن، پلن را ارتقا دهید.
+    ai_openai_compatible_notice: پلن فعلی شما شامل مدل زبانی سفارشی (Custom LLM) نیست. برای باز کردن آن، پلن را ارتقا دهید.
     ai_openai_compatible_name: نام ارائه‌دهنده
     ai_openai_compatible_base_url: نشانی پایه
-    ai_openai_compatible_api_key: API Key
+    ai_openai_compatible_api_key: کلید API
     ai_openai_compatible_models: مدل‌ها
     ai_openai_compatible_headers: هدرهای سفارشی
     ai_model_id: شناسه مدل
@@ -1727,7 +1987,7 @@ field_options:
   directus_settings:
     project_name_placeholder: پروژه من...
     project_color_note: نماد برگه ورود
-    project_logo_note: White 40x40 SVG/PNG
+    project_logo_note: SVG/PNG سفید ۴۰×۴۰
     project_favicon_note: 32×32 ICO
     public_note_placeholder: یک پیام کوتاه و عمومی که از قالب بندی علامت گذاری پشتیبانی می کند...
     security_divider_title: امنیت
@@ -1749,8 +2009,8 @@ field_options:
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: نقشه‌های پایه
     basemaps_name_placeholder: نام نقشه پایه را وارد کنید...
-    basemaps_raster: Raster
-    basemaps_tile: Raster TileJSON
+    basemaps_raster: رستر (Raster)
+    basemaps_tile: رستر TileJSON
     basemaps_style: سبک مپ‌باکس
     files_divider_title: فایلها و تصاویر کوچک
     overrides_divider_title: لغو برنامه
@@ -1760,12 +2020,15 @@ field_options:
     create: ایجاد
     update: بروزرسانی
     delete: حذف
+  directus_oauth_clients:
+    registration_type_dcr: DCR
+    registration_type_cimd: CIMD
   directus_collections:
     track_activity_revisions: مشاهده فعالیت ها و لاگ ها
     only_track_activity: فقط مشاهده فعالیت ها
     do_not_track_anything: هیچ چیز را پیگیری نکن
     collection_setup: راه اندازی مجموعه
-    collection_naming_translations_note: "جایگزینی نام نمایشی مجموعه در برنامه بر اساس زبان کاربر."
+    collection_naming_translations_note: جایگزینی نام نمایشی مجموعه در برنامه بر اساس زبان کاربر.
     note_placeholder: توضیحات مربوط به این مجموعه...
     hidden_label: در برنامه پنهان شود
     singleton: به عنوان یک شی واحد رفتار کند
@@ -1788,6 +2051,8 @@ field_options:
     content_translations_divider: ترجمه‌های محتوا
     content_versioning_divider: نسخه‌بندی محتوا
     enable_versioning: فعال‌سازی نسخه‌بندی
+    interval_default: پیش‌فرض ({minutes} دقیقه)
+    interval_default_seconds: پیش‌فرض ({seconds} ثانیه)
   directus_files:
     title: یک عنوان منحصر به فرد
     description: توضیحات اختیاری...
@@ -1827,10 +2092,10 @@ field_options:
     status_dropdown_suspended: تعلیق شده
     status_dropdown_archived: بایگانی شده
     token: یک رمز دسترسی ایمن وارد کنید...
-no_fields_in_collection: 'There are no fields in "{collection}" yet'
+no_fields_in_collection: هنوز هیچ فیلدی در «{collection}» وجود ندارد
 no_value: بدون مقدار
 do_nothing: کاری انجام نشود
-generate_and_save_uuid: Generate and Save UUID
+generate_and_save_uuid: تولید و ذخیره UUID
 save_current_user_id: ذخیره نقش کاربر فعلی
 save_current_user_role: ذخیره نقش کاربر فعلی
 save_current_datetime: ذخیره تاریخ و ساعت فعلی
@@ -1853,13 +2118,26 @@ live_preview:
   exit_full_width: خروج از تمام عرض
   open_in_visual_editor: باز کردن در ویرایشگر بصری
 shares: اشتراک‌گذاری
-unlimited_usage: Unlimited usage
+unlimited_usage: استفاده نامحدود
 uses_left: هیچ استفاده‌ای نمانده | یک استفاده مانده | {n} استفاده مانده
 no_shares: هیچ اشتراک گذاری برای نمایش نیست
 new_share: اشتراک گذاری جدید
 show_more: نمایش بیشتر
 show_less: نمایش کمتر
+retry: تلاش مجدد
 ai:
+  flow_operations:
+    model: مدل
+    model_placeholder: یک مدل انتخاب کنید یا provider:model-id بنویسید
+    start_from: 'شروع از:'
+    start_over: شروع مجدد
+    start_over_title: شروع مجدد؟
+    start_over_copy: این کار پرامپت و تنظیمات همراه آن را پاک می‌کند.
+    replace_marker: "مقدار **{marker}** را با داده جریان جایگزین کنید، مانند `{'{'}{'{'} $trigger.payload.your_field {'}'}{'}'}` یا `{'{'}{'{'} step_key.your_field {'}'}{'}'}`. در غیر این صورت مدل آن را دقیقاً همان‌گونه که نوشته شده دریافت می‌کند. برای مشاهده داده‌های هر جریان به [مستندات زنجیره داده](https://directus.com/docs/guides/flows/data-chain) مراجعه کنید."
+    choose_files: انتخاب از کتابخانه
+    permissions_trigger: از راه‌انداز
+    permissions_public: نقش عمومی
+    permissions_full: دسترسی کامل
   thinking: در حال فکر کردن...
   input: ورودی
   output: خروجی
@@ -1895,6 +2173,14 @@ ai:
   prompt_staged: دستورالعمل جاگیر شد
   items_staged: موارد جاگیر شدند
   some_items_staged: '{count} مورد جاگیر شد (به محدودیت رسیدید)'
+  files_staged: فایل‌های آماده ارسال
+  some_files_staged: '{count} فایل آماده ارسال است (سقف تعداد پر شده)'
+  attach_file_subtitle: پیوست کردن فایل‌های موجود
+  upload_file_subtitle: بارگذاری فایل‌های محلی
+  file_upload_failed: بارگذاری {name} ناموفق بود
+  file_upload_not_supported: بارگذاری فایل برای این ارائه‌دهنده پشتیبانی نمی‌شود
+  unsupported_file_type: نوع فایل پشتیبانی نمی‌شود
+  provider_locked_tooltip: پس از بارگذاری فایل نمی‌توان ارائه‌دهنده را تغییر داد. برای تغییر، گفتگوی فعلی را پاک کنید.
   image_preview: پیش‌نمایش تصویر
   item_staged: مورد جاگیر شد
   invalid_collection: مجموعه نامعتبر
@@ -1953,9 +2239,9 @@ mcp_prompts_collection:
   already_exists: مجموعه پرامپت‌های هوش مصنوعی از قبل وجود دارد
   generate_collection_dialog_title: ایجاد مجموعه پرامپت‌های هوش مصنوعی
   generate_fields_dialog_title: ایجاد فیلدهای پرامپت‌های هوش مصنوعی
-  generate_collection_dialog_description: 'این کار، مجموعه «{collection}» جدیدی با فیلدهای ضروری و تنظیمات برای نگهداری قالب‌های پرامپت قابل استفاده مجدد ایجاد خواهد کرد.'
-  generate_fields_dialog_description: 'این کار، فیلدهای ضروری را در مجموعه «{collection}» شما ایجاد خواهد کرد.'
-  validation_success: 'مجموعه برای استفاده به عنوان مجموعه «پرامپت‌های هوش مصنوعی» آماده است.'
+  generate_collection_dialog_description: این کار، مجموعه «{collection}» جدیدی با فیلدهای ضروری و تنظیمات برای نگهداری قالب‌های پرامپت قابل استفاده مجدد ایجاد خواهد کرد.
+  generate_fields_dialog_description: این کار، فیلدهای ضروری را در مجموعه «{collection}» شما ایجاد خواهد کرد.
+  validation_success: مجموعه برای استفاده به عنوان مجموعه «پرامپت‌های هوش مصنوعی» آماده است.
   validation_error_invalid: مجموعه قابل استفاده نیست
   validation_error_missing: مجموعه هنوز قابل استفاده نیست
   invalid_fields: 'فیلدهای زیر موجود است؛ اما از نوع ناسازگار هستند:'
@@ -1967,6 +2253,7 @@ mcp_prompts_collection_schema:
   messages_role_user: کاربر
   messages_role_assistant: دستیار
   messages_role_note: چه کسی در این پیام صحبت می‌کند.
+  meta_prompts_notice: 'پرامپت‌ها قالب‌های قابل استفاده مجددی هستند که می‌توانید همراه با مدل‌های زبانی از طریق سرور MCP دایرکتوس، جریان‌ها یا سایر برنامه‌های هوش مصنوعی از آن‌ها استفاده کنید. <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">درباره ساخت پرامپت‌های مؤثر بیشتر بدانید.</a>'
 expired: منقضی شده
 upcoming: به زودی
 share: اشتراک‌گذاری
@@ -1976,8 +2263,8 @@ shared_enter_passcode: برای ادامه رمز خود را وارد نمائ�
 generate: ایجاد
 shared_leave_blank_for_passwordless_access: برای دسترسی بدون رمز عبور، خالی بگذارید
 shared_leave_blank_for_unlimited: (خالی به معنی بدون محدودیت.)
-shared_times_remaining: This link can only be used {n} times
-shared_last_remaining: This link can only be used once
+shared_times_remaining: این پیوند فقط {n} بار قابل استفاده است
+shared_last_remaining: این پیوند فقط یک بار قابل استفاده است
 shared_uses_left: برای امنیت بیشتر، این صفحه مشترک با تعداد محدودی بازدید پیکربندی شده است. در حال حاضر {n} بازدید باقی مانده است، پس از آن، صفحه دیگر قابل دسترسی نخواهد بود.
 share_access_page: دسترسی به صفحه Shared
 share_access_not_found: این صفحه به اشتراک گذاشته شده وجود ندارد یا قبلاً از حداکثر تعداد مجاز استفاده فراتر رفته است.
@@ -1991,24 +2278,28 @@ relational_triggers: رابطه محرک ها یا Triggers
 referential_action_field_label_m2o: در حال حذف {collection}...
 referential_action_field_label_o2m: در حال لغو {collection}
 referential_action_no_action: جلوگیری از حذف
-referential_action_cascade: Delete the {collection} item (cascade)
-referential_action_set_null: Nullify the {field} field
-referential_action_set_default: Set {field} to its default value
+referential_action_cascade: حذف آیتم {collection} (آبشاری)
+referential_action_set_null: خالی کردن (Null) فیلد {field}
+referential_action_set_default: تنظیم {field} به مقدار پیش‌فرض آن
 choose_action: انتخاب فعالیت
 continue_label: ادامه
-continue_as: >-
-  {name} در حال حاضر احراز هویت شده است. اگر این حساب را می‌شناسید، روی ادامه بزنید.
-editing_role: 'نقشِ {role}'
-editing_policy: 'سیاست {policy}'
+continue_as: '{name} در حال حاضر احراز هویت شده است. اگر این حساب را می‌شناسید، روی ادامه بزنید.'
+editing_role: نقشِ {role}
+editing_policy: سیاست {policy}
+public_policy_warning: تغییرات اینجا بر آنچه کاربران احراز هویت نشده و کاربران بدون نقش می‌توانند به آن دسترسی داشته باشند و کارهایی که می‌توانند انجام دهند تأثیر می‌گذارد. برای اطلاعات بیشتر به {docs} مراجعه کنید.
+public_policy_warning_docs_link: مستندات بهترین شیوه‌های امنیتی
+public_policy_dialog:
+  title: دسترسی عمومی به مجموعه‌های سیستمی تغییر کند؟
+  copy: 'شما در حال تغییر مجوزهای عمومی روی مجموعه‌های سیستمی زیر هستید. این عملیات‌ها برای کاربران احراز هویت نشده و کاربران بدون نقش در دسترس خواهد بود:'
+  unfiltered_read_warning: دسترسی خواندن بدون فیلتر، تمامی رکوردهای مجموعه را در معرض دید قرار می‌دهد.
+  best_practices: برای اطلاعات بیشتر به {docs} مراجعه کنید.
 no_permissions: بدون مجوز
 permission_add_collection: ایجاد مجموعه
 default_label: پیش‌فرض
 delete_label: حذف
 discard_label: لغو
-delete_are_you_sure: >-
-  این عمل دائمی است و قابل بازگشت نیست. آیا مطمئن هستید که می خواهید ادامه دهید؟
-delete_field_are_you_sure: >-
-  آیا مطمئن هستید که می‌خواهید فیلد {field} را حذف کنید؟ این عملیات قابل بازگردانی نیست.
+delete_are_you_sure: این عمل دائمی است و قابل بازگشت نیست. آیا مطمئن هستید که می خواهید ادامه دهید؟
+delete_field_are_you_sure: آیا مطمئن هستید که می‌خواهید فیلد {field} را حذف کنید؟ این عملیات قابل بازگردانی نیست.
 description: توضیحات
 done: انجام شد
 duplicate: تکراری
@@ -2016,13 +2307,14 @@ limit: محدوده
 email: ایمیل
 embed: درج
 fallback_icon: آیکن بازگشتی
-field: Field | Fields
+field: فیلد | فیلدها
 file: فایل
 file_library: مجموعه فایلها
 forgot_password: فراموشی رمز عبور
 hidden: مخفی
-hidden_in_group: Hidden in {group}
+hidden_in_group: مخفی در {group}
 icon: آیکن
+image: تصویر
 info: اطلاعات
 normal: عادی
 success: موفق
@@ -2070,8 +2362,7 @@ settings: تنظیمات
 register: ثبت نام
 registration_successful_headline: موفق!
 registration_successful_note: اکنون می‌توانید به صفحه ورود بروید.
-registration_successful_check_email_note: |
-  لطفا توجه کنید که قبل از این که بتوانید ثبت نام کنید، نیاز است نشانی ایمیل خود را با کلیک روی لینک فعال‌سازی ارسال شده برای شما تایید کنید.
+registration_successful_check_email_note: لطفا توجه کنید که قبل از این که بتوانید ثبت نام کنید، نیاز است نشانی ایمیل خود را با کلیک روی لینک فعال‌سازی ارسال شده برای شما تایید کنید.
 dont_have_an_account: حساب ندارید؟
 already_have_an_account: قبلا حساب داشتید؟
 sign_up_now: حالا ثبت نام کنید
@@ -2082,10 +2373,10 @@ something_went_wrong: مشکلی پیش آمد.
 sort_direction: جهت مرتب سازی
 export_location: برون‌برد مکان‌ها
 export_started: برون بری آغاز شد
-export_started_copy: Your export has started. You'll be notified when it's ready to download.
-sort_asc: Sort Ascending
+export_started_copy: خروجی‌گیری شما آغاز شد. هنگامی که آماده دانلود باشد به شما اطلاع داده خواهد شد.
+sort_asc: مرتب‌سازی صعودی
 sort_desc: مرتب‌سازی نزولی
-disable_sort: Disable Sorting
+disable_sort: غیرفعال کردن مرتب‌سازی
 template: پوسته
 require_value_to_be_set: مقدار لازم برای تنظیم هنگام ایجاد
 translation: ترجمه
@@ -2137,7 +2428,11 @@ interfaces:
     accordion_mode: حالت آکاردئون
     max_one_section_open: حداکثر 1 بخش باز باشد
   group-tabs:
+    name: تب‌ها
+    description: نمایش فیلدها یا گروه‌ها به صورت تب
+    overwrite_group_width: بازنویسی عرض گروه
     fill_width: عرض کامل
+    fill_width_note: اجازه دهید این گروه تمام عرض صفحه را پر کند.
   presentation-links:
     presentation-links: دکمه‌‌ها
     description: دکمه های لینک قابل تنظیم برای راه‌اندازی نشانی‌های پویا یا راه‌اندازی جریان‌ها
@@ -2152,10 +2447,10 @@ interfaces:
     checkboxes: کادر انتخابی
     description: بین چند گزینه از طریق جعبه انتخاب
     allow_other: اجازه به دیگری
-    show_more: 'نمایش {count} بیشتر'
+    show_more: نمایش {count} بیشتر
     items_shown: آیتمهای نشان داده شده
   select-multiple-checkbox-tree:
-    name: Checkboxes (Tree)
+    name: چک‌باکس‌ها (درختی)
     description: بین چند گزینه از طریق جعبه انتخاب تودرتو
     value_combining: ترکیب مقدار
     value_combining_note: زمانی که انتخاب‌های تودرتو انجام می‌شوند، مقداری را کنترل می‌کند.
@@ -2163,9 +2458,9 @@ interfaces:
     show_selected: نمایش موارد انتخاب شده
   input-code:
     code: کد
-    description: Write or share code snippets
+    description: نوشتن یا اشتراک‌گذاری قطعه کدها
     line_number: شمارۀ سطرها
-    line_wrapping: Line Wrapping
+    line_wrapping: شکستن خطوط
     placeholder: کد را اینجا وارد کنید...
   system-collection:
     collection: کالکشن یا مجموعه
@@ -2200,13 +2495,13 @@ interfaces:
     no_fields: بدون فیلد
   system-display-template:
     display-template: نمایش الگو
-    description: Mix static text and dynamic field values
-    collection_field: Collection field
+    description: ترکیب متن ثابت و مقادیر پویای فیلدها
+    collection_field: فیلد مجموعه
     collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
     select_a_collection: انتخاب یک کالکشن
   presentation-divider:
     divider: جدا کننده
-    description: Label and divide fields into sections
+    description: برچسب‌گذاری و تقسیم فیلدها به بخش‌های جداگانه
     title_placeholder: یک عنوان وارد نمائید یا خالی رها کنید
     inline_title: عنوان درون خطی
     inline_title_label: نمایش عنوان داخل خط
@@ -2236,26 +2531,27 @@ interfaces:
     description: انتخاب یا آپلود موارد بیشتر
   input-hash:
     hash: هش
-    description: Enter a value to be hashed
-    masked: Masked
-    masked_label: Hide the true values
+    description: وارد کردن مقداری برای هش شدن
+    masked: پوشیده (ماسک‌شده)
+    masked_label: مخفی کردن مقادیر واقعی
   select-icon:
     icon: آیکن
     description: انتخاب آیکن از منوی آبشاری
     search_for_icon: جستجو برای آیکون ها...
   file-image:
     image: عکس
-    description: Select or upload an image
+    description: انتخاب یا بارگذاری یک تصویر
     crop: تناسب با برش تصویر
     crop_label: برش تصویر در صورت نیاز
+    letterbox: حاشیه ثابت (Letterbox)
     letterbox_label: اضافه کردن حاشیه به پیش‌نمایش تصویر
   system-interface:
     interface: رابط کاربری
     description: از رابط‌های موجود انتخاب کنید
-    placeholder: Select an interface...
+    placeholder: یک رابط کاربری انتخاب کنید...
   system-interface-options:
     interface-options: تنظیمات رابط
-    description: A modal for selecting options of an interface
+    description: پنجره‌ای برای انتخاب گزینه‌های یک رابط کاربری
   system-display:
     display: نحوه نمایش
     description: از نحوه نمایش‌های موجود انتخاب کنید
@@ -2266,8 +2562,8 @@ interfaces:
   list-m2m:
     many-to-many: چندتا به چندتا
     description: انتخاب چندین آیتم تقاطعی مرتبط
-    columns_configure_notice: You can configure the columns after creating this field.
-    display_template_configure_notice: You can configure the display template after creating this field.
+    columns_configure_notice: پس از ایجاد این فیلد می‌توانید ستون‌ها را پیکربندی کنید.
+    display_template_configure_notice: پس از ایجاد این فیلد می‌توانید قالب نمایش را پیکربندی کنید.
   select-dropdown-m2o:
     many-to-one: چندتا به یکی
     description: انتخاب یک آیتم مرتبط
@@ -2280,46 +2576,51 @@ interfaces:
     description: چند مورد از یک مجموعه را در قالب JSON انتخاب کنید
   input-rich-text-md:
     markdown: مارک‌داون
-    description: Enter and preview markdown
+    description: وارد کردن و پیش‌نمایش مارک‌داون
     edit: ویرایش
     preview: پيش نمايش
-    editorFont: Editor Font
-    previewFont: Preview Font
-    default_view: Default View
+    editorFont: قلم ویرایشگر
+    previewFont: قلم پیش‌نمایش
+    default_view: نمای پیش‌فرض
     default_view_editor: ویرایشگر
     default_view_preview: پيش نمايش
     customSyntax: بلوک‌های سفارشی
-    customSyntax_label: Add custom syntax types
-    customSyntax_add: Add custom syntax
-    box: Block / Inline
-    imageToken: Static Access Token
-    imageToken_label: Static access token is appended to the assets' URL
+    customSyntax_label: افزودن انواع نحو سفارشی
+    customSyntax_add: افزودن نحو سفارشی
+    box: بلوکی / درون‌خطی
+    imageToken: توکن دسترسی ایستا
+    imageToken_label: توکن دسترسی ایستا به نشانی فایل‌ها اضافه می‌شود
   map:
     map: نقشه
     description: یک موقعیت را روی نقشه انتخاب کنید
     zoom: بزرگنمايی
-    geometry_type: Geometry Type
-    geometry_format: Geometry Format
-    default_view: Default View
-    invalid_options: Invalid options
-    invalid_format: Invalid format ({format})
-    unexpected_geometry: Expected {expected}, got {got}.
-    fit_bounds: Fit view to data
-    native: Native
+    geometry_type: نوع هندسه
+    geometry_format: قالب هندسه
+    default_view: نمای پیش‌فرض
+    invalid_options: گزینه‌های نامعتبر
+    invalid_format: قالب نامعتبر ({format})
+    unexpected_geometry: مقدار مورد انتظار {expected} بود، اما {got} دریافت شد.
+    fit_bounds: تنظیم نما متناسب با داده‌ها
+    native: بومی
     geojson: GeoJSON
-    lnglat: Longitude, Latitude
+    lnglat: طول جغرافیایی، عرض جغرافیایی
     wkt: WKT
     wkb: WKB
-    click_to_select: Click to select {geometry}
+    click_to_select: برای انتخاب {geometry} کلیک کنید
   presentation-notice:
     notice: اطلاعیه
-    description: Display a short notice
-    text: Enter notice content here...
+    description: نمایش یک اعلان کوتاه
+    text: متن اعلان را اینجا وارد کنید...
     no_text: هیچ متنی پیکربندی نشده است...
   list-o2m:
     one-to-many: یک به چند
     description: انتخاب چندین آیتم مرتبط
     no_collection: گزینه مورد نظر یافت نشد.
+  system-openrouter-models:
+    name: مدل‌های OpenRouter
+    description: جستجو و انتخاب مدل‌های OpenRouter
+    add_custom: افزودن «{id}»
+    unavailable: امکان اتصال به OpenRouter وجود نداشت. شناسه مدل را برای افزودن تایپ کنید.
   system-folder:
     folder: پوشه اصلی
     description: یک پوشه انتخاب کنید
@@ -2329,9 +2630,23 @@ interfaces:
   select-radio:
     radio-buttons: دکمه رادیویی
     description: یکی از چندین گزینه را انتخاب کنید
+  select-card-radio:
+    card-select: انتخاب کارتی
+    description: انتخاب یک مورد با استفاده از کارت‌های بصری
+    icon_type: نوع آیکون
+    description_note: متن کوتاهی که زیر برچسب کارت نمایش داده می‌شود
+  select-card-checkbox:
+    card-select-multiple: انتخاب کارتی (چندتایی)
+    description: انتخاب چند مورد با استفاده از کارت‌های بصری
+    icon_type: نوع آیکون
+    description_note: متن کوتاهی که زیر برچسب کارت نمایش داده می‌شود
+  system-file-image:
+    image_unavailable: تصویر در دسترس نیست
+    image: تصویر
+    description: انتخاب یک فایل تصویر
   list:
     repeater: تکرار شونده
-    description: Create multiple entries of the same structure
+    description: ایجاد چندین ورودی با ساختار یکسان
     edit_fields: ویرایش فیلدها
     add_label: 'برچسب "ساخت مورد جدید"'
     sort: مرتب سازی
@@ -2340,7 +2655,10 @@ interfaces:
     incompatible_data: داده فعلی با رابط کاربری تکرارشونده سازگار نیست و هنگام افزودن موارد به تکرارشونده، نادیده گرفته خواهد شد
     interface_group: تنظیمات رابط
     display_group: تنظیمات نحوه نمایش
+    edit_mode: حالت ویرایش
+    edit_mode_drawer: کشویی
     edit_mode_inline: درون خطی
+    confirm_remove: تأیید حذف آیتم
   slider:
     slider: اسلایدر
     description: یک عدد را با استفاده از نوار متحرک انتخاب کنید
@@ -2355,70 +2673,109 @@ interfaces:
     capitalization: حروف بزرگ
     uppercase: تبدیل به حروف بزرگ
     lowercase: تبدیل به حروف کوچک
-    auto_formatter: Use Title Auto-Formatter
+    auto_formatter: استفاده از قالب‌بندی خودکار عنوان
     alphabetize: الفبایی
-    alphabetize_label: Force Alphabetical Order
-    add_tags: Add a tag and press Enter...
+    alphabetize_label: اعمال ترتیب الفبایی
+    add_tags: یک برچسب اضافه کنید و Enter را بزنید...
   input:
     input: ورودی
-    description: Manually enter a value
-    trim: Trim
-    trim_label: Trim the start and end
-    mask: Masked
-    mask_label: Hide the real value
-    clear: Cleared Value
-    clear_label: Save as empty string
-    minimum_value: Minimum Value
+    description: وارد کردن دستی یک مقدار
+    trim: حذف فاصله‌های اضافی
+    trim_label: حذف فاصله‌های ابتدا و انتها
+    mask: پوشیده (ماسک‌شده)
+    mask_label: مخفی کردن مقدار واقعی
+    clear: مقدار پس از پاک‌سازی
+    clear_label: ذخیره به عنوان رشته خالی
+    minimum_value: حداقل مقدار
     maximum_value: حداکثر مقدار
-    step_interval: Step Interval
-    slug: Slugify
-    slug_label: Make entered value URL safe
+    step_interval: گام افزایش
+    slug: نامک‌سازی (Slugify)
+    slug_label: سازگار کردن مقدار ورودی با نشانی URL
   input-multiline:
     textarea: کادر متنی
-    description: Enter multiline plain-text
+    description: وارد کردن متن ساده چندخطی
   input-translated-string:
     input-translated-string: رشته‌های ترجمه شده
-    description: Select or add translation string
+    description: انتخاب یا افزودن ترجمه سفارشی
     search_placeholder: جست‌وجو...
     new_custom_translation: ترجمه سفارشی تازه
   boolean:
     toggle: تغییر وضعیت
-    description: Switch between on and off
-    color_on: Color On
-    color_off: Color Off
-    label_placeholder: Enter a label...
+    description: جابه‌جایی بین روشن و خاموش
+    color_on: رنگ حالت روشن
+    color_off: رنگ حالت خاموش
+    label_placeholder: یک برچسب وارد کنید...
     label_default: فعال شده
   translations:
     display_template: نمایش الگو
     no_collection: بدون مجموعه
-    toggle_split_view: Toggle Split View
+    toggle_split_view: تغییر وضعیت نمای دوگانه
     enable: فعال سازی
     default_split_view_state: حالت پیش‌فرض نمای تقسیم‌شده
-    user_language: Use Current User Language
+    user_language: استفاده از زبان فعلی کاربر
     default_language: زبان پیش‎فرض
-    language_field: Language Indicator Field
-    language_direction_field: Language Direction Field
+    language_field: فیلد نشانگر زبان
+    language_direction_field: فیلد جهت زبان
+    ai_translate: ترجمه با هوش مصنوعی
+    ai_translate_short: ترجمه
+    ai_translate_tooltip: محتوای خود را به صورت خودکار با هوش مصنوعی ترجمه کنید
+    model: مدل
+    source_language: زبان مبدأ
+    target_languages: زبان‌های مقصد
+    translate_n_languages: ترجمه {count} زبان | ترجمه {count} زبان
+    no_source_content: فیلدهای مبدأ انتخاب‌شده محتوایی برای ترجمه ندارند.
+    no_additional_languages: هیچ زبان اضافی پیکربندی نشده است.
+    no_translation_models: در حال حاضر هیچ مدل ترجمه‌ای در دسترس نیست.
+    translation_error: ترجمه برای این زبان ناموفق بود.
+    translation_not_allowed: شما مجوز ترجمه این زبان را ندارید.
+    translation_pending_delete: این زبان در انتظار حذف است و قابل ترجمه نیست.
+    permission_check_failed: بررسی مجوزها برای این زبان امکان‌پذیر نبود. لطفاً دوباره تلاش کنید.
+    empty: (خالی)
+    field_empty_tooltip: این فیلد محتوای مبدأ برای ترجمه ندارد
+    ai_translating: در حال ترجمه...
+    ai_translating_progress: در حال ترجمه {done} از {total} زبان...
+    translation_has_errors: برخی ترجمه‌ها ناموفق بودند.
+    translation_complete: ترجمه‌ها با موفقیت انجام شدند.
+    translation_complete_with_warnings: ترجمه‌ها انجام شدند، اما ممکن است برخی فیلدها ناقص باشند.
+    partial_translation: فقط {count} از {total} فیلد ترجمه شدند.
+    rate_limited: ارائه‌دهنده هوش مصنوعی درخواست‌ها را محدود کرده است. لطفاً لحظه‌ای صبر کنید و دوباره تلاش کنید.
   list-o2m-tree-view:
     description: نمایش درختی برای موارد یک به چند بازگشتی تو در تو
-    recursive_only: The tree view interface only works for recursive relationships.
+    recursive_only: رابط کاربری نمای درختی فقط برای روابط بازگشتی کار می‌کند.
   user:
     user: کاربر
-    description: Select an existing directus user
-    select_mode: Select Mode
+    description: انتخاب یک کاربر موجود دایرکتوس
+    select_mode: حالت انتخاب
     modes:
-      auto: Auto
+      auto: خودکار
       dropdown: لیست کشویی
       modal: مودال
   input-rich-text-html:
     wysiwyg: WYSIWYG
-    description: A rich-text editor writing HTML content
+    description: یک ویرایشگر متن غنی با خروجی HTML
     toolbar: نوار ابزار
     extensions: افزونه‌ها
+    extensions_placeholder: انتخاب افزونه‌ها...
+    extensions_note: افزونه‌هایی که این فیلد می‌تواند از آن‌ها استفاده کند. نشانه‌گذاری‌های مربوط به افزونه‌های انتخاب‌نشده هنگام ذخیره حذف می‌شوند.
+    extension_options: گزینه‌های افزونه
+    extension_options_for: گزینه‌های {extension}
     custom_formats: نوع سفارشی
-    folder_note: Folder for uploaded files. Does not affect existing files.
-    imageToken: Static Access Token
-    imageToken_label: Static access token is appended to the assets' URL
+    custom_formats_note: فهرستی از قالب‌های سفارشی. هر مورد به یک `title` و همچنین یک تگ `inline`، یک تگ `block`، یک `selector` از تگ‌های بلوکی یا `items` برای گروه‌بندی موارد در یک زیرمنو نیاز دارد. مقادیر اختیاری `classes`، `styles` و `attributes` نیز می‌توانند اضافه شوند. هنگام تنظیم، یک منوی کشویی «قالب‌ها» به نوار ابزار اضافه می‌شود. قالب‌بندی با `block` فقط بین پاراگراف‌ها و سرتیترها تبدیل انجام می‌دهد و موارد `wrapper` پشتیبانی نمی‌شوند.
+    options_override: بازنویسی گزینه‌ها (منسوخ‌شده)
+    options_override_note: بازنویسی‌های قدیمی و منسوخ‌شده TinyMCE. این مقدار دیگر توسط ویرایشگر اعمال نمی‌شود و صرفاً جهت ارجاع نگهداری می‌شود. به جای آن از سایر گزینه‌های رابط کاربری مانند گزینه «قالب‌های سفارشی» استفاده کنید.
+    folder_note: پوشه برای فایل‌های بارگذاری‌شده. بر فایل‌های موجود تأثیری ندارد.
+    imageToken: توکن دسترسی ایستا
+    imageToken_label: توکن دسترسی ایستا به نشانی فایل‌ها اضافه می‌شود
     media_preview_iframe_title: پیش‌نمایش رسانه
+    embed_invalid: کد جاسازی‌شده به عنوان رسانه (ویدیو، صدا یا iframe) قابل تجزیه نبود
+    link_protocols: پروتکل‌های مجاز پیوند
+    link_protocols_note: طرحواره‌های URL اضافی که پیوندها می‌توانند از آن‌ها استفاده کنند، مانند `myapp` برای پیوندهای عمیق `myapp://`. طرحواره‌های استاندارد مانند `http`، `https`، `mailto` و `tel` همیشه مجاز هستند. طرحواره‌های اسکریپتی مانند `javascript` هرگز مجاز نیستند. فقط طرحواره‌هایی را اضافه کنید که به آن‌ها اعتماد دارید.
+    link_protocols_placeholder: یک طرحواره اضافه کرده و Enter را بزنید...
+    link_protocols_blocked: «{scheme}» اضافه نشد. پیوندهای دارای این طرحواره می‌توانند کدهای مخرب بالقوه اجرا کنند و هرگز مجاز نیستند.
+    link_protocols_invalid: «{scheme}» اضافه نشد. یک طرحواره باید با یک حرف شروع شود و فقط شامل حروف، ارقام، `+`، `-` و `.` باشد.
+    link_protocol_not_allowed: این نوع پیوند مجاز نیست. طرحواره آن را به گزینه «پروتکل‌های مجاز پیوند» این فیلد اضافه کنید.
+    link_protocol_blocked: پیوندهای اسکریپتی مانند `javascript:` هرگز مجاز نیستند.
+    auto_height: ارتفاع خودکار
   input-block-editor:
     input-block-editor: ویرایشگر بلوک
     description: ویرایشگر قطعه‌ای برای محتوای غنی، داده‌های تمیز را توسط Editor.js در قالب JSON خروجی می‌دهد
@@ -2441,37 +2798,42 @@ interfaces:
       alignment: ترازبندی
       raw: HTML خام
   input-autocomplete-api:
-    input-autocomplete-api: Autocomplete Input (API)
-    description: A search typeahead for external API values.
-    results_path: Results Path
-    value_path: Value Path
-    text_path: Text Path
-    trigger: Trigger
+    input-autocomplete-api: ورودی تکمیل خودکار (API)
+    description: جستجوی پیشنهادی برای مقادیر API خارجی.
+    results_path: مسیر نتایج
+    value_path: مسیر مقدار
+    text_path: مسیر متن
+    trigger: راه‌انداز
     rate: امتیاز
   group-raw:
-    name: Raw Group
-    description: Render the fields as-is
+    name: گروه خام
+    description: نمایش فیلدها بدون تغییر
   group-detail:
-    name: Detail Group
-    description: Render the fields as a collapsable section
-    show_header: Show Group Header
+    name: گروه جزئیات
+    description: نمایش فیلدها به صورت یک بخش جمع‌شونده
+    show_header: نمایش سرصفحه گروه
     header_icon: آیکن سربرگ
     header_color: رنگ هدر
-    start_open: Start Open
-    start_closed: Start Closed
+    start_open: شروع در حالت باز
+    start_closed: شروع در حالت بسته
   system-token:
     system-token: توکن
-    description: Manage static access token
-    placeholder: Click "Generate Token" to create a new static access token
-    value_securely_saved: Value Securely Saved
-    generate: Generate Token
+    description: مدیریت توکن دسترسی ایستا
+    placeholder: برای ایجاد یک توکن دسترسی ایستای جدید روی «تولید توکن» کلیک کنید
+    value_securely_saved: مقدار با امنیت ذخیره شد
+    generate: تولید توکن
     regenerate: بازسازی توکن
     regenerate_confirm_title: بازسازی توکن
+    regenerate_confirm_body: توکن فعلی بلافاصله نامعتبر خواهد شد. این عمل قابل بازگشت نیست.
     remove_token: حذف توکن
     remove_confirm_title: حذف توکن
+    remove_confirm_body: هرگونه دسترسی API که از این توکن استفاده می‌کند بلافاصله متوقف خواهد شد.
+    new_user_disabled_notice: پیش از تولید توکن، این کاربر را ذخیره کنید.
+    token_saved_notice: توکن با موفقیت ذخیره شد.
+    token_saved_copy: حتماً همین الان این توکن را کپی کنید. به دلایل امنیتی، دیگر نمایش داده نخواهد شد.
   system-raw-editor:
     system-raw-editor: ویرایشگر خام
-    description: Allow entering of raw or mustache templating values
+    description: امکان وارد کردن مقادیر خام یا قالب‌های Mustache
   input-password:
     input-password: ورود رمز عبور
     description: ورودی پسورد با دکمه‌ای برای مخفی کردن مقدار
@@ -2498,22 +2860,22 @@ interfaces:
 displays:
   translations:
     translations: ترجمه‌ها
-    description: Preview translations
+    description: پیش‌نمایش ترجمه‌ها
     enable: فعال سازی
-    user_language: Use Current User Language
+    user_language: استفاده از زبان فعلی کاربر
     default_language: زبان پیش‎فرض
-    language_field: Language Indicator Field
+    language_field: فیلد نشانگر زبان
   boolean:
     boolean: بولین
-    description: Display on and off states
-    label_on: Label On
-    label_on_placeholder: Enter an on label...
-    label_off: Label Off
-    label_off_placeholder: Enter an off label...
+    description: نمایش وضعیت‌های روشن و خاموش
+    label_on: برچسب حالت روشن
+    label_on_placeholder: برچسب حالت روشن را وارد کنید...
+    label_off: برچسب حالت خاموش
+    label_off_placeholder: برچسب حالت خاموش را وارد کنید...
     icon_on: آیکن روشن
     icon_off: آیکن خاموش
-    color_on: Color On
-    color_off: Color Off
+    color_on: رنگ حالت روشن
+    color_off: رنگ حالت خاموش
   collection:
     collection: کالکشن یا مجموعه
     description: نمایش یک مجموعه
@@ -2526,23 +2888,24 @@ displays:
     datetime: تاریخ و زمان
     description: نمایش مقادیر مربوط به زمان
     format: فرمت
-    format_note: >-
-      فرمت سفارش پذیرنده __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__ می‌باشد
+    format_note: فرمت سفارش پذیرنده __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__ می‌باشد
     long: بلند
     short: کوتاه
     relative: پیوسته
     relative_label: 'نمایش زمان نسبی، برای نمونه: 5 دقیقه پیش'
     suffix: پسوند
     suffix_label: نمایش نشانگر نسبی
-    suffix_note: از واژه‌هایی مانند "در" و "پیش" استفاده می کند
+    suffix_note: 'از واژه‌هایی مانند "در" و "پیش" استفاده می کند'
     strict: سخت گیرانه
     strict_label: استفاده از واحدهای مطلق
-    strict_note: واژه‌هایی مانند "تقریباً"، "بیش از"، "کمتر از" را حذف می‌کند
+    strict_note: 'واژه‌هایی مانند "تقریباً"، "بیش از"، "کمتر از" را حذف می‌کند'
     round: گرد
     round_note: یک تابع گِرد را برای استفاده انتخاب کنید
     down: پایین
     nearest: نزدیکترین
     up: بالا
+    timezone: منطقه زمانی
+    timezone_note: "شناسه منطقه زمانی IANA (مثلاً 'Asia/Tehran' یا 'UTC'). برای استفاده از منطقه زمانی محلی، خالی بگذارید."
   file:
     file: فایل
     description: نمایش فایل ها
@@ -2571,13 +2934,13 @@ displays:
     icon: آیکن
     border: حاشیه
     border_label: نمایش حاشیه
-    mask: Masked
-    mask_label: Hide the real value
+    mask: پوشیده (ماسک‌شده)
+    mask_label: مخفی کردن مقدار واقعی
     text: متن
     text_placeholder: نادیده گرفتن مقدار اختیاری...
   formatted-json-value:
-    formatted-json-value: Formatted JSON value
-    description: Display a formatted version of the object
+    formatted-json-value: مقدار JSON قالب‌بندی‌شده
+    description: نمایش نسخه قالب‌بندی‌شده شیء
   hash:
     hash: هش
     description: نسخه سانسورشده از مقدار را نمایش بده
@@ -2601,24 +2964,24 @@ displays:
     choices_value_placeholder: یک مقدار را وارد کنید...
     choices_text_placeholder: ورود یک نوشته...
   mime-type:
-    mime-type: MIME Type
-    description: Show the MIME-Type of a file
-    extension_only: Extension Only
-    extension_only_label: Only show the file extension
+    mime-type: نوع MIME
+    description: نمایش نوع MIME یک فایل
+    extension_only: فقط پسوند
+    extension_only_label: فقط نمایش پسوند فایل
   rating:
     rating: رتبه بندی
-    description: Visualize a number as stars relative to the max-value
+    description: نمایش یک عدد به صورت ستاره نسبت به حداکثر مقدار
     simple: ساده
     simple_label: نمایش ستاره ها در قالبی ساده
   raw:
-    raw: Raw Value
+    raw: مقدار خام
   related-values:
     related-values: مقادیر مرتبط
     description: نمایش مقادیر مرتبط
     display_template_configure_notice: پس از ایجاد این فیلد می توانید قالب نمایش را پیکربندی کنید
   user:
     user: کاربر
-    description: Send an in-app notification to one or more users
+    description: نمایش یک کاربر دایرکتوس
     avatar: آواتار
     name: نام
     both: هردو
@@ -2642,6 +3005,7 @@ layouts:
     calendar: تقویم
     start_date_field: کادر تاریخ شروع
     end_date_field: کادر تاریخ اتمام
+    color_field: فیلد رنگ
     optional: اختیاری
     first_day: اولین روز هفته
   map:
@@ -2664,6 +3028,7 @@ layouts:
     group_field_placeholder: کادر جهت گروه‌بندی بر اساس...
     group_title: عنوان گروه
     group_title_placeholder: کادر برای عناوین گروه...
+    group_collection_inactive: مجموعه‌ای که این تخته بر اساس آن گروه‌بندی شده غیرفعال است
     title: عنوان تابلو
     title_placeholder: کادر عنوان اختیاری...
     text: متن تابلو
@@ -2776,8 +3141,8 @@ triggers:
   event:
     name: هوک رویداد
     description: در رویدادهای داده یا پلتفرم فعال می‌شود
-    action: 'اقدام (غیر مسدودکننده)'
-    filter: 'فیلتر (مسدودکننده)'
+    action: اقدام (غیر مسدودکننده)
+    filter: فیلتر (مسدودکننده)
   webhook:
     name: وب‌هوک
     error_on_reject: خطا هنگام رد درخواست
@@ -2798,13 +3163,125 @@ triggers:
     collection_and_item: صفحات مجموعه و مورد
     collection_only: فقط برگه مجموعه‌
     item_only: فقط صفحه مورد
+    hidden: هیچ‌کدام (مخفی)
     collection_page: برگه مجموعه
     require_selection: نیاز به انتخاب دارد
 a_flow_uuid: یک جریان را جهت راه‌اندازی انتخاب کنید...
 any_string_or_json: Json یا هر رشته‌ای...
 item_payload_placeholder: این JSON برای به‌روزرسانی مقادیر فیلد به‌کارگیری می‌شود...
-operation_variables_note: شما می‌توانید با متغیرهایی نظیر **{'{'}{'{'}$last{'}'}{'}'}**، **{'{'}{'{'}$trigger{'}'}{'}'}** و **{'{'}{'{'}$accountability{'}'}{'}'}** به داده‌های جریان دسترسی پیدا کنید؛ یا با **{'{'}{'{'}operation_key{'}'}{'}'}** به عملیات‌های قبلی ارجاع بدهید.
+operation_variables_note: "شما می‌توانید با متغیرهایی نظیر **{'{'}{'{'}$last{'}'}{'}'}**، **{'{'}{'{'}$trigger{'}'}{'}'}** و **{'{'}{'{'}$accountability{'}'}{'}'}** به داده‌های جریان دسترسی پیدا کنید؛ یا با **{'{'}{'{'}operation_key{'}'}{'}'}** به عملیات‌های قبلی ارجاع بدهید."
 operations:
+  ai-image:
+    name: تصویر هوش مصنوعی
+    model_note: مدل‌های تصویر از ارائه‌دهندگانی که در تنظیمات ← هوش مصنوعی پیکربندی شده‌اند. برای استفاده از مدل دیگر، provider:model-id بنویسید.
+    prompt_note: "موضوع، سبک و ترکیب‌بندی را توصیف کنید. داده جریان را با {'{'}{'{'} … {'}'}{'}'} درج کنید. برای مشاهده داده‌های هر جریان به مستندات [زنجیره داده](https://directus.com/docs/guides/flows/data-chain) و [راه‌اندازها](https://directus.com/docs/guides/flows/triggers) مراجعه کنید."
+    count_note: ۱ تا ۴. هر تصویر به عنوان یک فایل جداگانه ذخیره می‌شود.
+    quality_note: کیفیت بالاتر هزینه بیشتری دارد و زمان بیشتری می‌برد.
+    transparent_note: یک فایل PNG بدون پس‌زمینه ذخیره می‌کند. مناسب برای آیکون‌ها و لوگوها.
+    permissions_note: دسترسی چه کسی برای خواندن تصاویر مرجع و ذخیره فایل‌های جدید استفاده شود. با «دسترسی کامل»، هر شناسه تصویر در داده جریان می‌تواند به ارائه‌دهنده هوش مصنوعی ارسال شود و تصاویر در هر پوشه‌ای ذخیره شوند.
+    file_title_note: به صورت پیش‌فرض «AI image» است. تصاویر متعدد شماره‌گذاری می‌شوند.
+    aspect_ratio_reference_note: گزینه «مطابق با تصویر مرجع» از ابعاد اولین تصویر مرجع استفاده می‌کند.
+    description: تولید تصویر با مدل هوش مصنوعی و ذخیره آن در فایل‌ها
+    no_providers: هیچ ارائه‌دهنده تصویری پیکربندی نشده است. یک کلید API برای OpenAI، Google یا OpenRouter در تنظیمات ← هوش مصنوعی اضافه کنید.
+    prompt_placeholder: تصویری را که می‌خواهید توصیف کنید
+    reference_images: تصاویر مرجع
+    reference_images_note: اختیاری. مدل به جای شروع از صفر، این تصاویر را ویرایش یا ترکیب می‌کند. برخی مدل‌های OpenRouter آن‌ها را نادیده می‌گیرند.
+    reference_images_placeholder: "شناسه‌های فایل یا {'{'}{'{'}$trigger.key{'}'}{'}'}"
+    choose_files_disabled: تصاویر از داده جریان می‌آیند. برای انتخاب تصویر از کتابخانه، مقدار را پاک کنید.
+    aspect_ratio_note: فقط نسبت‌های تصویری که این مدل پشتیبانی می‌کند فهرست شده‌اند.
+    match_reference: مطابق با تصویر مرجع
+    count: تعداد تصاویر
+    quality_placeholder: پیش‌فرض مدل
+    low: کم
+    high: زیاد
+    background: پس‌زمینه
+    transparent: پس‌زمینه شفاف
+    folder_note: محل ذخیره فایل‌های جدید.
+    file_title: عنوان فایل
+    emit_events: انتشار رویدادها
+    emit_events_note: جریان‌های دیگری را که با بارگذاری فایل آغاز می‌شوند برای فایل‌های جدید اجرا می‌کند. اگر همین جریان با بارگذاری فایل شروع شود، فعال کردن این گزینه باعث می‌شود برای هر تصویر تولیدشده در یک حلقه بی‌پایان دوباره اجرا شود و هزینه هر اجرا محاسبه گردد.
+    starting_points:
+      hero: تصویر شاخص مقاله
+      product: عکس محصول
+      social: کارت شبکه اجتماعی
+      restyle: تغییر سبک تصویر مرجع
+      icon: آیکون
+  ai-text:
+    name: متن هوش مصنوعی
+    model_note: مدل‌ها از ارائه‌دهندگانی که در تنظیمات ← هوش مصنوعی پیکربندی شده‌اند. برای استفاده از مدل دیگر، provider:model-id بنویسید.
+    prompt_note: "آنچه می‌خواهید مدل انجام دهد. داده جریان را با {'{'}{'{'} … {'}'}{'}'} از راه‌انداز یا مرحله قبلی درج کنید. برای مشاهده داده‌های هر جریان به مستندات [زنجیره داده](https://directus.com/docs/guides/flows/data-chain) و [راه‌اندازها](https://directus.com/docs/guides/flows/triggers) مراجعه کنید."
+    system_note: اختیاری. قوانین ثابت برای هر اجرا، مانند لحن، مخاطب یا زبان.
+    files_note: "تصاویر، فایل‌های PDF و فایل‌های متنی که مدل می‌تواند بخواند. در راه‌انداز بارگذاری فایل، {'{'}{'{'}$trigger.key{'}'}{'}'} فایل بارگذاری‌شده است."
+    permissions_note: دسترسی چه کسی برای خواندن فایل‌ها استفاده شود. با «دسترسی کامل»، هر شناسه فایل در داده جریان می‌تواند به ارائه‌دهنده هوش مصنوعی ارسال شود.
+    output_note: "حالت متن یک رشته برمی‌گرداند. حالت شیء مقادیر نام‌گذاری‌شده‌ای برمی‌گرداند که مراحل بعدی می‌توانند از آن‌ها استفاده کنند، مانند {'{'}{'{'}step_key.output.alt{'}'}{'}'}."
+    max_output_tokens_note: طول و هزینه هر اجرا را محدود می‌کند. مدل‌های استدلالی، استدلال خود را نیز در این سقف حساب می‌کنند؛ بنابراین سقف پایین ممکن است اجرا را پیش از پاسخ متوقف کند. برای استفاده از پیش‌فرض مدل، خالی بگذارید.
+    fields_note: هر فیلد به یک مقدار در خروجی تبدیل می‌شود. توضیحات شفاف نتایج بهتری می‌دهند.
+    description: تولید متن یا داده ساختاریافته با مدل هوش مصنوعی
+    no_providers: هیچ ارائه‌دهنده هوش مصنوعی پیکربندی نشده است. یک کلید API در تنظیمات ← هوش مصنوعی اضافه کنید.
+    prompt_placeholder: توضیح دهید مدل باید با داده جریان شما چه کاری انجام دهد
+    system: پرامپت سیستمی
+    system_placeholder: برای توسعه‌دهندگان می‌نویسی. مختصر و صمیمی باش.
+    files: فایل‌ها
+    files_placeholder: "شناسه‌های فایل یا {'{'}{'{'}$trigger.key{'}'}{'}'}"
+    output: خروجی
+    object: شیء
+    returns: خروجی برمی‌گرداند
+    max_output_tokens: حداکثر توکن‌های خروجی
+    max_output_tokens_placeholder: پیش‌فرض مدل
+    fields: فیلدهای خروجی
+    type_text: متن
+    type_number: عدد
+    type_integer: عدد صحیح
+    type_boolean: درست/نادرست
+    type_strings: فهرست متن‌ها
+    type_numbers: فهرست اعداد
+    type_object: شیء
+    type_objects: فهرست اشیاء
+    nested_fields: فیلدهای داخلی
+    choices_note: اختیاری. مدل فقط می‌تواند با یکی از این گزینه‌ها پاسخ دهد.
+    choices_placeholder: یک گزینه اضافه کنید و Enter را بزنید
+    required_label: همیشه مقداری برگردانده شود
+    required_note: هنگام خاموش بودن، مدل در صورت نبودن مقدار می‌تواند null برگرداند.
+    output_schema: اسکیمای خروجی
+    view_fields: فیلدها
+    view_json: JSON
+    schema_unsupported: این اسکیما از ویژگی‌هایی استفاده می‌کند که ویرایشگر فیلد قادر به نمایش آن‌ها نیست، مانند $ref، فیلدی با بیش از یک نوع یا فهرستی از فهرست‌ها. آن را به صورت JSON ویرایش کنید.
+    schema_note: بخش‌های «فیلدها» و «JSON» یک اسکیمای واحد را ویرایش می‌کنند. تغییرات در یکی، در دیگری نیز ظاهر می‌شود.
+    paste_example: چسباندن یک نمونه
+    generate_schema: تولید با هوش مصنوعی
+    generate_disabled: نیازمند یک مدل مجاز در تنظیمات ← هوش مصنوعی است
+    generate_placeholder: متن جایگزین (Alt)، حال‌وهوا (آرام، شلوغ یا تاریک) و نقطه کانونی به صورت x و y
+    generate_note: مقادیری را که می‌خواهید دریافت کنید توصیف کنید. هوش مصنوعی این را به فیلدها تبدیل می‌کند. از {model} استفاده می‌کند.
+    regenerate: تلاش مجدد
+    generate_incomplete: پاسخ هوش مصنوعی ناتمام ماند. دوباره تلاش کنید.
+    row_error: '{error} این تغییر تا زمان رفع خطا ذخیره نمی‌شود.'
+    schema_errors:
+      unknown_type: فیلد خروجی «{name}» دارای نوع ناشناخته «{type}» است.
+      empty_fields: فیلد خروجی «{name}» حداقل به یک فیلد در داخل خود نیاز دارد.
+      duplicate_name: دو فیلد خروجی با نام «{name}» وجود دارد. نام‌ها باید متفاوت باشند.
+      reserved_name: «{name}» نمی‌تواند نام یک فیلد خروجی باشد.
+      example_null: «{path}» مقدار null دارد. از یک مقدار نمونه استفاده کنید تا نوع آن مشخص باشد.
+    generate_failed: تولید فیلدها ناموفق بود ({status}). دوباره تلاش کنید.
+    generate_empty: هوش مصنوعی هیچ فیلدی پیشنهاد نداد. سعی کنید مقادیر را با جزئیات بیشتری توصیف کنید.
+    suggested_fields: فیلدهای پیشنهادی
+    generate_replaces: استفاده از این موارد جایگزین اسکیمای فعلی می‌شود.
+    use_fields: استفاده از این فیلدها
+    optional: اختیاری
+    example: نتیجه نمونه
+    example_note: نمونه‌ای از آنچه می‌خواهید دریافت کنید. مقادیر متنی به دستورالعمل برای مدل تبدیل می‌شوند، اعداد و درست/نادرست نوع داده را مشخص می‌کنند و اولین مورد یک فهرست، نوع همه موارد را تعیین می‌کند. این کار جایگزین اسکیمای فعلی می‌شود.
+    example_invalid: یک شیء JSON با حداقل یک کلید بچسبانید.
+    use_example: استفاده از نمونه
+    field_description_note: چه چیزی باید اینجا قرار گیرد؟ مدل این توضیح را می‌خواند.
+    schema: اسکیمای JSON
+    choose_files_disabled: فایل‌ها از داده جریان می‌آیند. برای انتخاب فایل از کتابخانه، مقدار را پاک کنید.
+    starting_points:
+      describe_image: متن جایگزین و نقطه کانونی
+      summarize: خلاصه‌سازی
+      translate: ترجمه
+      improve: بهبود نگارش
+      seo_description: توضیحات سئو (SEO)
+      categorize: دسته‌بندی
+      moderate: بررسی و نظارت محتوا
   condition:
     name: شرط
     description: مسیردهی به یک جریان بر اساس منطق اگر / آنگاه
@@ -2846,7 +3323,7 @@ operations:
     token: توکن
     token_placeholder: eyJhbGciOi......
     options: گزینه‌ها
-    options_placeholder: 'برای مشاهده گزینه‌های موجود به https://www.npmjs.com/package/jsonwebtoken#usage مراجعه کنید'
+    options_placeholder: برای مشاهده گزینه‌های موجود به https://www.npmjs.com/package/jsonwebtoken#usage مراجعه کنید
     sign: امضای توکن
     verify: تایید توکن
     decode: رمزگشایی توکن
@@ -2858,6 +3335,8 @@ operations:
   mail:
     name: فرستادن رایانامه
     description: فرستادن رایانامه به یک یا چند نفر
+    from_name: نام فرستنده
+    from_name_placeholder: به صورت پیش‌فرض نام پروژه است
     to: به
     to_placeholder: نشانی‌های ایمیل را اضافه کنید و اینتر بزنید...
     body: متن
@@ -2880,7 +3359,7 @@ operations:
     subject: موضوع
   request:
     name: وب‌هوک / درخواست URL
-    description: 'ساخت یک درخواست به URL'
+    description: ساخت یک درخواست به URL
     url: URL
     url_placeholder: https://example.com/example
     method: شیوه یا متود
@@ -2914,13 +3393,17 @@ operations:
     parallel: موازی
     batch: دسته
     batch_size: اندازه دسته
-    cache: Cache
+    cache: کش (Cache)
+    cache_query: پارامترهای کوئری کش
+    cache_query_placeholder: پارامترهای کوئری مجاز...
+    cache_query_description: این پارامترهای کوئری نیز برای کلید کش استفاده خواهند شد.
 unit: واحد
 standard: استاندارد
 scientific: علمی
 engineering: مهندسی
 compact: جمع و جور
 currency: واحد پول
+notation: نمادگذاری
 style: استایل
 fonts:
   thin: نازک
@@ -2936,7 +3419,8 @@ fonts:
   oblique: کج
   small: کوچک
   large: بزرگ
-  auto: Auto
+  auto: خودکار
+text_wrap: شکستن خطوط متن
 center: وسط
 justify: هم‌تراز کردن
 text_align: چیدمان متن
@@ -2951,6 +3435,8 @@ series_grouping: گروه‌بندی دنباله‌ها
 date_precision: دقت داده
 export_dashboard: صدور داشبورد
 duplicate_dashboard: رونوشت از پیشخوان
+duplicate_policy: رونوشت از سیاست
+duplicate_flow: رونوشت از جریان
 search_dashboard: جستجوی داشبورد...
 search_flow: جستجوی جریان...
 percent: درصد
@@ -2958,10 +3444,21 @@ show_password: نمایش رمز عبور
 hide_password: مخفی کردن رمز عبور
 license_grace_key_modal:
   optional: اختیاری
+  get_license_key: دریافت کلید لایسنس
+  over_limit_warning_lead: شما از میزان مصرف مجاز پلن Core فراتر رفته‌اید.
+  over_limit_warning_tail: '{lead} برای حفظ دسترسی فعلی خود، پیش از تاریخ {date} ({days} روز دیگر) یک {licenseKey} اضافه کنید.'
+  over_limit_customer_help: قبلاً مشتری بوده‌اید؟ برای بازیابی کلید خود به {email} ایمیل بزنید.
+  license_key_link_label: کلید لایسنس
 license_banner:
+  title: شما مالک پروژه را تعیین نکرده‌اید.
+  license: برای اطمینان از انطباق با لایسنس MSCL-1.0-GPL به این اطلاعات نیاز داریم. این شخص باید مخاطب اصلی و مسئول پروژه شما باشد.
+  set_owner: تنظیم مالک
   remind_later: بعدا یادآوری کن
+  remind_next_login: در ورود بعدی دوباره به شما یادآوری خواهیم کرد.
 accepted: پذیرفته شده
 text_direction_auto: خودکار (مطابق زبان)
 text_direction_ltr: چپ به راست (LTR)
 text_direction_rtl: راست به چپ (RTL)
 set_to_now: تنظیم به اکنون
+aria:
+  more_options: گزینه‌های بیشتر
