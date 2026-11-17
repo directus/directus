@@ -711,6 +711,10 @@ crop_tool: Crop Tool
 focal_point_tool: Focal Point Tool
 cancel_crop: Cancel Crop
 cancel_selection: Cancel Selection
+preset_previews: Preset Previews
+preset_previews_empty: No presets crop this image, so the focal point doesn't change them.
+preset_count: 'No Presets | 1 Preset | {count} Presets'
+preset_previews_image_edits: Save or reset your rotate and flip changes to preview how presets crop this image.
 original: Original
 url: URL
 import_label: Import
