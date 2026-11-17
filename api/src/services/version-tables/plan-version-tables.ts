@@ -9,11 +9,11 @@ import {
 	VERSION_META_FIELDS,
 } from './constants.js';
 
-export type OnDelete = ForeignKey['on_delete'];
+export type ReferentialAction = ForeignKey['on_delete'];
 
 /** Vendors report the default action differently, but they all behave the same */
-export function normalizeOnDelete(onDelete: OnDelete) {
-	return onDelete === null || onDelete === 'RESTRICT' ? 'NO ACTION' : onDelete;
+export function normalizeAction(action: ReferentialAction) {
+	return action === null || action === 'RESTRICT' ? 'NO ACTION' : action;
 }
 
 export type VersionTableColumn =
@@ -28,7 +28,8 @@ export type VersionTableForeignKey = {
 	column: string;
 	foreign_key_table: string;
 	foreign_key_column: string;
-	on_delete: OnDelete;
+	on_delete: ReferentialAction;
+	on_update: ReferentialAction;
 };
 
 export type VersionTable = {
@@ -61,9 +62,8 @@ export type LiveCollections = Record<string, LiveCollection>;
  *
  * @param collections - Live collections to plan the version tables for, keyed by collection name
  * @param versioned - All collections that have versioning enabled, including ones not being planned
- * @param schemaHelper - Adjusts the foreign keys to what the vendor supports
  */
-export function planShadowTables(collections: LiveCollections, versioned: Set<string>): VersionTables {
+export function planVersionTables(collections: LiveCollections, versioned: Set<string>): VersionTables {
 	const tables: VersionTables = {};
 
 	for (const collection of Object.values(collections)) {
@@ -104,12 +104,14 @@ function planShadowTable(liveCollection: LiveCollection, versioned: Set<string>)
 				foreign_key_table: 'directus_users',
 				foreign_key_column: 'id',
 				on_delete: 'SET NULL',
+				on_update: null,
 			},
 			{
 				column: VERSION_META_FIELDS.userUpdated,
 				foreign_key_table: 'directus_users',
 				foreign_key_column: 'id',
 				on_delete: 'SET NULL',
+				on_update: null,
 			},
 		],
 	};
@@ -149,6 +151,7 @@ function planShadowTable(liveCollection: LiveCollection, versioned: Set<string>)
 				foreign_key_table: reference.relatedCollection,
 				foreign_key_column: relation.schema.foreign_key_column,
 				on_delete: relation.schema.on_delete,
+				on_update: relation.schema.on_update ?? null,
 			});
 		}
 
@@ -199,6 +202,7 @@ function planLinkTable(liveCollection: LiveCollection, versioned: Set<string>): 
 				foreign_key_table: collection,
 				foreign_key_column: primary,
 				on_delete: 'CASCADE',
+				on_update: null,
 			},
 		],
 	};
@@ -237,6 +241,7 @@ function getVersionReference(relation: Relation, versioned: Set<string>) {
 				foreign_key_table: getShadowTableName(relatedCollection),
 				foreign_key_column: VERSION_META_FIELDS.id,
 				on_delete: relation.schema?.on_delete ?? 'SET NULL',
+				on_update: null,
 			},
 		} as const;
 	}

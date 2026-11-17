@@ -1,5 +1,5 @@
 import { createKnex } from '@directus/sandbox';
-import { type Column, createInspector } from '@directus/schema';
+import { type Column, createInspector, type ForeignKey } from '@directus/schema';
 import { customEndpoint, type DirectusClient, queryToParams, readItems, type RestClient } from '@directus/sdk';
 import { env, options, port } from '@utils/constants.js';
 
@@ -70,6 +70,13 @@ export async function getColumns(table: string): Promise<string[] | null> {
 
 export async function getColumn(table: string, column: string): Promise<Column> {
 	return inspector.columnInfo(table, column);
+}
+
+export async function getForeignKey(table: string, column: string): Promise<ForeignKey | undefined> {
+	// SQLite answers `pragma foreign_key_list` from the connection's cached schema, reading the table list refreshes it
+	await inspector.hasTable(table);
+
+	return (await inspector.foreignKeys(table)).find((foreignKey) => foreignKey.column === column);
 }
 
 /**

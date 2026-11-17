@@ -746,6 +746,53 @@ describe('dialects', () => {
 		`);
 	});
 
+	test('keeps the exact type of sized numbers on postgres', async () => {
+		const live = [
+			...LIVE_COLUMNS,
+			column('articles', 'rank', 'smallint', { numeric_precision: 16 }),
+			column('articles', 'ratio', 'double precision', { numeric_precision: 53 }),
+		];
+
+		const { sql } = await sync({ versioned: ['articles'], live, shadow: ARTICLES_SHADOW });
+
+		expect(sql).toMatchInlineSnapshot(`
+			"alter table "directus_shadow_articles"
+			add column "rank" smallint null,
+			add column "ratio" double precision null"
+		`);
+
+		const synced = await sync({
+			versioned: ['articles'],
+			live,
+			shadow: {
+				...ARTICLES_SHADOW,
+				columns: [
+					...ARTICLES_SHADOW.columns,
+					column('directus_shadow_articles', 'rank', 'smallint', { numeric_precision: 16 }),
+					column('directus_shadow_articles', 'ratio', 'double precision', { numeric_precision: 53 }),
+				],
+			},
+		});
+
+		expect(synced.sql).toBe('');
+	});
+
+	test('recreates foreign keys whose on update action changed', async () => {
+		const { sql } = await sync({
+			versioned: ['articles'],
+			liveForeignKeys: [{ ...foreignKey('articles', 'author', 'authors', 'SET NULL'), on_update: 'CASCADE' }],
+			shadow: ARTICLES_SHADOW,
+		});
+
+		expect(sql).toMatchInlineSnapshot(`
+			"alter table "directus_shadow_articles"
+			drop constraint "directus_shadow_articles_author_foreign";
+
+			alter table "directus_shadow_articles"
+			add constraint "directus_shadow_articles_author_foreign" foreign key ("author") references "authors" ("id") on update CASCADE on delete SET NULL"
+		`);
+	});
+
 	test('mssql', async () => {
 		const { sql } = await sync({ client: 'mssql', versioned: ['articles'] });
 

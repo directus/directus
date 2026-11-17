@@ -6,6 +6,7 @@ import type { Knex } from 'knex';
 import { groupBy, intersection, mapValues, partition, pickBy, uniq } from 'lodash-es';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
+import type { SchemaHelper } from '../database/helpers/schema/types.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import getLocalType from '../utils/get-local-type.js';
@@ -19,8 +20,8 @@ import {
 } from './version-tables/constants.js';
 import {
 	type LiveCollections,
-	normalizeOnDelete,
-	planShadowTables,
+	normalizeAction,
+	planVersionTables,
 	type VersionTableColumn,
 	type VersionTableForeignKey,
 	type VersionTables,
@@ -113,7 +114,7 @@ export class VersionTablesService {
 			}),
 		);
 
-		let plannedShadowTables = planShadowTables(liveCollections, state.versionedTables);
+		let plannedShadowTables = planVersionTables(liveCollections, state.versionedTables);
 		plannedShadowTables = this.helpers.schema.applyShadowForeignKeyRules(plannedShadowTables);
 
 		await this.applyChanges(plannedShadowTables, shadowTables);
@@ -154,20 +155,19 @@ export class VersionTablesService {
 
 		// Without versioned collections, only leftover version tables of the given collections have to be dropped.
 		// Probe for those instead of listing every table of the database on each schema change.
-		const shadowTables =
-			versionedTables.size === 0 && collections
-				? await this.filterExistingTables(getVersionTableNames(collections))
-				: (await this.schemaInspector.tables()).filter(isShadowTable);
+		let shadowTables: string[];
+
+		if (versionedTables.size === 0 && collections) {
+			const tables = getVersionTableNames(collections);
+			const exists = await Promise.all(tables.map((table) => this.schemaInspector.hasTable(table)));
+			shadowTables = tables.filter((_table, index) => exists[index]);
+		} else {
+			shadowTables = (await this.schemaInspector.tables()).filter(isShadowTable);
+		}
 
 		if (versionedTables.size === 0 && shadowTables.length === 0) return null;
 
 		return { versionedTables, shadowTables };
-	}
-
-	private async filterExistingTables(tables: string[]): Promise<string[]> {
-		const exists = await Promise.all(tables.map((table) => this.schemaInspector.hasTable(table)));
-
-		return tables.filter((_table, index) => exists[index]);
 	}
 
 	/**
@@ -246,7 +246,7 @@ export class VersionTablesService {
 	 * Diff the planned version tables against the current shadow tables and apply the difference
 	 */
 	private async applyChanges(planned: VersionTables, shadow: InspectedTables): Promise<void> {
-		const columnChanges = getColumnChanges(planned, shadow.columns);
+		const columnChanges = getColumnChanges(this.helpers.schema, planned, shadow.columns);
 
 		const tablesToDrop = Object.keys(shadow.columns).filter((table) => !planned[table]);
 		const tablesToCreate = Object.values(planned).filter((table) => !shadow.columns[table.table]);
@@ -265,7 +265,6 @@ export class VersionTablesService {
 		const foreignKeysToDrop = shadow.foreignKeys.filter(isForeignKeyOutdated);
 		const foreignKeysToKeep = shadow.foreignKeys.filter((foreignKey) => !foreignKeysToDrop.includes(foreignKey));
 
-		// Drop foreign keys first, so tables and columns can be changed in any order
 		await this.dropForeignKeys(foreignKeysToDrop);
 
 		for (const table of tablesToDrop) {
@@ -324,6 +323,7 @@ export class VersionTablesService {
 						.references(`${foreignKey.foreign_key_table}.${foreignKey.foreign_key_column}`);
 
 					if (foreignKey.on_delete) constraint.onDelete(foreignKey.on_delete);
+					if (normalizeAction(foreignKey.on_update) !== 'NO ACTION') constraint.onUpdate(foreignKey.on_update!);
 				}
 			});
 		}
@@ -352,12 +352,22 @@ export class VersionTablesService {
 
 		const { source } = column;
 		const type = getLocalType(source);
+		const exactType = getExactType(this.helpers.schema, source);
+
+		// Altering through Directus would re-add the primary key and drop its `not null`, which Postgres rejects
+		if (column.primary && existing) {
+			let fullType = exactType ?? source.data_type;
+
+			if (!exactType && type === 'decimal') fullType += `(${source.numeric_precision},${source.numeric_scale})`;
+			if (!exactType && type === 'string' && source.max_length !== null) fullType += `(${source.max_length})`;
+
+			builder.specificType(column.name, fullType).notNullable().alter({ alterNullable: false });
+			return;
+		}
 
 		// Knex would default strings without a length to 255. MSSQL's `nvarchar(max)` is handled by `addColumnToTable`.
 		const isUnboundedString =
 			type === 'string' && source.max_length === null && !this.helpers.schema.isOneOfClients(['mssql']);
-
-		const exactType = getExactType(source);
 
 		if (exactType || isUnboundedString) {
 			const columnBuilder = builder.specificType(column.name, exactType ?? source.data_type);
@@ -429,7 +439,7 @@ function keyColumns(columns: Column[]): ColumnsByTable {
 /**
  * Column changes per existing table. Tables without changes are left out.
  */
-function getColumnChanges(planned: VersionTables, existingColumns: ColumnsByTable) {
+function getColumnChanges(schemaHelper: SchemaHelper, planned: VersionTables, existingColumns: ColumnsByTable) {
 	const result = new Map<string, ColumnChanges>();
 
 	for (const table of Object.values(planned)) {
@@ -443,7 +453,7 @@ function getColumnChanges(planned: VersionTables, existingColumns: ColumnsByTabl
 			add: table.columns.filter((column) => !existing[column.name]),
 			alter: table.columns.filter((column) => {
 				const current = existing[column.name];
-				return current && column.kind === 'mirror' && !column.primary && hasTypeChanged(column.source, current);
+				return current && column.kind === 'mirror' && hasTypeChanged(schemaHelper, column.source, current);
 			}),
 			drop: Object.keys(existing).filter((name) => !plannedNames.has(name)),
 		};
@@ -459,7 +469,7 @@ function getColumnChanges(planned: VersionTables, existingColumns: ColumnsByTabl
 /**
  * Raw database type for columns that would lose information when mirrored through their Directus type, or `null`
  */
-function getExactType(column: Column): string | null {
+function getExactType(schemaHelper: SchemaHelper, column: Column): string | null {
 	const dataType = column.data_type.toLowerCase();
 
 	// Oracle reports every NUMBER(p,s) as `NUMBER`, which Directus treats as an integer regardless of its scale
@@ -482,14 +492,16 @@ function getExactType(column: Column): string | null {
 
 	if (type === 'unknown' || type === 'alias' || dataType.includes('unsigned')) return column.data_type;
 
+	if ((type === 'integer' || type === 'float') && schemaHelper.isSizedNumberType(dataType)) return column.data_type;
+
 	return null;
 }
 
-function hasTypeChanged(source: Column, existing: Column) {
+function hasTypeChanged(schemaHelper: SchemaHelper, source: Column, existing: Column) {
 	if (getLocalType(source) !== getLocalType(existing)) return true;
 
-	const sourceExactType = getExactType(source);
-	const existingExactType = getExactType(existing);
+	const sourceExactType = getExactType(schemaHelper, source);
+	const existingExactType = getExactType(schemaHelper, existing);
 
 	if (sourceExactType || existingExactType) {
 		return sourceExactType?.toLowerCase() !== existingExactType?.toLowerCase();
@@ -507,6 +519,7 @@ function isSameForeignKey(existing: ForeignKey, planned: VersionTableForeignKey)
 		existing.column === planned.column &&
 		existing.foreign_key_table === planned.foreign_key_table &&
 		existing.foreign_key_column === planned.foreign_key_column &&
-		normalizeOnDelete(existing.on_delete) === normalizeOnDelete(planned.on_delete)
+		normalizeAction(existing.on_delete) === normalizeAction(planned.on_delete) &&
+		normalizeAction(existing.on_update) === normalizeAction(planned.on_update)
 	);
 }

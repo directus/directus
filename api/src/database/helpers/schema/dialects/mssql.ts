@@ -1,7 +1,7 @@
 import type { Knex } from 'knex';
 import { countBy, mapValues } from 'lodash-es';
 import {
-	normalizeOnDelete,
+	normalizeAction,
 	type VersionTableForeignKey,
 	type VersionTables,
 } from '../../../../services/version-tables/plan-version-tables.js';
@@ -13,7 +13,13 @@ import { prepQueryParams } from '../utils/prep-query-params.js';
 // lookup to avoid an extra round-trip on every insert
 const triggerCache = new Map<string, boolean>();
 
+const SIZED_NUMBER_TYPES = new Set(['tinyint', 'smallint', 'real']);
+
 export class SchemaHelperMSSQL extends SchemaHelper {
+	override isSizedNumberType(dataType: string): boolean {
+		return SIZED_NUMBER_TYPES.has(dataType.toLowerCase());
+	}
+
 	override applyShadowForeignKeyRules(tables: VersionTables): VersionTables {
 		return mapValues(super.applyShadowForeignKeyRules(tables), (table) => ({
 			...table,
@@ -145,15 +151,17 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 
 /**
  * MSSQL rejects multiple cascade paths, i.e. more than one foreign key with a referential action to the same table.
- * All foreign keys involved in such a conflict lose their action.
+ * All foreign keys involved in such a conflict lose their actions.
  */
 function limitCascadePaths(foreignKeys: VersionTableForeignKey[]): VersionTableForeignKey[] {
-	const hasAction = (foreignKey: VersionTableForeignKey) => normalizeOnDelete(foreignKey.on_delete) !== 'NO ACTION';
+	const hasAction = (foreignKey: VersionTableForeignKey) =>
+		normalizeAction(foreignKey.on_delete) !== 'NO ACTION' || normalizeAction(foreignKey.on_update) !== 'NO ACTION';
+
 	const actionCounts = countBy(foreignKeys.filter(hasAction), 'foreign_key_table');
 
 	return foreignKeys.map((foreignKey) =>
 		hasAction(foreignKey) && actionCounts[foreignKey.foreign_key_table]! > 1
-			? { ...foreignKey, on_delete: null }
+			? { ...foreignKey, on_delete: null, on_update: null }
 			: foreignKey,
 	);
 }

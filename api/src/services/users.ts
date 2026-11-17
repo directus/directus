@@ -414,7 +414,20 @@ export class UsersService extends ItemsService {
 			.map(({ collection }) => collection);
 
 		for (const versionedCollection of versionedCollections) {
-			for (const field of [VERSION_META_FIELDS.userCreated, VERSION_META_FIELDS.userUpdated]) {
+			const userFields = [
+				VERSION_META_FIELDS.userCreated,
+				VERSION_META_FIELDS.userUpdated,
+				...this.schema.relations
+					.filter(
+						(relation) =>
+							relation.collection === versionedCollection &&
+							relation.related_collection === 'directus_users' &&
+							relation.schema?.on_delete === 'SET NULL',
+					)
+					.map((relation) => relation.field),
+			];
+
+			for (const field of userFields) {
 				await this.knex(getShadowTableName(versionedCollection))
 					.update({ [field]: null })
 					.whereIn(field, keys);

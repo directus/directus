@@ -148,6 +148,14 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return fn();
 	}
 
+	/**
+	 * Whether Directus would create a number column of this database type as a different type, like `smallint` as
+	 * `integer`, losing precision or differing from the source column on every version table sync
+	 */
+	isSizedNumberType(_dataType: string): boolean {
+		return false;
+	}
+
 	preRelationChange(_relation: Partial<Relation>): void {
 		return;
 	}
