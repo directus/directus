@@ -384,6 +384,36 @@ describe('filterReplaceM2aDeep', () => {
 		});
 	});
 
+	test('deep with aliased a2o field keeps the alias as key', () => {
+		const result = filterReplaceM2ADeep(
+			{
+				blocks: {
+					_alias: { aliased_item: 'anyitem' },
+					aliased_item__text: {
+						_alias: { aliased_blocks: 'blocks' },
+						aliased_blocks: {
+							_limit: 1,
+						},
+					},
+				},
+			},
+			'article',
+			schema,
+		);
+
+		expect(result).toEqual({
+			blocks: {
+				_alias: { aliased_item: 'anyitem' },
+				'aliased_item:text': {
+					_alias: { aliased_blocks: 'blocks' },
+					aliased_blocks: {
+						_limit: 1,
+					},
+				},
+			},
+		});
+	});
+
 	test('deep with filter having a2o on wrong deep', () => {
 		const result = filterReplaceM2ADeep(
 			{

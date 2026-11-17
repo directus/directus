@@ -244,4 +244,6 @@ fields:
     interface: input
 
   - field: auth_data
+    special:
+      - conceal
     hidden: true
