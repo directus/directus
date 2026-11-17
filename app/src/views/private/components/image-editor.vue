@@ -313,26 +313,9 @@ const localDragMode = ref<'move' | 'crop' | 'focal_point'>('move');
 
 const storageAssetPresets = settingsStore.settings?.storage_asset_presets ?? [];
 
-const presetPreviewsOpen = ref(true);
-
 const showPresetPreviews = computed(
-	() =>
-		localDragMode.value === 'focal_point' &&
-		presetPreviewsOpen.value &&
-		!!imageData.value?.width &&
-		!!imageData.value?.height,
+	() => localDragMode.value === 'focal_point' && !!imageData.value?.width && !!imageData.value?.height,
 );
-
-// Clicking the active focal point tool again shows or hides the previews and keeps the selection
-function onFocalPointToolClick() {
-	if (localDragMode.value === 'focal_point') {
-		presetPreviewsOpen.value = !presetPreviewsOpen.value;
-		return;
-	}
-
-	presetPreviewsOpen.value = true;
-	dragMode.value = 'focal_point';
-}
 
 const previewFocalPoint = computed(() => {
 	if (localDragMode.value === 'focal_point' && cropping.value && liveFocalPoint.value) return liveFocalPoint.value;
@@ -679,7 +662,7 @@ function setAspectRatio() {
 						name="location_searching"
 						:class="{ active: localDragMode === 'focal_point' }"
 						clickable
-						@click="onFocalPointToolClick"
+						@click="dragMode = 'focal_point'"
 					/>
 				</div>
 
