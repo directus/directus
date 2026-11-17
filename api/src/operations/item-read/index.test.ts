@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { ItemsService } from '../../services/index.js';
 import config from './index.js';
@@ -147,4 +148,10 @@ describe('Operations / Item Read', () => {
 
 		expect(ItemsService.prototype.readMany).toHaveBeenCalledWith(keys, {}, { emitEvents: false });
 	});
+});
+
+test('should route system collections through getService and reject unsupported ones', async () => {
+	await expect(
+		config.handler({ collection: 'directus_fields' } as any, { accountability: testAccountability, getSchema } as any),
+	).rejects.toThrowError(ForbiddenError);
 });

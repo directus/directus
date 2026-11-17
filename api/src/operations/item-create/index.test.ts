@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import { afterEach, expect, test, vi } from 'vitest';
 import { ItemsService } from '../../services/items.js';
 import config from './index.js';
@@ -72,4 +73,13 @@ test.each([undefined, false])('should not emit events when %s', async (emitEvent
 	);
 
 	expect(vi.mocked(ItemsService).prototype.createMany).toHaveBeenCalledWith([{}], { emitEvents: false });
+});
+
+test('should route system collections through getService and reject unsupported ones', async () => {
+	await expect(
+		config.handler(
+			{ collection: 'directus_fields', payload: { test: 'test' } } as any,
+			{ accountability: testAccountability, getSchema } as any,
+		),
+	).rejects.toThrowError(ForbiddenError);
 });
