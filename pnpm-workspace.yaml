@@ -377,5 +377,3 @@ catalog:
   zod-validation-error: 4.0.2
 
 catalogMode: strict
-minimumReleaseAgeExclude:
-  - '@directus/tsconfig@6.0.0'
