@@ -6,6 +6,7 @@ import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
+import ImagePresetPreviews from './image-preset-previews.vue';
 import api from '@/api';
 import VDivider from '@/components/v-divider.vue';
 import VDrawer from '@/components/v-drawer.vue';
@@ -76,6 +77,8 @@ const {
 	newDimensions,
 	dragMode,
 	cropping,
+	liveFocalPoint,
+	hasImageTransforms,
 } = useCropper();
 
 watch(internalActive, (isActive) => {
@@ -308,6 +311,32 @@ function useImage() {
 
 const localDragMode = ref<'move' | 'crop' | 'focal_point'>('move');
 
+const storageAssetPresets = settingsStore.settings?.storage_asset_presets ?? [];
+
+const showPresetPreviews = computed(
+	() => localDragMode.value === 'focal_point' && !!imageData.value?.width && !!imageData.value?.height,
+);
+
+const previewFocalPoint = computed(() => {
+	if (localDragMode.value === 'focal_point' && cropping.value && liveFocalPoint.value) return liveFocalPoint.value;
+
+	const { focal_point_x: x, focal_point_y: y } = imageData.value ?? {};
+	return x != null && y != null ? { x, y } : null;
+});
+
+watch(showPresetPreviews, async () => {
+	await nextTick();
+
+	const cropper = cropperInstance.value as (Cropper & { resize: () => void }) | null;
+	if (!cropper) return;
+
+	// Cropper only re-measures its container on window resize, so tell it the panel changed the editor's size.
+	// Its resize scales the crop box from the corner, so put the box back where it was on the image
+	const data = cropping.value ? cropper.getData() : null;
+	cropper.resize();
+	if (data) cropper.setData(data);
+});
+
 function useCropper() {
 	const cropperInstance = ref<Cropper | null>(null);
 
@@ -398,6 +427,11 @@ function useCropper() {
 
 	const localCropping = ref(false);
 
+	const liveFocalPoint = ref<{ x: number; y: number } | null>(null);
+
+	// Rotating or flipping changes the image the presets will crop, so the previews would be out of date
+	const hasImageTransforms = ref(false);
+
 	const cropping = computed({
 		get() {
 			return localCropping.value;
@@ -422,6 +456,8 @@ function useCropper() {
 		newDimensions,
 		dragMode,
 		cropping,
+		liveFocalPoint,
+		hasImageTransforms,
 	};
 
 	function initCropper() {
@@ -445,6 +481,16 @@ function useCropper() {
 
 				if (cropping.value === false && (event.detail.width || event.detail.height)) {
 					cropping.value = true;
+				}
+
+				hasImageTransforms.value =
+					event.detail.rotate % 360 !== 0 || event.detail.scaleX !== 1 || event.detail.scaleY !== 1;
+
+				if (localDragMode.value === 'focal_point' && event.detail.width) {
+					liveFocalPoint.value = {
+						x: Math.round(event.detail.x + event.detail.width / 2),
+						y: Math.round(event.detail.y + event.detail.height / 2),
+					};
 				}
 
 				const newWidth = event.detail.width || imageData.value.width;
@@ -524,8 +570,20 @@ function setAspectRatio() {
 			class="editor-container"
 			:class="{ 'focal-point': localDragMode === 'focal_point' }"
 		>
-			<div class="editor">
-				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
+			<div class="workspace">
+				<div class="editor">
+					<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
+				</div>
+
+				<ImagePresetPreviews
+					v-if="showPresetPreviews"
+					:src="imageURL"
+					:width="imageData.width!"
+					:height="imageData.height!"
+					:focal-point="previewFocalPoint"
+					:presets="storageAssetPresets"
+					:has-image-edits="hasImageTransforms"
+				/>
 			</div>
 
 			<div class="toolbar">
@@ -682,10 +740,17 @@ function setAspectRatio() {
 	overflow: hidden;
 	background-color: var(--theme--background-subdued);
 
-	.editor {
-		flex-grow: 1;
+	.workspace {
+		display: flex;
+		flex-direction: column;
 		inline-size: 100%;
 		block-size: calc(100% - 3.375rem);
+	}
+
+	.editor {
+		flex-grow: 1;
+		min-inline-size: 0;
+		min-block-size: 0;
 	}
 
 	img {
