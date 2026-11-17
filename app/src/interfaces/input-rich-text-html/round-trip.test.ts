@@ -1,5 +1,6 @@
 import { Editor } from '@tiptap/vue-3';
 import { describe, expect, test } from 'vitest';
+import { findMarkupLoss } from './composables/markup-loss';
 import { computeValueNormalizationDiff } from './composables/normalization-diff';
 import { buildFieldSchema, editorExtensions, fieldEditorExtensions } from './extensions';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
@@ -789,6 +790,126 @@ describe('html comments', () => {
 
 	test('the schema key tells the option apart', () => {
 		expect(buildFieldSchema({ keepHtmlComments: true }).key).not.toBe(buildFieldSchema({}).key);
+	});
+});
+
+describe('legacy attributes', () => {
+	function legacySchema() {
+		return buildFieldSchema({ keepLegacyAttributes: true });
+	}
+
+	function legacyRoundTrip(html: string, schema = legacySchema()): string {
+		const editor = new Editor({ extensions: fieldEditorExtensions(schema.extensions), content: html });
+		const out = editor.getHTML();
+		editor.destroy();
+		return out;
+	}
+
+	const IFRAME =
+		'<iframe frameborder="0" allow="autoplay; fullscreen" allowfullscreen="" scrolling="no" marginwidth="0" marginheight="0" src="about:blank" width="560" height="315"></iframe>';
+
+	const TABLE =
+		'<table border="1" cellpadding="4" cellspacing="0" width="100%" align="center" bgcolor="#eeeeee" summary="Prices"><tbody>' +
+		'<tr valign="top" align="left" bgcolor="#ffffff" height="20">' +
+		'<th scope="col" abbr="N" width="50%" valign="bottom" align="right" bgcolor="#dddddd" nowrap="">a</th>' +
+		'<td headers="h1" height="10" valign="middle" align="center" bgcolor="#cccccc" nowrap="">b</td>' +
+		'</tr></tbody></table>';
+
+	test('an iframe survives round-trip unchanged', () => {
+		expect(legacyRoundTrip(IFRAME)).toBe(IFRAME);
+	});
+
+	test('a legacy iframe does not trip the normalization check', () => {
+		const { extensions, key } = legacySchema();
+
+		expect(computeValueNormalizationDiff(IFRAME, extensions, key)).toBeNull();
+	});
+
+	test('a table already in editor form does not trip the normalization check', () => {
+		const { extensions, key } = legacySchema();
+
+		const html =
+			'<table border="1" cellpadding="4" style="min-width: 25px;"><colgroup><col style="min-width: 25px;"></colgroup><tbody><tr valign="top"><td align="center" bgcolor="#cccccc" colspan="1" rowspan="1"><p>a</p></td></tr></tbody></table>';
+
+		expect(computeValueNormalizationDiff(html, extensions, key)).toBeNull();
+	});
+
+	test('a legacy table loses no markup', () => {
+		const editor = new Editor({ extensions: fieldEditorExtensions(legacySchema().extensions), content: TABLE });
+
+		expect(findMarkupLoss(TABLE, editor.getHTML(), editor.schema)).toEqual([]);
+		editor.destroy();
+	});
+
+	test('table, row and cell attributes survive round-trip', () => {
+		const out = legacyRoundTrip(TABLE);
+
+		expect(out).toContain(
+			'<table border="1" cellpadding="4" cellspacing="0" width="100%" align="center" bgcolor="#eeeeee" summary="Prices"',
+		);
+
+		expect(out).toContain('<tr valign="top" align="left" bgcolor="#ffffff" height="20">');
+
+		expect(out).toContain(
+			'<th scope="col" abbr="N" width="50%" valign="bottom" align="right" bgcolor="#dddddd" nowrap=""',
+		);
+
+		expect(out).toContain('<td headers="h1" height="10" valign="middle" align="center" bgcolor="#cccccc" nowrap=""');
+	});
+
+	test('a cell align attribute is not rewritten to text-align', () => {
+		expect(legacyRoundTrip(TABLE)).not.toContain('text-align');
+	});
+
+	test('a cell text-align style still round-trips as a style', () => {
+		const out = legacyRoundTrip('<table><tbody><tr><td style="text-align: right;">a</td></tr></tbody></table>');
+
+		expect(out).toContain('style="text-align: right;"');
+		expect(out).not.toContain('align="right"');
+	});
+
+	test('event handlers stay dropped', () => {
+		const out = legacyRoundTrip('<table onclick="x()"><tbody><tr><td onmouseover="x()">a</td></tr></tbody></table>');
+
+		expect(out).not.toMatch(/\son\w+=/);
+	});
+
+	test('a video does not keep iframe attributes', () => {
+		const out = legacyRoundTrip(
+			'<video allow="camera" frameborder="0" controls src="https://example.com/a.mp4"></video>',
+		);
+
+		expect(out).toBe('<video controls=""><source src="https://example.com/a.mp4"></video>');
+	});
+
+	test('a cell width attribute does not conflict with colwidth', () => {
+		const out = legacyRoundTrip(
+			'<table><tbody><tr><td width="50%">a</td><td colwidth="120">b</td></tr></tbody></table>',
+		);
+
+		expect(out).toBe(
+			'<table style="min-width: 145px;"><colgroup><col style="min-width: 25px;"><col style="width: 120px;"></colgroup><tbody><tr><td width="50%" colspan="1" rowspan="1"><p>a</p></td><td colspan="1" rowspan="1" colwidth="120"><p>b</p></td></tr></tbody></table>',
+		);
+	});
+
+	test('without the option, legacy attributes are dropped', () => {
+		const out = legacyRoundTrip(TABLE + IFRAME, buildFieldSchema({ keepLegacyAttributes: false }));
+
+		for (const name of ['border', 'cellpadding', 'cellspacing', 'bgcolor', 'valign', 'frameborder', 'allow']) {
+			expect(out).not.toContain(`${name}=`);
+		}
+	});
+
+	test('works together with inline styles', () => {
+		const schema = buildFieldSchema({ keepLegacyAttributes: true, keepInlineStyles: true });
+		const html = '<iframe style="border: 0px;" frameborder="0" src="about:blank"></iframe>';
+
+		expect(legacyRoundTrip(html, schema)).toBe(html);
+		expect(computeValueNormalizationDiff(html, schema.extensions, schema.key)).toBeNull();
+	});
+
+	test('the schema key tells the options apart', () => {
+		expect(legacySchema().key).not.toBe(buildFieldSchema({}).key);
 	});
 });
 

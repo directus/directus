@@ -36,6 +36,7 @@ describe('options compat', () => {
 			'keepFormElements',
 			'keepHtmlComments',
 			'keepHtmlCommentsWarning',
+			'keepLegacyAttributes',
 			'customFormats',
 			'tinymceOverrides',
 		]);
@@ -63,6 +64,12 @@ describe('options compat', () => {
 		const { advanced } = resolveOptions();
 
 		expect(advanced.find((f) => f.field === 'keepHtmlComments')?.schema?.default_value).toBe(false);
+	});
+
+	test('keepLegacyAttributes is opt-in', () => {
+		const { advanced } = resolveOptions();
+
+		expect(advanced.find((f) => f.field === 'keepLegacyAttributes')?.schema?.default_value).toBe(false);
 	});
 
 	test('keeps all legacy toolbar choice values', () => {

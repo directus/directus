@@ -64,6 +64,8 @@ const props = withDefaults(
 		keepFormElements?: boolean;
 		/** Keep HTML comments from stored content as hidden atoms; see extensions/html-comments.ts. */
 		keepHtmlComments?: boolean;
+		/** Keep presentational iframe and table attributes; see extensions/legacy-attributes.ts. */
+		keepLegacyAttributes?: boolean;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -112,6 +114,7 @@ const fieldSchema = buildFieldSchema({
 	keepWrapperElements: props.keepWrapperElements,
 	keepFormElements: props.keepFormElements,
 	keepHtmlComments: props.keepHtmlComments,
+	keepLegacyAttributes: props.keepLegacyAttributes,
 	comparisonMode: props.comparisonMode,
 });
 

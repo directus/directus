@@ -9,6 +9,7 @@ import { figureExtensions } from './figure';
 import { FormLabel } from './form-label';
 import { buildHtmlCommentSchema } from './html-comments';
 import { CustomImage, IMAGE_NODE, INLINE_IMAGE_NODE, InlineImage, inlineImageOf } from './image';
+import { buildLegacyAttributeSchema } from './legacy-attributes';
 import { BaseLink, buildLinkProtocolSchema } from './link-protocols';
 import { Media } from './media';
 import { namedAnchorExtensions } from './named-anchor';
@@ -112,6 +113,8 @@ export interface FieldSchemaOptions {
 	keepFormElements?: unknown;
 	/** Field `keepHtmlComments` option: keep HTML comments from stored content. */
 	keepHtmlComments?: unknown;
+	/** Field `keepLegacyAttributes` option: keep presentational iframe and table attributes such as `frameborder` and `cellpadding`. */
+	keepLegacyAttributes?: unknown;
 	comparisonMode?: boolean;
 }
 
@@ -128,7 +131,7 @@ export interface FieldSchema {
 
 /**
  * The one place a field's schema additions are assembled: the richtext extensions the field opted
- * into, its custom formats, its link protocols, its inline styles, its legacy emphasis tags, its wrapper elements, its form elements, its HTML comments, and the comparison-diff mark in
+ * into, its custom formats, its link protocols, its inline styles, its legacy emphasis tags, its wrapper elements, its form elements, its legacy attributes, its HTML comments, and the comparison-diff mark in
  * comparison mode. The live editor, the save-time round-trip check, the source-code drawer and the
  * comparison view all build from this result. A site that composed the list by hand could miss a contribution and report its markup as
  * dropped even though the editor renders it.
@@ -139,6 +142,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 	const links = buildLinkProtocolSchema(options.linkProtocols);
 	const legacyEmphasis = buildLegacyEmphasisSchema(options.keepLegacyEmphasisTags);
 	const wrappers = buildWrapperElementSchema(options.keepWrapperElements);
+	const legacyAttributes = buildLegacyAttributeSchema(options.keepLegacyAttributes);
 	const containerParagraphs = buildContainerParagraphSchema(options.noContainerParagraphs, wrappers.tags);
 	const htmlComments = buildHtmlCommentSchema(options.keepHtmlComments);
 
@@ -167,6 +171,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 				: []),
 			...legacyEmphasis.extensions,
 			...wrappers.extensions,
+			...legacyAttributes.extensions,
 			...containerParagraphs.extensions,
 			...htmlComments.extensions,
 			...(options.comparisonMode ? [ComparisonDiff] : []),
@@ -181,6 +186,7 @@ export function buildFieldSchema(options: FieldSchemaOptions = {}): FieldSchema 
 			wrappers.key,
 			rawHtmlOptions.formElements ? 'form-elements' : '',
 			htmlComments.key,
+			legacyAttributes.key,
 			contributed.map((config) => config.key).join('\u0000'),
 		].join('\u0000'),
 		formats: customFormats.formats,

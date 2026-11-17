@@ -320,6 +320,7 @@ export function useComparison(options: UseComparisonOptions) {
 					keepWrapperElements: field.meta?.options?.['keepWrapperElements'],
 					keepFormElements: field.meta?.options?.['keepFormElements'],
 					keepHtmlComments: field.meta?.options?.['keepHtmlComments'],
+					keepLegacyAttributes: field.meta?.options?.['keepLegacyAttributes'],
 					comparisonMode: true,
 				});
 

@@ -2948,6 +2948,12 @@ interfaces:
     keep_html_comments_warning:
       If your servers or CDN process server-side include (`<!--#include … -->`) or ESI comments, keep this setting off
       unless you need it.
+    keep_legacy_attributes: Legacy Attributes
+    keep_legacy_attributes_label: Keep legacy iframe and table attributes
+    keep_legacy_attributes_note:
+      By default, the editor removes presentational attributes such as `frameborder` and `allow` on `<iframe>`, and
+      `border`, `cellpadding`, `cellspacing`, `align`, `valign` and `bgcolor` on tables, rows and cells. Enable this to
+      keep them.
     link_protocols: Allowed Link Protocols
     link_protocols_note:
       Extra URL schemes that links may use, such as `myapp` for `myapp://` deep links. Standard schemes such as `http`,
