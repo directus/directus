@@ -1,5 +1,5 @@
 import fs, { promises as fsProm } from 'node:fs';
-import { Agent as HttpAgent } from 'node:http';
+import { Agent as HttpAgent, type AgentOptions as HttpAgentOptions } from 'node:http';
 import { Agent as HttpsAgent } from 'node:https';
 import os from 'node:os';
 import { join } from 'node:path';
@@ -97,12 +97,26 @@ export class DriverS3 implements TusDriver {
 		const maxSockets = this.config.maxSockets ?? 500;
 		const keepAlive = this.config.keepAlive ?? true;
 
+		/*
+		 * Only hand the proxy variables to the agents, not the whole environment.
+		 * HTTPS requests fall back to HTTP_PROXY when HTTPS_PROXY isn't set
+		 */
+		const getEnv = (key: string) => process.env[key] || process.env[key.toLowerCase()];
+
+		const proxyEnv = {
+			HTTP_PROXY: getEnv('HTTP_PROXY'),
+			HTTPS_PROXY: getEnv('HTTPS_PROXY') || getEnv('HTTP_PROXY'),
+			NO_PROXY: getEnv('NO_PROXY'),
+		};
+
+		const agentOptions: HttpAgentOptions = { maxSockets, keepAlive, proxyEnv };
+
 		const s3ClientConfig: S3ClientConfig = {
 			requestHandler: new NodeHttpHandler({
 				connectionTimeout,
 				socketTimeout,
-				httpAgent: new HttpAgent({ maxSockets, keepAlive }),
-				httpsAgent: new HttpsAgent({ maxSockets, keepAlive }),
+				httpAgent: new HttpAgent(agentOptions),
+				httpsAgent: new HttpsAgent(agentOptions),
 			}),
 		};
 
