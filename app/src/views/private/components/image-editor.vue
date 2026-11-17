@@ -694,7 +694,7 @@ function setAspectRatio() {
 
 				<VIcon v-tooltip.top.inverted="$t('flip_vertical')" name="flip_vertical" clickable @click="flip('vertical')" />
 
-				<VMenu placement="top" show-arrow>
+				<VMenu v-if="localDragMode !== 'focal_point'" placement="top" show-arrow>
 					<template #activator="{ toggle }">
 						<VIcon v-tooltip.top.inverted="$t('aspect_ratio')" :name="aspectRatioIcon" clickable @click="toggle" />
 					</template>
