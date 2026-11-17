@@ -1,7 +1,6 @@
-import { type DirectusError, isDirectusError } from '@directus/errors';
+import { type DirectusError, formatZodError, isDirectusError } from '@directus/errors';
 import type { WebSocket } from 'ws';
 import { ZodError } from 'zod';
-import { fromZodError } from 'zod-validation-error';
 import { useLogger } from '../logger/index.js';
 import type { WebSocketResponse } from './messages.js';
 import type { WebSocketClient } from './types.js';
@@ -43,8 +42,7 @@ export class WebSocketError extends Error {
 	}
 
 	static fromZodError(error: ZodError, type = 'unknown', uid?: string | number) {
-		const zError = fromZodError(error);
-		return new WebSocketError(type, 'INVALID_PAYLOAD', zError.message, uid);
+		return new WebSocketError(type, 'INVALID_PAYLOAD', formatZodError(error), uid);
 	}
 }
 
