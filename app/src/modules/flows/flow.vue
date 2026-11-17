@@ -85,6 +85,16 @@ const flow = computed<FlowRaw | undefined>({
 
 const loading = ref(false);
 
+/**
+ * Stages a status change from the trigger panel, dropping it when it matches the saved status
+ */
+function stageStatus(status: FlowRaw['status']) {
+	const existing = flowsStore.flows.find((flow) => flow.id === props.primaryKey);
+	const rest = omit(stagedFlow.value, 'status');
+
+	stagedFlow.value = status === existing?.status ? rest : { ...rest, status };
+}
+
 const backTo = computed(() => {
 	const folder = flow.value?.folder;
 	return router.resolve(folder ? { name: 'flows-folder', params: { folder } } : { name: 'flows-collection' }).path;
@@ -117,6 +127,15 @@ async function deleteFlow() {
 const { operations } = useExtensions();
 
 const triggerDetailOpen = ref(false);
+
+/**
+ * The drawer saves the staged status along with its own changes, so it no longer needs staging
+ */
+function onFlowDrawerDone() {
+	triggerDetailOpen.value = false;
+	stagedFlow.value = omit(stagedFlow.value, 'status');
+}
+
 const stagedPanels = ref<Partial<OperationRaw & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
 const panelsToBeDeleted = ref<string[]>([]);
 const hoveredPanelID = ref<string | null>(null);
@@ -701,7 +720,7 @@ function discardAndLeave() {
 						@arrow-stop="arrowStop"
 						@show-hint="hoveredPanelID = $event"
 						@hide-hint="hoveredPanelID = null"
-						@flow-status="stagedFlow.status = $event"
+						@flow-status="stageStatus"
 					/>
 				</template>
 			</VWorkspace>
@@ -712,8 +731,9 @@ function discardAndLeave() {
 			:active="triggerDetailOpen"
 			:primary-key="flow.id"
 			:start-tab="'trigger_setup'"
+			:status="stagedFlow.status"
 			@cancel="triggerDetailOpen = false"
-			@done="triggerDetailOpen = false"
+			@done="onFlowDrawerDone"
 		/>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">

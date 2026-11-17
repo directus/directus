@@ -13,7 +13,7 @@ const RETENTION_INDEXES = [
 export async function up(knex: Knex): Promise<void> {
 	const client = getDatabaseClient(knex);
 	const helpers = getHelpers(knex);
-	const schema = await getSchema();
+	const schema = await getSchema({ database: knex });
 	const service = new FieldsService({ knex, schema });
 
 	for (const { collection, field, ignore } of RETENTION_INDEXES) {
@@ -30,7 +30,7 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
 	const client = getDatabaseClient(knex);
 	const helpers = getHelpers(knex);
-	const schema = await getSchema();
+	const schema = await getSchema({ database: knex });
 	const service = new FieldsService({ knex, schema });
 
 	for (const { collection, field, ignore } of RETENTION_INDEXES) {

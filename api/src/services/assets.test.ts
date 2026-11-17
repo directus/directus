@@ -32,9 +32,10 @@ vi.mock('@directus/storage');
 vi.mock('../permissions/modules/validate-access/lib/validate-item-access.js');
 vi.mock('archiver');
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
+});
 
 vi.mock('./items.js', async () => {
 	const { mockItemsService } = await import('../test-utils/services/items-service.js');

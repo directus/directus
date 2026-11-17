@@ -76,8 +76,8 @@ describe('getMailer', () => {
 				options: { sendmail: true, newline: 'windows', path: '/custom/sendmail' },
 			},
 			{
-				case: 'its defaults',
-				env: {},
+				case: 'the env defaults',
+				env: { EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail', EMAIL_SENDMAIL_NEW_LINE: 'unix' },
 				options: { sendmail: true, newline: 'unix', path: '/usr/sbin/sendmail' },
 			},
 		])('should be configured from $case', async ({ env, options }) => {

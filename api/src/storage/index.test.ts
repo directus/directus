@@ -1,6 +1,5 @@
 import { StorageManager } from '@directus/storage';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { validateEnv } from '../utils/validate-env.js';
 import { registerDrivers } from './register-drivers.js';
 import { registerLocations } from './register-locations.js';
 import { _cache, getStorage } from './index.js';
@@ -8,7 +7,6 @@ import { _cache, getStorage } from './index.js';
 vi.mock('@directus/storage');
 vi.mock('./register-drivers.js');
 vi.mock('./register-locations.js');
-vi.mock('../utils/validate-env.js');
 
 let mockStorage: StorageManager;
 
@@ -28,11 +26,6 @@ afterEach(() => {
 test('Returns storage from cache immediately if cache has been filled', async () => {
 	_cache.storage = mockStorage;
 	expect(await getStorage());
-});
-
-test('Validates STORAGE_LOCATIONS to exist in env', async () => {
-	await getStorage();
-	expect(validateEnv).toHaveBeenCalledWith(['STORAGE_LOCATIONS']);
 });
 
 test('Creates new StorageManager instance in cache', async () => {

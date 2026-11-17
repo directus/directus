@@ -12,7 +12,7 @@ import isUrlAllowed from '../../utils/is-url-allowed.js';
  */
 export function resolveLoginRedirect(redirect: unknown, opts: { provider?: string | undefined } = {}) {
 	const env = useEnv();
-	const publicURL = env['PUBLIC_URL'] as string;
+	const publicURL = env.PUBLIC_URL;
 
 	// Default empty redirect to root
 	if (!redirect) return '/';
@@ -31,6 +31,9 @@ export function resolveLoginRedirect(redirect: unknown, opts: { provider?: strin
 			if (dummyProtocol !== parsedRelativeURL.protocol || dummyHost !== parsedRelativeURL.host) {
 				throw new Error('Relative URL mismatch');
 			}
+
+			// Ensure the path does not start with `//`, which the browser treats as a protocol-relative URL.
+			if (parsedRelativeURL.pathname.startsWith('//')) throw new Error('Protocol-relative path');
 
 			// If the protocol & host match then it is a safe relative path
 			return parsedRelativeURL.toString().replace(dummyDomain, '');

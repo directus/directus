@@ -7,11 +7,13 @@ import { getInternalLayouts, registerLayouts } from './layouts';
 import { getInternalModules, registerModules } from './modules';
 import { getInternalOperations, registerOperations } from './operations';
 import { getInternalPanels, registerPanels } from './panels';
+import { registerRichTexts } from './rich-text/register';
 import { registerThemes } from './themes/register';
 import { getRootPath } from './utils/get-root-path';
 import { translate } from './utils/translate-object-values';
 
 let customExtensions: AppExtensionConfigs | null = null;
+let validRichTexts: AppExtensionConfigs['richtexts'] = [];
 
 const extensions: RefRecord<AppExtensionConfigs> = {
 	interfaces: shallowRef([]),
@@ -21,6 +23,7 @@ const extensions: RefRecord<AppExtensionConfigs> = {
 	panels: shallowRef([]),
 	operations: shallowRef([]),
 	themes: shallowRef([]),
+	richtexts: shallowRef([]), // populated via registerRichTexts, like themes
 };
 
 const onHydrateCallbacks: (() => Promise<void>)[] = [];
@@ -29,8 +32,10 @@ const onDehydrateCallbacks: (() => Promise<void>)[] = [];
 const allModules = shallowRef<ModuleConfig[]>([]);
 
 export async function loadExtensions(): Promise<void> {
+	let loaded: AppExtensionConfigs;
+
 	try {
-		customExtensions = import.meta.env.DEV
+		loaded = import.meta.env.DEV
 			? await import(/* @vite-ignore */ '@directus-extensions')
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/sources/index.js`);
 	} catch (err: any) {
@@ -38,6 +43,32 @@ export async function loadExtensions(): Promise<void> {
 		console.warn(`Couldn't load extensions`);
 		// eslint-disable-next-line no-console
 		console.warn(err);
+		return;
+	}
+
+	customExtensions = loaded;
+
+	// the validator pulls in the whole Tiptap editor, so only pay for it when a richtext extension is installed
+	if (loaded.richtexts.length === 0) return;
+
+	// the validator is a separate chunk, so its failure must not take the other extension types down with it
+	try {
+		const { validateRichTexts } = await import('./rich-text/validate');
+		validRichTexts = validateRichTexts(loaded.richtexts);
+	} catch (err: any) {
+		validRichTexts = [];
+		// eslint-disable-next-line no-console
+		console.warn(`Couldn't load richtext extensions`);
+		// eslint-disable-next-line no-console
+		console.warn(err);
+		return;
+	}
+
+	try {
+		const { warnAsymmetricRichTexts } = await import('./rich-text/symmetry');
+		warnAsymmetricRichTexts(validRichTexts);
+	} catch {
+		// advisory only, so a failed symmetry chunk must not disable the extensions that passed validation
 	}
 }
 
@@ -66,6 +97,8 @@ export function registerExtensions(app: App): void {
 	registerPanels(panels, app);
 	registerOperations(operations, app);
 	registerThemes(themes);
+	// richtext contributes into the WYSIWYG interface, so it has no internal registry of its own
+	registerRichTexts(validRichTexts);
 
 	watch(
 		i18n.global.locale,

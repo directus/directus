@@ -5,6 +5,7 @@ export * from './use-filter-fields.js';
 export * from './use-groupable.js';
 export * from './use-items.js';
 export * from './use-layout.js';
+export * from './use-rich-text-editable.js';
 export * from './use-size-class.js';
 export * from './use-sync.js';
 export * from './translate-shortcut.js';

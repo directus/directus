@@ -4,15 +4,15 @@ import { resetEnv, setEnv } from '../../../test-utils/env.js';
 import { assertValidStorageLocation } from './assert-valid-storage-location.js';
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../../../test-utils/env.js');
+	const { mockUseEnv } = await import('../../../test-utils/env.js');
 
-	return mockEnv();
+	return mockUseEnv();
 });
 
 describe('assertValidStorageLocation', () => {
 	beforeEach(() => {
 		resetEnv();
-		setEnv({ STORAGE_LOCATIONS: 'local, s3' });
+		setEnv({ STORAGE_LOCATIONS: ['local', 's3'] });
 	});
 
 	test('allows a configured location', () => {

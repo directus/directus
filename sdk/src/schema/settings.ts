@@ -44,6 +44,7 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 		custom_aspect_ratios: { text: string; value: number }[] | null;
 		custom_css: string | null;
 		storage_default_folder: DirectusFolder<Schema> | string | null;
+		default_exports_folder: DirectusFolder<Schema> | string | null;
 		basemaps:
 			| {
 					name: string;
@@ -64,6 +65,7 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 		ai_openai_api_key: string | null; // will be *'s
 		ai_anthropic_api_key: string | null; // will be *'s
 		ai_google_api_key: string | null; // will be *'s
+		ai_openrouter_api_key: string | null; // will be *'s
 		ai_openai_compatible_api_key: string | null; // will be *'s
 		ai_openai_compatible_base_url: string | null;
 		ai_openai_compatible_name: string | null;
@@ -72,6 +74,14 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 		ai_openai_allowed_models: string[] | null;
 		ai_anthropic_allowed_models: string[] | null;
 		ai_google_allowed_models: string[] | null;
+		ai_openrouter_models: Array<{
+			id: string;
+			name: string;
+			context?: number;
+			output?: number;
+			attachment?: boolean;
+			reasoning?: boolean;
+		}> | null;
 		ai_system_prompt: string | null;
 		ai_translation_default_model: string | null;
 		ai_translation_glossary: Array<{ term: string; translation_note?: string }> | null;

@@ -5,6 +5,7 @@ import { getSchema } from '../../utils/get-schema.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
 import type { Subscription } from '../../websocket/types.js';
 import { getPayload } from '../../websocket/utils/items.js';
+import { validateDeleteEventAccess } from '../../websocket/utils/validate-subscription-access.js';
 import { getQuery } from './schema/parse-query.js';
 import type { GraphQLService } from './index.js';
 
@@ -39,6 +40,16 @@ export function createSubscriptionGenerator(gql: GraphQLService, event: string) 
 			};
 
 			if (eventData['action'] === 'delete') {
+				try {
+					await validateDeleteEventAccess(
+						{ accountability: gql.accountability, collection: eventData['collection'], itemScoped: false },
+						{ knex: gql.knex, schema },
+					);
+				} catch {
+					// dont notify the subscription of permission errors
+					continue;
+				}
+
 				// we have no data to send besides the key
 				for (const key of eventData.keys) {
 					yield { [event]: { key, data: null, event: eventData['action'] } };

@@ -1,9 +1,5 @@
 import type { Knex } from 'knex';
 
-const DEFAULT_OPENAI_MODELS = ['gpt-5.4-nano', 'gpt-5.4-mini', 'gpt-5.4'];
-const DEFAULT_ANTHROPIC_MODELS = ['claude-haiku-4-5', 'claude-sonnet-4-6'];
-const DEFAULT_GOOGLE_MODELS = ['gemini-3-pro-preview', 'gemini-3-flash-preview', 'gemini-2.5-pro', 'gemini-2.5-flash'];
-
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_settings', (table) => {
 		table.text('ai_google_api_key');
@@ -15,13 +11,6 @@ export async function up(knex: Knex): Promise<void> {
 		table.json('ai_openai_allowed_models');
 		table.json('ai_anthropic_allowed_models');
 		table.json('ai_google_allowed_models');
-	});
-
-	// Set default allowed models for existing installations
-	await knex('directus_settings').update({
-		ai_openai_allowed_models: JSON.stringify(DEFAULT_OPENAI_MODELS),
-		ai_anthropic_allowed_models: JSON.stringify(DEFAULT_ANTHROPIC_MODELS),
-		ai_google_allowed_models: JSON.stringify(DEFAULT_GOOGLE_MODELS),
 	});
 }
 

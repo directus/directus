@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
-import { toBoolean } from '@directus/utils';
 import { Router } from 'express';
 import { DirectusMCP } from '../../ai/mcp/index.js';
 import checkIsLocked from '../../middleware/is-locked.js';
@@ -40,10 +39,7 @@ const mcpHandler = asyncHandler(async (req, res) => {
 		throw new ForbiddenError({ reason: 'MCP must be enabled' });
 	}
 
-	if (
-		req.accountability?.oauth &&
-		(toBoolean(env['MCP_OAUTH_ENABLED']) !== true || toBoolean(mcp_oauth_enabled) !== true)
-	) {
+	if (req.accountability?.oauth && (env.MCP_OAUTH_ENABLED !== true || mcp_oauth_enabled !== true)) {
 		throw new ForbiddenError({ reason: 'MCP OAuth must be enabled' });
 	}
 
