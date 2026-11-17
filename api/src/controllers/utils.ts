@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, InvalidQueryError } from '@directus/errors';
-import bytes from 'bytes';
 import { Router } from 'express';
 import { z } from 'zod';
 import { resolveLoginRedirect } from '../auth/utils/resolve-login-redirect.js';
@@ -24,8 +23,6 @@ import { sanitizeQuery } from '../utils/sanitize-query.js';
 const router = Router();
 
 const env = useEnv();
-
-const IMPORT_MAX_FILE_SIZE = bytes.parse(env['IMPORT_MAX_FILE_SIZE'] as string) ?? undefined;
 
 const randomStringSchema = z.object({
 	length: z.coerce.number().int().min(1).max(500).default(32),
@@ -97,7 +94,7 @@ router.post(
 		// The upload is read as a stream and capped by readMultipartFile (busboy fileSize limit). Background
 		// imports are made safe against responding before the body is read by the service itself, which
 		// spools the upload to a temp file before it detaches (see ImportService.import).
-		const { mimetype, stream } = await readMultipartFile(req, { maxFileSize: IMPORT_MAX_FILE_SIZE });
+		const { mimetype, stream } = await readMultipartFile(req, { maxFileSize: env.IMPORT_MAX_FILE_SIZE });
 
 		await service.import(req.params['collection']!, mimetype, stream, {
 			background: queryFlag(req.query['background']),
@@ -118,7 +115,7 @@ const ImportBatchSchema = z
 
 router.post(
 	'/import',
-	readFileUploadBody({ maxFileSize: IMPORT_MAX_FILE_SIZE }),
+	readFileUploadBody({ maxFileSize: env.IMPORT_MAX_FILE_SIZE }),
 	asyncHandler(async (req, res, next) => {
 		const { data: value, error } = ImportBatchSchema.safeParse(req.body);
 		if (error) throw new InvalidPayloadError(error);

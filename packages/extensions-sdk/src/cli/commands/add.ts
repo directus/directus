@@ -20,6 +20,7 @@ import getPackageManager from '../utils/get-package-manager.js';
 import { getLanguageFromPath, isLanguage, languageToShort } from '../utils/languages.js';
 import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
+import getBundleHost from './helpers/get-bundle-host.js';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 
 type AddOptions = { install?: boolean };
@@ -129,7 +130,14 @@ export default async function add(options: AddOptions): Promise<void> {
 					},
 		];
 
-		const newExtensionOptions: ExtensionOptions = { ...extensionOptions, entries: newEntries };
+		const newExtensionOptions: ExtensionOptions = {
+			...extensionOptions,
+			entries: newEntries,
+			host: getBundleHost(
+				extensionOptions.host,
+				newEntries.map((entry) => entry.type),
+			),
+		};
 
 		const newExtensionManifest = {
 			...extensionManifest,
@@ -275,7 +283,10 @@ export default async function add(options: AddOptions): Promise<void> {
 			type: 'bundle',
 			path: { app: 'dist/app.js', api: 'dist/api.js' },
 			entries,
-			host: extensionOptions.host,
+			host: getBundleHost(
+				extensionOptions.host,
+				entries.map((entry) => entry.type),
+			),
 			hidden: extensionOptions.hidden,
 		};
 

@@ -467,6 +467,69 @@ describe('parseFields', () => {
 		expect(query.fields).toContain('parent:child.id');
 		expect(query.fields).toContain('parentAlias:child.id');
 	});
+
+	test('should keep every alias nested under an M2A member', async () => {
+		const selections = [
+			buildField('parent', {
+				children: [
+					buildInlineFragment('child', [
+						buildField('rel', { alias: 'first', children: [buildField('id')] }),
+						buildField('rel', { alias: 'second', children: [buildField('id')] }),
+					]),
+				],
+			}),
+		];
+
+		const query = await getQuery({}, m2aSchema, selections, mockVariableValues, mockAccountability, 'test_collection');
+
+		// The deep node is keyed `parent__child`, so reading it back as `parent:child` found nothing and
+		// each alias replaced the one before it
+		expect(query.deep).toEqual({ parent__child: { _alias: { first: 'rel', second: 'rel' } } });
+	});
+
+	test('should record an alias without copying what its parent already holds', async () => {
+		// Every alias used to merge a fresh copy of everything collected under the parent, so this
+		// took ~12s. The work is linear now, so a regression fails on the test timeout rather than on
+		// a measured duration.
+		const COUNT = 4000;
+		const filter = buildFilterArgument({ status: { _eq: 'published' } });
+
+		const children = Array.from({ length: COUNT }, (_value, index) =>
+			buildField('role', { alias: `a${index}`, args: [filter], children: [buildField('id')] }),
+		);
+
+		const selections = [buildField('author', { children })];
+
+		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
+
+		// Counted rather than compared, so a regression does not diff thousands of nodes
+		expect(Object.keys((query.deep as any).author._alias)).toHaveLength(COUNT);
+	});
+
+	test('should keep what the children recorded when a field has arguments at every level', async () => {
+		const selections = [
+			buildField('a', {
+				args: [buildArgument('limit', 1)],
+				children: [
+					buildField('b', {
+						alias: 'renamed',
+						args: [buildArgument('limit', 2)],
+						children: [buildField('c', { args: [buildArgument('limit', 3)], children: [buildField('id')] })],
+					}),
+				],
+			}),
+		];
+
+		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
+
+		expect(query.deep).toEqual({
+			a: {
+				_limit: 1,
+				_alias: { renamed: 'b' },
+				renamed: { _limit: 2, c: { _limit: 3 } },
+			},
+		});
+	});
 });
 
 /**
@@ -561,6 +624,36 @@ describe('parseFields with resolved fragments', () => {
 		if (expected.fields) expect(query.fields).toEqual(expected.fields);
 		if (expected.alias) expect(query.alias).toEqual(expected.alias);
 		if (expected.deep) expect(query.deep).toEqual(expected.deep);
+	});
+});
+
+describe('query limits', () => {
+	// Each argument-bearing selection is sanitized separately, so a fresh allowance per selection
+	// would let nesting multiply the work one query can cause
+	test('should pass the same limits object to every selection', async () => {
+		const selections = [
+			buildField('relation_a', {
+				args: [buildArgument('limit', 10)],
+				children: [
+					buildField('relation_b', {
+						args: [buildArgument('limit', 10)],
+						children: [buildField('relation_c', { args: [buildArgument('limit', 10)] })],
+					}),
+				],
+			}),
+			buildField('relation_d', { args: [buildArgument('limit', 10)] }),
+		];
+
+		// The `afterEach` above is scoped to another block
+		vi.mocked(sanitizeQuery).mockClear();
+
+		await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
+
+		const limitsPerCall = vi.mocked(sanitizeQuery).mock.calls.map(([, , , limits]) => limits);
+
+		expect(limitsPerCall.length).toBeGreaterThan(1);
+		expect(limitsPerCall.every((limits) => limits !== undefined)).toBe(true);
+		expect(new Set(limitsPerCall).size).toBe(1);
 	});
 });
 

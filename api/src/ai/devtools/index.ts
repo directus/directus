@@ -9,7 +9,7 @@ let devToolsInitPromise: Promise<void> | null = null;
 async function doDevToolsInit(): Promise<void> {
 	const env = useEnv();
 
-	if (env['AI_DEVTOOLS_ENABLED'] !== true) return;
+	if (!env.AI_DEVTOOLS_ENABLED) return;
 
 	const logger = useLogger();
 

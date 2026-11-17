@@ -490,7 +490,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				const claims = verifyJWT(accessToken, getSecret()) as any;
 
 				if (claims?.enforce_tfa === true) {
-					const url = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'tfa-setup');
+					const url = new Url(env.PUBLIC_URL).addPath('admin', 'tfa-setup');
 
 					if (redirect) {
 						url.setQuery('redirect', redirect);
@@ -505,9 +505,9 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			if (redirect) {
 				if (authMode === 'session') {
-					res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+					res.cookie(env.SESSION_COOKIE_NAME, accessToken, SESSION_COOKIE_OPTIONS);
 				} else {
-					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+					res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, REFRESH_COOKIE_OPTIONS);
 				}
 
 				return res.redirect(redirect);

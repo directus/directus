@@ -5,6 +5,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, type MockInstance, 
 import { getDatabase } from '../database/index.js';
 import { getFlowManager } from '../flows.js';
 import { fetchPoliciesIpAccess } from '../permissions/modules/fetch-policies-ip-access/fetch-policies-ip-access.js';
+import { mockEnv } from '../test-utils/env.js';
 import { getCacheKey } from './get-cache-key.js';
 import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
 
@@ -20,11 +21,12 @@ vi.mock('../flows.js', () => ({
 
 vi.mock('directus/version', () => ({ version: '1.2.3' }));
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({
 		REDIS_ENABLED: false,
-	}),
-}));
+	});
+});
 
 beforeEach(() => {
 	vi.mocked(getDatabase).mockReturnValue({} as Knex);
@@ -92,7 +94,7 @@ const requests = [
 const cases = requests.map(({ name, params, key }) => [name, params, key]);
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({});
+	vi.mocked(useEnv).mockReturnValue(mockEnv({}));
 });
 
 afterEach(() => {

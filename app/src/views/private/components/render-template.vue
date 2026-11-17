@@ -46,18 +46,20 @@ const collectionName = computed(() => {
 
 const regex = /({{.*?}})/g;
 
-const getNestedValues = (data: any, path: string) => {
+// Returns null when the path targets an M2A collection other than the item's own.
+const getNestedValues = (data: any, path: string): any[] | null => {
 	const pathParts = path.split('.');
 	let currentData = data;
 
-	pathParts.filter(partWithoutDollarPrefix).forEach((part) => {
+	for (const part of pathParts.filter(partWithoutDollarPrefix)) {
 		if (props.collection && partIsM2AItem(part)) {
 			const [itemField = '', anyCollection = ''] = part.split(':');
-			if (!anyCollection || anyCollection !== getM2AJunctionCollectionField(props.collection, itemField)) return;
+			if (!anyCollection) continue;
+			if (anyCollection !== getM2AJunctionCollectionField(props.collection, itemField)) return null;
 		}
 
 		currentData = getWithArrayIndex(currentData, part) ?? null;
-	});
+	}
 
 	return Array.isArray(currentData) ? currentData : [currentData];
 
@@ -92,6 +94,8 @@ const parts = computed(() =>
 
 			// Try getting the value from the item
 			let value = getNestedValues(props.item, fieldKey);
+
+			if (value === null) return [];
 
 			let field: DeepPartial<Field> | null = props.fields?.find((field) => field.field === fieldKey) ?? null;
 

@@ -100,6 +100,7 @@
     - ai_openai_allowed_models
     - ai_anthropic_allowed_models
     - ai_google_allowed_models
+    - ai_openrouter_models
     - mcp_prompts_collection
     - default_save_action
     - ai_translation_default_model

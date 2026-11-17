@@ -2,7 +2,6 @@ import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Snapshot, SnapshotDiffWithHash } from '@directus/types';
 import { toArray } from '@directus/utils';
-import bytes from 'bytes';
 import express from 'express';
 import { z } from 'zod';
 import checkIsAdmin from '../middleware/is-admin.js';
@@ -15,8 +14,6 @@ import { queryFlag } from '../utils/query-flag.js';
 
 const env = useEnv();
 const router = express.Router();
-
-const IMPORT_MAX_FILE_SIZE = bytes.parse(env['IMPORT_MAX_FILE_SIZE'] as string) ?? undefined;
 
 /** Accepts a single collection name or a list, always normalizing to a string array. */
 const collectionList = z.union([z.string(), z.array(z.string())]).transform((value) => toArray(value));
@@ -53,7 +50,7 @@ const diffQuerySchema = z.object({
 router.post(
 	'/diff',
 	checkIsAdmin,
-	readFileUploadBody({ allowYaml: true, maxFileSize: IMPORT_MAX_FILE_SIZE }),
+	readFileUploadBody({ allowYaml: true, maxFileSize: env.IMPORT_MAX_FILE_SIZE }),
 	asyncHandler(async (req, res, next) => {
 		const parsed = diffQuerySchema.safeParse(req.query);
 		if (!parsed.success) throw new InvalidPayloadError(parsed.error);
@@ -80,7 +77,7 @@ router.post(
 router.post(
 	'/apply',
 	checkIsAdmin,
-	readFileUploadBody({ allowYaml: true, maxFileSize: IMPORT_MAX_FILE_SIZE }),
+	readFileUploadBody({ allowYaml: true, maxFileSize: env.IMPORT_MAX_FILE_SIZE }),
 	asyncHandler(async (req, _res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
 		const diff: SnapshotDiffWithHash = req.body;

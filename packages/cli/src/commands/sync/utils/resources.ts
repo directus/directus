@@ -239,6 +239,7 @@ const RESOURCE_LIST = [
 			'ai_openai_api_key',
 			'ai_anthropic_api_key',
 			'ai_google_api_key',
+			'ai_openrouter_api_key',
 			'ai_openai_compatible_api_key',
 			'ai_openai_compatible_headers',
 		],
@@ -265,6 +266,28 @@ const RESOURCE_LIST = [
 		// Ancestry included: one source and target folder sharing a name under different parents must not match.
 		naturalKey: ['name', 'parent', 'type'],
 		fkFields: [{ field: 'parent', references: 'directus_folders' }],
+	},
+	{
+		name: 'presets',
+		singular: 'preset',
+		plural: 'presets',
+		collection: 'directus_presets',
+		endpoint: '/presets',
+		appRoute: '/admin/settings/presets',
+		primaryKey: 'id',
+		primaryKeyType: 'integer',
+		singleton: false,
+		selectable: true,
+		mustPull: [],
+		strip: [],
+		aliases: [],
+		// A null bookmark is the collection's default view. User stays in the key so a pulled preset (always
+		// user-less) never matches a target's personal one.
+		naturalKey: ['collection', 'bookmark', 'role', 'user'],
+		fkFields: [
+			{ field: 'role', references: 'directus_roles' },
+			{ field: 'user', references: 'directus_users' },
+		],
 	},
 	{
 		name: 'translations',
@@ -304,6 +327,7 @@ export const RESOURCE_FLAG_PHRASES: Record<SelectableResource, string> = {
 	flows: 'flows and their operations',
 	folders: 'media-library folders (the folder tree, not the files)',
 	policies: 'access policies with their permissions and access rules',
+	presets: 'global and role presets: bookmarks and default views',
 	roles: 'roles (brings their policies)',
 	settings: 'project settings',
 	translations: 'custom translations',

@@ -23,16 +23,14 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 	const rowsLimit = 50;
-	let hasMore = true;
 
-	while (hasMore) {
+	while (true) {
 		const comments = await knex
 			.select('id', 'collection', 'item', 'comment', 'date_created', 'user_created')
 			.from('directus_comments')
 			.limit(rowsLimit);
 
 		if (comments.length === 0) {
-			hasMore = false;
 			break;
 		}
 

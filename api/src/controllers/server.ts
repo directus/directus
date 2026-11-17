@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, RouteNotFoundError } from '@directus/errors';
-import { toBoolean } from '@directus/utils';
 import { format } from 'date-fns';
 import { Router } from 'express';
 import z from 'zod';
@@ -15,7 +14,7 @@ import { createAdmin } from '../utils/create-admin.js';
 const router = Router();
 const env = useEnv();
 
-if (env['OPENAPI_ENABLED'] !== false) {
+if (env.OPENAPI_ENABLED) {
 	router.get(
 		'/specs/oas',
 		asyncHandler(async (req, res, next) => {
@@ -31,7 +30,7 @@ if (env['OPENAPI_ENABLED'] !== false) {
 	);
 }
 
-if (env['GRAPHQL_INTROSPECTION'] !== false) {
+if (env.GRAPHQL_INTROSPECTION) {
 	router.get(
 		'/specs/graphql/:scope?',
 		asyncHandler(async (req, res) => {
@@ -74,7 +73,7 @@ router.get(
 	respond,
 );
 
-if (toBoolean(env['HEALTHCHECK_ENABLED']) !== false) {
+if (env.HEALTHCHECK_ENABLED) {
 	router.get(
 		'/health',
 		asyncHandler(async (req, res, next) => {

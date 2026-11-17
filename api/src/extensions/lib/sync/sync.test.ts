@@ -4,7 +4,6 @@ import { sep } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { setTimeout } from 'node:timers/promises';
-import { useEnv } from '@directus/env';
 import type { Driver } from '@directus/storage';
 import mid from 'node-machine-id';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -12,27 +11,22 @@ import { useBus } from '../../../bus/index.js';
 import { useLock } from '../../../lock/index.js';
 import { useLogger } from '../../../logger/index.js';
 import { getStorage } from '../../../storage/index.js';
+import { resetEnv, setEnv } from '../../../test-utils/env.js';
 import { getExtensionsPath } from '../get-extensions-path.js';
 import { isSynchronizing, setSyncStatus, SyncStatus } from './status.js';
 import { syncExtensions } from './sync.js';
 import { SyncFileTracker } from './tracker.js';
 import { compareFileMetadata, getSyncPaths } from './utils.js';
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn(() => ({
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../../../test-utils/env.js');
+
+	return mockUseEnv({
 		EXTENSIONS_LOCATION: 'test-location',
 		EXTENSIONS_PATH: 'remote/extensions',
 		EXTENSIONS_STORAGE_MAX_CONCURRENCY: 2,
-		REFRESH_TOKEN_COOKIE_DOMAIN: 'localhost',
-		REFRESH_TOKEN_TTL: '7d',
-		REFRESH_TOKEN_COOKIE_SECURE: false,
-		REFRESH_TOKEN_COOKIE_SAME_SITE: 'strict',
-		SESSION_COOKIE_DOMAIN: 'localhost',
-		SESSION_COOKIE_TTL: '1d',
-		SESSION_COOKIE_SECURE: false,
-		SESSION_COOKIE_SAME_SITE: 'strict',
-	})),
-}));
+	});
+});
 
 vi.mock('../../../bus/index.js');
 vi.mock('../../../lock/index.js');
@@ -48,7 +42,6 @@ vi.mock('node:stream/promises');
 vi.mock('node-machine-id');
 
 describe('syncExtensions', () => {
-	let mockEnv: Record<string, any>;
 	let mockLock: any;
 	let mockMessenger: any;
 	let mockLogger: any;
@@ -57,18 +50,7 @@ describe('syncExtensions', () => {
 	let mockFileTracker: any;
 
 	beforeEach(() => {
-		// Mock all the things
-		mockEnv = new Proxy(
-			{
-				EXTENSIONS_LOCATION: 'test-location',
-				EXTENSIONS_PATH: 'remote/extensions',
-			},
-			{
-				get: (target, prop) => {
-					return target[prop as keyof typeof target];
-				},
-			},
-		) as any;
+		resetEnv();
 
 		mockLock = {
 			increment: vi.fn(),
@@ -104,7 +86,6 @@ describe('syncExtensions', () => {
 			cleanup: vi.fn().mockResolvedValue(undefined),
 		};
 
-		vi.mocked(useEnv).mockReturnValue(mockEnv);
 		vi.mocked(useLock).mockReturnValue(mockLock);
 		vi.mocked(useBus).mockReturnValue(mockMessenger);
 		vi.mocked(useLogger).mockReturnValue(mockLogger);
@@ -132,6 +113,15 @@ describe('syncExtensions', () => {
 	});
 
 	describe('basic synchronization flow', () => {
+		test('should skip syncing when no remote extensions location is configured', async () => {
+			setEnv({ EXTENSIONS_LOCATION: undefined });
+
+			await syncExtensions({ forceSync: true });
+
+			expect(mockLock.increment).not.toHaveBeenCalled();
+			expect(getStorage).not.toHaveBeenCalled();
+		});
+
 		test('should exit early if already synchronizing and forceSync is not enabled', async () => {
 			vi.mocked(isSynchronizing).mockResolvedValue(true);
 

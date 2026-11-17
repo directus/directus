@@ -1165,6 +1165,8 @@ interfaces:
     modes:
       auto: Tự động
       dropdown: Tuỳ chọn dạng thả xuống
+  input-rich-text-html:
+    extensions: Phần mở rộng
   input-block-editor:
     tools_options:
       nestedlist: Danh sách
