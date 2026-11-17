@@ -3,14 +3,13 @@ import { randomUUID } from 'node:crypto';
 import type internal from 'stream';
 import { parse } from 'url';
 import { useEnv } from '@directus/env';
-import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
+import { formatZodError, InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { WebSocketMessage } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import cookie from 'cookie';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
 import WebSocket, { type Server, WebSocketServer } from 'ws';
-import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
 import { getLicenseManager } from '../../license/manager.js';
 import { useLogger } from '../../logger/index.js';
@@ -42,9 +41,12 @@ export default abstract class SocketController {
 	private authInterval: NodeJS.Timeout | null;
 
 	constructor(httpServer: httpServer, configPrefix: string) {
+		const maxPayload = useEnv().MAX_PAYLOAD_SIZE;
+
 		this.server = new WebSocketServer({
 			noServer: true,
 			autoPong: false,
+			maxPayload,
 		});
 
 		this.clients = new Set();
@@ -77,7 +79,7 @@ export default abstract class SocketController {
 		if (!authMode.success) {
 			throw new InvalidProviderConfigError({
 				provider: 'ws',
-				reason: fromZodError(authMode.error, { prefix: `${configPrefix}_AUTH` }).message,
+				reason: `${configPrefix}_AUTH: ${formatZodError(authMode.error)}`,
 			});
 		}
 
@@ -255,58 +257,57 @@ export default abstract class SocketController {
 		client.auth_timer = null;
 
 		ws.on('message', async (data: WebSocket.RawData) => {
-			if (this.rateLimiter !== null) {
-				try {
-					await this.rateLimiter.consume(client.uid);
-				} catch (limit) {
-					const timeout = (limit as any)?.msBeforeNext ?? this.rateLimiter.msDuration;
+			try {
+				if (this.rateLimiter !== null) {
+					try {
+						await this.rateLimiter.consume(client.uid);
+					} catch (limit) {
+						const timeout = (limit as any)?.msBeforeNext ?? this.rateLimiter.msDuration;
 
+						const error = new WebSocketError(
+							'server',
+							'REQUESTS_EXCEEDED',
+							`Too many messages, retry after ${timeout}ms.`,
+						);
+
+						handleWebSocketError(client, error, { type: 'server' });
+						logger.debug(`WebSocket#${client.uid} is rate limited`);
+						return;
+					}
+				}
+
+				if (await getLicenseManager().isLocked()) {
 					const error = new WebSocketError(
-						'server',
-						'REQUESTS_EXCEEDED',
-						`Too many messages, retry after ${timeout}ms.`,
+						'license',
+						'SERVICE_UNAVAILABLE',
+						`License is in a locked state and must be resolved`,
 					);
 
 					handleWebSocketError(client, error, { type: 'server' });
-					logger.debug(`WebSocket#${client.uid} is rate limited`);
+					logger.debug(`WebSocket#${client.uid} closed due to license in locked state`);
 					return;
 				}
-			}
 
-			if (await getLicenseManager().isLocked()) {
-				const error = new WebSocketError(
-					'license',
-					'SERVICE_UNAVAILABLE',
-					`License is in a locked state and must be resolved`,
-				);
+				const message = this.parseMessage(data.toString());
 
-				handleWebSocketError(client, error, { type: 'server' });
-				logger.debug(`WebSocket#${client.uid} closed due to license in locked state`);
-				return;
-			}
+				if (getMessageType(message) === 'auth') {
+					try {
+						await this.handleAuthRequest(client, WebSocketAuthMessage.parse(message));
+					} catch {
+						// ignore errors
+					}
 
-			let message: WebSocketMessage;
-
-			try {
-				message = this.parseMessage(data.toString());
-			} catch (err: any) {
-				handleWebSocketError(client, err, { type: 'server' });
-				return;
-			}
-
-			if (getMessageType(message) === 'auth') {
-				try {
-					await this.handleAuthRequest(client, WebSocketAuthMessage.parse(message));
-				} catch {
-					// ignore errors
+					return;
 				}
 
-				return;
+				// this log cannot be higher in the function or it will leak credentials
+				logger.trace({ message }, `WebSocket#${client.uid}`);
+				ws.emit('parsed-message', message);
+			} catch (error) {
+				// `ws` drops the promise this returns, so an error escaping here would be an unhandled
+				// rejection taking the process with it, rather than one failed message
+				handleWebSocketError(client, error, { type: 'server' });
 			}
-
-			// this log cannot be higher in the function or it will leak credentials
-			logger.trace(`WebSocket#${client.uid} - ${JSON.stringify(message)}`);
-			ws.emit('parsed-message', message);
 		});
 
 		ws.on('error', () => {

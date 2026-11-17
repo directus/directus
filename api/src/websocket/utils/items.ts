@@ -1,6 +1,6 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { CollectionsService, FieldsService, MetaService } from '../../services/index.js';
+import { CollectionsService, FieldsService, MetaService, RelationsService } from '../../services/index.js';
 import { getService } from '../../utils/get-service.js';
 import type { WebSocketEvent } from '../messages.js';
 import type { Subscription } from '../types.js';
@@ -36,7 +36,7 @@ export async function getPayload(
 			result['data'] = await getFieldsPayload(subscription, accountability, schema, event);
 			break;
 		case 'directus_relations':
-			result['data'] = event?.payload;
+			result['data'] = await getRelationsPayload(accountability, schema, event);
 			break;
 		case 'directus_extensions':
 			throw new InvalidPayloadError({ reason: '"directus_extensions" is currently not supported.' });
@@ -125,6 +125,36 @@ export async function getFieldsPayload(
 		default:
 			return await service.readOne(event?.payload?.['collection'], event?.payload?.['field']);
 	}
+}
+
+/**
+ * Get relations through the RelationsService, which only returns relations on collections and fields the
+ * accountability can read
+ *
+ * @param accountability Accountability object
+ * @param schema Schema object
+ * @param event Event data
+ * @returns the fetched relation data
+ */
+export async function getRelationsPayload(
+	accountability: Accountability | null,
+	schema: SchemaOverview,
+	event?: WebSocketEvent,
+) {
+	const service = new RelationsService({ schema, accountability });
+
+	if (event?.action === 'create' || event?.action === 'update') {
+		// relation events are keyed by the id of their directus_relations row
+		const keys = (event.action === 'create' ? [event.key] : event.keys).map(String);
+		const relations = await service.readAll();
+
+		return relations.filter((relation) => relation.meta && keys.includes(String(relation.meta.id)));
+	}
+
+	// delete events are only dispatched to admins, see validateDeleteEventAccess
+	if (event?.action === 'delete') return event.payload;
+
+	return service.readAll();
 }
 
 /**

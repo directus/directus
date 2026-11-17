@@ -4,6 +4,7 @@ import process from 'node:process';
 import eslintJs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintImportPlugin from 'eslint-plugin-import-x';
+import eslintPluginRegexp from 'eslint-plugin-regexp';
 import eslintPluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
 import typescriptEslint from 'typescript-eslint';
@@ -191,6 +192,16 @@ export default typescriptEslint.config(
 		files: ['**/*.test.ts'],
 		rules: {
 			'vue/one-component-per-file': 'off',
+		},
+	},
+
+	// A regex that is worse than linear in its input length is a denial-of-service vector wherever
+	// that input comes from a caller
+	{
+		files: ['**/*.{js,ts,vue}'],
+		plugins: { regexp: eslintPluginRegexp },
+		rules: {
+			'regexp/no-super-linear-backtracking': 'error',
 		},
 	},
 

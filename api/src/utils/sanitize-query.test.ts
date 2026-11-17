@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { DEFAULTS, type Env, useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
@@ -16,6 +16,10 @@ vi.mock('../database/index.js');
 vi.mock('../database/helpers/index.js');
 vi.mock('../permissions/lib/fetch-policies.js');
 vi.mock('../permissions/utils/fetch-dynamic-variable-data.js');
+
+// Some cases below stub only the keys they exercise, to cover the fallbacks for the rest. `Env`
+// models a fully built env, so it can't describe them.
+const envWith = (values: Record<string, unknown>) => values as Env;
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue(mockEnv({}));
@@ -253,6 +257,181 @@ describe('filter', () => {
 		const sanitizedQuery = await sanitizeQuery({ filter }, null as any, {} as any);
 
 		expect(sanitizedQuery.filter).toEqual({ field_a: { _eq: 'test' } });
+	});
+
+	test.each(['$CURRENT_USER', '$CURRENT_ROLE', '$CURRENT_ROLES', '$CURRENT_POLICIES'])(
+		'rejects a %s path deeper than the max relational depth before fetching it',
+		async (variable) => {
+			vi.mocked(useEnv).mockReturnValue(envWith({ MAX_RELATIONAL_DEPTH: 3 }));
+
+			const filter = { id: { _eq: `${variable}.role.users.role.id` } };
+
+			await expect(sanitizeQuery({ filter }, null as any, {} as any)).rejects.toThrowError(
+				'Invalid query. Max relational depth exceeded.',
+			);
+
+			expect(fetchDynamicVariableData).not.toHaveBeenCalled();
+		},
+	);
+
+	test('fetches a dynamic variable path at the max relational depth', async () => {
+		vi.mocked(useEnv).mockReturnValue(envWith({ MAX_RELATIONAL_DEPTH: 3 }));
+		vi.mocked(fetchDynamicVariableData).mockResolvedValue({ $CURRENT_USER: { role: { users: [{ id: 'a' }] } } });
+
+		const filter = { id: { _in: '$CURRENT_USER.role.users.id' } };
+
+		await sanitizeQuery({ filter }, null as any, {} as any);
+
+		expect(fetchDynamicVariableData).toHaveBeenCalledOnce();
+	});
+});
+
+describe('query limits', () => {
+	/** A filter with `count` leaves, so `count + 1` nodes including the root object */
+	function filterWithLeaves(count: number) {
+		return Object.fromEntries(Array.from({ length: count }, (_, index) => [`field_${index}`, 'x']));
+	}
+
+	/** A filter nested `depth` containers deep, built iteratively so the helper survives any depth */
+	function filterOfDepth(depth: number): Record<string, any> {
+		let filter: Record<string, any> = { _eq: 'x' };
+
+		for (let level = 1; level < depth; level++) {
+			filter = { a: filter };
+		}
+
+		return filter;
+	}
+
+	/** A `deep` value with `levels` nested relations, carrying `subQuery` at the innermost level */
+	function deepOfDepth(levels: number, subQuery: Record<string, any>): Record<string, any> {
+		return levels <= 0 ? subQuery : { [`relation_${levels}`]: deepOfDepth(levels - 1, subQuery) };
+	}
+
+	describe('filter nodes', () => {
+		test('should accept a filter at the node limit', async () => {
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_NODES: 6 }));
+
+			const sanitizedQuery = await sanitizeQuery({ filter: filterWithLeaves(5) }, null as any);
+
+			expect(sanitizedQuery.filter).toEqual({
+				_and: [
+					{ field_0: { _eq: 'x' } },
+					{ field_1: { _eq: 'x' } },
+					{ field_2: { _eq: 'x' } },
+					{ field_3: { _eq: 'x' } },
+					{ field_4: { _eq: 'x' } },
+				],
+			});
+		});
+
+		test('should reject a filter one node over the limit', async () => {
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_NODES: 5 }));
+
+			await expect(sanitizeQuery({ filter: filterWithLeaves(5) }, null as any)).rejects.toThrowError(InvalidQueryError);
+		});
+	});
+
+	describe('filter depth', () => {
+		test('should accept a filter at the depth limit', async () => {
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_DEPTH: 5 }));
+
+			const sanitizedQuery = await sanitizeQuery({ filter: filterOfDepth(5) }, null as any);
+
+			expect(sanitizedQuery.filter).toEqual({ a: { a: { a: { a: { _eq: 'x' } } } } });
+		});
+
+		test('should reject a filter one level over the depth limit', async () => {
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_DEPTH: 5 }));
+
+			await expect(sanitizeQuery({ filter: filterOfDepth(6) }, null as any)).rejects.toThrowError(InvalidQueryError);
+		});
+
+		test('should reject a filter deeper than the call stack without overflowing', async () => {
+			await expect(sanitizeQuery({ filter: filterOfDepth(50_000) }, null as any)).rejects.toThrowError(
+				InvalidQueryError,
+			);
+		});
+	});
+
+	describe('deep depth', () => {
+		test('should accept `deep` at the depth limit', async () => {
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_DEPTH: 3 }));
+
+			const sanitizedQuery = await sanitizeQuery({ deep: deepOfDepth(3, { _limit: 1 }) }, null as any);
+
+			expect(sanitizedQuery.deep).toEqual(deepOfDepth(3, { _limit: 1 }));
+		});
+
+		test('should reject `deep` one level over the depth limit', async () => {
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_DEPTH: 3 }));
+
+			await expect(sanitizeQuery({ deep: deepOfDepth(4, { _limit: 1 }) }, null as any)).rejects.toThrowError(
+				InvalidQueryError,
+			);
+		});
+	});
+
+	// `sanitizeDeep` recurses back into `sanitizeQuery` for every nested `_filter`, so a per-call
+	// allowance would let nesting multiply the work one request can cause.
+	describe('shared allowance across `deep`', () => {
+		test('should share the node allowance across `deep` levels', async () => {
+			// 11 nodes, so the per-filter cost dominates walking `deep` itself
+			const filter = filterWithLeaves(10);
+
+			// One level costs 13 nodes, five cost 65
+			const oneLevel = { relation_1: { _filter: filter } };
+
+			const fiveLevels = {
+				relation_1: {
+					_filter: filter,
+					relation_2: {
+						_filter: filter,
+						relation_3: {
+							_filter: filter,
+							relation_4: { _filter: filter, relation_5: { _filter: filter } },
+						},
+					},
+				},
+			};
+
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_NODES: 20 }));
+			await expect(sanitizeQuery({ deep: oneLevel }, null as any)).resolves.toBeDefined();
+
+			// Five copies that each fit on their own: a per-call allowance would admit this
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_NODES: 20 }));
+			await expect(sanitizeQuery({ deep: fiveLevels }, null as any)).rejects.toThrowError(InvalidQueryError);
+
+			// Enough for all five, confirming nothing else rejected it
+			vi.mocked(useEnv).mockReturnValue(envWith({ QUERY_FILTER_MAX_NODES: 100 }));
+			await expect(sanitizeQuery({ deep: fiveLevels }, null as any)).resolves.toBeDefined();
+		});
+	});
+
+	test('should leave a relational query within the shipped limits untouched', async () => {
+		vi.mocked(useEnv).mockReturnValue(envWith(DEFAULTS));
+
+		const filter = { author: { role: { name: { _eq: 'admin' } } } };
+		const deep = { translations: { _filter: filter, _limit: 10 } };
+
+		const sanitizedQuery = await sanitizeQuery({ filter, deep }, null as any);
+
+		expect(sanitizedQuery.filter).toEqual(filter);
+		expect(sanitizedQuery.deep).toEqual({ translations: { _filter: filter, _limit: 10 } });
+	});
+
+	// The app's filter builder wraps every relational level in an `_and` group. Counting the
+	// group's array as a level takes this to depth 33, rejecting it under the shipped limits.
+	test('should accept a fully grouped relational filter at the shipped limits', async () => {
+		vi.mocked(useEnv).mockReturnValue(envWith(DEFAULTS));
+
+		let filter: Record<string, any> = { _and: [{ name: { _eq: 'admin' } }] };
+
+		for (let level = 0; level < 10; level++) {
+			filter = { _and: [{ [`rel_${level}`]: filter }] };
+		}
+
+		await expect(sanitizeQuery({ filter }, null as any)).resolves.toBeDefined();
 	});
 });
 

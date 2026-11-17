@@ -54,12 +54,12 @@ export function filterReplaceM2ADeep(
 	for (const key in deep) {
 		if (key.startsWith('_') === false) {
 			const parts = key.split('__');
-			let field = parts[0];
+			const fieldKey = parts[0];
 			const any_collection = parts[1];
 
-			if (!field) continue;
+			if (!fieldKey) continue;
 
-			field = options?.aliasMap?.[field] || (deep as DeepQuery)._alias?.[field] || field;
+			const field = options?.aliasMap?.[fieldKey] || (deep as DeepQuery)._alias?.[fieldKey] || fieldKey;
 
 			const relation = getRelation(schema.relations, collection, field);
 
@@ -72,7 +72,8 @@ export function filterReplaceM2ADeep(
 			} else if (type === 'm2o') {
 				deep[key] = filterReplaceM2ADeep(deep[key], relation.related_collection!, schema);
 			} else if (type === 'a2o' && any_collection && relation.meta?.one_allowed_collections?.includes(any_collection)) {
-				deep[`${field}:${any_collection}`] = filterReplaceM2ADeep(deep[key], any_collection, schema);
+				// Keep the (possibly aliased) field key, as the AST resolves the deep via `${fieldKey}:${collection}`
+				deep[`${fieldKey}:${any_collection}`] = filterReplaceM2ADeep(deep[key], any_collection, schema);
 				delete deep[key];
 			}
 		}

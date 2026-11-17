@@ -27,7 +27,8 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"ms": "catalog:"
+		"ms": "catalog:",
+		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",

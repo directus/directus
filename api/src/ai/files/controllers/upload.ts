@@ -1,6 +1,5 @@
 import type { IncomingHttpHeaders } from 'node:http';
-import type { StandardProviderType } from '@directus/ai';
-import { AI_ALLOWED_MIME_TYPES } from '@directus/ai';
+import { AI_ALLOWED_MIME_TYPES, AI_MAX_FILE_SIZE, isFileUploadProviderType } from '@directus/ai';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
@@ -8,15 +7,7 @@ import { useLogger } from '../../../logger/index.js';
 import { uploadToProvider } from '../lib/upload-to-provider.js';
 import type { UploadedFile } from '../types.js';
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
-
 const ALLOWED_MIME_TYPES: Set<string> = new Set(AI_ALLOWED_MIME_TYPES);
-
-const SUPPORTED_PROVIDERS = new Set<StandardProviderType>(['openai', 'anthropic', 'google']);
-
-function isSupportedProvider(provider: string): provider is StandardProviderType {
-	return SUPPORTED_PROVIDERS.has(provider as StandardProviderType);
-}
 
 interface ParsedMultipart {
 	file: UploadedFile | undefined;
@@ -43,7 +34,7 @@ async function parseMultipart(headers: IncomingHttpHeaders, stream: NodeJS.Reada
 
 		const bb = Busboy({
 			headers: headers as Record<string, string>,
-			limits: { fileSize: MAX_FILE_SIZE, files: 1 },
+			limits: { fileSize: AI_MAX_FILE_SIZE, files: 1 },
 		});
 
 		bb.on('file', (_name, fileStream, info) => {
@@ -57,7 +48,7 @@ async function parseMultipart(headers: IncomingHttpHeaders, stream: NodeJS.Reada
 				fileStream.destroy();
 
 				safeReject(
-					new InvalidPayloadError({ reason: `File exceeds maximum size of ${MAX_FILE_SIZE / (1024 * 1024)}MB` }),
+					new InvalidPayloadError({ reason: `File exceeds maximum size of ${AI_MAX_FILE_SIZE / (1024 * 1024)}MB` }),
 				);
 			});
 
@@ -114,13 +105,8 @@ export const aiFileUploadHandler: RequestHandler = async (req, res, next) => {
 			throw new InvalidPayloadError({ reason: 'No provider specified' });
 		}
 
-		if (!isSupportedProvider(provider)) {
-			throw new InvalidPayloadError({
-				reason:
-					provider === 'openai-compatible'
-						? 'File uploads not supported for openai-compatible provider'
-						: `Unsupported provider: ${provider}`,
-			});
+		if (!isFileUploadProviderType(provider)) {
+			throw new InvalidPayloadError({ reason: `File uploads not supported for ${provider} provider` });
 		}
 
 		if (!ALLOWED_MIME_TYPES.has(file.mimeType)) {
