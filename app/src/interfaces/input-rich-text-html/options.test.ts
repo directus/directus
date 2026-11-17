@@ -27,6 +27,7 @@ describe('options compat', () => {
 
 		expect(fieldKeys(advanced)).toEqual([
 			'softLength',
+			'advancedGroup',
 			'linkProtocols',
 			'keepInlineStyles',
 			'keepInlineStylesWarning',

@@ -331,10 +331,25 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'advancedGroup',
+				name: '$t:advanced',
+				type: 'alias',
+				meta: {
+					field: 'advancedGroup',
+					width: 'full',
+					interface: 'group-detail',
+					special: ['alias', 'no-data', 'group'],
+					options: {
+						start: 'closed',
+					},
+				},
+			},
+			{
 				field: 'linkProtocols',
 				name: '$t:interfaces.input-rich-text-html.link_protocols',
 				type: 'csv',
 				meta: {
+					group: 'advancedGroup',
 					width: 'full',
 					interface: 'system-link-protocols',
 					note: '$t:interfaces.input-rich-text-html.link_protocols_note',
@@ -348,11 +363,12 @@ export default defineInterface({
 				name: '$t:interfaces.input-rich-text-html.keep_inline_styles',
 				type: 'boolean',
 				meta: {
-					width: 'full',
+					group: 'advancedGroup',
+					width: 'half',
 					interface: 'boolean',
 					note: '$t:interfaces.input-rich-text-html.keep_inline_styles_note',
 					options: {
-						label: '$t:interfaces.input-rich-text-html.keep_inline_styles_label',
+						label: '$t:interfaces.input-rich-text-html.preserve',
 					},
 				},
 				schema: {
@@ -363,6 +379,7 @@ export default defineInterface({
 				field: 'keepInlineStylesWarning',
 				type: 'alias',
 				meta: {
+					group: 'advancedGroup',
 					width: 'full',
 					interface: 'presentation-notice',
 					special: ['alias', 'no-data'],
@@ -380,11 +397,12 @@ export default defineInterface({
 				name: '$t:interfaces.input-rich-text-html.keep_legacy_emphasis_tags',
 				type: 'boolean',
 				meta: {
-					width: 'full',
+					group: 'advancedGroup',
+					width: 'half',
 					interface: 'boolean',
 					note: '$t:interfaces.input-rich-text-html.keep_legacy_emphasis_tags_note',
 					options: {
-						label: '$t:interfaces.input-rich-text-html.keep_legacy_emphasis_tags_label',
+						label: '$t:interfaces.input-rich-text-html.preserve',
 					},
 				},
 				schema: {
@@ -396,11 +414,12 @@ export default defineInterface({
 				name: '$t:interfaces.input-rich-text-html.no_container_paragraphs',
 				type: 'boolean',
 				meta: {
-					width: 'full',
+					group: 'advancedGroup',
+					width: 'half',
 					interface: 'boolean',
 					note: '$t:interfaces.input-rich-text-html.no_container_paragraphs_note',
 					options: {
-						label: '$t:interfaces.input-rich-text-html.no_container_paragraphs_label',
+						label: '$t:interfaces.input-rich-text-html.do_not_wrap',
 					},
 				},
 				schema: {
@@ -412,11 +431,12 @@ export default defineInterface({
 				name: '$t:interfaces.input-rich-text-html.keep_wrapper_elements',
 				type: 'boolean',
 				meta: {
-					width: 'full',
+					group: 'advancedGroup',
+					width: 'half',
 					interface: 'boolean',
 					note: '$t:interfaces.input-rich-text-html.keep_wrapper_elements_note',
 					options: {
-						label: '$t:interfaces.input-rich-text-html.keep_wrapper_elements_label',
+						label: '$t:interfaces.input-rich-text-html.preserve',
 					},
 				},
 				schema: {
@@ -428,11 +448,12 @@ export default defineInterface({
 				name: '$t:interfaces.input-rich-text-html.keep_form_elements',
 				type: 'boolean',
 				meta: {
-					width: 'full',
+					group: 'advancedGroup',
+					width: 'half',
 					interface: 'boolean',
 					note: '$t:interfaces.input-rich-text-html.keep_form_elements_note',
 					options: {
-						label: '$t:interfaces.input-rich-text-html.keep_form_elements_label',
+						label: '$t:interfaces.input-rich-text-html.preserve',
 					},
 				},
 				schema: {
@@ -444,11 +465,12 @@ export default defineInterface({
 				name: '$t:interfaces.input-rich-text-html.keep_html_comments',
 				type: 'boolean',
 				meta: {
-					width: 'full',
+					group: 'advancedGroup',
+					width: 'half',
 					interface: 'boolean',
 					note: '$t:interfaces.input-rich-text-html.keep_html_comments_note',
 					options: {
-						label: '$t:interfaces.input-rich-text-html.keep_html_comments_label',
+						label: '$t:interfaces.input-rich-text-html.preserve',
 					},
 				},
 				schema: {
@@ -459,6 +481,7 @@ export default defineInterface({
 				field: 'keepHtmlCommentsWarning',
 				type: 'alias',
 				meta: {
+					group: 'advancedGroup',
 					width: 'full',
 					interface: 'presentation-notice',
 					special: ['alias', 'no-data'],
@@ -476,11 +499,12 @@ export default defineInterface({
 				name: '$t:interfaces.input-rich-text-html.keep_legacy_attributes',
 				type: 'boolean',
 				meta: {
-					width: 'full',
+					group: 'advancedGroup',
+					width: 'half',
 					interface: 'boolean',
 					note: '$t:interfaces.input-rich-text-html.keep_legacy_attributes_note',
 					options: {
-						label: '$t:interfaces.input-rich-text-html.keep_legacy_attributes_label',
+						label: '$t:interfaces.input-rich-text-html.preserve',
 					},
 				},
 				schema: {
