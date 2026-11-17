@@ -313,9 +313,26 @@ const localDragMode = ref<'move' | 'crop' | 'focal_point'>('move');
 
 const storageAssetPresets = settingsStore.settings?.storage_asset_presets ?? [];
 
+const presetPreviewsOpen = ref(true);
+
 const showPresetPreviews = computed(
-	() => localDragMode.value === 'focal_point' && !!imageData.value?.width && !!imageData.value?.height,
+	() =>
+		localDragMode.value === 'focal_point' &&
+		presetPreviewsOpen.value &&
+		!!imageData.value?.width &&
+		!!imageData.value?.height,
 );
+
+// Clicking the active focal point tool again shows or hides the previews and keeps the selection
+function onFocalPointToolClick() {
+	if (localDragMode.value === 'focal_point') {
+		presetPreviewsOpen.value = !presetPreviewsOpen.value;
+		return;
+	}
+
+	presetPreviewsOpen.value = true;
+	dragMode.value = 'focal_point';
+}
 
 const previewFocalPoint = computed(() => {
 	if (localDragMode.value === 'focal_point' && cropping.value && liveFocalPoint.value) return liveFocalPoint.value;
@@ -331,9 +348,31 @@ watch(showPresetPreviews, async () => {
 	if (!cropper) return;
 
 	// Cropper only re-measures its container on window resize, so tell it the panel changed the editor's size.
-	// Its resize scales the crop box from the corner, so put the box back where it was on the image
+	// Its resize scales the image and crop box from the top-left corner, so re-centre the image and
+	// put the box back where it was on the image
 	const data = cropping.value ? cropper.getData() : null;
+	const oldContainer = cropper.getContainerData();
+	const oldCanvas = cropper.getCanvasData();
+	// Cropper returns empty data until the image has loaded
+	if (!oldCanvas.width) return;
+
 	cropper.resize();
+
+	const newContainer = cropper.getContainerData();
+	const newCanvas = cropper.getCanvasData();
+	const scale = newCanvas.width / oldCanvas.width;
+
+	cropper.setCanvasData({
+		left:
+			newContainer.width / 2 +
+			(oldCanvas.left + oldCanvas.width / 2 - oldContainer.width / 2) * scale -
+			newCanvas.width / 2,
+		top:
+			newContainer.height / 2 +
+			(oldCanvas.top + oldCanvas.height / 2 - oldContainer.height / 2) * scale -
+			newCanvas.height / 2,
+	});
+
 	if (data) cropper.setData(data);
 });
 
@@ -640,7 +679,7 @@ function setAspectRatio() {
 						name="location_searching"
 						:class="{ active: localDragMode === 'focal_point' }"
 						clickable
-						@click="dragMode = 'focal_point'"
+						@click="onFocalPointToolClick"
 					/>
 				</div>
 
