@@ -1,7 +1,6 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { jsonSchema, streamObject } from 'ai';
 import type { RequestHandler } from 'express';
-import { fromZodError } from 'zod-validation-error';
 import { resolveLanguageModel } from '../../providers/resolve-model.js';
 import type { AISettings } from '../../providers/types.js';
 import { getAITelemetryConfig } from '../../telemetry/index.js';
@@ -16,7 +15,7 @@ export const aiObjectPostHandler: RequestHandler = async (req, res) => {
 	const parseResult = ObjectRequest.safeParse(req.body);
 
 	if (!parseResult.success) {
-		throw new InvalidPayloadError({ reason: fromZodError(parseResult.error).message });
+		throw new InvalidPayloadError(parseResult.error);
 	}
 
 	const { provider, model, prompt, outputSchema, maxOutputTokens } = parseResult.data;
