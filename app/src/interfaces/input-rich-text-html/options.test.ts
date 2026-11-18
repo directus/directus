@@ -27,17 +27,19 @@ describe('options compat', () => {
 
 		expect(fieldKeys(advanced)).toEqual([
 			'softLength',
+			'customFormats',
+			'advancedGroup',
+			'advancedGroupWarning',
 			'linkProtocols',
+			'keepLegacyEmphasisTags',
 			'keepInlineStyles',
 			'keepInlineStylesWarning',
-			'keepLegacyEmphasisTags',
 			'noContainerParagraphs',
 			'keepWrapperElements',
 			'keepFormElements',
 			'keepHtmlComments',
 			'keepHtmlCommentsWarning',
 			'keepLegacyAttributes',
-			'customFormats',
 			'tinymceOverrides',
 		]);
 	});
