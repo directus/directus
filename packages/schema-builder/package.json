@@ -43,6 +43,7 @@
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@types/lodash-es": "catalog:",
+		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

@@ -1,4 +1,4 @@
-import { NewChangesetWithCommit, VersionType } from '@changesets/types';
+import type { NewChangesetWithCommit, VersionType } from '@changesets/types';
 import { expect, test } from 'vitest';
 import { processReleaseLines } from './process-release-lines.js';
 
