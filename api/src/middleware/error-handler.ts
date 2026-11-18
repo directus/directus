@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, InternalServerError, isDirectusError } from '@directus/errors';
 import type { DeepPartial } from '@directus/types';
-import { isObject } from '@directus/utils';
+import { isObject, toBoolean } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
 import type { ErrorRequestHandler } from 'express';
 import { buildMcpWWWAuthenticateHeader as buildMcpChallengeHeader, getMcpUrls, isMcpPath } from '../ai/mcp/utils.js';
@@ -18,6 +18,16 @@ type ApiError = {
 };
 
 const FALLBACK_ERROR = new InternalServerError();
+
+/** Project settings, so projects without MCP or with MCP OAuth off keep Directus's usual 401 */
+async function isMcpOAuthSettingOn(): Promise<boolean> {
+	try {
+		const settings = await getDatabase()('directus_settings').select('mcp_enabled', 'mcp_oauth_enabled').first();
+		return toBoolean(settings?.mcp_enabled) && toBoolean(settings?.mcp_oauth_enabled);
+	} catch {
+		return false;
+	}
+}
 
 export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 	const { MCP_OAUTH_ENABLED } = useEnv();
@@ -39,7 +49,8 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 				isDirectusError(error, ErrorCode.InvalidToken) ||
 				isDirectusError(error, ErrorCode.TokenExpired)) &&
 			isMcpPath(req.path) &&
-			MCP_OAUTH_ENABLED
+			MCP_OAUTH_ENABLED &&
+			(await isMcpOAuthSettingOn())
 		) {
 			const { metadataUrl } = getMcpUrls();
 

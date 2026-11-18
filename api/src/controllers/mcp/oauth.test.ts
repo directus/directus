@@ -920,6 +920,8 @@ describe('error-handler MCP 401', () => {
 			MCP_OAUTH_ENABLED: true,
 		} as any);
 
+		mockDbChain.first.mockResolvedValueOnce({ mcp_enabled: true, mcp_oauth_enabled: true });
+
 		// Import the real error handler
 		const { errorHandler } = await import('../../middleware/error-handler.js');
 
@@ -942,6 +944,8 @@ describe('error-handler MCP 401', () => {
 			PUBLIC_URL: 'http://localhost/directus',
 			MCP_OAUTH_ENABLED: true,
 		} as any);
+
+		mockDbChain.first.mockResolvedValueOnce({ mcp_enabled: true, mcp_oauth_enabled: true });
 
 		const { errorHandler } = await import('../../middleware/error-handler.js');
 		const { InvalidCredentialsError } = await import('@directus/errors');
