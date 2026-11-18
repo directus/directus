@@ -311,13 +311,13 @@ describe('mcp server', () => {
 		test('should execute a valid tool successfully', async () => {
 			const result = await callTool('test-tool', { test: 'value' });
 
-			expect(result.content).toEqual([{ type: 'text', text: JSON.stringify({ raw: 'test result' }) }]);
+			expect(result.content).toEqual([{ type: 'text', text: 'test result' }]);
 		});
 
 		test('should execute a valid tool for 2025-era clients', async () => {
 			const result = await callTool('test-tool', { test: 'value' }, { era: 'legacy' });
 
-			expect(result.content).toEqual([{ type: 'text', text: JSON.stringify({ raw: 'test result' }) }]);
+			expect(result.content).toEqual([{ type: 'text', text: 'test result' }]);
 		});
 
 		test('should execute tools through the registry root execute tool in registry mode', async () => {
@@ -365,7 +365,7 @@ describe('mcp server', () => {
 
 			const result = await callTool('admin-tool');
 
-			expect(result.content).toEqual([{ type: 'text', text: JSON.stringify({ raw: 'admin result' }) }]);
+			expect(result.content).toEqual([{ type: 'text', text: 'admin result' }]);
 		});
 
 		test('should error on delete action if deletes disabled', async () => {
@@ -560,6 +560,23 @@ describe('mcp server', () => {
 					},
 				],
 			});
+		});
+
+		test('should send string results as plain text', () => {
+			const response = directusMCP.toResultResponse({ type: 'text', data: 'line one\n\tline two', url: 'http://x/y' });
+
+			expect(response).toEqual({
+				content: [
+					{ type: 'text', text: 'line one\n\tline two' },
+					{ type: 'text', text: 'URL: http://x/y' },
+				],
+			});
+		});
+
+		test('should keep string results as JSON in registry mode', () => {
+			const response = directusMCP.toResultResponse({ type: 'text', data: 'hello' }, { data: 'hello' }, 'registry');
+
+			expect(response.content).toEqual([{ type: 'text', text: JSON.stringify({ data: 'hello' }) }]);
 		});
 
 		test('should attach structured content alongside the registry text payload', () => {
