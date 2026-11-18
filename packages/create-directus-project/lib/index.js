@@ -3,19 +3,19 @@
 
 /* eslint-disable no-console */
 
+import { mkdir, readdir, readFile, stat } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import { execa } from 'execa';
-import fse from 'fs-extra';
 import logSymbols from 'log-symbols';
 import ora from 'ora';
 import checkForUpdate from 'update-check';
 import checkRequirements from './check-requirements.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const pkg = JSON.parse(String(await fse.readFile(join(__dirname, '../package.json'), 'utf8')));
+const pkg = JSON.parse(await readFile(join(__dirname, '../package.json'), 'utf8'));
 
 const program = new Command(pkg.name)
 	.version(pkg.version)
@@ -32,26 +32,29 @@ export async function create(directory) {
 
 	const rootPath = resolve(directory);
 
-	if (await fse.pathExists(rootPath)) {
-		const stat = await fse.stat(rootPath);
+	const rootStat = await stat(rootPath).catch((error) => {
+		if (error.code === 'ENOENT') return null;
+		throw error;
+	});
 
-		if (stat.isDirectory() === false) {
+	if (rootStat) {
+		if (rootStat.isDirectory() === false) {
 			console.error(`Destination '${chalk.blue(directory)}' already exists and is not a directory.`);
 			process.exit(1);
 		}
 
-		const files = await fse.readdir(rootPath);
+		const files = await readdir(rootPath);
 
 		if (files.length > 0) {
 			console.error(`Destination '${chalk.blue(directory)}' already exists and is not an empty directory.`);
 			process.exit(1);
 		}
 	} else {
-		await fse.mkdir(rootPath);
+		await mkdir(rootPath);
 	}
 
-	await fse.mkdir(join(rootPath, 'uploads'));
-	await fse.mkdir(join(rootPath, 'extensions'));
+	await mkdir(join(rootPath, 'uploads'));
+	await mkdir(join(rootPath, 'extensions'));
 
 	// Let's get into the Directus mood while waiting
 	const bunnyFrames = [];

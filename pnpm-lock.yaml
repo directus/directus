@@ -503,9 +503,6 @@ catalogs:
     '@types/file-saver':
       specifier: 2.0.7
       version: 2.0.7
-    '@types/fs-extra':
-      specifier: 11.0.4
-      version: 11.0.4
     '@types/geojson':
       specifier: 7946.0.16
       version: 7946.0.16
@@ -758,9 +755,6 @@ catalogs:
     form-data:
       specifier: 4.0.6
       version: 4.0.6
-    fs-extra:
-      specifier: 11.3.2
-      version: 11.3.2
     geojson:
       specifier: 0.5.0
       version: 0.5.0
@@ -1413,9 +1407,6 @@ importers:
       flat:
         specifier: 'catalog:'
         version: 6.0.1
-      fs-extra:
-        specifier: 'catalog:'
-        version: 11.3.2
       glob-to-regexp:
         specifier: 'catalog:'
         version: 0.4.1
@@ -1639,9 +1630,6 @@ importers:
       '@types/express-serve-static-core':
         specifier: 'catalog:'
         version: 4.19.6
-      '@types/fs-extra':
-        specifier: 'catalog:'
-        version: 11.0.4
       '@types/glob-to-regexp':
         specifier: 'catalog:'
         version: 0.4.4
@@ -2369,9 +2357,6 @@ importers:
       execa:
         specifier: 'catalog:'
         version: 9.6.0
-      fs-extra:
-        specifier: 'catalog:'
-        version: 11.3.2
       log-symbols:
         specifier: 'catalog:'
         version: 7.0.1
@@ -2474,9 +2459,6 @@ importers:
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
-      fs-extra:
-        specifier: 'catalog:'
-        version: 11.3.2
       lodash-es:
         specifier: 'catalog:'
         version: 4.18.1
@@ -2493,9 +2475,6 @@ importers:
       '@tiptap/pm':
         specifier: 'catalog:'
         version: 3.31.3
-      '@types/fs-extra':
-        specifier: 'catalog:'
-        version: 11.0.4
       '@types/lodash-es':
         specifier: 'catalog:'
         version: 4.17.12
@@ -2617,9 +2596,6 @@ importers:
       execa:
         specifier: 'catalog:'
         version: 9.6.0
-      fs-extra:
-        specifier: 'catalog:'
-        version: 11.3.2
       inquirer:
         specifier: 'catalog:'
         version: 12.11.0(@types/node@26.2.0)
@@ -2648,9 +2624,6 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 6.0.0
-      '@types/fs-extra':
-        specifier: 'catalog:'
-        version: 11.0.4
       '@types/inquirer':
         specifier: 'catalog:'
         version: 9.0.9
@@ -3371,9 +3344,6 @@ importers:
       date-fns:
         specifier: 'catalog:'
         version: 4.1.0
-      fs-extra:
-        specifier: 'catalog:'
-        version: 11.3.2
       ipaddr.js:
         specifier: 'catalog:'
         version: 2.4.0
@@ -3408,9 +3378,6 @@ importers:
       '@ngneat/falso':
         specifier: 'catalog:'
         version: 8.0.2
-      '@types/fs-extra':
-        specifier: 'catalog:'
-        version: 11.0.4
       '@types/js-yaml':
         specifier: 'catalog:'
         version: 4.0.9
@@ -7130,9 +7097,6 @@ packages:
   '@types/file-saver@2.0.7':
     resolution: {integrity: sha512-dNKVfHd/jk0SkR/exKGj2ggkB45MAkzvWCaqLUUgkyjITkGNzH8H+yUwr+BLJUBjZOe9w8X3wgmXhZDRg1ED6A==}
 
-  '@types/fs-extra@11.0.4':
-    resolution: {integrity: sha512-yTbItCNreRooED33qjunPthRcSjERP1r4MqCZc7wv0u2sUkzTFp45tgUfS5+r7FrZPdmCCNflLhVSP/o+SemsQ==}
-
   '@types/geojson@7946.0.16':
     resolution: {integrity: sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==}
 
@@ -7159,9 +7123,6 @@ packages:
 
   '@types/json2csv@5.0.7':
     resolution: {integrity: sha512-Ma25zw9G9GEBnX8b12R4EYvnFT6dBh8L3jwsN5EUFXa+fl2dqmbLDbNWN0XuQU3rSXdsbBeCYjI9uHU2PUBxhA==}
-
-  '@types/jsonfile@6.1.4':
-    resolution: {integrity: sha512-D5qGUYwjvnNNextdU59/+fI+spnwtTFmyQP0h+PfIOSkNfpU6AOICUOkm4i0OnSk+NyjdPJrxCDro0sJsWlRpQ==}
 
   '@types/jsonwebtoken@9.0.10':
     resolution: {integrity: sha512-asx5hIG9Qmf/1oStypjanR7iKTv0gXQ1Ov/jfrX6kS/EO0OFni8orbmGCn0672NHR3kXHwpAwR+B368ZGN/2rA==}
@@ -17354,11 +17315,6 @@ snapshots:
 
   '@types/file-saver@2.0.7': {}
 
-  '@types/fs-extra@11.0.4':
-    dependencies:
-      '@types/jsonfile': 6.1.4
-      '@types/node': 26.2.0
-
   '@types/geojson@7946.0.16': {}
 
   '@types/glob-to-regexp@0.4.4': {}
@@ -17381,10 +17337,6 @@ snapshots:
   '@types/json-schema@7.0.15': {}
 
   '@types/json2csv@5.0.7':
-    dependencies:
-      '@types/node': 26.2.0
-
-  '@types/jsonfile@6.1.4':
     dependencies:
       '@types/node': 26.2.0
 

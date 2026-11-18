@@ -1,15 +1,17 @@
 import path from 'path';
-import fse from 'fs-extra';
+import { pathExists } from '@directus/utils/node';
 import type { Ora } from 'ora';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Report } from '../../types.js';
+import { readJson } from '../../utils/json.js';
 import checkBuiltCode from './check-built-code.js';
 
-vi.mock('fs-extra', () => ({
-	default: {
-		pathExists: vi.fn(),
-		readJson: vi.fn(),
-	},
+vi.mock('@directus/utils/node', () => ({
+	pathExists: vi.fn(),
+}));
+
+vi.mock('../../utils/json.js', () => ({
+	readJson: vi.fn(),
 }));
 
 const spinner = { text: '', fail: vi.fn() } as unknown as Ora;
@@ -20,9 +22,9 @@ beforeEach(() => {
 
 describe('check-built-code', () => {
 	test('rejects when built code directory does not exist', async () => {
-		vi.mocked(fse.pathExists).mockImplementation(async (p) => String(p).endsWith('package.json'));
+		vi.mocked(pathExists).mockImplementation(async (p) => String(p).endsWith('package.json'));
 
-		vi.mocked(fse.readJson).mockResolvedValue({ 'directus:extension': { path: 'dist/index.js' } });
+		vi.mocked(readJson).mockResolvedValue({ 'directus:extension': { path: 'dist/index.js' } });
 
 		const reports: Array<Report> = [];
 
@@ -30,9 +32,9 @@ describe('check-built-code', () => {
 	});
 
 	test('rejects when any bundle path does not exist', async () => {
-		vi.mocked(fse.pathExists).mockImplementation(async (p) => !String(p).endsWith('api.js'));
+		vi.mocked(pathExists).mockImplementation(async (p) => !String(p).endsWith('api.js'));
 
-		vi.mocked(fse.readJson).mockResolvedValue({
+		vi.mocked(readJson).mockResolvedValue({
 			'directus:extension': { path: { app: 'dist/app.js', api: 'dist/api.js' } },
 		});
 
@@ -47,13 +49,13 @@ describe('check-built-code', () => {
 	});
 
 	test('resolves with dist relative to the project when no path is configured', async () => {
-		vi.mocked(fse.pathExists).mockResolvedValue(true as never);
-		vi.mocked(fse.readJson).mockResolvedValue({});
+		vi.mocked(pathExists).mockResolvedValue(true as never);
+		vi.mocked(readJson).mockResolvedValue({});
 
 		const reports: Array<Report> = [];
 
 		await expect(checkBuiltCode.handler(spinner, reports)).resolves.toBe('Valid built code directory');
 
-		expect(fse.pathExists).toHaveBeenLastCalledWith(path.resolve('dist'));
+		expect(pathExists).toHaveBeenLastCalledWith(path.resolve('dist'));
 	});
 });

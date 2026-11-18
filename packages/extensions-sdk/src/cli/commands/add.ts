@@ -1,3 +1,4 @@
+import { mkdir, readdir, readFile, rename } from 'node:fs/promises';
 import path from 'path';
 import { EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import type {
@@ -8,15 +9,15 @@ import type {
 import { EXTENSION_LANGUAGES, EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';
 import type { NestedExtensionType } from '@directus/types';
 import { isIn, isTypeIn } from '@directus/utils';
-import { pathToRelativeUrl } from '@directus/utils/node';
+import { pathExists, pathToRelativeUrl } from '@directus/utils/node';
 import chalk from 'chalk';
 import { execa } from 'execa';
-import fse from 'fs-extra';
 import inquirer from 'inquirer';
 import ora from 'ora';
 import type { Language } from '../types.js';
 import detectJsonIndent from '../utils/detect-json-indent.js';
 import getPackageManager from '../utils/get-package-manager.js';
+import { writeJson } from '../utils/json.js';
 import { getLanguageFromPath, isLanguage, languageToShort } from '../utils/languages.js';
 import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
@@ -30,7 +31,7 @@ export default async function add(options: AddOptions): Promise<void> {
 	const extensionPath = process.cwd();
 	const packagePath = path.resolve('package.json');
 
-	if (!(await fse.pathExists(packagePath))) {
+	if (!(await pathExists(packagePath))) {
 		log(`Current directory is not a valid Directus extension:`, 'error');
 		log(`Missing "package.json" file.`, 'error');
 		process.exit(1);
@@ -39,7 +40,7 @@ export default async function add(options: AddOptions): Promise<void> {
 	let extensionManifestFile: string;
 
 	try {
-		extensionManifestFile = (await fse.readFile(packagePath, 'utf8')) as string;
+		extensionManifestFile = await readFile(packagePath, 'utf8');
 	} catch {
 		log(`Failed to read "package.json" file from current directory.`, 'error');
 		process.exit(1);
@@ -61,7 +62,7 @@ export default async function add(options: AddOptions): Promise<void> {
 
 	const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
 
-	const sourceExists = await fse.pathExists(path.resolve('src'));
+	const sourceExists = await pathExists(path.resolve('src'));
 
 	if (extensionOptions.type === 'bundle') {
 		const { type, name, language, alternativeSource } = await inquirer.prompt<{
@@ -109,7 +110,7 @@ export default async function add(options: AddOptions): Promise<void> {
 
 		const sourcePath = path.resolve(source, name);
 
-		await fse.ensureDir(sourcePath);
+		await mkdir(sourcePath, { recursive: true });
 		await copyTemplate(type, extensionPath, sourcePath, language);
 
 		const newEntries: ExtensionOptionsBundleEntry[] = [
@@ -151,7 +152,7 @@ export default async function add(options: AddOptions): Promise<void> {
 			},
 		};
 
-		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
+		await writeJson(packagePath, newExtensionManifest, indent ?? '\t');
 
 		const packageManager = getPackageManager();
 
@@ -236,13 +237,15 @@ export default async function add(options: AddOptions): Promise<void> {
 		const convertSourcePath = path.resolve(source, convertName);
 		const entrySourcePath = path.resolve(source, name);
 
-		const convertFiles = (await fse.readdir(source, 'utf8')) as string[];
+		const convertFiles = await readdir(source);
+
+		await mkdir(convertSourcePath, { recursive: true });
 
 		await Promise.all(
-			convertFiles.map((file) => fse.move(path.resolve(source, file), path.join(convertSourcePath, file))),
+			convertFiles.map((file) => rename(path.resolve(source, file), path.join(convertSourcePath, file))),
 		);
 
-		await fse.ensureDir(entrySourcePath);
+		await mkdir(entrySourcePath, { recursive: true });
 		await copyTemplate(type, extensionPath, entrySourcePath, language);
 
 		const toConvertSourceUrl = (entrypoint: string) =>
@@ -304,7 +307,7 @@ export default async function add(options: AddOptions): Promise<void> {
 			},
 		};
 
-		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
+		await writeJson(packagePath, newExtensionManifest, indent ?? '\t');
 
 		const packageManager = getPackageManager();
 

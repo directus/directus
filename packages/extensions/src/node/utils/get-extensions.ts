@@ -1,6 +1,6 @@
+import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'path';
-import { isTypeIn, listFolders, resolvePackage } from '@directus/utils/node';
-import fse from 'fs-extra';
+import { isTypeIn, listFolders, pathExists, resolvePackage } from '@directus/utils/node';
 import { pick } from 'lodash-es';
 import { EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
 import { ExtensionManifest } from '../../shared/schemas/index.js';
@@ -68,7 +68,7 @@ export function getExtensionDefinition(manifest: ExtensionManifest, meta: { path
 export async function resolveFsExtensions(root: string): Promise<Map<string, Extension>> {
 	root = resolve(root);
 
-	if (!(await fse.exists(root))) return new Map();
+	if (!(await pathExists(root))) return new Map();
 
 	const extensionFolders = await listFolders(root, { ignoreHidden: true });
 
@@ -77,7 +77,7 @@ export async function resolveFsExtensions(root: string): Promise<Map<string, Ext
 			const path = join(root, folder);
 
 			try {
-				const manifest: Record<string, any> = await fse.readJSON(join(path, 'package.json'));
+				const manifest: Record<string, any> = JSON.parse(await readFile(join(path, 'package.json'), 'utf8'));
 				return { name: folder, path, manifest };
 			} catch {
 				// Ignore invalid extensions or non-extension folders
@@ -114,7 +114,7 @@ export async function resolveModuleExtensions(root: string): Promise<Map<string,
 	let pkg: { dependencies?: Record<string, string> };
 
 	try {
-		pkg = await fse.readJSON(join(root, 'package.json'));
+		pkg = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 	} catch {
 		throw new Error(`Couldn't resolve package extensions: Path "${root}" does not contain a package.json file`);
 	}
@@ -125,7 +125,7 @@ export async function resolveModuleExtensions(root: string): Promise<Map<string,
 		dependencyNames.map(async (name) => {
 			try {
 				const path = resolvePackage(name, root);
-				const manifest: Record<string, any> = await fse.readJSON(join(path, 'package.json'));
+				const manifest: Record<string, any> = JSON.parse(await readFile(join(path, 'package.json'), 'utf8'));
 				if (EXTENSION_PKG_KEY in manifest) return { name, path, manifest };
 			} catch {
 				// Ignore

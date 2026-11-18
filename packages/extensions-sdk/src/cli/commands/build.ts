@@ -1,3 +1,4 @@
+import { readFile, stat } from 'node:fs/promises';
 import path from 'path';
 import { APP_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import type { ExtensionOptionsBundleEntry, ExtensionManifest as TExtensionManifest } from '@directus/extensions';
@@ -11,6 +12,7 @@ import {
 } from '@directus/extensions';
 import type { ApiExtensionType, AppExtensionType } from '@directus/types';
 import { isIn, isTypeIn } from '@directus/utils';
+import { pathExists } from '@directus/utils/node';
 import commonjsDefault from '@rollup/plugin-commonjs';
 import jsonDefault from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -19,7 +21,6 @@ import terserDefault from '@rollup/plugin-terser';
 import virtualDefault from '@rollup/plugin-virtual';
 import vue from '@vitejs/plugin-vue';
 import chalk from 'chalk';
-import fse from 'fs-extra';
 import ora from 'ora';
 import type { Plugin, RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
 import { rollup, watch as rollupWatch } from 'rollup';
@@ -57,7 +58,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 	if (!options.type && !options.input && !options.output) {
 		const packagePath = path.resolve('package.json');
 
-		if (!(await fse.pathExists(packagePath))) {
+		if (!(await pathExists(packagePath))) {
 			log(`Current directory is not a valid Directus extension:`, 'error');
 			log(`Missing "package.json" file.`, 'error');
 			process.exit(1);
@@ -66,7 +67,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 		let extensionManifestFile: string;
 
 		try {
-			extensionManifestFile = (await fse.readFile(packagePath, 'utf8')) as string;
+			extensionManifestFile = await readFile(packagePath, 'utf8');
 		} catch {
 			log(`Failed to read "package.json" file from current directory.`, 'error');
 			process.exit(1);
@@ -257,7 +258,7 @@ async function buildAppOrApiExtension({
 	sourcemap: boolean;
 	minify: boolean;
 }) {
-	if (!(await fse.pathExists(input)) || !(await fse.stat(input)).isFile()) {
+	if (!(await pathExists(input)) || !(await stat(input)).isFile()) {
 		log(`Entrypoint ${chalk.bold(input)} does not exist.`, 'error');
 		process.exit(1);
 	}
@@ -300,12 +301,12 @@ async function buildHybridExtension({
 	sourcemap: boolean;
 	minify: boolean;
 }) {
-	if (!(await fse.pathExists(inputApp)) || !(await fse.stat(inputApp)).isFile()) {
+	if (!(await pathExists(inputApp)) || !(await stat(inputApp)).isFile()) {
 		log(`App entrypoint ${chalk.bold(inputApp)} does not exist.`, 'error');
 		process.exit(1);
 	}
 
-	if (!(await fse.pathExists(inputApi)) || !(await fse.stat(inputApi)).isFile()) {
+	if (!(await pathExists(inputApi)) || !(await stat(inputApi)).isFile()) {
 		log(`API entrypoint ${chalk.bold(inputApi)} does not exist.`, 'error');
 		process.exit(1);
 	}

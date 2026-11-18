@@ -1,3 +1,4 @@
+import { readdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
@@ -7,7 +8,7 @@ import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { DatabaseClient } from '@directus/types';
 import { isObject } from '@directus/utils';
-import fse from 'fs-extra';
+import { pathExists } from '@directus/utils/node';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { isArray, merge } from 'lodash-es';
@@ -245,12 +246,12 @@ export async function validateMigrations(): Promise<boolean> {
 	const logger = useLogger();
 
 	try {
-		let migrationFiles = await fse.readdir(path.join(__dirname, 'migrations'));
+		let migrationFiles = await readdir(path.join(__dirname, 'migrations'));
 
 		const customMigrationsPath = path.resolve(getExtensionsPath(), 'migrations');
 
 		let customMigrationFiles =
-			((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
+			((await pathExists(customMigrationsPath)) && (await readdir(customMigrationsPath))) || [];
 
 		migrationFiles = migrationFiles.filter(
 			(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false,

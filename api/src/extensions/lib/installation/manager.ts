@@ -1,13 +1,12 @@
-import { mkdir, readFile, rm } from 'node:fs/promises';
+import { cp, mkdir, readFile, rm } from 'node:fs/promises';
 import { Readable } from 'node:stream';
-import { join } from 'path';
+import { dirname, join } from 'path';
 import type { ReadableStream } from 'stream/web';
 import { useEnv } from '@directus/env';
 import { ErrorCode, isDirectusError, ServiceUnavailableError } from '@directus/errors';
 import { EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';
 import { download, type DownloadOptions } from '@directus/extensions-registry';
 import DriverLocal from '@directus/storage-driver-local';
-import { move, remove } from 'fs-extra';
 import Queue from 'p-queue';
 import { extract } from 'tar';
 import { EXTENSIONS } from '../../../constants.js';
@@ -98,7 +97,9 @@ export class InstallationManager {
 
 			// move to regular local extensions folder
 			const dest = join(this.extensionPath, '.registry', versionId);
-			await move(join(tempDir, extractedPath), dest, { overwrite: true });
+			await rm(dest, { recursive: true, force: true });
+			await mkdir(dirname(dest), { recursive: true });
+			await cp(join(tempDir, extractedPath), dest, { recursive: true });
 		} catch (err) {
 			logger.warn(err);
 
@@ -133,6 +134,6 @@ export class InstallationManager {
 		}
 
 		const path = join(this.extensionPath, '.registry', folder);
-		await remove(path);
+		await rm(path, { recursive: true, force: true });
 	}
 }

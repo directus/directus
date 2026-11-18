@@ -1,9 +1,10 @@
+import { readdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
-import fse from 'fs-extra';
+import { pathExists } from '@directus/utils/node';
 import type { Knex } from 'knex';
 import { orderBy } from 'lodash-es';
 import { flushCaches } from '../../cache.js';
@@ -17,12 +18,11 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	const { MIGRATIONS_PATH } = useEnv();
 	const logger = useLogger();
 
-	let migrationFiles = await fse.readdir(__dirname);
+	let migrationFiles = await readdir(__dirname);
 
 	const customMigrationsPath = path.resolve(MIGRATIONS_PATH);
 
-	let customMigrationFiles =
-		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
+	let customMigrationFiles = ((await pathExists(customMigrationsPath)) && (await readdir(customMigrationsPath))) || [];
 
 	migrationFiles = migrationFiles.filter((file: string) => /^[0-9]+[A-Z]-[^.]+\.(?:js|ts)$/.test(file));
 

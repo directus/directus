@@ -1,8 +1,9 @@
 import path from 'path';
 import { EXTENSION_PKG_KEY } from '@directus/extensions';
-import fse from 'fs-extra';
+import { pathExists } from '@directus/utils/node';
 import { type Ora } from 'ora';
 import type { Report } from '../../types.js';
+import { readJson } from '../../utils/json.js';
 
 const checkBuiltCode = {
 	name: 'built-code',
@@ -12,8 +13,8 @@ const checkBuiltCode = {
 		let codePaths = ['dist'];
 		const packagePath = path.resolve('package.json');
 
-		if (await fse.pathExists(packagePath)) {
-			const packageFile = await fse.readJson(packagePath);
+		if (await pathExists(packagePath)) {
+			const packageFile = await readJson(packagePath);
 			const extensionPath = packageFile[EXTENSION_PKG_KEY]?.path;
 
 			if (extensionPath) {
@@ -30,7 +31,7 @@ const checkBuiltCode = {
 		}
 
 		for (const builtPath of codePaths) {
-			if (!(await fse.pathExists(path.resolve(builtPath)))) {
+			if (!(await pathExists(path.resolve(builtPath)))) {
 				spinner.fail();
 				const message = `No ${builtPath} directory`;
 

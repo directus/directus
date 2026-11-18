@@ -1,10 +1,11 @@
 import path from 'path';
 import { API_EXTENSION_TYPES, EXTENSION_TYPES } from '@directus/constants';
 import { EXTENSION_PKG_KEY } from '@directus/extensions';
-import fse from 'fs-extra';
+import { pathExists } from '@directus/utils/node';
 import { type Ora } from 'ora';
 import semver from 'semver';
 import type { Report } from '../../types.js';
+import { readJson } from '../../utils/json.js';
 
 const checkDirectusConfig = {
 	name: 'directus-config',
@@ -13,7 +14,7 @@ const checkDirectusConfig = {
 
 		const packagePath = path.resolve('package.json');
 
-		if (!(await fse.pathExists(packagePath))) {
+		if (!(await pathExists(packagePath))) {
 			spinner.fail();
 
 			const message = 'No package.json';
@@ -26,7 +27,7 @@ const checkDirectusConfig = {
 			throw new Error(message);
 		}
 
-		const packageFile = await fse.readJson(packagePath);
+		const packageFile = await readJson(packagePath);
 
 		spinner.text = `Checking ${EXTENSION_PKG_KEY} is present`;
 
@@ -77,7 +78,7 @@ const checkDirectusConfig = {
 		const extensionPaths = typeof extensionPath === 'string' ? { app: extensionPath } : extensionPath;
 
 		for (const [key, value] of Object.entries<string>(extensionPaths)) {
-			if (!(await fse.pathExists(path.resolve(value)))) {
+			if (!(await pathExists(path.resolve(value)))) {
 				spinner.fail();
 				const message = `Extension path ${key}: ${value} invalid`;
 

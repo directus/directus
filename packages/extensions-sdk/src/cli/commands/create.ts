@@ -1,3 +1,4 @@
+import { mkdir, readdir, stat } from 'node:fs/promises';
 import path from 'path';
 import { BUNDLE_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import type { ExtensionOptions } from '@directus/extensions';
@@ -10,12 +11,13 @@ import type {
 	HybridExtensionType,
 } from '@directus/types';
 import { isIn } from '@directus/utils';
+import { pathExists } from '@directus/utils/node';
 import chalk from 'chalk';
 import { execa } from 'execa';
-import fse from 'fs-extra';
 import ora from 'ora';
 import { LAST_BREAKING_RELEASE } from '../../constants/last-breaking.js';
 import getPackageManager from '../utils/get-package-manager.js';
+import { writeJson } from '../utils/json.js';
 import { isLanguage, languageToShort } from '../utils/languages.js';
 import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
@@ -48,15 +50,15 @@ export default async function create(type: string, name: string, options: Create
 		process.exit(1);
 	}
 
-	if (await fse.pathExists(targetPath)) {
-		const info = await fse.stat(targetPath);
+	if (await pathExists(targetPath)) {
+		const info = await stat(targetPath);
 
 		if (!info.isDirectory()) {
 			log(`Destination ${chalk.bold(targetDir)} already exists and is not a directory.`, 'error');
 			process.exit(1);
 		}
 
-		const files = await fse.readdir(targetPath);
+		const files = await readdir(targetPath);
 
 		if (files.length > 0) {
 			log(`Destination ${chalk.bold(targetDir)} already exists and is not empty.`, 'error');
@@ -88,14 +90,14 @@ async function createBundleExtension({
 }) {
 	const spinner = ora(chalk.bold('Scaffolding Directus extension...')).start();
 
-	await fse.ensureDir(targetPath);
+	await mkdir(targetPath, { recursive: true });
 	await copyTemplate(type, targetPath);
 
 	const host = `^${LAST_BREAKING_RELEASE}`;
 	const options = { type, path: { app: 'dist/app.js', api: 'dist/api.js' }, entries: [], host };
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type));
 
-	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
+	await writeJson(path.join(targetPath, 'package.json'), packageManifest);
 
 	const packageManager = getPackageManager();
 
@@ -136,7 +138,7 @@ async function createExtension({
 
 	const spinner = ora(chalk.bold('Scaffolding Directus extension...')).start();
 
-	await fse.ensureDir(targetPath);
+	await mkdir(targetPath, { recursive: true });
 	await copyTemplate(type, targetPath, 'src', language);
 
 	const host = getDefaultHost(type);
@@ -157,7 +159,7 @@ async function createExtension({
 
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type, language));
 
-	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
+	await writeJson(path.join(targetPath, 'package.json'), packageManifest);
 
 	const packageManager = getPackageManager();
 
