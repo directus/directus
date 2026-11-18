@@ -53,7 +53,7 @@ export type Options = {
 		suffix: string;
 		/**
 		 * Reuse a long lived database container instead of starting a new one, creating a fresh user and database inside of it.
-		 * The user and database are dropped on stop, the container is kept running. Defaults to the `SANDBOX_SHARED` env var.
+		 * The user and database are dropped on stop, the container is kept running.
 		 */
 		shared: boolean;
 	};

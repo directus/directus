@@ -1,13 +1,26 @@
 import { spawn } from 'child_process';
-import { createHash } from 'crypto';
-import { mkdir, readdir, readFile, rm, stat } from 'fs/promises';
+import { createHash, randomBytes } from 'crypto';
+import { mkdir, readdir, readFile, rename, rm, stat, writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { type Env } from '../../config.js';
 import { apiFolder, type Options } from '../../sandbox.js';
 
-/** Env variables that bootstrap writes into the database */
-const bootstrapEnv = ['ADMIN_EMAIL', 'ADMIN_PASSWORD', 'ADMIN_TOKEN', 'PROJECT_NAME', 'PROJECT_OWNER'];
+/** Env variables that influence what bootstrap writes into the database */
+const bootstrapEnv = [
+	'ADMIN_EMAIL',
+	'ADMIN_PASSWORD',
+	'ADMIN_TOKEN',
+	'PROJECT_NAME',
+	'PROJECT_OWNER',
+	'ACCEPT_TERMS',
+	'MIGRATIONS_PATH',
+	'TZ',
+	'DB_CHARSET',
+	'DB_COLLATION',
+	'DB_SEARCH_PATH',
+	'DB_EXCLUDE_TABLES',
+];
 
 /**
  * Templates are keyed by everything that influences the outcome of bootstrapping,
@@ -18,25 +31,37 @@ export async function getTemplateKey(opts: Options, env: Env) {
 	// Bootstrap runs from source in dev mode and from the build otherwise
 	const folder = join(apiFolder, opts.dev ? 'src' : 'dist', 'database');
 
-	for (const dir of ['migrations', 'seeds']) {
-		const entries = await readdir(join(folder, dir), { recursive: true, withFileTypes: true });
+	const values = env as Record<string, string | undefined>;
 
-		const files = entries
-			.filter((entry) => entry.isFile())
-			.map((entry) => join(entry.parentPath, entry.name))
-			.sort();
-
-		for (const file of files) {
-			hash.update(file.slice(folder.length));
-			hash.update(await readFile(file));
-		}
-	}
+	await hashFolder(hash, join(folder, 'migrations'));
+	await hashFolder(hash, join(folder, 'seeds'));
+	// Custom migrations are resolved against the cwd the bootstrap process inherits
+	await hashFolder(hash, resolve(values['MIGRATIONS_PATH'] ?? './migrations'), true);
 
 	for (const key of bootstrapEnv) {
-		hash.update(`${key}=${(env as Record<string, string | undefined>)[key] ?? ''}`);
+		hash.update(`${key}=${values[key] ?? ''}\n`);
 	}
 
 	return hash.digest('hex').slice(0, 12);
+}
+
+async function hashFolder(hash: ReturnType<typeof createHash>, folder: string, optional = false) {
+	const entries = await readdir(folder, { recursive: true, withFileTypes: true }).catch((err) => {
+		if (optional && err.code === 'ENOENT') return [];
+		throw err;
+	});
+
+	const files = entries
+		.filter((entry) => entry.isFile())
+		.map((entry) => join(entry.parentPath, entry.name))
+		.sort();
+
+	hash.update(`${folder}\n`);
+
+	for (const file of files) {
+		hash.update(`${file.slice(folder.length)}\n`);
+		hash.update(await readFile(file));
+	}
 }
 
 export async function findContainer(project: string, service: string) {
@@ -86,31 +111,68 @@ export async function exec(command: string, args: string[], input?: string) {
 
 /**
  * Cross process lock, so parallel sandboxes don't try to start the same shared container or build the same template at once.
- * `mkdir` is atomic, locks older than `staleAfter` are assumed to be left over from a crashed process.
+ * `mkdir` is atomic. The lock stores the pid of its holder, so it is only taken over once that process is gone,
+ * no matter how long the holder takes. All sandboxes share the host, so the pid check is reliable.
  */
-export async function withLock<T>(name: string, fn: () => Promise<T>, staleAfter = 5 * 60_000): Promise<T> {
+export async function withLock<T>(name: string, fn: () => Promise<T>): Promise<T> {
 	const lock = join(tmpdir(), `${name}.lock`);
+	const ownerFile = join(lock, 'owner');
+	const owner = `${process.pid}:${randomBytes(8).toString('hex')}`;
+	const readOwner = (dir = lock) => readFile(join(dir, 'owner'), 'utf8').catch(() => undefined);
 
 	while (true) {
 		try {
 			await mkdir(lock);
+			await writeFile(ownerFile, owner);
 			break;
 		} catch (err: any) {
 			if (err.code !== 'EEXIST') throw err;
 
-			const age = await stat(lock).then(
-				(s) => Date.now() - s.mtimeMs,
-				() => 0,
-			);
+			const current = await readOwner();
 
-			if (age > staleAfter) await rm(lock, { recursive: true, force: true });
-			else await new Promise((resolve) => setTimeout(resolve, 250));
+			if (await isStale(lock, current)) {
+				// Renaming is atomic, so only a single waiter can take over a stale lock
+				const stale = `${lock}.${randomBytes(8).toString('hex')}.stale`;
+
+				const renamed = await rename(lock, stale).then(
+					() => true,
+					() => false,
+				);
+
+				if (renamed) {
+					// The lock might have changed hands between the check and the rename, so hand it back
+					if ((await readOwner(stale)) !== current) await rename(stale, lock).catch(() => {});
+					await rm(stale, { recursive: true, force: true });
+				}
+			} else {
+				await new Promise((resolve) => setTimeout(resolve, 250));
+			}
 		}
 	}
 
 	try {
 		return await fn();
 	} finally {
-		await rm(lock, { recursive: true, force: true });
+		if ((await readOwner()) === owner) await rm(lock, { recursive: true, force: true });
+	}
+}
+
+async function isStale(lock: string, owner: string | undefined) {
+	// The owner is written right after the lock is created, so only treat a missing owner as stale after a grace period
+	if (!owner) {
+		const age = await stat(lock).then(
+			(s) => Date.now() - s.mtimeMs,
+			() => 0,
+		);
+
+		return age > 10_000;
+	}
+
+	try {
+		process.kill(Number(owner.split(':')[0]), 0);
+		return false;
+	} catch (err: any) {
+		// EPERM means the process exists but belongs to another user
+		return err.code === 'ESRCH';
 	}
 }

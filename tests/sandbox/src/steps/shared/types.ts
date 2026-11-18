@@ -45,10 +45,13 @@ export abstract class SharedHelper {
 		} else {
 			this.logger.info(`Starting shared database container ${this.project}`);
 
-			// Keep the port of an existing but unhealthy container so compose doesn't recreate it
-			const ports = container ? { DB_PORT: await getHostPort(container, this.port) } : {};
+			// Keep all published ports of an existing but unhealthy container, compose recreates it on any change
+			if (container) {
+				this.container = container;
+				Object.assign(this.env, await this.getPorts());
+			}
 
-			await composeUp(this.project, [this.database], { ...this.env, ...ports }, this.logger);
+			await composeUp(this.project, [this.database], this.env, this.logger);
 
 			container = await findContainer(this.project, this.database);
 			if (!container) throw new Error(`Shared database container ${this.project} could not be found after starting it`);

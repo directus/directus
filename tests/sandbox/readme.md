@@ -67,8 +67,7 @@ await sb.close();
 ### Shared database mode
 
 Starting a database container and bootstrapping it are usually the slowest parts of spinning up a sandbox. With
-`--docker.shared` (or `docker: { shared: true }`, or `SANDBOX_SHARED=true` as an environment variable), the sandbox
-instead:
+`--docker.shared` (or `docker: { shared: true }`), the sandbox instead:
 
 1. Reuses a long lived database container in the compose project `sandbox_shared_<database>_<version>`, starting it on
    first use. That container is never stopped by the sandbox; remove it with
