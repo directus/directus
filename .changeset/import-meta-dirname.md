@@ -1,6 +1,7 @@
 ---
 '@directus/api': patch
 '@directus/extensions-sdk': patch
+'@directus/memory': patch
 '@directus/specs': patch
 'create-directus-project': patch
 'directus': patch
