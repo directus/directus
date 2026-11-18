@@ -1,14 +1,8 @@
-import fs from 'node:fs';
+import { chmod, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { promisify } from 'node:util';
 import type { Driver } from '@directus/types';
 import { Liquid } from 'liquidjs';
 import type { Credentials } from '../create-db-connection.js';
-
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
-const fchmod = promisify(fs.fchmod);
-const open = promisify(fs.open);
 
 const liquidEngine = new Liquid({
 	extname: '.liquid',
@@ -45,6 +39,8 @@ export default async function createEnv(client: Driver, credentials: Credentials
 
 	const templateString = await readFile(path.join(import.meta.dirname, 'env-stub.liquid'), 'utf8');
 	const text = await liquidEngine.parseAndRender(templateString, configAsStrings);
-	await writeFile(path.join(directory, '.env'), text);
-	await fchmod(await open(path.join(directory, '.env'), 'r+'), 0o640);
+	const envPath = path.join(directory, '.env');
+
+	await writeFile(envPath, text);
+	await chmod(envPath, 0o640);
 }
