@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import LogoOpenRouter from './components/logos/openrouter.vue';
 import { buildCustomModelDefinition, buildCustomModels } from './models';
 
 describe('buildCustomModels', () => {
@@ -37,6 +38,13 @@ describe('buildCustomModels', () => {
 				output: 0,
 			},
 		});
+	});
+
+	test('uses the given provider and its logo', () => {
+		const [model] = buildCustomModels([{ id: 'anthropic/claude-haiku-4.5', name: 'Claude Haiku 4.5' }], 'openrouter');
+
+		expect(model?.provider).toBe('openrouter');
+		expect(model?.icon).toBe(LogoOpenRouter);
 	});
 
 	test('uses default context when not provided', () => {

@@ -126,7 +126,7 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 
 		if (args.action === 'read') {
 			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
-			let result = null;
+			let result;
 
 			if (isSingleton) {
 				result = await itemsService.readSingleton(sanitizedQuery);
@@ -160,7 +160,7 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 				};
 			}
 
-			let updatedKeys: PrimaryKey[] = [];
+			let updatedKeys: PrimaryKey[];
 
 			if (Array.isArray(args.data)) {
 				updatedKeys = await itemsService.updateBatch(args.data);

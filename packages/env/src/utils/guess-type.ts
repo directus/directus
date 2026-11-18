@@ -1,6 +1,6 @@
 import type { EnvType } from '../types/env-type.js';
 
-export const guessType = (value: unknown): EnvType => {
+export function guessType(value: unknown): EnvType {
 	if (typeof value === 'boolean' || value === 'true' || value === 'false') {
 		return 'boolean';
 	}
@@ -21,4 +21,4 @@ export const guessType = (value: unknown): EnvType => {
 	}
 
 	return 'json';
-};
+}

@@ -1,5 +1,4 @@
 import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import { random } from 'lodash-es';
 import getDatabase from '../database/index.js';
@@ -12,9 +11,9 @@ import { scheduleSynchronizedJob } from '../utils/schedule.js';
  * @returns Whether or not the project status job has been initialized
  */
 export default async function schedule(): Promise<boolean> {
-	const env = useEnv();
+	const { PROJECT_OWNER_ENABLED } = useEnv();
 
-	if (toBoolean(env['PROJECT_OWNER_ENABLED']) === false) {
+	if (!PROJECT_OWNER_ENABLED) {
 		return false;
 	}
 

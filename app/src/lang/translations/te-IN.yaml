@@ -84,8 +84,11 @@ fields:
 field_options:
   directus_users:
     status_dropdown_draft: డ్రాఫ్ట్
+image: చిత్రం
 interfaces:
   file-image:
+    image: చిత్రం
+  system-file-image:
     image: చిత్రం
   translations:
     default_language: డిఫాల్ట్ భాష

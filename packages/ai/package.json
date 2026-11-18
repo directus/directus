@@ -1,6 +1,6 @@
 {
 	"name": "@directus/ai",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"description": "Shared AI types and model definitions for Directus AI",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -29,6 +29,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

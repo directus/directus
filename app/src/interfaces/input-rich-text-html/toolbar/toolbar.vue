@@ -31,6 +31,9 @@ const props = withDefaults(
 		disabled?: boolean;
 		fullscreen?: boolean;
 		visualaid?: boolean;
+		/** Field `keepHtmlComments` option; auto-appends the Show HTML Comments toggle. */
+		htmlComments?: boolean;
+		showHtmlComments?: boolean;
 	}>(),
 	{ font: 'sans-serif', customFormats: () => [], contributedButtons: () => [] },
 );
@@ -38,6 +41,7 @@ const props = withDefaults(
 const emit = defineEmits<{
 	'toggle-fullscreen': [];
 	'toggle-visualaid': [];
+	'toggle-html-comments': [];
 	'open-image': [];
 	'open-media': [];
 	'open-link': [];
@@ -61,6 +65,10 @@ const context: ToolbarContext = {
 	visualaid: {
 		active: () => props.visualaid ?? false,
 		toggle: () => emit('toggle-visualaid'),
+	},
+	htmlComments: {
+		active: () => props.showHtmlComments ?? false,
+		toggle: () => emit('toggle-html-comments'),
 	},
 	image: {
 		open: () => emit('open-image'),
@@ -146,14 +154,16 @@ const allGroups = computed<ToolbarGroup[]>(() => {
 
 const TOOLBAR_ALIASES: Record<string, string[]> = { 'ltr rtl': ['ltr', 'rtl'] };
 
-// keys present in the field config AND the registry; `styles` is never user-configured — it's
-// auto-appended when customFormats exist (TinyMCE parity)
+const AUTO_APPENDED_KEYS = ['styles', 'htmlcomments'];
+
+// keys present in the field config AND the registry; auto-appended keys are never user-configured
 const selectedKeys = computed(() => {
 	const keys = props.toolbar
 		.flatMap((key) => TOOLBAR_ALIASES[key] ?? [key])
-		.filter((key) => key !== 'styles' && Boolean(allButtons.value[key]));
+		.filter((key) => !AUTO_APPENDED_KEYS.includes(key) && Boolean(allButtons.value[key]));
 
 	if (props.customFormats.length > 0) keys.push('styles');
+	if (props.htmlComments) keys.push('htmlcomments');
 	return keys;
 });
 

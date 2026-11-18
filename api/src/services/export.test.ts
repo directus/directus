@@ -30,12 +30,10 @@ vi.mock('node:fs', async (importOriginal) => ({
 	createReadStream: vi.fn(),
 }));
 
-vi.mock('@directus/env', () => ({
-	useEnv: () => ({
-		EMAIL_TEMPLATES_PATH: './templates',
-		EXTENSIONS_PATH: './extensions',
-	}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
+});
 
 vi.mock('../database/index.js', () => ({
 	default: vi.fn(),

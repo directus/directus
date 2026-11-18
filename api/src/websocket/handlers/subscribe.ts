@@ -1,4 +1,4 @@
-import { InvalidPayloadError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { type Bus } from '@directus/memory';
 import { useBus } from '../../bus/index.js';
 import getDatabase from '../../database/index.js';
@@ -14,6 +14,7 @@ import { WebSocketSubscribeMessage } from '../messages.js';
 import type { Subscription, SubscriptionEvent, WebSocketClient } from '../types.js';
 import { getPayload } from '../utils/items.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
+import { validateDeleteEventAccess, validateSubscriptionAccess } from '../utils/validate-subscription-access.js';
 
 /**
  * Handler responsible for subscriptions
@@ -127,12 +128,27 @@ export class SubscribeHandler {
 			}
 
 			try {
+				// manually check delete events permissions, create and update are checked by getPayload
+				if (event.action === 'delete') {
+					await validateDeleteEventAccess(
+						{
+							accountability: client.accountability,
+							collection: subscription.collection,
+							itemScoped: 'item' in subscription,
+						},
+						{ knex: getDatabase(), schema },
+					);
+				}
+
 				const result = await getPayload(subscription, client.accountability, schema, event);
 
 				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) continue;
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
+				// don't notify the client of permission errors, as that would leak the existence of the event
+				if (isDirectusError(err, ErrorCode.Forbidden)) continue;
+
 				handleWebSocketError(client, err, { type: 'subscribe', uid: subscription.uid });
 			}
 		}
@@ -172,6 +188,14 @@ export class SubscribeHandler {
 				}
 
 				if ('item' in message) subscription.item = String(message.item);
+
+				// subscriptions on specific events skip getPayload, validate access here
+				if (subscription.event) {
+					await validateSubscriptionAccess(
+						{ accountability, collection, event: subscription.event, item: subscription.item },
+						{ knex: getDatabase(), schema },
+					);
+				}
 
 				if ('uid' in message) {
 					subscription.uid = String(message.uid);

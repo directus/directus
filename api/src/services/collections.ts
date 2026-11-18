@@ -331,7 +331,7 @@ export class CollectionsService {
 	 * Read all collections. Currently doesn't support any query.
 	 */
 	async readByQuery(): Promise<Collection[]> {
-		const env = useEnv();
+		const { DB_EXCLUDE_TABLES } = useEnv();
 
 		const collectionsItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
@@ -408,10 +408,8 @@ export class CollectionsService {
 			}
 		}
 
-		if (env['DB_EXCLUDE_TABLES']) {
-			return collections.filter(
-				(collection) => (env['DB_EXCLUDE_TABLES'] as string[]).includes(collection.collection) === false,
-			);
+		if (DB_EXCLUDE_TABLES.length > 0) {
+			return collections.filter((collection) => DB_EXCLUDE_TABLES.includes(collection.collection) === false);
 		}
 
 		return collections;

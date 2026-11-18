@@ -12,7 +12,6 @@ import type { AbstractServiceOptions, Accountability, LoginResult, SchemaOvervie
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash-es';
-import type { StringValue } from 'ms';
 import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
@@ -24,7 +23,6 @@ import { fetchAccountabilityPolicyGlobals } from '../permissions/modules/fetch-a
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { createRateLimiter, RateLimiterRes } from '../rate-limiter.js';
 import type { DirectusTokenPayload, Session, User } from '../types/index.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { getSecret } from '../utils/get-secret.js';
 import { stall } from '../utils/stall.js';
 import { ActivityService } from './activity.js';
@@ -66,7 +64,7 @@ export class AuthenticationService {
 	): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
 
-		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
+		const STALL_TIME = env.LOGIN_STALL_TIME;
 		const timeStart = performance.now();
 
 		const provider = getAuthProvider(providerName);
@@ -252,7 +250,7 @@ export class AuthenticationService {
 		}
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
+		const refreshTokenExpiration = new Date(Date.now() + env.REFRESH_TOKEN_TTL);
 
 		if (options?.session) {
 			tokenPayload.session = refreshToken;
@@ -274,10 +272,10 @@ export class AuthenticationService {
 			},
 		);
 
-		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as StringValue | number;
+		const TTL = options?.session ? env.SESSION_COOKIE_TTL : env.ACCESS_TOKEN_TTL;
 
 		const accessToken = jwt.sign(customClaims, getSecret(), {
-			expiresIn: TTL,
+			expiresIn: Math.floor(TTL / 1000),
 			issuer: 'directus',
 		});
 
@@ -317,14 +315,14 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: getMilliseconds(TTL),
+			expires: TTL,
 			id: user.id,
 		};
 	}
 
 	async refresh(refreshToken: string, options?: Partial<{ session: boolean }>): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
-		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
+		const STALL_TIME = env.LOGIN_STALL_TIME;
 		const timeStart = performance.now();
 
 		if (!refreshToken) {
@@ -412,8 +410,8 @@ export class AuthenticationService {
 		}
 
 		let newRefreshToken = record.session_next_token ?? nanoid(64);
-		const sessionDuration = env[options?.session ? 'SESSION_COOKIE_TTL' : 'REFRESH_TOKEN_TTL'];
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(sessionDuration, 0));
+		const sessionDuration = options?.session ? env.SESSION_COOKIE_TTL : env.REFRESH_TOKEN_TTL;
+		const refreshTokenExpiration = new Date(Date.now() + sessionDuration);
 
 		const tokenPayload: DirectusTokenPayload = {
 			id: record.user_id,
@@ -461,10 +459,10 @@ export class AuthenticationService {
 			},
 		);
 
-		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as StringValue | number;
+		const TTL = options?.session ? env.SESSION_COOKIE_TTL : env.ACCESS_TOKEN_TTL;
 
 		const accessToken = jwt.sign(customClaims, getSecret(), {
-			expiresIn: TTL,
+			expiresIn: Math.floor(TTL / 1000),
 			issuer: 'directus',
 		});
 
@@ -484,7 +482,7 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken: newRefreshToken,
-			expires: getMilliseconds(TTL),
+			expires: TTL,
 			id: record.user_id,
 		};
 	}
@@ -508,7 +506,7 @@ export class AuthenticationService {
 		}
 
 		// Keep the old session active for a short period of time
-		const GRACE_PERIOD = getMilliseconds(env['SESSION_REFRESH_GRACE_PERIOD'], 10_000);
+		const GRACE_PERIOD = env.SESSION_REFRESH_GRACE_PERIOD;
 
 		// Update the existing session record to have a short safety timeout
 		// before expiring, and add the reference to the new session token
