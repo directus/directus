@@ -49,7 +49,7 @@ export async function runSchemaChange<T>(
 				beforeDrop: async (collection) => {
 					dropped.add(collection);
 					if (!shouldSync) return;
-					await service.syncCollections([collection], { includeRelating: true, exclude: [collection] });
+					await service.syncCollections([collection], { exclude: [collection] });
 				},
 			};
 
@@ -64,7 +64,7 @@ export async function runSchemaChange<T>(
 			}
 
 			if (pending.size > 0 && shouldSync) {
-				await service.syncCollections([...pending], { includeRelating: true, exclude: [...dropped] });
+				await service.syncCollections([...pending], { exclude: [...dropped] });
 			}
 
 			return result;

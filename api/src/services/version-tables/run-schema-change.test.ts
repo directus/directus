@@ -68,7 +68,7 @@ describe('runSchemaChange', () => {
 			'disable foreign keys',
 			'begin',
 			'change',
-			'sync articles,authors {"includeRelating":true,"exclude":[]}',
+			'sync articles,authors {"exclude":[]}',
 			'commit',
 			'enable foreign keys',
 		]);
@@ -83,7 +83,7 @@ describe('runSchemaChange', () => {
 		expect(calls).toEqual([
 			'disable foreign keys',
 			'begin',
-			'sync authors {"includeRelating":true,"exclude":["authors"]}',
+			'sync authors {"exclude":["authors"]}',
 			'drop',
 			'commit',
 			'enable foreign keys',
@@ -108,7 +108,7 @@ describe('runSchemaChange', () => {
 			'begin',
 			'nested change',
 			'change',
-			'sync articles,authors {"includeRelating":true,"exclude":[]}',
+			'sync articles,authors {"exclude":[]}',
 			'commit',
 			'enable foreign keys',
 		]);
@@ -123,8 +123,8 @@ describe('runSchemaChange', () => {
 		expect(calls).toEqual([
 			'disable foreign keys',
 			'begin',
-			'sync authors {"includeRelating":true,"exclude":["authors"]}',
-			'sync articles,authors {"includeRelating":true,"exclude":["authors"]}',
+			'sync authors {"exclude":["authors"]}',
+			'sync articles,authors {"exclude":["authors"]}',
 			'commit',
 			'enable foreign keys',
 		]);
@@ -148,7 +148,7 @@ describe('runSchemaChange', () => {
 			});
 		});
 
-		expect(calls).toContain('sync articles,authors {"includeRelating":true,"exclude":[]}');
+		expect(calls).toContain('sync articles,authors {"exclude":[]}');
 	});
 
 	test('does not sync when the change fails', async () => {

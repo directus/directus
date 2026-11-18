@@ -481,10 +481,19 @@ describe('scoped changes', () => {
 		const { sql, introspected } = await sync({
 			versioned: ['articles'],
 			shadow: OUTDATED_ARTICLES_SHADOW,
+			schema: new SchemaBuilder()
+				.collection('articles', (c) => {
+					c.field('id').id();
+					c.field('title').string();
+				})
+				.collection('authors', (c) => {
+					c.field('id').id();
+				})
+				.build(),
 			run: (service) => service.syncCollections(['authors']),
 		});
 
-		// The outdated shadow table of articles is left alone, as it isn't affected by a change to authors
+		// The outdated shadow table of articles is left alone, as articles doesn't relate to authors
 		expect(sql).toBe('');
 
 		// Version tables that don't exist aren't introspected
@@ -516,7 +525,7 @@ describe('scoped changes', () => {
 			versioned: ['articles', 'authors'],
 			shadow: ARTICLES_SHADOW,
 			relations: [AUTHOR_O2M],
-			run: (service) => service.syncCollections(['authors'], { includeRelating: true }),
+			run: (service) => service.syncCollections(['authors']),
 		});
 
 		expect(introspected).toEqual(['directus_shadow_articles', 'authors', 'articles']);
@@ -573,7 +582,7 @@ describe('scoped changes', () => {
 					c.field('item').a2o(['authors']);
 				})
 				.build(),
-			run: (service) => service.syncCollections(['authors'], { includeRelating: true }),
+			run: (service) => service.syncCollections(['authors']),
 		});
 
 		expect(introspected).toContain('comments');
@@ -583,7 +592,7 @@ describe('scoped changes', () => {
 		const { sql } = await sync({
 			versioned: ['articles'],
 			shadow: ARTICLES_SHADOW,
-			run: (service) => service.syncCollections(['authors'], { includeRelating: true, exclude: ['authors'] }),
+			run: (service) => service.syncCollections(['authors'], { exclude: ['authors'] }),
 		});
 
 		expect(sql).toMatchInlineSnapshot(`

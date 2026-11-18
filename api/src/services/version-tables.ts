@@ -42,8 +42,6 @@ type InspectedSchema = {
 };
 
 export type SyncCollectionsOptions = {
-	/** Also sync collections with a m2o / a2o relation to the given collections */
-	includeRelating?: boolean;
 	/** Collections to treat as deleted */
 	exclude?: string[];
 };
@@ -71,12 +69,12 @@ export class VersionTablesService {
 	/**
 	 * Bring the version tables in line with the current schema
 	 *
-	 * @param collections - Collections to sync, excluding shadow/link tables. Syncs every version table if omitted.
+	 * @param collections - Collections to sync, excluding shadow/link tables, together with the collections that have a m2o / a2o relation to them. Syncs every version table if omitted.
 	 */
 	async syncCollections(collections?: string[], options?: SyncCollectionsOptions): Promise<void> {
 		const exclude = new Set(options?.exclude ?? []);
 
-		if (collections && options?.includeRelating) {
+		if (collections) {
 			collections = this.resolveRelatedCollections(collections);
 		}
 
@@ -113,7 +111,7 @@ export class VersionTablesService {
 	}
 
 	/**
-	 * Add the collections with a m2o / a2o relation to the given collections, if requested
+	 * Add the collections with a m2o / a2o relation to the given collections
 	 */
 	private resolveRelatedCollections(collections: string[]): string[] {
 		const relatingCollections = this.schema.relations
