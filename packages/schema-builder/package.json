@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema-builder",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Directus SchemaBuilder for mocking/constructing a database schema based on code.",
 	"keywords": [
 		"sql",
@@ -43,6 +43,7 @@
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@types/lodash-es": "catalog:",
+		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
