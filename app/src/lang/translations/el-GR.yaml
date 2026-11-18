@@ -540,6 +540,12 @@ triggers:
   webhook:
     method: Μέθοδος
 operations:
+  ai-image:
+    starting_points:
+      icon: Εικονίδιο
+  ai-text:
+    files: Αρχεία
+    type_text: Κείμενο
   json-web-token:
     options: Επιλογές
   log:
