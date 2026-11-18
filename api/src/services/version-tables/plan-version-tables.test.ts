@@ -234,7 +234,9 @@ describe('planVersionTables', () => {
 			},
 		};
 
-		expect(() => planTables(conflicting, new Set(['authors']))).toThrow('conflicts with the versioning field');
+		expect(() => planTables(conflicting, new Set(['authors']))).toThrow(
+			'conflicts with a reserved versioning field name',
+		);
 	});
 
 	test('copies the on update action of relational constraints', () => {

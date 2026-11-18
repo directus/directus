@@ -1,9 +1,9 @@
-import { InvalidPayloadError } from '@directus/errors';
 import type { Column, ForeignKey } from '@directus/schema';
 import type { Relation } from '@directus/types';
 import { partition } from 'lodash-es';
 import type { VersioningHelper } from '../../database/helpers/versioning/types.js';
 import getLocalType from '../../utils/get-local-type.js';
+import { assertVersionSystemFields } from './assert-field-names.js';
 import { VERSION_SYSTEM_FIELDS } from './constants.js';
 import { isVersioningTable } from './utils.js';
 
@@ -192,12 +192,11 @@ function getPrimaryKey(collection: LiveCollection) {
 function planShadowTable(liveCollection: LiveCollection, context: PlanContext): VersionTable {
 	const { collection, columns, relations } = liveCollection;
 	const primary = getPrimaryKey(liveCollection)?.name;
-	const systemFields: string[] = Object.values(VERSION_SYSTEM_FIELDS);
 
 	const shadow: VersionTable = {
 		table: context.helper.getShadowTableName(collection),
 		type: 'shadow',
-		columns: systemFields.map((name) => ({ kind: 'system', name })),
+		columns: Object.values(VERSION_SYSTEM_FIELDS).map((name) => ({ kind: 'system', name })),
 		foreignKeys: [
 			{
 				column: VERSION_SYSTEM_FIELDS.userCreated,
@@ -216,22 +215,15 @@ function planShadowTable(liveCollection: LiveCollection, context: PlanContext): 
 		],
 	};
 
-	const usedNames = new Set(systemFields);
-
-	const reserveName = (name: string, field: string) => {
-		if (usedNames.has(name)) {
-			throw new InvalidPayloadError({
-				reason: `Field "${field}" in collection "${collection}" conflicts with the versioning field "${name}"`,
-			});
-		}
-
-		usedNames.add(name);
-	};
+	// Field creation only checks this while the collection is versioned, not for fields that existed before
+	assertVersionSystemFields(
+		collection,
+		columns.map((column) => column.name),
+	);
 
 	for (const source of columns) {
 		const field = source.name;
 
-		reserveName(field, field);
 		shadow.columns.push({ kind: 'mirror', name: field, source });
 
 		// The live primary key references the live item and is null until the version is published. It has no foreign
@@ -259,7 +251,6 @@ function planShadowTable(liveCollection: LiveCollection, context: PlanContext): 
 
 		const referenceField = context.helper.getVersionReferenceField(field);
 
-		reserveName(referenceField, field);
 		shadow.columns.push({ kind: 'reference', name: referenceField });
 
 		if (reference.foreignKey) {
