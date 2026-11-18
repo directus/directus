@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-registry",
-	"version": "4.0.6",
+	"version": "4.0.7",
 	"description": "Abstraction for exploring Directus extensions on a package registry",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -35,6 +35,7 @@
 	"devDependencies": {
 		"@directus/types": "workspace:*",
 		"@directus/tsconfig": "catalog:",
+		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
