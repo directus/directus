@@ -1,6 +1,6 @@
 {
 	"name": "@directus/types",
-	"version": "18.1.0",
+	"version": "19.0.0",
 	"description": "Shared types for Directus",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -38,6 +38,7 @@
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@types/deep-diff": "catalog:",
+		"@types/node": "catalog:",
 		"knex": "catalog:",
 		"typescript": "catalog:",
 		"vue": "catalog:",

@@ -1257,6 +1257,13 @@ triggers:
   webhook:
     method: Phương thức
 operations:
+  ai-image:
+    starting_points:
+      icon: Biểu tượng
+  ai-text:
+    files: Tệp
+    type_text: Đoạn văn bản
+    view_json: JSON
   json-web-token:
     token: Token
     options: Tuỳ chọn

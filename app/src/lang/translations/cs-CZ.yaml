@@ -20,6 +20,35 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O nás
+directus_mscl: Directus MSCL-1.0-GPL
+data_processing_agreement: Smlouva o zpracování osobních údajů
+contact_support: kontaktovat podporu
+setup_welcome: Vítejte v aplikaci Directus
+setup_license_key_notice: >
+  Pokud máte licenční klíč, zadejte ho níže pro odemknutí celého vašeho plánu. Vybrané podniky s ročními příjmy pod 5 milionů dolarů mohou mít nárok na náš {oig}.
+setup_save_accept_license: >
+  Kliknutím na Uložit, souhlasíte s podmínkami {directusMscl} a {privacyPolicy}.
+setup_license_invalid: >
+  Licence je neplatná. Pro vyřešení tohoto problému prosím {contactSupport}.
+setup_license_invalid_format: Neplatný formát licenčního klíče.
+setup_accept_license: Přijímám podmínky {directusMscl} a {privacyPolicy}
+setup_launch: Spustit Directus
+setup_license_title: Nastavte si licenci
+license_onboarding_title: Máte licenční klíč?
+license_onboarding_desc: >
+  Zadejte ho níže pro odemknutí celého vašeho plánu. Vybrané podniky s ročními příjmy pod 5 milionů dolarů mohou mít nárok na náš {oig}.
+project_usage: Na co používáte Directus?
+project_usage_personal: Osobní / vedlejší projekt
+project_usage_commercial: Business / komerční užití
+project_usage_community: Open Source / komunitní projekt
+org_name: Jméno organizace
+license_key_option: Mám licenční klíč
+license_key_option_desc: 'OIG, Team, nebo Enterprise plán'
+enter_license_key: Zadejte Váš licenční klíč
+license_valid: Licence platná
+license_key: Licenční klíč
+no_license_key: Nemáte licenční klíč?
+get_license_key: Získat licenční klíč
 continue: Pokračovat
 first_name: Křestní jméno
 last_name: Příjmení
@@ -683,6 +712,8 @@ file_moved: Soubor přesunut
 collection_created: Kolekce vytvořena
 modified_on: Upraveno
 card_size: Velikost karty
+small: Malé
+large: Velké
 sort_field: Pole řazení
 add_sort_field: Přidat pole řazení
 sort: Seřadit
@@ -730,6 +761,7 @@ errors:
   INVALID_USER: Ověření uživatele se nezdařilo
   ITEM_LIMIT_REACHED: Dosažen limit položek
   ITEM_NOT_FOUND: Položka nebyla nalezena
+  LICENSE_INVALID: Licenční klíč nelze použít
   LIMIT_EXCEEDED: 'Limit byl překonán'
   METHOD_NOT_ALLOWED: Tato metoda není povolena
   NOT_NULL_VIOLATION: Hodnota nesmí být null
@@ -1122,14 +1154,32 @@ settings_data_model: Datový model
 settings_roles: Uživatelské role
 settings_permissions: Přístupová práva
 settings_project: Nastavení
+settings_license: Licence
 licensing:
+  unlicensed: Bez licence
+  add: Přidat licenci
+  manage: Správa licence
   unlimited: Bez omezení
   addon_manage: Spravovat
   addon_update: Úpravy
+  deactivate: Deaktivovat licenci
+  deactivate_confirm_title: Deaktivovat licenci?
+  deactivate_confirm_body: Jste si jisti, že chcete deaktivovat licenci? Vaše instance bude snížena na plán Core.
+  resolve_title_manual: Deaktivovat licenci
+  resolve_title_invalid_key: Neplatný licenční klíč
+  resolve_title_binding_mismatch: Licence už je registrovaná jinde
+  resolve_title_verification: Licenci nelze ověřit
+  resolve_title_unavailable: Licenci nelze zkontrolovat
+  resolve_title_env_removed: Licence byla odstraněna
+  resolve_title_grace: Vyřešit omezení licence
+  resolve_title_no_resolution: Licence neaktivní
+  resolve_subtitle: Pokud potřebujete aktualizovat svůj licenční klíč, můžete jej aktualizovat v proměnné prostředí (environment variable).
+  resolve_notice_env_removed: Váš projekt již nemá aktivní licenční klíč. Všechny položky, které překračují limity plánu Core a vyžadují změnu, jsou uvedeny níže.
   resolve_continue: Pokračovat
   resolve_show_n_more: 'Zobrazit dalších {count}'
   resolve_section_flows: Toky
   resolve_sso_admin_password: Heslo
+  key: Licenční klíč
   entitlements:
     collections: Kategorie
     flows: Toky
@@ -1592,6 +1642,7 @@ forgot_password: Zapomenuté heslo
 hidden: Skryté
 hidden_in_group: Skrytý v {group}
 icon: Ikona
+image: Obrázek
 info: Informace
 normal: Normální
 success: Úspěch
@@ -1880,6 +1931,8 @@ interfaces:
   select-radio:
     radio-buttons: Přepínací tlačítka
     description: Vyberte jednu z více možností
+  system-file-image:
+    image: Obrázek
   list:
     repeater: Opakovač
     description: Vytvořit více záznamů ve stejné struktuře
@@ -2332,6 +2385,16 @@ a_flow_uuid: Vyberte tok pro spuštění...
 any_string_or_json: Jakýkoliv řetězec nebo JSON...
 item_payload_placeholder: Toto je JSON používaný k aktualizaci hodnot polí položky...
 operations:
+  ai-image:
+    background: Pozadí
+    emit_events: Povolit události
+    starting_points:
+      icon: Ikona
+  ai-text:
+    files: Soubory
+    type_text: Text
+    view_fields: Pole
+    view_json: JSON
   condition:
     name: Podmínka
   exec:

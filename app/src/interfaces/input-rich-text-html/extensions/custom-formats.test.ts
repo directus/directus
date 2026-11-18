@@ -303,7 +303,6 @@ describe('buildCustomFormats: block entries', () => {
 	// The community thread asks for a `float-left` class on an image and TinyMCE configs routinely
 	// target list items and table cells, so every node type the editor models must be selectable.
 	test.each([
-		['img', { type: 'image' }],
 		['hr', { type: 'horizontalRule' }],
 		['li', { type: 'listItem' }],
 		['ul', { type: 'bulletList' }],
@@ -326,12 +325,22 @@ describe('buildCustomFormats: block entries', () => {
 		expect(blockAt(formats, 0).convert).toBe(false);
 	});
 
+	test('maps the `img` selector to both the block and the inline image', () => {
+		const { formats } = buildCustomFormats([{ title: 'T', selector: 'img', classes: 'x' }]);
+
+		expect(blockAt(formats, 0).targets).toEqual([{ type: 'image' }, { type: 'inlineImage' }]);
+	});
+
 	test('a `block` entry on a non-convertible tag like img is match-only', () => {
 		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
 		const { formats } = buildCustomFormats([{ title: 'Float', block: 'img', classes: 'float-left' }]);
 
-		expect(blockAt(formats, 0)).toMatchObject({ convert: false, targets: [{ type: 'image' }] });
+		expect(blockAt(formats, 0)).toMatchObject({
+			convert: false,
+			targets: [{ type: 'image' }, { type: 'inlineImage' }],
+		});
+
 		expect(warn).toHaveBeenCalledTimes(1);
 	});
 

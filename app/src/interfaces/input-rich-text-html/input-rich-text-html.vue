@@ -18,6 +18,7 @@ import NormalizationWarningDialog from './drawers/normalization-warning-dialog.v
 import PasteWarningDialog from './drawers/paste-warning-dialog.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { buildFieldSchema, fieldEditorExtensions } from './extensions';
+import { isImageNode } from './extensions/image';
 import { LinkShortcut } from './extensions/link-shortcut';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 import ContributedBubbleMenu from './toolbar/menus/contributed-bubble-menu.vue';
@@ -51,6 +52,20 @@ const props = withDefaults(
 		extensionOptions?: StoredExtensionOptions;
 		/** Extra URL schemes links may use (e.g. `myapp`), on top of Tiptap's defaults. */
 		linkProtocols?: string[] | null;
+		/** Keep every `style` attribute and `<style>` tag instead of only the styles the toolbar models. */
+		keepInlineStyles?: boolean;
+		/** Keep `<b>` and `<i>` from the source instead of rewriting them to `<strong>` and `<em>`. */
+		keepLegacyEmphasisTags?: boolean;
+		/** Never add `<p>` in list items, blockquotes and table cells; see extensions/no-container-paragraphs.ts. */
+		noContainerParagraphs?: boolean;
+		/** Keep `div` and other wrapper elements instead of unwrapping them; see extensions/wrapper-elements.ts. */
+		keepWrapperElements?: boolean;
+		/** Keep `<form>` and loose form controls as non-editable blocks; see extensions/raw-html.ts. */
+		keepFormElements?: boolean;
+		/** Keep HTML comments from stored content as hidden atoms; see extensions/html-comments.ts. */
+		keepHtmlComments?: boolean;
+		/** Keep presentational iframe and table attributes; see extensions/legacy-attributes.ts. */
+		keepLegacyAttributes?: boolean;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -93,6 +108,13 @@ const fieldSchema = buildFieldSchema({
 	extensions: props.extensions,
 	extensionOptions: props.extensionOptions,
 	linkProtocols: props.linkProtocols,
+	keepInlineStyles: props.keepInlineStyles,
+	keepLegacyEmphasisTags: props.keepLegacyEmphasisTags,
+	noContainerParagraphs: props.noContainerParagraphs,
+	keepWrapperElements: props.keepWrapperElements,
+	keepFormElements: props.keepFormElements,
+	keepHtmlComments: props.keepHtmlComments,
+	keepLegacyAttributes: props.keepLegacyAttributes,
 	comparisonMode: props.comparisonMode,
 });
 
@@ -168,7 +190,7 @@ const editor = useEditor({
 		attributes: { class: 'richtext-content' },
 		// media nodes handle dblclick themselves in their node view
 		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
-			if (node.type.name === 'image') {
+			if (isImageNode(node)) {
 				editor.value?.commands.setNodeSelection(nodePos);
 				openImageDrawer();
 				return true;
@@ -367,6 +389,7 @@ watch(
 
 const fullscreen = ref(false);
 const visualaid = ref(false);
+const showHtmlComments = ref(false);
 
 onKeyStroke('Escape', () => {
 	if (fullscreen.value) fullscreen.value = false;
@@ -386,7 +409,13 @@ onKeyStroke('Escape', () => {
 	</VNotice>
 	<div
 		class="wysiwyg"
-		:class="{ disabled, 'non-editable': nonEditable || comparisonMode, fullscreen, visualaid }"
+		:class="{
+			disabled,
+			'non-editable': nonEditable || comparisonMode,
+			fullscreen,
+			visualaid,
+			'show-html-comments': showHtmlComments,
+		}"
 		:style="{ '--editor-font-family': fontFamily, '--page-break-label': pageBreakLabel }"
 	>
 		<Toolbar
@@ -399,8 +428,11 @@ onKeyStroke('Escape', () => {
 			:disabled="disabled || normalizationLocked"
 			:fullscreen="fullscreen"
 			:visualaid="visualaid"
+			:html-comments="keepHtmlComments"
+			:show-html-comments="showHtmlComments"
 			@toggle-fullscreen="fullscreen = !fullscreen"
 			@toggle-visualaid="visualaid = !visualaid"
+			@toggle-html-comments="showHtmlComments = !showHtmlComments"
 			@open-image="openImageDrawer"
 			@open-media="openMediaDrawer"
 			@open-link="openLinkDrawer"
@@ -664,10 +696,14 @@ onKeyStroke('Escape', () => {
 		margin: 0;
 	}
 
-	a {
+	a[href] {
 		color: var(--theme--primary-accent);
 		text-decoration: underline;
 		cursor: pointer;
+	}
+
+	a[name]:not([href]) {
+		text-decoration: underline dotted var(--theme--foreground-subdued);
 	}
 
 	b,
@@ -718,7 +754,10 @@ onKeyStroke('Escape', () => {
 	// `.range-selected` (RangeSelectedAtoms) covers selections that merely span the leaf, which
 	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image.
 	// A linked image renders as `<a><img></a>`, so the class lands on the anchor, not the img
-	:is(img, hr, .page-break):is(.ProseMirror-selectednode, .range-selected),
+	:is(img, hr, .page-break, .style-tag, .named-anchor, .raw-html, .html-comment):is(
+		.ProseMirror-selectednode,
+		.range-selected
+	),
 	a:is(.ProseMirror-selectednode, .range-selected) > img {
 		outline: 2px solid var(--theme--primary);
 	}
@@ -744,6 +783,96 @@ onKeyStroke('Escape', () => {
 			text-transform: uppercase;
 			letter-spacing: 0.05em;
 		}
+	}
+
+	.named-anchor {
+		display: inline-block;
+		vertical-align: middle;
+		color: var(--theme--foreground-subdued);
+		border-radius: var(--theme--border-radius);
+		user-select: none;
+
+		&::before {
+			content: 'anchor';
+			display: block;
+			font-family: 'Material Symbols';
+			font-size: 1em;
+			font-style: normal;
+			font-weight: normal;
+			line-height: 1;
+		}
+	}
+
+	.style-tag {
+		background-color: var(--theme--background-normal);
+		border-radius: var(--theme--border-radius);
+		user-select: none;
+
+		&::before {
+			content: '<style>';
+			display: block;
+			padding: 0.25em 1em 0;
+			color: var(--theme--foreground-subdued);
+			font-family: var(--theme--fonts--monospace--font-family), monospace;
+			font-size: 0.6875rem;
+		}
+
+		pre {
+			margin: 0;
+			max-block-size: 12em;
+			background: none;
+			color: var(--theme--foreground-subdued);
+			white-space: pre-wrap;
+		}
+	}
+
+	.html-comment {
+		display: inline-block;
+		max-inline-size: 100%;
+		overflow: hidden;
+		padding-inline: 0.375em;
+		border-radius: var(--theme--border-radius);
+		background-color: var(--theme--background-normal);
+		color: var(--theme--foreground-subdued);
+		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		font-size: 0.6875rem;
+		text-overflow: ellipsis;
+		vertical-align: middle;
+		white-space: nowrap;
+		user-select: none;
+	}
+
+	div.html-comment {
+		display: block;
+		inline-size: fit-content;
+	}
+
+	// the app base styles make every label a block
+	label {
+		display: inline;
+	}
+
+	.raw-html {
+		background-color: var(--theme--background-normal);
+		border-radius: var(--theme--border-radius);
+		color: var(--theme--foreground-subdued);
+		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		font-size: 0.6875rem;
+		user-select: none;
+
+		&::before {
+			content: '<' attr(data-raw-html) '>';
+		}
+	}
+
+	span.raw-html {
+		display: inline-block;
+		padding-inline: 0.5em;
+	}
+
+	div.raw-html {
+		display: block;
+		padding: 0.25em 1em;
 	}
 
 	hr {
@@ -838,6 +967,10 @@ onKeyStroke('Escape', () => {
 		padding: 0.125rem;
 		border-radius: var(--theme--border-radius);
 	}
+}
+
+.wysiwyg:not(.show-html-comments) :deep(.html-comment) {
+	display: none;
 }
 
 /* `visualaid` toggle: dashed guides so borderless tables stay visible while editing. */
