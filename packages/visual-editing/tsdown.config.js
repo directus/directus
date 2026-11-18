@@ -1,22 +1,23 @@
 import { defineConfig } from 'tsdown';
+import { baseConfig } from '../../tsdown.config.ts';
 
 const env = process.env.NODE_ENV;
 
 const shared = {
+	...baseConfig,
 	sourcemap: env === 'production', // source map is only available in prod
 	clean: true, // clean dist before build
 	globalName: 'DirectusVisualEditing', // global variable name for iife
 	minify: env === 'production',
 	watch: env === 'development',
 	target: 'es2022',
-	noExternal: ['@directus/utils'], // inline so consumers don't pull the full utils dep tree
+	deps: { ...baseConfig.deps, alwaysBundle: ['@directus/utils'] }, // inline so consumers don't pull the full utils dep tree
 };
 
 export default defineConfig(() => [
 	{
 		...shared,
 		dts: true, // generate dts file for main module
-		fixedExtension: false, // use .js/.cjs based on package type
 		entry: ['src/index.ts', 'src/types.ts'],
 		format: ['esm', 'cjs'],
 	},

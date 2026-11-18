@@ -180,8 +180,6 @@ logoutReason:
   SESSION_EXPIRED: Relácia vypršala
 public_label: Verejné
 public_description: Určuje, ktoré údaje z API sú dostupné bez overovania.
-public_role_info: >-
-  Verejná rola určuje, ktoré údaje z API sú dostupné pre neoverených používateľov alebo používateľov bez role. Požiadavky s verejnou rolou nemôžu mať prístup k appke admin práva. Ak sú práva na appku alebo admin nastavené pravidlu s verejnou rolou, ignorujú sa.
 admin_description: Počiatočná administratívna rola s neobmedzeným prístupom k Appke/API.
 admin_policy_description: Počiatočné administratívna politika s neobmedzeným prístupom k appke/API.
 no_description: Žiadny popis...
@@ -676,6 +674,8 @@ file_moved: Súbor presunutý
 collection_created: Zbierka vytvorená
 modified_on: Upravené
 card_size: Veľkosť karty
+small: Malé
+large: Veľké
 sort_field: Zoraďovacie pole
 add_sort_field: Pridať zoraďovacie pole
 sort: Zoradiť
@@ -1584,6 +1584,7 @@ forgot_password: Zabudnuté heslo
 hidden: Skryté
 hidden_in_group: Skryté v {group}
 icon: Ikona
+image: Obrázok
 info: Info
 normal: Normálne
 success: Úspech
@@ -1874,6 +1875,8 @@ interfaces:
   select-radio:
     radio-buttons: Prepínače
     description: Vyberie jednu z viacerých možností
+  system-file-image:
+    image: Obrázok
   list:
     repeater: Opakovač
     description: Vytvorí viac položiek rovnakej štruktúry
@@ -1958,6 +1961,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Textový editor s HTML obsahom
     toolbar: Panel nástrojov
+    extensions: Rozšírenia
     custom_formats: Vlastné formáty
     folder_note: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     imageToken: Statický prístupový token
@@ -2325,6 +2329,16 @@ a_flow_uuid: Vyberte tok na spustenie...
 any_string_or_json: Akýkoľvek text alebo JSON...
 item_payload_placeholder: Toto je JSON použitý na aktualizáciu hodnôt polí v položke...
 operations:
+  ai-image:
+    background: Pozadie
+    emit_events: Vysielať udalosti
+    starting_points:
+      icon: Ikona
+  ai-text:
+    files: Súbory
+    type_text: Text
+    view_fields: Polia
+    view_json: JSON
   condition:
     name: Podmienka
   exec:

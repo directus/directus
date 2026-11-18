@@ -7,17 +7,17 @@ import { getSchema } from '../../utils/get-schema.js';
 export async function getLicenseKey(options?: {
 	database?: Knex;
 }): Promise<{ source: LicenseSource; key: string | null }> {
-	const env = useEnv();
+	const { LICENSE_KEY, LICENSE_TOKEN } = useEnv();
 
-	if (env['LICENSE_KEY']) {
+	if (LICENSE_KEY) {
 		return {
 			source: 'env',
-			key: String(env['LICENSE_KEY']),
+			key: LICENSE_KEY,
 		};
 	}
 
 	// An env token ignores any stored key
-	if (env['LICENSE_TOKEN']) {
+	if (LICENSE_TOKEN) {
 		return {
 			source: 'env',
 			key: null,

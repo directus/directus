@@ -479,6 +479,7 @@ delete_label: Eyða
 description: Lýsing
 email: Tölvupóstur
 file_library: Skjöl Safn
+image: Mynd
 password: Lykilorð
 search: Leita
 settings: Stillingar
@@ -527,6 +528,8 @@ interfaces:
     zoom: Aðdráttur
   presentation-notice:
     notice: Tilkynning
+  system-file-image:
+    image: Mynd
   list:
     sort: Flokka
   tags:
@@ -545,6 +548,8 @@ interfaces:
     modes:
       auto: Sjálfvirkt
       dropdown: Fellilisti
+  input-rich-text-html:
+    extensions: Viðbætur
   input-block-editor:
     tools_options:
       header: Haus
@@ -669,6 +674,11 @@ triggers:
     method: Aðferð
     async: Ólínulegt
 operations:
+  ai-image:
+    background: Bakgrunnur
+  ai-text:
+    files: Skrár
+    type_text: Texti
   condition:
     name: Ástand
   item-create:

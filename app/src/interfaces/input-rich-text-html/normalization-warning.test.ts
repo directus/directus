@@ -1,7 +1,7 @@
 import { type Editor, EditorContent } from '@tiptap/vue-3';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { nextTick } from 'vue';
 import { createI18n } from 'vue-i18n';
 import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
@@ -149,5 +149,81 @@ describe('normalization warning wiring', () => {
 		await nextTick();
 
 		expect(editor.isEditable).toBe(false);
+	});
+
+	test('a list item without <p> locks a field that wraps', async () => {
+		const { editor } = await mountWithValue('<ul><li>a</li></ul>');
+
+		expect(editor.isEditable).toBe(false);
+	});
+
+	test('a stored HTML comment mounts the editor read-only', async () => {
+		const { editor } = await mountWithValue('<p>a</p><!-- note -->');
+
+		expect(editor.isEditable).toBe(false);
+	});
+
+	test('a stored HTML comment stays editable with keepHtmlComments', async () => {
+		const { editor } = await mountWithValue('<p>a</p><!-- note -->', { keepHtmlComments: true });
+
+		expect(editor.isEditable).toBe(true);
+	});
+
+	test('a list item without <p> stays editable with noContainerParagraphs', async () => {
+		const { editor } = await mountWithValue('<ul><li>a</li></ul>', { noContainerParagraphs: true });
+
+		expect(editor.isEditable).toBe(true);
+	});
+
+	test('an edit emits a list item without <p> with noContainerParagraphs', async () => {
+		const { wrapper, editor } = await mountWithValue('<ul><li>a</li></ul>', { noContainerParagraphs: true });
+
+		// the value loads in the editor's deferred onCreate
+		await vi.waitFor(() => expect(editor.getText().trim()).toBe('a'));
+
+		editor.chain().setTextSelection(4).insertContent('b').run();
+
+		expect(wrapper.emitted('input')?.at(-1)).toEqual(['<ul><li>ab</li></ul><p></p>']);
+	});
+
+	test('a <div> locks the editor without wrapper elements', async () => {
+		const { editor } = await mountWithValue('<div class="box">a</div>');
+
+		expect(editor.isEditable).toBe(false);
+	});
+
+	test('an edit keeps the <div> with wrapper elements', async () => {
+		const { wrapper, editor } = await mountWithValue('<div class="box">a</div>', { keepWrapperElements: true });
+
+		await vi.waitFor(() => expect(editor.getText().trim()).toBe('a'));
+
+		expect(editor.isEditable).toBe(true);
+
+		editor.chain().setTextSelection(3).insertContent('b').run();
+
+		expect(wrapper.emitted('input')?.at(-1)).toEqual(['<div class="box">ab</div><p></p>']);
+	});
+
+	test('an iframe frameborder locks the editor without legacy attributes', async () => {
+		const { editor } = await mountWithValue('<iframe frameborder="0" src="https://example.com"></iframe>');
+
+		expect(editor.isEditable).toBe(false);
+	});
+
+	test('an edit keeps the iframe frameborder with legacy attributes', async () => {
+		const { wrapper, editor } = await mountWithValue(
+			'<p>a</p><iframe frameborder="0" src="https://example.com"></iframe>',
+			{ keepLegacyAttributes: true },
+		);
+
+		await vi.waitFor(() => expect(editor.getText().trim()).toBe('a'));
+
+		expect(editor.isEditable).toBe(true);
+
+		editor.chain().setTextSelection(2).insertContent('b').run();
+
+		expect(wrapper.emitted('input')?.at(-1)).toEqual([
+			'<p>ab</p><iframe frameborder="0" src="https://example.com"></iframe><p></p>',
+		]);
 	});
 });

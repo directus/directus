@@ -379,7 +379,6 @@ function useDisplayValue() {
 					:item-label-font-family="itemLabelFontFamily"
 					:model-value="modelValue"
 					:multiple="multiple"
-					:allow-other="allowOther"
 					:group-selectable="groupSelectable"
 					:non-editable="nonEditable"
 					@update:model-value="$emit('update:modelValue', $event)"
@@ -390,7 +389,6 @@ function useDisplayValue() {
 					:item="item"
 					:item-label-font-family="itemLabelFontFamily"
 					:multiple="multiple"
-					:allow-other="allowOther"
 					:non-editable="nonEditable"
 					@update:model-value="$emit('update:modelValue', $event)"
 				/>

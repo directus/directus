@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import { createI18n } from 'vue-i18n';
@@ -259,6 +260,12 @@ describe('string/text formatting', () => {
 	it('displays raw value without format', () => {
 		const text = getDisplayText({ type: 'string', value: 'hello_world' });
 		expect(text).toBe('hello_world');
+	});
+
+	// rich-text values from any richtext extension show in list and display columns through here
+	it('displays the text of rich-text markup without its tags', () => {
+		const text = getDisplayText({ type: 'text', value: '<p>intro</p><div data-callout=""><p>hi</p></div>' });
+		expect(text).toBe('introhi');
 	});
 });
 

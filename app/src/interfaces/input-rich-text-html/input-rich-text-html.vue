@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { RICHTEXT_EDITABLE_INJECT } from '@directus/constants';
 import type { SettingsStorageAssetPreset } from '@directus/types';
 import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
-import { computed, nextTick, ref, type Ref, toRefs, watch } from 'vue';
+import { computed, nextTick, provide, ref, type Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { comparisonSchema } from './composables/normalization-diff';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
 import { useMedia } from './composables/use-media';
@@ -17,11 +17,11 @@ import MediaDrawer from './drawers/media-drawer.vue';
 import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
 import PasteWarningDialog from './drawers/paste-warning-dialog.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
-import { editorExtensions } from './extensions';
-import { ComparisonDiff } from './extensions/comparison-diff';
-import { buildCustomFormats } from './extensions/custom-formats';
+import { buildFieldSchema, fieldEditorExtensions } from './extensions';
+import { isImageNode } from './extensions/image';
 import { LinkShortcut } from './extensions/link-shortcut';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
+import ContributedBubbleMenu from './toolbar/menus/contributed-bubble-menu.vue';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
@@ -29,6 +29,7 @@ import VNotice from '@/components/v-notice.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
 import { parseGlobalMimeTypeAllowList, useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
+import type { StoredExtensionOptions } from '@/rich-text/register';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
@@ -45,6 +46,26 @@ const props = withDefaults(
 		folder?: string;
 		/** Legacy TinyMCE `customFormats` option (array or JSON string); see extensions/custom-formats.ts. */
 		customFormats?: unknown;
+		/** Field `extensions` option: ids of the registered richtext extensions this field opted into. */
+		extensions?: string[];
+		/** Field `extensionOptions` option: per-extension values, keyed by extension id. */
+		extensionOptions?: StoredExtensionOptions;
+		/** Extra URL schemes links may use (e.g. `myapp`), on top of Tiptap's defaults. */
+		linkProtocols?: string[] | null;
+		/** Keep every `style` attribute and `<style>` tag instead of only the styles the toolbar models. */
+		keepInlineStyles?: boolean;
+		/** Keep `<b>` and `<i>` from the source instead of rewriting them to `<strong>` and `<em>`. */
+		keepLegacyEmphasisTags?: boolean;
+		/** Never add `<p>` in list items, blockquotes and table cells; see extensions/no-container-paragraphs.ts. */
+		noContainerParagraphs?: boolean;
+		/** Keep `div` and other wrapper elements instead of unwrapping them; see extensions/wrapper-elements.ts. */
+		keepWrapperElements?: boolean;
+		/** Keep `<form>` and loose form controls as non-editable blocks; see extensions/raw-html.ts. */
+		keepFormElements?: boolean;
+		/** Keep HTML comments from stored content as hidden atoms; see extensions/html-comments.ts. */
+		keepHtmlComments?: boolean;
+		/** Keep presentational iframe and table attributes; see extensions/legacy-attributes.ts. */
+		keepLegacyAttributes?: boolean;
 		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
 		tinymceOverrides?: unknown;
 		softLength?: number;
@@ -80,12 +101,22 @@ if (
 	);
 }
 
-// built once at init: `customFormats` is design-time config, not reactive
-const {
-	extensions: customFormatExtensions,
-	formats: customFormatList,
-	key: customFormatsKey,
-} = buildCustomFormats(props.customFormats);
+// built once: the schema is frozen when the editor is constructed, so a field options change needs a remount
+// In comparison mode ComparisonDiff joins the schema, so precomputed diff spans don't read as loss.
+const fieldSchema = buildFieldSchema({
+	customFormats: props.customFormats,
+	extensions: props.extensions,
+	extensionOptions: props.extensionOptions,
+	linkProtocols: props.linkProtocols,
+	keepInlineStyles: props.keepInlineStyles,
+	keepLegacyEmphasisTags: props.keepLegacyEmphasisTags,
+	noContainerParagraphs: props.noContainerParagraphs,
+	keepWrapperElements: props.keepWrapperElements,
+	keepFormElements: props.keepFormElements,
+	keepHtmlComments: props.keepHtmlComments,
+	keepLegacyAttributes: props.keepLegacyAttributes,
+	comparisonMode: props.comparisonMode,
+});
 
 const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
 
@@ -95,11 +126,6 @@ const fontFamily = computed(() => {
 	return `var(--theme--fonts--${token}--font-family)`;
 });
 
-// in comparison mode ComparisonDiff joins the check, so precomputed diff spans don't read as loss
-const { extensions: normalizationExtensions, schemaKey: normalizationSchemaKey } = props.comparisonMode
-	? comparisonSchema(props.customFormats)
-	: { extensions: customFormatExtensions, schemaKey: customFormatsKey };
-
 const {
 	normalizationLocked,
 	normalizationWarningOpen,
@@ -108,7 +134,7 @@ const {
 	onLockedClick,
 	confirmNormalizationWarning,
 	cancelNormalizationWarning,
-} = useNormalizationWarning(value, normalizationExtensions, normalizationSchemaKey);
+} = useNormalizationWarning(value, fieldSchema.extensions, fieldSchema.key);
 
 // comparison runs it to pick the source fallback below; plain read-only display has nothing to act on
 if (!props.nonEditable || props.comparisonMode) checkValue();
@@ -122,6 +148,9 @@ watch(normalizationLocked, (locked) => emit('readonly', locked), { immediate: tr
 const isEditable = computed(
 	() => !props.disabled && !props.nonEditable && !props.comparisonMode && !normalizationLocked.value,
 );
+
+// `editor.isEditable` is not reactive, so node views inject this to follow a later lock
+provide(RICHTEXT_EDITABLE_INJECT, isEditable);
 
 const editorDir = computed(() => (props.direction === 'rtl' ? 'rtl' : 'ltr'));
 
@@ -148,20 +177,20 @@ function updateCount(instance: Editor) {
 const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
 const editor = useEditor({
-	// LinkShortcut is per-instance (its Mod-K handler opens this editor's drawer); ComparisonDiff only
-	// joins the schema in comparison mode, so normal editing keeps stripping diff spans
+	// LinkShortcut is per-instance (its Mod-K handler opens this editor's drawer), so it stays out of
+	// the shared field schema the normalization checks re-parse with
 	extensions: [
-		...editorExtensions,
-		...customFormatExtensions,
+		...fieldEditorExtensions(fieldSchema.extensions),
 		LinkShortcut.configure({ onTrigger: () => openLinkDrawer() }),
-		...(props.comparisonMode ? [ComparisonDiff] : []),
 	],
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
+		// public styling hook: richtext extensions scope their CSS under it, so never rename it
+		attributes: { class: 'richtext-content' },
 		// media nodes handle dblclick themselves in their node view
 		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
-			if (node.type.name === 'image') {
+			if (isImageNode(node)) {
 				editor.value?.commands.setNodeSelection(nodePos);
 				openImageDrawer();
 				return true;
@@ -211,7 +240,7 @@ const {
 	undoPaste,
 	takeRawPaste,
 	dismissPasteWarning,
-} = usePasteWarning(editor, customFormatExtensions);
+} = usePasteWarning(editor, fieldSchema.extensions);
 
 function onEditorClick() {
 	if (props.disabled || props.nonEditable || props.comparisonMode) return;
@@ -289,12 +318,13 @@ const {
 	linkSelection,
 	isEditingLink,
 	targetsImage,
+	linkUrlError,
 	isLinkSaveable,
 	openLinkDrawer,
 	closeLinkDrawer,
 	saveLink,
 	unlink,
-} = useLink(editor as Ref<Editor>);
+} = useLink(editor as Ref<Editor>, fieldSchema.linkProtocols);
 
 const {
 	mediaDrawerOpen,
@@ -318,7 +348,7 @@ const {
 	saveSourceCode,
 	confirmSaveSourceCode,
 	cancelNormalize,
-} = useSourceCode(editor as Ref<Editor>, customFormatExtensions);
+} = useSourceCode(editor as Ref<Editor>, fieldSchema.extensions);
 
 // pause the surrounding view's focus trap while a drawer is open so its inputs stay reachable
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
@@ -359,6 +389,7 @@ watch(
 
 const fullscreen = ref(false);
 const visualaid = ref(false);
+const showHtmlComments = ref(false);
 
 onKeyStroke('Escape', () => {
 	if (fullscreen.value) fullscreen.value = false;
@@ -378,7 +409,13 @@ onKeyStroke('Escape', () => {
 	</VNotice>
 	<div
 		class="wysiwyg"
-		:class="{ disabled, 'non-editable': nonEditable || comparisonMode, fullscreen, visualaid }"
+		:class="{
+			disabled,
+			'non-editable': nonEditable || comparisonMode,
+			fullscreen,
+			visualaid,
+			'show-html-comments': showHtmlComments,
+		}"
 		:style="{ '--editor-font-family': fontFamily, '--page-break-label': pageBreakLabel }"
 	>
 		<Toolbar
@@ -386,12 +423,16 @@ onKeyStroke('Escape', () => {
 			:editor="editor"
 			:toolbar="toolbar"
 			:font="font"
-			:custom-formats="customFormatList"
+			:custom-formats="fieldSchema.formats"
+			:contributed-buttons="fieldSchema.buttons"
 			:disabled="disabled || normalizationLocked"
 			:fullscreen="fullscreen"
 			:visualaid="visualaid"
+			:html-comments="keepHtmlComments"
+			:show-html-comments="showHtmlComments"
 			@toggle-fullscreen="fullscreen = !fullscreen"
 			@toggle-visualaid="visualaid = !visualaid"
+			@toggle-html-comments="showHtmlComments = !showHtmlComments"
 			@open-image="openImageDrawer"
 			@open-media="openMediaDrawer"
 			@open-link="openLinkDrawer"
@@ -425,7 +466,13 @@ onKeyStroke('Escape', () => {
 			{{ softLength - count }}
 		</span>
 
-		<TableBubbleMenu v-if="!nonEditable && !comparisonMode && !normalizationLocked" :editor="editor" />
+		<!-- `isEditable`, not `shouldShow`: a lock flip changes no selection, so an open menu would stay usable -->
+		<TableBubbleMenu v-if="isEditable" :editor="editor" />
+		<ContributedBubbleMenu
+			v-if="fieldSchema.bubbleMenus.length > 0 && isEditable"
+			:editor="editor"
+			:menus="fieldSchema.bubbleMenus"
+		/>
 
 		<ImageDrawer
 			v-model="imageDrawerOpen"
@@ -444,6 +491,7 @@ onKeyStroke('Escape', () => {
 			v-model:link-selection="linkSelection"
 			:editing="isEditingLink"
 			:targets-image="targetsImage"
+			:url-error="linkUrlError"
 			:saveable="isLinkSaveable"
 			@save="saveLink"
 			@unlink="unlink"
@@ -566,7 +614,8 @@ onKeyStroke('Escape', () => {
 }
 
 /* Content styles, scoped to the ProseMirror container so they neither leak into the app nor inherit app styles. */
-.wysiwyg :deep(.ProseMirror) {
+/* :where() keeps these at `.ProseMirror p` specificity, so extension rules scoped under .richtext-content can override them. */
+:where(.wysiwyg) :deep(.ProseMirror) {
 	min-block-size: var(--input-height-tall);
 	padding: 1.125rem;
 	outline: none;
@@ -647,10 +696,14 @@ onKeyStroke('Escape', () => {
 		margin: 0;
 	}
 
-	a {
+	a[href] {
 		color: var(--theme--primary-accent);
 		text-decoration: underline;
 		cursor: pointer;
+	}
+
+	a[name]:not([href]) {
+		text-decoration: underline dotted var(--theme--foreground-subdued);
 	}
 
 	b,
@@ -701,7 +754,10 @@ onKeyStroke('Escape', () => {
 	// `.range-selected` (RangeSelectedAtoms) covers selections that merely span the leaf, which
 	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image.
 	// A linked image renders as `<a><img></a>`, so the class lands on the anchor, not the img
-	:is(img, hr, .page-break):is(.ProseMirror-selectednode, .range-selected),
+	:is(img, hr, .page-break, .style-tag, .named-anchor, .raw-html, .html-comment):is(
+		.ProseMirror-selectednode,
+		.range-selected
+	),
 	a:is(.ProseMirror-selectednode, .range-selected) > img {
 		outline: 2px solid var(--theme--primary);
 	}
@@ -727,6 +783,96 @@ onKeyStroke('Escape', () => {
 			text-transform: uppercase;
 			letter-spacing: 0.05em;
 		}
+	}
+
+	.named-anchor {
+		display: inline-block;
+		vertical-align: middle;
+		color: var(--theme--foreground-subdued);
+		border-radius: var(--theme--border-radius);
+		user-select: none;
+
+		&::before {
+			content: 'anchor';
+			display: block;
+			font-family: 'Material Symbols';
+			font-size: 1em;
+			font-style: normal;
+			font-weight: normal;
+			line-height: 1;
+		}
+	}
+
+	.style-tag {
+		background-color: var(--theme--background-normal);
+		border-radius: var(--theme--border-radius);
+		user-select: none;
+
+		&::before {
+			content: '<style>';
+			display: block;
+			padding: 0.25em 1em 0;
+			color: var(--theme--foreground-subdued);
+			font-family: var(--theme--fonts--monospace--font-family), monospace;
+			font-size: 0.6875rem;
+		}
+
+		pre {
+			margin: 0;
+			max-block-size: 12em;
+			background: none;
+			color: var(--theme--foreground-subdued);
+			white-space: pre-wrap;
+		}
+	}
+
+	.html-comment {
+		display: inline-block;
+		max-inline-size: 100%;
+		overflow: hidden;
+		padding-inline: 0.375em;
+		border-radius: var(--theme--border-radius);
+		background-color: var(--theme--background-normal);
+		color: var(--theme--foreground-subdued);
+		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		font-size: 0.6875rem;
+		text-overflow: ellipsis;
+		vertical-align: middle;
+		white-space: nowrap;
+		user-select: none;
+	}
+
+	div.html-comment {
+		display: block;
+		inline-size: fit-content;
+	}
+
+	// the app base styles make every label a block
+	label {
+		display: inline;
+	}
+
+	.raw-html {
+		background-color: var(--theme--background-normal);
+		border-radius: var(--theme--border-radius);
+		color: var(--theme--foreground-subdued);
+		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		font-size: 0.6875rem;
+		user-select: none;
+
+		&::before {
+			content: '<' attr(data-raw-html) '>';
+		}
+	}
+
+	span.raw-html {
+		display: inline-block;
+		padding-inline: 0.5em;
+	}
+
+	div.raw-html {
+		display: block;
+		padding: 0.25em 1em;
 	}
 
 	hr {
@@ -804,8 +950,10 @@ onKeyStroke('Escape', () => {
 		margin-block-start: 0.1875rem;
 		text-align: center;
 	}
+}
 
-	// content versioning / revision diff highlights (comparison mode)
+/* Outside the :where() block so extension styles cannot hide the diff highlights. */
+.wysiwyg :deep(.ProseMirror) {
 	.comparison-diff--added {
 		color: var(--theme--success);
 		background-color: var(--theme--success-background);
@@ -819,6 +967,10 @@ onKeyStroke('Escape', () => {
 		padding: 0.125rem;
 		border-radius: var(--theme--border-radius);
 	}
+}
+
+.wysiwyg:not(.show-html-comments) :deep(.html-comment) {
+	display: none;
 }
 
 /* `visualaid` toggle: dashed guides so borderless tables stay visible while editing. */

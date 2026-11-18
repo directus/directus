@@ -3,8 +3,8 @@ import { useBufferedCounter } from '../telemetry/counter/use-buffered-counter.js
 import requestCounterMiddleware from './request-counter.js';
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv({ TELEMETRY: true });
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({ TELEMETRY: true });
 });
 
 vi.mock('../telemetry/counter/use-buffered-counter.js');
@@ -129,8 +129,8 @@ describe('requestCounter middleware', () => {
 			vi.resetModules();
 
 			vi.doMock('@directus/env', async () => {
-				const { mockEnv } = await import('../test-utils/env.js');
-				return mockEnv({ TELEMETRY: false });
+				const { mockUseEnv } = await import('../test-utils/env.js');
+				return mockUseEnv({ TELEMETRY: false });
 			});
 
 			vi.doMock('../telemetry/counter/use-buffered-counter.js');

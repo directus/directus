@@ -1,17 +1,19 @@
+import { useEnv } from '@directus/env';
 import type { Accountability } from '@directus/types';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createMockRequest, createMockResponse, getRouteHandler } from '../../test-utils/controllers.js';
+import { mockEnv } from './../../test-utils/env.js';
 
 const readSingleton = vi.fn();
 const handleRequest = vi.fn();
 
-const mockEnv = {
-	MCP_OAUTH_ENABLED: true,
-};
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('./../../test-utils/env.js');
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn(() => mockEnv),
-}));
+	return mockUseEnv({
+		MCP_OAUTH_ENABLED: true,
+	});
+});
 
 vi.mock('../../services/settings.js', () => ({
 	SettingsService: vi.fn().mockImplementation(function () {
@@ -63,7 +65,13 @@ function mockSettings(overrides: Record<string, unknown> = {}) {
 describe('mcp controller', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		mockEnv.MCP_OAUTH_ENABLED = true;
+
+		vi.mocked(useEnv).mockReturnValue(
+			mockEnv({
+				MCP_OAUTH_ENABLED: true,
+			}),
+		);
+
 		mockSettings();
 	});
 
@@ -87,7 +95,11 @@ describe('mcp controller', () => {
 	});
 
 	test('rejects OAuth accountability when MCP OAuth is disabled by env', async () => {
-		mockEnv.MCP_OAUTH_ENABLED = false;
+		vi.mocked(useEnv).mockReturnValue(
+			mockEnv({
+				MCP_OAUTH_ENABLED: false,
+			}),
+		);
 
 		const req = createMockRequest({
 			accountability: makeAccountability({

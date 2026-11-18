@@ -15,14 +15,12 @@ const props = withDefaults(
 		itemLabelFontFamily?: string;
 		modelValue?: string | number | (string | number)[] | null;
 		multiple?: boolean;
-		allowOther?: boolean;
 		nonEditable?: boolean;
 	}>(),
 	{
 		itemLabelFontFamily: 'var(--v-select-font-family)',
 		modelValue: null,
 		multiple: true,
-		allowOther: false,
 		nonEditable: false,
 	},
 );
@@ -48,13 +46,14 @@ const isActive = computed(() => {
 	<VListItem
 		v-else
 		v-show="!item.hidden"
+		:style="{ '--select-list-item-font-family': itemLabelFontFamily }"
 		:active="isActive"
 		:disabled="item.disabled"
 		:value="item.value"
 		:clickable="!multiple"
 		@click="multiple ? undefined : $emit('update:modelValue', item.value)"
 	>
-		<VListItemIcon v-if="multiple === false && allowOther === false && (item.icon || item.color)">
+		<VListItemIcon v-if="multiple === false && (item.icon || item.color)">
 			<VIcon v-if="item.icon" :name="item.icon" :color="item.color" small />
 			<DisplayColor v-else :value="item.color" />
 		</VListItemIcon>
@@ -62,7 +61,7 @@ const isActive = computed(() => {
 			<span
 				v-if="multiple === false || item.selectable === false"
 				class="item-text"
-				:class="{ 'item-text-margin': multiple === false && allowOther === false && item.icon === null }"
+				:class="{ 'item-text-margin': multiple === false && item.icon === null }"
 			>
 				{{ item.text }}
 			</span>
@@ -83,7 +82,7 @@ const isActive = computed(() => {
 <style scoped>
 .item-text,
 .checkbox :deep(.type-text) {
-	font-family: v-bind('itemLabelFontFamily');
+	font-family: var(--select-list-item-font-family);
 }
 
 .item-text-margin {

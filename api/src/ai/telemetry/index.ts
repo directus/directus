@@ -26,10 +26,10 @@ let telemetryInitPromise: Promise<void> | null = null;
 async function doTelemetryInit(): Promise<void> {
 	const env = useEnv();
 
-	if (env['AI_TELEMETRY_ENABLED'] !== true) return;
+	if (!env.AI_TELEMETRY_ENABLED) return;
 
 	const logger = useLogger();
-	const provider = (env['AI_TELEMETRY_PROVIDER'] as string) || 'langfuse';
+	const provider = env.AI_TELEMETRY_PROVIDER;
 
 	const requiredKeys: Record<string, string[]> = {
 		langfuse: ['LANGFUSE_SECRET_KEY', 'LANGFUSE_PUBLIC_KEY'],

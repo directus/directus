@@ -180,8 +180,6 @@ logoutReason:
   SESSION_EXPIRED: Sessione scaduta
 public_label: Pubblico
 public_description: Controlla quali dati API sono disponibili senza autenticarsi.
-public_role_info: >-
-  Il ruolo pubblico controlla quali dati API sono disponibili per gli utenti non autenticati o per gli utenti senza un ruolo assegnato. Le richieste con il ruolo pubblico non possono avere accesso all'app o all'area amministrativa. Se vengono concessi accessi all'app o all'area amministrativa in una policy assegnata al ruolo pubblico, questi verranno ignorati.
 admin_description: Ruolo amministrativo iniziale con accesso illimitato ad App/API.
 admin_policy_description: Policy amministrativa iniziale con accesso illimitato ad App/API.
 no_description: Nessuna descrizione...
@@ -681,6 +679,8 @@ file_moved: File Spostato
 collection_created: Raccolta Creata
 modified_on: Modificato il
 card_size: Dimensione della Card
+small: Piccolo
+large: Grande
 sort_field: Ordina per
 add_sort_field: Aggiungi Campo Ordinamento
 sort: Ordinamento
@@ -1600,6 +1600,7 @@ forgot_password: Ha dimenticato la password
 hidden: Nascosto
 hidden_in_group: Nascosto in {group}
 icon: Icona
+image: Immagine
 info: Informazioni
 normal: Normale
 success: Successo
@@ -1892,6 +1893,8 @@ interfaces:
   select-radio:
     radio-buttons: Radio button
     description: Seleziona una tra più scelte
+  system-file-image:
+    image: Immagine
   list:
     repeater: Ripetitore
     description: Crea più elementi della stessa struttura
@@ -1976,6 +1979,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Un editor di testo formattato per scrivere contenuto HTML
     toolbar: Barra degli strumenti
+    extensions: Estensioni
     custom_formats: Formati personalizzati
     folder_note: Cartella per i file caricati. Non influisce sui file esistenti.
     imageToken: Token di accesso statico
@@ -2347,6 +2351,16 @@ a_flow_uuid: Seleziona un flusso da attivare...
 any_string_or_json: Qualsiasi stringa o JSON...
 item_payload_placeholder: Questo è il JSON usato per aggiornare i valori dei campi dell'elemento...
 operations:
+  ai-image:
+    background: Sfondo
+    emit_events: Genera gli eventi
+    starting_points:
+      icon: Icona
+  ai-text:
+    files: File
+    type_text: Text
+    view_fields: Campi
+    view_json: JSON
   condition:
     name: Condizione
   exec:

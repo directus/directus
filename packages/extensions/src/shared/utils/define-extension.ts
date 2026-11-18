@@ -9,6 +9,7 @@ import type {
 	OperationApiConfig,
 	OperationAppConfig,
 	PanelConfig,
+	RichTextConfig,
 } from '../types/index.js';
 
 type CustomConfig<T extends object> = { [K in string]: K extends keyof T ? never : unknown };
@@ -42,6 +43,12 @@ export function defineModule<Custom extends CustomConfig<ModuleConfig>>(
 export function definePanel<Custom extends CustomConfig<PanelConfig>>(
 	config: ExtendedConfig<PanelConfig, Custom>,
 ): ExtendedConfig<PanelConfig, Custom> {
+	return config;
+}
+
+export function defineRichText<Custom extends CustomConfig<RichTextConfig>>(
+	config: ExtendedConfig<RichTextConfig, Custom>,
+): ExtendedConfig<RichTextConfig, Custom> {
 	return config;
 }
 

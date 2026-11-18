@@ -180,8 +180,6 @@ logoutReason:
   SESSION_EXPIRED: Sesja wygasła
 public_label: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
-public_role_info: >-
-  Publiczna rola kontroluje jakie dane API są dostępne dla nieuwierzytelnionych użytkowników lub użytkowników bez roli. Żądania o publicznej roli nie mogą mieć dostępu do aplikacji lub administratora. Jeśli aplikacja lub administrator mają dostęp do zasad przypisanych do roli publicznej, zostaną one zignorowane.
 admin_description: Początkowa rola administracyjna z nieograniczonym dostępem App/API.
 admin_policy_description: Wstępna polityka administracyjna z nieograniczonym dostępem App/API.
 no_description: Brak opisu...
@@ -677,6 +675,8 @@ file_moved: Plik przeniesiony
 collection_created: Utworzono kolekcję
 modified_on: Modyfikowane Dnia
 card_size: Rozmiar karty
+small: Mały
+large: Duży
 sort_field: Pole sortowania
 add_sort_field: Dodaj pole sortowania
 sort: Sortuj
@@ -1562,6 +1562,7 @@ forgot_password: Zapomniałem hasła
 hidden: Ukryte
 hidden_in_group: Ukryte w {group}
 icon: Ikona
+image: Obraz
 info: Informacja
 normal: Normalny
 success: Sukces
@@ -1851,6 +1852,8 @@ interfaces:
   select-radio:
     radio-buttons: Pola wyboru
     description: Wybierz jeden lub wiele obiektów
+  system-file-image:
+    image: Obraz
   list:
     repeater: Powtarzaj
     description: Utwórz wiele wpisów o tej samej strukturze
@@ -1935,6 +1938,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Edytor zawartość HTML
     toolbar: Pasek narzędzi
+    extensions: Rozszerzenia
     custom_formats: Niestandardowe formaty
     folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
     imageToken: Statyczny token dostępu
@@ -2302,6 +2306,16 @@ a_flow_uuid: Wybierz przepływ do wyzwalacza...
 any_string_or_json: Dowolny ciąg znaków lub JSON...
 item_payload_placeholder: To jest JSON używany do aktualizacji wartości pola elementu...
 operations:
+  ai-image:
+    background: Tło
+    emit_events: Wydaj wydarzenia
+    starting_points:
+      icon: Ikona
+  ai-text:
+    files: Pliki
+    type_text: Tekst
+    view_fields: Pola
+    view_json: JSON
   condition:
     name: Warunek
   exec:

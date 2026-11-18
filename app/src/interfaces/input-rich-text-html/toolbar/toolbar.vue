@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RichTextToolbarButton } from '@directus/extensions';
 import { cssVar } from '@directus/utils/browser';
 import type { Editor } from '@tiptap/vue-3';
 import { useResizeObserver } from '@vueuse/core';
@@ -7,10 +8,12 @@ import { useI18n } from 'vue-i18n';
 import type { CustomFormat } from '../extensions/custom-formats';
 import { type ToolbarButton, toolbarButtons, type ToolbarContext } from './buttons';
 import { computeToolbarLayout, type LayoutMeasurements, type RenderGroup } from './compute-toolbar-layout';
-import { toolbarGroups } from './groups';
+import { ToolbarGroup, toolbarGroups } from './groups';
+import ContributedMenu from './menus/contributed-menu.vue';
 import ToolbarButtonComp from './toolbar-button.vue';
 import ToolbarPopover from './toolbar-popover.vue';
 import { useClipboardActions } from './use-clipboard-actions';
+import { useContributedGuard } from './use-contributed-guard';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
@@ -23,16 +26,22 @@ const props = withDefaults(
 		font?: 'sans-serif' | 'serif' | 'monospace';
 		/** Custom formats built from the field's `customFormats` option; auto-appends the styles dropdown. */
 		customFormats?: CustomFormat[];
+		/** Buttons of the richtext extensions the field's `extensions` option opted into. */
+		contributedButtons?: RichTextToolbarButton[];
 		disabled?: boolean;
 		fullscreen?: boolean;
 		visualaid?: boolean;
+		/** Field `keepHtmlComments` option; auto-appends the Show HTML Comments toggle. */
+		htmlComments?: boolean;
+		showHtmlComments?: boolean;
 	}>(),
-	{ font: 'sans-serif', customFormats: () => [] },
+	{ font: 'sans-serif', customFormats: () => [], contributedButtons: () => [] },
 );
 
 const emit = defineEmits<{
 	'toggle-fullscreen': [];
 	'toggle-visualaid': [];
+	'toggle-html-comments': [];
 	'open-image': [];
 	'open-media': [];
 	'open-link': [];
@@ -57,6 +66,10 @@ const context: ToolbarContext = {
 		active: () => props.visualaid ?? false,
 		toggle: () => emit('toggle-visualaid'),
 	},
+	htmlComments: {
+		active: () => props.showHtmlComments ?? false,
+		toggle: () => emit('toggle-html-comments'),
+	},
 	image: {
 		open: () => emit('open-image'),
 	},
@@ -71,34 +84,86 @@ const context: ToolbarContext = {
 	},
 };
 
-// labeled dropdowns (font family/size) declare their own width; the rest are 2rem squares
-const keyWidths = Object.fromEntries(
-	Object.entries(toolbarButtons)
-		.filter(([, button]) => button.width !== undefined)
-		.map(([key, button]) => [key, button.width!]),
-);
-
 // small icon button = 2rem square; separator ~1px rule + side margins; keep in sync with CSS below
-const MEASUREMENTS: LayoutMeasurements = {
+const MEASUREMENTS: Omit<LayoutMeasurements, 'keyWidths'> = {
 	buttonWidth: 32,
 	gap: 2,
 	moreWidth: 32,
 	separatorWidth: 9,
 	minItems: 5,
 	popoverWidth: 40,
-	keyWidths,
 };
+
+// same as the core table button: icon + caret
+const MENU_BUTTON_WIDTH = MEASUREMENTS.popoverWidth;
+
+const { guardButton } = useContributedGuard();
+
+const contributedMap = computed<Record<string, ToolbarButton>>(() =>
+	Object.fromEntries(
+		props.contributedButtons
+			.filter((button) => !(button.key in toolbarButtons))
+			.map((button) => [button.key, toToolbarButton(guardButton(button.key, button))]),
+	),
+);
+
+function toToolbarButton(button: RichTextToolbarButton): ToolbarButton {
+	if (button.items) {
+		return {
+			icon: button.icon,
+			label: button.label,
+			literalLabel: true,
+			component: ContributedMenu,
+			componentProps: { button },
+			width: MENU_BUTTON_WIDTH,
+		};
+	}
+
+	const { command, isActive, isDisabled } = button;
+
+	return {
+		icon: button.icon,
+		label: button.label,
+		literalLabel: true,
+		command,
+		disabled: isDisabled,
+		...(isActive ? { isActive } : {}),
+	};
+}
+
+// labeled dropdowns (font family/size) and icon+caret menus declare their own width; the rest are 2rem squares
+const keyWidths = computed(() =>
+	Object.fromEntries(
+		Object.entries({ ...toolbarButtons, ...contributedMap.value })
+			.filter(([, button]) => button.width !== undefined)
+			.map(([key, button]) => [key, button.width!]),
+	),
+);
+
+const allButtons = computed<Record<string, ToolbarButton>>(() => ({
+	...toolbarButtons,
+	...contributedMap.value,
+}));
+
+// The priority is low. Therefore these buttons are the first buttons in the "Show More" menu.
+const allGroups = computed<ToolbarGroup[]>(() => {
+	const keys = Object.keys(contributedMap.value);
+	if (keys.length === 0) return toolbarGroups;
+	return [...toolbarGroups, { id: 'contributed', priority: 10, keys }];
+});
 
 const TOOLBAR_ALIASES: Record<string, string[]> = { 'ltr rtl': ['ltr', 'rtl'] };
 
-// keys present in the field config AND the registry; `styles` is never user-configured — it's
-// auto-appended when customFormats exist (TinyMCE parity)
+const AUTO_APPENDED_KEYS = ['styles', 'htmlcomments'];
+
+// keys present in the field config AND the registry; auto-appended keys are never user-configured
 const selectedKeys = computed(() => {
 	const keys = props.toolbar
 		.flatMap((key) => TOOLBAR_ALIASES[key] ?? [key])
-		.filter((key) => key !== 'styles' && Boolean(toolbarButtons[key]));
+		.filter((key) => !AUTO_APPENDED_KEYS.includes(key) && Boolean(allButtons.value[key]));
 
 	if (props.customFormats.length > 0) keys.push('styles');
+	if (props.htmlComments) keys.push('htmlcomments');
 	return keys;
 });
 
@@ -131,7 +196,10 @@ useResizeObserver(container, ([entry]) => {
 });
 
 const layout = computed(() =>
-	computeToolbarLayout(selectedKeys.value, toolbarGroups, availableWidth.value, MEASUREMENTS),
+	computeToolbarLayout(selectedKeys.value, allGroups.value, availableWidth.value, {
+		...MEASUREMENTS,
+		keyWidths: keyWidths.value,
+	}),
 );
 
 const visibleGroups = computed(() => layout.value.visible);
@@ -140,7 +208,7 @@ const hasOverflow = computed(() => overflowGroups.value.length > 0);
 
 function resolve(group: RenderGroup): { key: string; button: ToolbarButton }[] {
 	return group.keys.map((key) => {
-		const button = toolbarButtons[key]!;
+		const button = allButtons.value[key]!;
 		const extra = key === 'styles' ? { formats: props.customFormats } : styleDefaults.value[key];
 		if (!extra) return { key, button };
 		return { key, button: { ...button, componentProps: { ...button.componentProps, ...extra } } };

@@ -35,6 +35,7 @@ test('should have days array in firstDayOptions variable', async () => {
 					meta: null,
 				},
 			],
+			colorFields: [],
 		},
 		shallow: true,
 		global,
@@ -42,5 +43,7 @@ test('should have days array in firstDayOptions variable', async () => {
 
 	const expected = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-	expect(wrapper.vm.firstDayOptions.map((option: { text: string; value: number }) => option.text)).toEqual(expected);
+	expect((wrapper.vm as any).firstDayOptions.map((option: { text: string; value: number }) => option.text)).toEqual(
+		expected,
+	);
 });

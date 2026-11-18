@@ -1,21 +1,21 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 
-const mockEnv: Record<string, unknown> = {};
 const mockLogger = { info: vi.fn(), warn: vi.fn() };
 const mockInitLangfuse = vi.fn();
 const mockInitBraintrust = vi.fn();
 
-let initAITelemetry: (typeof import('./index.js'))['initAITelemetry'];
-let getAITelemetryConfig: (typeof import('./index.js'))['getAITelemetryConfig'];
-let shutdownAITelemetry: (typeof import('./index.js'))['shutdownAITelemetry'];
-
-beforeEach(async () => {
+/**
+ * Registers the mocks and imports a fresh copy of the module, so that each test starts from a
+ * clean telemetry state with its own env.
+ */
+async function loadTelemetry(env?: Record<string, unknown>) {
 	vi.resetModules();
 
 	// Re-register mocks after resetModules
-	vi.doMock('@directus/env', () => ({
-		useEnv: vi.fn(() => mockEnv),
-	}));
+	vi.doMock('@directus/env', async () => {
+		const { mockUseEnv } = await import('../../test-utils/env.js');
+		return mockUseEnv(env);
+	});
 
 	vi.doMock('../../logger/index.js', () => ({
 		useLogger: vi.fn(() => mockLogger),
@@ -29,24 +29,16 @@ beforeEach(async () => {
 		initBraintrust: mockInitBraintrust,
 	}));
 
-	const mod = await import('./index.js');
-	initAITelemetry = mod.initAITelemetry;
-	getAITelemetryConfig = mod.getAITelemetryConfig;
-	shutdownAITelemetry = mod.shutdownAITelemetry;
-});
+	return await import('./index.js');
+}
 
 afterEach(() => {
 	vi.clearAllMocks();
-
-	// Reset shared env object
-	for (const key of Object.keys(mockEnv)) {
-		delete mockEnv[key];
-	}
 });
 
 describe('initAITelemetry', () => {
 	test('does nothing when AI_TELEMETRY_ENABLED is false', async () => {
-		mockEnv['AI_TELEMETRY_ENABLED'] = false;
+		const { initAITelemetry, getAITelemetryConfig } = await loadTelemetry({ AI_TELEMETRY_ENABLED: false });
 
 		await initAITelemetry();
 
@@ -58,8 +50,10 @@ describe('initAITelemetry', () => {
 	});
 
 	test('calls initLangfuse when provider is langfuse', async () => {
-		mockEnv['AI_TELEMETRY_ENABLED'] = true;
-		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
+		const { initAITelemetry } = await loadTelemetry({
+			AI_TELEMETRY_ENABLED: true,
+			AI_TELEMETRY_PROVIDER: 'langfuse',
+		});
 
 		const mockTracer = { getTracer: vi.fn(), shutdown: vi.fn() };
 		mockInitLangfuse.mockResolvedValue({ recordIO: true, tracerProvider: mockTracer });
@@ -71,8 +65,10 @@ describe('initAITelemetry', () => {
 	});
 
 	test('calls initBraintrust when provider is braintrust', async () => {
-		mockEnv['AI_TELEMETRY_ENABLED'] = true;
-		mockEnv['AI_TELEMETRY_PROVIDER'] = 'braintrust';
+		const { initAITelemetry } = await loadTelemetry({
+			AI_TELEMETRY_ENABLED: true,
+			AI_TELEMETRY_PROVIDER: 'braintrust',
+		});
 
 		const mockTracer = { getTracer: vi.fn(), shutdown: vi.fn() };
 		mockInitBraintrust.mockResolvedValue({ recordIO: false, tracerProvider: mockTracer });
@@ -84,16 +80,21 @@ describe('initAITelemetry', () => {
 	});
 
 	test('warns on unknown provider', async () => {
-		mockEnv['AI_TELEMETRY_ENABLED'] = true;
-		mockEnv['AI_TELEMETRY_PROVIDER'] = 'unknown-provider';
+		const { initAITelemetry } = await loadTelemetry({
+			AI_TELEMETRY_ENABLED: true,
+			AI_TELEMETRY_PROVIDER: 'unknown-provider',
+		});
 
 		await initAITelemetry();
 
 		expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining('Unknown AI telemetry provider'));
 	});
 
-	test('defaults to langfuse when AI_TELEMETRY_PROVIDER is not set', async () => {
-		mockEnv['AI_TELEMETRY_ENABLED'] = true;
+	test('uses the langfuse default of AI_TELEMETRY_PROVIDER', async () => {
+		const { initAITelemetry } = await loadTelemetry({
+			AI_TELEMETRY_ENABLED: true,
+			AI_TELEMETRY_PROVIDER: 'langfuse',
+		});
 
 		const mockTracer = { getTracer: vi.fn(), shutdown: vi.fn() };
 		mockInitLangfuse.mockResolvedValue({ recordIO: false, tracerProvider: mockTracer });
@@ -105,8 +106,10 @@ describe('initAITelemetry', () => {
 	});
 
 	test('deduplicates concurrent init calls', async () => {
-		mockEnv['AI_TELEMETRY_ENABLED'] = true;
-		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
+		const { initAITelemetry } = await loadTelemetry({
+			AI_TELEMETRY_ENABLED: true,
+			AI_TELEMETRY_PROVIDER: 'langfuse',
+		});
 
 		const mockTracer = { getTracer: vi.fn(), shutdown: vi.fn() };
 		mockInitLangfuse.mockResolvedValue({ recordIO: false, tracerProvider: mockTracer });
@@ -119,8 +122,10 @@ describe('initAITelemetry', () => {
 	});
 
 	test('warns when required config keys are missing', async () => {
-		mockEnv['AI_TELEMETRY_ENABLED'] = true;
-		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
+		const { initAITelemetry } = await loadTelemetry({
+			AI_TELEMETRY_ENABLED: true,
+			AI_TELEMETRY_PROVIDER: 'langfuse',
+		});
 
 		const mockTracer = { getTracer: vi.fn(), shutdown: vi.fn() };
 		mockInitLangfuse.mockResolvedValue({ recordIO: false, tracerProvider: mockTracer });
@@ -131,9 +136,11 @@ describe('initAITelemetry', () => {
 	});
 
 	test('does not warn about missing keys when they are provided', async () => {
-		mockEnv['AI_TELEMETRY_ENABLED'] = true;
-		mockEnv['AI_TELEMETRY_PROVIDER'] = 'braintrust';
-		mockEnv['BRAINTRUST_API_KEY'] = 'bt-key';
+		const { initAITelemetry } = await loadTelemetry({
+			AI_TELEMETRY_ENABLED: true,
+			AI_TELEMETRY_PROVIDER: 'braintrust',
+			BRAINTRUST_API_KEY: 'bt-key',
+		});
 
 		const mockTracer = { getTracer: vi.fn(), shutdown: vi.fn() };
 		mockInitBraintrust.mockResolvedValue({ recordIO: false, tracerProvider: mockTracer });
@@ -144,8 +151,10 @@ describe('initAITelemetry', () => {
 	});
 
 	test('logs warning and leaves telemetry disabled when init fails', async () => {
-		mockEnv['AI_TELEMETRY_ENABLED'] = true;
-		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
+		const { initAITelemetry, getAITelemetryConfig } = await loadTelemetry({
+			AI_TELEMETRY_ENABLED: true,
+			AI_TELEMETRY_PROVIDER: 'langfuse',
+		});
 
 		mockInitLangfuse.mockRejectedValue(new Error('connection refused'));
 
@@ -160,8 +169,10 @@ describe('initAITelemetry', () => {
 
 describe('getAITelemetryConfig', () => {
 	test('returns correct shape after init', async () => {
-		mockEnv['AI_TELEMETRY_ENABLED'] = true;
-		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
+		const { initAITelemetry, getAITelemetryConfig } = await loadTelemetry({
+			AI_TELEMETRY_ENABLED: true,
+			AI_TELEMETRY_PROVIDER: 'langfuse',
+		});
 
 		const mockGetTracer = vi.fn().mockReturnValue('tracer-instance');
 		const mockTracer = { getTracer: mockGetTracer, shutdown: vi.fn() };
@@ -184,8 +195,10 @@ describe('getAITelemetryConfig', () => {
 
 describe('shutdownAITelemetry', () => {
 	test('calls tracerProvider.shutdown()', async () => {
-		mockEnv['AI_TELEMETRY_ENABLED'] = true;
-		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
+		const { initAITelemetry, shutdownAITelemetry } = await loadTelemetry({
+			AI_TELEMETRY_ENABLED: true,
+			AI_TELEMETRY_PROVIDER: 'langfuse',
+		});
 
 		const mockShutdown = vi.fn().mockResolvedValue(undefined);
 		const mockTracer = { getTracer: vi.fn(), shutdown: mockShutdown };
@@ -198,10 +211,12 @@ describe('shutdownAITelemetry', () => {
 	});
 
 	test('waits for in-flight init before shutting down', async () => {
-		mockEnv['AI_TELEMETRY_ENABLED'] = true;
-		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
-		mockEnv['LANGFUSE_SECRET_KEY'] = 'sk-test';
-		mockEnv['LANGFUSE_PUBLIC_KEY'] = 'pk-test';
+		const { initAITelemetry, shutdownAITelemetry } = await loadTelemetry({
+			AI_TELEMETRY_ENABLED: true,
+			AI_TELEMETRY_PROVIDER: 'langfuse',
+			LANGFUSE_SECRET_KEY: 'sk-test',
+			LANGFUSE_PUBLIC_KEY: 'pk-test',
+		});
 
 		const mockShutdown = vi.fn().mockResolvedValue(undefined);
 		const mockTracer = { getTracer: vi.fn(), shutdown: mockShutdown };
@@ -237,8 +252,10 @@ describe('shutdownAITelemetry', () => {
 	});
 
 	test('logs warning when tracerProvider.shutdown() throws', async () => {
-		mockEnv['AI_TELEMETRY_ENABLED'] = true;
-		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
+		const { initAITelemetry, shutdownAITelemetry } = await loadTelemetry({
+			AI_TELEMETRY_ENABLED: true,
+			AI_TELEMETRY_PROVIDER: 'langfuse',
+		});
 
 		const mockShutdown = vi.fn().mockRejectedValue(new Error('shutdown failed'));
 		const mockTracer = { getTracer: vi.fn(), shutdown: mockShutdown };
