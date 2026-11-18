@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { isIn, isTypeIn, pathToRelativeUrl, pluralize } from '@directus/utils/node';
 import { APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
 import type {

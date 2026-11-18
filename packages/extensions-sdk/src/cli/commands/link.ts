@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { readlink, symlink } from 'node:fs/promises';
-import path from 'path';
+import path from 'node:path';
 import { ExtensionManifest } from '@directus/extensions';
 import { pathExists } from '@directus/utils/node';
 import { readJson } from '../utils/json.js';

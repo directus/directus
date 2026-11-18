@@ -1,5 +1,5 @@
 import { mkdir, readdir, readFile, rename } from 'node:fs/promises';
-import path from 'path';
+import path from 'node:path';
 import { EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import type {
 	ExtensionOptions,

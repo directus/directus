@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { pathExists } from '@directus/utils/node';
 import type { Ora } from 'ora';
 import { beforeEach, describe, expect, test, vi } from 'vitest';

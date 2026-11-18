@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { join, resolve } from 'path';
+import { join, resolve } from 'node:path';
 import { isTypeIn, listFolders, pathExists, resolvePackage } from '@directus/utils/node';
 import { pick } from 'lodash-es';
 import { EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';

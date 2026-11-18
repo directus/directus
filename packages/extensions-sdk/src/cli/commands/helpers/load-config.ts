@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
 import { pathExists, pathToRelativeUrl } from '@directus/utils/node';
 import type { Config } from '../../types.js';

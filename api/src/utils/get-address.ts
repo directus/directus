@@ -1,4 +1,4 @@
-import * as http from 'http';
+import * as http from 'node:http';
 import { useEnv } from '@directus/env';
 
 export function getAddress(server: http.Server) {

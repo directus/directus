@@ -1,4 +1,4 @@
-import { getCallSites } from 'util';
+import { getCallSites } from 'node:util';
 
 /**
  * Returns an identifier that is unique to the file in which it was called.

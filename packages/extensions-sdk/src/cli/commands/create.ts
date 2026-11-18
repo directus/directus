@@ -1,5 +1,5 @@
 import { mkdir, readdir, stat } from 'node:fs/promises';
-import path from 'path';
+import path from 'node:path';
 import { BUNDLE_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import type { ExtensionOptions } from '@directus/extensions';
 import { EXTENSION_LANGUAGES, EXTENSION_PKG_KEY } from '@directus/extensions';

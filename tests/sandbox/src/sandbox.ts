@@ -1,5 +1,5 @@
-import { type ChildProcessWithoutNullStreams } from 'child_process';
-import { join } from 'path';
+import { type ChildProcessWithoutNullStreams } from 'node:child_process';
+import { join } from 'node:path';
 import type { DatabaseClient, DeepPartial } from '@directus/types';
 import chalk from 'chalk';
 import type { Knex } from 'knex';

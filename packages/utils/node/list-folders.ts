@@ -1,5 +1,5 @@
 import { readdir, stat } from 'node:fs/promises';
-import path from 'path';
+import path from 'node:path';
 
 interface ListFoldersOptions {
 	/**

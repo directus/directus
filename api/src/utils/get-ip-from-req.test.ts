@@ -1,4 +1,4 @@
-import type { IncomingMessage } from 'http';
+import type { IncomingMessage } from 'node:http';
 import { useEnv } from '@directus/env';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { mockEnv } from '../test-utils/env.js';

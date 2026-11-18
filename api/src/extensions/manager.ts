@@ -2,7 +2,7 @@ import type { ReadStream, Stats } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import os from 'node:os';
 import { join, relative, resolve, sep } from 'node:path';
-import path from 'path';
+import path from 'node:path';
 import { HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { APP_SHARED_DEPS } from '@directus/extensions';

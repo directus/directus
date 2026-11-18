@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { createDirectus, createUser, graphql, rest, serverHealth, staticToken } from '@directus/sdk';
 import { database, env, options, port } from '@utils/constants.js';
 import { describe, expect, test } from 'vitest';

@@ -1,4 +1,4 @@
-import { type UUID } from 'crypto';
+import { type UUID } from 'node:crypto';
 import z from 'zod';
 import type { Item, PrimaryKey } from '../items.js';
 import { TYPE } from './type.js';

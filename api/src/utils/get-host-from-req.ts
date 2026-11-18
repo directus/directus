@@ -1,4 +1,4 @@
-import type { IncomingMessage } from 'http';
+import type { IncomingMessage } from 'node:http';
 import { useEnv } from '@directus/env';
 import { getTrustValue } from './get-ip-from-req.js';
 

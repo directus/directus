@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { type Ora } from 'ora';
 import type { Report } from '../../types.js';
 import { readJson } from '../../utils/json.js';

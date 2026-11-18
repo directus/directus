@@ -1,5 +1,5 @@
 import { readdir } from 'node:fs/promises';
-import path from 'path';
+import path from 'node:path';
 import { useEnv } from '@directus/env';
 import { resolvePackage } from '@directus/utils/node';
 import { escapeRegExp } from 'lodash-es';

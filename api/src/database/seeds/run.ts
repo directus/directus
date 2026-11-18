@@ -1,5 +1,5 @@
 import { readdir, readFile } from 'node:fs/promises';
-import path from 'path';
+import path from 'node:path';
 import type { Field, Type } from '@directus/types';
 import yaml from 'js-yaml';
 import type { Knex } from 'knex';

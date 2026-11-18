@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import path from 'path';
+import path from 'node:path';
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';

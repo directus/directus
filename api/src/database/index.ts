@@ -1,6 +1,6 @@
 import { readdir } from 'node:fs/promises';
-import path from 'path';
-import { performance } from 'perf_hooks';
+import path from 'node:path';
+import { performance } from 'node:perf_hooks';
 import { useEnv, validateDbEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';

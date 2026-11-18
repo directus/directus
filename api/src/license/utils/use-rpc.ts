@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { useBus } from '../../bus/index.js';
 import { useLogger } from '../../logger/index.js';
 

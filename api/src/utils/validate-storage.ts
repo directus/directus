@@ -1,6 +1,6 @@
-import { constants } from 'fs';
+import { constants } from 'node:fs';
 import { access } from 'node:fs/promises';
-import path from 'path';
+import path from 'node:path';
 import { useEnv } from '@directus/env';
 import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
 import { useLogger } from '../logger/index.js';

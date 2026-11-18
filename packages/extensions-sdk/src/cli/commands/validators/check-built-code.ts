@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { EXTENSION_PKG_KEY } from '@directus/extensions';
 import { pathExists } from '@directus/utils/node';
 import { type Ora } from 'ora';

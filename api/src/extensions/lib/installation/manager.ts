@@ -1,7 +1,7 @@
 import { cp, mkdir, readFile, rm } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import { Readable } from 'node:stream';
-import { dirname, join } from 'path';
-import type { ReadableStream } from 'stream/web';
+import type { ReadableStream } from 'node:stream/web';
 import { useEnv } from '@directus/env';
 import { ErrorCode, isDirectusError, ServiceUnavailableError } from '@directus/errors';
 import { EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';

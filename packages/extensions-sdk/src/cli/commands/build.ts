@@ -1,5 +1,5 @@
 import { readFile, stat } from 'node:fs/promises';
-import path from 'path';
+import path from 'node:path';
 import { APP_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import type { ExtensionOptionsBundleEntry, ExtensionManifest as TExtensionManifest } from '@directus/extensions';
 import {

@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import { promisify } from 'util';
+import fs from 'node:fs';
+import path from 'node:path';
+import { promisify } from 'node:util';
 import type { Driver } from '@directus/types';
 import { Liquid } from 'liquidjs';
 import type { Credentials } from '../create-db-connection.js';

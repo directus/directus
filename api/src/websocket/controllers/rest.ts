@@ -1,4 +1,4 @@
-import type { Server as httpServer } from 'http';
+import type { Server as httpServer } from 'node:http';
 import { WebSocketMessage } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import type WebSocket from 'ws';

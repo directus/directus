@@ -1,5 +1,5 @@
 import { cp, readdir } from 'node:fs/promises';
-import path from 'path';
+import path from 'node:path';
 import type { ExtensionType } from '@directus/types';
 import { pathExists } from '@directus/utils/node';
 import type { Language } from '../../types.js';
