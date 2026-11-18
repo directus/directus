@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 import { createHash, randomBytes } from 'crypto';
-import { mkdir, readdir, readFile, rename, rm, stat, writeFile } from 'fs/promises';
+import { readdir, readFile, rename, rm, stat, writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join, resolve } from 'path';
 import { type Env } from '../../config.js';
@@ -111,65 +111,53 @@ export async function exec(command: string, args: string[], input?: string) {
 
 /**
  * Cross process lock, so parallel sandboxes don't try to start the same shared container or build the same template at once.
- * `mkdir` is atomic. The lock stores the pid of its holder, so it is only taken over once that process is gone,
- * no matter how long the holder takes. All sandboxes share the host, so the pid check is reliable.
+ * The lock file holds the pid of its holder and is only taken over once that process is gone. All sandboxes share the host.
  */
 export async function withLock<T>(name: string, fn: () => Promise<T>): Promise<T> {
 	const lock = join(tmpdir(), `${name}.lock`);
-	const ownerFile = join(lock, 'owner');
-	const owner = `${process.pid}:${randomBytes(8).toString('hex')}`;
-	const readOwner = (dir = lock) => readFile(join(dir, 'owner'), 'utf8').catch(() => undefined);
 
 	while (true) {
 		try {
-			await mkdir(lock);
-			await writeFile(ownerFile, owner);
+			await writeFile(lock, String(process.pid), { flag: 'wx' });
 			break;
 		} catch (err: any) {
 			if (err.code !== 'EEXIST') throw err;
+		}
 
-			const current = await readOwner();
+		if (await isStale(lock)) {
+			// Renaming is atomic, so only a single waiter removes a stale lock
+			const stale = `${lock}.${randomBytes(8).toString('hex')}`;
 
-			if (await isStale(lock, current)) {
-				// Renaming is atomic, so only a single waiter can take over a stale lock
-				const stale = `${lock}.${randomBytes(8).toString('hex')}.stale`;
-
-				const renamed = await rename(lock, stale).then(
-					() => true,
-					() => false,
-				);
-
-				if (renamed) {
-					// The lock might have changed hands between the check and the rename, so hand it back
-					if ((await readOwner(stale)) !== current) await rename(stale, lock).catch(() => {});
-					await rm(stale, { recursive: true, force: true });
-				}
-			} else {
-				await new Promise((resolve) => setTimeout(resolve, 250));
-			}
+			await rename(lock, stale).then(
+				() => rm(stale, { recursive: true, force: true }),
+				() => {},
+			);
+		} else {
+			await new Promise((resolve) => setTimeout(resolve, 250));
 		}
 	}
 
 	try {
 		return await fn();
 	} finally {
-		if ((await readOwner()) === owner) await rm(lock, { recursive: true, force: true });
+		await rm(lock, { force: true });
 	}
 }
 
-async function isStale(lock: string, owner: string | undefined) {
-	// The owner is written right after the lock is created, so only treat a missing owner as stale after a grace period
-	if (!owner) {
-		const age = await stat(lock).then(
+async function isStale(lock: string) {
+	const [pid, age] = await Promise.all([
+		readFile(lock, 'utf8').catch(() => ''),
+		stat(lock).then(
 			(s) => Date.now() - s.mtimeMs,
 			() => 0,
-		);
+		),
+	]);
 
-		return age > 10_000;
-	}
+	// The pid is written right after the file is created, a crash in between would otherwise leave the lock forever
+	if (!pid) return age > 10_000;
 
 	try {
-		process.kill(Number(owner.split(':')[0]), 0);
+		process.kill(Number(pid), 0);
 		return false;
 	} catch (err: any) {
 		// EPERM means the process exists but belongs to another user
