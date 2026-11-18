@@ -1,5 +1,4 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import type { Field, Relation } from '@directus/types';
 import { z } from 'zod';
 import { FieldsService } from '../../..//services/fields.js';
@@ -8,8 +7,6 @@ import { RelationsService } from '../../../services/relations.js';
 import type { Collection } from '../../../types/collection.js';
 import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export interface fieldOverviewOutput {
 	type: string;
@@ -89,7 +86,7 @@ export const schema = defineTool<z.infer<typeof SchemaValidateSchema>, z.infer<t
 	name: 'schema',
 	description:
 		'Reads a compact Directus schema overview. Use first to discover collections, fields, relationships, and field semantics before reading or changing data.',
-	instructions: requireText(resolve(__dirname, './prompt.md')),
+	instructions: requireText(resolve(import.meta.dirname, './prompt.md')),
 	keywords: ['data model', 'collections', 'fields', 'relationships', 'structure', 'discovery'],
 	annotations: {
 		title: 'Directus - Schema',

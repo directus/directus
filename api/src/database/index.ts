@@ -1,6 +1,4 @@
 import { readdir } from 'node:fs/promises';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { performance } from 'perf_hooks';
 import { useEnv, validateDbEnv } from '@directus/env';
@@ -27,8 +25,6 @@ type QueryInfo = Partial<Knex.Sql> & {
 
 let database: Knex | null = null;
 let inspector: SchemaInspector | null = null;
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default getDatabase;
 
@@ -246,7 +242,7 @@ export async function validateMigrations(): Promise<boolean> {
 	const logger = useLogger();
 
 	try {
-		let migrationFiles = await readdir(path.join(__dirname, 'migrations'));
+		let migrationFiles = await readdir(path.join(import.meta.dirname, 'migrations'));
 
 		const customMigrationsPath = path.resolve(getExtensionsPath(), 'migrations');
 

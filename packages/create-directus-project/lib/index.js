@@ -4,8 +4,7 @@
 /* eslint-disable no-console */
 
 import { mkdir, readdir, readFile, stat } from 'node:fs/promises';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, resolve } from 'node:path';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import { execa } from 'execa';
@@ -14,8 +13,7 @@ import ora from 'ora';
 import checkForUpdate from 'update-check';
 import checkRequirements from './check-requirements.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const pkg = JSON.parse(await readFile(join(__dirname, '../package.json'), 'utf8'));
+const pkg = JSON.parse(await readFile(join(import.meta.dirname, '../package.json'), 'utf8'));
 
 const program = new Command(pkg.name)
 	.version(pkg.version)

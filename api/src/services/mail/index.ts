@@ -1,6 +1,5 @@
 import { readFile } from 'node:fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
@@ -20,10 +19,8 @@ import { useEmailRateLimiterQueue } from './rate-limiter.js';
 const env = useEnv();
 const logger = useLogger();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 const liquidEngine = new Liquid({
-	root: [path.resolve(env.EMAIL_TEMPLATES_PATH), path.resolve(__dirname, 'templates')],
+	root: [path.resolve(env.EMAIL_TEMPLATES_PATH), path.resolve(import.meta.dirname, 'templates')],
 	extname: '.liquid',
 });
 
@@ -113,7 +110,7 @@ export class MailService {
 
 	private async renderTemplate(template: string, variables: Record<string, any>) {
 		const customTemplatesDir = path.resolve(env['EMAIL_TEMPLATES_PATH'] as string);
-		const systemTemplatesDir = path.resolve(__dirname, 'templates');
+		const systemTemplatesDir = path.resolve(import.meta.dirname, 'templates');
 
 		const customTemplatePath = path.resolve(customTemplatesDir, template + '.liquid');
 		const systemTemplatePath = path.resolve(systemTemplatesDir, template + '.liquid');

@@ -1,13 +1,9 @@
 import fs from 'fs';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { promisify } from 'util';
 import type { Driver } from '@directus/types';
 import { Liquid } from 'liquidjs';
 import type { Credentials } from '../create-db-connection.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -47,7 +43,7 @@ export default async function createEnv(client: Driver, credentials: Credentials
 		}
 	}
 
-	const templateString = await readFile(path.join(__dirname, 'env-stub.liquid'), 'utf8');
+	const templateString = await readFile(path.join(import.meta.dirname, 'env-stub.liquid'), 'utf8');
 	const text = await liquidEngine.parseAndRender(templateString, configAsStrings);
 	await writeFile(path.join(directory, '.env'), text);
 	await fchmod(await open(path.join(directory, '.env'), 'r+'), 0o640);

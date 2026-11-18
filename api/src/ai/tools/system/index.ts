@@ -1,10 +1,7 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import { z } from 'zod';
 import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const SystemPromptInputSchema = z.object({});
 
@@ -25,7 +22,7 @@ export const system = defineTool<z.infer<typeof SystemPromptValidateSchema>>({
 	async handler({ args }) {
 		return {
 			type: 'text',
-			data: args.promptOverride || requireText(resolve(__dirname, './prompt.md')),
+			data: args.promptOverride || requireText(resolve(import.meta.dirname, './prompt.md')),
 		};
 	},
 });

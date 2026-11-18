@@ -1,6 +1,4 @@
 import { readdir } from 'node:fs/promises';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
@@ -12,13 +10,11 @@ import { useLogger } from '../../logger/index.js';
 import type { Migration } from '../../types/index.js';
 import getModuleDefault from '../../utils/get-module-default.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
 	const { MIGRATIONS_PATH } = useEnv();
 	const logger = useLogger();
 
-	let migrationFiles = await readdir(__dirname);
+	let migrationFiles = await readdir(import.meta.dirname);
 
 	const customMigrationsPath = path.resolve(MIGRATIONS_PATH);
 
@@ -47,7 +43,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 		const completed = !!completedMigrations.find((migration) => migration.version === version);
 
 		return {
-			file: custom ? path.join(customMigrationsPath, filePath) : path.join(__dirname, filePath),
+			file: custom ? path.join(customMigrationsPath, filePath) : path.join(import.meta.dirname, filePath),
 			version,
 			name,
 			completed,

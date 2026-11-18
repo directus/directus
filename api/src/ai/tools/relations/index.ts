@@ -1,5 +1,4 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Relation } from '@directus/types';
 import { z } from 'zod';
@@ -12,8 +11,6 @@ import {
 	RelationItemValidateCreateSchema,
 	RelationItemValidateUpdateSchema,
 } from '../schema.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const RelationsValidateSchema = z.discriminatedUnion('action', [
 	z.object({
@@ -61,7 +58,7 @@ export const relations = defineTool<z.infer<typeof RelationsValidateSchema>, z.i
 	admin: true,
 	description:
 		'Reads and changes relationships between Directus collections. Use for many-to-one, one-to-many, many-to-many, and many-to-any relations.',
-	instructions: requireText(resolve(__dirname, './prompt.md')),
+	instructions: requireText(resolve(import.meta.dirname, './prompt.md')),
 	keywords: ['relationships', 'foreign keys', 'm2o', 'o2m', 'm2m', 'm2a', 'junction'],
 	annotations: {
 		title: 'Directus - Relations',

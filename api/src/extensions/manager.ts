@@ -1,8 +1,7 @@
 import type { ReadStream, Stats } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import os from 'node:os';
-import { dirname, join, relative, resolve, sep } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, relative, resolve, sep } from 'node:path';
 import path from 'path';
 import { HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { useEnv } from '@directus/env';
@@ -65,8 +64,6 @@ import { wrapEmbeds } from './lib/wrap-embeds.js';
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
 const alias = aliasDefault as unknown as typeof aliasDefault.default;
 const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.default;
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const env = useEnv();
 
@@ -867,7 +864,7 @@ export class ExtensionManager {
 	 * registerOperation
 	 */
 	private async registerInternalOperations(): Promise<void> {
-		const internalOperations = await readdir(path.join(__dirname, '..', 'operations'));
+		const internalOperations = await readdir(path.join(import.meta.dirname, '..', 'operations'));
 
 		for (const operation of internalOperations) {
 			const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(

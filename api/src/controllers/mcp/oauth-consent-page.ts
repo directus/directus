@@ -6,19 +6,16 @@
  * Only `styles` and `themeAttr` use the `| raw` filter (CSS and HTML attribute, respectively).
  */
 
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { flatten } from 'flat';
 import { Liquid } from 'liquidjs';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // ---------------------------------------------------------------------------
 // Liquid engine scoped to our templates directory
 // ---------------------------------------------------------------------------
 
 const liquid = new Liquid({
-	root: join(__dirname, 'templates'),
+	root: join(import.meta.dirname, 'templates'),
 	extname: '.liquid',
 	outputEscape: 'escape',
 });

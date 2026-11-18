@@ -1,5 +1,4 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import type { File, PrimaryKey } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { z } from 'zod';
@@ -19,8 +18,6 @@ import {
 	QueryValidateSchema,
 } from '../schema.js';
 import { buildSanitizedQueryFromArgs } from '../utils.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const FilesValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({
@@ -65,7 +62,7 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>, z.infer<typ
 	name: 'files',
 	description:
 		'Reads and changes Directus file metadata or imports remote files. Use for uploads, media metadata, folders, titles, and file records.',
-	instructions: requireText(resolve(__dirname, './prompt.md')),
+	instructions: requireText(resolve(import.meta.dirname, './prompt.md')),
 	keywords: ['media', 'upload', 'import', 'asset metadata', 'attachments', 'documents'],
 	annotations: {
 		title: 'Directus - Files',
