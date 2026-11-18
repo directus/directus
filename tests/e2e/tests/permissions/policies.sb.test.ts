@@ -12,6 +12,8 @@ beforeAll(async () => {
 	directus = await useSandbox(database, {
 		env: {
 			LOG_LEVEL: 'debug',
+			// Without the schema cache every request reloads the schema, which on slow databases dwarfs the timing difference under test
+			CACHE_SCHEMA: 'true',
 			DB_FILENAME: `directus_test_${getUID()}.db`,
 			CACHE_STORE: 'memory',
 			CACHE_AUTO_PURGE: 'true',
