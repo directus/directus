@@ -1,6 +1,8 @@
 import { Editor } from '@tiptap/vue-3';
 import { describe, expect, test } from 'vitest';
-import { editorExtensions } from './extensions';
+import { findMarkupLoss } from './composables/markup-loss';
+import { computeValueNormalizationDiff } from './composables/normalization-diff';
+import { buildFieldSchema, editorExtensions, fieldEditorExtensions } from './extensions';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 
 /**
@@ -9,6 +11,7 @@ import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
  * passthrough — the schema is the source of truth; anything it can't represent is restored by an
  * extension (semantic tags, preserved attributes) or normalized away (see snapshots).
  */
+// svg and image map round-trips live in extensions/raw-html.test.ts: DOMPurify needs jsdom, and this file needs happy-dom
 function roundTrip(html: string): string {
 	// same comment ↔ element boundary as input-rich-text-html.vue, so page breaks round-trip identically
 	const editor = new Editor({ extensions: editorExtensions, content: decodePageBreaks(html) });
@@ -359,6 +362,681 @@ describe('round-trip: image', () => {
 	test('an anchor wrapping text and an image is still a text link', () => {
 		const out = roundTrip('<p><a href="https://directus.io">before<img src="/assets/abc" alt="a"></a></p>');
 
-		expect(out).toContain('<a href="https://directus.io">before</a>');
+		expect(out).toContain('<a href="https://directus.io">before');
+	});
+});
+
+describe('round-trip: inline image', () => {
+	function imageTypes(html: string): string[] {
+		const editor = new Editor({ extensions: editorExtensions, content: html });
+		const types: string[] = [];
+
+		editor.state.doc.descendants((node) => {
+			if (node.type.name === 'image' || node.type.name === 'inlineImage') types.push(node.type.name);
+		});
+
+		editor.destroy();
+		return types;
+	}
+
+	const UNCHANGED: Record<string, string> = {
+		'image between text in a paragraph': '<p>before <img src="/assets/abc" alt="a"> after</p>',
+		'image alone in a paragraph': '<p><img src="/assets/abc" alt="a"></p>',
+		'two images in one paragraph': '<p><img src="/assets/a" alt="a"><img src="/assets/b" alt="b"></p>',
+		'image in a heading': '<h2>Title <img src="/assets/abc" alt="a"></h2>',
+		'image in a list item paragraph': '<ul><li><p>item <img src="/assets/abc" alt="a"></p></li></ul>',
+		'lazy image': '<p><img src="/assets/abc" alt="a" loading="lazy"></p>',
+		'image with size': '<p><img src="/assets/abc" alt="a" width="16" height="16"></p>',
+		'image with preserved attributes': '<p><img class="icon" id="i1" data-x="1" src="/assets/abc" alt="a"></p>',
+		'linked image': '<p>see <a href="https://directus.io"><img src="/assets/abc" alt="a"></a> here</p>',
+		'linked image opening in a new tab':
+			'<p><a target="_blank" rel="noopener noreferrer" href="https://directus.io"><img src="/assets/abc" alt="a"></a></p>',
+		'link around text and an image': '<p><a href="https://directus.io">before<img src="/assets/abc" alt="a"></a></p>',
+		'image in a figure caption':
+			'<figure><img src="/assets/abc" alt="photo"><figcaption>c<img src="/assets/x" alt="x">ap</figcaption></figure>',
+		'image in a description term': '<dl><dt>term <img src="/assets/abc" alt="a"></dt><dd><p>definition</p></dd></dl>',
+		'image in a details summary':
+			'<details><summary>more <img src="/assets/abc" alt="a"></summary><p>body</p></details>',
+	};
+
+	test.each(Object.entries(UNCHANGED))('%s survives round-trip unchanged', (_name, html) => {
+		expect(roundTrip(html)).toBe(html);
+	});
+
+	test.each(Object.entries(UNCHANGED))('%s does not trip the normalization check', (_name, html) => {
+		expect(computeValueNormalizationDiff(html)).toBeNull();
+	});
+
+	// the form Tiptap stored before inline images: a block image after the item's paragraph
+	test.each([
+		['after the item paragraph', '<ul><li><p>item</p><img src="/assets/abc" alt="a"></li></ul>'],
+		[
+			'between the paragraph and a nested list',
+			'<ul><li><p>item</p><img src="/assets/abc" alt="a"><ul><li><p>b</p></li></ul></li></ul>',
+		],
+		['two images after the paragraph', '<ul><li><p>item</p><img src="/a" alt="a"><img src="/b" alt="b"></li></ul>'],
+	])('a block image %s in a list item stays a block image', (_name, html) => {
+		expect(roundTrip(html)).toBe(html);
+		expect(imageTypes(html).every((type) => type === 'image')).toBe(true);
+		expect(computeValueNormalizationDiff(html)).toBeNull();
+	});
+
+	test('an image in a bare list item stays in the item text', () => {
+		expect(roundTrip('<ul><li>item <img src="/assets/abc" alt="a"></li></ul>')).toBe(
+			'<ul><li><p>item <img src="/assets/abc" alt="a"></p></li></ul>',
+		);
+	});
+
+	test.each([
+		['alone', '<ul><li>item <img src="/assets/abc" alt="a"></li></ul>'],
+		['before a nested list', '<ul><li>item <img src="/assets/abc" alt="a"><ul><li>b</li></ul></li></ul>'],
+		['before a second paragraph', '<ul><li><img src="/assets/abc" alt="a"><p>b</p></li></ul>'],
+	])('an image in a bare list item survives with noContainerParagraphs (%s)', (_name, html) => {
+		const { extensions, key } = buildFieldSchema({ noContainerParagraphs: true });
+		const editor = new Editor({ extensions: fieldEditorExtensions(extensions), content: html });
+
+		expect(editor.getHTML()).toBe(html);
+		expect(computeValueNormalizationDiff(html, extensions, key)).toBeNull();
+		editor.destroy();
+	});
+
+	test('an image in a paragraph, heading, list item, caption, term or summary is inline', () => {
+		expect(
+			imageTypes(
+				'<p><img src="/a"></p><h3><img src="/b"></h3><ul><li><img src="/c"></li></ul><figure><img src="/d"><figcaption><img src="/e"></figcaption></figure><dl><dt><img src="/f"></dt><dd><p>d</p></dd></dl><details><summary><img src="/g"></summary><p>b</p></details>',
+			),
+		).toEqual(['inlineImage', 'inlineImage', 'inlineImage', 'image', 'inlineImage', 'inlineImage', 'inlineImage']);
+	});
+
+	test('an image anywhere else stays a block image', () => {
+		expect(
+			imageTypes(
+				'<img src="/a"><figure><img src="/b"><figcaption>c</figcaption></figure><div><img src="/c"></div><table><tbody><tr><td><img src="/d"></td></tr></tbody></table>',
+			),
+		).toEqual(['image', 'image', 'image', 'image']);
+	});
+
+	test('a linked inline image uses the Link mark, not node attributes', () => {
+		const editor = new Editor({
+			extensions: editorExtensions,
+			content: '<p><a href="https://directus.io"><img src="/assets/abc" alt="a"></a></p>',
+		});
+
+		const image = editor.state.doc.firstChild!.firstChild!;
+
+		expect(image.type.name).toBe('inlineImage');
+		expect(image.attrs.href).toBeUndefined();
+		expect(image.marks.map((mark) => mark.type.name)).toEqual(['link']);
+		editor.destroy();
+	});
+});
+
+describe('noContainerParagraphs', () => {
+	function unwrappedEditor(html: string) {
+		const { extensions } = buildFieldSchema({ noContainerParagraphs: true });
+		return new Editor({ extensions: fieldEditorExtensions(extensions), content: html });
+	}
+
+	const UNCHANGED: Record<string, string> = {
+		'list item': '<ul><li>a</li></ul>',
+		'nested list': '<ul><li>a<ul><li>b</li></ul></li></ul>',
+		blockquote: '<blockquote>a</blockquote>',
+		'table cells':
+			'<table style="min-width: 50px;"><colgroup><col style="min-width: 25px;"><col style="min-width: 25px;"></colgroup><tbody><tr><th colspan="1" rowspan="1">a</th><td colspan="1" rowspan="1">b</td></tr></tbody></table>',
+		'marks in a list item': '<ul><li><strong>a</strong> b</li></ul>',
+		'mixed items keep their own form': '<ul><li>a</li><li><p>b</p></li><li>c<ul><li>d</li></ul></li></ul>',
+		'stored <p> in a list item': '<ul><li><p>a</p></li></ul>',
+		'stored <p> in a blockquote': '<blockquote><p>a</p></blockquote>',
+		'stored <p> in a table cell':
+			'<table style="min-width: 25px;"><colgroup><col style="min-width: 25px;"></colgroup><tbody><tr><td colspan="1" rowspan="1"><p>a</p></td></tr></tbody></table>',
+		'second paragraph keeps its <p>': '<blockquote>a<p>b</p></blockquote>',
+		'paragraph with own attributes': '<ul><li><p class="lead">a</p></li></ul>',
+		'empty first paragraph before a paragraph': '<blockquote><p></p><p>a</p></blockquote>',
+		'empty first paragraph before a nested list': '<ul><li><p></p><ul><li>a</li></ul></li></ul>',
+		'empty list item': '<ul><li></li></ul>',
+		'top-level paragraph': '<p>a</p>',
+	};
+
+	test.each(Object.entries(UNCHANGED))('%s survives round-trip unchanged', (_name, html) => {
+		const editor = unwrappedEditor(html);
+		const out = editor.getHTML();
+		editor.destroy();
+
+		expect(out).toBe(html);
+	});
+
+	test.each(Object.entries(UNCHANGED))('%s does not trip the normalization check', (_name, html) => {
+		const { extensions, key } = buildFieldSchema({ noContainerParagraphs: true });
+
+		expect(computeValueNormalizationDiff(html, extensions, key)).toBeNull();
+	});
+
+	test('a paragraph turned into a list item gets no <p>', () => {
+		const editor = unwrappedEditor('<p>a</p>');
+
+		editor.chain().setTextSelection(1).toggleBulletList().run();
+
+		expect(editor.getHTML()).toBe('<ul><li>a</li></ul><p></p>');
+		editor.destroy();
+	});
+
+	test('a blockquote made from a paragraph gets no <p>', () => {
+		const editor = unwrappedEditor('<p>a</p>');
+
+		editor.chain().setTextSelection(1).toggleBlockquote().run();
+
+		expect(editor.getHTML()).toBe('<blockquote>a</blockquote><p></p>');
+		editor.destroy();
+	});
+
+	test('a list item split from a stored <p> gets no <p>', () => {
+		const editor = unwrappedEditor('<ul><li><p>a</p></li></ul>');
+
+		editor.chain().setTextSelection(4).splitListItem('listItem').insertContent('b').run();
+
+		expect(editor.getHTML()).toBe('<ul><li><p>a</p></li><li>b</li></ul><p></p>');
+		editor.destroy();
+	});
+
+	test('an empty line opened above a paragraph survives a reload', () => {
+		const editor = unwrappedEditor('<blockquote>a</blockquote>');
+
+		editor.chain().setTextSelection(2).splitBlock().run();
+		const saved = editor.getHTML();
+		editor.destroy();
+
+		const reloaded = unwrappedEditor(saved);
+
+		expect(reloaded.state.doc.firstChild?.childCount).toBe(2);
+		reloaded.destroy();
+	});
+
+	test('a paragraph that gains an attribute keeps its <p> so the attribute survives', () => {
+		const editor = unwrappedEditor('<ul><li>a</li></ul>');
+
+		editor.chain().setTextSelection(3).updateAttributes('paragraph', { textAlign: 'center' }).run();
+
+		expect(editor.getHTML()).toBe('<ul><li><p style="text-align: center;">a</p></li></ul><p></p>');
+		editor.destroy();
+	});
+
+	test('the editor view still renders the paragraph', () => {
+		const editor = unwrappedEditor('<ul><li>a</li></ul>');
+
+		expect(editor.view.dom.querySelector('li > p')?.textContent).toBe('a');
+		editor.destroy();
+	});
+
+	test('a field without the option still wraps', () => {
+		const { extensions } = buildFieldSchema({});
+		const editor = new Editor({ extensions: fieldEditorExtensions(extensions), content: '<ul><li>a</li></ul>' });
+
+		expect(editor.getHTML()).toBe('<ul><li><p>a</p></li></ul>');
+		editor.destroy();
+	});
+
+	test('the schema key tells the two modes apart', () => {
+		expect(buildFieldSchema({ noContainerParagraphs: true }).key).not.toBe(buildFieldSchema({}).key);
+	});
+});
+
+describe('wrapper elements', () => {
+	function wrapperSchema() {
+		return buildFieldSchema({ keepWrapperElements: true });
+	}
+
+	function wrapperEditor(html: string) {
+		const { extensions } = wrapperSchema();
+		return new Editor({ extensions: fieldEditorExtensions(extensions), content: decodePageBreaks(html) });
+	}
+
+	function wrapperRoundTrip(html: string): string {
+		const editor = wrapperEditor(html);
+		const out = encodePageBreaks(editor.getHTML());
+		editor.destroy();
+		return out;
+	}
+
+	const UNCHANGED: Record<string, string> = {
+		'div with text': '<div>a</div>',
+		'div with a paragraph': '<div><p>a</p></div>',
+		'div with class and id': '<div class="box" id="intro"><p>a</p></div>',
+		'div with data attribute': '<div data-role="card">a</div>',
+		'nested divs': '<div class="outer"><div class="inner"><p>a</p></div></div>',
+		'div with text then a paragraph': '<div>a<p>b</p></div>',
+		'div with a heading and a list': '<div><h2>a</h2><ul><li><p>b</p></li></ul></div>',
+		'empty div': '<div></div>',
+		aside: '<aside><p>a</p></aside>',
+		header: '<header><h1>a</h1></header>',
+		footer: '<footer>a</footer>',
+		nav: '<nav><ul><li><p>a</p></li></ul></nav>',
+		main: '<main><p>a</p></main>',
+		'div in a section': '<section><div class="box"><p>a</p></div></section>',
+		'page break next to a div': '<div>a</div><!-- pagebreak --><div>b</div>',
+	};
+
+	test.each(Object.entries(UNCHANGED))('%s survives round-trip unchanged', (_name, html) => {
+		expect(wrapperRoundTrip(html)).toBe(html);
+	});
+
+	test.each(Object.entries(UNCHANGED))('%s does not trip the normalization check', (_name, html) => {
+		const { extensions, key } = wrapperSchema();
+
+		expect(computeValueNormalizationDiff(decodePageBreaks(html), extensions, key)).toBeNull();
+	});
+
+	test('the editor view still renders the paragraph in a text-only div', () => {
+		const editor = wrapperEditor('<div>a</div>');
+
+		expect(editor.view.dom.querySelector(':scope div > p')?.textContent).toBe('a');
+		editor.destroy();
+	});
+
+	test('a page break is still a page break', () => {
+		const editor = wrapperEditor('<p>a</p><!-- pagebreak --><p>b</p>');
+
+		expect(editor.state.doc.child(1).type.name).toBe('pageBreak');
+		editor.destroy();
+	});
+
+	test('a wrapper that starts a list item is unwrapped, so it stays in the list', () => {
+		expect(wrapperRoundTrip('<ul><li><div>a</div></li></ul>')).toBe('<ul><li><p>a</p></li></ul>');
+		expect(wrapperRoundTrip('<ul><li>a<div>b</div></li></ul>')).toBe('<ul><li><p>a</p><div>b</div></li></ul>');
+		expect(wrapperRoundTrip('<ul><li><!-- c --><div>a</div></li></ul>')).toBe('<ul><li><p>a</p></li></ul>');
+	});
+
+	test('the checkbox turns the option off', () => {
+		const { extensions } = buildFieldSchema({ keepWrapperElements: false });
+		const editor = new Editor({ extensions: fieldEditorExtensions(extensions), content: '<div class="box">a</div>' });
+
+		expect(editor.getHTML()).toBe('<p class="box">a</p>');
+		editor.destroy();
+	});
+
+	test('a text-only div keeps no <p> without noContainerParagraphs', () => {
+		expect(wrapperRoundTrip('<ul><li><p>a</p></li></ul><div>b</div>')).toBe('<ul><li><p>a</p></li></ul><div>b</div>');
+	});
+
+	test('works together with noContainerParagraphs', () => {
+		const { extensions, key } = buildFieldSchema({
+			keepWrapperElements: true,
+			noContainerParagraphs: true,
+		});
+
+		const html = '<div>a</div><ul><li>b</li></ul><blockquote>c</blockquote>';
+		const editor = new Editor({ extensions: fieldEditorExtensions(extensions), content: html });
+
+		expect(editor.getHTML()).toBe(html);
+		expect(computeValueNormalizationDiff(html, extensions, key)).toBeNull();
+		editor.destroy();
+	});
+
+	test('the schema key tells the options apart', () => {
+		const keys = new Set([
+			buildFieldSchema({}).key,
+			wrapperSchema().key,
+			buildFieldSchema({ noContainerParagraphs: true }).key,
+			buildFieldSchema({ keepWrapperElements: true, noContainerParagraphs: true }).key,
+		]);
+
+		expect(keys.size).toBe(4);
+	});
+});
+
+describe('html comments', () => {
+	function commentEditor(html: string, options: Parameters<typeof buildFieldSchema>[0] = {}) {
+		const { extensions } = buildFieldSchema({ keepHtmlComments: true, ...options });
+		return new Editor({ extensions: fieldEditorExtensions(extensions), content: decodePageBreaks(html) });
+	}
+
+	function commentRoundTrip(html: string, options: Parameters<typeof buildFieldSchema>[0] = {}) {
+		const editor = commentEditor(html, options);
+		const out = encodePageBreaks(editor.getHTML());
+		editor.destroy();
+		return out;
+	}
+
+	const KEPT: Record<string, string> = {
+		'between blocks': '<!-- top --><p>a</p><!-- bottom -->',
+		'inside text': '<p>a <!-- inline --> b</p>',
+		'after a mark': '<p><strong>x</strong><!-- after --></p>',
+		'in a heading': '<h2>T<!-- h --></h2>',
+		'in a list item': '<ul><li><p>x<!-- in li --></p></li></ul>',
+		'in a blockquote': '<blockquote><!-- q --><p>x</p></blockquote>',
+		'outlook conditional comment':
+			'<!--[if mso]><table><tr><td>Outlook</td></tr></table><![endif]--><p>a</p><!--[if !mso]><!--><p>b</p><!--<![endif]-->',
+		'text with dashes': '<p>a</p><!-- a -- b --->',
+		'next to a page break': '<p>a</p><!-- pagebreak --><!-- note -->',
+	};
+
+	test.each(Object.entries(KEPT))('%s survives round-trip unchanged', (_name, html) => {
+		expect(commentRoundTrip(html)).toBe(html);
+	});
+
+	test.each(Object.entries(KEPT))('%s does not trip the normalization check', (_name, html) => {
+		const { extensions, key } = buildFieldSchema({ keepHtmlComments: true });
+
+		expect(computeValueNormalizationDiff(html, extensions, key)).toBeNull();
+	});
+
+	test('setContent keeps comments', () => {
+		const editor = commentEditor('<p>a</p>');
+		editor.commands.setContent('<p>b<!-- kept --></p>');
+
+		expect(editor.getHTML()).toBe('<p>b<!-- kept --></p>');
+		editor.destroy();
+	});
+
+	test('pasted comments are removed', () => {
+		const editor = commentEditor('<p>a</p>');
+		editor.commands.setTextSelection(2);
+		editor.view.pasteHTML('<p>b<!-- #include virtual="/x" --></p><!--esi <esi:include src="/x"/> -->');
+
+		expect(editor.getHTML()).toContain('b');
+		expect(editor.getHTML()).not.toContain('<!--');
+		editor.destroy();
+	});
+
+	test('without the option, a stored comment is removed and trips the normalization check', () => {
+		const html = '<!-- top --><p>a <!-- inline --> b</p>';
+
+		expect(roundTrip(html)).toBe('<p>a b</p>');
+		expect(computeValueNormalizationDiff(html)).not.toBeNull();
+	});
+
+	// the schema has no place for these, so they are removed and the editor locks with the warning
+	test.each([
+		['between list items', '<ul><li><p>a</p></li><!-- c --><li><p>b</p></li></ul>'],
+		['before the first paragraph of a list item', '<ul><li><!-- c --><p>x</p></li></ul>'],
+		['in a code block', '<pre><code>a <!-- c --> b</code></pre>'],
+	])('a comment %s is removed without changing the structure', (_name, html) => {
+		const { extensions, key } = buildFieldSchema({ keepHtmlComments: true });
+
+		expect(commentRoundTrip(html)).toBe(html.replace(/<!-- c -->/, ''));
+		expect(computeValueNormalizationDiff(html, extensions, key)).not.toBeNull();
+	});
+
+	test('works together with noContainerParagraphs', () => {
+		const html = '<ul><li>a<!-- c --></li></ul><blockquote><!-- q --><p>b</p></blockquote>';
+
+		expect(commentRoundTrip(html, { noContainerParagraphs: true })).toBe(html);
+	});
+
+	test('copy keeps comments in the clipboard HTML', () => {
+		const editor = commentEditor('<p>a<!-- c --></p>');
+		editor.commands.selectAll();
+		const { dom } = editor.view.serializeForClipboard(editor.state.selection.content());
+
+		expect(dom.innerHTML).toContain('<!-- c -->');
+		editor.destroy();
+	});
+
+	test('pasting a copy from the same editor keeps its comments', () => {
+		const editor = commentEditor('<p>a<!-- c --></p><p>b</p>');
+		editor.commands.setTextSelection({ from: 1, to: 3 });
+		const { dom } = editor.view.serializeForClipboard(editor.state.selection.content());
+		editor.commands.setTextSelection(6);
+		editor.view.pasteHTML(dom.innerHTML);
+
+		expect(editor.getHTML()).toBe('<p>a<!-- c --></p><p>ba<!-- c --></p>');
+		editor.destroy();
+	});
+
+	test.each([
+		[
+			'Backspace after an inline comment deletes the character before it',
+			'<p>ab<!-- c -->d</p>',
+			4,
+			'Backspace',
+			'<p>a<!-- c -->d</p>',
+		],
+		[
+			'Delete before an inline comment deletes the character after it',
+			'<p>ab<!-- c -->d</p>',
+			3,
+			'Delete',
+			'<p>ab<!-- c --></p>',
+		],
+		[
+			'Backspace after a block comment joins the paragraphs and keeps the comment',
+			'<p>a</p><!-- c --><p>b</p><p>z</p>',
+			5,
+			'Backspace',
+			'<p>ab</p><!-- c --><p>z</p>',
+		],
+		[
+			'Delete before a block comment joins the paragraphs and keeps the comment',
+			'<p>a</p><!-- c --><p>b</p>',
+			2,
+			'Delete',
+			'<!-- c --><p>ab</p>',
+		],
+		['Backspace after a leading comment keeps it', '<!-- c --><p>a</p>', 2, 'Backspace', '<!-- c --><p>a</p>'],
+	])('%s', (_name, html, cursor, key, expected) => {
+		const editor = commentEditor(html);
+		editor.commands.setTextSelection(cursor);
+		// Tiptap's keyboardShortcut command replays captured steps, which drops part of a multi-step change
+		editor.view.someProp('handleKeyDown', (handle) => handle(editor.view, new KeyboardEvent('keydown', { key })));
+
+		expect(editor.getHTML()).toBe(expected);
+		editor.destroy();
+	});
+
+	test('the schema key tells the option apart', () => {
+		expect(buildFieldSchema({ keepHtmlComments: true }).key).not.toBe(buildFieldSchema({}).key);
+	});
+});
+
+describe('legacy attributes', () => {
+	function legacySchema() {
+		return buildFieldSchema({ keepLegacyAttributes: true });
+	}
+
+	function legacyRoundTrip(html: string, schema = legacySchema()): string {
+		const editor = new Editor({ extensions: fieldEditorExtensions(schema.extensions), content: html });
+		const out = editor.getHTML();
+		editor.destroy();
+		return out;
+	}
+
+	const IFRAME =
+		'<iframe frameborder="0" allow="autoplay; fullscreen" allowfullscreen="" scrolling="no" marginwidth="0" marginheight="0" src="about:blank" width="560" height="315"></iframe>';
+
+	const TABLE =
+		'<table border="1" cellpadding="4" cellspacing="0" width="100%" align="center" bgcolor="#eeeeee" summary="Prices"><tbody>' +
+		'<tr valign="top" align="left" bgcolor="#ffffff" height="20">' +
+		'<th scope="col" abbr="N" width="50%" valign="bottom" align="right" bgcolor="#dddddd" nowrap="">a</th>' +
+		'<td headers="h1" height="10" valign="middle" align="center" bgcolor="#cccccc" nowrap="">b</td>' +
+		'</tr></tbody></table>';
+
+	test('an iframe survives round-trip unchanged', () => {
+		expect(legacyRoundTrip(IFRAME)).toBe(IFRAME);
+	});
+
+	test('a legacy iframe does not trip the normalization check', () => {
+		const { extensions, key } = legacySchema();
+
+		expect(computeValueNormalizationDiff(IFRAME, extensions, key)).toBeNull();
+	});
+
+	test('a table already in editor form does not trip the normalization check', () => {
+		const { extensions, key } = legacySchema();
+
+		const html =
+			'<table border="1" cellpadding="4" style="min-width: 25px;"><colgroup><col style="min-width: 25px;"></colgroup><tbody><tr valign="top"><td align="center" bgcolor="#cccccc" colspan="1" rowspan="1"><p>a</p></td></tr></tbody></table>';
+
+		expect(computeValueNormalizationDiff(html, extensions, key)).toBeNull();
+	});
+
+	test('a legacy table loses no markup', () => {
+		const editor = new Editor({ extensions: fieldEditorExtensions(legacySchema().extensions), content: TABLE });
+
+		expect(findMarkupLoss(TABLE, editor.getHTML(), editor.schema)).toEqual([]);
+		editor.destroy();
+	});
+
+	test('table, row and cell attributes survive round-trip', () => {
+		const out = legacyRoundTrip(TABLE);
+
+		expect(out).toContain(
+			'<table border="1" cellpadding="4" cellspacing="0" width="100%" align="center" bgcolor="#eeeeee" summary="Prices"',
+		);
+
+		expect(out).toContain('<tr valign="top" align="left" bgcolor="#ffffff" height="20">');
+
+		expect(out).toContain(
+			'<th scope="col" abbr="N" width="50%" valign="bottom" align="right" bgcolor="#dddddd" nowrap=""',
+		);
+
+		expect(out).toContain('<td headers="h1" height="10" valign="middle" align="center" bgcolor="#cccccc" nowrap=""');
+	});
+
+	test('a cell align attribute is not rewritten to text-align', () => {
+		expect(legacyRoundTrip(TABLE)).not.toContain('text-align');
+	});
+
+	test('a cell text-align style still round-trips as a style', () => {
+		const out = legacyRoundTrip('<table><tbody><tr><td style="text-align: right;">a</td></tr></tbody></table>');
+
+		expect(out).toContain('style="text-align: right;"');
+		expect(out).not.toContain('align="right"');
+	});
+
+	test('event handlers stay dropped', () => {
+		const out = legacyRoundTrip('<table onclick="x()"><tbody><tr><td onmouseover="x()">a</td></tr></tbody></table>');
+
+		expect(out).not.toMatch(/\son\w+=/);
+	});
+
+	test('a video does not keep iframe attributes', () => {
+		const out = legacyRoundTrip(
+			'<video allow="camera" frameborder="0" controls src="https://example.com/a.mp4"></video>',
+		);
+
+		expect(out).toBe('<video controls=""><source src="https://example.com/a.mp4"></video>');
+	});
+
+	test('a cell width attribute does not conflict with colwidth', () => {
+		const out = legacyRoundTrip(
+			'<table><tbody><tr><td width="50%">a</td><td colwidth="120">b</td></tr></tbody></table>',
+		);
+
+		expect(out).toBe(
+			'<table style="min-width: 145px;"><colgroup><col style="min-width: 25px;"><col style="width: 120px;"></colgroup><tbody><tr><td width="50%" colspan="1" rowspan="1"><p>a</p></td><td colspan="1" rowspan="1" colwidth="120"><p>b</p></td></tr></tbody></table>',
+		);
+	});
+
+	test('without the option, legacy attributes are dropped', () => {
+		const out = legacyRoundTrip(TABLE + IFRAME, buildFieldSchema({ keepLegacyAttributes: false }));
+
+		for (const name of ['border', 'cellpadding', 'cellspacing', 'bgcolor', 'valign', 'frameborder', 'allow']) {
+			expect(out).not.toContain(`${name}=`);
+		}
+	});
+
+	test('works together with inline styles', () => {
+		const schema = buildFieldSchema({ keepLegacyAttributes: true, keepInlineStyles: true });
+		const html = '<iframe style="border: 0px;" frameborder="0" src="about:blank"></iframe>';
+
+		expect(legacyRoundTrip(html, schema)).toBe(html);
+		expect(computeValueNormalizationDiff(html, schema.extensions, schema.key)).toBeNull();
+	});
+
+	test('the schema key tells the options apart', () => {
+		expect(legacySchema().key).not.toBe(buildFieldSchema({}).key);
+	});
+});
+
+describe('named anchors', () => {
+	const UNCHANGED: Record<string, string> = {
+		'empty anchor': '<p><a name="section-2"></a>Section 2</p>',
+		'empty anchor between text': '<p>before<a name="mid"></a>after</p>',
+		'anchor wrapping text': '<p><a name="section-2">Section 2</a> body</p>',
+		'anchor wrapping marked text': '<p><a name="intro"><strong>Intro</strong></a></p>',
+		'anchor wrapping a non-breaking space': '<p>a<a name="gap">&nbsp;</a>b</p>',
+		'empty anchor in a heading': '<h2><a name="part-1"></a>Part 1</h2>',
+		'empty anchor with id and class': '<p><a class="anchor" id="top" name="top"></a>text</p>',
+		'anchor next to a link to it': '<p><a name="faq"></a>FAQ <a href="#faq">jump</a></p>',
+		'anchor wrapping a space between words': '<p>a<a name="gap"> </a>b</p>',
+	};
+
+	test.each(Object.entries(UNCHANGED))('%s survives round-trip unchanged', (_name, html) => {
+		expect(roundTrip(html)).toBe(html);
+	});
+
+	test.each(Object.entries(UNCHANGED))('%s does not trip the normalization check', (_name, html) => {
+		const { extensions, key } = buildFieldSchema();
+
+		expect(computeValueNormalizationDiff(html, extensions, key)).toBeNull();
+	});
+
+	test('an anchor with an empty name is not kept', () => {
+		expect(roundTrip('<p>a<a name=""></a>b</p>')).toBe('<p>ab</p>');
+	});
+
+	test('a top-level anchor is kept inside a paragraph', () => {
+		expect(roundTrip('<a name="top"></a><h2>Title</h2>')).toBe('<p><a name="top"></a></p><h2>Title</h2>');
+	});
+
+	test('a link with a name is still a link', () => {
+		expect(roundTrip('<p><a href="https://directus.io" name="x">link</a></p>')).toBe(
+			'<p><a href="https://directus.io">link</a></p>',
+		);
+	});
+
+	test('an anchor without a name is not kept', () => {
+		expect(roundTrip('<p><a>text</a></p>')).toBe('<p>text</p>');
+	});
+
+	test('the editor shows an empty anchor as a marker with its name', () => {
+		const editor = new Editor({ extensions: editorExtensions, content: '<p><a name="section-2"></a>text</p>' });
+		const marker = editor.view.dom.querySelector('.named-anchor');
+
+		expect(marker?.getAttribute('title')).toBe('section-2');
+		expect(marker?.getAttribute('contenteditable')).toBe('false');
+		editor.destroy();
+	});
+
+	describe('editing anchored text', () => {
+		function edit(html: string, change: (editor: Editor) => void): string {
+			const editor = new Editor({ extensions: editorExtensions, content: html });
+			change(editor);
+			const out = editor.getHTML();
+			editor.destroy();
+			return out;
+		}
+
+		test('adding a link keeps the anchor as an empty anchor before the link', () => {
+			const out = edit('<p><a name="s">hello</a> world</p>', (editor) =>
+				editor.chain().setTextSelection({ from: 1, to: 6 }).setLink({ href: 'https://directus.io' }).run(),
+			);
+
+			expect(out).toBe('<p><a name="s"></a><a href="https://directus.io">hello</a> world</p>');
+			expect(roundTrip(out)).toBe(out);
+		});
+
+		test('clearing formatting keeps the anchor as an empty anchor', () => {
+			const out = edit('<p><a class="anchor" name="s"><strong>hello</strong></a> world</p>', (editor) =>
+				editor.chain().selectAll().unsetAllMarks().run(),
+			);
+
+			expect(out).toBe('<p><a class="anchor" name="s"></a>hello world</p>');
+		});
+
+		test('clearing formatting on part of the anchored text keeps the anchor on the rest', () => {
+			const out = edit('<p><a name="s">hello</a></p>', (editor) =>
+				editor.chain().setTextSelection({ from: 4, to: 6 }).unsetAllMarks().run(),
+			);
+
+			expect(out).toBe('<p><a name="s">hel</a>lo</p>');
+		});
+
+		test('deleting the anchored text deletes the anchor', () => {
+			const out = edit('<p>a <a name="s">hello</a> b</p>', (editor) =>
+				editor.chain().setTextSelection({ from: 3, to: 8 }).deleteSelection().run(),
+			);
+
+			expect(out).toBe('<p>a  b</p>');
+		});
 	});
 });

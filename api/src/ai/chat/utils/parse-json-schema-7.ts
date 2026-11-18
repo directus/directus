@@ -1,6 +1,6 @@
+import { formatZodError } from '@directus/errors';
 import type { JSONSchema7 } from 'ai';
 import { z } from 'zod';
-import { fromZodError } from 'zod-validation-error';
 
 const jsonType = z.enum(['null', 'boolean', 'object', 'array', 'number', 'integer', 'string']);
 
@@ -84,7 +84,7 @@ export const parseJsonSchema7 = (schema: unknown): JSONSchema7 => {
 	const { success, error, data } = JsonSchema7.safeParse(schema);
 
 	if (!success) {
-		throw new Error(`Invalid JSON Schema passed: ${fromZodError(error).message}`);
+		throw new Error(`Invalid JSON Schema passed: ${formatZodError(error)}`);
 	}
 
 	return data as JSONSchema7;

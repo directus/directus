@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { File, SettingsStorageAssetPreset } from '@directus/types';
-import type { ImageSelection } from '../composables/use-image';
+import { canBeInline, type ImageSelection } from '../composables/use-image';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VInput from '@/components/v-input.vue';
@@ -43,7 +43,7 @@ const selection = defineModel<ImageSelection | null>('imageSelection', { require
 					</div>
 					<div class="field full">
 						<div class="type-label">{{ $t('caption') }}</div>
-						<VInput v-model="selection.caption" :nullable="false" />
+						<VInput v-model="selection.caption" :nullable="false" :disabled="selection.inline" />
 					</div>
 					<template v-if="storageAssetTransform === 'all'">
 						<div class="field half">
@@ -58,6 +58,15 @@ const selection = defineModel<ImageSelection | null>('imageSelection', { require
 					<div class="field half">
 						<div class="type-label">{{ $t('wysiwyg_options.lazy_loading') }}</div>
 						<VCheckbox v-model="selection.lazy" block :label="$t('wysiwyg_options.lazy_loading_label')" />
+					</div>
+					<div class="field half-right">
+						<div class="type-label">{{ $t('wysiwyg_options.inline_image') }}</div>
+						<VCheckbox
+							v-model="selection.inline"
+							block
+							:label="$t('wysiwyg_options.inline_image_label')"
+							:disabled="!canBeInline(selection)"
+						/>
 					</div>
 					<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
 						<div class="type-label">{{ $t('transformation_preset_key') }}</div>

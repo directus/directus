@@ -43,7 +43,7 @@ export const toolbarGroups: ToolbarGroup[] = [
 	{ id: 'code', priority: 40, keys: ['customInlineCode', 'code', 'customPre'] },
 	{ id: 'clipboard', priority: 30, keys: ['cut', 'copy', 'paste', 'remove', 'selectall'] },
 	{ id: 'tools', priority: 20, keys: ['removeformat'] },
-	{ id: 'view', priority: 10, pinned: true, keys: ['visualaid', 'fullscreen'] },
+	{ id: 'view', priority: 10, pinned: true, keys: ['visualaid', 'htmlcomments', 'fullscreen'] },
 ];
 
 const groupByKey = new Map<string, ToolbarGroup>();

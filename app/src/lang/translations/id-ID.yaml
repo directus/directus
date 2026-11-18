@@ -1493,6 +1493,13 @@ triggers:
   webhook:
     method: Metode
 operations:
+  ai-image:
+    starting_points:
+      icon: Ikon
+  ai-text:
+    files: Berkas
+    type_text: Teks
+    view_json: JSON
   item-create:
     payload: Muatan
   item-update:

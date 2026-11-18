@@ -1,6 +1,7 @@
 import type { Editor } from '@tiptap/vue-3';
 import type { Component } from 'vue';
 import { isAnyLinkActive, unsetAnyLink } from '../composables/use-link';
+import { activeImageType } from '../extensions/image';
 import { PAGE_BREAK_NODE } from '../extensions/page-break';
 import ColorMenu from './menus/color-menu.vue';
 import DateTimeMenu from './menus/datetime-menu.vue';
@@ -20,6 +21,10 @@ export interface ToolbarContext {
 		toggle: () => void;
 	};
 	visualaid: {
+		active: () => boolean;
+		toggle: () => void;
+	};
+	htmlComments: {
 		active: () => boolean;
 		toggle: () => void;
 	};
@@ -299,7 +304,7 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		icon: 'image',
 		label: 'wysiwyg_options.image',
 		command: (_e, ctx) => ctx.image.open(),
-		isActive: (e) => e.isActive('image'),
+		isActive: (e) => activeImageType(e) !== null,
 	},
 	customMedia: {
 		icon: 'slideshow',
@@ -374,6 +379,12 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		label: 'wysiwyg_options.visualaid',
 		command: (_e, ctx) => ctx.visualaid.toggle(),
 		isActive: (_e, ctx) => ctx.visualaid.active(),
+	},
+	htmlcomments: {
+		icon: 'comment',
+		label: 'wysiwyg_options.show_html_comments',
+		command: (_e, ctx) => ctx.htmlComments.toggle(),
+		isActive: (_e, ctx) => ctx.htmlComments.active(),
 	},
 	fullscreen: {
 		icon: 'zoom_out_map',

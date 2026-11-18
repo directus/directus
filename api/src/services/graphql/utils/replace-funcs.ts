@@ -1,6 +1,6 @@
 import { FUNCTIONS } from '@directus/constants';
 import type { Filter } from '@directus/types';
-import { transform } from 'lodash-es';
+import { isPlainObject, transform } from 'lodash-es';
 
 /**
  * Replace functions from GraphQL format to Directus-Filter format
@@ -19,7 +19,8 @@ export function replaceFuncs(filter: Filter): Filter {
 
 				result[`${functionName}(${fieldName})`] = Object.values(value)[0]!;
 			} else {
-				result[key] = value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
+				// `isPlainObject` rather than a constructor check, since `deep` is built from null-prototype objects
+				result[key] = isPlainObject(value) || Array.isArray(value) ? replaceFuncDeep(value) : value;
 			}
 		});
 	}
