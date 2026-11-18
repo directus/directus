@@ -6,7 +6,6 @@ import type { Knex } from 'knex';
 import { groupBy, intersection, mapValues, partition, pickBy } from 'lodash-es';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
-import type { VersioningHelper } from '../database/helpers/versioning/types.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import getLocalType from '../utils/get-local-type.js';
@@ -14,25 +13,16 @@ import { stitchRelations } from '../utils/stitch-relations.js';
 import { FieldsService } from './fields.js';
 import { VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
 import {
+	type ColumnsByTable,
+	getExactType,
+	type InspectedTables,
 	type LiveCollections,
 	normalizeAction,
-	planVersionTables,
+	type Plan,
+	planVersioning,
 	type VersionTableColumn,
-	type VersionTableForeignKey,
-	type VersionTables,
 } from './version-tables/plan-version-tables.js';
 import { isVersioningTable } from './version-tables/utils.js';
-
-type ColumnChanges = { add: VersionTableColumn[]; alter: VersionTableColumn[]; drop: string[] };
-
-/** Columns keyed by table, then by column name */
-type ColumnsByTable = Record<string, Record<string, Column>>;
-
-/** Columns and foreign keys of a set of tables */
-export type InspectedTables = {
-	columns: ColumnsByTable;
-	foreignKeys: ForeignKey[];
-};
 
 /** Versioned collections, version tables, live tables and relation meta rows to plan a sync from */
 type InspectedSchema = {
@@ -102,9 +92,9 @@ export class VersionTablesService {
 			}),
 		);
 
-		const plannedShadowTables = planVersionTables(liveCollections, versionedTables, this.helpers.versioning);
+		const plan = planVersioning(liveCollections, versionedTables, shadowTables, this.helpers.versioning);
 
-		await this.applyChanges(plannedShadowTables, shadowTables);
+		await this.applyPlan(plan);
 	}
 
 	/**
@@ -204,38 +194,22 @@ export class VersionTablesService {
 		return { columns: keyColumns(columns), foreignKeys };
 	}
 
-	/**
-	 * Diff the planned version tables against the current shadow tables and apply the difference
-	 */
-	private async applyChanges(planned: VersionTables, shadow: InspectedTables): Promise<void> {
-		const columnChanges = getColumnChanges(this.helpers.versioning, planned, shadow.columns);
-
-		const tablesToDrop = Object.keys(shadow.columns).filter((table) => !planned[table]);
-		const tablesToCreate = Object.values(planned).filter((table) => !shadow.columns[table.table]);
-
-		const isForeignKeyOutdated = (foreignKey: ForeignKey) => {
-			const plannedTable = planned[foreignKey.table];
-			const changes = columnChanges.get(foreignKey.table);
-
-			if (!plannedTable) return true;
-			if (changes?.drop.includes(foreignKey.column)) return true;
-			if (changes?.alter.some((column) => column.name === foreignKey.column)) return true;
-
-			return !plannedTable.foreignKeys.some((plannedForeignKey) => isSameForeignKey(foreignKey, plannedForeignKey));
-		};
-
-		const foreignKeysToDrop = shadow.foreignKeys.filter(isForeignKeyOutdated);
-		const foreignKeysToKeep = shadow.foreignKeys.filter((foreignKey) => !foreignKeysToDrop.includes(foreignKey));
-
-		await this.dropForeignKeys(foreignKeysToDrop);
-
-		for (const table of tablesToDrop) {
-			await this.knex.schema.dropTable(table);
+	private async applyPlan(plan: Plan): Promise<void> {
+		for (const [table, foreignKeys] of Object.entries(groupBy(plan.foreignKeys.drop, 'table'))) {
+			await this.knex.schema.alterTable(table, (builder) => {
+				for (const foreignKey of foreignKeys) {
+					builder.dropForeign(foreignKey.column, foreignKey.constraint_name ?? undefined);
+				}
+			});
 		}
 
 		const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
 
-		for (const table of tablesToCreate) {
+		for (const table of plan.tables.drop) {
+			await this.knex.schema.dropTable(table);
+		}
+
+		for (const table of plan.tables.create) {
 			await this.knex.schema.createTable(table.table, (builder) => {
 				for (const column of table.columns) {
 					this.addColumn(fieldsService, builder, table.table, column);
@@ -243,45 +217,25 @@ export class VersionTablesService {
 			});
 		}
 
-		for (const [table, changes] of columnChanges) {
+		for (const [table, alteration] of Object.entries(plan.tables.alter)) {
 			await this.knex.schema.alterTable(table, (builder) => {
-				if (changes.drop.length > 0) builder.dropColumns(...changes.drop);
+				if (alteration.drop.length > 0) builder.dropColumns(...alteration.drop);
 
-				for (const column of changes.add) {
+				for (const column of alteration.add) {
 					this.addColumn(fieldsService, builder, table, column);
 				}
 
-				for (const column of changes.alter) {
-					this.addColumn(fieldsService, builder, table, column, shadow.columns[table]![column.name]);
+				for (const { column, existing } of alteration.alter) {
+					this.addColumn(fieldsService, builder, table, column, existing);
 				}
 			});
 		}
 
-		await this.addForeignKeys(planned, foreignKeysToKeep);
-	}
-
-	private async dropForeignKeys(foreignKeys: ForeignKey[]) {
-		for (const [table, tableForeignKeys] of Object.entries(groupBy(foreignKeys, 'table'))) {
+		for (const [table, foreignKeys] of Object.entries(plan.foreignKeys.add)) {
 			await this.knex.schema.alterTable(table, (builder) => {
-				for (const foreignKey of tableForeignKeys) {
-					builder.dropForeign(foreignKey.column, foreignKey.constraint_name ?? undefined);
-				}
-			});
-		}
-	}
-
-	private async addForeignKeys(planned: VersionTables, existing: ForeignKey[]) {
-		for (const table of Object.values(planned)) {
-			const missing = table.foreignKeys.filter(
-				(foreignKey) => !existing.some((other) => other.table === table.table && isSameForeignKey(other, foreignKey)),
-			);
-
-			if (missing.length === 0) continue;
-
-			await this.knex.schema.alterTable(table.table, (builder) => {
-				for (const foreignKey of missing) {
+				for (const foreignKey of foreignKeys) {
 					const constraint = builder
-						.foreign(foreignKey.column, getDefaultIndexName('foreign', table.table, foreignKey.column))
+						.foreign(foreignKey.column, getDefaultIndexName('foreign', table, foreignKey.column))
 						.references(`${foreignKey.foreign_key_table}.${foreignKey.foreign_key_column}`);
 
 					if (foreignKey.on_delete) constraint.onDelete(foreignKey.on_delete);
@@ -301,8 +255,8 @@ export class VersionTablesService {
 		column: VersionTableColumn,
 		existing?: Column,
 	) {
-		if (column.kind === 'meta') {
-			this.addMetaColumn(builder, column.name);
+		if (column.kind === 'system') {
+			this.addSystemColumn(builder, column.name);
 			return;
 		}
 
@@ -362,7 +316,7 @@ export class VersionTablesService {
 		);
 	}
 
-	private addMetaColumn(builder: Knex.CreateTableBuilder, name: string) {
+	private addSystemColumn(builder: Knex.CreateTableBuilder, name: string) {
 		switch (name) {
 			case VERSION_SYSTEM_FIELDS.id:
 				builder.increments(name);
@@ -396,92 +350,4 @@ function keyColumns(columns: Column[]): ColumnsByTable {
 	}
 
 	return result;
-}
-
-/**
- * Column changes per existing table. Tables without changes are left out.
- */
-function getColumnChanges(versioningHelper: VersioningHelper, planned: VersionTables, existingColumns: ColumnsByTable) {
-	const result = new Map<string, ColumnChanges>();
-
-	for (const table of Object.values(planned)) {
-		const existing = existingColumns[table.table];
-
-		if (!existing) continue;
-
-		const plannedNames = new Set(table.columns.map((column) => column.name));
-
-		const changes: ColumnChanges = {
-			add: table.columns.filter((column) => !existing[column.name]),
-			alter: table.columns.filter((column) => {
-				const current = existing[column.name];
-				return current && column.kind === 'mirror' && hasTypeChanged(versioningHelper, column.source, current);
-			}),
-			drop: Object.keys(existing).filter((name) => !plannedNames.has(name)),
-		};
-
-		if (changes.add.length || changes.alter.length || changes.drop.length) {
-			result.set(table.table, changes);
-		}
-	}
-
-	return result;
-}
-
-/**
- * Raw database type for columns that would lose information when mirrored through their Directus type, or `null`
- */
-function getExactType(versioningHelper: VersioningHelper, column: Column): string | null {
-	const dataType = column.data_type.toLowerCase();
-
-	// Oracle reports every NUMBER(p,s) as `NUMBER`, which Directus treats as an integer regardless of its scale
-	if (dataType === 'number') {
-		const { numeric_precision: precision, numeric_scale: scale } = column;
-
-		if (precision === null && scale === null) return 'NUMBER';
-
-		return `NUMBER(${precision ?? '*'},${scale ?? 0})`;
-	}
-
-	// Fixed length strings (like uuids on Oracle / MySQL) would be mirrored as varchar, Oracle rejects foreign keys
-	// between the two
-	if (dataType === 'char' && column.max_length !== null) return `${column.data_type}(${column.max_length})`;
-
-	const type = getLocalType(column);
-
-	// Unbounded Postgres / CockroachDB numerics are treated as integers by Directus
-	if (dataType === 'numeric' && type !== 'decimal') return column.data_type;
-
-	if (type === 'unknown' || type === 'alias' || dataType.includes('unsigned')) return column.data_type;
-
-	if ((type === 'integer' || type === 'float') && versioningHelper.isSizedNumberType(dataType)) return column.data_type;
-
-	return null;
-}
-
-function hasTypeChanged(versioningHelper: VersioningHelper, source: Column, existing: Column) {
-	if (getLocalType(source) !== getLocalType(existing)) return true;
-
-	const sourceExactType = getExactType(versioningHelper, source);
-	const existingExactType = getExactType(versioningHelper, existing);
-
-	if (sourceExactType || existingExactType) {
-		return sourceExactType?.toLowerCase() !== existingExactType?.toLowerCase();
-	}
-
-	return (
-		source.max_length !== existing.max_length ||
-		source.numeric_precision !== existing.numeric_precision ||
-		source.numeric_scale !== existing.numeric_scale
-	);
-}
-
-function isSameForeignKey(existing: ForeignKey, planned: VersionTableForeignKey) {
-	return (
-		existing.column === planned.column &&
-		existing.foreign_key_table === planned.foreign_key_table &&
-		existing.foreign_key_column === planned.foreign_key_column &&
-		normalizeAction(existing.on_delete) === normalizeAction(planned.on_delete) &&
-		normalizeAction(existing.on_update) === normalizeAction(planned.on_update)
-	);
 }

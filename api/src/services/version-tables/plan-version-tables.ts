@@ -1,7 +1,9 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { Column, ForeignKey } from '@directus/schema';
 import type { Relation } from '@directus/types';
+import { partition } from 'lodash-es';
 import type { VersioningHelper } from '../../database/helpers/versioning/types.js';
+import getLocalType from '../../utils/get-local-type.js';
 import { VERSION_SYSTEM_FIELDS } from './constants.js';
 import { isVersioningTable } from './utils.js';
 
@@ -12,11 +14,12 @@ export function normalizeAction(action: ReferentialAction) {
 	return action === null || action === 'RESTRICT' ? 'NO ACTION' : action;
 }
 
+/** Copy of a live column */
+export type MirrorColumn = { kind: 'mirror'; name: string; source: Column; primary?: boolean };
+
 export type VersionTableColumn =
-	/** One of the version meta fields, only present on shadow tables */
-	| { kind: 'meta'; name: string }
-	/** Copy of a live column, without any of its constraints */
-	| { kind: 'mirror'; name: string; source: Column; primary?: boolean }
+	| { kind: 'system'; name: string }
+	| MirrorColumn
 	/** Reference to the `version_id` of a shadow table */
 	| { kind: 'reference'; name: string };
 
@@ -40,36 +43,88 @@ export type VersionTable = {
  */
 export type LiveCollection = {
 	collection: string;
-	/** Columns of the live table, in table order */
 	columns: Column[];
-	/** m2o and a2o relations where this collection is the "many" side */
 	relations: Relation[];
 };
 
-/** Version tables keyed by table name */
 export type VersionTables = Record<string, VersionTable>;
-
-/** Live collections keyed by collection name */
 export type LiveCollections = Record<string, LiveCollection>;
+export type ColumnsByTable = Record<string, Record<string, Column>>;
+
+export type InspectedTables = {
+	columns: ColumnsByTable;
+	foreignKeys: ForeignKey[];
+};
+
+export type TableAlteration = {
+	add: VersionTableColumn[];
+	alter: { column: MirrorColumn; existing: Column }[];
+	drop: string[];
+};
+
+export type TableChanges = {
+	drop: string[];
+	create: VersionTable[];
+	alter: Record<string, TableAlteration>;
+};
+
+export type Plan = {
+	tables: TableChanges;
+	foreignKeys: { drop: ForeignKey[]; add: Record<string, VersionTableForeignKey[]> };
+};
 
 /**
- * Compute the shadow and link tables that should exist for the given live collections. Only the version tables of
- * these collections are planned, the version tables of any other collection are left out.
+ * Plan the changes to the version tables of the given live collections. Only the version tables of these collections
+ * are planned, so `existing` is expected to hold just their version tables: any other table in it is dropped.
  *
  * @param collections - Live collections to plan the version tables for, keyed by collection name
  * @param versioned - All collections that have versioning enabled, including ones not being planned
- * @param helper - Provides the vendor specific names of the version tables and their columns
+ * @param existing - Current shadow and link tables of the planned collections
+ * @param helper - Provides the vendor specific names and types of the version tables and their columns
  */
-export function planVersionTables(
+export function planVersioning(
 	collections: LiveCollections,
 	versioned: Set<string>,
+	existing: InspectedTables,
 	helper: VersioningHelper,
-): VersionTables {
-	const context: PlanContext = { versioned, helper };
+): Plan {
+	const target = planTables(collections, { versioned, helper });
+	const tables = planTableChanges(target, existing.columns, helper);
+
+	const isForeignKeyOutdated = (foreignKey: ForeignKey) => {
+		const table = target[foreignKey.table];
+		const alteration = tables.alter[foreignKey.table];
+
+		if (!table) return true;
+		if (alteration?.drop.includes(foreignKey.column)) return true;
+		if (alteration?.alter.some(({ column }) => column.name === foreignKey.column)) return true;
+
+		return !table.foreignKeys.some((planned) => isSameForeignKey(foreignKey, planned));
+	};
+
+	const [drop, kept] = partition(existing.foreignKeys, isForeignKeyOutdated);
+
+	const add: Record<string, VersionTableForeignKey[]> = {};
+
+	for (const table of Object.values(target)) {
+		const missing = table.foreignKeys.filter(
+			(foreignKey) => !kept.some((kept) => kept.table === table.table && isSameForeignKey(kept, foreignKey)),
+		);
+
+		if (missing.length > 0) add[table.table] = missing;
+	}
+
+	return { tables, foreignKeys: { drop, add } };
+}
+
+/**
+ * Compute the shadow and link tables that should exist for the given live collections
+ */
+function planTables(collections: LiveCollections, context: PlanContext): VersionTables {
 	const tables: VersionTables = {};
 
 	for (const collection of Object.values(collections)) {
-		if (!versioned.has(collection.collection) || isVersioningTable(collection.collection)) continue;
+		if (!context.versioned.has(collection.collection) || isVersioningTable(collection.collection)) continue;
 
 		const shadowTable = planShadowTable(collection, context);
 
@@ -84,7 +139,48 @@ export function planVersionTables(
 		if (linkTable) tables[linkTable.table] = linkTable;
 	}
 
-	return helper.applyForeignKeyRules(tables);
+	return context.helper.applyForeignKeyRules(tables);
+}
+
+/**
+ * Diff the target tables against the existing ones
+ */
+function planTableChanges(
+	target: VersionTables,
+	existingColumns: ColumnsByTable,
+	helper: VersioningHelper,
+): TableChanges {
+	const changes: TableChanges = {
+		drop: Object.keys(existingColumns).filter((table) => !target[table]),
+		create: Object.values(target).filter((table) => !existingColumns[table.table]),
+		alter: {},
+	};
+
+	for (const table of Object.values(target)) {
+		const existing = existingColumns[table.table];
+
+		if (!existing) continue;
+
+		const plannedNames = new Set(table.columns.map((column) => column.name));
+
+		const alteration: TableAlteration = {
+			add: table.columns.filter((column) => !existing[column.name]),
+			alter: table.columns.flatMap((column) => {
+				const current = existing[column.name];
+
+				if (!current || column.kind !== 'mirror' || !hasTypeChanged(helper, column.source, current)) return [];
+
+				return [{ column, existing: current }];
+			}),
+			drop: Object.keys(existing).filter((name) => !plannedNames.has(name)),
+		};
+
+		if (alteration.add.length || alteration.alter.length || alteration.drop.length) {
+			changes.alter[table.table] = alteration;
+		}
+	}
+
+	return changes;
 }
 
 type PlanContext = { versioned: Set<string>; helper: VersioningHelper };
@@ -96,12 +192,12 @@ function getPrimaryKey(collection: LiveCollection) {
 function planShadowTable(liveCollection: LiveCollection, context: PlanContext): VersionTable {
 	const { collection, columns, relations } = liveCollection;
 	const primary = getPrimaryKey(liveCollection)?.name;
-	const metaFields: string[] = Object.values(VERSION_SYSTEM_FIELDS);
+	const systemFields: string[] = Object.values(VERSION_SYSTEM_FIELDS);
 
 	const shadow: VersionTable = {
 		table: context.helper.getShadowTableName(collection),
 		type: 'shadow',
-		columns: metaFields.map((name) => ({ kind: 'meta', name })),
+		columns: systemFields.map((name) => ({ kind: 'system', name })),
 		foreignKeys: [
 			{
 				column: VERSION_SYSTEM_FIELDS.userCreated,
@@ -120,7 +216,7 @@ function planShadowTable(liveCollection: LiveCollection, context: PlanContext): 
 		],
 	};
 
-	const usedNames = new Set(metaFields);
+	const usedNames = new Set(systemFields);
 
 	const reserveName = (name: string, field: string) => {
 		if (usedNames.has(name)) {
@@ -258,4 +354,62 @@ function getVersionReference(relation: Relation, { versioned, helper }: PlanCont
 		versioned: allowedCollections.some((allowedCollection) => versioned.has(allowedCollection)),
 		foreignKey: null,
 	} as const;
+}
+
+/**
+ * Raw database type for columns that would lose information when mirrored through their Directus type, or `null`
+ */
+export function getExactType(versioningHelper: VersioningHelper, column: Column): string | null {
+	const dataType = column.data_type.toLowerCase();
+
+	// Oracle reports every NUMBER(p,s) as `NUMBER`, which Directus treats as an integer regardless of its scale
+	if (dataType === 'number') {
+		const { numeric_precision: precision, numeric_scale: scale } = column;
+
+		if (precision === null && scale === null) return 'NUMBER';
+
+		return `NUMBER(${precision ?? '*'},${scale ?? 0})`;
+	}
+
+	// Fixed length strings (like uuids on Oracle / MySQL) would be mirrored as varchar, Oracle rejects foreign keys
+	// between the two
+	if (dataType === 'char' && column.max_length !== null) return `${column.data_type}(${column.max_length})`;
+
+	const type = getLocalType(column);
+
+	// Unbounded Postgres / CockroachDB numerics are treated as integers by Directus
+	if (dataType === 'numeric' && type !== 'decimal') return column.data_type;
+
+	if (type === 'unknown' || type === 'alias' || dataType.includes('unsigned')) return column.data_type;
+
+	if ((type === 'integer' || type === 'float') && versioningHelper.isSizedNumberType(dataType)) return column.data_type;
+
+	return null;
+}
+
+function hasTypeChanged(versioningHelper: VersioningHelper, source: Column, existing: Column) {
+	if (getLocalType(source) !== getLocalType(existing)) return true;
+
+	const sourceExactType = getExactType(versioningHelper, source);
+	const existingExactType = getExactType(versioningHelper, existing);
+
+	if (sourceExactType || existingExactType) {
+		return sourceExactType?.toLowerCase() !== existingExactType?.toLowerCase();
+	}
+
+	return (
+		source.max_length !== existing.max_length ||
+		source.numeric_precision !== existing.numeric_precision ||
+		source.numeric_scale !== existing.numeric_scale
+	);
+}
+
+function isSameForeignKey(existing: ForeignKey, planned: VersionTableForeignKey) {
+	return (
+		existing.column === planned.column &&
+		existing.foreign_key_table === planned.foreign_key_table &&
+		existing.foreign_key_column === planned.foreign_key_column &&
+		normalizeAction(existing.on_delete) === normalizeAction(planned.on_delete) &&
+		normalizeAction(existing.on_update) === normalizeAction(planned.on_update)
+	);
 }

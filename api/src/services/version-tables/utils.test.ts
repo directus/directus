@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { isVersionSystemField } from './utils.js';
 
 describe('isReservedVersionField', () => {
-	test('reserves the version meta fields and the version reference prefix', () => {
+	test('reserves the version system fields and the version reference prefix', () => {
 		expect(isVersionSystemField('version_type')).toBe(true);
 		expect(isVersionSystemField('version_id')).toBe(true);
 		expect(isVersionSystemField('version_ref_author')).toBe(true);

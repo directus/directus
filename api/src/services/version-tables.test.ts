@@ -75,7 +75,7 @@ const LIVE_COLUMNS = [
 ];
 
 /** Version columns of a shadow table as they exist after it was created */
-function metaColumns(table: string) {
+function systemColumns(table: string) {
 	return [
 		column(table, 'version_id'),
 		column(table, 'version_name', 'varchar'),
@@ -108,7 +108,7 @@ function foreignKey(
 const ARTICLES_SHADOW = {
 	tables: ['directus_shadow_articles'],
 	columns: [
-		...metaColumns('directus_shadow_articles'),
+		...systemColumns('directus_shadow_articles'),
 		column('directus_shadow_articles', 'id'),
 		column('directus_shadow_articles', 'title', 'varchar'),
 		column('directus_shadow_articles', 'author'),
