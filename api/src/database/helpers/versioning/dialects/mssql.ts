@@ -6,18 +6,7 @@ import {
 } from '../../../../services/version-tables/plan-version-tables.js';
 import { VersioningHelper } from '../types.js';
 
-const SIZED_NUMBER_TYPES = new Set(['tinyint', 'smallint', 'real']);
-
 export class VersioningHelperMSSQL extends VersioningHelper {
-	override getMaxIdentifierLength(): number {
-		// https://learn.microsoft.com/en-us/sql/relational-databases/databases/database-identifiers
-		return 128;
-	}
-
-	override isSizedNumberType(dataType: string): boolean {
-		return SIZED_NUMBER_TYPES.has(dataType.toLowerCase());
-	}
-
 	override applyForeignKeyRules(tables: VersionTables): VersionTables {
 		return mapValues(super.applyForeignKeyRules(tables), (table) => ({
 			...table,

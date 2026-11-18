@@ -40,6 +40,13 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		});
 	}
 
+	/**
+	 * The maximum length of table and column names. Longer names are truncated or rejected by the database.
+	 */
+	getMaxIdentifierLength(): number {
+		return Infinity;
+	}
+
 	generateIndexName(type: 'unique' | 'foreign' | 'index', collection: string, fields: string | string[]): string {
 		return getDefaultIndexName(type, collection, fields);
 	}

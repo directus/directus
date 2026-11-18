@@ -4,15 +4,19 @@ import type { VersionTables } from '../../../services/version-tables/plan-versio
 import { isVersioningTable } from '../../../services/version-tables/utils.js';
 import type { SchemaHelper } from '../schema/types.js';
 import { VersioningHelperMSSQL } from './dialects/mssql.js';
-import { VersioningHelperPostgres } from './dialects/postgres.js';
 import { VersioningHelper } from './types.js';
 
 const knex = {} as Knex;
-const schema = { preRelationChange: vi.fn() } as unknown as SchemaHelper;
+
+function schemaHelper(maxIdentifierLength = Infinity) {
+	return { preRelationChange: vi.fn(), getMaxIdentifierLength: () => maxIdentifierLength } as unknown as SchemaHelper;
+}
+
+const schema = schemaHelper();
 
 describe('version table names', () => {
-	const helper = new VersioningHelperPostgres(knex, schema);
-	const maxLength = helper.getMaxIdentifierLength();
+	const maxLength = 63;
+	const helper = new VersioningHelper(knex, schemaHelper(maxLength));
 
 	test('prefixes short names', () => {
 		expect(helper.getShadowTableName('articles')).toBe('directus_shadow_articles');

@@ -2,7 +2,6 @@ import type { Column, ForeignKey } from '@directus/schema';
 import type { Relation } from '@directus/types';
 import { partition } from 'lodash-es';
 import type { VersioningHelper } from '../../database/helpers/versioning/types.js';
-import getLocalType from '../../utils/get-local-type.js';
 import { assertVersionSystemFields } from './assert-field-names.js';
 import { VERSION_SYSTEM_FIELDS } from './constants.js';
 import { isVersioningTable } from './utils.js';
@@ -15,7 +14,14 @@ export function normalizeAction(action: ReferentialAction) {
 }
 
 /** Copy of a live column */
-export type MirrorColumn = { kind: 'mirror'; name: string; source: Column; primary?: boolean };
+export type MirrorColumn = {
+	kind: 'mirror';
+	name: string;
+	source: Column;
+	/** Database type as declared on the live column */
+	type: string;
+	primary?: boolean;
+};
 
 export type VersionTableColumn =
 	| { kind: 'system'; name: string }
@@ -80,7 +86,7 @@ export type Plan = {
  * @param collections - Live collections to plan the version tables for, keyed by collection name
  * @param versioned - All collections that have versioning enabled, including ones not being planned
  * @param existing - Current shadow and link tables of the planned collections
- * @param helper - Provides the vendor specific names and types of the version tables and their columns
+ * @param helper - Provides the vendor specific names and foreign key rules of the version tables
  */
 export function planVersioning(
 	collections: LiveCollections,
@@ -89,7 +95,7 @@ export function planVersioning(
 	helper: VersioningHelper,
 ): Plan {
 	const target = planTables(collections, { versioned, helper });
-	const tables = planTableChanges(target, existing.columns, helper);
+	const tables = planTableChanges(target, existing.columns);
 
 	const isForeignKeyOutdated = (foreignKey: ForeignKey) => {
 		const table = target[foreignKey.table];
@@ -145,11 +151,7 @@ function planTables(collections: LiveCollections, context: PlanContext): Version
 /**
  * Diff the target tables against the existing ones
  */
-function planTableChanges(
-	target: VersionTables,
-	existingColumns: ColumnsByTable,
-	helper: VersioningHelper,
-): TableChanges {
+function planTableChanges(target: VersionTables, existingColumns: ColumnsByTable): TableChanges {
 	const changes: TableChanges = {
 		drop: Object.keys(existingColumns).filter((table) => !target[table]),
 		create: Object.values(target).filter((table) => !existingColumns[table.table]),
@@ -168,7 +170,8 @@ function planTableChanges(
 			alter: table.columns.flatMap((column) => {
 				const current = existing[column.name];
 
-				if (!current || column.kind !== 'mirror' || !hasTypeChanged(helper, column.source, current)) return [];
+				if (!current || column.kind !== 'mirror') return [];
+				if (column.type.toLowerCase() === getType(current).toLowerCase()) return [];
 
 				return [{ column, existing: current }];
 			}),
@@ -224,7 +227,7 @@ function planShadowTable(liveCollection: LiveCollection, context: PlanContext): 
 	for (const source of columns) {
 		const field = source.name;
 
-		shadow.columns.push({ kind: 'mirror', name: field, source });
+		shadow.columns.push(mirrorColumn(source));
 
 		// The live primary key references the live item and is null until the version is published. It has no foreign
 		// key, so archived versions keep the id of their item after the live item is removed
@@ -286,7 +289,7 @@ function planLinkTable(liveCollection: LiveCollection, context: PlanContext): Ve
 	const link: VersionTable = {
 		table: context.helper.getLinkTableName(collection),
 		type: 'link',
-		columns: [{ kind: 'mirror', name: primary, source, primary: true }],
+		columns: [mirrorColumn(source, true)],
 		foreignKeys: [
 			{
 				column: primary,
@@ -347,52 +350,13 @@ function getVersionReference(relation: Relation, { versioned, helper }: PlanCont
 	} as const;
 }
 
-/**
- * Raw database type for columns that would lose information when mirrored through their Directus type, or `null`
- */
-export function getExactType(versioningHelper: VersioningHelper, column: Column): string | null {
-	const dataType = column.data_type.toLowerCase();
-
-	// Oracle reports every NUMBER(p,s) as `NUMBER`, which Directus treats as an integer regardless of its scale
-	if (dataType === 'number') {
-		const { numeric_precision: precision, numeric_scale: scale } = column;
-
-		if (precision === null && scale === null) return 'NUMBER';
-
-		return `NUMBER(${precision ?? '*'},${scale ?? 0})`;
-	}
-
-	// Fixed length strings (like uuids on Oracle / MySQL) would be mirrored as varchar, Oracle rejects foreign keys
-	// between the two
-	if (dataType === 'char' && column.max_length !== null) return `${column.data_type}(${column.max_length})`;
-
-	const type = getLocalType(column);
-
-	// Unbounded Postgres / CockroachDB numerics are treated as integers by Directus
-	if (dataType === 'numeric' && type !== 'decimal') return column.data_type;
-
-	if (type === 'unknown' || type === 'alias' || dataType.includes('unsigned')) return column.data_type;
-
-	if ((type === 'integer' || type === 'float') && versioningHelper.isSizedNumberType(dataType)) return column.data_type;
-
-	return null;
+// Mirrored columns drop all constraints apart from relations
+function mirrorColumn(source: Column, primary?: boolean): MirrorColumn {
+	return { kind: 'mirror', name: source.name, source, type: getType(source), ...(primary && { primary }) };
 }
 
-function hasTypeChanged(versioningHelper: VersioningHelper, source: Column, existing: Column) {
-	if (getLocalType(source) !== getLocalType(existing)) return true;
-
-	const sourceExactType = getExactType(versioningHelper, source);
-	const existingExactType = getExactType(versioningHelper, existing);
-
-	if (sourceExactType || existingExactType) {
-		return sourceExactType?.toLowerCase() !== existingExactType?.toLowerCase();
-	}
-
-	return (
-		source.max_length !== existing.max_length ||
-		source.numeric_precision !== existing.numeric_precision ||
-		source.numeric_scale !== existing.numeric_scale
-	);
+function getType(column: Column): string {
+	return column.full_data_type ?? column.data_type;
 }
 
 function isSameForeignKey(existing: ForeignKey, planned: VersionTableForeignKey) {

@@ -58,6 +58,7 @@ function column(table: string, name: string, data_type = 'integer', overrides: P
 		table,
 		name,
 		data_type,
+		full_data_type: data_type === 'varchar' ? 'varchar(255)' : data_type,
 		max_length: data_type === 'varchar' ? 255 : null,
 		numeric_precision: null,
 		numeric_scale: null,
@@ -74,12 +75,21 @@ const LIVE_COLUMNS = [
 	column('authors', 'name', 'varchar'),
 ];
 
+/** The live columns with the types as reported by the given vendor */
+function vendorColumns(types: { integer: string; varchar: string }) {
+	return LIVE_COLUMNS.map((live) => {
+		const type = live.data_type === 'integer' ? types.integer : types.varchar;
+
+		return { ...live, data_type: type.replace(/\(.*\)/, ''), full_data_type: type };
+	});
+}
+
 /** Version columns of a shadow table as they exist after it was created */
 function systemColumns(table: string) {
 	return [
 		column(table, 'version_id'),
 		column(table, 'version_name', 'varchar'),
-		column(table, 'version_type', 'varchar', { max_length: 16 }),
+		column(table, 'version_type', 'varchar', { max_length: 16, full_data_type: 'varchar(16)' }),
 		column(table, 'version_date_created', 'timestamp with time zone'),
 		column(table, 'version_date_updated', 'timestamp with time zone'),
 		column(table, 'version_user_created', 'uuid'),
@@ -237,9 +247,9 @@ describe('VersionTablesService.syncCollections', () => {
 			  "version_date_updated" timestamptz null,
 			  "version_user_created" uuid null,
 			  "version_user_updated" uuid null,
-			  "id" integer null default null,
-			  "title" varchar(255) null default null,
-			  "author" integer null default null
+			  "id" integer null,
+			  "title" varchar(255) null,
+			  "author" integer null
 			);
 
 			alter table "directus_shadow_articles"
@@ -274,9 +284,9 @@ describe('VersionTablesService.syncCollections', () => {
 			  "version_date_updated" timestamptz null,
 			  "version_user_created" uuid null,
 			  "version_user_updated" uuid null,
-			  "id" integer null default null,
-			  "title" varchar(255) null default null,
-			  "author" integer null default null,
+			  "id" integer null,
+			  "title" varchar(255) null,
+			  "author" integer null,
 			  "version_ref_author" integer null
 			);
 
@@ -288,12 +298,12 @@ describe('VersionTablesService.syncCollections', () => {
 			  "version_date_updated" timestamptz null,
 			  "version_user_created" uuid null,
 			  "version_user_updated" uuid null,
-			  "id" integer null default null,
-			  "name" varchar(255) null default null
+			  "id" integer null,
+			  "name" varchar(255) null
 			);
 
 			create table "directus_link_articles" (
-			  "id" integer not null default null,
+			  "id" integer not null,
 			  "author" integer null,
 			  constraint "directus_link_articles_pkey" primary key ("id")
 			);
@@ -384,13 +394,15 @@ describe('VersionTablesService.syncCollections', () => {
 				foreignKeys: ARTICLES_SHADOW.foreignKeys.filter((foreignKey) => foreignKey.column !== 'author'),
 			},
 			live: LIVE_COLUMNS.map((live) =>
-				live.table === 'articles' && live.name === 'title' ? { ...live, max_length: 500 } : live,
+				live.table === 'articles' && live.name === 'title'
+					? { ...live, max_length: 500, full_data_type: 'varchar(500)' }
+					: live,
 			),
 		});
 
 		expect(sql).toMatchInlineSnapshot(`
 			"alter table "directus_shadow_articles"
-			add column "author" integer null default null;
+			add column "author" integer null;
 
 			alter table "directus_shadow_articles"
 			alter column "title"
@@ -404,10 +416,6 @@ describe('VersionTablesService.syncCollections', () => {
 			alter column "title" type varchar(500) using ("title"::varchar(500));
 
 			alter table "directus_shadow_articles"
-			alter column "title"
-			set default null;
-
-			alter table "directus_shadow_articles"
 			drop column "removed";
 
 			alter table "directus_shadow_articles"
@@ -416,7 +424,6 @@ describe('VersionTablesService.syncCollections', () => {
 
 		expect(bindings).toMatchInlineSnapshot(`
 			[
-			  [],
 			  [],
 			  [],
 			  [],
@@ -516,7 +523,7 @@ describe('scoped changes', () => {
 
 		expect(sql).toMatchInlineSnapshot(`
 			"alter table "directus_shadow_articles"
-			add column "title" varchar(255) null default null"
+			add column "title" varchar(255) null"
 		`);
 	});
 
@@ -539,12 +546,12 @@ describe('scoped changes', () => {
 			  "version_date_updated" timestamptz null,
 			  "version_user_created" uuid null,
 			  "version_user_updated" uuid null,
-			  "id" integer null default null,
-			  "name" varchar(255) null default null
+			  "id" integer null,
+			  "name" varchar(255) null
 			);
 
 			create table "directus_link_articles" (
-			  "id" integer not null default null,
+			  "id" integer not null,
 			  "author" integer null,
 			  constraint "directus_link_articles_pkey" primary key ("id")
 			);
@@ -618,7 +625,11 @@ describe('scoped changes', () => {
 
 describe('dialects', () => {
 	test('mysql', async () => {
-		const { sql } = await sync({ client: 'mysql', versioned: ['articles'] });
+		const { sql } = await sync({
+			client: 'mysql',
+			versioned: ['articles'],
+			live: vendorColumns({ integer: 'int', varchar: 'varchar(255)' }),
+		});
 
 		expect(sql).toMatchInlineSnapshot(`
 			"create table \`directus_shadow_articles\` (
@@ -647,7 +658,7 @@ describe('dialects', () => {
 
 	// MySQL doesn't accept foreign keys between signed and unsigned integers, keys created by Directus are unsigned
 	const UNSIGNED_COLUMNS = LIVE_COLUMNS.map((live) =>
-		live.data_type === 'integer' ? { ...live, data_type: 'int unsigned' } : live,
+		live.data_type === 'integer' ? { ...live, data_type: 'int unsigned', full_data_type: 'int unsigned' } : live,
 	);
 
 	test('keeps unsigned integers on mysql, so foreign keys to unsigned keys can be added', async () => {
@@ -686,7 +697,7 @@ describe('dialects', () => {
 			shadow: {
 				...ARTICLES_SHADOW,
 				columns: ARTICLES_SHADOW.columns.map((column) =>
-					column.data_type === 'integer' ? { ...column, data_type: 'int' } : column,
+					column.data_type === 'integer' ? { ...column, data_type: 'int', full_data_type: 'int' } : column,
 				),
 				foreignKeys: ARTICLES_SHADOW.foreignKeys.filter((foreignKey) => foreignKey.column !== 'author'),
 			},
@@ -705,8 +716,12 @@ describe('dialects', () => {
 	// Oracle reports decimals as `NUMBER` with a precision and scale, which Directus would otherwise mirror as integer
 	const ORACLE_DECIMAL_COLUMNS = [
 		...LIVE_COLUMNS,
-		column('articles', 'price', 'NUMBER', { numeric_precision: 10, numeric_scale: 5 }),
-		column('articles', 'amount', 'NUMBER', { numeric_precision: null, numeric_scale: 0 }),
+		column('articles', 'price', 'NUMBER', { numeric_precision: 10, numeric_scale: 5, full_data_type: 'NUMBER(10,5)' }),
+		column('articles', 'amount', 'NUMBER', {
+			numeric_precision: null,
+			numeric_scale: 0,
+			full_data_type: 'NUMBER(*,0)',
+		}),
 	];
 
 	test('keeps the precision and scale of oracle numbers', async () => {
@@ -718,8 +733,16 @@ describe('dialects', () => {
 				...ARTICLES_SHADOW,
 				columns: [
 					...ARTICLES_SHADOW.columns,
-					column('directus_shadow_articles', 'price', 'NUMBER', { numeric_precision: null, numeric_scale: 0 }),
-					column('directus_shadow_articles', 'amount', 'NUMBER', { numeric_precision: null, numeric_scale: 0 }),
+					column('directus_shadow_articles', 'price', 'NUMBER', {
+						numeric_precision: null,
+						numeric_scale: 0,
+						full_data_type: 'NUMBER(*,0)',
+					}),
+					column('directus_shadow_articles', 'amount', 'NUMBER', {
+						numeric_precision: null,
+						numeric_scale: 0,
+						full_data_type: 'NUMBER(*,0)',
+					}),
 				],
 			},
 		});
@@ -736,14 +759,19 @@ describe('dialects', () => {
 			versioned: ['authors'],
 			relations: [AUTHOR_O2M],
 			live: LIVE_COLUMNS.map((live) =>
-				live.table === 'articles' && live.name === 'id' ? { ...live, data_type: 'CHAR', max_length: 36 } : live,
+				live.table === 'articles' && live.name === 'id'
+					? { ...live, data_type: 'CHAR', max_length: 36, full_data_type: 'CHAR(36 BYTE)' }
+					: live,
 			),
 			shadow: { tables: [], columns: [], foreignKeys: [] },
 			run: (service) => service.syncCollections(['articles']),
 		});
 
 		expect(sql).toMatchInlineSnapshot(`
-			"create table "directus_link_articles" ("id" CHAR(36) not null, "author" integer null);
+			"create table "directus_link_articles" (
+			  "id" CHAR(36 BYTE) not null,
+			  "author" integer null
+			);
 
 			alter table "directus_link_articles"
 			add constraint "directus_link_articles_pkey" primary key ("id");
@@ -817,7 +845,11 @@ describe('dialects', () => {
 	});
 
 	test('mssql', async () => {
-		const { sql } = await sync({ client: 'mssql', versioned: ['articles'] });
+		const { sql } = await sync({
+			client: 'mssql',
+			versioned: ['articles'],
+			live: vendorColumns({ integer: 'int', varchar: 'nvarchar(255)' }),
+		});
 
 		expect(sql).toMatchInlineSnapshot(`
 			"CREATE TABLE [directus_shadow_articles] (
@@ -828,9 +860,9 @@ describe('dialects', () => {
 			  [version_date_updated] datetimeoffset null,
 			  [version_user_created] uniqueidentifier null,
 			  [version_user_updated] uniqueidentifier null,
-			  [id] int null CONSTRAINT [directus_shadow_articles_id_default] DEFAULT null,
-			  [title] nvarchar(255) null CONSTRAINT [directus_shadow_articles_title_default] DEFAULT null,
-			  [author] int null CONSTRAINT [directus_shadow_articles_author_default] DEFAULT null
+			  [id] int null,
+			  [title] nvarchar(255) null,
+			  [author] int null
 			);
 
 			ALTER TABLE [directus_shadow_articles]
@@ -856,9 +888,9 @@ describe('dialects', () => {
 			  \`version_date_updated\` datetime null,
 			  \`version_user_created\` char(36) null,
 			  \`version_user_updated\` char(36) null,
-			  \`id\` integer null default null,
-			  \`title\` varchar(255) null default null,
-			  \`author\` integer null default null
+			  \`id\` integer null,
+			  \`title\` varchar(255) null,
+			  \`author\` integer null
 			);
 
 			PRAGMA foreign_keys;
@@ -873,9 +905,9 @@ describe('dialects', () => {
 			  \`version_date_updated\` datetime NULL,
 			  \`version_user_created\` char(36) NULL,
 			  \`version_user_updated\` char(36) NULL,
-			  \`id\` integer NULL DEFAULT null,
-			  \`title\` varchar(255) NULL DEFAULT null,
-			  \`author\` integer NULL DEFAULT null,
+			  \`id\` integer NULL,
+			  \`title\` varchar(255) NULL,
+			  \`author\` integer NULL,
 			  CONSTRAINT \`directus_shadow_articles_version_user_created_foreign\` FOREIGN KEY (\`version_user_created\`) REFERENCES \`directus_users\` (\`id\`) ON DELETE SET NULL
 			);
 
@@ -907,9 +939,9 @@ describe('dialects', () => {
 			  \`version_date_updated\` datetime NULL,
 			  \`version_user_created\` char(36) NULL,
 			  \`version_user_updated\` char(36) NULL,
-			  \`id\` integer NULL DEFAULT null,
-			  \`title\` varchar(255) NULL DEFAULT null,
-			  \`author\` integer NULL DEFAULT null,
+			  \`id\` integer NULL,
+			  \`title\` varchar(255) NULL,
+			  \`author\` integer NULL,
 			  CONSTRAINT \`directus_shadow_articles_version_user_updated_foreign\` FOREIGN KEY (\`version_user_updated\`) REFERENCES \`directus_users\` (\`id\`) ON DELETE SET NULL
 			);
 
@@ -941,9 +973,9 @@ describe('dialects', () => {
 			  \`version_date_updated\` datetime NULL,
 			  \`version_user_created\` char(36) NULL,
 			  \`version_user_updated\` char(36) NULL,
-			  \`id\` integer NULL DEFAULT null,
-			  \`title\` varchar(255) NULL DEFAULT null,
-			  \`author\` integer NULL DEFAULT null,
+			  \`id\` integer NULL,
+			  \`title\` varchar(255) NULL,
+			  \`author\` integer NULL,
 			  CONSTRAINT \`directus_shadow_articles_author_foreign\` FOREIGN KEY (\`author\`) REFERENCES \`authors\` (\`id\`) ON DELETE SET NULL
 			);
 
@@ -966,7 +998,11 @@ describe('dialects', () => {
 	});
 
 	test('oracle', async () => {
-		const { sql } = await sync({ client: 'oracle', versioned: ['articles'] });
+		const { sql } = await sync({
+			client: 'oracle',
+			versioned: ['articles'],
+			live: vendorColumns({ integer: 'NUMBER(*,0)', varchar: 'VARCHAR2(255 BYTE)' }),
+		});
 
 		expect(sql).toMatchInlineSnapshot(`
 			"create table "directus_shadow_articles" (
@@ -981,9 +1017,9 @@ describe('dialects', () => {
 			    local time zone null,
 			    "version_user_created" char(36) null,
 			    "version_user_updated" char(36) null,
-			    "id" integer default null null,
-			    "title" varchar2(255) default null null,
-			    "author" integer default null null
+			    "id" NUMBER(*, 0) null,
+			    "title" VARCHAR2(255 BYTE) null,
+			    "author" NUMBER(*, 0) null
 			);
 
 			DECLARE PK_NAME VARCHAR(200);

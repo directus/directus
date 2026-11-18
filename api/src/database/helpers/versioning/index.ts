@@ -1,7 +1,7 @@
-export { VersioningHelperPostgres as postgres } from './dialects/postgres.js';
-export { VersioningHelperPostgres as redshift } from './dialects/postgres.js';
-export { VersioningHelperPostgres as cockroachdb } from './dialects/postgres.js';
-export { VersioningHelperOracle as oracle } from './dialects/oracle.js';
-export { VersioningHelperMySQL as mysql } from './dialects/mysql.js';
+export { VersioningHelperDefault as postgres } from './dialects/default.js';
+export { VersioningHelperDefault as redshift } from './dialects/default.js';
+export { VersioningHelperDefault as cockroachdb } from './dialects/default.js';
+export { VersioningHelperDefault as oracle } from './dialects/default.js';
+export { VersioningHelperDefault as mysql } from './dialects/default.js';
 export { VersioningHelperMSSQL as mssql } from './dialects/mssql.js';
 export { VersioningHelperDefault as sqlite } from './dialects/default.js';

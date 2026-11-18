@@ -13,9 +13,15 @@ import {
 	type VersionTables,
 } from './plan-version-tables.js';
 
-const helper = new VersioningHelper({} as Knex, { preRelationChange: vi.fn() } as unknown as SchemaHelper);
+const helper = new VersioningHelper(
+	{} as Knex,
+	{
+		preRelationChange: vi.fn(),
+		getMaxIdentifierLength: () => Infinity,
+	} as unknown as SchemaHelper,
+);
 
-function column(table: string, name: string, data_type = 'integer'): Column {
+function column(table: string, name: string, data_type = 'integer', overrides: Partial<Column> = {}): Column {
 	return {
 		table,
 		name,
@@ -24,6 +30,7 @@ function column(table: string, name: string, data_type = 'integer'): Column {
 		numeric_precision: null,
 		numeric_scale: null,
 		is_primary_key: name === 'id',
+		...overrides,
 	} as Column;
 }
 
@@ -162,7 +169,7 @@ describe('planVersionTables', () => {
 		const link = tables['directus_link_tags']!;
 
 		expect(link.columns).toEqual([
-			{ kind: 'mirror', name: 'id', source: columns.tags[0], primary: true },
+			{ kind: 'mirror', name: 'id', source: columns.tags[0], type: 'integer', primary: true },
 			{ kind: 'reference', name: 'article' },
 		]);
 
@@ -332,7 +339,7 @@ describe('planVersionTables changes', () => {
 
 		expect(plan.tables.alter).toEqual({
 			directus_shadow_authors: {
-				add: [{ kind: 'mirror', name: 'name', source: columns.authors[1] }],
+				add: [{ kind: 'mirror', name: 'name', source: columns.authors[1], type: 'varchar' }],
 				alter: [],
 				drop: ['removed'],
 			},
@@ -371,5 +378,60 @@ describe('planVersionTables changes', () => {
 		expect(plan.foreignKeys.add).toEqual({
 			directus_shadow_articles: [expect.objectContaining({ column: 'version_ref_author', on_delete: 'SET NULL' })],
 		});
+	});
+});
+
+describe('mirror column types', () => {
+	function typeOf(source: Column) {
+		const live: LiveCollections = {
+			authors: { collection: 'authors', columns: [column('authors', 'id'), source], relations: [] },
+		};
+
+		const shadow = planTables(live, new Set(['authors']))['directus_shadow_authors']!;
+		const mirror = shadow.columns.find((planned) => planned.name === source.name);
+
+		return mirror?.kind === 'mirror' ? mirror.type : null;
+	}
+
+	test('mirrors the declared type of the live column', () => {
+		const source = column('authors', 'price', 'numeric', { full_data_type: 'numeric(10,2)' });
+
+		expect(typeOf(source)).toBe('numeric(10,2)');
+	});
+
+	test('falls back to the data type when the declared type is unknown', () => {
+		expect(typeOf(column('authors', 'bio', 'text'))).toBe('text');
+	});
+
+	function planAlteration(live: Column, existing: Column) {
+		const versioned = new Set(['authors']);
+		const inspected = inspect(planTables(collections, versioned));
+
+		inspected.columns['directus_shadow_authors']!['name'] = existing;
+
+		const plan = planVersioning(
+			{ authors: { ...collections['authors']!, columns: [columns.authors[0]!, live] } },
+			versioned,
+			inspected,
+			helper,
+		);
+
+		return plan.tables.alter['directus_shadow_authors']?.alter ?? [];
+	}
+
+	test('alters columns whose declared type changed', () => {
+		const live = column('authors', 'name', 'varchar', { full_data_type: 'varchar(500)' });
+		const existing = column('directus_shadow_authors', 'name', 'varchar', { full_data_type: 'varchar(255)' });
+
+		expect(planAlteration(live, existing)).toEqual([
+			{ column: expect.objectContaining({ name: 'name', type: 'varchar(500)' }), existing },
+		]);
+	});
+
+	test('compares declared types case insensitively', () => {
+		const live = column('authors', 'name', 'varchar', { full_data_type: 'VARCHAR2(255 CHAR)' });
+		const existing = column('directus_shadow_authors', 'name', 'varchar', { full_data_type: 'varchar2(255 char)' });
+
+		expect(planAlteration(live, existing)).toEqual([]);
 	});
 });

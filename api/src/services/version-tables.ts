@@ -1,6 +1,6 @@
 import { type Column, createInspector, type ForeignKey, type SchemaInspector } from '@directus/schema';
 import { systemRelationRows } from '@directus/system-data';
-import type { AbstractServiceOptions, Accountability, RelationMeta, SchemaOverview, Type } from '@directus/types';
+import type { AbstractServiceOptions, Accountability, RelationMeta, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { groupBy, intersection, mapValues, partition, pickBy } from 'lodash-es';
@@ -8,13 +8,10 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
-import getLocalType from '../utils/get-local-type.js';
 import { stitchRelations } from '../utils/stitch-relations.js';
-import { FieldsService } from './fields.js';
 import { VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
 import {
 	type ColumnsByTable,
-	getExactType,
 	type InspectedTables,
 	type LiveCollections,
 	normalizeAction,
@@ -203,8 +200,6 @@ export class VersionTablesService {
 			});
 		}
 
-		const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
-
 		for (const table of plan.tables.drop) {
 			await this.knex.schema.dropTable(table);
 		}
@@ -212,7 +207,7 @@ export class VersionTablesService {
 		for (const table of plan.tables.create) {
 			await this.knex.schema.createTable(table.table, (builder) => {
 				for (const column of table.columns) {
-					this.addColumn(fieldsService, builder, table.table, column);
+					this.addColumn(builder, column);
 				}
 			});
 		}
@@ -222,11 +217,11 @@ export class VersionTablesService {
 				if (alteration.drop.length > 0) builder.dropColumns(...alteration.drop);
 
 				for (const column of alteration.add) {
-					this.addColumn(fieldsService, builder, table, column);
+					this.addColumn(builder, column);
 				}
 
 				for (const { column, existing } of alteration.alter) {
-					this.addColumn(fieldsService, builder, table, column, existing);
+					this.addColumn(builder, column, existing);
 				}
 			});
 		}
@@ -248,13 +243,7 @@ export class VersionTablesService {
 	/**
 	 * Add a column to the builder, or alter it if `existing` is given
 	 */
-	private addColumn(
-		fieldsService: FieldsService,
-		builder: Knex.CreateTableBuilder,
-		table: string,
-		column: VersionTableColumn,
-		existing?: Column,
-	) {
+	private addColumn(builder: Knex.CreateTableBuilder, column: VersionTableColumn, existing?: Column) {
 		if (column.kind === 'system') {
 			this.addSystemColumn(builder, column.name);
 			return;
@@ -266,54 +255,18 @@ export class VersionTablesService {
 			return;
 		}
 
-		const { source } = column;
-		const type = getLocalType(source);
-		const exactType = getExactType(this.helpers.versioning, source);
+		const columnBuilder = builder.specificType(column.name, column.type);
 
-		// Altering through Directus would re-add the primary key and drop its `not null`, which Postgres rejects
+		// Re-adding the primary key while altering would fail, as would dropping its `not null` on Postgres
 		if (column.primary && existing) {
-			let fullType = exactType ?? source.data_type;
-
-			if (!exactType && type === 'decimal') fullType += `(${source.numeric_precision},${source.numeric_scale})`;
-			if (!exactType && type === 'string' && source.max_length !== null) fullType += `(${source.max_length})`;
-
-			builder.specificType(column.name, fullType).notNullable().alter({ alterNullable: false });
+			columnBuilder.notNullable().alter({ alterNullable: false });
 			return;
 		}
 
-		// Knex would default strings without a length to 255. MSSQL's `nvarchar(max)` is handled by `addColumnToTable`.
-		const isUnboundedString =
-			type === 'string' && source.max_length === null && !this.helpers.schema.isOneOfClients(['mssql']);
+		if (column.primary) columnBuilder.primary().notNullable();
+		else columnBuilder.nullable();
 
-		if (exactType || isUnboundedString) {
-			const columnBuilder = builder.specificType(column.name, exactType ?? source.data_type);
-
-			if (column.primary) columnBuilder.primary().notNullable();
-			else columnBuilder.nullable();
-
-			if (existing) columnBuilder.alter();
-
-			return;
-		}
-
-		// Mirrored columns drop all constraints apart from relations
-		fieldsService.addColumnToTable(
-			builder,
-			table,
-			{
-				field: column.name,
-				type: type as Type,
-				schema: {
-					max_length: source.max_length,
-					numeric_precision: source.numeric_precision,
-					numeric_scale: source.numeric_scale,
-					default_value: null,
-					is_nullable: !column.primary,
-					is_primary_key: Boolean(column.primary),
-				},
-			},
-			{ existing: existing ?? null },
-		);
+		if (existing) columnBuilder.alter();
 	}
 
 	private addSystemColumn(builder: Knex.CreateTableBuilder, name: string) {

@@ -22,13 +22,6 @@ export class VersioningHelper extends DatabaseHelper {
 		super(knex);
 	}
 
-	/**
-	 * The maximum length of table and column names. Longer names are truncated or rejected by the database.
-	 */
-	getMaxIdentifierLength(): number {
-		return Infinity;
-	}
-
 	getShadowTableName(collection: string): string {
 		return this.prefixName(SHADOW_TABLE_PREFIX, collection);
 	}
@@ -52,14 +45,6 @@ export class VersioningHelper extends DatabaseHelper {
 			this.getShadowTableName(collection),
 			this.getLinkTableName(collection),
 		]);
-	}
-
-	/**
-	 * Whether Directus would create a number column of this database type as a different type, like `smallint` as
-	 * `integer`, losing precision or differing from the source column on every version table sync
-	 */
-	isSizedNumberType(_dataType: string): boolean {
-		return false;
 	}
 
 	/**
@@ -89,7 +74,7 @@ export class VersioningHelper extends DatabaseHelper {
 	 */
 	protected prefixName(prefix: string, name: string): string {
 		const prefixed = `${prefix}${name}`;
-		const maxLength = this.getMaxIdentifierLength();
+		const maxLength = this.schema.getMaxIdentifierLength();
 
 		if (prefixed.length <= maxLength) return prefixed;
 
