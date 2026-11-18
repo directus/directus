@@ -8,6 +8,7 @@ import type { Request, RequestHandler, Response } from 'express';
 import express from 'express';
 import type { Logger } from 'pino';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { expectMcpBearerChallenge } from '../test-utils/mcp-oauth.js';
 import * as errorHandlerMod from './error-handler.js';
@@ -239,6 +240,11 @@ test('Catch error within the handler and respond with fallback error', async () 
 });
 
 describe('MCP OAuth RFC 6750 WWW-Authenticate', () => {
+	function mockOAuthSetting(enabled: boolean, mcpEnabled = true) {
+		const first = vi.fn().mockResolvedValue({ mcp_enabled: mcpEnabled, mcp_oauth_enabled: enabled });
+		vi.mocked(getDatabase).mockReturnValue((() => ({ select: () => ({ first }) })) as any);
+	}
+
 	function setupMcpMocks(path: string) {
 		mockRequest.path = path;
 
@@ -246,6 +252,8 @@ describe('MCP OAuth RFC 6750 WWW-Authenticate', () => {
 			MCP_OAUTH_ENABLED: true,
 			PUBLIC_URL: 'http://localhost:8055',
 		} as any);
+
+		mockOAuthSetting(true);
 
 		// Chain-friendly mock response for the MCP path
 		mockResponse = {
@@ -263,6 +271,24 @@ describe('MCP OAuth RFC 6750 WWW-Authenticate', () => {
 		setupMcpMocks('/mcp');
 		await errorHandlerMod.errorHandler(createError(), mockRequest, mockResponse, nextFunction);
 		expectMcpBearerChallenge(mockResponse, { status: 401, resourceMetadata: true });
+	});
+
+	test('keeps the usual 401 when the project has MCP OAuth off', async () => {
+		setupMcpMocks('/mcp');
+		mockOAuthSetting(false);
+
+		await errorHandlerMod.errorHandler(new InvalidCredentialsError(), mockRequest, mockResponse, nextFunction);
+
+		expect(mockResponse.set).not.toHaveBeenCalledWith('WWW-Authenticate', expect.anything());
+	});
+
+	test('keeps the usual 401 when the project has MCP off', async () => {
+		setupMcpMocks('/mcp');
+		mockOAuthSetting(true, false);
+
+		await errorHandlerMod.errorHandler(new InvalidCredentialsError(), mockRequest, mockResponse, nextFunction);
+
+		expect(mockResponse.set).not.toHaveBeenCalledWith('WWW-Authenticate', expect.anything());
 	});
 
 	test('TokenExpiredError on /mcp sub-path does NOT get WWW-Authenticate treatment', async () => {

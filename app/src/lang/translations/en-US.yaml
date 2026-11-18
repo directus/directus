@@ -1689,7 +1689,9 @@ ai_disabled_by_env: AI Assistant features have been disabled via environment var
 ai_allowed_models_default_note:
   Using the recommended models, which update with new Directus releases. Changing this list saves your own selection.
 mcp_disabled_by_env: MCP features have been disabled via environment variable.
-mcp_oauth_disabled_by_env: MCP OAuth is disabled by the MCP_OAUTH_ENABLED environment variable.
+mcp_oauth_disabled_by_env:
+  MCP OAuth is off on this server. It needs PUBLIC_URL set to the project's full URL, and MCP_OAUTH_ENABLED not set to
+  false.
 mcp_oauth_dcr_disabled_by_env:
   Dynamic Client Registration is disabled by the MCP_OAUTH_DCR_ENABLED environment variable.
 mcp_oauth_cimd_disabled_by_env:

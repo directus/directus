@@ -117,6 +117,36 @@ describe('mcp controller', () => {
 		expect(handleRequest).not.toHaveBeenCalled();
 	});
 
+	test.each([
+		['settings', { mcp_oauth_enabled: false }, true],
+		['env', {}, false],
+	])('rejects anonymous requests without an OAuth challenge when MCP OAuth is off in %s', async (_, settings, env) => {
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ MCP_OAUTH_ENABLED: env }));
+		mockSettings(settings);
+
+		const req = createMockRequest({ accountability: makeAccountability({ user: null }) });
+		const res = createMockResponse();
+		const next = vi.fn();
+
+		const [handler] = getRouteHandler(router, 'POST', '/');
+		await handler!.handle(req, res, next);
+
+		expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 'INVALID_CREDENTIALS' }));
+		expect(handleRequest).not.toHaveBeenCalled();
+	});
+
+	test('passes anonymous requests on to the OAuth challenge when MCP OAuth is on', async () => {
+		const req = createMockRequest({ accountability: makeAccountability({ user: null }) });
+		const res = createMockResponse();
+		const next = vi.fn();
+
+		const [handler] = getRouteHandler(router, 'GET', '/');
+		await handler!.handle(req, res, next);
+
+		expect(next).not.toHaveBeenCalled();
+		expect(handleRequest).toHaveBeenCalledWith(req, res);
+	});
+
 	test('allows regular Directus accountability when MCP is enabled and MCP OAuth is disabled', async () => {
 		mockSettings({ mcp_oauth_enabled: false });
 

@@ -218,6 +218,34 @@ describe('createApp', async () => {
 
 			expect(mockMcpOAuthGuard).toHaveBeenCalledTimes(1);
 		});
+
+		test.each([
+			'/',
+			'',
+			'cms.example.com',
+			'ftp://cms.example.com',
+			'https:cms.example.com',
+			'https:///cms.example.com',
+			'https://cms.example.com/?x=1',
+			'https://cms.example.com/#admin',
+			'https://cms.example.com?',
+			'https://cms.example.com#',
+			'https://\\cms.example.com',
+		])('Should turn OAuth off when PUBLIC_URL is %j', async (PUBLIC_URL) => {
+			mockAppEnv({ MCP_ENABLED: true, MCP_OAUTH_ENABLED: true, PUBLIC_URL });
+
+			await createApp();
+
+			expect(useEnv().MCP_OAUTH_ENABLED).toBe(false);
+		});
+
+		test('Should keep OAuth on with a full PUBLIC_URL', async () => {
+			mockAppEnv({ MCP_ENABLED: true, MCP_OAUTH_ENABLED: true });
+
+			await createApp();
+
+			expect(useEnv().MCP_OAUTH_ENABLED).toBe(true);
+		});
 	});
 
 	describe('Custom Endpoints', () => {

@@ -262,7 +262,7 @@ export const DEFAULTS = {
 	PROJECT_OWNER_ENABLED: true,
 
 	MCP_ENABLED: true,
-	MCP_OAUTH_ENABLED: false,
+	MCP_OAUTH_ENABLED: true,
 	MCP_OAUTH_AUTH_CODE_TTL: '60s',
 	MCP_OAUTH_MAX_CLIENTS: 10000,
 	MCP_OAUTH_CLIENT_UNUSED_TTL: '24h',
@@ -272,7 +272,7 @@ export const DEFAULTS = {
 	MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: [],
 	MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: ['raycast://oauth', 'cursor://cursor.mcp', 'cursor://anysphere.cursor-mcp'],
 	MCP_OAUTH_DCR_ENABLED: false,
-	MCP_OAUTH_CIMD_ENABLED: false,
+	MCP_OAUTH_CIMD_ENABLED: true,
 	MCP_OAUTH_CIMD_ALLOW_HTTP: false,
 	MCP_OAUTH_CIMD_ALLOWED_DOMAINS: [],
 	MCP_OAUTH_CIMD_BLOCKED_TLDS: ['test', 'localhost', 'invalid', 'example', 'local', 'onion'],

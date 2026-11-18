@@ -127,6 +127,12 @@ export default async function createApp(): Promise<express.Application> {
 		env.MCP_OAUTH_ENABLED = false;
 	}
 
+	// OAuth metadata and redirects are built from PUBLIC_URL, so anything but a full http(s) URL sends clients nowhere
+	if (env.MCP_OAUTH_ENABLED === true && !isFullHttpUrl(env.PUBLIC_URL)) {
+		logger.warn('MCP OAuth is off: set "PUBLIC_URL" to the full URL of this project, like https://cms.example.com.');
+		env.MCP_OAUTH_ENABLED = false;
+	}
+
 	await validateDatabaseExtensions();
 	await validateStorage();
 
@@ -425,4 +431,18 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('app.after', { app });
 
 	return app;
+}
+
+function isFullHttpUrl(value: unknown): boolean {
+	const url = String(value);
+
+	// new URL() repairs "https:host", "https:///host" and backslashes, but PUBLIC_URL is used as written.
+	// Paths get appended to it, which a query or fragment would swallow.
+	if (!/^https?:\/\/[^/\\]/i.test(url) || /[?#\\]/.test(url)) return false;
+
+	try {
+		return new URL(url).host !== '';
+	} catch {
+		return false;
+	}
 }

@@ -7,6 +7,7 @@ import getDatabase, {
 	validateDatabaseConnection,
 } from '../../../database/index.js';
 import runMigrations from '../../../database/migrations/run.js';
+import { applyNewProjectSettings } from '../../../database/new-project-settings.js';
 import installDatabase from '../../../database/seeds/run.js';
 import { getEntitlementManager } from '../../../license/index.js';
 import { useLogger } from '../../../logger/index.js';
@@ -32,6 +33,7 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 
 		logger.info('Running migrations...');
 		await runMigrations(database, 'latest');
+		await applyNewProjectSettings(database);
 
 		const schema = await getSchema();
 
