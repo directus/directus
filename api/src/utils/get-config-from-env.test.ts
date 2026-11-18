@@ -1,25 +1,32 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { mockEnv } from '../test-utils/env.js';
 import { getConfigFromEnv } from './get-config-from-env.js';
 
 vi.mock('@directus/env');
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({
-		CASING_KEY: 'key',
-		CASING_KEY_value: 'value',
-		OBJECT_BRAND__COLOR: 'purple',
-		OBJECT_BRAND__HEX: '#6644FF',
-		CAMELCASE_OBJECT__FIRST_KEY: 'firstValue',
-		CAMELCASE_OBJECT__SECOND_KEY: 'secondValue',
-		OMIT_PREFIX_FIRST_KEY: 'firstKey',
-		OMIT_PREFIX_FIRST_KEY_VALUE: 'firstValue',
-		OMIT_PREFIX_FIRST_VALUE: 'firstValue',
-		OMIT_PREFIX_SECOND_KEY: 'secondKey',
-		OMIT_PREFIX_SECOND_KEY_VALUE: 'secondValue',
-		OMIT_KEY_FIRST_KEY: 'firstKey',
-		OMIT_KEY_FIRST_KEY_VALUE: 'firstValue',
-	});
+	vi.mocked(useEnv).mockReturnValue(
+		mockEnv({
+			CASING_KEY: 'key',
+			CASING_KEY_value: 'value',
+			OBJECT_BRAND__COLOR: 'purple',
+			OBJECT_BRAND__HEX: '#6644FF',
+			CAMELCASE_OBJECT__FIRST_KEY: 'firstValue',
+			CAMELCASE_OBJECT__SECOND_KEY: 'secondValue',
+			OMIT_PREFIX_FIRST_KEY: 'firstKey',
+			OMIT_PREFIX_FIRST_KEY_VALUE: 'firstValue',
+			OMIT_PREFIX_FIRST_VALUE: 'firstValue',
+			OMIT_PREFIX_SECOND_KEY: 'secondKey',
+			OMIT_PREFIX_SECOND_KEY_VALUE: 'secondValue',
+			OMIT_KEY_FIRST_KEY: 'firstKey',
+			OMIT_KEY_FIRST_KEY_VALUE: 'firstValue',
+			OMIT_SUFFIX_HOST: 'localhost',
+			OMIT_SUFFIX_BUS_NAMESPACE: 'bus',
+			OMIT_SUFFIX_LOCK_NAMESPACE: 'lock',
+			OMIT_SUFFIX_LOCK_TTL: '10',
+		}),
+	);
 });
 
 afterEach(() => {
@@ -67,6 +74,17 @@ describe('get config from env', () => {
 
 		expect(getConfigFromEnv('OMIT_KEY_', { omitKey: ['OMIT_KEY_FIRST_KEY_VALUE'] })).toStrictEqual({
 			firstKey: 'firstKey',
+		});
+	});
+
+	test('Keys ending with the suffix(es) listed in omitSuffix should be omitted', () => {
+		expect(getConfigFromEnv('OMIT_SUFFIX_', { omitSuffix: '_NAMESPACE' })).toStrictEqual({
+			host: 'localhost',
+			lockTtl: '10',
+		});
+
+		expect(getConfigFromEnv('OMIT_SUFFIX_', { omitSuffix: ['_namespace', '_TTL'] })).toStrictEqual({
+			host: 'localhost',
 		});
 	});
 });

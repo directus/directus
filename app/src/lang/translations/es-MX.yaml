@@ -194,8 +194,6 @@ logoutReason:
   SESSION_EXPIRED: Sesión expirada
 public_label: Público
 public_description: Controla qué datos de la API están disponibles sin autenticar.
-public_role_info: >-
-  El rol público controla qué datos de la API están disponibles para usuarios sin autenticación o sin un rol. Las solicitudes con el rol público no pueden tener acceso de aplicación o administrador. Si se brinda acceso de aplicación o administrador a una política asignada al rol público, este será ignorado.
 admin_description: Rol administrativo inicial con acceso sin restricciones a la aplicación/API.
 admin_policy_description: Política administrativa inicial sin acceso restringido a la aplicación/API.
 no_description: Sin descripción...
@@ -699,6 +697,8 @@ file_moved: Archivo movido
 collection_created: Colección creada
 modified_on: Modificado el
 card_size: Tamaño de tarjeta
+small: Pequeño
+large: Grande
 sort_field: Ordenar campo
 add_sort_field: Añadir campo de ordenación
 sort: Ordenar
@@ -1623,6 +1623,7 @@ forgot_password: He olvidado mi Contraseña
 hidden: Oculto
 hidden_in_group: Escondido en {group}
 icon: Ícono
+image: Imagen
 info: Información
 normal: Normal
 success: Éxito
@@ -1915,6 +1916,8 @@ interfaces:
   select-radio:
     radio-buttons: Botones de radio
     description: Seleccione una de las múltiples opciones
+  system-file-image:
+    image: Imagen
   list:
     repeater: Repetidor
     description: Crear múltiples entradas con la misma estructura
@@ -1999,6 +2002,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Un editor de texto rich escribiendo contenido HTML
     toolbar: Barra de Herramientas
+    extensions: Extensiones
     custom_formats: Formatos Personalizados
     folder_note: Carpeta para los archivos subidos. No afecta a los archivos existentes.
     imageToken: Token de acceso estático
@@ -2372,6 +2376,16 @@ a_flow_uuid: Seleccione un flujo para disparar...
 any_string_or_json: Alguna cadena o JSON...
 item_payload_placeholder: Este es el JSON usado para actualizar los valores del campo del elemento...
 operations:
+  ai-image:
+    background: Fondo
+    emit_events: Emitir eventos
+    starting_points:
+      icon: Ícono
+  ai-text:
+    files: Archivos
+    type_text: Texto
+    view_fields: Campos
+    view_json: JSON
   condition:
     name: Condición
   exec:

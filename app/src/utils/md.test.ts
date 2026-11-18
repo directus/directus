@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
-import { expect, test } from 'vitest';
+import dompurify from 'dompurify';
+import { expect, test, vi } from 'vitest';
 import { md } from './md.js';
 
 test.each([
@@ -16,4 +17,13 @@ test.each([
 	{ value: `test<script>alert('alert')</script>`, expected: '<p>test</p>\n' },
 ])('should sanitize "$str" into "$expected"', ({ value, expected, options }) => {
 	expect(md(value, options)).toBe(expected);
+});
+
+test('does not register a DOMPurify hook per call', () => {
+	const addHook = vi.spyOn(dompurify, 'addHook');
+
+	md('one');
+	md('two');
+
+	expect(addHook).not.toHaveBeenCalled();
 });

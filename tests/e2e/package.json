@@ -12,7 +12,6 @@
 	"author": "Nils Twelker (nils@directus.io)",
 	"type": "module",
 	"license": "MIT",
-	"packageManager": "pnpm@10.14.0",
 	"dependencies": {
 		"@directus/license": "catalog:",
 		"@directus/mock-license-server": "catalog:",
@@ -33,11 +32,9 @@
 		"@types/node": "catalog:",
 		"tsx": "catalog:",
 		"typescript": "catalog:",
-		"vite-tsconfig-paths": "catalog:",
 		"vitest": "catalog:"
 	},
 	"engines": {
-		"node": ">=22",
-		"pnpm": ">=10"
+		"node": ">=26"
 	}
 }

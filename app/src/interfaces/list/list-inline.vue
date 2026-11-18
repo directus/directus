@@ -4,7 +4,7 @@ defineOptions({ inheritAttrs: false });
 import type { Field } from '@directus/types';
 import { sortBy } from 'lodash-es';
 import { AccordionContent, AccordionItem, AccordionRoot, AccordionTrigger } from 'reka-ui';
-import { computed, nextTick, ref, toRefs, useTemplateRef, watch } from 'vue';
+import { computed, nextTick, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import { resolveFieldName } from './resolve-field-name';
@@ -28,7 +28,6 @@ const emit = defineEmits<RepeaterEmits>();
 
 const { value } = toRefs(props);
 const { locale } = useI18n();
-const listItemForms = useTemplateRef<HTMLDivElement[]>('list-item-form');
 
 const templateWithDefaults = computed(() =>
 	props.fields?.[0]?.field ? props.template || `{{${props.fields[0].field}}}` : '',
@@ -82,6 +81,14 @@ const isDragging = ref(false);
 let nextRowId = 0;
 const makeRowId = () => `row-${nextRowId++}`;
 const rowIds = ref<string[]>([]);
+
+// Inside Draggable's slot (not a v-for), so useTemplateRef would hold one element, not an array
+const rowForms = new Map<string, HTMLElement>();
+
+function setRowForm(id: string, el: unknown) {
+	if (el instanceof HTMLElement) rowForms.set(id, el);
+	else rowForms.delete(id);
+}
 
 watch(
 	() => internalValue.value,
@@ -190,19 +197,18 @@ function addNew() {
 		newDefaults[field.field!] = field.schema?.default_value;
 	}
 
+	const nextValue = [...(Array.isArray(internalValue.value) ? internalValue.value : []), newDefaults];
+	// Row ids are positional, so the new id goes where the sorted value will put the new row
+	const insertAt = props.sort ? sortBy(nextValue, props.sort).indexOf(newDefaults) : nextValue.length - 1;
+
 	const newId = makeRowId();
-	rowIds.value.push(newId);
+	rowIds.value.splice(insertAt, 0, newId);
 	expandedItems.value.push(newId);
 
-	if (Array.isArray(internalValue.value)) {
-		emitValue([...internalValue.value, newDefaults]);
-	} else {
-		emitValue([newDefaults]);
-	}
+	emitValue(nextValue);
 
 	nextTick(() => {
-		const lastForm = listItemForms.value?.at(-1);
-		const firstInput = lastForm?.querySelector('input, select, textarea');
+		const firstInput = rowForms.get(newId)?.querySelector('input, select, textarea');
 
 		if (firstInput instanceof HTMLElement) {
 			firstInput.focus();
@@ -276,7 +282,7 @@ function emitValue(value?: Record<string, unknown>[]) {
 								</div>
 								<TransitionExpand>
 									<AccordionContent as-child>
-										<div ref="list-item-form" class="list-item-form">
+										<div :ref="(el) => setRowForm(element.id, el)" class="list-item-form">
 											<VForm
 												:disabled="disabled"
 												:non-editable="nonEditable"

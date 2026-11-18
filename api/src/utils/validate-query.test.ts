@@ -1,12 +1,13 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { mockEnv } from '../test-utils/env.js';
 
 vi.mock('@directus/env');
 
 beforeEach(() => {
 	vi.resetModules();
 
-	vi.mocked(useEnv).mockReturnValue({});
+	vi.mocked(useEnv).mockReturnValue(mockEnv({}));
 });
 
 afterEach(() => {
@@ -15,7 +16,7 @@ afterEach(() => {
 
 describe('max limit', () => {
 	describe('max limit of 100', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ QUERY_LIMIT_MAX: 100 }));
 		const { validateQuery } = await import('./validate-query.js');
 
 		test.each([-1, 1, 25])('should accept number %i', (limit) => {
@@ -34,7 +35,7 @@ describe('max limit', () => {
 	});
 
 	test('should accept 101 when unlimited', async () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: -1 });
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ QUERY_LIMIT_MAX: -1 }));
 		const { validateQuery } = await import('./validate-query.js');
 
 		expect(() => validateQuery({ limit: 101 })).not.toThrowError('limit');
@@ -128,8 +129,12 @@ describe('alias validation', async () => {
 });
 
 describe('alias relational depth', async () => {
-	vi.mocked(useEnv).mockReturnValue({ MAX_RELATIONAL_DEPTH: 2 });
+	vi.resetModules();
 	const { validateQuery } = await import('./validate-query.js');
+
+	beforeEach(() => {
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ MAX_RELATIONAL_DEPTH: 2 }));
+	});
 
 	test('checks depth against resolved alias value, not key', () => {
 		// alias key "myAlias" has depth 1, but the value resolves to depth 2 (category_id + metadata)
@@ -207,8 +212,12 @@ describe('sort validation', async () => {
 });
 
 describe('sort relational depth', async () => {
-	vi.mocked(useEnv).mockReturnValue({ MAX_RELATIONAL_DEPTH: 2 });
+	vi.resetModules();
 	const { validateQuery } = await import('./validate-query.js');
+
+	beforeEach(() => {
+		vi.mocked(useEnv).mockReturnValue(mockEnv({ MAX_RELATIONAL_DEPTH: 2 }));
+	});
 
 	test('dotted json path in sort does not inflate relational depth', () => {
 		// json(metadata, path.with.dots) has relational depth 1 — dots inside json path are not relational segments

@@ -180,8 +180,6 @@ logoutReason:
   SESSION_EXPIRED: دەورە بەسەرچوو
 public_label: گشتی
 public_description: کۆنتڕۆڵکردنی ئەوەی کام داتایەی API بەردەستە بەبێ ڕەسەنایەتی.
-public_role_info: >-
-  پلەی گشتی کۆنتڕۆڵی ئەوە دەکات کە چ داتایەکی API بەردەستە بۆ بەکارهێنەرە پشتڕاست نەکراوەکان یان ئەوانەی هیچ پلەیەکیان نییە. داواکاریەکانی پلەی گشتی ناتوانن دەستگەیشتنی پێگە یان بەڕێوبەریان هەبێت. ئەگەر دەستگەیشتنی پێگە یان بەڕێوبەر بۆ سیاسەتێک دانرا کە پلەی گشتی هەیبێت، ئەوا پشتگوێدەخرێن.
 admin_description: ڕۆڵی بەڕێوبەری سەرەتایی لەگەڵ دەسەڵاتی API و پێگەی بێ سنوور.
 admin_policy_description: سیاسەتی بەڕێوبەرایەتی سەرەتایی لەگەڵ دەستگەیشتنی بێ سنوری پێگە/API.
 no_description: هیچ وەسفێک نییە...
@@ -679,6 +677,8 @@ file_moved: پەڕگە گواسترایەوە
 collection_created: کۆمەڵە دروستکرا
 modified_on: دەستکاریکرا لە
 card_size: قەبارەی کارت
+small: بچوک
+large: گەورە
 sort_field: خانەی ڕیزکردن
 add_sort_field: دانانی خانەی ڕیزکردن
 sort: ڕیزکردن
@@ -1597,6 +1597,7 @@ forgot_password: تێپەڕەوشەت لەبیرکردوە
 hidden: شاراوە
 hidden_in_group: شاراوە لە {group}
 icon: ئایکۆن
+image: وێنە
 info: زانیاری
 normal: ئاسایی
 success: سەرکەوتووبوو
@@ -1887,6 +1888,8 @@ interfaces:
   select-radio:
     radio-buttons: دوگمە ڕادیۆییەکان
     description: یەکێک دیاری بکە لە چەند هەڵبژاردەیەک
+  system-file-image:
+    image: وێنە
   list:
     repeater: دوبارەکەرەوە
     description: چەندین نوسراو لەهەمان پێکهاتە دروست بکە
@@ -1971,6 +1974,7 @@ interfaces:
     wysiwyg: دەستکاریکەری بینراو
     description: دەستکاریکەرێکی دەوڵەمەندی دەقە بە نوسینی ناوەڕۆکی HTML
     toolbar: شریتی ئامرازەکان
+    extensions: زیادکراوەکان
     custom_formats: داڕشتنە تایبەتەکان
     folder_note: بوخچە بۆ بارکردنی پەڕگەکان. کاریگەری نابێت لەسەر پەڕگە هەنووکەیەکان.
     imageToken: تۆکنی دەستگەیشتنی جێگیر
@@ -2342,6 +2346,16 @@ a_flow_uuid: لێشاوێک دیاری بکە بۆ وروژاندن...
 any_string_or_json: هەر دەقێک یان JSONێک...
 item_payload_placeholder: ئەمە ئەو JSONەیە کە بەکاردێت بۆ نوێکردنەوەی بەهاکانی خانەی مادەکە...
 operations:
+  ai-image:
+    background: پاشبنەما
+    emit_events: دەرکردنی ڕووداوەکان
+    starting_points:
+      icon: ئایکۆن
+  ai-text:
+    files: پەڕگەکان
+    type_text: نوسین
+    view_fields: خانەکان
+    view_json: JSON
   condition:
     name: مەرج
   exec:

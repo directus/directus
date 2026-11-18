@@ -427,7 +427,7 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _ends_with: 'field' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`.*field$`), {
+			field: Joi.string().pattern(new RegExp(`field$`), {
 				name: 'ends_with',
 			}),
 		})
@@ -453,7 +453,7 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _nends_with: 'field' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`.*field$`), {
+			field: Joi.string().pattern(new RegExp(`field$`), {
 				name: 'nends_with',
 				invert: true,
 			}),
@@ -480,7 +480,7 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _iends_with: 'field' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`.*field$`, 'i'), {
+			field: Joi.string().pattern(new RegExp(`field$`, 'i'), {
 				name: 'iends_with',
 			}),
 		})
@@ -506,7 +506,7 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _niends_with: 'field' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`.*field$`, 'i'), {
+			field: Joi.string().pattern(new RegExp(`field$`, 'i'), {
 				name: 'niends_with',
 				invert: true,
 			}),
@@ -911,5 +911,42 @@ describe(`generateJoi`, () => {
 			.describe();
 
 		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	describe(`ends_with matching`, () => {
+		const accepts = (filter: FieldFilter, value: string) =>
+			generateJoi(filter).validate({ field: value }).error === undefined;
+
+		// Dropping the leading `.*` from the pattern must not move any of these. In JS `$` is the end
+		// of the string rather than the end of a line, so a trailing newline is still not a match.
+		it.each<[string, string, boolean]>([
+			['the suffix on its own', 'field', true],
+			['a longer value ending in it', 'my_field', true],
+			['the suffix followed by more', 'field_name', false],
+			['a prefix of the suffix', 'fiel', false],
+			['the suffix after a newline', 'first\nfield', true],
+			['the suffix before a trailing newline', 'field\n', false],
+		])(`should accept %s: %j`, (_label, value, expected) => {
+			expect(accepts({ field: { _ends_with: 'field' } } as FieldFilter, value)).toBe(expected);
+			expect(accepts({ field: { _nends_with: 'field' } } as FieldFilter, value)).toBe(!expected);
+		});
+
+		it(`should ignore case only for the insensitive operators`, () => {
+			expect(accepts({ field: { _ends_with: 'field' } } as FieldFilter, 'my_FIELD')).toBe(false);
+			expect(accepts({ field: { _iends_with: 'field' } } as FieldFilter, 'my_FIELD')).toBe(true);
+			expect(accepts({ field: { _niends_with: 'field' } } as FieldFilter, 'my_FIELD')).toBe(false);
+		});
+
+		it(`should treat the compared value as a literal rather than a pattern`, () => {
+			expect(accepts({ field: { _ends_with: 'a.c' } } as FieldFilter, 'xa.c')).toBe(true);
+			expect(accepts({ field: { _ends_with: 'a.c' } } as FieldFilter, 'xabc')).toBe(false);
+		});
+
+		it(`should finish on a long value that does not match`, () => {
+			// The pattern was `.*field$`, which backtracks from the end of the value at every start
+			// position. At this length that took ~16s, so a regression fails on the test timeout
+			// rather than on a measured duration.
+			expect(accepts({ field: { _ends_with: 'field' } } as FieldFilter, 'a'.repeat(200_000))).toBe(false);
+		});
 	});
 });

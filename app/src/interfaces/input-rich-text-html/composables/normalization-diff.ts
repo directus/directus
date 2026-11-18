@@ -1,16 +1,15 @@
 import { type AnyExtension, Editor } from '@tiptap/vue-3';
 import { type Change, diffLines } from 'diff';
-import { editorExtensions } from '../extensions';
-import { ComparisonDiff } from '../extensions/comparison-diff';
-import { buildCustomFormats } from '../extensions/custom-formats';
+import { fieldEditorExtensions } from '../extensions';
 import { decodePageBreaks, encodePageBreaks } from '../extensions/page-break';
+import { canonicalHtml } from './canonical-html';
 import { formatHtml } from './format-html';
 
 // Re-parse through the schema exactly as saveSourceCode will, so the diff compares against what
-// actually gets stored. `extraExtensions` carries the instance-only marks (custom formats) the live
-// editor was built with — without them their markup reads as dropped and falsely trips the warning.
+// actually gets stored. `extraExtensions` is the per-field slice from buildFieldSchema the live
+// editor was built with — without it that markup reads as dropped and falsely trips the warning.
 export function roundTrip(html: string, extraExtensions: AnyExtension[] = []): string {
-	const editor = new Editor({ extensions: [...editorExtensions, ...extraExtensions], content: html });
+	const editor = new Editor({ extensions: fieldEditorExtensions(extraExtensions), content: html });
 	const out = editor.getHTML();
 	editor.destroy();
 	return out;
@@ -18,8 +17,8 @@ export function roundTrip(html: string, extraExtensions: AnyExtension[] = []): s
 
 // Both sides run through formatHtml so only semantic loss surfaces, never cosmetic reformatting.
 export function diffFormatted(rawBefore: string, rawAfter: string): Change[] | null {
-	const before = formatHtml(rawBefore);
-	const after = formatHtml(rawAfter);
+	const before = formatHtml(canonicalHtml(rawBefore));
+	const after = formatHtml(canonicalHtml(rawAfter));
 	if (before === after) return null;
 
 	const changes = diffLines(before, after);
@@ -62,12 +61,6 @@ export function computeValueNormalizationDiff(
 	verdictCache.set(cacheKey, verdict);
 
 	return verdict;
-}
-
-/** The schema the comparison view renders with, so its verdicts are shared with the interface. */
-export function comparisonSchema(customFormats: unknown): { extensions: AnyExtension[]; schemaKey: string } {
-	const { extensions, key } = buildCustomFormats(customFormats);
-	return { extensions: [...extensions, ComparisonDiff], schemaKey: `comparison\u0000${key}` };
 }
 
 const VERDICT_CACHE_SIZE = 24;

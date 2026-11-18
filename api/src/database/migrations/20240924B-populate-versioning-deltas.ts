@@ -4,13 +4,11 @@ import { assign } from 'lodash-es';
 
 export async function up(knex: Knex): Promise<void> {
 	const rowsLimit = 50;
-	let hasMore = true;
 
-	while (hasMore) {
+	while (true) {
 		const missingDeltaVersions = await knex.select('id').from('directus_versions').whereNull('delta').limit(rowsLimit);
 
 		if (missingDeltaVersions.length === 0) {
-			hasMore = false;
 			break;
 		}
 
