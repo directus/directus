@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
 	const schema = await getSchema({ database: knex, bypassCache: true });
 	const service = new VersionTablesService({ knex, schema });
 
-	await service.syncCollections();
+	await service.syncCollections(null);
 	// TODO: handle data migration as well
 }
 
