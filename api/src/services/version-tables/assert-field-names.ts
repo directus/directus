@@ -1,5 +1,5 @@
 import { InvalidPayloadError } from '@directus/errors';
-import { isReservedVersionField } from './utils.js';
+import { isVersionSystemField } from './utils.js';
 
 /**
  * Reject field names that collide with the shadow table columns of a versioned collection. Has to run before the live
@@ -7,7 +7,7 @@ import { isReservedVersionField } from './utils.js';
  */
 export function assertVersionSystemFields(collection: string, fields: string[]) {
 	for (const field of fields) {
-		if (isReservedVersionField(field)) {
+		if (isVersionSystemField(field)) {
 			throw new InvalidPayloadError({
 				reason: `Field "${field}" in collection "${collection}" conflicts with a reserved versioning field name`,
 			});
