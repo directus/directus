@@ -5,7 +5,7 @@ import {
 	VERSION_SYSTEM_FIELDS,
 } from './constants.js';
 
-export function isShadowTable(table: string) {
+export function isVersioningTable(table: string) {
 	return table.startsWith(SHADOW_TABLE_PREFIX) || table.startsWith(LINK_TABLE_PREFIX);
 }
 

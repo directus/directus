@@ -1,7 +1,7 @@
 import type { Knex } from 'knex';
 import { describe, expect, test, vi } from 'vitest';
 import type { VersionTables } from '../../../services/version-tables/plan-version-tables.js';
-import { isShadowTable } from '../../../services/version-tables/utils.js';
+import { isVersioningTable } from '../../../services/version-tables/utils.js';
 import type { SchemaHelper } from '../schema/types.js';
 import { VersioningHelperMSSQL } from './dialects/mssql.js';
 import { VersioningHelperPostgres } from './dialects/postgres.js';
@@ -28,7 +28,7 @@ describe('version table names', () => {
 		expect(a.length).toBeLessThanOrEqual(maxLength);
 		expect(b.length).toBeLessThanOrEqual(maxLength);
 		expect(a).not.toBe(b);
-		expect(isShadowTable(a)).toBe(true);
+		expect(isVersioningTable(a)).toBe(true);
 		expect(helper.getLinkTableName('endpoints_query_version_item_articles_tags_junction')).toBe(a);
 
 		expect(helper.getVersionReferenceField('f'.repeat(64)).length).toBeLessThanOrEqual(maxLength);

@@ -3,7 +3,7 @@ import type { Column, ForeignKey } from '@directus/schema';
 import type { Relation } from '@directus/types';
 import type { VersioningHelper } from '../../database/helpers/versioning/types.js';
 import { VERSION_SYSTEM_FIELDS } from './constants.js';
-import { isShadowTable } from './utils.js';
+import { isVersioningTable } from './utils.js';
 
 export type ReferentialAction = ForeignKey['on_delete'];
 
@@ -69,7 +69,7 @@ export function planVersionTables(
 	const tables: VersionTables = {};
 
 	for (const collection of Object.values(collections)) {
-		if (!versioned.has(collection.collection) || isShadowTable(collection.collection)) continue;
+		if (!versioned.has(collection.collection) || isVersioningTable(collection.collection)) continue;
 
 		const shadowTable = planShadowTable(collection, context);
 
@@ -77,7 +77,7 @@ export function planVersionTables(
 	}
 
 	for (const collection of Object.values(collections)) {
-		if (isShadowTable(collection.collection)) continue;
+		if (isVersioningTable(collection.collection)) continue;
 
 		const linkTable = planLinkTable(collection, context);
 

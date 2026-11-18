@@ -50,7 +50,7 @@ import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
 import { assertVersionSystemFields } from './version-tables/assert-field-names.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
-import { isShadowTable } from './version-tables/utils.js';
+import { isVersioningTable } from './version-tables/utils.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const { CACHE_SCHEMA } = useEnv();
@@ -281,7 +281,7 @@ export class FieldsService {
 	}
 
 	async readOne(collection: string, field: string): Promise<Record<string, any>> {
-		if (isShadowTable(collection)) throw new ForbiddenError();
+		if (isVersioningTable(collection)) throw new ForbiddenError();
 
 		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
@@ -368,7 +368,7 @@ export class FieldsService {
 			throw new ForbiddenError();
 		}
 
-		if (isShadowTable(collection)) throw new ForbiddenError();
+		if (isVersioningTable(collection)) throw new ForbiddenError();
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -506,7 +506,7 @@ export class FieldsService {
 	}
 
 	async updateField(collection: string, field: RawField, opts?: FieldMutationOptions): Promise<string> {
-		if (isShadowTable(collection)) throw new ForbiddenError();
+		if (isVersioningTable(collection)) throw new ForbiddenError();
 
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
@@ -699,7 +699,7 @@ export class FieldsService {
 	}
 
 	async deleteField(collection: string, field: string, opts?: MutationOptions): Promise<void> {
-		if (isShadowTable(collection)) throw new ForbiddenError();
+		if (isVersioningTable(collection)) throw new ForbiddenError();
 
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();

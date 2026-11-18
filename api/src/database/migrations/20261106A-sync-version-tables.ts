@@ -1,6 +1,6 @@
 import { createInspector } from '@directus/schema';
 import type { Knex } from 'knex';
-import { isShadowTable } from '../../services/version-tables/utils.js';
+import { isVersioningTable } from '../../services/version-tables/utils.js';
 import { VersionTablesService } from '../../services/version-tables.js';
 import { getSchema } from '../../utils/get-schema.js';
 
@@ -18,7 +18,7 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 	const inspector = createInspector(knex);
-	const tables = (await inspector.tables()).filter(isShadowTable);
+	const tables = (await inspector.tables()).filter(isVersioningTable);
 
 	// Version tables reference each other, so their foreign keys have to be dropped before the tables
 	for (const table of tables) {

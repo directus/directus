@@ -30,7 +30,7 @@ import { getSchema } from '../utils/get-schema.js';
 import { stitchRelations } from '../utils/stitch-relations.js';
 import { ItemsService } from './items.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
-import { isShadowTable } from './version-tables/utils.js';
+import { isVersioningTable } from './version-tables/utils.js';
 
 const { CACHE_SCHEMA } = useEnv();
 
@@ -130,14 +130,14 @@ export class RelationsService {
 		}
 
 		// Foreign keys of version tables are managed by versioning
-		schemaRows = schemaRows.filter((row) => !isShadowTable(row.table));
+		schemaRows = schemaRows.filter((row) => !isVersioningTable(row.table));
 
 		const results = stitchRelations(metaRows, schemaRows);
 		return await this.filterForbidden(results);
 	}
 
 	async readOne(collection: string, field: string): Promise<Relation> {
-		if (isShadowTable(collection)) throw new ForbiddenError();
+		if (isVersioningTable(collection)) throw new ForbiddenError();
 
 		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(

@@ -21,7 +21,7 @@ import {
 	type VersionTableForeignKey,
 	type VersionTables,
 } from './version-tables/plan-version-tables.js';
-import { isShadowTable } from './version-tables/utils.js';
+import { isVersioningTable } from './version-tables/utils.js';
 
 type ColumnChanges = { add: VersionTableColumn[]; alter: VersionTableColumn[]; drop: string[] };
 
@@ -154,7 +154,7 @@ export class VersionTablesService {
 			const exists = await Promise.all(tables.map((table) => this.schemaInspector.hasTable(table)));
 			shadowTables = tables.filter((_table, index) => exists[index]);
 		} else {
-			shadowTables = (await this.schemaInspector.tables()).filter(isShadowTable);
+			shadowTables = (await this.schemaInspector.tables()).filter(isVersioningTable);
 		}
 
 		if (versionedTables.size === 0 && shadowTables.length === 0) return null;
@@ -188,11 +188,11 @@ export class VersionTablesService {
 	 */
 	private async inspectAll(): Promise<InspectedSchema> {
 		const [shadowColumns, liveColumns] = partition(await this.schemaInspector.columnInfo(), (column) =>
-			isShadowTable(column.table),
+			isVersioningTable(column.table),
 		);
 
 		const [shadowForeignKeys, liveForeignKeys] = partition(await this.schemaInspector.foreignKeys(), (foreignKey) =>
-			isShadowTable(foreignKey.table),
+			isVersioningTable(foreignKey.table),
 		);
 
 		return {

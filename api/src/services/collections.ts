@@ -38,7 +38,7 @@ import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
 import { assertVersionSystemFields } from './version-tables/assert-field-names.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
-import { isShadowTable } from './version-tables/utils.js';
+import { isVersioningTable } from './version-tables/utils.js';
 
 export class CollectionsService {
 	knex: Knex;
@@ -352,7 +352,7 @@ export class CollectionsService {
 		});
 
 		// Shadow and link tables are managed by versioning and shouldn't be exposed as collections
-		let tablesInDatabase = (await this.schemaInspector.tableInfo()).filter((table) => !isShadowTable(table.name));
+		let tablesInDatabase = (await this.schemaInspector.tableInfo()).filter((table) => !isVersioningTable(table.name));
 
 		let meta = (await collectionsItemsService.readByQuery({
 			limit: -1,
