@@ -726,6 +726,8 @@ file_moved: Bestand verplaatst
 collection_created: Collectie aangemaakt
 modified_on: Aangepast op
 card_size: Kaart grootte
+small: Klein
+large: Groot
 sort_field: Sorteerveld
 add_sort_field: Voeg Sorteerveld Toe
 sort: Sorteren
@@ -1732,6 +1734,7 @@ forgot_password: Wachtwoord vergeten
 hidden: Verborgen
 hidden_in_group: Verborgen in {group}
 icon: Icoon
+image: Afbeelding
 info: Info
 normal: Normaal
 success: Geslaagd
@@ -2035,6 +2038,8 @@ interfaces:
   select-radio:
     radio-buttons: Keuzerondjes
     description: Selecteer één van meerdere keuzes
+  system-file-image:
+    image: Afbeelding
   list:
     repeater: Herhaler
     description: Maak meerdere items met dezelfde structuur
@@ -2499,6 +2504,17 @@ a_flow_uuid: Selecteer een Flow om te triggeren...
 any_string_or_json: Elke string of JSON...
 item_payload_placeholder: Dit is de JSON die wordt gebruikt om de veldwaarden van het item bij te werken...
 operations:
+  ai-image:
+    background: Achtergrond
+    emit_events: Events verzenden
+    starting_points:
+      icon: Icoon
+  ai-text:
+    files: Bestanden
+    output: Output
+    type_text: Tekst
+    view_fields: Velden
+    view_json: JSON
   condition:
     name: Conditie
   exec:

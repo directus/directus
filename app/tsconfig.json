@@ -4,9 +4,8 @@
 		"verbatimModuleSyntax": false,
 		"exactOptionalPropertyTypes": false,
 		"noPropertyAccessFromIndexSignature": false,
-		"baseUrl": ".",
 		"paths": {
-			"@/*": ["src/*"]
+			"@/*": ["./src/*"]
 		}
 	},
 	"include": ["env.d.ts", "src/**/*", "src/**/*.vue"]

@@ -1,6 +1,6 @@
 import { getSchema } from '@tiptap/core';
 import { describe, expect, test } from 'vitest';
-import { editorExtensions } from '../extensions';
+import { buildFieldSchema, editorExtensions, fieldEditorExtensions } from '../extensions';
 import { buildCustomFormats } from '../extensions/custom-formats';
 import { findMarkupLoss } from './markup-loss';
 import { roundTrip } from './normalization-diff';
@@ -21,7 +21,15 @@ describe('findMarkupLoss', () => {
 			['implied paragraph in a blockquote', '<blockquote>quoted</blockquote>'],
 			['implied paragraphs in a nested list', '<ul><li>a<ul><li>b</li></ul></li></ul>'],
 			['ordered list start and type', '<ol start="3" type="a"><li>c</li></ol>'],
-			['image lifted out of its paragraph', '<p>before<img src="https://x.test/a.png" alt="A">after</p>'],
+			['image inside a paragraph', '<p>before<img src="https://x.test/a.png" alt="A">after</p>'],
+			[
+				'linked image inside a heading',
+				'<h2>t <a href="https://x.test"><img src="https://x.test/a.png" alt="A"></a></h2>',
+			],
+			[
+				'image lifted out of a table cell',
+				'<table><tr><td>before<img src="https://x.test/a.png" alt="A">after</td></tr></table>',
+			],
 			['reserialized CSS', '<p><span style="font-size:11pt;color:#FF0000">w</span></p>'],
 			[
 				'styles that become marks',
@@ -45,6 +53,12 @@ describe('findMarkupLoss', () => {
 	});
 
 	describe('genuine loss', () => {
+		test('an inline style on an inline image', () => {
+			expect(loss('<p>a<img src="https://x.test/a.png" style="float: left;">b</p>')).toEqual([
+				'<img style="float: left">',
+			]);
+		});
+
 		test('an inline style no rule claims', () => {
 			expect(loss('<p><span style="white-space: pre-wrap;" data-metadata="figma">Grass</span></p>')).toEqual([
 				'<span style="white-space: pre-wrap">',
@@ -93,5 +107,46 @@ describe('findMarkupLoss', () => {
 		const withFormats = getSchema([...editorExtensions, ...extensions]);
 
 		expect(findMarkupLoss(html, roundTrip(html, extensions), withFormats)).toEqual([]);
+	});
+
+	describe('with keepInlineStyles', () => {
+		const { extensions } = buildFieldSchema({ keepInlineStyles: true });
+		const inlineSchema = getSchema(fieldEditorExtensions(extensions));
+		const inlineLoss = (html: string) => findMarkupLoss(html, roundTrip(html, extensions), inlineSchema);
+
+		test.each([
+			['a block style', '<p style="line-height:1.38;margin-top:0pt">gd</p>'],
+			['an inline style', '<p><span style="white-space: pre-wrap;" data-metadata="figma">Grass</span></p>'],
+			[
+				'styles mixed with owned ones',
+				'<p style="text-align:center;margin-left:40px"><span style="color:red;letter-spacing:1px">a</span></p>',
+			],
+			['a <style> tag', '<style type="text/css">p { color: red; }</style><p>s</p>'],
+			['a <style> tag inside a paragraph', '<p>a<style>p { color: red; }</style>b</p>'],
+		])('%s is kept', (_name, html) => {
+			expect(inlineLoss(html)).toEqual([]);
+		});
+
+		test('reports the part of a shorthand that only its owner keeps as lost', () => {
+			expect(inlineLoss('<p><span style="background: yellow url(a.png)">x</span></p>')).toEqual([
+				expect.stringContaining('background-image'),
+			]);
+		});
+
+		test('an attribute a <style> tag does not model', () => {
+			expect(inlineLoss('<style nonce="abc">p { color: red; }</style>')).toEqual(['<style nonce="abc">']);
+		});
+	});
+
+	describe('with keepInlineStyles and keepLegacyEmphasisTags', () => {
+		const { extensions } = buildFieldSchema({ keepInlineStyles: true, keepLegacyEmphasisTags: true });
+		const bothSchema = getSchema(fieldEditorExtensions(extensions));
+
+		test.each([
+			['a styled <b>', '<p><b style="text-transform: uppercase;">a</b> <i style="color: red;">b</i></p>'],
+			['a <style> tag next to a legacy tag', '<style>b { color: red; }</style><p><b>a</b></p>'],
+		])('%s is kept', (_name, html) => {
+			expect(findMarkupLoss(html, roundTrip(html, extensions), bothSchema)).toEqual([]);
+		});
 	});
 });

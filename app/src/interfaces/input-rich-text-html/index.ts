@@ -331,19 +331,6 @@ export default defineInterface({
 				},
 			},
 			{
-				field: 'linkProtocols',
-				name: '$t:interfaces.input-rich-text-html.link_protocols',
-				type: 'csv',
-				meta: {
-					width: 'full',
-					interface: 'system-link-protocols',
-					note: '$t:interfaces.input-rich-text-html.link_protocols_note',
-					options: {
-						placeholder: '$t:interfaces.input-rich-text-html.link_protocols_placeholder',
-					},
-				},
-			},
-			{
 				field: 'customFormats',
 				name: '$t:interfaces.input-rich-text-html.custom_formats',
 				type: 'json',
@@ -375,6 +362,203 @@ export default defineInterface({
 							4,
 						),
 					},
+				},
+			},
+			{
+				field: 'advancedGroup',
+				name: '$t:advanced',
+				type: 'alias',
+				meta: {
+					field: 'advancedGroup',
+					width: 'full',
+					interface: 'group-detail',
+					special: ['alias', 'no-data', 'group'],
+					options: {
+						start: 'closed',
+					},
+				},
+			},
+			{
+				field: 'advancedGroupWarning',
+				type: 'alias',
+				meta: {
+					group: 'advancedGroup',
+					width: 'full',
+					interface: 'presentation-notice',
+					special: ['alias', 'no-data'],
+					options: {
+						color: 'warning',
+						icon: 'warning',
+						text: '$t:interfaces.input-rich-text-html.advanced_group_warning',
+					},
+				},
+			},
+			{
+				field: 'linkProtocols',
+				name: '$t:interfaces.input-rich-text-html.link_protocols',
+				type: 'csv',
+				meta: {
+					group: 'advancedGroup',
+					width: 'full',
+					interface: 'system-link-protocols',
+					note: '$t:interfaces.input-rich-text-html.link_protocols_note',
+					options: {
+						placeholder: '$t:interfaces.input-rich-text-html.link_protocols_placeholder',
+					},
+				},
+			},
+			{
+				field: 'keepLegacyEmphasisTags',
+				name: '$t:interfaces.input-rich-text-html.keep_legacy_emphasis_tags',
+				type: 'boolean',
+				meta: {
+					group: 'advancedGroup',
+					width: 'half',
+					interface: 'boolean',
+					note: '$t:interfaces.input-rich-text-html.keep_legacy_emphasis_tags_note',
+					options: {
+						label: '$t:interfaces.input-rich-text-html.preserve',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			// Conditional full-width notices must follow a right-column toggle, or the half fields below swap columns.
+			{
+				field: 'keepInlineStyles',
+				name: '$t:interfaces.input-rich-text-html.keep_inline_styles',
+				type: 'boolean',
+				meta: {
+					group: 'advancedGroup',
+					width: 'half',
+					interface: 'boolean',
+					note: '$t:interfaces.input-rich-text-html.keep_inline_styles_note',
+					options: {
+						label: '$t:interfaces.input-rich-text-html.preserve',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'keepInlineStylesWarning',
+				type: 'alias',
+				meta: {
+					group: 'advancedGroup',
+					width: 'full',
+					interface: 'presentation-notice',
+					special: ['alias', 'no-data'],
+					options: {
+						color: 'warning',
+						icon: 'warning',
+						text: '$t:interfaces.input-rich-text-html.keep_inline_styles_warning',
+					},
+					hidden: true,
+					conditions: [{ rule: { keepInlineStyles: { _eq: true } }, hidden: false }],
+				},
+			},
+			{
+				field: 'noContainerParagraphs',
+				name: '$t:interfaces.input-rich-text-html.no_container_paragraphs',
+				type: 'boolean',
+				meta: {
+					group: 'advancedGroup',
+					width: 'half',
+					interface: 'boolean',
+					note: '$t:interfaces.input-rich-text-html.no_container_paragraphs_note',
+					options: {
+						label: '$t:interfaces.input-rich-text-html.do_not_wrap',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'keepWrapperElements',
+				name: '$t:interfaces.input-rich-text-html.keep_wrapper_elements',
+				type: 'boolean',
+				meta: {
+					group: 'advancedGroup',
+					width: 'half',
+					interface: 'boolean',
+					note: '$t:interfaces.input-rich-text-html.keep_wrapper_elements_note',
+					options: {
+						label: '$t:interfaces.input-rich-text-html.preserve',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'keepFormElements',
+				name: '$t:interfaces.input-rich-text-html.keep_form_elements',
+				type: 'boolean',
+				meta: {
+					group: 'advancedGroup',
+					width: 'half',
+					interface: 'boolean',
+					note: '$t:interfaces.input-rich-text-html.keep_form_elements_note',
+					options: {
+						label: '$t:interfaces.input-rich-text-html.preserve',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'keepHtmlComments',
+				name: '$t:interfaces.input-rich-text-html.keep_html_comments',
+				type: 'boolean',
+				meta: {
+					group: 'advancedGroup',
+					width: 'half',
+					interface: 'boolean',
+					note: '$t:interfaces.input-rich-text-html.keep_html_comments_note',
+					options: {
+						label: '$t:interfaces.input-rich-text-html.preserve',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'keepHtmlCommentsWarning',
+				type: 'alias',
+				meta: {
+					group: 'advancedGroup',
+					width: 'full',
+					interface: 'presentation-notice',
+					special: ['alias', 'no-data'],
+					options: {
+						color: 'warning',
+						icon: 'warning',
+						text: '$t:interfaces.input-rich-text-html.keep_html_comments_warning',
+					},
+					hidden: true,
+					conditions: [{ rule: { keepHtmlComments: { _eq: true } }, hidden: false }],
+				},
+			},
+			{
+				field: 'keepLegacyAttributes',
+				name: '$t:interfaces.input-rich-text-html.keep_legacy_attributes',
+				type: 'boolean',
+				meta: {
+					group: 'advancedGroup',
+					width: 'half',
+					interface: 'boolean',
+					note: '$t:interfaces.input-rich-text-html.keep_legacy_attributes_note',
+					options: {
+						label: '$t:interfaces.input-rich-text-html.preserve',
+					},
+				},
+				schema: {
+					default_value: false,
 				},
 			},
 			// deprecated + inert; only rendered for fields that still carry a stored value
