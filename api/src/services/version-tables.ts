@@ -102,9 +102,7 @@ export class VersionTablesService {
 			}),
 		);
 
-		let plannedShadowTables = planVersionTables(liveCollections, versionedTables, this.helpers.versioning);
-
-		plannedShadowTables = this.helpers.versioning.applyForeignKeyRules(plannedShadowTables);
+		const plannedShadowTables = planVersionTables(liveCollections, versionedTables, this.helpers.versioning);
 
 		await this.applyChanges(plannedShadowTables, shadowTables);
 	}

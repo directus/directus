@@ -84,7 +84,7 @@ export function planVersionTables(
 		if (linkTable) tables[linkTable.table] = linkTable;
 	}
 
-	return tables;
+	return helper.applyForeignKeyRules(tables);
 }
 
 type PlanContext = { versioned: Set<string>; helper: VersioningHelper };
