@@ -38,6 +38,7 @@
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@types/deep-diff": "catalog:",
+		"@types/node": "catalog:",
 		"knex": "catalog:",
 		"typescript": "catalog:",
 		"vue": "catalog:",

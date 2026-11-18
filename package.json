@@ -28,6 +28,7 @@
 		"stylelint-config-standard-scss": "catalog:",
 		"stylelint-config-standard-vue": "catalog:",
 		"stylelint-use-logical": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"typescript-eslint": "catalog:",
 		"vue-eslint-parser": "catalog:"
