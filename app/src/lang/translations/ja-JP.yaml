@@ -730,6 +730,8 @@ file_moved: ファイルを移動しました
 collection_created: コレクションが作成されました
 modified_on: 修正日時
 card_size: カードサイズ
+small: 小
+large: 大
 sort_field: フィールドの並べ替え
 add_sort_field: 並べ替えフィールドを追加
 sort: 並べ替え
@@ -1733,6 +1735,7 @@ forgot_password: パスワード忘れ
 hidden: 非表示
 hidden_in_group: '{group} 内で非表示'
 icon: アイコン
+image: 画像
 info: 情報
 normal: 標準
 success: 成功
@@ -1916,6 +1919,8 @@ interfaces:
   select-radio:
     radio-buttons: ラジオボタン
     description: 複数の選択肢から1つを選択
+  system-file-image:
+    image: 画像
   list:
     repeater: リピーター
     description: 同じ構造の項目を複数作成する
@@ -2132,6 +2137,14 @@ triggers:
     name: マニュアル
 operation_variables_note: フロー内のデータを利用するには、*{'{'}{'{'}$last{'}'}{'}'}** 、**{'{'}{'{'}$trigger{'}'}{'}'}** や **{'{'}{'{'}$accountability{'}'}{'}'}** といった変数を使用します。前のステップの結果を使いたい場合は、そのオペレーションのキー **{'{'}{'{'}operation_key{'}'}{'}'}** を指定して参照してください。
 operations:
+  ai-image:
+    starting_points:
+      icon: アイコン
+  ai-text:
+    files: ファイル
+    output: 出力
+    type_text: テキスト
+    view_json: JSON
   exec:
     description: 任意のコードを実行し、受け取ったデータ内容を加工・修正することができます
     modules: '以下の **Node modules** を使用することができます：'

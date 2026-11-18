@@ -292,6 +292,9 @@ triggers:
   webhook:
     method: Kaedah
 operations:
+  ai-text:
+    files: Fail-fail
+    type_text: Teks
   json-web-token:
     options: Pilihan-pilihan
   log:

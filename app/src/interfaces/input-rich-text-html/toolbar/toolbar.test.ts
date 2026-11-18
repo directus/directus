@@ -106,6 +106,26 @@ describe('Toolbar', () => {
 		const wrapper = mountToolbar(['bold']);
 		expect(wrapper.find('.style-list-button').exists()).toBe(false);
 	});
+
+	test('auto-appends the Show HTML Comments toggle when the field keeps comments', async () => {
+		const wrapper = mountToolbar(['bold']);
+		expect(iconsOf(wrapper)).not.toContain('comment');
+
+		await wrapper.setProps({ htmlComments: true });
+		expect(iconsOf(wrapper)).toContain('comment');
+
+		const toggle = wrapper
+			.findAll('.toolbar-button button')
+			.find((button) => button.find('[data-icon="comment"]').exists())!;
+
+		await toggle.trigger('click');
+		expect(wrapper.emitted('toggle-html-comments')).toHaveLength(1);
+	});
+
+	test('the Show HTML Comments toggle is never taken from the toolbar option', () => {
+		const wrapper = mountToolbar(['bold', 'htmlcomments']);
+		expect(iconsOf(wrapper)).not.toContain('comment');
+	});
 });
 
 describe('contributed buttons', () => {

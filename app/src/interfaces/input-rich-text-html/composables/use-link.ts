@@ -1,7 +1,7 @@
 import { isAllowedUri } from '@tiptap/extension-link';
 import { type Editor, getMarkRange } from '@tiptap/vue-3';
 import { computed, ComputedRef, Ref, ref } from 'vue';
-import { isImageLinkActive } from '../extensions/image';
+import { activeImageType, IMAGE_NODE, isImageLinkActive } from '../extensions/image';
 import { hasBlockedScheme } from '../extensions/link-scheme';
 
 /** Why the editor would strip the url: a script scheme, or a scheme that is not a Tiptap default nor in `linkProtocols`. */
@@ -78,11 +78,12 @@ export function useLink(editor: Ref<Editor>, linkProtocols: string[] = []): Usab
 	// inside an existing link: prefill from its attributes; otherwise seed from the selection (URL → url field, else display text)
 	function openLinkDrawer() {
 		linkDrawerOpen.value = true;
-		targetsImage.value = editor.value.isActive('image');
+		const imageType = activeImageType(editor.value);
+		targetsImage.value = imageType !== null;
 
-		// the tooltip of a linked image is the image's own title
-		if (targetsImage.value) {
-			const attrs = editor.value.getAttributes('image');
+		// a block image holds its link and tooltip on the node; an inline image has the Link mark
+		if (imageType !== null) {
+			const attrs = editor.value.getAttributes(imageType === IMAGE_NODE ? IMAGE_NODE : 'link');
 			isEditingLink.value = Boolean(attrs.href);
 			originalText.value = '';
 			originalRel.value = attrs.rel ?? '';
@@ -146,7 +147,12 @@ export function useLink(editor: Ref<Editor>, linkProtocols: string[] = []): Usab
 		const attrs = { href, target: newTab ? '_blank' : null, rel, title: title || null };
 
 		if (targetsImage.value) {
-			editor.value.chain().focus().setImageLink(attrs).run();
+			const chain = editor.value.chain().focus();
+
+			if (editor.value.isActive(IMAGE_NODE)) chain.setImageLink(attrs);
+			else chain.extendMarkRange('link').setLink(attrs);
+
+			chain.run();
 			closeLinkDrawer();
 			return;
 		}
