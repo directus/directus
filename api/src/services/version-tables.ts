@@ -6,18 +6,13 @@ import type { Knex } from 'knex';
 import { groupBy, intersection, mapValues, partition, pickBy, uniq } from 'lodash-es';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
-import type { SchemaHelper } from '../database/helpers/schema/types.js';
+import type { VersioningHelper } from '../database/helpers/versioning/types.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import getLocalType from '../utils/get-local-type.js';
 import { stitchRelations } from '../utils/stitch-relations.js';
 import { FieldsService } from './fields.js';
-import {
-	getLinkTableName,
-	getShadowTableName,
-	isShadowTable,
-	VERSION_META_FIELDS,
-} from './version-tables/constants.js';
+import { VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
 import {
 	type LiveCollections,
 	normalizeAction,
@@ -26,11 +21,7 @@ import {
 	type VersionTableForeignKey,
 	type VersionTables,
 } from './version-tables/plan-version-tables.js';
-
-/** Names of the shadow and link table of each given collection */
-function getVersionTableNames(collections: string[]): string[] {
-	return collections.flatMap((collection) => [getShadowTableName(collection), getLinkTableName(collection)]);
-}
+import { isShadowTable } from './version-tables/utils.js';
 
 type ColumnChanges = { add: VersionTableColumn[]; alter: VersionTableColumn[]; drop: string[] };
 
@@ -114,8 +105,9 @@ export class VersionTablesService {
 			}),
 		);
 
-		let plannedShadowTables = planVersionTables(liveCollections, state.versionedTables);
-		plannedShadowTables = this.helpers.schema.applyShadowForeignKeyRules(plannedShadowTables);
+		let plannedShadowTables = planVersionTables(liveCollections, state.versionedTables, this.helpers.versioning);
+
+		plannedShadowTables = this.helpers.versioning.applyForeignKeyRules(plannedShadowTables);
 
 		await this.applyChanges(plannedShadowTables, shadowTables);
 	}
@@ -158,7 +150,7 @@ export class VersionTablesService {
 		let shadowTables: string[];
 
 		if (versionedTables.size === 0 && collections) {
-			const tables = getVersionTableNames(collections);
+			const tables = this.helpers.versioning.getVersionTableNames(collections);
 			const exists = await Promise.all(tables.map((table) => this.schemaInspector.hasTable(table)));
 			shadowTables = tables.filter((_table, index) => exists[index]);
 		} else {
@@ -179,7 +171,9 @@ export class VersionTablesService {
 		exclude: Set<string>,
 	): Promise<InspectedSchema> {
 		// Only the version tables of these collections, so the ones of other collections aren't dropped
-		const shadowTables = getVersionTableNames(collections).filter((table) => allShadowTables.includes(table));
+		const shadowTables = this.helpers.versioning
+			.getVersionTableNames(collections)
+			.filter((table) => allShadowTables.includes(table));
 
 		return {
 			shadowTables: await this.inspectTables(shadowTables),
@@ -246,7 +240,7 @@ export class VersionTablesService {
 	 * Diff the planned version tables against the current shadow tables and apply the difference
 	 */
 	private async applyChanges(planned: VersionTables, shadow: InspectedTables): Promise<void> {
-		const columnChanges = getColumnChanges(this.helpers.schema, planned, shadow.columns);
+		const columnChanges = getColumnChanges(this.helpers.versioning, planned, shadow.columns);
 
 		const tablesToDrop = Object.keys(shadow.columns).filter((table) => !planned[table]);
 		const tablesToCreate = Object.values(planned).filter((table) => !shadow.columns[table.table]);
@@ -352,7 +346,7 @@ export class VersionTablesService {
 
 		const { source } = column;
 		const type = getLocalType(source);
-		const exactType = getExactType(this.helpers.schema, source);
+		const exactType = getExactType(this.helpers.versioning, source);
 
 		// Altering through Directus would re-add the primary key and drop its `not null`, which Postgres rejects
 		if (column.primary && existing) {
@@ -402,23 +396,23 @@ export class VersionTablesService {
 
 	private addMetaColumn(builder: Knex.CreateTableBuilder, name: string) {
 		switch (name) {
-			case VERSION_META_FIELDS.id:
+			case VERSION_SYSTEM_FIELDS.id:
 				builder.increments(name);
 				break;
-			case VERSION_META_FIELDS.name:
+			case VERSION_SYSTEM_FIELDS.name:
 				builder.string(name).nullable();
 				break;
-			case VERSION_META_FIELDS.type:
+			case VERSION_SYSTEM_FIELDS.type:
 				builder.string(name, 16).notNullable().defaultTo('draft');
 				break;
-			case VERSION_META_FIELDS.dateCreated:
+			case VERSION_SYSTEM_FIELDS.dateCreated:
 				builder.timestamp(name, { useTz: true }).defaultTo(this.knex.fn.now());
 				break;
-			case VERSION_META_FIELDS.dateUpdated:
+			case VERSION_SYSTEM_FIELDS.dateUpdated:
 				builder.timestamp(name, { useTz: true }).nullable();
 				break;
-			case VERSION_META_FIELDS.userCreated:
-			case VERSION_META_FIELDS.userUpdated:
+			case VERSION_SYSTEM_FIELDS.userCreated:
+			case VERSION_SYSTEM_FIELDS.userUpdated:
 				builder.uuid(name).nullable();
 				break;
 		}
@@ -439,7 +433,7 @@ function keyColumns(columns: Column[]): ColumnsByTable {
 /**
  * Column changes per existing table. Tables without changes are left out.
  */
-function getColumnChanges(schemaHelper: SchemaHelper, planned: VersionTables, existingColumns: ColumnsByTable) {
+function getColumnChanges(versioningHelper: VersioningHelper, planned: VersionTables, existingColumns: ColumnsByTable) {
 	const result = new Map<string, ColumnChanges>();
 
 	for (const table of Object.values(planned)) {
@@ -453,7 +447,7 @@ function getColumnChanges(schemaHelper: SchemaHelper, planned: VersionTables, ex
 			add: table.columns.filter((column) => !existing[column.name]),
 			alter: table.columns.filter((column) => {
 				const current = existing[column.name];
-				return current && column.kind === 'mirror' && hasTypeChanged(schemaHelper, column.source, current);
+				return current && column.kind === 'mirror' && hasTypeChanged(versioningHelper, column.source, current);
 			}),
 			drop: Object.keys(existing).filter((name) => !plannedNames.has(name)),
 		};
@@ -469,7 +463,7 @@ function getColumnChanges(schemaHelper: SchemaHelper, planned: VersionTables, ex
 /**
  * Raw database type for columns that would lose information when mirrored through their Directus type, or `null`
  */
-function getExactType(schemaHelper: SchemaHelper, column: Column): string | null {
+function getExactType(versioningHelper: VersioningHelper, column: Column): string | null {
 	const dataType = column.data_type.toLowerCase();
 
 	// Oracle reports every NUMBER(p,s) as `NUMBER`, which Directus treats as an integer regardless of its scale
@@ -492,16 +486,16 @@ function getExactType(schemaHelper: SchemaHelper, column: Column): string | null
 
 	if (type === 'unknown' || type === 'alias' || dataType.includes('unsigned')) return column.data_type;
 
-	if ((type === 'integer' || type === 'float') && schemaHelper.isSizedNumberType(dataType)) return column.data_type;
+	if ((type === 'integer' || type === 'float') && versioningHelper.isSizedNumberType(dataType)) return column.data_type;
 
 	return null;
 }
 
-function hasTypeChanged(schemaHelper: SchemaHelper, source: Column, existing: Column) {
+function hasTypeChanged(versioningHelper: VersioningHelper, source: Column, existing: Column) {
 	if (getLocalType(source) !== getLocalType(existing)) return true;
 
-	const sourceExactType = getExactType(schemaHelper, source);
-	const existingExactType = getExactType(schemaHelper, existing);
+	const sourceExactType = getExactType(versioningHelper, source);
+	const existingExactType = getExactType(versioningHelper, existing);
 
 	if (sourceExactType || existingExactType) {
 		return sourceExactType?.toLowerCase() !== existingExactType?.toLowerCase();

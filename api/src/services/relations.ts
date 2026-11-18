@@ -29,8 +29,8 @@ import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
 import { stitchRelations } from '../utils/stitch-relations.js';
 import { ItemsService } from './items.js';
-import { isShadowTable } from './version-tables/constants.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
+import { isShadowTable } from './version-tables/utils.js';
 
 const { CACHE_SCHEMA } = useEnv();
 

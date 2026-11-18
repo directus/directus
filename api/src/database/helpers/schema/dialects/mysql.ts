@@ -8,13 +8,7 @@ import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types
 const { DB_DATABASE } = useEnv();
 let lowerCaseTableNames: number | undefined;
 
-const SIZED_NUMBER_TYPES = new Set(['tinyint', 'smallint', 'mediumint', 'double']);
-
 export class SchemaHelperMySQL extends SchemaHelper {
-	override isSizedNumberType(dataType: string): boolean {
-		return SIZED_NUMBER_TYPES.has(dataType.toLowerCase());
-	}
-
 	override generateIndexName(
 		type: 'unique' | 'foreign' | 'index',
 		collection: string,

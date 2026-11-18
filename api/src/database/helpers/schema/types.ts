@@ -4,8 +4,6 @@ import type { Column } from '@directus/schema';
 import type { DatabaseClient, Field, RawField, Relation, Type } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { mapValues } from 'lodash-es';
-import type { VersionTables } from '../../../services/version-tables/plan-version-tables.js';
 import { getDefaultIndexName } from '../../../utils/get-default-index-name.js';
 import { getDatabaseClient } from '../../index.js';
 import { DatabaseHelper } from '../types.js';
@@ -148,31 +146,8 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return fn();
 	}
 
-	/**
-	 * Whether Directus would create a number column of this database type as a different type, like `smallint` as
-	 * `integer`, losing precision or differing from the source column on every version table sync
-	 */
-	isSizedNumberType(_dataType: string): boolean {
-		return false;
-	}
-
 	preRelationChange(_relation: Partial<Relation>): void {
 		return;
-	}
-
-	/**
-	 * Adjust `on_delete` of the version table foreign keys the same way as for regular relations, as not every vendor
-	 * supports every action
-	 */
-	applyShadowForeignKeyRules(tables: VersionTables): VersionTables {
-		return mapValues(tables, (table) => ({
-			...table,
-			foreignKeys: table.foreignKeys.map((foreignKey) => {
-				const schema = { on_delete: foreignKey.on_delete } as NonNullable<Relation['schema']>;
-				this.preRelationChange({ collection: table.table, related_collection: foreignKey.foreign_key_table, schema });
-				return { ...foreignKey, on_delete: schema.on_delete };
-			}),
-		}));
 	}
 
 	setNullable(column: Knex.ColumnBuilder, field: RawField | Field, existing: Column | null): void {

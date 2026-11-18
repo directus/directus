@@ -18,6 +18,7 @@ import jwt from 'jsonwebtoken';
 import { isEmpty } from 'lodash-es';
 import { clearSystemCache } from '../cache.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { getEntitlementManager } from '../license/index.js';
 import { useLogger } from '../logger/index.js';
@@ -32,7 +33,7 @@ import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
-import { getShadowTableName, VERSION_META_FIELDS } from './version-tables/constants.js';
+import { VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -413,10 +414,12 @@ export class UsersService extends ItemsService {
 			.filter(({ versioned }) => versioned)
 			.map(({ collection }) => collection);
 
+		const versioningHelper = getHelpers(this.knex).versioning;
+
 		for (const versionedCollection of versionedCollections) {
 			const userFields = [
-				VERSION_META_FIELDS.userCreated,
-				VERSION_META_FIELDS.userUpdated,
+				VERSION_SYSTEM_FIELDS.userCreated,
+				VERSION_SYSTEM_FIELDS.userUpdated,
 				...this.schema.relations
 					.filter(
 						(relation) =>
@@ -428,7 +431,7 @@ export class UsersService extends ItemsService {
 			];
 
 			for (const field of userFields) {
-				await this.knex(getShadowTableName(versionedCollection))
+				await this.knex(versioningHelper.getShadowTableName(versionedCollection))
 					.update({ [field]: null })
 					.whereIn(field, keys);
 			}

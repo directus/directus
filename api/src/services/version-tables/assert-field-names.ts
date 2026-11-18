@@ -1,11 +1,11 @@
 import { InvalidPayloadError } from '@directus/errors';
-import { isReservedVersionField } from './constants.js';
+import { isReservedVersionField } from './utils.js';
 
 /**
  * Reject field names that collide with the shadow table columns of a versioned collection. Has to run before the live
  * schema is changed, as MySQL, MariaDB, CockroachDB and Oracle can't roll back DDL once the version table sync fails.
  */
-export function assertVersionFieldNames(collection: string, fields: string[]) {
+export function assertVersionSystemFields(collection: string, fields: string[]) {
 	for (const field of fields) {
 		if (isReservedVersionField(field)) {
 			throw new InvalidPayloadError({

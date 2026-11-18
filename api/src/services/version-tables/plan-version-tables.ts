@@ -1,13 +1,9 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { Column, ForeignKey } from '@directus/schema';
 import type { Relation } from '@directus/types';
-import {
-	getLinkTableName,
-	getShadowTableName,
-	getVersionReferenceField,
-	isShadowTable,
-	VERSION_META_FIELDS,
-} from './constants.js';
+import type { VersioningHelper } from '../../database/helpers/versioning/types.js';
+import { VERSION_SYSTEM_FIELDS } from './constants.js';
+import { isShadowTable } from './utils.js';
 
 export type ReferentialAction = ForeignKey['on_delete'];
 
@@ -62,14 +58,20 @@ export type LiveCollections = Record<string, LiveCollection>;
  *
  * @param collections - Live collections to plan the version tables for, keyed by collection name
  * @param versioned - All collections that have versioning enabled, including ones not being planned
+ * @param helper - Provides the vendor specific names of the version tables and their columns
  */
-export function planVersionTables(collections: LiveCollections, versioned: Set<string>): VersionTables {
+export function planVersionTables(
+	collections: LiveCollections,
+	versioned: Set<string>,
+	helper: VersioningHelper,
+): VersionTables {
+	const context: PlanContext = { versioned, helper };
 	const tables: VersionTables = {};
 
 	for (const collection of Object.values(collections)) {
 		if (!versioned.has(collection.collection) || isShadowTable(collection.collection)) continue;
 
-		const shadowTable = planShadowTable(collection, versioned);
+		const shadowTable = planShadowTable(collection, context);
 
 		tables[shadowTable.table] = shadowTable;
 	}
@@ -77,7 +79,7 @@ export function planVersionTables(collections: LiveCollections, versioned: Set<s
 	for (const collection of Object.values(collections)) {
 		if (isShadowTable(collection.collection)) continue;
 
-		const linkTable = planLinkTable(collection, versioned);
+		const linkTable = planLinkTable(collection, context);
 
 		if (linkTable) tables[linkTable.table] = linkTable;
 	}
@@ -85,29 +87,31 @@ export function planVersionTables(collections: LiveCollections, versioned: Set<s
 	return tables;
 }
 
+type PlanContext = { versioned: Set<string>; helper: VersioningHelper };
+
 function getPrimaryKey(collection: LiveCollection) {
 	return collection.columns.find((column) => column.is_primary_key);
 }
 
-function planShadowTable(liveCollection: LiveCollection, versioned: Set<string>): VersionTable {
+function planShadowTable(liveCollection: LiveCollection, context: PlanContext): VersionTable {
 	const { collection, columns, relations } = liveCollection;
 	const primary = getPrimaryKey(liveCollection)?.name;
-	const metaFields: string[] = Object.values(VERSION_META_FIELDS);
+	const metaFields: string[] = Object.values(VERSION_SYSTEM_FIELDS);
 
 	const shadow: VersionTable = {
-		table: getShadowTableName(collection),
+		table: context.helper.getShadowTableName(collection),
 		type: 'shadow',
 		columns: metaFields.map((name) => ({ kind: 'meta', name })),
 		foreignKeys: [
 			{
-				column: VERSION_META_FIELDS.userCreated,
+				column: VERSION_SYSTEM_FIELDS.userCreated,
 				foreign_key_table: 'directus_users',
 				foreign_key_column: 'id',
 				on_delete: 'SET NULL',
 				on_update: null,
 			},
 			{
-				column: VERSION_META_FIELDS.userUpdated,
+				column: VERSION_SYSTEM_FIELDS.userUpdated,
 				foreign_key_table: 'directus_users',
 				foreign_key_column: 'id',
 				on_delete: 'SET NULL',
@@ -142,7 +146,7 @@ function planShadowTable(liveCollection: LiveCollection, versioned: Set<string>)
 
 		if (!relation) continue;
 
-		const reference = getVersionReference(relation, versioned);
+		const reference = getVersionReference(relation, context);
 
 		// Relational constraints are the only constraints that are kept on the mirrored columns
 		if (relation.schema && reference.relatedCollection) {
@@ -157,7 +161,7 @@ function planShadowTable(liveCollection: LiveCollection, versioned: Set<string>)
 
 		if (!reference.versioned) continue;
 
-		const referenceField = getVersionReferenceField(field);
+		const referenceField = context.helper.getVersionReferenceField(field);
 
 		reserveName(referenceField, field);
 		shadow.columns.push({ kind: 'reference', name: referenceField });
@@ -174,7 +178,7 @@ function planShadowTable(liveCollection: LiveCollection, versioned: Set<string>)
  * Link tables store references from live items to versions of related collections.
  * Only created when a versioned collection has an o2m to the collection.
  */
-function planLinkTable(liveCollection: LiveCollection, versioned: Set<string>): VersionTable | null {
+function planLinkTable(liveCollection: LiveCollection, context: PlanContext): VersionTable | null {
 	const { collection, relations } = liveCollection;
 	const source = getPrimaryKey(liveCollection);
 
@@ -185,7 +189,7 @@ function planLinkTable(liveCollection: LiveCollection, versioned: Set<string>): 
 			relation.field !== source.name &&
 			relation.meta?.one_field &&
 			relation.related_collection &&
-			versioned.has(relation.related_collection),
+			context.versioned.has(relation.related_collection),
 	);
 
 	if (!hasVersionedO2M) return null;
@@ -193,7 +197,7 @@ function planLinkTable(liveCollection: LiveCollection, versioned: Set<string>): 
 	const primary = source.name;
 
 	const link: VersionTable = {
-		table: getLinkTableName(collection),
+		table: context.helper.getLinkTableName(collection),
 		type: 'link',
 		columns: [{ kind: 'mirror', name: primary, source, primary: true }],
 		foreignKeys: [
@@ -210,7 +214,7 @@ function planLinkTable(liveCollection: LiveCollection, versioned: Set<string>): 
 	for (const relation of relations) {
 		if (relation.field === primary) continue;
 
-		const reference = getVersionReference(relation, versioned);
+		const reference = getVersionReference(relation, context);
 
 		if (!reference.versioned) continue;
 
@@ -228,7 +232,7 @@ function planLinkTable(liveCollection: LiveCollection, versioned: Set<string>): 
  * Figure out if a m2o / a2o relation can point to a version and how that reference should be constrained.
  * Relations to collections that no longer exist are expected to be left out by the caller.
  */
-function getVersionReference(relation: Relation, versioned: Set<string>) {
+function getVersionReference(relation: Relation, { versioned, helper }: PlanContext) {
 	const relatedCollection = relation.related_collection;
 
 	if (relatedCollection) {
@@ -238,8 +242,8 @@ function getVersionReference(relation: Relation, versioned: Set<string>) {
 			relatedCollection,
 			versioned: true,
 			foreignKey: {
-				foreign_key_table: getShadowTableName(relatedCollection),
-				foreign_key_column: VERSION_META_FIELDS.id,
+				foreign_key_table: helper.getShadowTableName(relatedCollection),
+				foreign_key_column: VERSION_SYSTEM_FIELDS.id,
 				on_delete: relation.schema?.on_delete ?? 'SET NULL',
 				on_update: null,
 			},

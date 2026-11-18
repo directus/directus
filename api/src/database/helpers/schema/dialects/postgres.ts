@@ -4,13 +4,8 @@ import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js
 import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types.js';
 
 const { DB_DATABASE } = useEnv();
-const SIZED_NUMBER_TYPES = new Set(['smallint', 'int2', 'double precision', 'float8']);
 
 export class SchemaHelperPostgres extends SchemaHelper {
-	override isSizedNumberType(dataType: string): boolean {
-		return SIZED_NUMBER_TYPES.has(dataType.toLowerCase());
-	}
-
 	override generateIndexName(
 		type: 'unique' | 'foreign' | 'index',
 		collection: string,

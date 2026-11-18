@@ -36,9 +36,9 @@ import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.j
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
-import { assertVersionFieldNames } from './version-tables/assert-field-names.js';
-import { isShadowTable } from './version-tables/constants.js';
+import { assertVersionSystemFields } from './version-tables/assert-field-names.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
+import { isShadowTable } from './version-tables/utils.js';
 
 export class CollectionsService {
 	knex: Knex;
@@ -171,7 +171,7 @@ export class CollectionsService {
 					});
 
 					if (payload.meta?.versioning) {
-						assertVersionFieldNames(
+						assertVersionSystemFields(
 							payload.collection,
 							payload.fields
 								.filter((field) => field.type && ALIAS_TYPES.includes(field.type) === false)

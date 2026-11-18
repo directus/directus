@@ -1,8 +1,13 @@
 import type { Column } from '@directus/schema';
 import type { Relation } from '@directus/types';
+import type { Knex } from 'knex';
 import { keyBy } from 'lodash-es';
 import { describe, expect, test } from 'vitest';
+import type { SchemaHelper } from '../../database/helpers/schema/types.js';
+import { VersioningHelper } from '../../database/helpers/versioning/types.js';
 import { type LiveCollection, type LiveCollections, planVersionTables } from './plan-version-tables.js';
+
+const helper = new VersioningHelper({} as Knex, {} as SchemaHelper);
 
 function column(table: string, name: string, data_type = 'integer'): Column {
 	return {
@@ -74,11 +79,11 @@ const collections: LiveCollections = keyBy(collectionList, 'collection');
 
 describe('planVersionTables', () => {
 	test('creates nothing when no collection is versioned', () => {
-		expect(planVersionTables(collections, new Set())).toEqual({});
+		expect(planVersionTables(collections, new Set(), helper)).toEqual({});
 	});
 
 	test('creates a shadow table mirroring the live fields', () => {
-		const tables = planVersionTables(collections, new Set(['authors']));
+		const tables = planVersionTables(collections, new Set(['authors']), helper);
 		const shadow = tables['directus_shadow_authors'];
 
 		expect(shadow!.table).toBe('directus_shadow_authors');
@@ -100,7 +105,7 @@ describe('planVersionTables', () => {
 	});
 
 	test('keeps relational constraints and references versions of versioned related collections', () => {
-		const tables = planVersionTables(collections, new Set(['articles', 'authors']));
+		const tables = planVersionTables(collections, new Set(['articles', 'authors']), helper);
 		const shadow = tables['directus_shadow_articles']!;
 
 		expect(shadow.columns.map((column) => column.name)).toContain('version_ref_author');
@@ -127,14 +132,14 @@ describe('planVersionTables', () => {
 	});
 
 	test('does not reference versions of unversioned related collections', () => {
-		const tables = planVersionTables(collections, new Set(['articles']));
+		const tables = planVersionTables(collections, new Set(['articles']), helper);
 		const shadow = tables['directus_shadow_articles']!;
 
 		expect(shadow.columns.map((column) => column.name)).not.toContain('version_ref_author');
 	});
 
 	test('creates link tables for collections pointing to versioned collections', () => {
-		const tables = planVersionTables(collections, new Set(['articles']));
+		const tables = planVersionTables(collections, new Set(['articles']), helper);
 
 		expect(Object.keys(tables).sort()).toEqual([
 			'directus_link_comments',
@@ -162,19 +167,19 @@ describe('planVersionTables', () => {
 	});
 
 	test('does not create link tables for m2o relations without an o2m on the versioned collection', () => {
-		const tables = planVersionTables(collections, new Set(['authors']));
+		const tables = planVersionTables(collections, new Set(['authors']), helper);
 
 		expect(Object.keys(tables)).toEqual(['directus_shadow_authors']);
 	});
 
 	test('does not create link tables for a2o relations alone', () => {
-		const tables = planVersionTables(collections, new Set(['authors']));
+		const tables = planVersionTables(collections, new Set(['authors']), helper);
 
 		expect(tables['directus_link_comments']).toBeUndefined();
 	});
 
 	test('does not create link tables for o2m relations on unversioned collections', () => {
-		const tables = planVersionTables(collections, new Set(['tags']));
+		const tables = planVersionTables(collections, new Set(['tags']), helper);
 
 		expect(Object.keys(tables)).toEqual(['directus_shadow_tags']);
 	});
@@ -191,7 +196,7 @@ describe('planVersionTables', () => {
 			},
 		};
 
-		const tables = planVersionTables(junction, new Set(['articles', 'authors']));
+		const tables = planVersionTables(junction, new Set(['articles', 'authors']), helper);
 
 		expect(tables['directus_link_junction']!.columns.map((column) => column.name)).toEqual([
 			'id',
@@ -201,7 +206,7 @@ describe('planVersionTables', () => {
 	});
 
 	test('does not add foreign keys for a2o references', () => {
-		const tables = planVersionTables(collections, new Set(['articles', 'authors']));
+		const tables = planVersionTables(collections, new Set(['articles', 'authors']), helper);
 		const link = tables['directus_link_comments']!;
 
 		expect(link.columns.map((column) => column.name)).toEqual(['id', 'article', 'item']);
@@ -217,7 +222,9 @@ describe('planVersionTables', () => {
 			},
 		};
 
-		expect(() => planVersionTables(conflicting, new Set(['authors']))).toThrow('conflicts with the versioning field');
+		expect(() => planVersionTables(conflicting, new Set(['authors']), helper)).toThrow(
+			'conflicts with the versioning field',
+		);
 	});
 
 	test('copies the on update action of relational constraints', () => {
@@ -227,6 +234,7 @@ describe('planVersionTables', () => {
 		const tables = planVersionTables(
 			{ articles: { ...collections['articles']!, relations: [relation] } },
 			new Set(['articles']),
+			helper,
 		);
 
 		expect(tables['directus_shadow_articles']!.foreignKeys).toContainEqual(
@@ -235,7 +243,7 @@ describe('planVersionTables', () => {
 	});
 
 	test('only plans the version tables of the given collections', () => {
-		const tables = planVersionTables({ tags: collections['tags']! }, new Set(['articles', 'tags']));
+		const tables = planVersionTables({ tags: collections['tags']! }, new Set(['articles', 'tags']), helper);
 
 		expect(Object.keys(tables)).toEqual(['directus_shadow_tags', 'directus_link_tags']);
 	});
