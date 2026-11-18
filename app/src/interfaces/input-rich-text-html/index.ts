@@ -408,6 +408,24 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'keepLegacyEmphasisTags',
+				name: '$t:interfaces.input-rich-text-html.keep_legacy_emphasis_tags',
+				type: 'boolean',
+				meta: {
+					group: 'advancedGroup',
+					width: 'half',
+					interface: 'boolean',
+					note: '$t:interfaces.input-rich-text-html.keep_legacy_emphasis_tags_note',
+					options: {
+						label: '$t:interfaces.input-rich-text-html.preserve',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			// Conditional full-width notices must follow a right-column toggle, or the half fields below swap columns.
+			{
 				field: 'keepInlineStyles',
 				name: '$t:interfaces.input-rich-text-html.keep_inline_styles',
 				type: 'boolean',
@@ -439,23 +457,6 @@ export default defineInterface({
 					},
 					hidden: true,
 					conditions: [{ rule: { keepInlineStyles: { _eq: true } }, hidden: false }],
-				},
-			},
-			{
-				field: 'keepLegacyEmphasisTags',
-				name: '$t:interfaces.input-rich-text-html.keep_legacy_emphasis_tags',
-				type: 'boolean',
-				meta: {
-					group: 'advancedGroup',
-					width: 'half',
-					interface: 'boolean',
-					note: '$t:interfaces.input-rich-text-html.keep_legacy_emphasis_tags_note',
-					options: {
-						label: '$t:interfaces.input-rich-text-html.preserve',
-					},
-				},
-				schema: {
-					default_value: false,
 				},
 			},
 			{
