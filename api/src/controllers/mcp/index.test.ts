@@ -137,6 +137,7 @@ describe('mcp controller', () => {
 			allowDeletes: false,
 			systemPromptEnabled: false,
 			systemPrompt: null,
+			project: { name: undefined, descriptor: undefined, url: undefined, icon: expect.any(Buffer) },
 		});
 
 		expect(handleRequest).toHaveBeenCalledWith(req, res);

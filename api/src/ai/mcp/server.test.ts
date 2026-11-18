@@ -219,6 +219,8 @@ describe('mcp server', () => {
 
 	describe('protocol', () => {
 		test('advertises supported versions and server identity through server/discover', async () => {
+			mcpOptions = { project: { name: 'Acme CMS', icon: Buffer.from('png') } };
+
 			const { result } = await rpc('server/discover');
 
 			expect(result.supportedVersions).toContain(MODERN_VERSION);
@@ -226,8 +228,9 @@ describe('mcp server', () => {
 
 			expect(result._meta['io.modelcontextprotocol/serverInfo']).toMatchObject({
 				name: 'directus',
-				title: 'Directus',
+				title: 'Acme CMS',
 				version: expect.any(String),
+				icons: [expect.objectContaining({ mimeType: 'image/png' })],
 			});
 		});
 

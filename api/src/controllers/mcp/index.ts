@@ -5,6 +5,7 @@ import { DirectusMCP } from '../../ai/mcp/index.js';
 import checkIsLocked from '../../middleware/is-locked.js';
 import { SettingsService } from '../../services/settings.js';
 import asyncHandler from '../../utils/async-handler.js';
+import { getProjectIconPng } from '../../utils/project-icon.js';
 
 const router = Router();
 
@@ -18,6 +19,10 @@ const mcpHandler = asyncHandler(async (req, res) => {
 	});
 
 	const {
+		project_name,
+		project_descriptor,
+		project_url,
+		project_color,
 		mcp_enabled,
 		mcp_oauth_enabled,
 		mcp_allow_deletes,
@@ -26,6 +31,10 @@ const mcpHandler = asyncHandler(async (req, res) => {
 		mcp_system_prompt_enabled,
 	} = await settings.readSingleton({
 		fields: [
+			'project_name',
+			'project_descriptor',
+			'project_url',
+			'project_color',
 			'mcp_enabled',
 			'mcp_oauth_enabled',
 			'mcp_allow_deletes',
@@ -44,6 +53,12 @@ const mcpHandler = asyncHandler(async (req, res) => {
 	}
 
 	const mcp = new DirectusMCP({
+		project: {
+			name: project_name,
+			descriptor: project_descriptor,
+			url: project_url,
+			icon: await getProjectIconPng(project_color ?? null),
+		},
 		promptsCollection: mcp_prompts_collection,
 		allowDeletes: mcp_allow_deletes,
 		systemPromptEnabled: mcp_system_prompt_enabled,

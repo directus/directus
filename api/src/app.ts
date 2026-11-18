@@ -85,6 +85,7 @@ import retentionSchedule from './schedules/retention.js';
 import telemetrySchedule from './schedules/telemetry.js';
 import tusSchedule from './schedules/tus.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { faviconHandler } from './utils/project-icon.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
 
@@ -265,6 +266,8 @@ export default async function createApp(): Promise<express.Application> {
 			next();
 		}
 	});
+
+	app.get('/favicon.ico', faviconHandler);
 
 	app.get('/robots.txt', (_, res) => {
 		res.set('Content-Type', 'text/plain');

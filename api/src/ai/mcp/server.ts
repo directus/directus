@@ -10,25 +10,27 @@ import {
 	Server,
 	type Tool,
 } from '@modelcontextprotocol/server';
-import { version } from 'directus/version';
 import type { Request, Response } from 'express';
 import { render, tokenize } from 'micromustache';
 import { z } from 'zod';
 import { ItemsService } from '../../services/index.js';
 import { ALL_TOOLS, type RegistryError, type RegistryExecuteResult, ToolRegistry } from '../tools/index.js';
 import type { RootTool, ToolResult } from '../tools/types.js';
-import type { MCPOptions, Prompt } from './types.js';
+import { getServerInfo } from './server-info.js';
+import type { MCPOptions, MCPProject, Prompt } from './types.js';
 import { buildMcpWWWAuthenticateHeader, getMcpUrls, MCP_ACCESS_SCOPE } from './utils.js';
 
 type McpToolMode = 'legacy' | 'registry';
 
 export class DirectusMCP {
+	project: MCPProject;
 	promptsCollection?: string | null;
 	systemPrompt?: string | null;
 	systemPromptEnabled?: boolean;
 	allowDeletes?: boolean;
 
 	constructor(options: MCPOptions = {}) {
+		this.project = options.project ?? {};
 		this.promptsCollection = options.promptsCollection ?? null;
 		this.systemPromptEnabled = options.systemPromptEnabled ?? true;
 		this.systemPrompt = options.systemPrompt ?? null;
@@ -104,19 +106,12 @@ export class DirectusMCP {
 	}
 
 	createServer(req: Request): Server {
-		const server = new Server(
-			{
-				name: 'directus',
-				title: 'Directus',
-				version,
+		const server = new Server(getServerInfo(this.project), {
+			capabilities: {
+				tools: {},
+				prompts: {},
 			},
-			{
-				capabilities: {
-					tools: {},
-					prompts: {},
-				},
-			},
-		);
+		});
 
 		server.setRequestHandler('prompts/list', async () => {
 			if (!this.promptsCollection) return { prompts: [] };
