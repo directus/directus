@@ -15,8 +15,8 @@ import {
 } from './assert-transforms-allowed.js';
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../../test-utils/env.js');
-	return mockEnv();
+	const { mockUseEnv } = await import('../../test-utils/env.js');
+	return mockUseEnv();
 });
 
 describe('assertTransformsAllowed', () => {

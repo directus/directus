@@ -1335,6 +1335,7 @@ file_library: Tiedostokirjasto
 forgot_password: Unohtunut salasana
 hidden: Piilotettu
 icon: Kuvake
+image: Kuva
 info: Tietoja
 normal: Normaali
 success: Onnistui
@@ -1552,6 +1553,8 @@ interfaces:
   select-radio:
     radio-buttons: Valintanapit
     description: Valitse yksi useista valinnoista
+  system-file-image:
+    image: Kuva
   list:
     repeater: Toistaja
     description: Luo useita saman rakenteen merkintöjä
@@ -1827,6 +1830,13 @@ triggers:
   webhook:
     method: Metodi
 operations:
+  ai-image:
+    starting_points:
+      icon: Kuvake
+  ai-text:
+    files: Tiedostot
+    type_text: Teksti
+    view_json: JSON
   item-create:
     payload: Tietosisältö
   item-update:

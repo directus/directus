@@ -5,8 +5,7 @@ import { getSchema } from '../utils/get-schema.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 
 export default async function scheduleOAuthCleanup(): Promise<boolean> {
-	const env = useEnv();
-	const schedule = String(env['MCP_OAUTH_CLEANUP_SCHEDULE']);
+	const { MCP_OAUTH_CLEANUP_SCHEDULE: schedule } = useEnv();
 
 	if (!validateCron(schedule)) {
 		useLogger().error(`Invalid MCP_OAUTH_CLEANUP_SCHEDULE: "${schedule}". OAuth cleanup disabled.`);

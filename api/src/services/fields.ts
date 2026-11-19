@@ -51,7 +51,7 @@ import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
-const env = useEnv();
+const { CACHE_SCHEMA } = useEnv();
 
 export const systemFieldUpdateSchema = z
 	.object({
@@ -96,18 +96,16 @@ export class FieldsService {
 	async columnInfo(collection?: string): Promise<Column[]>;
 	async columnInfo(collection: string, field: string): Promise<Column>;
 	async columnInfo(collection?: string, field?: string): Promise<Column | Column[]> {
-		const schemaCacheIsEnabled = Boolean(env['CACHE_SCHEMA']);
-
 		let columnInfo: Column[] | null = null;
 
-		if (schemaCacheIsEnabled) {
+		if (CACHE_SCHEMA) {
 			columnInfo = await getCacheValue(this.schemaCache, 'columnInfo');
 		}
 
 		if (!columnInfo) {
 			columnInfo = await this.schemaInspector.columnInfo();
 
-			if (schemaCacheIsEnabled) {
+			if (CACHE_SCHEMA) {
 				await setCacheValue(this.schemaCache, 'columnInfo', columnInfo);
 			}
 		}

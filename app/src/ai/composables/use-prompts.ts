@@ -9,7 +9,11 @@ import { useSettingsStore } from '@/stores/settings';
  * Converts {{ variable: description }} to {{ variable }}
  */
 function sanitizeTemplate(text: string): string {
-	return text.replace(/\{\{\s*([^:}]+):[^}]*\}\}/g, '{{ $1 }}');
+	// Two separate quadratics, one guard each: excluding `{` from the name makes a run of `{` fail
+	// immediately rather than scanning forward from every position, and trimming here rather than
+	// matching a leading `\s*` stops a run of spaces exchanging characters with the name. The
+	// description is deliberately left permissive — `{` is legitimate there.
+	return text.replace(/\{\{([^:}{]+):[^}]*\}\}/g, (_, variable: string) => `{{ ${variable.trimStart()} }}`);
 }
 
 export function usePrompts() {

@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import { EmailLimitExceededError } from '@directus/errors';
-import { toBoolean } from '@directus/utils';
 import { RateLimiterMemory, RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
 import { createRateLimiter } from '../../rate-limiter.js';
 
@@ -8,7 +7,7 @@ let emailRateLimiter: RateLimiterRedis | RateLimiterMemory | undefined;
 
 const env = useEnv();
 
-if (toBoolean(env['RATE_LIMITER_EMAIL_FLOWS_ENABLED']) === true) {
+if (env.RATE_LIMITER_EMAIL_FLOWS_ENABLED) {
 	emailRateLimiter = createRateLimiter('RATE_LIMITER_EMAIL_FLOWS');
 }
 
@@ -20,13 +19,9 @@ export async function useFlowsEmailRateLimiter(flow_id: string) {
 	} catch (err: unknown) {
 		if (err instanceof RateLimiterRes) {
 			throw new EmailLimitExceededError({
-				points: 'RATE_LIMITER_EMAIL_FLOWS_POINTS' in env ? Number(env['RATE_LIMITER_EMAIL_FLOWS_POINTS']) : undefined,
-				duration:
-					'RATE_LIMITER_EMAIL_FLOWS_DURATION' in env ? Number(env['RATE_LIMITER_EMAIL_FLOWS_DURATION']) : undefined,
-				message:
-					'RATE_LIMITER_EMAIL_FLOWS_ERROR_MESSAGE' in env
-						? String(env['RATE_LIMITER_EMAIL_FLOWS_ERROR_MESSAGE'])
-						: undefined,
+				points: env.RATE_LIMITER_EMAIL_FLOWS_POINTS,
+				duration: env.RATE_LIMITER_EMAIL_FLOWS_DURATION,
+				message: env.RATE_LIMITER_EMAIL_FLOWS_ERROR_MESSAGE,
 			});
 		}
 

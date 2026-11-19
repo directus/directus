@@ -313,6 +313,14 @@ export function useComparison(options: UseComparisonOptions) {
 					customFormats: field.meta?.options?.['customFormats'],
 					extensions: field.meta?.options?.['extensions'],
 					extensionOptions: field.meta?.options?.['extensionOptions'],
+					linkProtocols: field.meta?.options?.['linkProtocols'],
+					keepInlineStyles: field.meta?.options?.['keepInlineStyles'],
+					keepLegacyEmphasisTags: field.meta?.options?.['keepLegacyEmphasisTags'],
+					noContainerParagraphs: field.meta?.options?.['noContainerParagraphs'],
+					keepWrapperElements: field.meta?.options?.['keepWrapperElements'],
+					keepFormElements: field.meta?.options?.['keepFormElements'],
+					keepHtmlComments: field.meta?.options?.['keepHtmlComments'],
+					keepLegacyAttributes: field.meta?.options?.['keepLegacyAttributes'],
 					comparisonMode: true,
 				});
 

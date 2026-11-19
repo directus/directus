@@ -1,6 +1,6 @@
 import type { Project } from '@pnpm/types';
 import { beforeEach, expect, test, vi } from 'vitest';
-import { Config } from '../types.js';
+import type { Config } from '../types.js';
 
 vi.mock('../config.js', () => {
 	const config: Partial<Config> = {

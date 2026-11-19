@@ -1,7 +1,9 @@
 import { createRequire } from 'node:module';
+import type { Env } from '@directus/env';
 import { defineOperationApi } from '@directus/extensions';
-// eslint-disable-next-line import/order
 import { sieveFunctions } from '@directus/utils';
+// eslint-disable-next-line import/order
+import { serializeErrors } from '../../utils/serialize-errors.js';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -22,8 +24,8 @@ export default defineOperationApi<Options>({
 	id: 'exec',
 	handler: async ({ code }, { data, env, logger }) => {
 		const allowedEnv = data['$env'] ?? {};
-		const isolateSizeMb = env['FLOWS_RUN_SCRIPT_MAX_MEMORY'];
-		const scriptTimeoutMs = env['FLOWS_RUN_SCRIPT_TIMEOUT'];
+		const isolateSizeMb = env['FLOWS_RUN_SCRIPT_MAX_MEMORY'] as Env['FLOWS_RUN_SCRIPT_MAX_MEMORY'];
+		const scriptTimeoutMs = env['FLOWS_RUN_SCRIPT_TIMEOUT'] as Env['FLOWS_RUN_SCRIPT_TIMEOUT'];
 
 		const isolate = new ivm.Isolate({ memoryLimit: isolateSizeMb });
 		const context = isolate.createContextSync();
@@ -48,7 +50,8 @@ export default defineOperationApi<Options>({
 		// Run the operation once to define the module.exports function
 		await context.eval(code, { timeout: scriptTimeoutMs });
 
-		const inputData = new ivm.ExternalCopy({ data: sieveFunctions(data) });
+		// Errors (e.g. the validation errors of a rejected condition) can't be copied into the isolate
+		const inputData = new ivm.ExternalCopy({ data: sieveFunctions(serializeErrors(data)) });
 
 		const resultRef = await context.evalClosure(`return module.exports($0.data)`, [inputData.copyInto()], {
 			result: { reference: true, promise: true },

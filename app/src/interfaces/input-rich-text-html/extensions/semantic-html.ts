@@ -1,3 +1,4 @@
+import type { TagParseRule } from '@tiptap/pm/model';
 import { type AnyExtension, Mark, Node } from '@tiptap/vue-3';
 
 /**
@@ -7,7 +8,7 @@ import { type AnyExtension, Mark, Node } from '@tiptap/vue-3';
  */
 
 /** Block container that wraps other block content (`<section>`, `<article>`, …). */
-function blockContainer(name: string, tag: string, content = 'block+') {
+export function blockContainer(name: string, tag: string, content = 'block+', getAttrs?: TagParseRule['getAttrs']) {
 	return Node.create({
 		name,
 		group: 'block',
@@ -15,7 +16,7 @@ function blockContainer(name: string, tag: string, content = 'block+') {
 		defining: true,
 
 		parseHTML() {
-			return [{ tag }];
+			return [{ tag, getAttrs }];
 		},
 
 		renderHTML({ HTMLAttributes }) {
