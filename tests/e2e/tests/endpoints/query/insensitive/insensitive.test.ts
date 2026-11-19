@@ -50,13 +50,32 @@ describe('Field validation', () => {
 		niends_with: { valid: 'Beta', invalid: 'ALPHA' },
 	};
 
+	const createValidated = (payload: Record<string, unknown>) =>
+		fetch(`http://localhost:${port}/items/${collections.validated}`, {
+			method: 'POST',
+			headers: { Authorization: 'Bearer admin', 'Content-Type': 'application/json' },
+			body: JSON.stringify(payload),
+		});
+
 	test.each(Object.entries(VALUES))('_%s', async (field, { valid, invalid }) => {
 		const item = await api.request(createItem(collections.validated, { [field]: valid }));
 
 		expect(item).toMatchObject({ [field]: valid });
 
-		await expect(api.request(createItem(collections.validated, { [field]: invalid }))).rejects.toMatchObject({
-			errors: [{ extensions: { code: 'FAILED_VALIDATION', field } }],
+		const response = await createValidated({ [field]: invalid });
+
+		expect(response.status).toBe(400);
+
+		expect(await response.json()).toMatchObject({
+			errors: [{ extensions: { code: 'FAILED_VALIDATION', field, type: field } }],
 		});
+	});
+
+	test.each(Object.keys(VALUES))('_%s with non-string value does not error', async (field) => {
+		for (const value of [5, true, null]) {
+			const response = await createValidated({ [field]: value });
+
+			expect(response.status, `${JSON.stringify(value)}`).not.toBe(500);
+		}
 	});
 });

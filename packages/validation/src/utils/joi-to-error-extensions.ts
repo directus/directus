@@ -74,20 +74,9 @@ export const joiValidationErrorItemToErrorExtensions = (
 		extensions.valid = validationErrorItem.context?.['limit'];
 	}
 
-	// contains
-	if (joiType.endsWith('contains')) {
-		extensions.type = 'contains';
-		extensions.substring = validationErrorItem.context?.['substring'];
-	}
-
-	// ncontains
-	if (joiType.endsWith('ncontains')) {
-		extensions.type = 'ncontains';
-		extensions.substring = validationErrorItem.context?.['substring'];
-	}
-
-	if (joiType === 'string.nicontains') {
-		extensions.type = 'nicontains';
+	// contains | icontains | ncontains | nicontains
+	if (['string.contains', 'string.icontains', 'string.ncontains', 'string.nicontains'].includes(joiType)) {
+		extensions.type = joiType.slice('string.'.length) as FailedValidationErrorExtensions['type'];
 		extensions.substring = validationErrorItem.context?.['substring'];
 	}
 
@@ -101,8 +90,8 @@ export const joiValidationErrorItemToErrorExtensions = (
 		extensions.invalid = validationErrorItem.context?.['invalid'];
 	}
 
-	// required
-	if (joiType.endsWith('required') || joiType.endsWith('.base')) {
+	// required, or a value of the wrong type (`alternatives.types` is raised by the `contains` family for non-strings)
+	if (joiType.endsWith('required') || joiType.endsWith('.base') || joiType === 'alternatives.types') {
 		extensions.type = 'required';
 	}
 
