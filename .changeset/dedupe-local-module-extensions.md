@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-Fixed extensions being loaded twice when the same extension was present as a local extension, a marketplace extension or a `package.json` dependency
+Fixed extensions being loaded twice when present in multiple sources by only using the copy from the highest-precedence source (local, then marketplace, then `package.json`), without falling back to another copy when it's disabled.
