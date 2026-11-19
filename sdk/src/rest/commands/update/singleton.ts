@@ -25,9 +25,14 @@ export type UpdateSingletonOutput<
  * @throws Will throw if collection is empty
  */
 export const updateSingleton =
-	<Schema, Collection extends SingletonCollections<Schema>, const TQuery extends Query<Schema, Schema[Collection]>>(
+	<
+		Schema,
+		Collection extends SingletonCollections<Schema>,
+		const TQuery extends Query<Schema, Schema[Collection]>,
+		Item = Schema[Collection],
+	>(
 		collection: Collection,
-		item: NestedPartial<Schema[Collection], Schema>,
+		item: NestedPartial<Item, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateSingletonOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {

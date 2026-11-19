@@ -94,10 +94,15 @@ export const updateItemsBatch =
  * @throws Will throw if collection is a core collection
  */
 export const updateItem =
-	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
+	<
+		Schema,
+		Collection extends keyof Schema,
+		const TQuery extends Query<Schema, Schema[Collection]>,
+		Item = UnpackList<Schema[Collection]>,
+	>(
 		collection: Collection,
 		key: string | number,
-		item: NestedPartial<UnpackList<Schema[Collection]>, Schema>,
+		item: NestedPartial<Item, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
