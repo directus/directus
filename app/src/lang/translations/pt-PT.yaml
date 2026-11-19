@@ -1271,6 +1271,10 @@ triggers:
   webhook:
     method: Método
 operations:
+  ai-text:
+    files: Ficheiros
+    type_text: Texto
+    view_json: JSON
   json-web-token:
     token: Token
   log:

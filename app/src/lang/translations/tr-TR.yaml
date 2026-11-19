@@ -685,6 +685,8 @@ file_moved: Dosya Taşındı
 collection_created: Koleksiyon Oluşturuldu
 modified_on: Düzenleme Tarihi
 card_size: Kart Boyutu
+small: Küçük
+large: Büyük
 sort_field: Sıralama Alanı
 add_sort_field: Sıralama Alanı Ekle
 sort: Sırala
@@ -1560,6 +1562,7 @@ forgot_password: Parolamı Unuttum
 hidden: Gizli
 hidden_in_group: '{group} içinde gizli'
 icon: İkon
+image: Fotoğraf
 info: Bilgi
 normal: Normal
 success: Başarılı
@@ -1837,6 +1840,8 @@ interfaces:
   select-radio:
     radio-buttons: Çoktan Seçmeli Butonlar
     description: Birden fazla seçenekten birini seç
+  system-file-image:
+    image: Fotoğraf
   list:
     repeater: Tekrarlayıcı
     description: Aynı yapıda birden çok girdi oluştur
@@ -2277,6 +2282,16 @@ triggers:
 any_string_or_json: Herhangi bir dize veya JSON...
 item_payload_placeholder: Bu, öğenin alan değerlerini güncellemek için kullanılan JSON'dur...
 operations:
+  ai-image:
+    background: Arkaplan
+    emit_events: Olayları Yayımla
+    starting_points:
+      icon: İkon
+  ai-text:
+    files: Dosyalar
+    type_text: Metin
+    view_fields: Alanlar
+    view_json: JSON
   condition:
     name: Durum
   exec:

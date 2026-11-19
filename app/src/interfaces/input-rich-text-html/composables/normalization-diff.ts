@@ -2,6 +2,7 @@ import { type AnyExtension, Editor } from '@tiptap/vue-3';
 import { type Change, diffLines } from 'diff';
 import { fieldEditorExtensions } from '../extensions';
 import { decodePageBreaks, encodePageBreaks } from '../extensions/page-break';
+import { canonicalHtml } from './canonical-html';
 import { formatHtml } from './format-html';
 
 // Re-parse through the schema exactly as saveSourceCode will, so the diff compares against what
@@ -14,26 +15,10 @@ export function roundTrip(html: string, extraExtensions: AnyExtension[] = []): s
 	return out;
 }
 
-// a re-parse renders preserved global attributes before a node's own, so attribute order is not stable
-function sortAttributes(html: string): string {
-	const root = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html').body;
-
-	for (const el of root.querySelectorAll('*')) {
-		const attributes = Array.from(el.attributes, ({ name, value }) => [name, value] as const);
-		for (const [name] of attributes) el.removeAttribute(name);
-
-		for (const [name, value] of attributes.sort(([a], [b]) => (a < b ? -1 : 1))) {
-			el.setAttribute(name, value);
-		}
-	}
-
-	return root.innerHTML;
-}
-
 // Both sides run through formatHtml so only semantic loss surfaces, never cosmetic reformatting.
 export function diffFormatted(rawBefore: string, rawAfter: string): Change[] | null {
-	const before = formatHtml(sortAttributes(rawBefore));
-	const after = formatHtml(sortAttributes(rawAfter));
+	const before = formatHtml(canonicalHtml(rawBefore));
+	const after = formatHtml(canonicalHtml(rawAfter));
 	if (before === after) return null;
 
 	const changes = diffLines(before, after);
