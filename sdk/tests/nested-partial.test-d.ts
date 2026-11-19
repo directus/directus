@@ -25,6 +25,7 @@ import {
 	updateItemsBatch,
 	updatePolicy,
 	updateRole,
+	updateSingleton,
 } from '../src/index.js';
 import type { CollectionA, CollectionC, TestSchema } from './schema.js';
 
@@ -559,5 +560,79 @@ describe('StringLiteralUnion on the read path', () => {
 
 		// @ts-expect-error status is not relational — an object field-spec must be rejected
 		assertType<ItemFields>([{ status: ['*'] }]);
+	});
+});
+
+describe('detailed object review gaps', () => {
+	test('a relation typed with a custom core-collection type accepts the detailed object', () => {
+		type MyUser = { custom_field: boolean };
+		type Schema = { directus_users: MyUser[]; articles: { id: number; editors: MyUser[] }[] };
+
+		assertType<NestedPartial<Schema['articles'][number], Schema>>({ editors: { delete: ['user-id'] } });
+	});
+
+	test('a JSON array whose element is a structural subtype of a collection item rejects the detailed object', () => {
+		type Link = { id: number; url: string };
+		type Schema = { links: Link[]; docs: { id: number; meta_links: { id: number; url: string; label: string }[] }[] };
+
+		assertType<NestedPartial<Schema['docs'][number], Schema>>({
+			// @ts-expect-error meta_links is JSON
+			meta_links: { delete: [1] },
+		});
+	});
+
+	test('a mixed JSON | relation union only offers the collection member in the detailed object', () => {
+		type Schema = { holder: { id: number; rel: ({ url: string } | CollectionC)[] }[]; collection_c: CollectionC[] };
+		type Case = NestedPartial<Schema['holder'][number], Schema>;
+
+		assertType<Case>({ rel: { create: [{ non_nullable: 'a' }] } });
+
+		assertType<Case>({
+			// @ts-expect-error { url } is not a collection_c item
+			rel: { create: [{ url: 'x' }] },
+		});
+
+		assertType<Case>({
+			// @ts-expect-error collection_c has a numeric primary key
+			rel: { delete: ['abc'] },
+		});
+	});
+
+	test('an update entry requires a custom primary key', () => {
+		type Page = { slug: string; title: string };
+		type Schema = { pages: Page[]; holder: { id: number; pages: Page[] }[] };
+
+		assertType<NestedPartial<Schema['holder'][number], Schema>>({
+			// @ts-expect-error update entries must carry the slug primary key
+			pages: { update: [{ title: 'x' }] },
+		});
+	});
+
+	test('an optional `id` keeps its type on delete', () => {
+		type Item = { id?: number; label: string };
+		type Schema = { items: Item[]; holder: { id: number; items: Item[] }[] };
+
+		assertType<NestedPartial<Schema['holder'][number], Schema>>({
+			// @ts-expect-error the primary key is numeric
+			items: { delete: ['abc'] },
+		});
+	});
+
+	describe('single-item commands reject the detailed object on JSON arrays', () => {
+		type Doc = { id: number; links: { url: string }[] };
+		type Settings = { id: number; links: { url: string }[] };
+		type JsonSchema = { docs: Doc[]; app_settings: Settings };
+
+		const client = createDirectus<JsonSchema>('https://directus.example.com').with(rest());
+
+		test('updateItem', () => {
+			// @ts-expect-error links is JSON
+			client.request(updateItem('docs', 1, { links: { delete: [1] } }));
+		});
+
+		test('updateSingleton', () => {
+			// @ts-expect-error links is JSON
+			client.request(updateSingleton('app_settings', { links: { delete: [1] } }));
+		});
 	});
 });
