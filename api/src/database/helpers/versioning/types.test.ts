@@ -38,6 +38,13 @@ describe('version table names', () => {
 		expect(helper.getVersionReferenceField('f'.repeat(64)).length).toBeLessThanOrEqual(maxLength);
 	});
 
+	test('leaves room for the primary key constraint suffix in table names', () => {
+		const collection = 'endpoints_query_version_item_articles_tags_junction';
+
+		expect(`${helper.getShadowTableName(collection)}_pkey`.length).toBeLessThanOrEqual(maxLength);
+		expect(`${helper.getLinkTableName(collection)}_pkey`.length).toBeLessThanOrEqual(maxLength);
+	});
+
 	test('keeps long names as is when the database has no identifier length limit', () => {
 		const collection = 'endpoints_query_version_item_articles_tags_junction';
 

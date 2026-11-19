@@ -20,6 +20,7 @@ import {
 import type { Snapshot } from '@directus/types';
 import { database, port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
+import type { Knex } from 'knex';
 import { afterAll, describe, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 import { snapshot } from './snapshot.js';
@@ -39,6 +40,36 @@ const META = [
 ];
 
 const columns = (...names: string[]) => [...names].sort();
+
+/**
+ * MySQL refuses to change columns referenced by foreign keys. SQLite checks the foreign keys of the whole database
+ * after rebuilding a table, which fails on references that concurrently running tests leave dangling while cleaning up.
+ */
+async function withoutForeignKeyChecks(fn: (db: Knex) => Promise<unknown>) {
+	if (database === 'sqlite') {
+		await knex.raw('PRAGMA foreign_keys = OFF');
+
+		try {
+			return await fn(knex);
+		} finally {
+			await knex.raw('PRAGMA foreign_keys = ON');
+		}
+	}
+
+	if (database === 'mysql' || database === 'maria') {
+		return knex.transaction(async (trx) => {
+			await trx.raw('SET FOREIGN_KEY_CHECKS = 0');
+
+			try {
+				return await fn(trx);
+			} finally {
+				await trx.raw('SET FOREIGN_KEY_CHECKS = 1');
+			}
+		});
+	}
+
+	return fn(knex);
+}
 
 afterAll(async () => {
 	await knex.destroy();
@@ -388,9 +419,11 @@ test.skipIf(['cockroachdb', 'mssql'].includes(database))(
 		expect((await getColumn(LINK + child, 'id')).max_length).toBe(50);
 
 		// Changed directly, as Postgres rejects the `drop not null` Directus emits when altering a primary key
-		await knex.schema.alterTable(child, (table) => {
-			table.string('id', 100).notNullable().alter({ alterNullable: false });
-		});
+		await withoutForeignKeyChecks((db) =>
+			db.schema.alterTable(child, (table) => {
+				table.string('id', 100).notNullable().alter({ alterNullable: false });
+			}),
+		);
 
 		await api.request(createField(child as any, { field: 'note', type: 'string' }));
 
@@ -510,8 +543,13 @@ test('rejects reserved field names when a schema apply enables versioning and ad
 
 	const diff = await api.request(schemaDiff(snapshot as any, { force: true }));
 
+	// Other test files change the schema concurrently, so only apply this collection's changes and skip the hash check
+	for (const key of ['collections', 'fields', 'relations'] as const) {
+		diff.diff[key] = diff.diff[key].filter((entry: { collection: string }) => entry.collection === name);
+	}
+
 	// Has to be rejected by the check that runs before the live table is changed, not by the version table sync
-	await expect(api.request(schemaApply(diff))).rejects.toMatchObject({
+	await expect(api.request(schemaApply(diff, true))).rejects.toMatchObject({
 		errors: [{ message: expect.stringContaining('reserved versioning field name') }],
 	});
 

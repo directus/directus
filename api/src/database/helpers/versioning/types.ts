@@ -12,6 +12,12 @@ import type { SchemaHelper } from '../schema/types.js';
 import { DatabaseHelper } from '../types.js';
 
 /**
+ * Knex names primary key constraints `<table>_pkey`. On Postgres, a full length table name would truncate it to the
+ * table name itself, which fails as the constraint's index is a relation of the same name.
+ */
+const PRIMARY_KEY_SUFFIX = '_pkey';
+
+/**
  * Vendor specific behavior of the shadow and link tables of versioned collections
  */
 export class VersioningHelper extends DatabaseHelper {
@@ -23,11 +29,11 @@ export class VersioningHelper extends DatabaseHelper {
 	}
 
 	getShadowTableName(collection: string): string {
-		return this.prefixName(SHADOW_TABLE_PREFIX, collection);
+		return this.prefixName(SHADOW_TABLE_PREFIX, collection, PRIMARY_KEY_SUFFIX.length);
 	}
 
 	getLinkTableName(collection: string): string {
-		return this.prefixName(LINK_TABLE_PREFIX, collection);
+		return this.prefixName(LINK_TABLE_PREFIX, collection, PRIMARY_KEY_SUFFIX.length);
 	}
 
 	/**
@@ -71,10 +77,12 @@ export class VersioningHelper extends DatabaseHelper {
 	/**
 	 * Prefix a name, replacing the end of the name with a hash if the result would exceed the identifier length limit.
 	 * Otherwise vendors would truncate the name, causing it to no longer match and possibly collide with other names.
+	 *
+	 * @param reserve - Characters to keep free for suffixes derived from the name
 	 */
-	protected prefixName(prefix: string, name: string): string {
+	protected prefixName(prefix: string, name: string, reserve = 0): string {
 		const prefixed = `${prefix}${name}`;
-		const maxLength = this.schema.getMaxIdentifierLength();
+		const maxLength = this.schema.getMaxIdentifierLength() - reserve;
 
 		if (prefixed.length <= maxLength) return prefixed;
 
