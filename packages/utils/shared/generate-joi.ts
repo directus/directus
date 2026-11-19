@@ -189,14 +189,15 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 		const compareValue = Object.values(value)[0];
 
 		const getAnySchema = () => schema[key] ?? Joi.any();
-		const getStringSchema = () => (schema[key] ?? Joi.string()) as StringSchema;
+		// `min(0)` lets empty strings reach the operator rules instead of failing with an unmapped `string.empty`
+		const getStringSchema = () => (schema[key] ?? Joi.string().min(0)) as StringSchema;
 		const getNumberSchema = () => (schema[key] ?? Joi.number()) as NumberSchema;
 		const getDateSchema = () => (schema[key] ?? Joi.date()) as DateSchema;
 
 		// Case insensitivity only applies to non-empty strings, other values are validated like `_eq` / `_neq`
-		const isCaseInsensitive = typeof compareValue === 'string' && compareValue !== '';
+		const canIgnoreCase = typeof compareValue === 'string' && compareValue !== '';
 
-		if (operator === '_eq' || (operator === '_ieq' && !isCaseInsensitive)) {
+		if (operator === '_eq' || (operator === '_ieq' && !canIgnoreCase)) {
 			let typecastedValue: string | number;
 
 			if (typeof compareValue === 'number') {
@@ -212,7 +213,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			}
 		}
 
-		if (operator === '_neq' || (operator === '_nieq' && !isCaseInsensitive)) {
+		if (operator === '_neq' || (operator === '_nieq' && !canIgnoreCase)) {
 			let typecastedValue: string | number;
 
 			if (typeof compareValue === 'number') {
@@ -228,11 +229,11 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			}
 		}
 
-		if (operator === '_ieq' && isCaseInsensitive) {
+		if (operator === '_ieq' && canIgnoreCase) {
 			schema[key] = getStringSchema().ieq(compareValue);
 		}
 
-		if (operator === '_nieq' && isCaseInsensitive) {
+		if (operator === '_nieq' && canIgnoreCase) {
 			schema[key] = Joi.alternatives().conditional(Joi.string(), {
 				then: getStringSchema().nieq(compareValue),
 				otherwise: getAnySchema(),
@@ -464,9 +465,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 				const wrapped =
 					typeof compareValue === 'string' ? compareValue.startsWith('/') && compareValue.endsWith('/') : false;
 
-				schema[key] = getStringSchema()
-					.min(0)
-					.regex(new RegExp(wrapped ? (compareValue as any).slice(1, -1) : compareValue));
+				schema[key] = getStringSchema().regex(new RegExp(wrapped ? (compareValue as any).slice(1, -1) : compareValue));
 			}
 		}
 	}

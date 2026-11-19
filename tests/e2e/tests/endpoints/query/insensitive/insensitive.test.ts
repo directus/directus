@@ -78,4 +78,20 @@ describe('Field validation', () => {
 			expect(response.status, `${JSON.stringify(value)}`).not.toBe(500);
 		}
 	});
+
+	test.each(['ieq', 'icontains', 'istarts_with', 'iends_with'])('_%s rejects an empty string', async (field) => {
+		const response = await createValidated({ [field]: '' });
+
+		expect(response.status).toBe(400);
+
+		expect(await response.json()).toMatchObject({
+			errors: [{ extensions: { code: 'FAILED_VALIDATION', field, type: field } }],
+		});
+	});
+
+	test.each(['nieq', 'nicontains', 'nistarts_with', 'niends_with'])('_%s accepts an empty string', async (field) => {
+		const item = await api.request(createItem(collections.validated, { [field]: '' }));
+
+		expect(item).toMatchObject({ [field]: '' });
+	});
 });
