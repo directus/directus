@@ -170,8 +170,8 @@ describe('generateExtensionsEntrypoint', () => {
 		});
 
 		const mockSettings = [
-			{ source: 'local', folder: 'mock-callout-extension', enabled: true },
-			{ source: 'local', folder: 'mock-kbd-extension', enabled: false },
+			{ source: 'local', folder: 'mock-callout-extension', enabled: true, bundle: null },
+			{ source: 'local', folder: 'mock-kbd-extension', enabled: false, bundle: null },
 		] as ExtensionSettings[];
 
 		expect(afterLoadHelper(generateExtensionsEntrypoint(mockExtensions, mockSettings))).toMatchInlineSnapshot(
@@ -414,6 +414,7 @@ describe('generateExtensionsEntrypoint load isolation', () => {
 			source: 'local',
 			folder,
 			enabled: true,
+			bundle: null,
 		})) as ExtensionSettings[];
 
 		const loaded = await importEntrypoint(generateExtensionsEntrypoint(extensions, settings));
