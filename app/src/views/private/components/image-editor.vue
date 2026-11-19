@@ -7,7 +7,7 @@ import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
-import ImagePresetPreviews from './image-preset-previews.vue';
+import ImagePresetPreviews, { type ImageTransform } from './image-preset-previews.vue';
 import api from '@/api';
 import VDivider from '@/components/v-divider.vue';
 import VDrawer from '@/components/v-drawer.vue';
@@ -79,7 +79,7 @@ const {
 	dragMode,
 	cropping,
 	liveFocalPoint,
-	hasImageTransforms,
+	imageTransform,
 } = useCropper();
 
 watch(internalActive, (isActive) => {
@@ -314,10 +314,19 @@ const localDragMode = ref<'move' | 'crop' | 'focal_point'>('move');
 
 const storageAssetPresets = settingsStore.settings?.storage_asset_presets ?? [];
 
+// The image presets will crop once saved, so a quarter turn swaps its sides
+const previewSize = computed(() => {
+	const { width, height } = imageData.value ?? {};
+	if (!width || !height) return null;
+
+	return imageTransform.value.rotate % 180 === 0 ? { width, height } : { width: height, height: width };
+});
+
 // Whether a preset crops depends only on the image and preset sizes, so the focal point doesn't matter here
 const croppingPresets = computed(() => {
-	const { width, height } = imageData.value ?? {};
-	if (!width || !height) return [];
+	if (!previewSize.value) return [];
+
+	const { width, height } = previewSize.value;
 
 	return storageAssetPresets.filter((preset) => getFocalPointCrop({ w: width, h: height }, null, preset));
 });
@@ -458,8 +467,7 @@ function useCropper() {
 
 	const liveFocalPoint = ref<{ x: number; y: number } | null>(null);
 
-	// Rotating or flipping changes the image the presets will crop, so the previews would be out of date
-	const hasImageTransforms = ref(false);
+	const imageTransform = ref<ImageTransform>({ rotate: 0, scaleX: 1, scaleY: 1 });
 
 	const cropping = computed({
 		get() {
@@ -486,7 +494,7 @@ function useCropper() {
 		dragMode,
 		cropping,
 		liveFocalPoint,
-		hasImageTransforms,
+		imageTransform,
 	};
 
 	function initCropper() {
@@ -498,6 +506,7 @@ function useCropper() {
 
 		localCropping.value = false;
 		localDragMode.value = 'move';
+		imageTransform.value = { rotate: 0, scaleX: 1, scaleY: 1 };
 
 		let boxDragStart: { x: number; y: number; left: number; top: number } | null = null;
 
@@ -540,8 +549,8 @@ function useCropper() {
 					cropping.value = true;
 				}
 
-				hasImageTransforms.value =
-					event.detail.rotate % 360 !== 0 || event.detail.scaleX !== 1 || event.detail.scaleY !== 1;
+				const { rotate, scaleX, scaleY } = event.detail;
+				imageTransform.value = { rotate, scaleX, scaleY };
 
 				if (localDragMode.value === 'focal_point' && event.detail.width) {
 					liveFocalPoint.value = {
@@ -640,11 +649,11 @@ function setAspectRatio() {
 				<ImagePresetPreviews
 					v-if="showPresetPreviews"
 					:src="imageURL"
-					:width="imageData.width!"
-					:height="imageData.height!"
+					:width="previewSize!.width"
+					:height="previewSize!.height"
 					:focal-point="previewFocalPoint"
 					:presets="croppingPresets"
-					:has-image-edits="hasImageTransforms"
+					:image-transform="imageTransform"
 				/>
 			</div>
 

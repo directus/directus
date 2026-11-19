@@ -3,9 +3,10 @@ import type { SettingsStorageAssetPreset } from '@directus/types';
 import { getFocalPointCrop } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import VNotice from '@/components/v-notice.vue';
 
 type Crop = NonNullable<ReturnType<typeof getFocalPointCrop>>;
+
+export type ImageTransform = { rotate: number; scaleX: number; scaleY: number };
 
 const THUMBNAIL_MAX_WIDTH = 96;
 const THUMBNAIL_MAX_HEIGHT = 52;
@@ -15,11 +16,12 @@ const labelStyle = { maxInlineSize: `${THUMBNAIL_MAX_WIDTH}px` };
 
 const props = defineProps<{
 	src: string;
+	/** Size of the image the presets crop, after `imageTransform` is applied to `src` */
 	width: number;
 	height: number;
 	focalPoint: { x: number; y: number } | null;
 	presets: SettingsStorageAssetPreset[];
-	hasImageEdits?: boolean;
+	imageTransform?: ImageTransform;
 }>();
 
 const { t } = useI18n();
@@ -71,12 +73,22 @@ function getThumbnailStyles(crop: Crop) {
 
 	const scale = frameWidth / crop.width;
 
+	const { rotate, scaleX, scaleY } = props.imageTransform ?? { rotate: 0, scaleX: 1, scaleY: 1 };
+	const quarterTurn = rotate % 180 !== 0;
+	const sourceWidth = quarterTurn ? props.height : props.width;
+	const sourceHeight = quarterTurn ? props.width : props.height;
+
+	// Centre the source on the transformed image so rotating around its own centre lines the two up
+	const offsetX = ((props.width - sourceWidth) / 2 - crop.left) * scale;
+	const offsetY = ((props.height - sourceHeight) / 2 - crop.top) * scale;
+
 	return {
 		frameStyle: { inlineSize: `${frameWidth}px`, blockSize: `${frameHeight}px` },
 		imageStyle: {
-			inlineSize: `${props.width * scale}px`,
-			blockSize: `${props.height * scale}px`,
-			transform: `translate(${-crop.left * scale}px, ${-crop.top * scale}px)`,
+			inlineSize: `${sourceWidth * scale}px`,
+			blockSize: `${sourceHeight * scale}px`,
+			// Same order as Cropper and its cropped canvas: rotate, then flip
+			transform: `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg) scale(${scaleX}, ${scaleY})`,
 		},
 	};
 }
@@ -88,9 +100,7 @@ function greatestCommonDivisor(a: number, b: number): number {
 
 <template>
 	<section class="image-preset-previews" :aria-label="$t('preset_previews')">
-		<VNotice v-if="hasImageEdits" type="warning" class="notice">{{ $t('preset_previews_image_edits') }}</VNotice>
-
-		<ul v-else class="groups">
+		<ul class="groups">
 			<li
 				v-for="group in groups"
 				:key="group.ratio"
@@ -123,10 +133,6 @@ function greatestCommonDivisor(a: number, b: number): number {
 	padding: 0.75rem 1.25rem;
 	background-color: var(--theme--background);
 	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
-}
-
-.notice {
-	flex-grow: 1;
 }
 
 .groups {
@@ -170,7 +176,6 @@ function greatestCommonDivisor(a: number, b: number): number {
 		inset-block-start: 0;
 		inset-inline-start: 0;
 		max-inline-size: none;
-		transform-origin: top left;
 	}
 }
 
