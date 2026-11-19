@@ -55,7 +55,7 @@ function toggle() {
 	Available Variables:
 
 		--v-switch-color            [var(--theme--primary)]
-		--v-switch-unchecked-color  [var(--theme--form--field--input--border-color)]
+		--v-switch-unchecked-color  [var(--theme--form--field--input--foreground-subdued)]
 		--v-switch-thumb-color      [var(--white)]
 
 */
@@ -83,7 +83,7 @@ function toggle() {
 		flex-shrink: 0;
 		inline-size: var(--v-switch-track-inline-size);
 		block-size: var(--v-switch-track-block-size);
-		background-color: var(--v-switch-unchecked-color, var(--theme--form--field--input--border-color));
+		background-color: var(--v-switch-unchecked-color, var(--theme--form--field--input--foreground-subdued));
 		border-radius: calc(var(--v-switch-track-block-size) / 2);
 		transition: background-color var(--fast) var(--transition);
 	}
@@ -116,14 +116,6 @@ function toggle() {
 				var(--v-switch-track-inline-size) - var(--v-switch-thumb-size) - var(--v-switch-thumb-inset)
 			);
 		}
-	}
-
-	&:not(.disabled):hover .track {
-		background-color: var(--theme--form--field--input--border-color-hover);
-	}
-
-	&.checked:not(.disabled):hover .track {
-		background-color: var(--v-switch-color, var(--theme--primary));
 	}
 
 	&.disabled {
