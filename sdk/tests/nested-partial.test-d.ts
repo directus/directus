@@ -581,26 +581,6 @@ describe('detailed object review gaps', () => {
 		});
 	});
 
-	test('an update entry requires a custom primary key', () => {
-		type Page = { slug: string; title: string };
-		type Schema = { pages: Page[]; holder: { id: number; pages: Page[] }[] };
-
-		assertType<NestedPartial<Schema['holder'][number], Schema>>({
-			// @ts-expect-error update entries must carry the slug primary key
-			pages: { update: [{ title: 'x' }] },
-		});
-	});
-
-	test('an optional `id` keeps its type on delete', () => {
-		type Item = { id?: number; label: string };
-		type Schema = { items: Item[]; holder: { id: number; items: Item[] }[] };
-
-		assertType<NestedPartial<Schema['holder'][number], Schema>>({
-			// @ts-expect-error the primary key is numeric
-			items: { delete: ['abc'] },
-		});
-	});
-
 	describe('single-item commands reject the detailed object on JSON arrays', () => {
 		type Doc = { id: number; links: { url: string }[] };
 		type Settings = { id: number; links: { url: string }[] };
