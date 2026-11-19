@@ -671,6 +671,8 @@ file_moved: الملفات المنقولة
 collection_created: تم تحديث المجموعة
 modified_on: التعديل في
 card_size: حجم البطاقة
+small: صغير
+large: كبير
 sort_field: فرز الحقل
 add_sort_field: إضافة حقل الترتيب
 sort: رتب
@@ -1518,6 +1520,7 @@ forgot_password: نسيت كلمة المرور
 hidden: مخفي
 hidden_in_group: مخفي في {group}
 icon: أيقونة
+image: صورة
 info: معلومات
 normal: عادي
 success: نجاح
@@ -1787,6 +1790,8 @@ interfaces:
   select-radio:
     radio-buttons: أزرار اختيار من متعدد
     description: حدد اختيار واحد من خيارات متعددة
+  system-file-image:
+    image: صورة
   list:
     repeater: مكرر
     description: إنشاء عدة نسخ من نفس الهيكل
@@ -2028,6 +2033,14 @@ triggers:
   webhook:
     method: الطريقة
 operations:
+  ai-image:
+    starting_points:
+      icon: أيقونة
+  ai-text:
+    files: الملفات
+    type_text: نص
+    view_fields: حقول
+    view_json: JSON
   item-create:
     name: إنشاء بيانات
     description: إنشاء عناصر في قاعدة البيانات

@@ -33,7 +33,6 @@
 		"@types/node": "catalog:",
 		"tsx": "catalog:",
 		"typescript": "catalog:",
-		"vite-tsconfig-paths": "catalog:",
 		"vitest": "catalog:"
 	},
 	"engines": {

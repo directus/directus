@@ -1401,6 +1401,7 @@ forgot_password: 忘記密碼
 hidden: 隱藏
 hidden_in_group: 在 {group} 中隱藏
 icon: 圖示
+image: 圖像
 info: 資訊
 normal: 一般
 success: 成功
@@ -1661,6 +1662,8 @@ interfaces:
   select-radio:
     radio-buttons: 單選按鈕
     description: 選擇一或多個選擇
+  system-file-image:
+    image: 圖像
   list:
     repeater: 重複器
     description: 建立多個擁有相同結構的資料項目
@@ -2039,6 +2042,16 @@ a_flow_uuid: 選擇要觸發的流程...
 any_string_or_json: 任何字串或 JSON...
 item_payload_placeholder: 這個JSON用來更新資料項目各欄位的值
 operations:
+  ai-image:
+    background: 背景
+    emit_events: 執行事件
+    starting_points:
+      icon: 圖示
+  ai-text:
+    files: 檔案
+    type_text: 文字
+    view_fields: 欄位
+    view_json: JSON
   condition:
     name: 條件
   exec:
