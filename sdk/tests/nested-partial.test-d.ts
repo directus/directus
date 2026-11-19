@@ -566,7 +566,7 @@ describe('StringLiteralUnion on the read path', () => {
 describe('detailed object review gaps', () => {
 	test('a relation typed with a custom core-collection type accepts the detailed object', () => {
 		type MyUser = { custom_field: boolean };
-		type Schema = { directus_users: MyUser[]; articles: { id: number; editors: MyUser[] }[] };
+		type Schema = { directus_users: MyUser[]; articles: { id: number; editors: DirectusUser[] }[] };
 
 		assertType<NestedPartial<Schema['articles'][number], Schema>>({ editors: { delete: ['user-id'] } });
 	});

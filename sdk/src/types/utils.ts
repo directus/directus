@@ -1,3 +1,4 @@
+import type { CoreSchema } from '../schema/index.js';
 import type { CompleteSchema, ItemType } from './schema.js';
 
 /**
@@ -60,12 +61,14 @@ type Builtin = Primitive | Date | RegExp;
 export type RelationPrimaryKey<Item> = Item extends { id: infer PK } ? NonNullable<PK> : string | number;
 
 /**
- * The members of `Item` that are collection items in `Schema`. An `any` Schema keeps all, a missing one none.
+ * The members of `Item` that are collection items in `Schema` (all for an `any` Schema, none for `unknown`).
+ * Core collections also match the unmerged `CoreSchema<any>`: custom fields make the merged type in
+ * `CompleteSchema` require keys that the plain `DirectusUser` lacks.
  */
 type ExtractSchemaItem<Schema, Item> = IfAny<
 	Schema,
 	Item,
-	unknown extends Schema ? never : Extract<Item, ItemType<CompleteSchema<Schema>>>
+	unknown extends Schema ? never : Extract<Item, ItemType<CompleteSchema<Schema>> | ItemType<CoreSchema<any>>>
 >;
 
 /**
