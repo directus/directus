@@ -52,7 +52,7 @@ const groups = computed(() => {
 				...group,
 				...getThumbnailStyles(group.crop),
 				name: names[0] ?? null,
-				// Every other preset that crops the same way, listed in the tooltip
+				// All presets that crop the same way, listed in the tooltip
 				tooltip: group.keys.length > 1 ? names.join(', ') : null,
 				ariaLabel: `${group.ratio}, ${t('preset_count', group.keys.length)}: ${names.join(', ')}`,
 			};
