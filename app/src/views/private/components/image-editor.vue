@@ -312,14 +312,14 @@ function useImage() {
 
 const localDragMode = ref<'move' | 'crop' | 'focal_point'>('move');
 
-const storageAssetPresets = settingsStore.settings?.storage_asset_presets ?? [];
+const storageAssetPresets = computed(() => settingsStore.settings?.storage_asset_presets ?? []);
 
 // Whether a preset crops depends only on the image and preset sizes, so the focal point doesn't matter here
 const croppingPresets = computed(() => {
 	const { width, height } = imageData.value ?? {};
 	if (!width || !height) return [];
 
-	return storageAssetPresets.filter((preset) => getFocalPointCrop({ w: width, h: height }, null, preset));
+	return storageAssetPresets.value.filter((preset) => getFocalPointCrop({ w: width, h: height }, null, preset));
 });
 
 const showPresetPreviews = computed(() => localDragMode.value === 'focal_point' && croppingPresets.value.length > 0);
