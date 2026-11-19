@@ -1,5 +1,4 @@
-import type { Server as httpServer } from 'node:http';
-import type { IncomingMessage } from 'node:http';
+import type { IncomingMessage, Server as httpServer } from 'node:http';
 import type internal from 'node:stream';
 import { buildSchema, GraphQLError, NoSchemaIntrospectionCustomRule, validate } from 'graphql';
 import type { Context, SubscribePayload } from 'graphql-ws';

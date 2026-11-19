@@ -1,6 +1,5 @@
 import { createReadStream, createWriteStream, ReadStream } from 'node:fs';
-import fsProm from 'node:fs/promises';
-import { access, copyFile, mkdir, opendir, rename, stat, unlink } from 'node:fs/promises';
+import { access, copyFile, mkdir, open, opendir, rename, stat, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import stream, { type Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
@@ -131,7 +130,7 @@ export class DriverLocal implements TusDriver {
 		const fullPath = this.fullPath(filepath);
 		await this.ensureDir(dirname(fullPath));
 
-		await fsProm.writeFile(fullPath, '');
+		await writeFile(fullPath, '');
 
 		return context;
 	}
@@ -150,7 +149,7 @@ export class DriverLocal implements TusDriver {
 	): Promise<number> {
 		const fullPath = this.fullPath(filepath);
 
-		const writeable = await fsProm.open(fullPath, 'r+').then((file) =>
+		const writeable = await open(fullPath, 'r+').then((file) =>
 			file.createWriteStream({
 				start: offset,
 			}),
