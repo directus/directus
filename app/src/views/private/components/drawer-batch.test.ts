@@ -35,8 +35,11 @@ vi.mock('@/stores/relations', () => ({
 	useRelationsStore: () => mockRelationsStore,
 }));
 
+const mockCollectionInfo = vi.hoisted(() => ({ value: null as Record<string, any> | null }));
+
 vi.mock('@directus/composables', () => ({
 	useCollection: () => ({
+		info: mockCollectionInfo,
 		primaryKeyField: { value: { field: 'id' } },
 	}),
 }));
@@ -68,6 +71,7 @@ function mountDrawerBatch(props: Record<string, any> = {}) {
 			stubs: {
 				VDrawer: { template: '<div><slot /><slot name="actions" /></div>' },
 				VForm: { template: '<div />' },
+				VNotice: { template: '<div class="v-notice"><slot /></div>' },
 				PrivateViewHeaderBarActionButton: { template: '<button />' },
 			},
 		},
@@ -96,6 +100,7 @@ function setupTranslationsRelation() {
 
 afterEach(() => {
 	vi.clearAllMocks();
+	mockCollectionInfo.value = null;
 });
 
 describe('batch save without translations', () => {
@@ -499,5 +504,31 @@ describe('stageOnSave with translations', () => {
 		expect(emitted![0]![0]).toEqual({
 			translations: { create: [{ languages_code: 'en', title: 'New' }] },
 		});
+	});
+});
+
+describe('versioning notice', () => {
+	it('shows the notice for a versioned collection', () => {
+		mockCollectionInfo.value = { meta: { versioning: true } };
+
+		const wrapper = mountDrawerBatch();
+
+		expect(wrapper.find('.v-notice').exists()).toBe(true);
+	});
+
+	it('hides the notice for a non-versioned collection', () => {
+		mockCollectionInfo.value = { meta: { versioning: false } };
+
+		const wrapper = mountDrawerBatch();
+
+		expect(wrapper.find('.v-notice').exists()).toBe(false);
+	});
+
+	it('hides the notice when edits are staged on save', () => {
+		mockCollectionInfo.value = { meta: { versioning: true } };
+
+		const wrapper = mountDrawerBatch({ stageOnSave: true });
+
+		expect(wrapper.find('.v-notice').exists()).toBe(false);
 	});
 });
