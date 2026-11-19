@@ -1,24 +1,31 @@
-import path from 'path';
-import type { DirResult } from 'tmp';
-import { dirSync } from 'tmp';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { listFolders } from './list-folders.js';
 
-describe('', () => {
-	let rootDir: DirResult;
-	let childDir: DirResult;
+describe('listFolders', () => {
+	let rootDir: string;
 
-	beforeEach(() => {
-		rootDir = dirSync({ unsafeCleanup: true, tmpdir: './' });
-		childDir = dirSync({ tmpdir: rootDir.name });
+	beforeEach(async () => {
+		rootDir = await mkdtemp(join(tmpdir(), 'list-folders-'));
 	});
 
-	afterEach(() => {
-		rootDir.removeCallback();
+	afterEach(async () => {
+		await rm(rootDir, { recursive: true, force: true });
 	});
 
-	it('returns all the subdirectories of the current directory', async () => {
-		const childPath = childDir.name.split(path.sep);
-		expect(await listFolders(rootDir.name)).toStrictEqual([childPath[childPath?.length - 1]]);
+	test('returns all the subdirectories of the given directory', async () => {
+		await mkdir(join(rootDir, 'child'));
+		await writeFile(join(rootDir, 'file.txt'), '');
+
+		expect(await listFolders(rootDir)).toStrictEqual(['child']);
+	});
+
+	test('skips hidden folders when ignoreHidden is set', async () => {
+		await mkdir(join(rootDir, 'child'));
+		await mkdir(join(rootDir, '.hidden'));
+
+		expect(await listFolders(rootDir, { ignoreHidden: true })).toStrictEqual(['child']);
 	});
 });

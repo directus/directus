@@ -3,7 +3,7 @@
  */
 import { rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { exists } from 'fs-extra';
+import { pathExists } from '@directus/utils/node';
 import { getExtensionsPath } from '../get-extensions-path.js';
 
 export const SyncStatus = {
@@ -16,7 +16,7 @@ export type SyncStatus = keyof typeof SyncStatus;
 export async function getSyncStatus(): Promise<SyncStatus> {
 	const statusFilePath = join(getExtensionsPath(), '.status');
 
-	if (await exists(statusFilePath)) {
+	if (await pathExists(statusFilePath)) {
 		return SyncStatus.SYNCING;
 	}
 

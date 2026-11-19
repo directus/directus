@@ -1,5 +1,4 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Field, Item, RawField, Type } from '@directus/types';
 import { toArray } from '@directus/utils';
@@ -19,8 +18,6 @@ import {
 	RawFieldItemInputSchema,
 	RawFieldItemValidateSchema,
 } from '../schema.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 type FieldCreateItem = Partial<Field> & {
 	field: string;
@@ -86,7 +83,7 @@ export const fields = defineTool<z.infer<typeof FieldsValidateSchema>, z.infer<t
 	admin: true,
 	description:
 		'Reads and changes Directus fields. Use to inspect, add, update, or delete fields on collections, including relational and alias fields.',
-	instructions: requireText(resolve(__dirname, './prompt.md')),
+	instructions: requireText(resolve(import.meta.dirname, './prompt.md')),
 	keywords: ['columns', 'properties', 'field types', 'interfaces', 'aliases', 'database fields'],
 	annotations: {
 		title: 'Directus - Fields',

@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import type { Driver } from '@directus/types';
 
 const filename = ({ filepath }: { filepath: string }): Record<string, string> => ({

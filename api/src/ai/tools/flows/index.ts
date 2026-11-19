@@ -1,5 +1,4 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import type { FlowRaw, OperationRaw } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { z } from 'zod';
@@ -10,8 +9,6 @@ import { defineTool } from '../define-tool.js';
 import { relayoutFlow } from '../operations/position.js';
 import { FlowItemInputSchema, FlowItemValidateSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
 import { buildSanitizedQueryFromArgs } from '../utils.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const FlowsValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({
@@ -46,7 +43,7 @@ export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 	admin: true,
 	description:
 		'Reads and changes Directus automation flows. Use for event, schedule, webhook, operation, or manual flow definitions.',
-	instructions: requireText(resolve(__dirname, './prompt.md')),
+	instructions: requireText(resolve(import.meta.dirname, './prompt.md')),
 	keywords: ['automation', 'workflow', 'webhook', 'schedule', 'event hook', 'manual flow'],
 	annotations: {
 		title: 'Directus - Flows',

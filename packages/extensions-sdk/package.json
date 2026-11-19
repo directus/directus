@@ -49,7 +49,6 @@
 		"commander": "catalog:",
 		"esbuild": "catalog:",
 		"execa": "catalog:",
-		"fs-extra": "catalog:",
 		"inquirer": "catalog:",
 		"ora": "catalog:",
 		"rollup": "catalog:",
@@ -61,7 +60,6 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
-		"@types/fs-extra": "catalog:",
 		"@types/inquirer": "catalog:",
 		"@types/node": "catalog:",
 		"@types/semver": "catalog:",

@@ -1,5 +1,5 @@
-import { type ChildProcessWithoutNullStreams, spawn } from 'child_process';
-import { join } from 'path';
+import { type ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
+import { join } from 'node:path';
 import chalk from 'chalk';
 import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';

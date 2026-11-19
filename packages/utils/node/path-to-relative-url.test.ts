@@ -1,6 +1,5 @@
+import path from 'node:path';
 import { dirname } from 'node:path/posix';
-import { fileURLToPath } from 'node:url';
-import path from 'path';
 import { describe, expect, it } from 'vitest';
 import { pathToRelativeUrl } from './path-to-relative-url.js';
 
@@ -14,7 +13,7 @@ describe('pathToRelativeUrl', () => {
 	});
 
 	it('returns a URL relative to the given path if it is passed as the second argument', async () => {
-		const relativeUrl = pathToRelativeUrl(filePath, dirname(fileURLToPath(import.meta.url)));
+		const relativeUrl = pathToRelativeUrl(filePath, import.meta.dirname);
 
 		expect(relativeUrl).toBe('../foo/bar.txt');
 	});

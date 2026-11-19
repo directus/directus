@@ -31,7 +31,6 @@
 		"chalk": "catalog:",
 		"commander": "catalog:",
 		"execa": "catalog:",
-		"fs-extra": "catalog:",
 		"log-symbols": "catalog:",
 		"ora": "catalog:",
 		"update-check": "catalog:"

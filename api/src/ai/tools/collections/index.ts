@@ -1,5 +1,4 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Collection, RawCollection } from '@directus/types';
 import { isObject, toArray } from '@directus/utils';
@@ -14,8 +13,6 @@ import {
 	CollectionItemValidateUpdateSchema,
 	PrimaryKeyOutputSchema,
 } from '../schema.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const CollectionsValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({
@@ -54,7 +51,7 @@ export const collections = defineTool<
 	admin: true,
 	description:
 		'Reads and changes Directus collections. Use to create content models, folders, collection metadata, or inspect existing collections.',
-	instructions: requireText(resolve(__dirname, './prompt.md')),
+	instructions: requireText(resolve(import.meta.dirname, './prompt.md')),
 	keywords: ['data model', 'content model', 'tables', 'schema folders', 'collection metadata'],
 	annotations: {
 		title: 'Directus - Collections',

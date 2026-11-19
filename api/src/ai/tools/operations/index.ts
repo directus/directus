@@ -1,5 +1,4 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import { InvalidPayloadError } from '@directus/errors';
 import type { OperationRaw } from '@directus/types';
 import { z } from 'zod';
@@ -15,8 +14,6 @@ import {
 } from '../schema.js';
 import { buildSanitizedQueryFromArgs } from '../utils.js';
 import { relayoutFlow } from './position.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const OperationsValidationSchema = z.discriminatedUnion('action', [
 	z.strictObject({
@@ -55,7 +52,7 @@ export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>
 	admin: true,
 	description:
 		'Reads and changes Directus flow operations. Use to build or inspect operation chains inside automation flows.',
-	instructions: requireText(resolve(__dirname, './prompt.md')),
+	instructions: requireText(resolve(import.meta.dirname, './prompt.md')),
 	keywords: ['flow steps', 'automation steps', 'data chain', 'resolve', 'reject', 'operation key'],
 	annotations: {
 		title: 'Directus - Operations',

@@ -1,4 +1,4 @@
-import { URL } from 'url';
+import { URL } from 'node:url';
 import { DEFAULT_REGISTRY } from '../../../constants.js';
 import type { DescribeOptions } from '../types/describe-options.js';
 

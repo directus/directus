@@ -1,4 +1,4 @@
-import { EventEmitter, on } from 'events';
+import { EventEmitter, on } from 'node:events';
 import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
 import { useBus } from '../../bus/index.js';
 import { getSchema } from '../../utils/get-schema.js';

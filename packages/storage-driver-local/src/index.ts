@@ -1,5 +1,5 @@
-import fsProm from 'fs/promises';
 import { createReadStream, createWriteStream, ReadStream } from 'node:fs';
+import fsProm from 'node:fs/promises';
 import { access, copyFile, mkdir, opendir, rename, stat, unlink } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import stream, { type Readable } from 'node:stream';

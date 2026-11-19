@@ -1,9 +1,8 @@
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import path from 'path';
+import { readdir } from 'node:fs/promises';
+import path from 'node:path';
 import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
-import fse from 'fs-extra';
+import { pathExists } from '@directus/utils/node';
 import type { Knex } from 'knex';
 import { orderBy } from 'lodash-es';
 import { flushCaches } from '../../cache.js';
@@ -11,18 +10,15 @@ import { useLogger } from '../../logger/index.js';
 import type { Migration } from '../../types/index.js';
 import getModuleDefault from '../../utils/get-module-default.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
 	const { MIGRATIONS_PATH } = useEnv();
 	const logger = useLogger();
 
-	let migrationFiles = await fse.readdir(__dirname);
+	let migrationFiles = await readdir(import.meta.dirname);
 
 	const customMigrationsPath = path.resolve(MIGRATIONS_PATH);
 
-	let customMigrationFiles =
-		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
+	let customMigrationFiles = ((await pathExists(customMigrationsPath)) && (await readdir(customMigrationsPath))) || [];
 
 	migrationFiles = migrationFiles.filter((file: string) => /^[0-9]+[A-Z]-[^.]+\.(?:js|ts)$/.test(file));
 
@@ -47,7 +43,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 		const completed = !!completedMigrations.find((migration) => migration.version === version);
 
 		return {
-			file: custom ? path.join(customMigrationsPath, filePath) : path.join(__dirname, filePath),
+			file: custom ? path.join(customMigrationsPath, filePath) : path.join(import.meta.dirname, filePath),
 			version,
 			name,
 			completed,

@@ -1,13 +1,12 @@
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import path from 'path';
-import { performance } from 'perf_hooks';
+import { readdir } from 'node:fs/promises';
+import path from 'node:path';
+import { performance } from 'node:perf_hooks';
 import { useEnv, validateDbEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { DatabaseClient } from '@directus/types';
 import { isObject } from '@directus/utils';
-import fse from 'fs-extra';
+import { pathExists } from '@directus/utils/node';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { isArray, merge } from 'lodash-es';
@@ -26,8 +25,6 @@ type QueryInfo = Partial<Knex.Sql> & {
 
 let database: Knex | null = null;
 let inspector: SchemaInspector | null = null;
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default getDatabase;
 
@@ -245,12 +242,12 @@ export async function validateMigrations(): Promise<boolean> {
 	const logger = useLogger();
 
 	try {
-		let migrationFiles = await fse.readdir(path.join(__dirname, 'migrations'));
+		let migrationFiles = await readdir(path.join(import.meta.dirname, 'migrations'));
 
 		const customMigrationsPath = path.resolve(getExtensionsPath(), 'migrations');
 
 		let customMigrationFiles =
-			((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
+			((await pathExists(customMigrationsPath)) && (await readdir(customMigrationsPath))) || [];
 
 		migrationFiles = migrationFiles.filter(
 			(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false,

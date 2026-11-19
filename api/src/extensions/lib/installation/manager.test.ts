@@ -17,12 +17,8 @@ vi.mock('@directus/extensions-registry', () => ({
 
 vi.mock('@directus/storage-driver-local');
 
-vi.mock('fs-extra', () => ({
-	move: vi.fn(),
-	remove: vi.fn(),
-}));
-
 vi.mock('node:fs/promises', () => ({
+	cp: vi.fn(),
 	mkdir: vi.fn(),
 	readFile: vi.fn(),
 	rm: vi.fn(),

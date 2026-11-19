@@ -1,5 +1,4 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import type { Folder, PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
@@ -17,8 +16,6 @@ import {
 	QueryValidateSchema,
 } from '../schema.js';
 import { buildSanitizedQueryFromArgs } from '../utils.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const FoldersValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({
@@ -58,7 +55,7 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>, z.infer
 	name: 'folders',
 	description:
 		'Reads and changes Directus folders. Use to organize files or Flows into folder hierarchies or inspect existing folder records.',
-	instructions: requireText(resolve(__dirname, './prompt.md')),
+	instructions: requireText(resolve(import.meta.dirname, './prompt.md')),
 	keywords: ['directories', 'media folders', 'file organization', 'flow organization', 'parent folder'],
 	annotations: {
 		title: 'Directus - Folders',

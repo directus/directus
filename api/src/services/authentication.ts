@@ -1,4 +1,4 @@
-import { performance } from 'perf_hooks';
+import { performance } from 'node:perf_hooks';
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import {

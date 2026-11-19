@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
 import { ErrorCode } from '@directus/errors';
 import {
 	type Accountability,

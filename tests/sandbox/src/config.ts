@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { directusFolder } from './find-directus.js';
 import { getPort } from './port.js';
 import type { Database, Options } from './sandbox.js';

@@ -5,6 +5,7 @@ import eslintJs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintImportPlugin from 'eslint-plugin-import-x';
 import eslintPluginRegexp from 'eslint-plugin-regexp';
+import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import eslintPluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
 import typescriptEslint from 'typescript-eslint';
@@ -96,6 +97,14 @@ export default typescriptEslint.config(
 					allowSeparatedGroups: true,
 				},
 			],
+		},
+	},
+
+	// Require (and autofix) the `node:` prefix for Node.js built-in modules
+	{
+		plugins: { unicorn: eslintPluginUnicorn },
+		rules: {
+			'unicorn/prefer-node-protocol': 'error',
 		},
 	},
 
