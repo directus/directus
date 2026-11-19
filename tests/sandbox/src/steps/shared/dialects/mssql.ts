@@ -8,7 +8,7 @@ export class SharedHelperMSSQL extends SharedHelper {
 
 	override async start() {
 		await super.start();
-		// `CREATE DATABASE` requires an exclusive lock on model, the default database of the sandbox
+		// `CREATE DATABASE` needs an exclusive lock on model, the sandbox default database
 		this.admin = { ...this.admin, DB_DATABASE: 'master' } as AdminEnv;
 	}
 
@@ -42,7 +42,7 @@ export class SharedHelperMSSQL extends SharedHelper {
 	protected override async restore(template: string, name: string) {
 		const folder = this.templateFolder;
 
-		// Logical file names default to the database name the backup was taken from
+		// Logical file names default to the source database name
 		await this.query((knex) =>
 			knex.raw(`RESTORE DATABASE [${name}] FROM DISK = '${this.templateFile(template, 'bak')}' WITH
 				MOVE '${template}' TO '${folder}/${name}.mdf',

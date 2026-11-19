@@ -11,19 +11,16 @@ import { exec, findContainer, getHostPort, isHealthy } from './utils.js';
 
 export type SharedVendor = Exclude<Database, 'sqlite'>;
 
-/** Credentials of the superuser used to create and drop sandbox users and databases */
+/** Superuser credentials for managing sandbox users and databases */
 export type AdminEnv = Env & { DB_PASSWORD: string; DB_DATABASE: string };
 
 /**
- * Manages users, databases and templates inside of a long lived database container.
- * Implements the default behavior, which each vendor can override.
+ * Manages users, databases and templates in a long lived container. Vendors override as needed.
  */
 export abstract class SharedHelper {
-	/** Port the database listens on inside of its container */
 	abstract readonly port: number;
-	/** Whether sandboxes are cloned from a bootstrapped template, otherwise each sandbox is bootstrapped on its own */
+	/** Clone from a template instead of bootstrapping each sandbox */
 	readonly supportsTemplates: boolean = true;
-	/** Folder inside of the container where template snapshots are stored */
 	protected readonly templateFolder: string = '/tmp';
 
 	container!: string;
@@ -36,7 +33,6 @@ export abstract class SharedHelper {
 		protected logger: Logger,
 	) {}
 
-	/** Start the shared container unless it is already running and healthy */
 	async start() {
 		let container = await findContainer(this.project, this.database);
 
@@ -45,7 +41,7 @@ export abstract class SharedHelper {
 		} else {
 			this.logger.info(`Starting shared database container ${this.project}`);
 
-			// Keep all published ports of an existing but unhealthy container, compose recreates it on any change
+			// Keep existing ports, compose recreates the container on any change
 			if (container) {
 				this.container = container;
 				Object.assign(this.env, await this.getPorts());
@@ -62,22 +58,21 @@ export abstract class SharedHelper {
 		this.admin = { ...this.env } as AdminEnv;
 	}
 
-	/** Host ports of the container, these are fixed by whoever started the container first */
+	/** Host ports, fixed by whoever started the container first */
 	protected async getPorts(): Promise<Record<string, string>> {
 		return { DB_PORT: await getHostPort(this.container, this.port) };
 	}
 
-	/** Name of the database a sandbox user connects to */
 	databaseName(user: string) {
 		return user;
 	}
 
 	generatePassword() {
-		// Satisfies the mssql password policy while staying a valid unquoted identifier for oracle
+		// Meets the mssql password policy and is a valid oracle identifier
 		return `Sb1_${randomBytes(12).toString('hex')}`;
 	}
 
-	/** Create the sandbox user, granting the same privileges the default (non shared) setup has, so tests behave the same */
+	/** Create the sandbox user with the same privileges as the non shared setup */
 	abstract createUser(user: string, password: string, name: string): Promise<void>;
 
 	async drop(user: string, name: string) {
@@ -106,10 +101,7 @@ export abstract class SharedHelper {
 		);
 	}
 
-	/**
-	 * Bootstrap a fresh database and store it as the template that sandboxes are cloned from.
-	 * Templates of other keys are removed, as they are outdated.
-	 */
+	/** Bootstrap and store the template sandboxes are cloned from, removing outdated templates. */
 	async buildTemplate(template: string, opts: Options) {
 		const start = performance.now();
 		this.logger.info(`Building shared database template ${template}`);
@@ -118,7 +110,7 @@ export abstract class SharedHelper {
 		await this.drop(template, template);
 		await this.query((knex) => this.createDatabase(knex, template));
 
-		// Bootstrapped by the admin, so the template doesn't depend on any sandbox user
+		// Bootstrapped as admin so the template doesn't depend on a sandbox user
 		await bootstrap(opts, { ...this.admin, DB_DATABASE: template } as Env, this.logger);
 		await this.saveTemplate(template);
 
@@ -126,7 +118,6 @@ export abstract class SharedHelper {
 		this.logger.info(`Built shared database template ${template} ${time}`);
 	}
 
-	/** Remove all templates, they are only ever built when the current one is missing or broken */
 	async removeTemplates() {
 		const folder = this.templateFolder;
 
@@ -139,11 +130,10 @@ export abstract class SharedHelper {
 		]);
 	}
 
-	/** Snapshot the bootstrapped template database into a file inside of the container */
 	protected async saveTemplate(template: string) {
 		await this.backup(template);
 
-		// The snapshot is all that is needed from now on, the marker makes sure only complete snapshots are used
+		// The marker ensures only complete snapshots are used
 		await this.drop(template, template);
 		await exec('docker', ['exec', this.container, 'touch', this.templateFile(template, 'ready')]);
 	}
@@ -152,7 +142,6 @@ export abstract class SharedHelper {
 		throw new Error(`Templates are not supported for ${this.database}`);
 	}
 
-	/** Create the sandbox database and user from the template */
 	async cloneTemplate(template: string, user: string, password: string, name: string) {
 		await this.restore(template, name);
 		await this.createUser(user, password, name);
@@ -166,9 +155,7 @@ export abstract class SharedHelper {
 		return `${this.templateFolder}/${template}.${extension}`;
 	}
 
-	/** Run queries as the admin */
 	protected async query<T>(fn: (knex: Knex) => Promise<T>) {
-		// Connection setup is logged on every connect, which is just noise here
 		const logger = { ...this.logger, info() {}, debug() {} };
 		const knex = createDatabase(this.admin, logger);
 

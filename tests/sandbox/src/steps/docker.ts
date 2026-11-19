@@ -18,7 +18,7 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 		.filter(([_, value]) => value)
 		.map(([key, _]) => key);
 
-	// Shared databases run in their own long lived compose project, see `createSharedDatabase`
+	// Shared databases run in their own compose project
 	const files = database === 'sqlite' || opts.docker.shared ? extrasList : [database, ...extrasList];
 
 	let project: string | undefined = undefined;
@@ -53,7 +53,6 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 	const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 
 	if ('DB_PORT' in env) {
-		// Shared databases are reported once their user and database are provisioned
 		if (!opts.docker.shared) {
 			logger.info(`Database started at ${env.DB_HOST}:${env.DB_PORT}/${env.DB_DATABASE} ${time}`);
 			logger.info(`User: ${chalk.cyan(env.DB_USER)} Password: ${chalk.cyan(env.DB_PASSWORD)}`);
@@ -71,7 +70,6 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 	return project;
 }
 
-/** Run `docker compose up` for the given compose files and wait for all containers to be healthy */
 export async function composeUp(
 	project: string,
 	files: string[],

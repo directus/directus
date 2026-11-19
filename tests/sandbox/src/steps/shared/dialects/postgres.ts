@@ -1,7 +1,7 @@
 import type { Knex } from 'knex';
 import { SharedHelper } from '../types.js';
 
-/** Postgres has native template databases, so no snapshot files are needed */
+/** Uses native template databases */
 export class SharedHelperPostgres extends SharedHelper {
 	readonly port = 5432;
 
@@ -13,7 +13,7 @@ export class SharedHelperPostgres extends SharedHelper {
 	}
 
 	protected override async createDatabase(knex: Knex, name: string) {
-		// The postgis image provides a template with postgis already installed
+		// The postgis image ships a template with postgis installed
 		const postgis = await knex.raw(`SELECT 1 FROM pg_database WHERE datname = 'template_postgis'`);
 		await knex.raw(`CREATE DATABASE "${name}"${postgis.rows.length > 0 ? ' TEMPLATE template_postgis' : ''}`);
 	}

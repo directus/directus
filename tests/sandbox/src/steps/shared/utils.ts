@@ -6,7 +6,6 @@ import { join, resolve } from 'path';
 import { type Env } from '../../config.js';
 import { apiFolder, type Options } from '../../sandbox.js';
 
-/** Env variables that influence what bootstrap writes into the database */
 const bootstrapEnv = [
 	'ADMIN_EMAIL',
 	'ADMIN_PASSWORD',
@@ -23,19 +22,17 @@ const bootstrapEnv = [
 ];
 
 /**
- * Templates are keyed by everything that influences the outcome of bootstrapping,
- * so a template is rebuilt whenever migrations, seeds or the initial admin change.
+ * Key of everything affecting bootstrap, so templates rebuild when migrations, seeds or the admin change.
  */
 export async function getTemplateKey(opts: Options, env: Env) {
 	const hash = createHash('sha256');
-	// Bootstrap runs from source in dev mode and from the build otherwise
 	const folder = join(apiFolder, opts.dev ? 'src' : 'dist', 'database');
 
 	const values = env as Record<string, string | undefined>;
 
 	await hashFolder(hash, join(folder, 'migrations'));
 	await hashFolder(hash, join(folder, 'seeds'));
-	// Custom migrations are resolved against the cwd the bootstrap process inherits
+	// Custom migrations resolve against the inherited cwd
 	await hashFolder(hash, resolve(values['MIGRATIONS_PATH'] ?? './migrations'), true);
 
 	for (const key of bootstrapEnv) {
@@ -110,8 +107,8 @@ export async function exec(command: string, args: string[], input?: string) {
 }
 
 /**
- * Cross process lock, so parallel sandboxes don't try to start the same shared container or build the same template at once.
- * The lock file holds the pid of its holder and is only taken over once that process is gone. All sandboxes share the host.
+ * Cross process lock around starting shared containers and building templates.
+ * Holds the pid of its owner and is only taken over once that process is gone.
  */
 export async function withLock<T>(name: string, fn: () => Promise<T>): Promise<T> {
 	const lock = join(tmpdir(), `${name}.lock`);
@@ -125,7 +122,7 @@ export async function withLock<T>(name: string, fn: () => Promise<T>): Promise<T
 		}
 
 		if (await isStale(lock)) {
-			// Renaming is atomic, so only a single waiter removes a stale lock
+			// Rename is atomic, so only one waiter removes a stale lock
 			const stale = `${lock}.${randomBytes(8).toString('hex')}`;
 
 			await rename(lock, stale).then(
@@ -153,14 +150,14 @@ async function isStale(lock: string) {
 		),
 	]);
 
-	// The pid is written right after the file is created, a crash in between would otherwise leave the lock forever
+	// A crash between create and pid write would otherwise leave the lock forever
 	if (!pid) return age > 10_000;
 
 	try {
 		process.kill(Number(pid), 0);
 		return false;
 	} catch (err: any) {
-		// EPERM means the process exists but belongs to another user
+		// EPERM: process exists but belongs to another user
 		return err.code === 'ESRCH';
 	}
 }

@@ -18,10 +18,7 @@ program
 	.option('--docker.keep', 'Keep containers running when stopping the sandbox')
 	.option('--docker.name <name>', 'Overwrite the name of the docker project')
 	.option('--docker.suffix <suffix>', 'Adds a suffix to the docker project. Can be used to ensure uniqueness')
-	.option(
-		'--docker.shared',
-		'Reuse a long lived database container and create a fresh user and database inside of it instead of starting a new one',
-	)
+	.option('--docker.shared', 'Reuse a long lived database container with a fresh user and database')
 	.option(
 		'--env <env...>',
 		'Add environment variables that the api should start with. Format: KEY=VALUE',

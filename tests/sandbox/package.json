@@ -43,8 +43,7 @@
 		"tsx": "catalog:",
 		"typedoc": "catalog:",
 		"typedoc-plugin-markdown": "catalog:",
-		"typescript": "catalog:",
-		"uuid": "catalog:"
+		"typescript": "catalog:"
 	},
 	"engines": {
 		"node": ">=26"

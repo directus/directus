@@ -2,7 +2,7 @@ import type { Knex } from 'knex';
 import { SharedHelper } from '../types.js';
 import { getHostPort } from '../utils.js';
 
-/** Templates are stored as backups in the external io dir of the node */
+/** Templates are stored as backups in the external io dir */
 export class SharedHelperCockroachDb extends SharedHelper {
 	readonly port = 26257;
 	protected override readonly templateFolder = '/cockroach/extern';

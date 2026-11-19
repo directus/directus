@@ -31,7 +31,7 @@ Options:
   --docker.keep                Keep containers running when stopping the sandbox
   --docker.name <name>         Overwrite the name of the docker project
   --docker.suffix <suffix>     Adds a suffix to the docker project. Can be used to ensure uniqueness
-  --docker.shared              Reuse a long lived database container and create a fresh user and database inside of it instead of starting a new one
+  --docker.shared              Reuse a long lived database container with a fresh user and database
   --env <env...>               Add environment variables that the api should start with. Format: KEY=VALUE (default: {})
   --cache                      Enable or disable caching
   --prefix <prefix>            Prefix the logs, useful when starting multiple sandboxes

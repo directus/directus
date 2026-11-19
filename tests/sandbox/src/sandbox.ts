@@ -51,10 +51,7 @@ export type Options = {
 		name: string | undefined;
 		/** Adds a suffix to the docker project. Can be used to ensure uniqueness */
 		suffix: string;
-		/**
-		 * Reuse a long lived database container instead of starting a new one, creating a fresh user and database inside of it.
-		 * The user and database are dropped on stop, the container is kept running.
-		 */
+		/** Reuse a long lived database container, with a fresh user and database per sandbox */
 		shared: boolean;
 	};
 	/** Horizontally scale the api to a given number of instances */
@@ -227,7 +224,6 @@ export async function sandboxes(
 					const project = await dockerUp(database, opts, env, logger);
 					if (project) projects.push({ project, logger, env, keep: opts.docker.keep });
 
-					// Shared databases are cloned from an already bootstrapped template
 					const shared = opts.docker.shared ? await createSharedDatabase(database, opts, env, logger) : undefined;
 
 					if (shared) sharedDatabases.push({ shared, logger });
@@ -265,7 +261,7 @@ export async function sandboxes(
 			}
 		}
 
-		// The apis have to let go of their connections before their database can be dropped
+		// Apis must disconnect before the database can be dropped
 		if (sharedDatabases.length > 0) {
 			await Promise.all(sandboxes.flatMap((sandbox) => sandbox.apis.map((api) => killAndWait(api.process))));
 		}
@@ -300,7 +296,6 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		}
 
 		project = await dockerUp(database, opts, env, logger);
-		// Shared databases are cloned from an already bootstrapped template
 		if (opts.docker.shared) shared = await createSharedDatabase(database, opts, env, logger);
 		if (!shared) await bootstrap(opts, env, logger);
 		if (opts.schema) await loadSchema(opts.schema, env, logger);
@@ -337,7 +332,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		kill(app);
 
 		if (shared) {
-			// The apis have to let go of their connections before the database can be dropped
+			// Apis must disconnect before the database can be dropped
 			await Promise.all(apis?.map((api) => killAndWait(api.process)) ?? []);
 			await dropSharedDatabase(shared, logger);
 		}

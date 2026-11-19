@@ -38,7 +38,6 @@ export class SharedHelperMySQL extends SharedHelper {
 		await this.shell(`${this.clientCommand} -uroot ${name} < ${this.templateFile(template, 'sql')}`);
 	}
 
-	/** Run a shell command inside of the container, authenticated as root */
 	protected async shell(command: string) {
 		await exec('docker', ['exec', '-e', `MYSQL_PWD=${this.admin.DB_PASSWORD}`, this.container, 'sh', '-c', command]);
 	}

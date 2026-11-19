@@ -2,8 +2,8 @@ import { SharedHelper } from '../types.js';
 import { exec } from '../utils.js';
 
 /**
- * Oracle has no databases, every sandbox gets a schema (user) inside of the pluggable database instead.
- * There is no template, as Data Pump takes longer than bootstrapping.
+ * Each sandbox gets a schema (user) in the pluggable database.
+ * No template, as Data Pump is slower than bootstrapping.
  */
 export class SharedHelperOracle extends SharedHelper {
 	readonly port = 1521;
@@ -33,7 +33,6 @@ export class SharedHelperOracle extends SharedHelper {
 		]);
 	}
 
-	/** Run statements as sysdba inside of the pluggable database */
 	private async sqlplus(lines: string[]) {
 		const script = [
 			'WHENEVER SQLERROR EXIT SQL.SQLCODE',
