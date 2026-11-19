@@ -161,7 +161,5 @@ defineExpose({ select, isFormatActive, currentLabel });
 
 .style-list {
 	min-inline-size: 10rem;
-	max-block-size: 18rem;
-	overflow-y: scroll;
 }
 </style>

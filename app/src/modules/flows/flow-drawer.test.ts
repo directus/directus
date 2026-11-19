@@ -2,6 +2,7 @@ import { FlowRaw } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { nextTick } from 'vue';
 import FlowDrawer from './flow-drawer.vue';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
@@ -21,6 +22,13 @@ vi.mock('@/stores/flows', () => ({
 				id: 'flow-1',
 				name: 'Test Flow 1',
 				status: 'active',
+				trigger: 'manual',
+				options: { collections: ['articles'], location: 'item' },
+			} as unknown as FlowRaw,
+			{
+				id: 'flow-2',
+				name: 'Test Flow 2',
+				status: 'inactive',
 				trigger: 'manual',
 				options: {},
 			} as unknown as FlowRaw,
@@ -43,6 +51,8 @@ vi.mock('@/utils/unexpected-error', () => ({
 let global: GlobalMountOptions;
 
 beforeEach(() => {
+	vi.clearAllMocks();
+
 	global = {
 		stubs: {
 			'v-drawer': true,
@@ -98,6 +108,7 @@ describe('FlowDrawer - save', () => {
 
 		const wrapper = mount(FlowDrawer, { global, props: { active: true, primaryKey: 'flow-1', folder: 'folder-a' } });
 
+		(wrapper.vm as any).values.name = 'Renamed Flow';
 		await (wrapper.vm as any).save();
 
 		expect(api.patch).toHaveBeenCalledWith(
@@ -105,5 +116,103 @@ describe('FlowDrawer - save', () => {
 			expect.not.objectContaining({ folder: expect.anything() }),
 			expect.anything(),
 		);
+	});
+});
+
+describe('FlowDrawer - update', () => {
+	test('only sends changed fields, skipping an unchanged status', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		api.patch.mockResolvedValue({ data: { data: { id: 'flow-1' } } });
+
+		const wrapper = mount(FlowDrawer, { global, props: { active: true, primaryKey: 'flow-1' } });
+
+		(wrapper.vm as any).values.name = 'Renamed Flow';
+		(wrapper.vm as any).values.status = 'active';
+		await (wrapper.vm as any).save();
+
+		expect(api.patch).toHaveBeenCalledWith('/flows/flow-1', { name: 'Renamed Flow' }, expect.anything());
+	});
+
+	test('sends all options when one option changes', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		api.patch.mockResolvedValue({ data: { data: { id: 'flow-1' } } });
+
+		const wrapper = mount(FlowDrawer, { global, props: { active: true, primaryKey: 'flow-1' } });
+
+		(wrapper.vm as any).values.options = { ...(wrapper.vm as any).values.options, collections: ['articles', 'pages'] };
+		await (wrapper.vm as any).save();
+
+		expect(api.patch).toHaveBeenCalledWith(
+			'/flows/flow-1',
+			{ options: { collections: ['articles', 'pages'], location: 'item' } },
+			expect.anything(),
+		);
+	});
+
+	test('sends the status when activating an inactive Flow', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		api.patch.mockResolvedValue({ data: { data: { id: 'flow-2' } } });
+
+		const wrapper = mount(FlowDrawer, { global, props: { active: true, primaryKey: 'flow-2' } });
+
+		(wrapper.vm as any).values.status = 'active';
+		await (wrapper.vm as any).save();
+
+		expect(api.patch).toHaveBeenCalledWith('/flows/flow-2', { status: 'active' }, expect.anything());
+	});
+
+	test('sends empty options when the trigger changes', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		api.patch.mockResolvedValue({ data: { data: { id: 'flow-1' } } });
+
+		const wrapper = mount(FlowDrawer, { global, props: { active: true, primaryKey: 'flow-1' } });
+
+		(wrapper.vm as any).values.trigger = 'webhook';
+		await nextTick();
+		await (wrapper.vm as any).save();
+
+		expect(api.patch).toHaveBeenCalledWith('/flows/flow-1', { trigger: 'webhook', options: {} }, expect.anything());
+	});
+
+	test('shows and saves the status staged in the editor', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		api.patch.mockResolvedValue({ data: { data: { id: 'flow-2' } } });
+
+		const wrapper = mount(FlowDrawer, { global, props: { active: false, primaryKey: 'flow-2' } });
+
+		await wrapper.setProps({ status: 'active', active: true });
+
+		expect((wrapper.vm as any).values.status).toBe('active');
+
+		await (wrapper.vm as any).save();
+
+		expect(api.patch).toHaveBeenCalledWith('/flows/flow-2', { status: 'active' }, expect.anything());
+	});
+
+	test('discards unsaved edits when reopened', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+
+		const wrapper = mount(FlowDrawer, { global, props: { active: true, primaryKey: 'flow-1' } });
+
+		(wrapper.vm as any).values.status = 'inactive';
+		(wrapper.vm as any).values.trigger = 'webhook';
+		await nextTick();
+
+		await wrapper.setProps({ active: false });
+		await wrapper.setProps({ active: true });
+		await (wrapper.vm as any).save();
+
+		expect(api.patch).not.toHaveBeenCalled();
+	});
+
+	test('closes without saving when nothing changes', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+
+		const wrapper = mount(FlowDrawer, { global, props: { active: true, primaryKey: 'flow-1' } });
+
+		await (wrapper.vm as any).save();
+
+		expect(api.patch).not.toHaveBeenCalled();
+		expect(wrapper.emitted('done')).toEqual([['flow-1']]);
 	});
 });

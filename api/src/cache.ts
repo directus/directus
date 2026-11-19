@@ -9,8 +9,6 @@ import { redisConfigAvailable } from './redis/index.js';
 import { compress, decompress } from './utils/compress.js';
 import { freezeSchema, unfreezeSchema } from './utils/freeze-schema.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import { getMilliseconds } from './utils/get-milliseconds.js';
-import { validateEnv } from './utils/validate-env.js';
 
 const logger = useLogger();
 const env = useEnv();
@@ -21,7 +19,6 @@ let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
 let deploymentCache: Keyv | null = null;
 let lockCache: Keyv | null = null;
-let messengerSubscribed = false;
 
 let localSchemaCache: Keyv | null = null;
 let memorySchemaCache: Readonly<SchemaOverview> | null = null;
@@ -35,11 +32,9 @@ interface CacheMessage {
 	autoPurgeSchema?: boolean | undefined;
 }
 
-if (redisConfigAvailable() && !messengerSubscribed) {
-	messengerSubscribed = true;
-
+if (redisConfigAvailable()) {
 	messenger.subscribe<CacheMessage>('schemaChanged', async (opts) => {
-		if (env['CACHE_STORE'] === 'memory' && env['CACHE_AUTO_PURGE'] && cache && opts?.['autoPurgeCache'] !== false) {
+		if (env.CACHE_STORE === 'memory' && env.CACHE_AUTO_PURGE && cache && opts?.['autoPurgeCache'] !== false) {
 			await cache.clear();
 		}
 
@@ -57,30 +52,30 @@ export function getCache(): {
 	localSchemaCache: Keyv;
 	lockCache: Keyv;
 } {
-	if (env['CACHE_ENABLED'] === true && cache === null) {
-		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-		cache = getKeyvInstance(env['CACHE_STORE'] as Store, getMilliseconds(env['CACHE_TTL']));
+	const store = env.CACHE_STORE as Store;
+
+	if (env.CACHE_ENABLED && cache === null) {
+		cache = getKeyvInstance(store, env.CACHE_TTL);
 		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
 	if (systemCache === null) {
-		systemCache = getKeyvInstance(env['CACHE_STORE'] as Store, getMilliseconds(env['CACHE_SYSTEM_TTL']), '_system');
+		systemCache = getKeyvInstance(store, env.CACHE_SYSTEM_TTL, '_system');
 		systemCache.on('error', (err) => logger.warn(err, `[system-cache] ${err}`));
 	}
 
 	if (deploymentCache === null) {
-		const ttl = getMilliseconds(env['CACHE_DEPLOYMENT_TTL']) || 5000; // Default 5s
-		deploymentCache = getKeyvInstance(env['CACHE_STORE'] as Store, ttl, '_deployment');
+		deploymentCache = getKeyvInstance(store, env.CACHE_DEPLOYMENT_TTL, '_deployment');
 		deploymentCache.on('error', (err) => logger.warn(err, `[deployment-cache] ${err}`));
 	}
 
 	if (localSchemaCache === null) {
-		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema');
+		localSchemaCache = getKeyvInstance('memory', env.CACHE_SYSTEM_TTL, '_schema');
 		localSchemaCache.on('error', (err) => logger.warn(err, `[schema-cache] ${err}`));
 	}
 
 	if (lockCache === null) {
-		lockCache = getKeyvInstance(env['CACHE_STORE'] as Store, undefined, '_lock');
+		lockCache = getKeyvInstance(store, undefined, '_lock');
 		lockCache.on('error', (err) => logger.warn(err, `[lock-cache] ${err}`));
 	}
 
@@ -145,7 +140,7 @@ export function setMemorySchemaCache(schema: SchemaOverview) {
 }
 
 export function getMemorySchemaCache(): Readonly<SchemaOverview> | undefined {
-	if (env['CACHE_SCHEMA_FREEZE_ENABLED']) {
+	if (env.CACHE_SCHEMA_FREEZE_ENABLED) {
 		return memorySchemaCache ?? undefined;
 	} else if (memorySchemaCache) {
 		return unfreezeSchema(memorySchemaCache);
@@ -213,13 +208,16 @@ function getKeyvInstance(store: Store, ttl: number | undefined, namespaceSuffix?
 
 function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSuffix = ''): KeyvOptions {
 	const config: KeyvOptions = {
-		namespace: `${env['CACHE_NAMESPACE']}${namespaceSuffix}`,
+		namespace: `${env.CACHE_NAMESPACE}${namespaceSuffix}`,
 		...(ttl && { ttl }),
 	};
 
 	if (store === 'redis') {
 		const { default: KeyvRedis } = require('@keyv/redis');
-		config.store = new KeyvRedis(env['REDIS'] || getConfigFromEnv('REDIS'), { useRedisSets: false });
+
+		config.store = new KeyvRedis(env['REDIS'] || getConfigFromEnv('REDIS', { omitSuffix: '_NAMESPACE' }), {
+			useRedisSets: false,
+		});
 	}
 
 	return config;

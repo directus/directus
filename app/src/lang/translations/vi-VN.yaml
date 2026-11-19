@@ -1165,6 +1165,8 @@ interfaces:
     modes:
       auto: Tự động
       dropdown: Tuỳ chọn dạng thả xuống
+  input-rich-text-html:
+    extensions: Phần mở rộng
   input-block-editor:
     tools_options:
       nestedlist: Danh sách
@@ -1255,6 +1257,13 @@ triggers:
   webhook:
     method: Phương thức
 operations:
+  ai-image:
+    starting_points:
+      icon: Biểu tượng
+  ai-text:
+    files: Tệp
+    type_text: Đoạn văn bản
+    view_json: JSON
   json-web-token:
     token: Token
     options: Tuỳ chọn

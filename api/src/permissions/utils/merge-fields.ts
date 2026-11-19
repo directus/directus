@@ -4,7 +4,7 @@ export function mergeFields(fieldsA: string[] | null, fieldsB: string[] | null, 
 	if (fieldsA === null) fieldsA = [];
 	if (fieldsB === null) fieldsB = [];
 
-	let fields = [];
+	let fields;
 
 	if (strategy === 'and') {
 		if (fieldsA.length === 0 || fieldsB.length === 0) return [];

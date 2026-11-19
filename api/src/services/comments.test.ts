@@ -16,8 +16,8 @@ vi.mock('../logger/index.js', () => {
 });
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv({ PUBLIC_URL: 'http://localhost:8055' });
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv({ PUBLIC_URL: 'http://localhost:8055' });
 });
 
 vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({ validateAccess: vi.fn() }));
@@ -33,8 +33,8 @@ vi.mock('./items.js', async () => {
 });
 
 vi.mock('./users.js', async () => {
-	const { mockUsersService } = await import('../test-utils/services/users-service.js');
-	return mockUsersService();
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
+	return { UsersService: mockItemsService().ItemsService };
 });
 
 vi.mock('./notifications.js', async () => {

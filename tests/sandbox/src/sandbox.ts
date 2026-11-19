@@ -6,7 +6,7 @@ import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { type Env, getEnv } from './config.js';
 import { directusFolder } from './find-directus.js';
-import { kill } from './kill.js';
+import { kill, killAndWait } from './kill.js';
 import { createLogger, type Logger } from './logger.js';
 import { getPort, type Port, type PortRange } from './port.js';
 import { startApp } from './steps/app.js';
@@ -15,13 +15,15 @@ import {
 	bootstrap,
 	buildApi,
 	createDatabase,
+	createSharedDatabase,
 	dockerDown,
 	dockerUp,
+	dropSharedDatabase,
 	loadSchema,
 	saveSchema,
+	type SharedDatabase,
 	startApi,
 } from './steps/index.js';
-import { startLicenseServer } from './steps/license.js';
 
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -49,6 +51,8 @@ export type Options = {
 		name: string | undefined;
 		/** Adds a suffix to the docker project. Can be used to ensure uniqueness */
 		suffix: string;
+		/** Reuse a long lived database container, with a fresh user and database per sandbox */
+		shared: boolean;
 	};
 	/** Horizontally scale the api to a given number of instances */
 	instances: string;
@@ -135,6 +139,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 				port: undefined,
 				name: undefined,
 				suffix: '',
+				shared: false,
 			},
 			instances: '1',
 			inspect: true,
@@ -162,7 +167,6 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 
 export const apiFolder = join(directusFolder, 'api');
 export const appFolder = join(directusFolder, 'app');
-export const licenseFolder = join(directusFolder, 'tests/mock-license-server');
 
 export const databases: Database[] = [
 	'maria',
@@ -201,12 +205,7 @@ export async function sandboxes(
 
 	let build: ChildProcessWithoutNullStreams | undefined;
 	const projects: { project: string; logger: Logger; env: Env; keep: boolean }[] = [];
-
-	let license: ChildProcessWithoutNullStreams | undefined;
-
-	if (opts.extras.license) {
-		license = await startLicenseServer(await getEnv('sqlite', opts), logger);
-	}
+	const sharedDatabases: { shared: SharedDatabase; logger: Logger }[] = [];
 
 	try {
 		// Rebuild directus
@@ -225,7 +224,10 @@ export async function sandboxes(
 					const project = await dockerUp(database, opts, env, logger);
 					if (project) projects.push({ project, logger, env, keep: opts.docker.keep });
 
-					await bootstrap(opts, env, logger);
+					const shared = opts.docker.shared ? await createSharedDatabase(database, opts, env, logger) : undefined;
+
+					if (shared) sharedDatabases.push({ shared, logger });
+					else await bootstrap(opts, env, logger);
 					if (opts.schema) await loadSchema(opts.schema, env, logger);
 					if (opts.knex) knex = createDatabase(env, logger);
 					await opts.hooks.beforeApi?.({ env, logger, knex });
@@ -259,11 +261,15 @@ export async function sandboxes(
 			}
 		}
 
-		kill(license);
+		// Apis must disconnect before the database can be dropped
+		if (sharedDatabases.length > 0) {
+			await Promise.all(sandboxes.flatMap((sandbox) => sandbox.apis.map((api) => killAndWait(api.process))));
+		}
 
-		await Promise.all(
-			projects.filter(({ keep }) => !keep).map(({ project, logger, env }) => dockerDown(project, env, logger)),
-		);
+		await Promise.all([
+			...projects.filter(({ keep }) => !keep).map(({ project, logger, env }) => dockerDown(project, env, logger)),
+			...sharedDatabases.map(({ shared, logger }) => dropSharedDatabase(shared, logger)),
+		]);
 	}
 
 	return { sandboxes, stop, restartApis };
@@ -279,9 +285,9 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	let app: ChildProcessWithoutNullStreams | undefined;
 	let build: ChildProcessWithoutNullStreams | undefined;
 	let interval: NodeJS.Timeout;
-	let license: ChildProcessWithoutNullStreams | undefined;
 	let knex: Knex | undefined;
 	let project: string | undefined;
+	let shared: SharedDatabase | undefined;
 
 	try {
 		// Rebuild directus
@@ -289,12 +295,9 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 			build = await buildApi(opts, logger, restartApi);
 		}
 
-		if (opts.extras.license) {
-			license = await startLicenseServer(env, logger);
-		}
-
 		project = await dockerUp(database, opts, env, logger);
-		await bootstrap(opts, env, logger);
+		if (opts.docker.shared) shared = await createSharedDatabase(database, opts, env, logger);
+		if (!shared) await bootstrap(opts, env, logger);
 		if (opts.schema) await loadSchema(opts.schema, env, logger);
 		if (opts.knex) knex = createDatabase(env, logger);
 		await opts.hooks.beforeApi?.({ env, logger, knex });
@@ -309,23 +312,8 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	}
 
 	async function restartApi() {
-		apis?.forEach((api) => kill(api.process));
-
-		// Re-resolve the port — the just-killed API may keep the port in
-		// TIME_WAIT for a short window. getPort falls back to a free port if
-		// the requested one is taken, and we propagate that everywhere
-		// (opts.port, env.PORT, env.PUBLIC_URL) so the API and any consumer of
-		// directus.apis/env stay in lockstep.
-		const resolvedPort = await getPort(opts.port);
-
-		if (resolvedPort !== opts.port) {
-			opts.port = resolvedPort;
-			env.PORT = String(resolvedPort);
-
-			const publicUrl = new URL(env.PUBLIC_URL);
-			publicUrl.port = String(resolvedPort);
-			env.PUBLIC_URL = publicUrl.toString().replace(/\/$/, '');
-		}
+		// Restart on the same port once the old process is gone, keeping PUBLIC_URL stable
+		await Promise.all(apis?.map((api) => killAndWait(api.process)) ?? []);
 
 		apis = await startApi(opts, env, logger);
 	}
@@ -342,7 +330,12 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		}
 
 		kill(app);
-		kill(license);
+
+		if (shared) {
+			// Apis must disconnect before the database can be dropped
+			await Promise.all(apis?.map((api) => killAndWait(api.process)) ?? []);
+			await dropSharedDatabase(shared, logger);
+		}
 
 		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
 

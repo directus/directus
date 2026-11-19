@@ -1,6 +1,7 @@
 import type { StaticTokenClient } from '../auth/types.js';
 import type { DirectusClient } from '../types/client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
+import { isFormData } from '../utils/is-form-data.js';
 import { request } from '../utils/request.js';
 import type { RestClient, RestCommand, RestConfig } from './types.js';
 
@@ -18,16 +19,13 @@ export const rest = (config: Partial<RestConfig> = {}) => {
 			async request<Output = any>(getOptions: RestCommand<Output, Schema>): Promise<Output> {
 				const options = getOptions();
 
-				// all api requests require this content type
-				if (!options.headers) {
-					options.headers = {};
-				}
+				options.headers = { ...options.headers };
 
-				if ('Content-Type' in options.headers === false) {
-					options.headers['Content-Type'] = 'application/json';
-				} else if (options.headers['Content-Type'] === 'multipart/form-data') {
-					// let the fetch function deal with multipart boundaries
+				if (options.headers['Content-Type'] === 'multipart/form-data' || isFormData(options.body)) {
+					// let fetch set the multipart content type and boundary
 					delete options.headers['Content-Type'];
+				} else if ('Content-Type' in options.headers === false) {
+					options.headers['Content-Type'] = 'application/json';
 				}
 
 				// we need to use THIS here instead of client to access overridden functions

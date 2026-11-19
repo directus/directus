@@ -50,35 +50,56 @@ export function parseIptc(buffer: Buffer): Record<string, unknown> {
 	return iptc;
 }
 
+function readTag(source: string, tag: string, offset = 0): { value: string; end: number } | undefined {
+	const openTagPattern = new RegExp(`<${tag}>`, 'gi');
+	openTagPattern.lastIndex = offset;
+
+	if (openTagPattern.exec(source) === null) return;
+
+	const valueStart = openTagPattern.lastIndex;
+	const closeTagPattern = new RegExp(`</${tag}>`, 'gi');
+	closeTagPattern.lastIndex = valueStart;
+
+	const closeTagMatch = closeTagPattern.exec(source);
+
+	if (closeTagMatch === null) return;
+
+	const tagEnd = closeTagPattern.lastIndex;
+	const valueEnd = closeTagMatch.index;
+	const value = source.slice(valueStart, valueEnd);
+
+	return { value, end: tagEnd };
+}
+
+function readTagList(source: string, tag: string): string[] {
+	const items: string[] = [];
+	let item = readTag(source, tag);
+
+	while (item) {
+		items.push(item.value);
+		item = readTag(source, tag, item.end);
+	}
+
+	return items;
+}
+
 export function parseXmp(buffer: Buffer): Record<string, unknown> {
 	const xmp: Record<string, unknown> = {};
+	const source = buffer.toString();
 
-	['title', 'description', 'rights', 'creator', 'subject'].forEach((x) => {
-		const tagRegex = new RegExp(`<dc:${x}>(.*?)</dc:${x}>`, 'smig'),
-			tagMatches = tagRegex.exec(buffer.toString());
+	for (const name of ['title', 'description', 'rights', 'creator', 'subject']) {
+		const tag = readTag(source, `dc:${name}`);
 
-		if (!tagMatches || tagMatches.length === 0) {
-			return;
-		}
+		if (tag === undefined) continue;
 
-		const value = tagMatches[1]?.trim();
+		const value = tag.value.trim();
 
-		if (value?.toLowerCase().indexOf('<rdf:bag>') === 0) {
-			const r = new RegExp('<rdf:li>(.*?)</rdf:li>', 'smig');
-			let match = r.exec(value);
-			const result = [];
-
-			while (match) {
-				result.push(match[1]);
-
-				match = r.exec(value);
-			}
-
-			xmp[x] = result;
+		if (value.toLowerCase().startsWith('<rdf:bag>')) {
+			xmp[name] = readTagList(value, 'rdf:li');
 		} else {
-			xmp[x] = value?.replace(/<[^>]*>?/gm, '').trim();
+			xmp[name] = value.replace(/<[^>]*>?/gm, '').trim();
 		}
-	});
+	}
 
 	return xmp;
 }

@@ -3,7 +3,6 @@ import { InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { isObject, toArray } from '@directus/utils';
 import { z } from 'zod';
-import { fromZodError } from 'zod-validation-error';
 import { Url } from '../../utils/url.js';
 import { schema as schemaTool } from './schema/index.js';
 import { getToolTypeStrings } from './schema-to-type-string.js';
@@ -266,7 +265,7 @@ export class MountedToolRegistry {
 		const { error, data: args } = tool.validateSchema?.safeParse(coercedArgs) ?? { data: coercedArgs };
 
 		if (error) {
-			throw new InvalidPayloadError({ reason: fromZodError(error).message });
+			throw new InvalidPayloadError(error);
 		}
 
 		if (!isObject(args)) {
@@ -365,16 +364,15 @@ const executeRootTool: RootTool = {
 };
 
 function buildURL(tool: ToolConfig<any>, input: unknown, data: unknown): string | undefined {
-	const env = useEnv();
-	const publicURL = env['PUBLIC_URL'] as string | undefined;
+	const { PUBLIC_URL } = useEnv();
 
-	if (!publicURL || !tool.endpoint) return;
+	if (!tool.endpoint) return;
 
 	const path = tool.endpoint({ input, data });
 
 	if (!path) return;
 
-	return new Url(publicURL).addPath('admin', ...path).toString();
+	return new Url(PUBLIC_URL).addPath('admin', ...path).toString();
 }
 
 function toRegistryError(error: unknown, tool?: ToolConfig<any>): RegistryError {

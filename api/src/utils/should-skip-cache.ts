@@ -1,7 +1,7 @@
-import url from 'url';
 import { useEnv } from '@directus/env';
 import { getEndpoint } from '@directus/utils';
 import type { Request } from 'express';
+import { parseRequestUrl } from './parse-request-url.js';
 import { Url } from './url.js';
 
 /**
@@ -17,7 +17,7 @@ export function shouldSkipCache(req: Request): boolean {
 	const referer = req.get('Referer');
 
 	if (referer) {
-		const adminUrl = new Url(env['PUBLIC_URL'] as string).addPath('admin');
+		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
 
 		if (adminUrl.isRootRelative()) {
 			const refererUrl = new Url(referer);
@@ -27,18 +27,16 @@ export function shouldSkipCache(req: Request): boolean {
 		}
 	}
 
-	if (env['CACHE_SKIP_ALLOWED'] && req.get('cache-control')?.includes('no-store')) return true;
+	if (env.CACHE_SKIP_ALLOWED && req.get('cache-control')?.includes('no-store')) return true;
 
 	return false;
 
 	function checkAutoPurge() {
-		if (env['CACHE_AUTO_PURGE'] === false) return true;
+		if (!env.CACHE_AUTO_PURGE) return true;
 
-		const path = url.parse(req.originalUrl).pathname;
+		const path = parseRequestUrl(req.originalUrl).pathname;
 
-		if (!path) return false;
-
-		for (const collection of env['CACHE_AUTO_PURGE_IGNORE_LIST'] as string[]) {
+		for (const collection of env.CACHE_AUTO_PURGE_IGNORE_LIST) {
 			const ignoredPath = getEndpoint(collection);
 
 			if (path.startsWith(ignoredPath)) {

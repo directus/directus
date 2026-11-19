@@ -1,6 +1,5 @@
 import { type Database, databases, type Env, type Options } from '@directus/sandbox';
 import type { DeepPartial } from '@directus/types';
-import tsconfigPaths from 'vite-tsconfig-paths';
 import { configDefaults, defineConfig } from 'vitest/config';
 
 declare module 'vitest' {
@@ -19,7 +18,7 @@ declare module 'vitest' {
 export {};
 
 export default defineConfig({
-	plugins: [tsconfigPaths() as any],
+	resolve: { tsconfigPaths: true },
 	test: {
 		teardownTimeout: 60_000,
 		include: [],
@@ -31,7 +30,7 @@ export default defineConfig({
 			...databases.flatMap((database, index) => {
 				return [
 					{
-						plugins: [tsconfigPaths() as any],
+						resolve: { tsconfigPaths: true },
 						test: {
 							setupFiles: './setup/setup-files.ts',
 							globalSetup: './setup/global-setup-one.ts',
@@ -51,7 +50,7 @@ export default defineConfig({
 						},
 					},
 					{
-						plugins: [tsconfigPaths() as any],
+						resolve: { tsconfigPaths: true },
 						test: {
 							setupFiles: './setup/setup-files.ts',
 							name: `${database}-sb`,

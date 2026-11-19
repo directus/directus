@@ -1,4 +1,3 @@
-import { DOMSerializer } from '@tiptap/pm/model';
 import type { Editor } from '@tiptap/vue-3';
 import { useClipboardItems } from '@vueuse/core';
 
@@ -10,16 +9,14 @@ import { useClipboardItems } from '@vueuse/core';
 export function useClipboardActions() {
 	const { copy, isSupported } = useClipboardItems();
 
+	// keeps data-pm-slice, without which Ctrl/Cmd+V unwraps a node that is not `defining`
 	function selectionToItem(editor: Editor): ClipboardItem {
-		const { state } = editor;
+		const { state, view } = editor;
 		const { from, to } = state.selection;
-		const slice = state.selection.content();
-		const fragment = DOMSerializer.fromSchema(state.schema).serializeFragment(slice.content);
-		const div = document.createElement('div');
-		div.append(fragment);
+		const { dom } = view.serializeForClipboard(state.selection.content());
 
 		return new ClipboardItem({
-			'text/html': new Blob([div.innerHTML], { type: 'text/html' }),
+			'text/html': new Blob([dom.innerHTML], { type: 'text/html' }),
 			'text/plain': new Blob([state.doc.textBetween(from, to, '\n')], { type: 'text/plain' }),
 		});
 	}

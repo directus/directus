@@ -53,24 +53,28 @@ function shiftLogicalOperatorsUp(filter: any): any {
 		return {
 			[key]: filter[key].map(shiftLogicalOperatorsUp),
 		};
-	} else if (key.startsWith('_')) {
-		return filter;
-	} else {
-		const childResult = shiftLogicalOperatorsUp(filter[key]);
-		const childKey = Object.keys(childResult)[0];
-
-		if (!childKey) return { [key]: childResult };
-
-		if (logicalFilterOperators.includes(childKey)) {
-			return shiftLogicalOperatorsUp({
-				[childKey]: childResult[childKey].map((nestedFilter: any) => ({
-					[key]: nestedFilter,
-				})),
-			});
-		}
-
-		return { [key]: childResult };
 	}
+
+	if (key.startsWith('_')) return filter;
+
+	return wrapField(key, shiftLogicalOperatorsUp(filter[key]));
+}
+
+/**
+ * Wrap an already shifted filter in a field, pushing the field below any logical operators at its
+ * top. Only those operators are walked: shifting the wrapped result again would re-walk the whole
+ * subtree once per level of nesting.
+ */
+function wrapField(key: string, shifted: any): any {
+	const childKey = Object.keys(shifted)[0];
+
+	if (childKey && logicalFilterOperators.includes(childKey)) {
+		return {
+			[childKey]: shifted[childKey].map((nestedFilter: any) => wrapField(key, nestedFilter)),
+		};
+	}
+
+	return { [key]: shifted };
 }
 
 function parseFilterRecursive(

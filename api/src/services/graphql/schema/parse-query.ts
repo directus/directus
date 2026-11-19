@@ -1,8 +1,8 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { getRelationInfo } from '@directus/utils';
 import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
-import { get, mapKeys, merge, uniq } from 'lodash-es';
-import { getRelatedCollection } from '../../../database/get-ast-from-query/utils/get-related-collection.js';
+import { toPath, uniq } from 'lodash-es';
+import { getQueryLimits } from '../../../utils/query-limits.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { setDeep } from '../../../utils/set-deep.js';
 import { validateQuery } from '../../../utils/validate-query.js';
@@ -22,7 +22,9 @@ export async function getQuery(
 	accountability?: Accountability | null,
 	collection?: string,
 ): Promise<Query> {
-	const query: Query = await sanitizeQuery(rawQuery, schema, accountability);
+	const limits = getQueryLimits();
+
+	const query: Query = await sanitizeQuery(rawQuery, schema, accountability, limits);
 
 	const parseAliases = (selections: readonly SelectionNode[]) => {
 		const aliases: Record<string, string> = {};
@@ -101,8 +103,8 @@ export async function getQuery(
 
 							setDeep(
 								query.deep as Record<string, any>,
-								path,
-								merge({}, get(query.deep, parent), { _alias: { [selection.alias!.value]: selection.name.value } }),
+								[...toPath(path), '_alias', selection.alias!.value],
+								selection.name.value,
 							);
 						}
 					}
@@ -113,7 +115,8 @@ export async function getQuery(
 					// For A2O, getRelatedCollection returns null. Fallback to currentCollection
 					// keeps the junction in context so the next level can detect M2A via isM2AField.
 					// The actual target collection is then set from the InlineFragment typeCondition.
-					childCollection = getRelatedCollection(schema, currentCollection, selection.name.value) ?? currentCollection;
+					const { oppositeCollection } = getRelationInfo(schema.relations, currentCollection, selection.name.value);
+					childCollection = oppositeCollection ?? currentCollection;
 				}
 			}
 
@@ -160,17 +163,13 @@ export async function getQuery(
 
 				const args: Record<string, any> = parseArgs(selection.arguments, variableValues);
 
-				const path = (currentAlias ?? current).replaceAll(':', '__');
+				const path = toPath((currentAlias ?? current).replaceAll(':', '__'));
 
-				setDeep(
-					query.deep as Record<string, any>,
-					path,
-					merge(
-						{},
-						get(query.deep, path),
-						mapKeys(await sanitizeQuery(args, schema, accountability), (_value, key) => `_${key}`),
-					),
-				);
+				// Set each argument in place rather than merging into a copy, since the children are parsed
+				// first and copying everything they left under this path made nested arguments quadratic
+				for (const [key, value] of Object.entries(await sanitizeQuery(args, schema, accountability, limits))) {
+					setDeep(query.deep as Record<string, any>, [...path, `_${key}`], value);
+				}
 			}
 		}
 

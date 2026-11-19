@@ -402,6 +402,13 @@ describe('useCollab', () => {
 		);
 	});
 
+	test('returns the same field context for repeated registrations', () => {
+		const { collabContext } = useCollab(collection, item, version, initialValues, edits, getItem);
+
+		expect(collabContext.registerField('title')).toBe(collabContext.registerField('title'));
+		expect(collabContext.registerField('title')).not.toBe(collabContext.registerField('body'));
+	});
+
 	test('leaves room on unmount', async () => {
 		item.value = 'unmount-test';
 		useCollab(collection, item, version, initialValues, edits, getItem);

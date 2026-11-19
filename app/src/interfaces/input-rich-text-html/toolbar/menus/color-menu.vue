@@ -36,6 +36,7 @@ defineExpose({ apply });
 <template>
 	<VMenu placement="bottom-start" show-arrow :close-on-content-click="false">
 		<template #activator="{ toggle, active }">
+			<!-- .stop keeps a parent menu (the "Show More" overflow panel) open when this lives inside it -->
 			<VButton
 				v-tooltip="t(label)"
 				class="toolbar-button"
@@ -44,7 +45,7 @@ defineExpose({ apply });
 				:disabled="disabled || !editor"
 				small
 				icon
-				@click="toggle"
+				@click.stop="toggle"
 			>
 				<VIcon :name="icon" :style="current() ? { color: current()! } : undefined" />
 				<ToolbarCaret class="color-menu-caret" />

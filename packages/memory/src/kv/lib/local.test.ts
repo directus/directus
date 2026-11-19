@@ -260,6 +260,16 @@ describe('usingLock', () => {
 		expect(callback).toHaveBeenCalled();
 		expect(result).toBe('result');
 	});
+
+	test('Hands the callback a signal that never aborts', async () => {
+		const callback = vi.fn().mockResolvedValue('result');
+
+		await kv.usingLock('key', callback, { duration: 1000, retryCount: 0 });
+
+		const [signal] = callback.mock.calls[0]!;
+		expect(signal).toBeInstanceOf(AbortSignal);
+		expect(signal.aborted).toBe(false);
+	});
 });
 
 describe('clear', () => {

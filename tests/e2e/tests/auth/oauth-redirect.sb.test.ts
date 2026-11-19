@@ -62,7 +62,7 @@ describe('an instance served from the root of its public url', () => {
 			const response = await login(url, redirect);
 
 			expect(response.status).toBe(400);
-			expect((await response.json()).errors[0].extensions.code).toBe('INVALID_PAYLOAD');
+			expect(((await response.json()) as any).errors[0].extensions.code).toBe('INVALID_PAYLOAD');
 		});
 	}
 
@@ -146,7 +146,7 @@ describe('an instance served from a subpath of its public url', () => {
 		const response = await login(`http://127.0.0.1:${port}`, 'https://malicious.com/steal');
 
 		expect(response.status).toBe(400);
-		expect((await response.json()).errors[0].extensions.code).toBe('INVALID_PAYLOAD');
+		expect(((await response.json()) as any).errors[0].extensions.code).toBe('INVALID_PAYLOAD');
 	});
 
 	test('allows a redirect to its own origin without needing the allow list', async () => {

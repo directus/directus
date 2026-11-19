@@ -180,8 +180,6 @@ logoutReason:
   SESSION_EXPIRED: Seanca ka skaduar
 public_label: Publik
 public_description: Kontrollon cilat të dhëna API janë në dispozicion pa autentifikim.
-public_role_info: >-
-  Roli publik kontrollon se cilat të dhëna API janë të disponueshme për përdoruesit e paautentikuar ose për ata pa rol. Kërkesat me rolin publik nuk mund të kenë akses në aplikacion ose administrim. Nëse një drejtimi të caktuar për rolin publik i jepet akses në aplikacion ose administrim, do të injorohet.
 admin_description: Roli administrativ fillestar me qasje të pakufizuar në Aplikacion/API.
 admin_policy_description: Drejtimi fillestar administrativ me akses të pakufizuar në Aplikacion/API.
 no_description: Pa përshkrim...
@@ -678,6 +676,8 @@ file_moved: Skedari u Zhvendos
 collection_created: Koleksioni u Krijua
 modified_on: Modifikuar Më
 card_size: Madhësia e Kartës
+small: Vogël
+large: Madh
 sort_field: Fusha e Renditjes
 add_sort_field: Shto Fushë Renditjeje
 sort: Rendit
@@ -1588,6 +1588,7 @@ forgot_password: Harruat Fjalëkalimin
 hidden: I Fshehur
 hidden_in_group: I fshehur në {group}
 icon: Ikonë
+image: Imazh
 info: Info
 normal: Normal
 success: Sukses
@@ -1878,6 +1879,8 @@ interfaces:
   select-radio:
     radio-buttons: Butonat Radio
     description: Zgjidh një nga zgjedhjet e shumta
+  system-file-image:
+    image: Imazh
   list:
     repeater: Përsëritës
     description: Krijo hyrje të shumta të strukturës së njëjtë
@@ -1962,6 +1965,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Një redaktues teksti të pasur që shkruan përmbajtje HTML
     toolbar: Shirit Mjetesh
+    extensions: Zgjerime
     custom_formats: Formate të Personalizuara
     folder_note: Dosje për skedarët e ngarkuar. Nuk ndikon në skedarët ekzistues.
     imageToken: Token i Qasshëm
@@ -2329,6 +2333,16 @@ a_flow_uuid: Zgjidh një rrjedhë për të shkaktuar...
 any_string_or_json: Çdo varg ose JSON...
 item_payload_placeholder: Kjo është JSON që përdoret për të përditësuar vlerat e fushës së artikullit...
 operations:
+  ai-image:
+    background: Sfond
+    emit_events: Lësho Ngjarje
+    starting_points:
+      icon: Ikonë
+  ai-text:
+    files: Skedarë
+    type_text: Tekst
+    view_fields: Fusha
+    view_json: JSON
   condition:
     name: Kusht
   exec:

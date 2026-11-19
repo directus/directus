@@ -180,8 +180,6 @@ logoutReason:
   SESSION_EXPIRED: Холболтын хугацаа дууссан
 public_label: Нээлттэй
 public_description: Нэвтэрч ороогүй үед API- ны ямар өгөгдөл авч болохыг удирдана.
-public_role_info: >-
-  Нийтийн үүрэг нь нэвтрээгүй эсвэл үүрэггүй хэрэглэгчдэд ямар API өгөгдөл нь боломжтой байхыг удирдана. Нийтийн үүрэг бүхий хүсэлтүүдэд апп эсвэл админ хандалт байх боломжгүй. Хэрэв апп эсвэл админ хандалтыг нийтийн үүрэгт хуваарилсан бодлогод өгсөн бол тэдгээрийг үл хэрэгсэх болно.
 admin_description: Апп болон API дата руу хязгааргүй хандах эрхтэй үндсэн админ эрх.
 admin_policy_description: Хязгаарлалтгүй Апп/API хандалт бүхий анхны админы бодлого.
 no_description: Тайлбар байхгүй...
@@ -678,6 +676,8 @@ file_moved: Файлыг зөөв
 collection_created: Бүрдлийг үүсгэлээ
 modified_on: Өөрчлөгдсөн
 card_size: Картын хэмжээ
+small: Жижиг
+large: Том
 sort_field: Талбаруудыг эрэмбэлэх
 add_sort_field: Эрэмбэлэх талбар нэмэх
 sort: Эрэмбэлэх
@@ -1588,6 +1588,7 @@ forgot_password: Нууц үгээ мартсан
 hidden: Нуусан
 hidden_in_group: '{group}-д нуусан'
 icon: Таних тэмдэг
+image: Зураг
 info: Мэдээлэл
 normal: Энгийн
 success: Амжилттай
@@ -1878,6 +1879,8 @@ interfaces:
   select-radio:
     radio-buttons: Радио товчлуур
     description: Олон сонголтоос нэгийг сонгох
+  system-file-image:
+    image: Зураг
   list:
     repeater: Давтагч
     description: Нэг бүтэцтэй олон оруулгууд үүсгэх
@@ -1962,6 +1965,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: HTML үүсгэдэг дэвшилтэт засварлагч
     toolbar: Хэрэгслийн самбар
+    extensions: Суулгасан хэрэгсэл
     custom_formats: Тохируулгат форматууд
     folder_note: Оруулсан файлуудын хавтас. Одоогийн файлуудад хамаарахгүй.
     imageToken: Статик хандалтын токен
@@ -2329,6 +2333,16 @@ a_flow_uuid: Өдөөгдөх урсгалыг сонгоно уу...
 any_string_or_json: Ямар ч тэмдэгтэн мөр эсвэл JSON...
 item_payload_placeholder: Энэ бол оруулгын талбарын утгыг шинэчлэхэд хэрэглэгддэг JSON юм...
 operations:
+  ai-image:
+    background: Ар дэвсгэр
+    emit_events: Үйл явдал үүсгэх
+    starting_points:
+      icon: Таних тэмдэг
+  ai-text:
+    files: Файлууд
+    type_text: Текст
+    view_fields: Талбарууд
+    view_json: JSON
   condition:
     name: Нөхцөл
   exec:

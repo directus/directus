@@ -274,8 +274,6 @@ logoutReason:
   SESSION_EXPIRED: نشست به پایان رسیده
 public_label: در دسترس عموم
 public_description: اینکه کدام داده مربوط به API، بدون احراز هویت، قابل دسترسی باشد را کنترل میکند.
-public_role_info: >-
-  نقش عمومی تعیین می‌کند که کدام داده‌های API برای کاربران احراز هویت نشده یا کاربران بدون نقش در دسترس باشد. درخواست‌ها با نقش عمومی نمی‌توانند دسترسی برنامه یا مدیر داشته باشند. اگر دسترسی برنامه یا مدیر به سیاستی که به نقش عمومی منتسب شده است داده شود، ندیده گرفته می‌شوند.
 admin_description: نقش مدیریتی اولیه با سطح دسترسی بدون محدودیت به برنامه و API
 admin_policy_description: نقش مدیریتی اولیه با دسترسی نامحدود به برنامه و API.
 no_description: بدون توضیحات...
@@ -837,6 +835,8 @@ file_moved: فایل منتقل شد
 collection_created: مجموعه ساخته شد
 modified_on: ویرایش شده در
 card_size: سایز کارت
+small: کوچک
+large: بزرگ
 sort_field: فیلد مرتب سازی
 add_sort_field: افزودن فیلد مرتب سازی
 add_to_ai_context: افزودن به زمینه هوش مصنوعی
@@ -2025,6 +2025,7 @@ forgot_password: فراموشی رمز عبور
 hidden: مخفی
 hidden_in_group: Hidden in {group}
 icon: آیکن
+image: عکس
 info: اطلاعات
 normal: عادی
 success: موفق
@@ -2331,6 +2332,8 @@ interfaces:
   select-radio:
     radio-buttons: دکمه رادیویی
     description: یکی از چندین گزینه را انتخاب کنید
+  system-file-image:
+    image: عکس
   list:
     repeater: تکرار شونده
     description: Create multiple entries of the same structure
@@ -2415,6 +2418,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: A rich-text editor writing HTML content
     toolbar: نوار ابزار
+    extensions: افزونه‌ها
     custom_formats: نوع سفارشی
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
@@ -2806,6 +2810,17 @@ any_string_or_json: Json یا هر رشته‌ای...
 item_payload_placeholder: این JSON برای به‌روزرسانی مقادیر فیلد به‌کارگیری می‌شود...
 operation_variables_note: شما می‌توانید با متغیرهایی نظیر **{'{'}{'{'}$last{'}'}{'}'}**، **{'{'}{'{'}$trigger{'}'}{'}'}** و **{'{'}{'{'}$accountability{'}'}{'}'}** به داده‌های جریان دسترسی پیدا کنید؛ یا با **{'{'}{'{'}operation_key{'}'}{'}'}** به عملیات‌های قبلی ارجاع بدهید.
 operations:
+  ai-image:
+    background: پس زمینه
+    emit_events: انتشار رویدادها
+    starting_points:
+      icon: آیکن
+  ai-text:
+    files: فایل ها
+    output: خروجی
+    type_text: متن
+    view_fields: کادرها
+    view_json: JSON
   condition:
     name: شرط
     description: مسیردهی به یک جریان بر اساس منطق اگر / آنگاه

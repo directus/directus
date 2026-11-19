@@ -67,9 +67,9 @@ function isReached(state: EditorState, node: ProseMirrorNode, pos: number): bool
  * would make `setNodeMarkup` throw; skipping it here keeps the active state and the apply in sync.
  */
 function isEligible(state: EditorState, node: ProseMirrorNode, pos: number, format: BlockCustomFormat): boolean {
-	if (!node.isBlock) return false;
 	if (!isReached(state, node, pos)) return false;
 	if (format.targets.some((target) => isTarget(node, target))) return true;
+	if (!node.isBlock) return false;
 	if (!format.convert || !CONVERTIBLE_TYPES.has(node.type.name)) return false;
 
 	const targetType = state.schema.nodes[format.targets[0]!.type];

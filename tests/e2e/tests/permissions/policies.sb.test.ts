@@ -1,16 +1,19 @@
 import { exec } from 'node:child_process';
-import { sandbox, type Sandbox } from '@directus/sandbox';
+import type { Sandbox } from '@directus/sandbox';
 import { authentication, createDirectus, readUsers, rest, updateUser } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeAll, expect, test } from 'vitest';
 
 let directus: Sandbox;
 
 beforeAll(async () => {
-	directus = await sandbox(database, {
+	directus = await useSandbox(database, {
 		env: {
 			LOG_LEVEL: 'debug',
+			// Schema reloads on slow databases dwarf the timing difference under test
+			CACHE_SCHEMA: 'true',
 			DB_FILENAME: `directus_test_${getUID()}.db`,
 			CACHE_STORE: 'memory',
 			CACHE_AUTO_PURGE: 'true',
@@ -76,10 +79,12 @@ test('long timeouts when editing access policy', async () => {
 
 	const policy2End = performance.now() - policy2Start;
 
+	// Scanning the 1M junk keys on cache clear adds well over a second, so use a fixed margin instead of a
+	// relative one, as request jitter alone easily exceeds a percentage of a ~30ms baseline
 	expect(
-		Math.abs(policy2End - policy1End),
+		policy2End,
 		`Expected 2nd (${Math.floor(policy2End)}ms) to be close to first (${Math.floor(policy1End)}ms)`,
-	).toBeLessThan(policy1End * 0.3 /* 30% difference */);
+	).toBeLessThan(policy1End + 500);
 });
 
 function execRedis(sandbox: Sandbox, command: string): Promise<string[]> {

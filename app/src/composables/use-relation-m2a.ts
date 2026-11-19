@@ -35,58 +35,58 @@ One1              Many|Any: junctionCollection          ┌─One2
                                                           └─────────┘
  */
 
-export function useRelationM2A(collection: Ref<string>, field: Ref<string>) {
+export function getRelationM2A(collection: string, field: string): RelationM2A | undefined {
 	const relationsStore = useRelationsStore();
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
 
-	const relationInfo = computed<RelationM2A | undefined>(() => {
-		const relations = relationsStore.getRelationsForField(collection.value, field.value);
+	const relations = relationsStore.getRelationsForField(collection, field);
 
-		const junction = relations.find(
-			(relation) =>
-				relation.related_collection === collection.value &&
-				relation.meta?.one_field === field.value &&
-				relation.meta.junction_field,
-		);
+	const junction = relations.find(
+		(relation) =>
+			relation.related_collection === collection && relation.meta?.one_field === field && relation.meta.junction_field,
+	);
 
-		if (!junction) return undefined;
+	if (!junction) return undefined;
 
-		const relation = relations.find(
-			(relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field,
-		);
+	const relation = relations.find(
+		(relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field,
+	);
 
-		if (!relation) return undefined;
+	if (!relation) return undefined;
 
-		const allowedCollections = (relation.meta?.one_allowed_collections ?? []).reduce((acc, collection) => {
-			const collectionInfo = collectionsStore.getCollection(collection);
-			if (collectionInfo) acc.push(collectionInfo);
+	const allowedCollections = (relation.meta?.one_allowed_collections ?? []).reduce((acc, collection) => {
+		const collectionInfo = collectionsStore.getCollection(collection);
+		if (collectionInfo) acc.push(collectionInfo);
+		return acc;
+	}, [] as Collection[]);
+
+	const relationPrimaryKeyFields = allowedCollections.reduce(
+		(acc, collection) => {
+			const pkField = fieldsStore.getPrimaryKeyFieldForCollection(collection?.collection);
+			if (pkField) acc[collection.collection] = pkField;
 			return acc;
-		}, [] as Collection[]);
+		},
+		{} as Record<string, Field>,
+	);
 
-		const relationPrimaryKeyFields = allowedCollections.reduce(
-			(acc, collection) => {
-				const pkField = fieldsStore.getPrimaryKeyFieldForCollection(collection?.collection);
-				if (pkField) acc[collection.collection] = pkField;
-				return acc;
-			},
-			{} as Record<string, Field>,
-		);
+	return {
+		allowedCollections,
+		relationPrimaryKeyFields,
+		collectionField: fieldsStore.getField(junction.collection, relation.meta?.one_collection_field as string),
+		junctionCollection: collectionsStore.getCollection(junction.collection),
+		junctionPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(junction.collection),
+		junctionField: fieldsStore.getField(junction.collection, junction.meta?.junction_field as string),
+		reverseJunctionField: fieldsStore.getField(junction.collection, relation.meta?.junction_field as string),
+		junction: junction,
+		relation: relation,
+		sortField: junction.meta?.sort_field ?? undefined,
+		type: 'm2a',
+	} as RelationM2A;
+}
 
-		return {
-			allowedCollections,
-			relationPrimaryKeyFields,
-			collectionField: fieldsStore.getField(junction.collection, relation.meta?.one_collection_field as string),
-			junctionCollection: collectionsStore.getCollection(junction.collection),
-			junctionPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(junction.collection),
-			junctionField: fieldsStore.getField(junction.collection, junction.meta?.junction_field as string),
-			reverseJunctionField: fieldsStore.getField(junction.collection, relation.meta?.junction_field as string),
-			junction: junction,
-			relation: relation,
-			sortField: junction.meta?.sort_field ?? undefined,
-			type: 'm2a',
-		} as RelationM2A;
-	});
+export function useRelationM2A(collection: Ref<string>, field: Ref<string>) {
+	const relationInfo = computed(() => getRelationM2A(collection.value, field.value));
 
 	return { relationInfo };
 }

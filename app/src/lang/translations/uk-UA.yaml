@@ -206,8 +206,6 @@ logoutReason:
   SESSION_EXPIRED: Час сеансу минув
 public_label: Загальнодоступний
 public_description: Контролює, які дані API є доступними без входу в особистий кабінет.
-public_role_info: >-
-  Публічна роль визначає, які дані API доступні для неавтентифікованих користувачів або користувачів без ролі. Запити з публічною роллю не можуть мати доступу до програми або адміністратора. Якщо додаток або адміністратор отримають доступ до політики, призначеної для публічної ролі, вони будуть проігноровані.
 admin_description: Початкова роль управління з необмеженим APP/API доступом.
 admin_policy_description: Початкова адміністративна політика з необмеженим доступом до програм та API.
 no_description: Немає опису...
@@ -726,6 +724,8 @@ file_moved: Файл переміщено
 collection_created: Колекцію створено
 modified_on: Час зміни
 card_size: Розмір картки
+small: Малий
+large: Великий
 sort_field: Поле сортування
 add_sort_field: Додати поле сортування
 sort: Сортування
@@ -1690,6 +1690,7 @@ forgot_password: Забули пароль
 hidden: Приховано
 hidden_in_group: Приховано в {group}
 icon: Іконка
+image: Зображення
 info: Інформація
 normal: Нормальний
 success: Успішно
@@ -1993,6 +1994,8 @@ interfaces:
   select-radio:
     radio-buttons: Радіокнопки
     description: Вибір одного з кількох варіантів
+  system-file-image:
+    image: Зображення
   list:
     repeater: Повторювач
     description: Створити кілька записів однієї структури
@@ -2077,6 +2080,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Багатотекстовий редактор, що пише матеріал для HTML
     toolbar: Панель інструментів
+    extensions: Розширення
     custom_formats: Власне форматування
     folder_note: Тека для завантажених файлів. Не може вплинути на існуючі файли.
     imageToken: Статичний маркер доступу
@@ -2454,6 +2458,16 @@ any_string_or_json: Будь-який рядок або JSON...
 item_payload_placeholder: Це JSON, який використовується для оновлення значень полів елемента...
 operation_variables_note: Ви можете отримати доступ до даних процесу за допомогою таких змінних, як **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** та **{'{'}{'{'}$accountability{'}'}{'}'}**, або звертатися до попередніх операцій за допомогою **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  ai-image:
+    background: Тло
+    emit_events: Створювати події
+    starting_points:
+      icon: Іконка
+  ai-text:
+    files: Файли
+    type_text: Текст
+    view_fields: Поля
+    view_json: JSON
   condition:
     name: Умова
     description: Маршрутизація процесу на основі логіки If / Else

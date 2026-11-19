@@ -43,8 +43,8 @@ vi.mock('./revisions.js', async () => {
 });
 
 vi.mock('./activity.js', async () => {
-	const { mockActivityService } = await import('../test-utils/services/activity-service.js');
-	return mockActivityService();
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
+	return { ActivityService: mockItemsService().ItemsService };
 });
 
 vi.mock('./collections.js', () => {

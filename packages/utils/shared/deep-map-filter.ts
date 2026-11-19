@@ -71,7 +71,9 @@ export function deepMapFilter(
 				const [_key, targetCollection] = key.split(':') as [string, string | undefined];
 				key = _key;
 
-				const functionMatch = /^([^$\s]*?)\((.*?)\)$/.exec(key);
+				// The name excludes `(` so exactly one position can open the argument list; sharing it
+				// with the argument makes a failed match quadratic in the key length
+				const functionMatch = /^([^$\s(]*?)\((.*?)\)$/.exec(key);
 				let functionName: string | undefined;
 
 				if (functionMatch) {
@@ -156,7 +158,8 @@ export function deepMapFilter(
 				return callback([key, value], {
 					collection,
 					field: field ?? null,
-					...relationInfo,
+					relation: relationInfo.relation,
+					relationType: relationInfo.relationType,
 					function: functionName,
 					leaf,
 					quantity,

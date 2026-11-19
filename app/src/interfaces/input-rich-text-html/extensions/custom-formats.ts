@@ -1,4 +1,6 @@
 import { type AnyExtension, Mark, mergeAttributes } from '@tiptap/vue-3';
+import { IMAGE_NODE, INLINE_IMAGE_NODE } from './image';
+import { isPreservedAttributeName } from './preserved-attributes';
 
 /**
  * Legacy TinyMCE `customFormats` (`style_formats`) entries. `inline` becomes a dynamic mark;
@@ -44,7 +46,7 @@ export interface BlockCustomFormat {
 	name: string;
 	title: string;
 	previewStyle?: string;
-	/** node types this format applies to; `block` entries have exactly one */
+	/** node types this format applies to; `block` entries have one tag (`img` maps to both image types) */
 	targets: BlockTarget[];
 	/** `block` entries convert a non-matching block to `targets[0]`; `selector` entries no-op */
 	convert: boolean;
@@ -86,7 +88,6 @@ const TAG_TARGETS: Record<string, BlockTarget> = {
 	dt: { type: 'descriptionTerm' },
 	dd: { type: 'descriptionDetails' },
 	hr: { type: 'horizontalRule' },
-	img: { type: 'image' },
 	ul: { type: 'bulletList' },
 	ol: { type: 'orderedList' },
 	li: { type: 'listItem' },
@@ -100,14 +101,16 @@ const TAG_TARGETS: Record<string, BlockTarget> = {
 };
 
 /** Block tags mapped to the node types the editor models. Anything else can't carry a format. */
-function blockTarget(tag: string): BlockTarget | null {
+function blockTargets(tag: string): BlockTarget[] {
 	const name = tag.trim().toLowerCase();
-	if (!/^[a-z][a-z0-9]*$/.test(name)) return null;
+	if (!/^[a-z][a-z0-9]*$/.test(name)) return [];
+	if (name === 'img') return [{ type: IMAGE_NODE }, { type: INLINE_IMAGE_NODE }];
 
 	const heading = /^h([1-6])$/.exec(name);
-	if (heading) return { type: 'heading', attrs: { level: Number(heading[1]) } };
+	if (heading) return [{ type: 'heading', attrs: { level: Number(heading[1]) } }];
 
-	return TAG_TARGETS[name] ?? null;
+	const target = TAG_TARGETS[name];
+	return target ? [target] : [];
 }
 
 /**
@@ -117,12 +120,8 @@ function blockTarget(tag: string): BlockTarget | null {
  */
 export const CONVERTIBLE_TYPES = new Set(['paragraph', 'heading']);
 
-const PRESERVED_ATTRIBUTES = new Set(['id', 'title', 'role', 'lang', 'dir']);
-
-/** Block formats can only carry attributes `preserved-attributes.ts` round-trips. */
-function isPreservedAttribute(name: string): boolean {
-	return PRESERVED_ATTRIBUTES.has(name) || name.startsWith('data-') || name.startsWith('aria-');
-}
+/** Prefix of the per-field mark names; reserved because fields add these marks after extensions register. */
+export const CUSTOM_FORMAT_PREFIX = 'customFormat_';
 
 function warn(message: string, entry: unknown): void {
 	// eslint-disable-next-line no-console
@@ -177,7 +176,7 @@ function blockAnchors(entry: BlockFormatEntry): {
 	for (const [attribute, value] of Object.entries(entry.attributes ?? {})) {
 		// `attributes: { class }` is the same intent as `classes`; merge so toggling off strips it too
 		if (attribute === 'class') classes.push(...classList(String(value)));
-		else if (isPreservedAttribute(attribute)) attributes[attribute] = String(value);
+		else if (isPreservedAttributeName(attribute)) attributes[attribute] = String(value);
 		else ignored.push(attribute);
 	}
 
@@ -263,15 +262,15 @@ function buildBlock(entry: BlockFormatEntry, name: string): BuiltEntry | null {
 	const targets: BlockTarget[] = [];
 
 	for (const tag of tags) {
-		const target = blockTarget(tag);
+		const tagTargets = blockTargets(tag);
 
-		if (!target) {
+		if (tagTargets.length === 0) {
 			// a `selector` list keeps its remaining tags; a single-tag `block` has nothing left to apply to
 			warn(`customFormats: \`${tag.trim()}\` is not a block the editor models and was skipped:`, entry);
 			continue;
 		}
 
-		targets.push(target);
+		targets.push(...tagTargets);
 	}
 
 	if (targets.length === 0) {
@@ -373,7 +372,7 @@ export function buildCustomFormats(raw: unknown): BuiltCustomFormats {
 	const parsed = parseOption(raw);
 
 	parsed.forEach((entry, index) => {
-		const built = buildEntry(entry, `customFormat_${index}`, false);
+		const built = buildEntry(entry, `${CUSTOM_FORMAT_PREFIX}${index}`, false);
 		if (!built) return;
 		formats.push(built.format);
 		extensions.push(...built.extensions);
