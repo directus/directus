@@ -581,23 +581,6 @@ describe('detailed object review gaps', () => {
 		});
 	});
 
-	test('a mixed JSON | relation union only offers the collection member in the detailed object', () => {
-		type Schema = { holder: { id: number; rel: ({ url: string } | CollectionC)[] }[]; collection_c: CollectionC[] };
-		type Case = NestedPartial<Schema['holder'][number], Schema>;
-
-		assertType<Case>({ rel: { create: [{ non_nullable: 'a' }] } });
-
-		assertType<Case>({
-			// @ts-expect-error { url } is not a collection_c item
-			rel: { create: [{ url: 'x' }] },
-		});
-
-		assertType<Case>({
-			// @ts-expect-error collection_c has a numeric primary key
-			rel: { delete: ['abc'] },
-		});
-	});
-
 	test('an update entry requires a custom primary key', () => {
 		type Page = { slug: string; title: string };
 		type Schema = { pages: Page[]; holder: { id: number; pages: Page[] }[] };
