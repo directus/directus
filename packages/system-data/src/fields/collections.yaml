@@ -162,6 +162,7 @@ fields:
       - cast-boolean
     options:
       label: $t:field_options.directus_collections.enable_versioning
+      appearance: switch
     width: half
 
   - field: autosave_revision_interval
