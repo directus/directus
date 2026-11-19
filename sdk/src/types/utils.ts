@@ -60,15 +60,27 @@ type Builtin = Primitive | Date | RegExp;
  */
 export type RelationPrimaryKey<Item> = Item extends { id: infer PK } ? NonNullable<PK> : string | number;
 
+type IsSameType<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;
+
+type MatchSchemaItem<Item, SchemaItem> = SchemaItem extends any ? IsSameType<Item, SchemaItem> : never;
+
 /**
  * The members of `Item` that are collection items in `Schema` (all for an `any` Schema, none for `unknown`).
+ * Items must be the same type as a schema item, not a structural subtype, so a JSON array of objects that
+ * merely extend one doesn't count.
  * Core collections also match the unmerged `CoreSchema<any>`: custom fields make the merged type in
  * `CompleteSchema` require keys that the plain `DirectusUser` lacks.
  */
 type ExtractSchemaItem<Schema, Item> = IfAny<
 	Schema,
 	Item,
-	unknown extends Schema ? never : Extract<Item, ItemType<CompleteSchema<Schema>> | ItemType<CoreSchema<any>>>
+	unknown extends Schema
+		? never
+		: Item extends any
+			? true extends MatchSchemaItem<Item, ItemType<CompleteSchema<Schema>> | ItemType<CoreSchema<any>>>
+				? Item
+				: never
+			: never
 >;
 
 /**
