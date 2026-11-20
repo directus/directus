@@ -1,6 +1,5 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { getHelpers } from '../../database/helpers/index.js';
 import { transaction } from '../../utils/transaction.js';
 import { VersionTablesService } from '../version-tables.js';
 
@@ -35,8 +34,9 @@ export async function runSchemaChange<T>(
 
 	if (outerChange) return handler(knex as Knex.Transaction, outerChange);
 
-	return getHelpers(knex).schema.withForeignKeysDisabled(() =>
-		transaction(knex, async (trx) => {
+	return transaction(
+		knex,
+		async (trx) => {
 			const service = new VersionTablesService({ knex: trx, schema });
 			const pending = new Set<string>();
 			const dropped = new Set<string>();
@@ -48,7 +48,7 @@ export async function runSchemaChange<T>(
 
 					if (options?.force) shouldSync = true;
 				},
-				drop: dropped.add,
+				drop: (collection) => dropped.add(collection),
 			};
 
 			activeChanges.set(trx, change);
@@ -73,6 +73,7 @@ export async function runSchemaChange<T>(
 			}
 
 			return result;
-		}),
+		},
+		{ disableForeignKeys: true },
 	);
 }

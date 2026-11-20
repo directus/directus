@@ -3,9 +3,8 @@ import type { Relation } from '@directus/types';
 import { partition } from 'lodash-es';
 import type { VersioningHelper } from '../../database/helpers/versioning/types.js';
 import type { InspectedSchema } from '../version-tables.js';
-import { assertVersionSystemFields } from './assert-field-names.js';
 import { VERSION_SYSTEM_FIELDS } from './constants.js';
-import { isVersioningTable } from './utils.js';
+import { assertVersionSystemField, isVersioningTable } from './utils.js';
 
 export type ReferentialAction = ForeignKey['on_delete'];
 
@@ -218,10 +217,9 @@ function planShadowTable(liveCollection: LiveCollection, context: PlanContext): 
 	};
 
 	// Field creation only checks this while the collection is versioned, not for fields that existed before
-	assertVersionSystemFields(
-		collection,
-		columns.map((column) => column.name),
-	);
+	for (const column of columns) {
+		assertVersionSystemField(collection, column.name);
+	}
 
 	for (const source of columns) {
 		const field = source.name;

@@ -1,8 +1,19 @@
 import type { DatabaseClient } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { type Knex } from 'knex';
+import { getHelpers } from '../database/helpers/index.js';
 import { getDatabaseClient } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
+
+export type TransactionOptions = {
+	/** Create a new transaction even if the given knex instance already is one */
+	forceNew?: boolean;
+	/**
+	 * Disable foreign key enforcement for the duration of the transaction, for vendors that rebuild tables to alter
+	 * them. Only applies when a new transaction is created, as some vendors ignore toggling it within one.
+	 */
+	disableForeignKeys?: boolean;
+};
 
 /**
  * Execute the given handler within the current transaction or a newly created one
@@ -14,43 +25,56 @@ import { useLogger } from '../logger/index.js';
 export const transaction = async <T = unknown>(
 	knex: Knex,
 	handler: (knex: Knex.Transaction) => Promise<T>,
-	forceNewTransaction = false,
+	options: TransactionOptions = {},
 ): Promise<T> => {
-	if (knex.isTransaction && forceNewTransaction === false) {
+	if (knex.isTransaction && !options.forceNew) {
 		return handler(knex as Knex.Transaction);
-	} else {
-		try {
-			return await knex.transaction((trx) => handler(trx));
-		} catch (error) {
-			const client = getDatabaseClient(knex);
+	}
 
-			if (!shouldRetryTransaction(client, error)) throw error;
+	if (!options.disableForeignKeys) return runTransaction(knex, handler);
 
-			const MAX_ATTEMPTS = 3;
-			const BASE_DELAY = 100;
+	const schemaHelper = getHelpers(knex).schema;
+	const runPostColumnChange = await schemaHelper.preColumnChange();
 
-			const logger = useLogger();
-
-			for (let attempt = 0; attempt < MAX_ATTEMPTS; ++attempt) {
-				const delay = 2 ** attempt * BASE_DELAY;
-
-				await new Promise((resolve) => setTimeout(resolve, delay));
-
-				logger.trace(`Restarting failed transaction (attempt ${attempt + 1}/${MAX_ATTEMPTS})`);
-
-				try {
-					return await knex.transaction((trx) => handler(trx));
-				} catch (error) {
-					if (!shouldRetryTransaction(client, error)) throw error;
-				}
-			}
-
-			/** Initial execution + additional attempts */
-			const attempts = 1 + MAX_ATTEMPTS;
-			throw new Error(`Transaction failed after ${attempts} attempts`, { cause: error });
-		}
+	try {
+		return await runTransaction(knex, handler);
+	} finally {
+		if (runPostColumnChange) await schemaHelper.postColumnChange();
 	}
 };
+
+async function runTransaction<T>(knex: Knex, handler: (knex: Knex.Transaction) => Promise<T>): Promise<T> {
+	try {
+		return await knex.transaction((trx) => handler(trx));
+	} catch (error) {
+		const client = getDatabaseClient(knex);
+
+		if (!shouldRetryTransaction(client, error)) throw error;
+
+		const MAX_ATTEMPTS = 3;
+		const BASE_DELAY = 100;
+
+		const logger = useLogger();
+
+		for (let attempt = 0; attempt < MAX_ATTEMPTS; ++attempt) {
+			const delay = 2 ** attempt * BASE_DELAY;
+
+			await new Promise((resolve) => setTimeout(resolve, delay));
+
+			logger.trace(`Restarting failed transaction (attempt ${attempt + 1}/${MAX_ATTEMPTS})`);
+
+			try {
+				return await knex.transaction((trx) => handler(trx));
+			} catch (error) {
+				if (!shouldRetryTransaction(client, error)) throw error;
+			}
+		}
+
+		/** Initial execution + additional attempts */
+		const attempts = 1 + MAX_ATTEMPTS;
+		throw new Error(`Transaction failed after ${attempts} attempts`, { cause: error });
+	}
+}
 
 function shouldRetryTransaction(client: DatabaseClient, error: unknown): boolean {
 	/**

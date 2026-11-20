@@ -48,9 +48,8 @@ import { getCollectionRelationList } from './fields/get-collection-relation-list
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
-import { assertVersionSystemFields } from './version-tables/assert-field-names.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
-import { isVersioningTable } from './version-tables/utils.js';
+import { assertVersionSystemField, isVersioningTable } from './version-tables/utils.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const { CACHE_SCHEMA } = useEnv();
@@ -420,10 +419,6 @@ export class FieldsService {
 						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
-					if (this.schema.collections[collection]?.versioned) {
-						assertVersionSystemFields(collection, [hookAdjustedField.field]);
-					}
-
 					if (table) {
 						this.addColumnToTable(table, collection, hookAdjustedField as Field, {
 							attemptConcurrentIndex,
@@ -913,6 +908,8 @@ export class FieldsService {
 		field: RawField | Field,
 		options?: { attemptConcurrentIndex?: boolean; existing?: Column | null },
 	): void {
+		assertVersionSystemField(collection, field.field);
+
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields

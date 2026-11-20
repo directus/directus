@@ -94,7 +94,6 @@ vi.mock('../database/helpers/index.js', () => ({
 		schema: {
 			createIndex: mockCreateIndexSpy,
 			processFieldType: vi.fn((field) => field.type),
-			withForeignKeysDisabled: vi.fn((fn) => fn()),
 			setNullable: vi.fn(),
 			generateIndexName: vi.fn((type, collection, field) => `${collection}_${field}_${type}`),
 			isOneOfClients: vi.fn(() => mockIsOneOfClientsMSSQL),

@@ -14,7 +14,13 @@ vi.mock('../version-tables.js', () => ({
 }));
 
 vi.mock('../../utils/transaction.js', () => ({
-	transaction: async <T>(knex: Knex, handler: (trx: Knex) => Promise<T>) => {
+	transaction: async <T>(
+		knex: Knex,
+		handler: (trx: Knex) => Promise<T>,
+		options?: { disableForeignKeys?: boolean },
+	) => {
+		if (options?.disableForeignKeys) calls.push('disable foreign keys');
+
 		calls.push('begin');
 
 		try {
@@ -24,21 +30,10 @@ vi.mock('../../utils/transaction.js', () => ({
 		} catch (error) {
 			calls.push('rollback');
 			throw error;
+		} finally {
+			if (options?.disableForeignKeys) calls.push('enable foreign keys');
 		}
 	},
-}));
-
-vi.mock('../../database/helpers/index.js', () => ({
-	getHelpers: () => ({
-		schema: {
-			withForeignKeysDisabled: async <T>(fn: () => Promise<T>) => {
-				calls.push('disable foreign keys');
-				const result = await fn();
-				calls.push('enable foreign keys');
-				return result;
-			},
-		},
-	}),
 }));
 
 const db = {
@@ -48,6 +43,7 @@ const db = {
 		},
 	},
 } as unknown as Knex;
+
 const schema = { collections: { articles: { versioned: true } }, relations: [] } as unknown as SchemaOverview;
 
 const unversionedSchema = {
@@ -171,6 +167,6 @@ describe('runSchemaChange', () => {
 			}),
 		).rejects.toThrow('failed');
 
-		expect(calls).toEqual(['disable foreign keys', 'begin', 'rollback']);
+		expect(calls).toEqual(['disable foreign keys', 'begin', 'rollback', 'enable foreign keys']);
 	});
 });
