@@ -1,6 +1,6 @@
 {
 	"name": "@directus/pressure",
-	"version": "4.0.8",
+	"version": "4.0.9",
 	"description": "Pressure based rate limiter",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -32,6 +32,7 @@
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@types/express": "catalog:",
+		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
