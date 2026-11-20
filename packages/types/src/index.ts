@@ -19,6 +19,7 @@ export * from './server.js';
 export * from './export.js';
 export * from './import.js';
 export * from './items.js';
+export * from './license-resolved.js';
 export * from './mail.js';
 export * from './misc.js';
 export * from './notifications.js';

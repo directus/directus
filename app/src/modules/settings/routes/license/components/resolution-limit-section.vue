@@ -1,6 +1,7 @@
 <script setup lang="ts" generic="TCandidate">
 import { computed, reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { effectiveUsage as computeEffectiveUsage, isAtCapacity } from '../utils/restore-capacity';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
@@ -33,10 +34,13 @@ const props = withDefaults(
 		linkable?: boolean;
 		/** Number of candidates rendered per group before the "Show more" toggle expands the rest */
 		initialVisible?: number;
+		/** Whether selecting a candidate frees a slot (deactivate) or takes one (restore) */
+		direction?: 'deactivate' | 'restore';
 	}>(),
 	{
 		initialVisible: 8,
 		linkable: false,
+		direction: 'deactivate',
 	},
 );
 
@@ -58,11 +62,16 @@ function hiddenCountFor(candidates: TCandidate[]): number {
 	return Math.max(0, candidates.length - props.initialVisible);
 }
 
-// Usage that would remain once the selected items are deactivated
-const effectiveUsage = computed(() => props.usage - props.modelValue.size);
+const effectiveUsage = computed(() => computeEffectiveUsage(props.direction, props.usage, props.modelValue.size));
 
 function isDisabled(candidate: TCandidate): boolean {
-	return props.disabledFor?.(candidate) ?? false;
+	if (props.disabledFor?.(candidate)) return true;
+
+	return (
+		props.direction === 'restore' &&
+		!isChecked(candidate) &&
+		isAtCapacity(props.limit, props.usage, props.modelValue.size)
+	);
 }
 
 function isChecked(candidate: TCandidate): boolean {
@@ -86,7 +95,7 @@ function toggle(candidate: TCandidate): void {
 				<VIcon :name="icon" small />
 				{{ title }}
 			</span>
-			<span class="usage-counter" :class="effectiveUsage > limit ? 'over' : 'within'">
+			<span v-if="limit !== -1" class="usage-counter" :class="effectiveUsage > limit ? 'over' : 'within'">
 				<span class="usage-current">{{ effectiveUsage }}</span>
 				<span class="usage-total">/ {{ limit }} {{ t('licensing.resolve_available') }}</span>
 			</span>

@@ -1,4 +1,5 @@
 import type { OpenAICompatibleHeader, OpenAICompatibleModel, OpenRouterModel } from '@directus/ai';
+import type { LicenseResolvedItems } from './license-resolved.js';
 
 export type SettingsModuleBarModule = {
 	type: 'module';
@@ -100,6 +101,7 @@ export type Settings = {
 	collaborative_editing_enabled: boolean;
 	license_key: string | null;
 	license_token: string | null;
+	resolved_items: LicenseResolvedItems | null;
 	project_status: string | null;
 } & OwnerInformation;
 

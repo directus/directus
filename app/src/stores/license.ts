@@ -13,10 +13,14 @@ import {
 	updateLicense,
 	updateLicenseAddon,
 } from '@directus/license';
+import { customEndpoint } from '@directus/sdk';
+import type { LicenseResolvedOutput, LicenseRestoreInput } from '@directus/types';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { i18n } from '@/lang';
 import sdk from '@/sdk';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFlowsStore } from '@/stores/flows';
 import { useUserStore } from '@/stores/user';
 import { formatTimeframe } from '@/utils/format-timeframe';
 import { localizedFormat } from '@/utils/localized-format';
@@ -49,6 +53,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	const info = ref<ReadLicenseOutput | null>(null);
 	const addons = ref<LicenseAddon[] | null>(null);
 	const pendingResolution = ref<LicensePendingResolution[] | null>(null);
+	const resolvedItems = ref<LicenseResolvedOutput | null>(null);
 	const loading = ref(false);
 	const loadingAddons = ref(false);
 	const loadingPendingResolution = ref(false);
@@ -57,6 +62,10 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	let refreshTimer: ReturnType<typeof setTimeout> | null = null;
 
 	const aiTranslationsEnabled = computed(() => isEntitlementEnabled('ai_translations_enabled'));
+
+	const resolvedCount = computed(() =>
+		Object.values(resolvedItems.value ?? {}).reduce((total, section) => total + (section?.candidates.length ?? 0), 0),
+	);
 
 	const boundary = computed<LicenseBoundary | null>(() => {
 		if (!info.value) return null;
@@ -244,6 +253,29 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		await sdk.request(applyLicenseResolution(payload));
 		pendingResolution.value = null;
 		await hydrate();
+		await hydrateResolvedItems();
+	}
+
+	async function hydrateResolvedItems() {
+		if (!useUserStore().isAdmin) return;
+
+		resolvedItems.value =
+			(await sdk.request(customEndpoint<LicenseResolvedOutput>({ path: '/license/resolved', method: 'GET' }))) ?? null;
+	}
+
+	async function restore(payload: LicenseRestoreInput): Promise<LicenseRestoreInput | undefined> {
+		const restored = await sdk.request(
+			customEndpoint<LicenseRestoreInput>({ path: '/license/restore', method: 'POST', body: JSON.stringify(payload) }),
+		);
+
+		await Promise.all([
+			hydrate(),
+			hydrateResolvedItems(),
+			restored?.collections?.length ? useCollectionsStore().hydrate() : undefined,
+			restored?.flows?.length ? useFlowsStore().hydrate() : undefined,
+		]);
+
+		return restored ?? undefined;
 	}
 
 	async function activate(licenseKey: string) {
@@ -266,6 +298,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		info.value = null;
 		addons.value = null;
 		pendingResolution.value = null;
+		resolvedItems.value = null;
 		error.value = null;
 		loading.value = false;
 		loadingAddons.value = false;
@@ -276,6 +309,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		info,
 		addons,
 		pendingResolution,
+		resolvedItems,
+		resolvedCount,
 		loading,
 		loadingAddons,
 		loadingPendingResolution,
@@ -302,7 +337,9 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		hydrate,
 		hydrateAddons,
 		hydratePendingResolution,
+		hydrateResolvedItems,
 		resolve,
+		restore,
 		activate,
 		update,
 		setAddonQuantity,

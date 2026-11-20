@@ -8,6 +8,7 @@ import SettingsNavigation from '../../components/navigation.vue';
 import LicenseAddonItem from './components/license-addon-item.vue';
 import LicenseEntitlementItem from './components/license-entitlement-item.vue';
 import LicenseResolutionDialog from './components/license-resolution-dialog.vue';
+import LicenseRestoreDialog from './components/license-restore-dialog.vue';
 import LicenseSection from './components/license-section.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -38,7 +39,9 @@ const { t } = useI18n();
 const licenseStore = useLicenseStore();
 const serverStore = useServerStore();
 
-const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
+const { info: license, addons, loading, boundary, isLicensed, resolvedCount } = storeToRefs(licenseStore);
+
+const restoreDialogOpen = ref(false);
 
 const isLicenseSourceEnv = computed(() => license.value?.source === 'env');
 const isLicenseEditable = computed(() => license.value?.editable);
@@ -51,6 +54,7 @@ const boundaryDate = computed(() => {
 
 onMounted(async () => {
 	await licenseStore.hydrate();
+	licenseStore.hydrateResolvedItems();
 
 	// Core tier has no addons (source === null), skip the request.
 	if (licenseStore.info?.source != null) {
@@ -108,6 +112,12 @@ async function handleActivate() {
 
 		addLicenseDrawer.value = false;
 		resetAddLicenseForm();
+
+		await licenseStore.hydrateResolvedItems();
+
+		if (licenseStore.info?.source != null && licenseStore.resolvedCount > 0) {
+			restoreDialogOpen.value = true;
+		}
 	} catch (err) {
 		unexpectedError(err);
 	} finally {
@@ -326,6 +336,17 @@ async function handleDeactivateConfirm() {
 					</VList>
 				</LicenseSection>
 
+				<LicenseSection
+					v-if="resolvedCount > 0"
+					icon="restore"
+					:title="t('licensing.restore_entry', { count: resolvedCount })"
+				>
+					<div class="restore-content">
+						<p>{{ t('licensing.restore_entry_description') }}</p>
+						<VButton secondary @click="restoreDialogOpen = true">{{ t('licensing.restore_title') }}</VButton>
+					</div>
+				</LicenseSection>
+
 				<LicenseSection v-if="license.source !== null" icon="emergency_home" :title="t('danger_zone')" kind="danger">
 					<div class="danger-zone-content">
 						<VNotice v-if="isLicenseEditable === false" type="info" class="danger-zone-notice">
@@ -346,6 +367,7 @@ async function handleDeactivateConfirm() {
 	</PrivateView>
 
 	<LicenseResolutionDialog v-model="resolutionDialogOpen" @confirm="handleResolutionConfirm" />
+	<LicenseRestoreDialog v-model="restoreDialogOpen" />
 
 	<VDialog v-model="deactivateConfirmOpen" @esc="deactivateConfirmOpen = false">
 		<VCard>
@@ -500,6 +522,18 @@ async function handleDeactivateConfirm() {
 .limit {
 	color: var(--theme--foreground-subdued);
 	margin-inline-start: 0.25rem;
+}
+
+.restore-content {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 1rem;
+	margin-block-end: 2rem;
+
+	p {
+		color: var(--theme--foreground-subdued);
+	}
 }
 
 .danger-zone-content {

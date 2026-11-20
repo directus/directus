@@ -3,6 +3,7 @@ import type { Knex } from 'knex';
 import getDatabase from '../../../database/index.js';
 import { FlowsService } from '../../../services/flows.js';
 import { getSchema } from '../../../utils/get-schema.js';
+import { settleIds } from '../utils/settle-ids.js';
 
 export async function getActiveFlows(opts?: { knex?: Knex | undefined }) {
 	const knex = opts?.knex ?? getDatabase();
@@ -32,8 +33,26 @@ export async function countActiveFlows(opts?: { knex?: Knex | undefined }) {
 	return flows.length;
 }
 
-export async function resolveFlows(flows: string[], ctx?: { accountability?: Accountability | undefined }) {
+export async function resolveFlows(
+	flows: string[],
+	ctx?: { accountability?: Accountability | undefined },
+): Promise<string[]> {
 	const flowsService = new FlowsService({ schema: await getSchema(), accountability: ctx?.accountability });
 
-	await Promise.allSettled(flows.map((flow_id) => flowsService.updateOne(flow_id, { status: 'inactive' })));
+	const active = await flowsService.readByQuery({
+		fields: ['id'],
+		filter: { _and: [{ id: { _in: flows } }, { status: { _eq: 'active' } }] },
+		limit: -1,
+	});
+
+	return settleIds(
+		active.map((flow) => String(flow.id)),
+		(flowId) => flowsService.updateOne(flowId, { status: 'inactive' }),
+	);
+}
+
+export async function restoreFlows(flows: string[], ctx: { accountability: Accountability | null }): Promise<string[]> {
+	const flowsService = new FlowsService({ schema: await getSchema(), accountability: ctx.accountability });
+
+	return settleIds(flows, (flowId) => flowsService.updateOne(flowId, { status: 'active' }));
 }

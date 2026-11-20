@@ -3,6 +3,7 @@ import { type LicensePreviewOutput, type ReadLicenseOutput, ResolveInput } from 
 import express from 'express';
 import { getEntitlementManager } from '../license/index.js';
 import { getLicenseManager } from '../license/manager.js';
+import { RestoreInput } from '../license/resolved-items/schema.js';
 import { getCoreGraceExpiresAt, GRACE_PERIOD_MS } from '../license/utils/get-core-grace-expires-at.js';
 import checkIsAdmin from '../middleware/is-admin.js';
 import { respond } from '../middleware/respond.js';
@@ -234,6 +235,38 @@ router.post(
 
 		await licenseManager.applyResolution(data, { accountability: req.accountability });
 
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	'/resolved',
+	checkIsAdmin,
+	asyncHandler(async (_req, res, next) => {
+		const licenseManager = getLicenseManager();
+
+		res.locals['payload'] = { data: await licenseManager.getResolvedItems() };
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/restore',
+	checkIsAdmin,
+	asyncHandler(async (req, res, next) => {
+		const { error, data } = RestoreInput.safeParse(req.body);
+
+		if (error) {
+			throw new InvalidPayloadError(error);
+		}
+
+		const licenseManager = getLicenseManager();
+
+		const restored = await licenseManager.restoreResolution(data, { accountability: req.accountability ?? null });
+
+		res.locals['payload'] = { data: restored };
 		return next();
 	}),
 	respond,

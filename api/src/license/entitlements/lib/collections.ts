@@ -5,6 +5,7 @@ import type { Knex } from 'knex';
 import getDatabase from '../../../database/index.js';
 import { CollectionsService } from '../../../services/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
+import { settleIds } from '../utils/settle-ids.js';
 
 export async function getActiveCollections(opts?: { knex?: Knex | undefined }) {
 	const { DB_EXCLUDE_TABLES } = useEnv();
@@ -37,14 +38,26 @@ export async function countActiveCollections(opts?: { knex?: Knex | undefined })
 	return collections.length;
 }
 
-export async function resolveCollections(collections: string[], ctx?: { accountability?: Accountability | undefined }) {
+export async function resolveCollections(
+	collections: string[],
+	ctx?: { accountability?: Accountability | undefined },
+): Promise<string[]> {
+	const active = new Set(await getActiveCollections());
 	const collectionsService = new CollectionsService({ schema: await getSchema(), accountability: ctx?.accountability });
 
-	await Promise.allSettled(
-		collections.map((collection) => {
-			return collectionsService.updateOne(collection, {
-				meta: { status: 'inactive' },
-			});
-		}),
+	return settleIds(
+		collections.filter((collection) => active.has(collection)),
+		(collection) => collectionsService.updateOne(collection, { meta: { status: 'inactive' } }),
+	);
+}
+
+export async function restoreCollections(
+	collections: string[],
+	ctx: { accountability: Accountability | null },
+): Promise<string[]> {
+	const collectionsService = new CollectionsService({ schema: await getSchema(), accountability: ctx.accountability });
+
+	return settleIds(collections, (collection) =>
+		collectionsService.updateOne(collection, { meta: { status: 'active' } }),
 	);
 }

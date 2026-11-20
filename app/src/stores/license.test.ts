@@ -1,9 +1,15 @@
 import type { ReadLicenseOutput } from '@directus/license';
 import { createPinia, setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
 import { useLicenseStore } from './license';
 import { i18n } from '@/lang';
+import sdk from '@/sdk';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFlowsStore } from '@/stores/flows';
+import { useUserStore } from '@/stores/user';
 import { localizedFormat } from '@/utils/localized-format';
+
+vi.mock('@/sdk', () => ({ default: { request: vi.fn() } }));
 
 const entitlements: ReadLicenseOutput['entitlements'] = {
 	seats: { limit: 10 },
@@ -352,5 +358,119 @@ describe('hasPinnedNotice', () => {
 		});
 
 		expect(licenseStore.hasPinnedNotice).toBe(false);
+	});
+});
+
+describe('resolved items', () => {
+	const AT = '2026-11-20T00:00:00.000Z';
+
+	const output = {
+		collections: { limit: 25, usage: 25, candidates: [{ id: 'c1', resolved_at: AT }] },
+		flows: { limit: 5, usage: 5, candidates: [{ id: 'f1', name: 'a', resolved_at: AT }] },
+		sso_users: {
+			entitled: false,
+			candidates: [{ id: 's1', first_name: null, last_name: null, avatar: null, email: null, resolved_at: AT }],
+		},
+	};
+
+	function asAdmin(admin = true) {
+		useUserStore().currentUser = { id: 'admin', admin_access: admin } as any;
+	}
+
+	let collectionsHydrate: MockInstance;
+	let flowsHydrate: MockInstance;
+
+	beforeEach(() => {
+		collectionsHydrate = vi.spyOn(useCollectionsStore(), 'hydrate').mockResolvedValue();
+		flowsHydrate = vi.spyOn(useFlowsStore(), 'hydrate').mockResolvedValue();
+	});
+
+	afterEach(() => {
+		vi.mocked(sdk.request).mockReset();
+	});
+
+	function requestPaths() {
+		return vi.mocked(sdk.request).mock.calls.map(([command]) => (command as any)().path);
+	}
+
+	test('hydrateResolvedItems requests GET /license/resolved', async () => {
+		asAdmin();
+		vi.mocked(sdk.request).mockResolvedValue(output);
+		const store = useLicenseStore();
+
+		await store.hydrateResolvedItems();
+
+		expect(requestPaths()).toEqual(['/license/resolved']);
+		expect(store.resolvedItems).toEqual(output);
+	});
+
+	test('resolvedCount sums all sections', () => {
+		const store = useLicenseStore();
+		store.resolvedItems = output as any;
+
+		expect(store.resolvedCount).toBe(3);
+	});
+
+	test('restore posts the payload and re-hydrates info and resolved items', async () => {
+		asAdmin();
+		vi.mocked(sdk.request).mockResolvedValue(undefined);
+		const store = useLicenseStore();
+
+		await store.restore({ flows: ['f1'] });
+
+		const [restoreCommand] = vi.mocked(sdk.request).mock.calls[0]!;
+
+		expect((restoreCommand as any)()).toMatchObject({
+			path: '/license/restore',
+			method: 'POST',
+			body: JSON.stringify({ flows: ['f1'] }),
+		});
+
+		expect(requestPaths()).toContain('/license/resolved');
+		expect(requestPaths()).toContain('/license');
+	});
+
+	test('restore returns the restored ids', async () => {
+		asAdmin();
+		vi.mocked(sdk.request).mockResolvedValueOnce({ flows: ['f1'] });
+
+		await expect(useLicenseStore().restore({ flows: ['f1'] })).resolves.toEqual({ flows: ['f1'] });
+	});
+
+	test('restore re-hydrates the collections and flows stores when they were restored', async () => {
+		asAdmin();
+		vi.mocked(sdk.request).mockResolvedValueOnce({ collections: ['c1'], flows: ['f1'] });
+
+		await useLicenseStore().restore({ collections: ['c1'], flows: ['f1'] });
+
+		expect(collectionsHydrate).toHaveBeenCalledOnce();
+		expect(flowsHydrate).toHaveBeenCalledOnce();
+	});
+
+	test('restore skips the collections and flows stores when only users were restored', async () => {
+		asAdmin();
+		vi.mocked(sdk.request).mockResolvedValueOnce({ seats: ['u1'] });
+
+		await useLicenseStore().restore({ seats: ['u1'] });
+
+		expect(collectionsHydrate).not.toHaveBeenCalled();
+		expect(flowsHydrate).not.toHaveBeenCalled();
+	});
+
+	test('resolve re-hydrates resolved items', async () => {
+		asAdmin();
+		vi.mocked(sdk.request).mockResolvedValue(undefined);
+
+		await useLicenseStore().resolve({ flows: ['f1'] });
+
+		expect(requestPaths()).toContain('/license/resolved');
+	});
+
+	test('non-admins skip hydrateResolvedItems', async () => {
+		asAdmin(false);
+
+		await useLicenseStore().hydrateResolvedItems();
+
+		expect(sdk.request).not.toHaveBeenCalled();
 	});
 });

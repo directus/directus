@@ -34,21 +34,25 @@ export async function checkUsersSSO(opts?: { knex?: Knex | undefined }) {
 export async function resolveSSOUsers(
 	resolution: NonNullable<ResolveInput['sso_enabled']>,
 	ctx?: { accountability?: Accountability | undefined },
-) {
-	if (!ctx?.accountability?.user) return;
+): Promise<string[]> {
+	if (!ctx?.accountability?.user) return [];
 
 	const adminId = ctx.accountability.user;
 	const usersService = new UsersService({ schema: await getSchema(), accountability: ctx?.accountability });
 
-	await usersService.updateByQuery(
-		{
-			filter: {
-				_and: [{ provider: { _neq: DEFAULT_AUTH_PROVIDER, _nnull: true } }, { id: { _neq: adminId } }],
-			},
+	const ssoUsers = await usersService.readByQuery({
+		fields: ['id'],
+		filter: {
+			_and: [
+				{ provider: { _neq: DEFAULT_AUTH_PROVIDER, _nnull: true } },
+				{ id: { _neq: adminId } },
+				{ status: { _eq: 'active' } },
+			],
 		},
-		{ status: USER_INACTIVE_LICENSE_STATUS },
-	);
+		limit: -1,
+	});
 
+	// Admin credentials first: a policy failure must not leave SSO users deactivated but unrecorded
 	if (isObject(resolution) && Object.keys(resolution.admin ?? {}).length) {
 		const payload: { email?: string | undefined; password?: string; provider: string } = {
 			provider: DEFAULT_AUTH_PROVIDER,
@@ -64,4 +68,31 @@ export async function resolveSSOUsers(
 
 		await usersService.updateOne(adminId, payload);
 	}
+
+	const ids = ssoUsers.map((user) => String(user['id']));
+
+	if (ids.length > 0) {
+		await usersService.updateMany(ids, { status: USER_INACTIVE_LICENSE_STATUS });
+	}
+
+	return ids;
+}
+
+/** Split deactivated seat users by provider, so SSO users are restored under the SSO entitlement */
+export async function splitSsoUsers(ids: string[]): Promise<{ seats: string[]; sso_users: string[] }> {
+	if (ids.length === 0) return { seats: [], sso_users: [] };
+
+	const usersService = new UsersService({ schema: await getSchema(), accountability: null });
+
+	const users = await usersService.readByQuery({
+		fields: ['id', 'provider'],
+		filter: { id: { _in: ids } },
+		limit: -1,
+	});
+
+	const sso = new Set(
+		users.filter((user) => user['provider'] && user['provider'] !== DEFAULT_AUTH_PROVIDER).map((user) => user['id']),
+	);
+
+	return { seats: ids.filter((id) => !sso.has(id)), sso_users: ids.filter((id) => sso.has(id)) };
 }

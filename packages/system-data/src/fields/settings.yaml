@@ -1428,3 +1428,9 @@ fields:
     hidden: true
     special:
       - encrypt
+
+  - field: resolved_items
+    group: license_group
+    hidden: true
+    special:
+      - cast-json

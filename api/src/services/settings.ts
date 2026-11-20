@@ -14,21 +14,21 @@ import { getEntitlementManager } from '../license/index.js';
 import { sendReport } from '../telemetry/index.js';
 import { ItemsService } from './items.js';
 
+const PROTECTED_FIELDS = ['license_key', 'license_token', 'resolved_items'] as const;
+
+function assertNoProtectedFields(data: Partial<Settings>) {
+	const field = PROTECTED_FIELDS.find((field) => field in data);
+
+	if (field) throw new InvalidPayloadError({ reason: `You can't change the "${field}" value manually` });
+}
+
 export class SettingsService extends ItemsService<Settings> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_settings', options);
 	}
 
 	override async createOne(data: Partial<Settings>, opts?: MutationOptions): Promise<PrimaryKey> {
-		if (this.accountability !== null) {
-			if ('license_key' in data) {
-				throw new InvalidPayloadError({ reason: `You can't change the "license_key" value manually` });
-			}
-
-			if ('license_token' in data) {
-				throw new InvalidPayloadError({ reason: `You can't change the "license_token" value manually` });
-			}
-		}
+		if (this.accountability !== null) assertNoProtectedFields(data);
 
 		const entitlementManager = getEntitlementManager();
 		const changesLLM = CUSTOM_LLM_FIELDS.some((field) => field in data && data[field] !== null);
@@ -51,15 +51,7 @@ export class SettingsService extends ItemsService<Settings> {
 		data: Partial<Settings>,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey[]> {
-		if (this.accountability !== null) {
-			if ('license_key' in data) {
-				throw new InvalidPayloadError({ reason: `You can't change the "license_key" value manually` });
-			}
-
-			if ('license_token' in data) {
-				throw new InvalidPayloadError({ reason: `You can't change the "license_token" value manually` });
-			}
-		}
+		if (this.accountability !== null) assertNoProtectedFields(data);
 
 		const entitlementManager = getEntitlementManager();
 		const changesLLM = CUSTOM_LLM_FIELDS.some((field) => field in data && data[field] !== null);

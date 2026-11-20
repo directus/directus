@@ -1633,6 +1633,19 @@ licensing:
   resolve_section_seats_users_caption: Select user seat(s) to deactivate
   resolve_section_seats_admins_caption: Select admin(s) to deactivate
   resolve_section_flows_caption: Select flow(s) to deactivate
+  restore_title: Restore Deactivated Items
+  restore_subtitle: Select the items to turn back on. Items you leave unselected stay inactive.
+  restore_submit: Restore Selected Items
+  restore_partial:
+    '{count} item could not be restored and is still listed | {count} items could not be restored and are still listed'
+  restore_entry: 'Deactivated items ({count})'
+  restore_entry_description: These items were deactivated to resolve license limits.
+  restore_section_collections_caption: Select collection(s) to restore
+  restore_section_seats_caption: Select user(s) to restore
+  restore_section_flows_caption: Select flow(s) to restore
+  restore_section_sso: SSO Users
+  restore_section_sso_caption: SSO users also use a seat
+  restore_sso_not_entitled: Your plan does not include SSO. These users can be restored after you upgrade.
   resolve_section_sso: SSO Deactivation
   resolve_sso_confirm: Confirm SSO Deactivation
   resolve_sso_caption:

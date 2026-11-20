@@ -1,7 +1,7 @@
 import { USER_INACTIVE_LICENSE_STATUS } from '@directus/constants';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { UsersService } from '../../../services/index.js';
-import { getActiveSeats, getSeatUsersAndRoles, resolveSeats } from './seats.js';
+import { getActiveSeats, getSeatUsersAndRoles, resolveSeats, restoreSeats } from './seats.js';
 
 vi.mock('../../../utils/get-schema.js', () => ({
 	getSchema: vi.fn(),
@@ -190,6 +190,12 @@ describe('getActiveSeats', () => {
 
 describe('resolveSeats', () => {
 	test('deactivates every given user except the acting user', async () => {
+		vi.mocked(UsersService.prototype.readByQuery).mockResolvedValue([
+			{ id: 'user1' },
+			{ id: 'admin' },
+			{ id: 'user2' },
+		]);
+
 		await resolveSeats(['user1', 'admin', 'user2'], { accountability: { user: 'admin' } as any });
 
 		const updateOne = vi.mocked(UsersService.prototype.updateOne);
@@ -198,9 +204,53 @@ describe('resolveSeats', () => {
 		expect(updateOne).not.toHaveBeenCalledWith('admin', expect.anything());
 	});
 
+	test('only deactivates users that are still active', async () => {
+		vi.mocked(UsersService.prototype.readByQuery).mockResolvedValue([{ id: 'user1' }]);
+
+		await expect(resolveSeats(['user1', 'suspended'], { accountability: { user: 'admin' } as any })).resolves.toEqual([
+			'user1',
+		]);
+
+		expect(UsersService.prototype.updateOne).not.toHaveBeenCalledWith('suspended', expect.anything());
+	});
+
+	test('returns only ids whose update fulfilled', async () => {
+		vi.mocked(UsersService.prototype.readByQuery).mockResolvedValue([{ id: 'user1' }, { id: 'broken' }]);
+
+		vi.mocked(UsersService.prototype.updateOne).mockImplementation(async (id: any) => {
+			if (id === 'broken') throw new Error('fail');
+			return id;
+		});
+
+		await expect(resolveSeats(['user1', 'broken'], { accountability: { user: 'admin' } as any })).resolves.toEqual([
+			'user1',
+		]);
+	});
+
+	test('never returns the current admin id', async () => {
+		vi.mocked(UsersService.prototype.readByQuery).mockResolvedValue([{ id: 'admin' }, { id: 'user1' }]);
+
+		await expect(resolveSeats(['admin', 'user1'], { accountability: { user: 'admin' } as any })).resolves.toEqual([
+			'user1',
+		]);
+	});
+
 	test('no-op when there is no acting user', async () => {
+		await expect(resolveSeats(['user1'])).resolves.toEqual([]);
 		await resolveSeats(['user1']);
 
 		expect(UsersService.prototype.updateOne).not.toHaveBeenCalled();
+	});
+});
+
+describe('restoreSeats', () => {
+	test('sets status active and returns fulfilled ids', async () => {
+		vi.mocked(UsersService.prototype.updateOne).mockImplementation(async (id: any) => {
+			if (id === 'broken') throw new Error('fail');
+			return id;
+		});
+
+		await expect(restoreSeats(['u1', 'broken'], { accountability: null })).resolves.toEqual(['u1']);
+		expect(UsersService.prototype.updateOne).toHaveBeenCalledWith('u1', { status: 'active' });
 	});
 });

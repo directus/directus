@@ -7,6 +7,7 @@ import getDatabase from '../../../database/index.js';
 import { AccessService, UsersService } from '../../../services/index.js';
 import { fetchAccessRoles } from '../../../utils/fetch-user-count/fetch-access-roles.js';
 import { getSchema } from '../../../utils/get-schema.js';
+import { settleIds } from '../utils/settle-ids.js';
 
 /**
  * Group access rows to the admin/app users and roles that occupy a seat.
@@ -193,14 +194,27 @@ export async function countActiveSeats(opts?: { knex?: Knex | undefined }) {
 	return seats.length;
 }
 
-export async function resolveSeats(seats: string[], ctx?: { accountability?: Accountability | undefined }) {
-	if (!ctx?.accountability?.user) return;
+export async function resolveSeats(
+	seats: string[],
+	ctx?: { accountability?: Accountability | undefined },
+): Promise<string[]> {
+	if (!ctx?.accountability?.user) return [];
 
 	const usersService = new UsersService({ schema: await getSchema(), accountability: ctx.accountability });
 
-	const users = seats.filter((user_id) => user_id !== ctx.accountability!.user);
+	const active = await usersService.readByQuery({
+		fields: ['id'],
+		filter: { _and: [{ id: { _in: seats } }, { status: { _eq: 'active' } }] },
+		limit: -1,
+	});
 
-	await Promise.allSettled(
-		users.map((user_id) => usersService.updateOne(user_id, { status: USER_INACTIVE_LICENSE_STATUS })),
-	);
+	const users = active.map((user) => String(user['id'])).filter((id) => id !== ctx.accountability!.user);
+
+	return settleIds(users, (userId) => usersService.updateOne(userId, { status: USER_INACTIVE_LICENSE_STATUS }));
+}
+
+export async function restoreSeats(users: string[], ctx: { accountability: Accountability | null }): Promise<string[]> {
+	const usersService = new UsersService({ schema: await getSchema(), accountability: ctx.accountability });
+
+	return settleIds(users, (userId) => usersService.updateOne(userId, { status: 'active' }));
 }
