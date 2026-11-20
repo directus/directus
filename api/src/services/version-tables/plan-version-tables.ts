@@ -69,7 +69,7 @@ export type TableAlteration = {
 
 export type Plan = {
 	tables: { create: VersionTable[]; update: Record<string, TableAlteration>; drop: string[] };
-	foreignKeys: { create: Record<string, VersionTableForeignKey[]>; drop: ForeignKey[] };
+	foreignKeys: { create: Record<string, VersionTableForeignKey[]>; drop: Record<string, ForeignKey[]> };
 };
 
 type TableChanges = Plan['tables'];
@@ -176,7 +176,7 @@ function diffTables(spec: VersionTables, existingTables: TablesMapped): TableCha
 }
 
 function diffForeignKeys(spec: VersionTables, changes: TableChanges, existingForeignKeys: ForeignKey[]) {
-	const drop: ForeignKey[] = [];
+	const drop: Record<string, ForeignKey[]> = {};
 	const kept = new Set<VersionTableForeignKey>();
 
 	for (const foreignKey of existingForeignKeys) {
@@ -192,7 +192,7 @@ function diffForeignKeys(spec: VersionTables, changes: TableChanges, existingFor
 			alteration?.update.some(({ column }) => column.name === foreignKey.column);
 
 		if (mustDrop) {
-			drop.push(foreignKey);
+			(drop[foreignKey.table] ??= []).push(foreignKey);
 		} else {
 			kept.add(match);
 		}

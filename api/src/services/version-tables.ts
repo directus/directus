@@ -179,8 +179,9 @@ export class VersionTablesService {
 	}
 
 	private async applyPlan(plan: Plan): Promise<void> {
-		for (const [table, foreignKeys] of Object.entries(groupBy(plan.foreignKeys.drop, 'table'))) {
+		for (const [table, foreignKeys] of Object.entries(plan.foreignKeys.drop)) {
 			await this.knex.schema.alterTable(table, (builder) => {
+				// We have to drop at the start so collection deletions and field updates dont fail
 				for (const foreignKey of foreignKeys) {
 					builder.dropForeign(foreignKey.column, foreignKey.constraint_name ?? undefined);
 				}
@@ -238,6 +239,7 @@ export class VersionTablesService {
 
 		if (column.kind === 'reference') {
 			// `unsigned` matches `increments` in MySQL, other vendors ignore it
+			// Integer because it points at the version_id of shadow tables
 			builder.integer(column.name).unsigned().nullable();
 			return;
 		}
@@ -246,14 +248,18 @@ export class VersionTablesService {
 		const nullable = !column.primary;
 
 		if (!existing) {
-			if (column.primary) columnBuilder.primary().notNullable();
-			else columnBuilder.nullable();
+			if (column.primary) {
+				columnBuilder.primary().notNullable();
+			} else {
+				columnBuilder.nullable();
+			}
 
 			return;
 		}
 
 		// Only touch the nullability when it changes: Oracle rejects setting the one a column already has and Postgres
 		// can't drop the `not null` of a primary key. Re-adding the primary key while altering would fail as well
+		// TODO: WHY?
 		if (existing.is_nullable === nullable) {
 			columnBuilder.alter({ alterNullable: false });
 			return;
