@@ -8,12 +8,17 @@ import { prepQueryParams } from '../utils/prep-query-params.js';
 const triggerCache = new Map<string, boolean>();
 
 export class SchemaHelperMSSQL extends SchemaHelper {
+	override getMaxIdentifierLength(): number {
+		// https://learn.microsoft.com/en-us/sql/relational-databases/databases/database-identifiers
+		return 128;
+	}
+
 	override generateIndexName(
 		type: 'unique' | 'foreign' | 'index',
 		collection: string,
 		fields: string | string[],
 	): string {
-		return getDefaultIndexName(type, collection, fields, { maxLength: 128 });
+		return getDefaultIndexName(type, collection, fields, { maxLength: this.getMaxIdentifierLength() });
 	}
 
 	override async hasTriggers(collection: string): Promise<boolean> {

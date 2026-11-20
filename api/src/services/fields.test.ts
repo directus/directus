@@ -23,6 +23,12 @@ vi.mock('@directus/env', async () => {
 	return mockUseEnv();
 });
 
+vi.mock('./version-tables.js', () => ({
+	VersionTablesService: class {
+		syncCollections = vi.fn();
+	},
+}));
+
 vi.mock('../../src/database/index', async () => {
 	const { mockDatabase } = await import('../test-utils/database.js');
 	return mockDatabase();
@@ -88,8 +94,6 @@ vi.mock('../database/helpers/index.js', () => ({
 		schema: {
 			createIndex: mockCreateIndexSpy,
 			processFieldType: vi.fn((field) => field.type),
-			preColumnChange: vi.fn().mockResolvedValue(true),
-			postColumnChange: vi.fn().mockResolvedValue(undefined),
 			setNullable: vi.fn(),
 			generateIndexName: vi.fn((type, collection, field) => `${collection}_${field}_${type}`),
 			isOneOfClients: vi.fn(() => mockIsOneOfClientsMSSQL),
@@ -413,6 +417,35 @@ describe('Integration Tests', () => {
 				expect(createOneSpy).toHaveBeenCalled();
 			});
 
+			test.each(['version_type', 'version_ref_author'])(
+				'should reject reserved versioning field name "%s" in a versioned collection before altering the table',
+				async (fieldName) => {
+					const versionedSchema = new SchemaBuilder()
+						.collection('test_collection', (c) => {
+							c.field('id').integer().primary();
+						})
+						.options({ versioning: true })
+						.build();
+
+					const service = new FieldsService({
+						knex: db,
+						schema: versionedSchema,
+						accountability: null,
+					});
+
+					tracker.on.select('directus_fields').response([]);
+
+					const alterTableSpy = vi.fn();
+					db.schema.alterTable = alterTableSpy;
+
+					await expect(service.createField('test_collection', { field: fieldName, type: 'string' })).rejects.toThrow(
+						InvalidPayloadError,
+					);
+
+					expect(alterTableSpy).not.toHaveBeenCalled();
+				},
+			);
+
 			test('should not create schema column for alias fields', async () => {
 				const service = new FieldsService({
 					knex: db,
@@ -489,6 +522,19 @@ describe('Integration Tests', () => {
 				await service.createField('test_collection', field);
 
 				expect(clearSpy).toHaveBeenCalled();
+			});
+		});
+
+		describe('version tables', () => {
+			const service = () => new FieldsService({ knex: db, schema, accountability: null });
+
+			test('should reject reading and changing fields of version tables', async () => {
+				const table = 'directus_shadow_test_collection';
+
+				await expect(service().readOne(table, 'id')).rejects.toThrow(ForbiddenError);
+				await expect(service().createField(table, { field: 'x', type: 'string' })).rejects.toThrow(ForbiddenError);
+				await expect(service().updateField(table, { field: 'id', type: 'integer' })).rejects.toThrow(ForbiddenError);
+				await expect(service().deleteField(table, 'id')).rejects.toThrow(ForbiddenError);
 			});
 		});
 

@@ -19,6 +19,8 @@ type RawColumn = {
 	DATA_LENGTH: number | null;
 	DATA_PRECISION: number | null;
 	DATA_SCALE: number | null;
+	CHAR_LENGTH: number | null;
+	CHAR_USED: 'B' | 'C' | null;
 	NULLABLE: 'Y' | 'N';
 	COLUMN_COMMENT: string | null;
 	REFERENCED_TABLE_NAME: string | null;
@@ -37,6 +39,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		name: rawColumn.COLUMN_NAME,
 		table: rawColumn.TABLE_NAME,
 		data_type: rawColumn.DATA_TYPE,
+		full_data_type: getFullDataType(rawColumn),
 		default_value: !is_generated ? default_value : null,
 		generation_expression: is_generated ? default_value : null,
 		max_length: rawColumn.DATA_LENGTH,
@@ -62,6 +65,38 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		default_value: hasAutoIncrement ? 'AUTO_INCREMENT' : column.default_value,
 		has_auto_increment: hasAutoIncrement,
 	};
+}
+
+/**
+ * Rebuild the declared type, as `DATA_TYPE` only holds the precision of timestamps and intervals
+ */
+export function getFullDataType(rawColumn: RawColumn): string {
+	const {
+		DATA_TYPE: dataType,
+		DATA_LENGTH: dataLength,
+		DATA_PRECISION: precision,
+		DATA_SCALE: scale,
+		CHAR_LENGTH: charLength,
+		CHAR_USED: charUsed,
+	} = rawColumn;
+
+	switch (dataType) {
+		case 'CHAR':
+		case 'VARCHAR2':
+			return `${dataType}(${charLength} ${charUsed === 'C' ? 'CHAR' : 'BYTE'})`;
+		case 'NCHAR':
+		case 'NVARCHAR2':
+			return `${dataType}(${charLength})`;
+		case 'RAW':
+			return `${dataType}(${dataLength})`;
+		case 'NUMBER':
+			if (precision === null && scale === null) return dataType;
+			return `${dataType}(${precision ?? '*'},${scale ?? 0})`;
+		case 'FLOAT':
+			return precision === null ? dataType : `${dataType}(${precision})`;
+		default:
+			return dataType;
+	}
 }
 
 export function parseDefaultValue(value: string | null): string | null {
@@ -292,6 +327,8 @@ export default class oracleDB implements SchemaInspector {
             "c"."DATA_LENGTH",
             "c"."DATA_PRECISION",
             "c"."DATA_SCALE",
+            "c"."CHAR_LENGTH",
+            "c"."CHAR_USED",
             "c"."NULLABLE",
             "c"."IDENTITY_COLUMN",
             "c"."VIRTUAL_COLUMN",

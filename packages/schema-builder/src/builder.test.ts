@@ -86,6 +86,7 @@ test('Create primitive schema', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		  },
 		  "relations": [],
@@ -147,6 +148,7 @@ test('Create o2m relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		    "countries": {
 		      "accountability": "all",
@@ -190,6 +192,7 @@ test('Create o2m relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		  },
 		  "relations": [
@@ -278,6 +281,7 @@ test('Create m2o relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		    "countries": {
 		      "accountability": "all",
@@ -304,6 +308,7 @@ test('Create m2o relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		  },
 		  "relations": [
@@ -392,6 +397,7 @@ test('Create m2m relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		    "articles_tags_junction": {
 		      "accountability": "all",
@@ -448,6 +454,7 @@ test('Create m2m relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		    "tags": {
 		      "accountability": "all",
@@ -474,6 +481,7 @@ test('Create m2m relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		  },
 		  "relations": [
@@ -589,6 +597,7 @@ test('Create m2a relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		    "blog_blocks": {
 		      "accountability": "all",
@@ -660,6 +669,7 @@ test('Create m2a relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		    "image": {
 		      "accountability": "all",
@@ -686,6 +696,7 @@ test('Create m2a relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		    "text": {
 		      "accountability": "all",
@@ -712,6 +723,7 @@ test('Create m2a relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		  },
 		  "relations": [
@@ -834,6 +846,7 @@ test('Create a2o relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		    "image": {
 		      "accountability": "all",
@@ -860,6 +873,7 @@ test('Create a2o relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		    "text": {
 		      "accountability": "all",
@@ -886,6 +900,7 @@ test('Create a2o relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		  },
 		  "relations": [
@@ -968,6 +983,7 @@ test('Create translations relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		    "blog_translations": {
 		      "accountability": "all",
@@ -1024,6 +1040,7 @@ test('Create translations relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		    "languages": {
 		      "accountability": "all",
@@ -1080,6 +1097,7 @@ test('Create translations relation', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		  },
 		  "relations": [
@@ -1194,6 +1212,7 @@ test('overwrite field', () => {
 		      "singleton": false,
 		      "sortField": null,
 		      "status": "active",
+		      "versioned": false,
 		    },
 		  },
 		  "relations": [],

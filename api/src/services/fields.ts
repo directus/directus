@@ -42,13 +42,14 @@ import getLocalType from '../utils/get-local-type.js';
 import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
-import { transaction } from '../utils/transaction.js';
 import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
+import { runSchemaChange } from './version-tables/run-schema-change.js';
+import { assertVersionSystemField, isVersioningTable } from './version-tables/utils.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const { CACHE_SCHEMA } = useEnv();
@@ -279,6 +280,8 @@ export class FieldsService {
 	}
 
 	async readOne(collection: string, field: string): Promise<Record<string, any>> {
+		if (isVersioningTable(collection)) throw new ForbiddenError();
+
 		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
 				{
@@ -364,7 +367,8 @@ export class FieldsService {
 			throw new ForbiddenError();
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
+		if (isVersioningTable(collection)) throw new ForbiddenError();
+
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
@@ -391,7 +395,7 @@ export class FieldsService {
 			let hookAdjustedField = field;
 			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
-			await transaction(this.knex, async (trx) => {
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
 				const itemsService = new ItemsService('directus_fields', {
 					knex: trx,
 					accountability: this.accountability,
@@ -425,6 +429,8 @@ export class FieldsService {
 								attemptConcurrentIndex,
 							});
 						});
+
+						change.sync(collection);
 					}
 				}
 
@@ -475,10 +481,6 @@ export class FieldsService {
 				});
 			}
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
@@ -499,11 +501,12 @@ export class FieldsService {
 	}
 
 	async updateField(collection: string, field: RawField, opts?: FieldMutationOptions): Promise<string> {
+		if (isVersioningTable(collection)) throw new ForbiddenError();
+
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		// 'type' is required for further checks on schema update
@@ -560,7 +563,7 @@ export class FieldsService {
 					try {
 						const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
-						await transaction(this.knex, async (trx) => {
+						await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
 							await trx.schema.alterTable(collection, (table) => {
 								if (!hookAdjustedField.schema) return;
 
@@ -569,6 +572,8 @@ export class FieldsService {
 									attemptConcurrentIndex,
 								});
 							});
+
+							change.sync(collection);
 						});
 
 						// concurrent index creation cannot be done inside the transaction
@@ -630,10 +635,6 @@ export class FieldsService {
 
 			return field.field;
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
@@ -693,11 +694,12 @@ export class FieldsService {
 	}
 
 	async deleteField(collection: string, field: string, opts?: MutationOptions): Promise<void> {
+		if (isVersioningTable(collection)) throw new ForbiddenError();
+
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
@@ -716,7 +718,7 @@ export class FieldsService {
 				);
 			}
 
-			await transaction(this.knex, async (trx) => {
+			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
 				const relations = getRelations(this.schema.relations, collection, field);
 
 				const relationsService = new RelationsService({
@@ -762,6 +764,8 @@ export class FieldsService {
 						await trx('directus_relations')
 							.update({ one_field: null })
 							.where({ many_collection: relation.collection, many_field: relation.field });
+
+						change.sync(relation.collection);
 					}
 				}
 
@@ -774,6 +778,8 @@ export class FieldsService {
 					await trx.schema.table(collection, (table) => {
 						table.dropColumn(field);
 					});
+
+					change.sync(collection);
 				}
 
 				const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(
@@ -877,10 +883,6 @@ export class FieldsService {
 				nestedActionEvents.push(actionEvent);
 			}
 		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
-
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
@@ -906,6 +908,8 @@ export class FieldsService {
 		field: RawField | Field,
 		options?: { attemptConcurrentIndex?: boolean; existing?: Column | null },
 	): void {
+		assertVersionSystemField(collection, field.field);
+
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields

@@ -16,16 +16,15 @@ import deepDiff from 'deep-diff';
 import type { Knex } from 'knex';
 import { cloneDeep, merge, set } from 'lodash-es';
 import { flushCaches } from '../../cache.js';
-import { getHelpers } from '../../database/helpers/index.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import { CollectionsService } from '../../services/collections.js';
 import { FieldsService } from '../../services/fields.js';
 import { RelationsService } from '../../services/relations.js';
+import { runSchemaChange } from '../../services/version-tables/run-schema-change.js';
 import type { Collection } from '../../types/index.js';
 import { getSchema } from '../get-schema.js';
-import { transaction } from '../transaction.js';
 
 type CollectionDelta = {
 	collection: string;
@@ -40,7 +39,6 @@ export async function applyDiff(
 	options?: { database?: Knex; schema?: SchemaOverview },
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
-	const helpers = getHelpers(database);
 	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 
 	const nestedActionEvents: ActionEventParams[] = [];
@@ -51,9 +49,7 @@ export async function applyDiff(
 		bypassLimits: true,
 	};
 
-	const runPostColumnChange = await helpers.schema.preColumnChange();
-
-	await transaction(database, async (trx) => {
+	await runSchemaChange({ knex: database, schema }, async (trx) => {
 		const collectionsService = new CollectionsService({ knex: trx, schema });
 
 		const getNestedCollectionsToCreate = (currentLevelCollection: string) =>
@@ -354,10 +350,6 @@ export async function applyDiff(
 			}
 		}
 	});
-
-	if (runPostColumnChange) {
-		await helpers.schema.postColumnChange();
-	}
 
 	await flushCaches();
 

@@ -51,6 +51,7 @@ export function toSchemaOverview(snapshot: SchemaSnapshot): SchemaOverview {
 			collection: collection.collection,
 			primary,
 			singleton: meta?.singleton ?? false,
+			versioned: meta?.versioning ?? false,
 			note: meta?.note || null,
 			sortField: meta?.sort_field || null,
 			accountability: meta ? (meta.accountability ?? null) : 'all',

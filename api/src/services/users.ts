@@ -18,6 +18,7 @@ import jwt from 'jsonwebtoken';
 import { isEmpty } from 'lodash-es';
 import { clearSystemCache } from '../cache.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { getEntitlementManager } from '../license/index.js';
 import { useLogger } from '../logger/index.js';
@@ -32,6 +33,7 @@ import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
+import { VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -390,11 +392,7 @@ export class UsersService extends ItemsService {
 			}
 		}
 
-		// Manual constraint, see https://github.com/directus/directus/pull/19912
-		await this.knex('directus_comments').update({ user_updated: null }).whereIn('user_updated', keys);
-		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
-		await this.knex('directus_versions').update({ user_updated: null }).whereIn('user_updated', keys);
-
+		await this.clearUserReferences(keys);
 		await super.deleteMany(keys, opts);
 		await this.clearUserSessions(keys);
 
@@ -402,6 +400,42 @@ export class UsersService extends ItemsService {
 		await getEntitlementManager().clearCache('seats', 'sso_enabled');
 
 		return keys;
+	}
+
+	async clearUserReferences(keys: PrimaryKey[]): Promise<void> {
+		if (keys.length === 0) return;
+
+		// Manual constraint, see https://github.com/directus/directus/pull/19912
+		await this.knex('directus_comments').update({ user_updated: null }).whereIn('user_updated', keys);
+		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
+		await this.knex('directus_versions').update({ user_updated: null }).whereIn('user_updated', keys);
+
+		const versionedCollections = Object.values(this.schema.collections)
+			.filter(({ versioned }) => versioned)
+			.map(({ collection }) => collection);
+
+		const versioningHelper = getHelpers(this.knex).versioning;
+
+		for (const versionedCollection of versionedCollections) {
+			const userFields = [
+				VERSION_SYSTEM_FIELDS.userCreated,
+				VERSION_SYSTEM_FIELDS.userUpdated,
+				...this.schema.relations
+					.filter(
+						(relation) =>
+							relation.collection === versionedCollection &&
+							relation.related_collection === 'directus_users' &&
+							relation.schema?.on_delete === 'SET NULL',
+					)
+					.map((relation) => relation.field),
+			];
+
+			for (const field of userFields) {
+				await this.knex(versioningHelper.getShadowTableName(versionedCollection))
+					.update({ [field]: null })
+					.whereIn(field, keys);
+			}
+		}
 	}
 
 	async inviteUser(email: string | string[], role: string, url: string | null, subject?: string | null): Promise<void> {

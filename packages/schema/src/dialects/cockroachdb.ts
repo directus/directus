@@ -531,6 +531,7 @@ ORDER BY c.ordinal_position`,
 					table: t,
 					name: r.column_name,
 					data_type: normalizedDataType,
+					full_data_type: r.crdb_sql_type,
 					default_value: defaultVal,
 					generation_expression: r.generation_expression || null,
 					is_generated: !!r.generation_expression,
@@ -667,10 +668,11 @@ ORDER BY c.ordinal_position`,
 		`,
 			[
 				// Note we bind the schema-array three times because we used ANY(?) three times.
-				this.explodedSchema,
-				this.explodedSchema,
+				// Bindings are positional, so the table goes right after the first schema-array.
 				this.explodedSchema,
 				...(table ? [table] : []),
+				this.explodedSchema,
+				this.explodedSchema,
 			],
 		);
 
