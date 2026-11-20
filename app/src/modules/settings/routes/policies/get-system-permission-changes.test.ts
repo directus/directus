@@ -21,8 +21,8 @@ test('returns created and updated system collection permissions, ignoring deleti
 	});
 
 	expect(result).toEqual([
-		{ collection: 'directus_files', action: 'read', unfilteredRead: true },
-		{ collection: 'directus_users', action: 'update', unfilteredRead: false },
+		{ collection: 'directus_files', action: 'read', unfilteredRead: true, requiresUser: false },
+		{ collection: 'directus_users', action: 'update', unfilteredRead: false, requiresUser: false },
 	]);
 });
 
@@ -34,6 +34,35 @@ test('does not flag a read with a filter as unfiltered', () => {
 	});
 
 	expect(result[0]?.unfilteredRead).toBe(false);
+});
+
+test('flags permissions the API only honors for an authenticated user', () => {
+	const result = getSystemPermissionChanges({
+		create: [
+			{ collection: 'directus_comments', action: 'create', permissions: null },
+			{ collection: 'directus_comments', action: 'read', permissions: null },
+		],
+		update: [],
+		delete: [],
+	});
+
+	expect(result.map(({ requiresUser }) => requiresUser)).toEqual([true, false]);
+});
+
+test('ignores permissions the API restricts to admins', () => {
+	const result = getSystemPermissionChanges({
+		create: [
+			{ collection: 'directus_collections', action: 'update', permissions: null },
+			{ collection: 'directus_extensions', action: 'update', permissions: null },
+			{ collection: 'directus_collections', action: 'read', permissions: null },
+		],
+		update: [],
+		delete: [],
+	});
+
+	expect(result).toEqual([
+		{ collection: 'directus_collections', action: 'read', unfilteredRead: true, requiresUser: false },
+	]);
 });
 
 test('returns the system collection permission changes of policies edited through access rows', () => {
@@ -59,8 +88,8 @@ test('returns the system collection permission changes of policies edited throug
 	});
 
 	expect(result).toEqual([
-		{ collection: 'directus_files', action: 'read', unfilteredRead: true },
-		{ collection: 'directus_users', action: 'create', unfilteredRead: false },
+		{ collection: 'directus_files', action: 'read', unfilteredRead: true, requiresUser: false },
+		{ collection: 'directus_users', action: 'create', unfilteredRead: false, requiresUser: false },
 	]);
 });
 
