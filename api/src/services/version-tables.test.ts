@@ -63,6 +63,7 @@ function column(table: string, name: string, data_type = 'integer', overrides: P
 		numeric_precision: null,
 		numeric_scale: null,
 		is_primary_key: name === 'id',
+		is_nullable: name !== 'id',
 		...overrides,
 	} as Column;
 }
@@ -409,10 +410,6 @@ describe('VersionTablesService.syncCollections', () => {
 			drop default;
 
 			alter table "directus_shadow_articles"
-			alter column "title"
-			drop not null;
-
-			alter table "directus_shadow_articles"
 			alter column "title" type varchar(500) using ("title"::varchar(500));
 
 			alter table "directus_shadow_articles"
@@ -424,7 +421,6 @@ describe('VersionTablesService.syncCollections', () => {
 
 		expect(bindings).toMatchInlineSnapshot(`
 			[
-			  [],
 			  [],
 			  [],
 			  [],
@@ -706,7 +702,7 @@ describe('dialects', () => {
 		expect(sql).toMatchInlineSnapshot(`
 			"alter table \`directus_shadow_articles\`
 			modify \`id\` int unsigned null,
-			modify \`author\` int unsigned null;
+			modify \`author\` int unsigned;
 
 			alter table \`directus_shadow_articles\`
 			add constraint \`directus_shadow_articles_author_foreign\` foreign key (\`author\`) references \`authors\` (\`id\`) on delete SET NULL"
@@ -749,7 +745,7 @@ describe('dialects', () => {
 
 		expect(sql).toMatchInlineSnapshot(`
 			"alter table "directus_shadow_articles"
-			modify "price" NUMBER(10, 5) null"
+			modify "price" NUMBER(10, 5)"
 		`);
 	});
 
@@ -781,6 +777,38 @@ describe('dialects', () => {
 
 			alter table "directus_link_articles"
 			add constraint "directus_link_articles_author_foreign" foreign key ("author") references "directus_shadow_authors" ("version_id") on delete SET NULL"
+		`);
+	});
+
+	test('keeps the nullability of altered columns on oracle, as it rejects setting the current one', async () => {
+		const { sql } = await sync({
+			client: 'oracle',
+			versioned: ['authors'],
+			relations: [AUTHOR_O2M],
+			live: LIVE_COLUMNS.map((live) =>
+				live.table === 'articles' && live.name === 'id'
+					? { ...live, data_type: 'CHAR', max_length: 36, full_data_type: 'CHAR(36 BYTE)' }
+					: live,
+			),
+			shadow: {
+				tables: ['directus_link_articles'],
+				columns: [column('directus_link_articles', 'id'), column('directus_link_articles', 'author')],
+				foreignKeys: [
+					foreignKey('directus_link_articles', 'id', 'articles', 'CASCADE'),
+					foreignKey('directus_link_articles', 'author', 'directus_shadow_authors', 'SET NULL'),
+				],
+			},
+			run: (service) => service.syncCollections(['articles']),
+		});
+
+		expect(sql).toMatchInlineSnapshot(`
+			"alter table "directus_link_articles" drop constraint "directus_link_articles_id_foreign";
+
+			alter table "directus_link_articles"
+			modify "id" CHAR(36 BYTE);
+
+			alter table "directus_link_articles"
+			add constraint "directus_link_articles_id_foreign" foreign key ("id") references "articles" ("id") on delete CASCADE"
 		`);
 	});
 

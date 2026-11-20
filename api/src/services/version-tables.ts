@@ -256,17 +256,26 @@ export class VersionTablesService {
 		}
 
 		const columnBuilder = builder.specificType(column.name, column.type);
+		const nullable = !column.primary;
 
-		// Re-adding the primary key while altering would fail, as would dropping its `not null` on Postgres
-		if (column.primary && existing) {
-			columnBuilder.notNullable().alter({ alterNullable: false });
+		if (!existing) {
+			if (column.primary) columnBuilder.primary().notNullable();
+			else columnBuilder.nullable();
+
 			return;
 		}
 
-		if (column.primary) columnBuilder.primary().notNullable();
-		else columnBuilder.nullable();
+		// Only touch the nullability when it changes: Oracle rejects setting the one a column already has and Postgres
+		// can't drop the `not null` of a primary key. Re-adding the primary key while altering would fail as well
+		if (existing.is_nullable === nullable) {
+			columnBuilder.alter({ alterNullable: false });
+			return;
+		}
 
-		if (existing) columnBuilder.alter();
+		if (nullable) columnBuilder.nullable();
+		else columnBuilder.notNullable();
+
+		columnBuilder.alter();
 	}
 
 	private addSystemColumn(builder: Knex.CreateTableBuilder, name: string) {

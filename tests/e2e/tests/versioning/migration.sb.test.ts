@@ -60,6 +60,6 @@ test('collections versioned before the upgrade with a conflicting field name fai
 	const { code, output } = await migrateLatest(directus.env);
 
 	expect(code, output).not.toBe(0);
-	expect(output).toContain('conflicts with the versioning field');
+	expect(output).toContain('conflicts with a reserved versioning field name');
 	expect(await knex('directus_migrations').where({ version: MIGRATION }).first()).toBeUndefined();
 });

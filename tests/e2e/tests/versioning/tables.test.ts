@@ -42,33 +42,19 @@ const META = [
 const columns = (...names: string[]) => [...names].sort();
 
 /**
- * MySQL refuses to change columns referenced by foreign keys. SQLite checks the foreign keys of the whole database
- * after rebuilding a table, which fails on references that concurrently running tests leave dangling while cleaning up.
+ * SQLite checks the foreign keys of the whole database after rebuilding a table, which fails on references that
+ * concurrently running tests leave dangling while cleaning up.
  */
 async function withoutForeignKeyChecks(fn: (db: Knex) => Promise<unknown>) {
-	if (database === 'sqlite') {
-		await knex.raw('PRAGMA foreign_keys = OFF');
+	if (database !== 'sqlite') return fn(knex);
 
-		try {
-			return await fn(knex);
-		} finally {
-			await knex.raw('PRAGMA foreign_keys = ON');
-		}
+	await knex.raw('PRAGMA foreign_keys = OFF');
+
+	try {
+		return await fn(knex);
+	} finally {
+		await knex.raw('PRAGMA foreign_keys = ON');
 	}
-
-	if (database === 'mysql' || database === 'maria') {
-		return knex.transaction(async (trx) => {
-			await trx.raw('SET FOREIGN_KEY_CHECKS = 0');
-
-			try {
-				return await fn(trx);
-			} finally {
-				await trx.raw('SET FOREIGN_KEY_CHECKS = 1');
-			}
-		});
-	}
-
-	return fn(knex);
 }
 
 afterAll(async () => {
@@ -349,11 +335,15 @@ describe('columns created outside of Directus', () => {
 			});
 		}
 
+		// Oracle creates `double` columns as `number(8, 2)`, so the mirror has to store exactly what the live column does
+		await knex(name).insert({ ratio: PRECISE, rank: 1 });
 		await knex(SHADOW + name).insert({ ratio: PRECISE, rank: 1 });
 
-		const { ratio } = await knex(SHADOW + name).first();
+		const live = await knex(name).first();
+		const mirror = await knex(SHADOW + name).first();
 
-		expect(Number(ratio)).toBe(PRECISE);
+		expect(Number(mirror.ratio)).toBe(Number(live.ratio));
+		if (database !== 'oracle') expect(Number(mirror.ratio)).toBe(PRECISE);
 	});
 
 	// The catalog row of a column is only rewritten when the column is altered
@@ -418,10 +408,24 @@ test.skipIf(['cockroachdb', 'mssql'].includes(database))(
 
 		expect((await getColumn(LINK + child, 'id')).max_length).toBe(50);
 
+		// MariaDB can't change a column referenced by a foreign key, even with the checks disabled
+		const { constraint_name } = (await getForeignKey(LINK + child, 'id'))!;
+
+		await withoutForeignKeyChecks((db) =>
+			db.schema.alterTable(LINK + child, (table) => {
+				table.dropForeign('id', constraint_name ?? undefined);
+			}),
+		);
+
 		// Changed directly, as Postgres rejects the `drop not null` Directus emits when altering a primary key
 		await withoutForeignKeyChecks((db) =>
 			db.schema.alterTable(child, (table) => {
-				table.string('id', 100).notNullable().alter({ alterNullable: false });
+				const id = table.string('id', 100);
+
+				// Oracle rejects setting the nullability a column already has
+				if (database !== 'oracle') id.notNullable();
+
+				id.alter({ alterNullable: false });
 			}),
 		);
 
@@ -429,6 +433,7 @@ test.skipIf(['cockroachdb', 'mssql'].includes(database))(
 
 		expect((await getColumn(child, 'id')).max_length).toBe(100);
 		expect((await getColumn(LINK + child, 'id')).max_length).toBe(100);
+		expect(await getForeignKey(LINK + child, 'id')).toMatchObject({ foreign_key_table: child, on_delete: 'CASCADE' });
 
 		await api.request(deleteCollection(child));
 		await api.request(deleteCollection(parent));
