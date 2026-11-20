@@ -1,5 +1,5 @@
 import { describe, expectTypeOf, test } from 'vitest';
-import type { JsonValue } from '../src/index.js';
+import type { ApplyQueryFields, DirectusUser, ItemType, JsonValue } from '../src/index.js';
 import { createDirectus, readItems, readUsers, rest } from '../src/index.js';
 import type {
 	CollectionA,
@@ -23,6 +23,42 @@ describe('Nested field selection on a core collection relation (issue #23313)', 
 		// role is nullable on DirectusUser
 		const firstRoleName = users[0]?.role?.name;
 		firstRoleName satisfies string | null | undefined;
+	});
+});
+
+describe('Relational detection for custom fields typed with a core collection generic (issue #21250)', () => {
+	test('ItemType includes core collection item types even when absent from the schema', () => {
+		// `assignee_id` is a required field DirectusUser doesn't have, so DirectusUser<Schema>
+		// can't accidentally structurally match this collection's item type.
+		type Schema = { festivities: { id: string; assignee_id: string }[] };
+
+		type Match = Extract<DirectusUser<Schema>, ItemType<Schema>>;
+
+		expectTypeOf<Match>().toEqualTypeOf<DirectusUser<Schema>>();
+	});
+
+	test('a field typed `string | DirectusUser<Schema> | null` resolves the requested nested fields', () => {
+		type CalendarEvents = {
+			id: string;
+			title: string;
+		};
+
+		type Festivities = {
+			id: string;
+			assignee?: string | DirectusUser<Schema> | null;
+			calendar_events: CalendarEvents[];
+		};
+
+		type Schema = {
+			festivities: Festivities[];
+			calendar_events: CalendarEvents[];
+		};
+
+		const _fields = ['id', { assignee: ['id', 'email'], calendar_events: ['id', 'title'] }] as const;
+
+		type Result = ApplyQueryFields<Schema, Festivities, typeof _fields>;
+
+		expectTypeOf<Result['assignee']>().toEqualTypeOf<Pick<DirectusUser<Schema>, 'id' | 'email'> | null>();
 	});
 });
 
