@@ -93,7 +93,7 @@ const collections: LiveCollections = keyBy(collectionList, 'collection');
 const noTables: InspectedTables = { columns: {}, foreignKeys: [] };
 
 function planTables(collections: LiveCollections, versioned: Set<string>) {
-	return keyBy(planVersioning(collections, versioned, noTables, helper).tables.create, 'table');
+	return keyBy(planVersioning(collections, versioned, noTables, helper).changes.create, 'table');
 }
 
 describe('planVersionTables', () => {
@@ -312,7 +312,7 @@ describe('planVersionTables changes', () => {
 		const { directus_shadow_authors: _authors, ...rest } = target;
 		const plan = planVersioning(collections, versioned, inspect(rest), helper);
 
-		expect(plan.tables.create).toEqual([target['directus_shadow_authors']]);
+		expect(plan.changes.create).toEqual([target['directus_shadow_authors']]);
 
 		expect(mapValues(plan.foreignKeys.add, (foreignKeys) => foreignKeys.map(({ column }) => column))).toEqual({
 			directus_shadow_authors: ['version_user_created', 'version_user_updated'],
@@ -323,7 +323,7 @@ describe('planVersionTables changes', () => {
 		const existing = inspect(planTables(collections, new Set(['articles', 'authors', 'tags'])));
 		const plan = planVersioning(collections, versioned, existing, helper);
 
-		expect(plan.tables.drop).toEqual(['directus_shadow_tags']);
+		expect(plan.changes.drop).toEqual(['directus_shadow_tags']);
 		expect(plan.foreignKeys.drop.every((foreignKey) => foreignKey.table === 'directus_shadow_tags')).toBe(true);
 		expect(plan.foreignKeys.drop).not.toHaveLength(0);
 	});
@@ -337,7 +337,7 @@ describe('planVersionTables changes', () => {
 
 		const plan = planVersioning(collections, versioned, existing, helper);
 
-		expect(plan.tables.alter).toEqual({
+		expect(plan.changes.alter).toEqual({
 			directus_shadow_authors: {
 				add: [{ kind: 'mirror', name: 'name', source: columns.authors[1], type: 'varchar' }],
 				alter: [],
@@ -354,7 +354,7 @@ describe('planVersionTables changes', () => {
 
 		const plan = planVersioning(collections, versioned, existing, helper);
 
-		expect(plan.tables.alter['directus_shadow_articles']!.alter).toEqual([
+		expect(plan.changes.alter['directus_shadow_articles']!.alter).toEqual([
 			{ column: expect.objectContaining({ name: 'author' }), existing: author },
 		]);
 
@@ -416,7 +416,7 @@ describe('mirror column types', () => {
 			helper,
 		);
 
-		return plan.tables.alter['directus_shadow_authors']?.alter ?? [];
+		return plan.changes.alter['directus_shadow_authors']?.alter ?? [];
 	}
 
 	test('alters columns whose declared type changed', () => {

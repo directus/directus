@@ -3,7 +3,7 @@ import { systemRelationRows } from '@directus/system-data';
 import type { AbstractServiceOptions, Accountability, RelationMeta, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { groupBy, intersection, mapValues, partition, pickBy } from 'lodash-es';
+import { groupBy, mapValues, partition, pickBy } from 'lodash-es';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
@@ -62,7 +62,8 @@ export class VersionTablesService {
 		const exclude = new Set(options?.exclude ?? []);
 
 		if (collections) {
-			collections = this.resolveRelatedCollections(collections);
+			const related = this.getReferencingCollections(collections);
+			collections.push(...related);
 		}
 
 		const inspected = await this.inspect(exclude, collections);
@@ -77,16 +78,17 @@ export class VersionTablesService {
 	/**
 	 * Add the collections with a m2o / a2o relation to the given collections
 	 */
-	private resolveRelatedCollections(collections: string[]): string[] {
-		const relatingCollections = this.schema.relations
+	private getReferencingCollections(collections: string[]): string[] {
+		const based = new Set(collections);
+
+		return this.schema.relations
 			.filter(
 				(relation) =>
-					(relation.related_collection && collections.includes(relation.related_collection)) ||
-					intersection(relation.meta?.one_allowed_collections, collections).length > 0,
+					((relation.related_collection && based.has(relation.related_collection)) ||
+						relation.meta?.one_allowed_collections?.some((collection) => based.has(collection))) &&
+					!based.has(relation.collection),
 			)
 			.map((relation) => relation.collection);
-
-		return [...new Set([...collections, ...relatingCollections])];
 	}
 
 	/**
@@ -185,11 +187,11 @@ export class VersionTablesService {
 			});
 		}
 
-		for (const table of plan.tables.drop) {
+		for (const table of plan.dropTables) {
 			await this.knex.schema.dropTable(table);
 		}
 
-		for (const table of plan.tables.create) {
+		for (const table of plan.createTables) {
 			await this.knex.schema.createTable(table.table, (builder) => {
 				for (const column of table.columns) {
 					this.addColumn(builder, column);
@@ -197,7 +199,7 @@ export class VersionTablesService {
 			});
 		}
 
-		for (const [table, alteration] of Object.entries(plan.tables.alter)) {
+		for (const [table, alteration] of Object.entries(plan.alterTables)) {
 			await this.knex.schema.alterTable(table, (builder) => {
 				if (alteration.drop.length > 0) builder.dropColumns(...alteration.drop);
 

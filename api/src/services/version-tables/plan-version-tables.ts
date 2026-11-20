@@ -75,7 +75,9 @@ export type TableChanges = {
 };
 
 export type Plan = {
-	tables: TableChanges;
+	dropTables: string[];
+	createTables: VersionTable[];
+	alterTables: Record<string, TableAlteration>;
 	foreignKeys: { drop: ForeignKey[]; add: Record<string, VersionTableForeignKey[]> };
 };
 
@@ -89,17 +91,17 @@ export type Plan = {
 export function planVersioning(schema: InspectedSchema, helper: VersioningHelper): Plan {
 	const { liveCollections, shadowTables, versionedTables } = schema;
 
-	const target = planTables(liveCollections, { versioned: versionedTables, helper });
-	const tables = planTableChanges(target, shadowTables.columns);
-	const foreignKeys = planForeignKeyChanges(target, tables, shadowTables.foreignKeys);
+	const target = generateVersionTables(liveCollections, { versioned: versionedTables, helper });
+	const changes = calculateChanges(target, shadowTables.columns);
+	const foreignKeys = planForeignKeyChanges(target, changes, shadowTables.foreignKeys);
 
-	return { tables, foreignKeys };
+	return { alterTables: changes.alter, createTables: changes.create, dropTables: changes.drop, foreignKeys };
 }
 
 /**
  * Compute the shadow and link tables that should exist for the given live collections
  */
-function planTables(collections: LiveCollections, context: PlanContext): VersionTables {
+function generateVersionTables(collections: LiveCollections, context: PlanContext): VersionTables {
 	const tables: VersionTables = {};
 
 	for (const collection of Object.values(collections)) {
@@ -124,7 +126,7 @@ function planTables(collections: LiveCollections, context: PlanContext): Version
 /**
  * Diff the target tables against the existing ones
  */
-function planTableChanges(target: VersionTables, existingColumns: ColumnsByTable): TableChanges {
+function calculateChanges(target: VersionTables, existingColumns: ColumnsByTable): TableChanges {
 	const changes: TableChanges = {
 		drop: Object.keys(existingColumns).filter((table) => !target[table]),
 		create: Object.values(target).filter((table) => !existingColumns[table.table]),
@@ -159,10 +161,10 @@ function planTableChanges(target: VersionTables, existingColumns: ColumnsByTable
 	return changes;
 }
 
-function planForeignKeyChanges(target: VersionTables, tables: TableChanges, foreignKeys: ForeignKey[]) {
+function planForeignKeyChanges(target: VersionTables, changes: TableChanges, foreignKeys: ForeignKey[]) {
 	const [drop, kept] = partition(foreignKeys, (foreignKey: ForeignKey) => {
 		const table = target[foreignKey.table];
-		const alteration = tables.alter[foreignKey.table];
+		const alteration = changes.alter[foreignKey.table];
 
 		if (!table) return true;
 		if (alteration?.drop.includes(foreignKey.column)) return true;
