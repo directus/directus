@@ -7,6 +7,7 @@ describe('overlay-item-utils', () => {
 			const current = {
 				item: { id: '5702', title: 'Published title' },
 			};
+
 			const fetched = {
 				id: '322b',
 				collection: 'block_trust_bar',
