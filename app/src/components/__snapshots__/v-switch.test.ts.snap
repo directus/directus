@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `"<button data-v-29b2a239="" type="button" role="switch" class="v-switch" aria-checked="false"><span data-v-29b2a239="" class="track" aria-hidden="true"><span data-v-29b2a239="" class="thumb"></span></span><span data-v-29b2a239="" class="label type-text">Enable</span></button>"`;

@@ -58,6 +58,7 @@ import VSelect from './v-select/v-select.vue';
 import VSheet from './v-sheet.vue';
 import VSkeletonLoader from './v-skeleton-loader.vue';
 import VSlider from './v-slider.vue';
+import VSwitch from './v-switch.vue';
 import VTabItem from './v-tab-item.vue';
 import VTab from './v-tab.vue';
 import VTable from './v-table/v-table.vue';
@@ -134,6 +135,7 @@ export function registerComponents(app: App): void {
 	app.component('VSheet', VSheet);
 	app.component('VSkeletonLoader', VSkeletonLoader);
 	app.component('VSlider', VSlider);
+	app.component('VSwitch', VSwitch);
 	app.component('VTabItem', VTabItem);
 	app.component('VTab', VTab);
 	app.component('VTable', VTable);
