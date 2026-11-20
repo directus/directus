@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { File } from '@directus/types';
+import { getFocalPointCrop } from '@directus/utils';
 import Cropper from 'cropperjs';
 import { isEqual, throttle } from 'lodash-es';
 import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
+import ImagePresetPreviews, { type ImageTransform } from './image-preset-previews.vue';
 import api from '@/api';
 import VDivider from '@/components/v-divider.vue';
 import VDrawer from '@/components/v-drawer.vue';
@@ -76,6 +78,9 @@ const {
 	newDimensions,
 	dragMode,
 	cropping,
+	liveFocalPoint,
+	imageTransform,
+	naturalSize,
 } = useCropper();
 
 watch(internalActive, (isActive) => {
@@ -308,6 +313,71 @@ function useImage() {
 
 const localDragMode = ref<'move' | 'crop' | 'focal_point'>('move');
 
+const storageAssetPresets = computed(() => settingsStore.settings?.storage_asset_presets ?? []);
+
+// Cropper loads the raw pixels and reports EXIF orientation as rotate and flip,
+// so start from its size, not the upright size stored on the file
+const previewSize = computed(() => {
+	if (!naturalSize.value) return null;
+
+	const { width, height } = naturalSize.value;
+
+	return imageTransform.value.rotate % 180 === 0 ? { width, height } : { width: height, height: width };
+});
+
+// Whether a preset crops depends only on the image and preset sizes, so the focal point doesn't matter here
+const croppingPresets = computed(() => {
+	if (!previewSize.value) return [];
+
+	const { width, height } = previewSize.value;
+
+	return storageAssetPresets.value.filter((preset) => getFocalPointCrop({ w: width, h: height }, null, preset));
+});
+
+const showPresetPreviews = computed(() => localDragMode.value === 'focal_point' && croppingPresets.value.length > 0);
+
+const previewFocalPoint = computed(() => {
+	if (localDragMode.value === 'focal_point' && cropping.value && liveFocalPoint.value) return liveFocalPoint.value;
+
+	const { focal_point_x: x, focal_point_y: y } = imageData.value ?? {};
+	return x != null && y != null ? { x, y } : null;
+});
+
+watch(showPresetPreviews, async () => {
+	await nextTick();
+
+	const cropper = cropperInstance.value as (Cropper & { resize: () => void }) | null;
+	if (!cropper) return;
+
+	// Cropper only re-measures its container on window resize, so tell it the panel changed the editor's size.
+	// Its resize scales the image and crop box from the top-left corner, so re-centre the image and
+	// put the box back where it was on the image
+	const data = cropping.value ? cropper.getData() : null;
+	const oldContainer = cropper.getContainerData();
+	const oldCanvas = cropper.getCanvasData();
+	// Cropper returns empty data until the image has loaded
+	if (!oldCanvas.width) return;
+
+	cropper.resize();
+
+	const newContainer = cropper.getContainerData();
+	const newCanvas = cropper.getCanvasData();
+	const scale = newCanvas.width / oldCanvas.width;
+
+	cropper.setCanvasData({
+		left:
+			newContainer.width / 2 +
+			(oldCanvas.left + oldCanvas.width / 2 - oldContainer.width / 2) * scale -
+			newCanvas.width / 2,
+		top:
+			newContainer.height / 2 +
+			(oldCanvas.top + oldCanvas.height / 2 - oldContainer.height / 2) * scale -
+			newCanvas.height / 2,
+	});
+
+	if (data) cropper.setData(data);
+});
+
 function useCropper() {
 	const cropperInstance = ref<Cropper | null>(null);
 
@@ -398,6 +468,12 @@ function useCropper() {
 
 	const localCropping = ref(false);
 
+	const liveFocalPoint = ref<{ x: number; y: number } | null>(null);
+
+	const imageTransform = ref<ImageTransform>({ rotate: 0, scaleX: 1, scaleY: 1 });
+
+	const naturalSize = ref<{ width: number; height: number } | null>(null);
+
 	const cropping = computed({
 		get() {
 			return localCropping.value;
@@ -422,6 +498,9 @@ function useCropper() {
 		newDimensions,
 		dragMode,
 		cropping,
+		liveFocalPoint,
+		imageTransform,
+		naturalSize,
 	};
 
 	function initCropper() {
@@ -433,6 +512,10 @@ function useCropper() {
 
 		localCropping.value = false;
 		localDragMode.value = 'move';
+		imageTransform.value = { rotate: 0, scaleX: 1, scaleY: 1 };
+		naturalSize.value = null;
+
+		let boxDragStart: { x: number; y: number; left: number; top: number } | null = null;
 
 		cropperInstance.value = new Cropper(imageElement.value as HTMLImageElement, {
 			autoCrop: false,
@@ -440,11 +523,55 @@ function useCropper() {
 			toggleDragModeOnDblclick: false,
 			dragMode: 'move',
 			viewMode: 1,
+			ready() {
+				const loadedImage = cropperInstance.value?.getImageData();
+				if (!loadedImage) return;
+
+				const { naturalWidth, naturalHeight, rotate = 0, scaleX = 1, scaleY = 1 } = loadedImage;
+				naturalSize.value = { width: naturalWidth, height: naturalHeight };
+				imageTransform.value = { rotate, scaleX, scaleY };
+			},
+			cropstart(event) {
+				const pointer = getPointer(event.detail.originalEvent);
+
+				if (event.detail.action !== 'all' || !pointer || !cropperInstance.value) {
+					boxDragStart = null;
+					return;
+				}
+
+				const { left, top } = cropperInstance.value.getCropBoxData();
+				boxDragStart = { ...pointer, left, top };
+			},
+			// Cropper moves the box by each pointer step and drops whatever the image edge clamps off,
+			// so the box drifts from the cursor. Position it from where the drag started instead.
+			cropmove(event) {
+				if (!boxDragStart || event.detail.action !== 'all') return;
+
+				const pointer = getPointer(event.detail.originalEvent);
+				if (!pointer) return;
+
+				event.preventDefault();
+
+				cropperInstance.value?.setCropBoxData({
+					left: boxDragStart.left + pointer.x - boxDragStart.x,
+					top: boxDragStart.top + pointer.y - boxDragStart.y,
+				});
+			},
 			crop: throttle((event) => {
 				if (!imageData.value) return;
 
 				if (cropping.value === false && (event.detail.width || event.detail.height)) {
 					cropping.value = true;
+				}
+
+				const { rotate, scaleX, scaleY } = event.detail;
+				imageTransform.value = { rotate, scaleX, scaleY };
+
+				if (localDragMode.value === 'focal_point' && event.detail.width) {
+					liveFocalPoint.value = {
+						x: Math.round(event.detail.x + event.detail.width / 2),
+						y: Math.round(event.detail.y + event.detail.height / 2),
+					};
 				}
 
 				const newWidth = event.detail.width || imageData.value.width;
@@ -459,6 +586,11 @@ function useCropper() {
 				}
 			}, 50),
 		});
+	}
+
+	function getPointer(event: PointerEvent | TouchEvent | MouseEvent) {
+		const point = 'touches' in event ? event.touches[0] : event;
+		return point ? { x: point.clientX, y: point.clientY } : null;
 	}
 
 	function flip(type: 'horizontal' | 'vertical') {
@@ -524,8 +656,20 @@ function setAspectRatio() {
 			class="editor-container"
 			:class="{ 'focal-point': localDragMode === 'focal_point' }"
 		>
-			<div class="editor">
-				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
+			<div class="workspace">
+				<div class="editor">
+					<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
+				</div>
+
+				<ImagePresetPreviews
+					v-if="showPresetPreviews"
+					:src="imageURL"
+					:width="previewSize!.width"
+					:height="previewSize!.height"
+					:focal-point="previewFocalPoint"
+					:presets="croppingPresets"
+					:image-transform="imageTransform"
+				/>
 			</div>
 
 			<div class="toolbar">
@@ -564,7 +708,7 @@ function setAspectRatio() {
 
 				<VIcon v-tooltip.top.inverted="$t('flip_vertical')" name="flip_vertical" clickable @click="flip('vertical')" />
 
-				<VMenu placement="top" show-arrow>
+				<VMenu v-if="localDragMode !== 'focal_point'" placement="top" show-arrow>
 					<template #activator="{ toggle }">
 						<VIcon v-tooltip.top.inverted="$t('aspect_ratio')" :name="aspectRatioIcon" clickable @click="toggle" />
 					</template>
@@ -682,10 +826,17 @@ function setAspectRatio() {
 	overflow: hidden;
 	background-color: var(--theme--background-subdued);
 
-	.editor {
-		flex-grow: 1;
+	.workspace {
+		display: flex;
+		flex-direction: column;
 		inline-size: 100%;
 		block-size: calc(100% - 3.375rem);
+	}
+
+	.editor {
+		flex-grow: 1;
+		min-inline-size: 0;
+		min-block-size: 0;
 	}
 
 	img {
