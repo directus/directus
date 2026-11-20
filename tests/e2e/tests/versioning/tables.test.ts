@@ -117,11 +117,15 @@ test('mirrors field updates and deletions', async () => {
 test('creates link tables only for collections with an o2m from a versioned collection', async () => {
 	// posts only has m2o / a2o relations to versioned collections, without an o2m pointing back
 	expect(await getColumns(LINK + collections.posts)).toBeNull();
-	expect(await getColumns(LINK + collections.notes)).toEqual(columns('id', 'post_id'));
-	expect(await getColumns(LINK + collections.links)).toEqual(columns('id', 'post_id'));
-	expect(await getColumns(LINK + collections.posts_tags_junction)).toEqual(columns('id', 'posts_id', 'tags_id'));
-	expect(await getColumns(LINK + collections.posts_blocks)).toEqual(columns('id', 'posts_id', 'item'));
-	expect(await getColumns(LINK + collections.posts_translations)).toEqual(columns('id', 'posts_id'));
+	expect(await getColumns(LINK + collections.notes)).toEqual(columns('id', 'version_ref_post_id'));
+	expect(await getColumns(LINK + collections.links)).toEqual(columns('id', 'version_ref_post_id'));
+	expect(await getColumns(LINK + collections.posts_tags_junction)).toEqual(
+		columns('id', 'version_ref_posts_id', 'version_ref_tags_id'),
+	);
+	expect(await getColumns(LINK + collections.posts_blocks)).toEqual(
+		columns('id', 'version_ref_posts_id', 'version_ref_item'),
+	);
+	expect(await getColumns(LINK + collections.posts_translations)).toEqual(columns('id', 'version_ref_posts_id'));
 
 	expect(await getColumns(LINK + collections.authors)).toBeNull();
 	expect(await getColumns(LINK + collections.categories)).toBeNull();
@@ -157,7 +161,9 @@ test('adding and removing an o2m creates and drops the link table', async () => 
 
 	await api.request(updateRelation(collections.posts, 'author', { meta: { one_field: 'posts' } }));
 
-	expect(await getColumns(LINK + collections.posts)).toEqual(columns('id', 'author', 'parent', 'attachment'));
+	expect(await getColumns(LINK + collections.posts)).toEqual(
+		columns('id', 'version_ref_author', 'version_ref_parent', 'version_ref_attachment'),
+	);
 
 	await api.request(deleteField(collections.authors, 'posts'));
 
@@ -258,7 +264,7 @@ test('link tables can reference live items with uuid keys', async () => {
 
 	await api.request(updateCollection(parent as any, { meta: { versioning: true } }));
 
-	expect(await getColumns(LINK + child)).toEqual(columns('id', 'parent'));
+	expect(await getColumns(LINK + child)).toEqual(columns('id', 'version_ref_parent'));
 	expect((await getColumn(LINK + child, 'id')).data_type).toBe((await getColumn(child, 'id')).data_type);
 
 	await api.request(deleteCollection(child));

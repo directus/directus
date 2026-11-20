@@ -1,17 +1,13 @@
-import { countBy, mapValues } from 'lodash-es';
+import { countBy } from 'lodash-es';
 import {
 	normalizeAction,
 	type VersionTableForeignKey,
-	type VersionTables,
 } from '../../../../services/version-tables/plan-version-tables.js';
 import { VersioningHelper } from '../types.js';
 
 export class VersioningHelperMSSQL extends VersioningHelper {
-	override applyForeignKeyRules(tables: VersionTables): VersionTables {
-		return mapValues(super.applyForeignKeyRules(tables), (table) => ({
-			...table,
-			foreignKeys: limitCascadePaths(table.foreignKeys),
-		}));
+	override adjustForeignKeyActions(table: string, foreignKeys: VersionTableForeignKey[]): VersionTableForeignKey[] {
+		return limitCascadePaths(super.adjustForeignKeyActions(table, foreignKeys));
 	}
 }
 

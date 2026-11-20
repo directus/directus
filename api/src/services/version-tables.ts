@@ -11,12 +11,12 @@ import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { stitchRelations } from '../utils/stitch-relations.js';
 import { VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
 import {
-	type ColumnsByTable,
 	type InspectedTables,
 	type LiveCollections,
 	normalizeAction,
 	type Plan,
 	planVersioning,
+	type TablesMapped,
 	type VersionTableColumn,
 } from './version-tables/plan-version-tables.js';
 import { isVersioningTable } from './version-tables/utils.js';
@@ -187,11 +187,11 @@ export class VersionTablesService {
 			});
 		}
 
-		for (const table of plan.dropTables) {
+		for (const table of plan.tables.drop) {
 			await this.knex.schema.dropTable(table);
 		}
 
-		for (const table of plan.createTables) {
+		for (const table of plan.tables.create) {
 			await this.knex.schema.createTable(table.table, (builder) => {
 				for (const column of table.columns) {
 					this.addColumn(builder, column);
@@ -199,21 +199,21 @@ export class VersionTablesService {
 			});
 		}
 
-		for (const [table, alteration] of Object.entries(plan.alterTables)) {
+		for (const [table, alteration] of Object.entries(plan.tables.update)) {
 			await this.knex.schema.alterTable(table, (builder) => {
 				if (alteration.drop.length > 0) builder.dropColumns(...alteration.drop);
 
-				for (const column of alteration.add) {
+				for (const column of alteration.create) {
 					this.addColumn(builder, column);
 				}
 
-				for (const { column, existing } of alteration.alter) {
+				for (const { column, existing } of alteration.update) {
 					this.addColumn(builder, column, existing);
 				}
 			});
 		}
 
-		for (const [table, foreignKeys] of Object.entries(plan.foreignKeys.add)) {
+		for (const [table, foreignKeys] of Object.entries(plan.foreignKeys.create)) {
 			await this.knex.schema.alterTable(table, (builder) => {
 				for (const foreignKey of foreignKeys) {
 					const constraint = builder
@@ -291,8 +291,8 @@ export class VersionTablesService {
 }
 
 // Groups columns by table and name
-function keyColumns(columns: Column[]): ColumnsByTable {
-	const result: ColumnsByTable = {};
+function keyColumns(columns: Column[]): TablesMapped {
+	const result: TablesMapped = {};
 
 	for (const column of columns) {
 		(result[column.table] ??= {})[column.name] = column;

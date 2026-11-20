@@ -1,13 +1,12 @@
 import type { Relation } from '@directus/types';
 import { getSimpleHash } from '@directus/utils';
 import type { Knex } from 'knex';
-import { mapValues } from 'lodash-es';
 import {
 	LINK_TABLE_PREFIX,
 	SHADOW_TABLE_PREFIX,
 	VERSION_REFERENCE_PREFIX,
 } from '../../../services/version-tables/constants.js';
-import type { VersionTables } from '../../../services/version-tables/plan-version-tables.js';
+import type { VersionTableForeignKey } from '../../../services/version-tables/plan-version-tables.js';
 import type { SchemaHelper } from '../schema/types.js';
 import { DatabaseHelper } from '../types.js';
 
@@ -57,21 +56,18 @@ export class VersioningHelper extends DatabaseHelper {
 	 * Adjust `on_delete` of the version table foreign keys the same way as for regular relations, as not every vendor
 	 * supports every action
 	 */
-	applyForeignKeyRules(tables: VersionTables): VersionTables {
-		return mapValues(tables, (table) => ({
-			...table,
-			foreignKeys: table.foreignKeys.map((foreignKey) => {
-				const schema = { on_delete: foreignKey.on_delete } as NonNullable<Relation['schema']>;
+	adjustForeignKeyActions(table: string, foreignKeys: VersionTableForeignKey[]): VersionTableForeignKey[] {
+		return foreignKeys.map((foreignKey) => {
+			const schema = { on_delete: foreignKey.on_delete } as NonNullable<Relation['schema']>;
 
-				this.schema.preRelationChange({
-					collection: table.table,
-					related_collection: foreignKey.foreign_key_table,
-					schema,
-				});
+			this.schema.preRelationChange({
+				collection: table,
+				related_collection: foreignKey.foreign_key_table,
+				schema,
+			});
 
-				return { ...foreignKey, on_delete: schema.on_delete };
-			}),
-		}));
+			return { ...foreignKey, on_delete: schema.on_delete };
+		});
 	}
 
 	/**

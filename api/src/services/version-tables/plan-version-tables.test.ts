@@ -170,13 +170,13 @@ describe('planVersionTables', () => {
 
 		expect(link.columns).toEqual([
 			{ kind: 'mirror', name: 'id', source: columns.tags[0], type: 'integer', primary: true },
-			{ kind: 'reference', name: 'article' },
+			{ kind: 'reference', name: 'version_ref_article' },
 		]);
 
 		expect(link.foreignKeys).toEqual([
 			{ column: 'id', foreign_key_table: 'tags', foreign_key_column: 'id', on_delete: 'CASCADE', on_update: null },
 			{
-				column: 'article',
+				column: 'version_ref_article',
 				foreign_key_table: 'directus_shadow_articles',
 				foreign_key_column: 'version_id',
 				on_delete: 'SET NULL',
@@ -219,8 +219,8 @@ describe('planVersionTables', () => {
 
 		expect(tables['directus_link_junction']!.columns.map((column) => column.name)).toEqual([
 			'id',
-			'articles_id',
-			'authors_id',
+			'version_ref_articles_id',
+			'version_ref_authors_id',
 		]);
 	});
 
@@ -228,8 +228,8 @@ describe('planVersionTables', () => {
 		const tables = planTables(collections, new Set(['articles', 'authors']));
 		const link = tables['directus_link_comments']!;
 
-		expect(link.columns.map((column) => column.name)).toEqual(['id', 'article', 'item']);
-		expect(link.foreignKeys.map((foreignKey) => foreignKey.column)).toEqual(['id', 'article']);
+		expect(link.columns.map((column) => column.name)).toEqual(['id', 'version_ref_article', 'version_ref_item']);
+		expect(link.foreignKeys.map((foreignKey) => foreignKey.column)).toEqual(['id', 'version_ref_article']);
 	});
 
 	test('throws when a live field conflicts with a version field', () => {
@@ -314,7 +314,7 @@ describe('planVersionTables changes', () => {
 
 		expect(plan.changes.create).toEqual([target['directus_shadow_authors']]);
 
-		expect(mapValues(plan.foreignKeys.add, (foreignKeys) => foreignKeys.map(({ column }) => column))).toEqual({
+		expect(mapValues(plan.foreignKeys.create, (foreignKeys) => foreignKeys.map(({ column }) => column))).toEqual({
 			directus_shadow_authors: ['version_user_created', 'version_user_updated'],
 		});
 	});
@@ -324,8 +324,8 @@ describe('planVersionTables changes', () => {
 		const plan = planVersioning(collections, versioned, existing, helper);
 
 		expect(plan.changes.drop).toEqual(['directus_shadow_tags']);
-		expect(plan.foreignKeys.drop.every((foreignKey) => foreignKey.table === 'directus_shadow_tags')).toBe(true);
-		expect(plan.foreignKeys.drop).not.toHaveLength(0);
+		expect(plan.foreignKeys.delete.every((foreignKey) => foreignKey.table === 'directus_shadow_tags')).toBe(true);
+		expect(plan.foreignKeys.delete).not.toHaveLength(0);
 	});
 
 	test('adds missing columns and drops removed ones', () => {
@@ -358,9 +358,9 @@ describe('planVersionTables changes', () => {
 			{ column: expect.objectContaining({ name: 'author' }), existing: author },
 		]);
 
-		expect(plan.foreignKeys.drop.map((foreignKey) => foreignKey.column)).toEqual(['author']);
+		expect(plan.foreignKeys.delete.map((foreignKey) => foreignKey.column)).toEqual(['author']);
 
-		expect(plan.foreignKeys.add).toEqual({
+		expect(plan.foreignKeys.create).toEqual({
 			directus_shadow_articles: [expect.objectContaining({ column: 'author' })],
 		});
 	});
@@ -373,9 +373,9 @@ describe('planVersionTables changes', () => {
 
 		const plan = planVersioning(collections, versioned, existing, helper);
 
-		expect(plan.foreignKeys.drop).toEqual([foreignKey]);
+		expect(plan.foreignKeys.delete).toEqual([foreignKey]);
 
-		expect(plan.foreignKeys.add).toEqual({
+		expect(plan.foreignKeys.create).toEqual({
 			directus_shadow_articles: [expect.objectContaining({ column: 'version_ref_author', on_delete: 'SET NULL' })],
 		});
 	});
