@@ -34,6 +34,8 @@ export const TYPE_MAP = {
 	QUERYSTRING_ARRAY_LIMIT: 'number',
 	QUERY_LIMIT_DEFAULT: 'number',
 	QUERY_LIMIT_MAX: 'number',
+	QUERY_FILTER_MAX_NODES: 'number',
+	QUERY_FILTER_MAX_DEPTH: 'number',
 	MAX_BATCH_MUTATION: 'number',
 	MAX_IMPORT_ERRORS: 'number',
 	ROBOTS_TXT: 'string',
@@ -239,6 +241,7 @@ export const TYPE_MAP = {
 	GRAPHQL_INTROSPECTION: 'boolean',
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 'number',
 	GRAPHQL_QUERY_TOKEN_LIMIT: 'number',
+	GRAPHQL_QUERY_SELECTION_LIMIT: 'number',
 	GRAPHQL_SINGLE_USE_MUTATIONS: 'string-array',
 	GRAPHQL_SCHEMA_CACHE_CAPACITY: 'number',
 
@@ -331,9 +334,12 @@ export const TYPE_MAP = {
 	'AUTH_.+_GROUP_DN': 'string',
 	'AUTH_.+_BIND_PASSWORD': 'string',
 	'AUTH_.+_COOKIE_SECURE': 'boolean',
-} as const satisfies Record<string, TypeMapEntry>;
+} as const;
 
-export const TYPE_MAP_REGEX: [RegExp, TypeMapEntry][] = Object.entries(TYPE_MAP).map(([name, value]) => [
+// Checks the entries, as `satisfies` on `TYPE_MAP` isn't supported with isolated declarations
+const TYPE_MAP_ENTRIES: Record<string, TypeMapEntry> = TYPE_MAP;
+
+export const TYPE_MAP_REGEX: [RegExp, TypeMapEntry][] = Object.entries(TYPE_MAP_ENTRIES).map(([name, value]) => [
 	new RegExp(`^${name}$`),
 	value,
 ]);

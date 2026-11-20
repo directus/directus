@@ -30,4 +30,13 @@ withDefaults(
 		color: var(--theme--primary-accent);
 	}
 }
+
+:deep(code) {
+	padding: 0.125rem 0.25rem;
+	font-family: var(--theme--fonts--monospace--font-family), monospace;
+	font-size: 0.875em;
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
+	white-space: nowrap;
+}
 </style>

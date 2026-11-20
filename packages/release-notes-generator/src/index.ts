@@ -1,4 +1,5 @@
 import { appendFile } from 'node:fs/promises';
+import type { ChangelogFunctions } from '@changesets/types';
 import { generateMarkdown } from './utils/generate-markdown.js';
 import { getInfo } from './utils/get-info.js';
 import { processPackages } from './utils/process-packages.js';
@@ -43,4 +44,6 @@ async function run() {
 	}
 }
 
-export default defaultChangelogFunctions;
+const changelogFunctions: ChangelogFunctions = defaultChangelogFunctions;
+
+export default changelogFunctions;
