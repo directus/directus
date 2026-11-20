@@ -72,6 +72,8 @@ export function formatValidationRule(node: ValidationNode, t: (key: string, para
 		if (
 			operator === 'contains' ||
 			operator === 'ncontains' ||
+			operator === 'icontains' ||
+			operator === 'nicontains' ||
 			operator === 'starts_with' ||
 			operator === 'istarts_with' ||
 			operator === 'nstarts_with' ||
@@ -84,13 +86,14 @@ export function formatValidationRule(node: ValidationNode, t: (key: string, para
 			params.substring = quote(value);
 		} else if (
 			operator === 'eq' ||
+			operator === 'ieq' ||
 			operator === 'gt' ||
 			operator === 'gte' ||
 			operator === 'lt' ||
 			operator === 'lte'
 		) {
 			params.valid = quote(value);
-		} else if (operator === 'neq' || operator === 'nin') {
+		} else if (operator === 'neq' || operator === 'nieq' || operator === 'nin') {
 			params.invalid = Array.isArray(value) ? value.map(quote).join(', ') : quote(value);
 		} else if (operator === 'in') {
 			params.valid = Array.isArray(value) ? value.map(quote).join(', ') : quote(value);

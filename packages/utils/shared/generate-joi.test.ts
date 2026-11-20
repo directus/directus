@@ -269,13 +269,86 @@ describe(`generateJoi`, () => {
 		}).toThrowError(`\"value\" must contain [field`);
 	});
 
+	it.each([
+		['_ieq', 'Field', 'FIELD', 'field-x'],
+		['_nieq', 'Field', 'other', 'FIELD'],
+		['_nicontains', 'Field', 'other', 'my-FIELD'],
+	])(`validates a %s match case insensitively`, (operator, compareValue, valid, invalid) => {
+		const schema = generateJoi({ field: { [operator]: compareValue } } as FieldFilter);
+
+		expect(schema.validate({ field: valid }).error).toBeUndefined();
+		expect(schema.validate({ field: invalid }).error).toBeDefined();
+	});
+
+	it.each([
+		['_ieq', null, null, 'field'],
+		['_ieq', '', '', 'field'],
+		['_ieq', 5, 5, 6],
+		['_ieq', true, true, false],
+		['_nieq', null, 'field', null],
+		['_nieq', '', 'field', ''],
+		['_nieq', 5, 6, 5],
+		['_nieq', true, false, true],
+		['_nieq', 'Field', null, 'FIELD'],
+		['_nieq', 'Field', '', 'field'],
+		['_nieq', 'Field', 5, 'field'],
+	])(`validates a %s match with %o like its case sensitive counterpart`, (operator, compareValue, valid, invalid) => {
+		const schema = generateJoi({ field: { [operator]: compareValue } } as FieldFilter);
+
+		expect(schema.validate({ field: valid }).error).toBeUndefined();
+		expect(schema.validate({ field: invalid }).error).toBeDefined();
+	});
+
+	it(`reports the nieq error type for a _nieq mismatch`, () => {
+		const schema = generateJoi({ field: { _nieq: 'Field' } } as FieldFilter);
+
+		expect(schema.validate({ field: 'FIELD' }).error?.details[0]?.type).toBe('string.nieq');
+	});
+
+	it.each([
+		['_ieq', 'string.ieq'],
+		['_contains', 'string.contains'],
+		['_icontains', 'string.icontains'],
+		['_starts_with', 'string.pattern.name'],
+		['_istarts_with', 'string.pattern.name'],
+		['_ends_with', 'string.pattern.name'],
+		['_iends_with', 'string.pattern.name'],
+	])(`reports the operator error instead of string.empty for an empty string with %s`, (operator, type) => {
+		const schema = generateJoi({ field: { [operator]: 'field' } } as FieldFilter);
+
+		expect(schema.validate({ field: '' }).error?.details[0]?.type).toBe(type);
+	});
+
+	it.each(['_nieq', '_ncontains', '_nicontains', '_nstarts_with', '_nistarts_with', '_nends_with', '_niends_with'])(
+		`accepts an empty string with %s`,
+		(operator) => {
+			const schema = generateJoi({ field: { [operator]: 'field' } } as FieldFilter);
+
+			expect(schema.validate({ field: '' }).error).toBeUndefined();
+		},
+	);
+
+	it(`returns the correct schema for a _nicontains with null value`, () => {
+		const mockFieldFilter = { field: { _nicontains: null } } as FieldFilter;
+
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(true),
+		})
+			.unknown()
+			.describe();
+
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
 	it(`returns the correct schema for a _starts_with match`, () => {
 		const mockFieldFilter = { field: { _starts_with: 'field' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`^${escapeRegExp('field')}.*`), {
-				name: 'starts_with',
-			}),
+			field: Joi.string()
+				.min(0)
+				.pattern(new RegExp(`^${escapeRegExp('field')}.*`), {
+					name: 'starts_with',
+				}),
 		})
 			.unknown()
 			.describe();
@@ -299,10 +372,12 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _nstarts_with: 'field' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`^${escapeRegExp('field')}.*`), {
-				name: 'nstarts_with',
-				invert: true,
-			}),
+			field: Joi.string()
+				.min(0)
+				.pattern(new RegExp(`^${escapeRegExp('field')}.*`), {
+					name: 'nstarts_with',
+					invert: true,
+				}),
 		})
 			.unknown()
 			.describe();
@@ -326,9 +401,11 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _istarts_with: 'field' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`^${escapeRegExp('field')}.*`, 'i'), {
-				name: 'istarts_with',
-			}),
+			field: Joi.string()
+				.min(0)
+				.pattern(new RegExp(`^${escapeRegExp('field')}.*`, 'i'), {
+					name: 'istarts_with',
+				}),
 		})
 			.unknown()
 			.describe();
@@ -352,10 +429,12 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _nistarts_with: 'field' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`^${escapeRegExp('field')}.*`, 'i'), {
-				name: 'nistarts_with',
-				invert: true,
-			}),
+			field: Joi.string()
+				.min(0)
+				.pattern(new RegExp(`^${escapeRegExp('field')}.*`, 'i'), {
+					name: 'nistarts_with',
+					invert: true,
+				}),
 		})
 			.unknown()
 			.describe();
@@ -379,7 +458,7 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _ends_with: 'field' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`field$`), {
+			field: Joi.string().min(0).pattern(new RegExp(`field$`), {
 				name: 'ends_with',
 			}),
 		})
@@ -405,7 +484,7 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _nends_with: 'field' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`field$`), {
+			field: Joi.string().min(0).pattern(new RegExp(`field$`), {
 				name: 'nends_with',
 				invert: true,
 			}),
@@ -432,7 +511,7 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _iends_with: 'field' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`field$`, 'i'), {
+			field: Joi.string().min(0).pattern(new RegExp(`field$`, 'i'), {
 				name: 'iends_with',
 			}),
 		})
@@ -458,7 +537,7 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _niends_with: 'field' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`field$`, 'i'), {
+			field: Joi.string().min(0).pattern(new RegExp(`field$`, 'i'), {
 				name: 'niends_with',
 				invert: true,
 			}),

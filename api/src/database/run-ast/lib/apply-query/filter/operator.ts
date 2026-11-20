@@ -116,7 +116,8 @@ export function applyOperator(
 	if (
 		(operator === '_null' && compareValue !== false) ||
 		(operator === '_nnull' && compareValue === false) ||
-		(operator === '_eq' && compareValue === null)
+		(operator === '_eq' && compareValue === null) ||
+		(operator === '_ieq' && compareValue === null)
 	) {
 		dbQuery[logical].whereNull(selectionRaw);
 		return;
@@ -125,7 +126,8 @@ export function applyOperator(
 	if (
 		(operator === '_nnull' && compareValue !== false) ||
 		(operator === '_null' && compareValue === false) ||
-		(operator === '_neq' && compareValue === null)
+		(operator === '_neq' && compareValue === null) ||
+		(operator === '_nieq' && compareValue === null)
 	) {
 		dbQuery[logical].whereNotNull(selectionRaw);
 		return;
@@ -205,7 +207,8 @@ function applyOperatorToRaw(
 	if (
 		(operator === '_null' && compareValue !== false) ||
 		(operator === '_nnull' && compareValue === false) ||
-		(operator === '_eq' && compareValue === null)
+		(operator === '_eq' && compareValue === null) ||
+		(operator === '_ieq' && compareValue === null)
 	) {
 		dbQuery[logical].whereNull(raw);
 		return;
@@ -214,7 +217,8 @@ function applyOperatorToRaw(
 	if (
 		(operator === '_nnull' && compareValue !== false) ||
 		(operator === '_null' && compareValue === false) ||
-		(operator === '_neq' && compareValue === null)
+		(operator === '_neq' && compareValue === null) ||
+		(operator === '_nieq' && compareValue === null)
 	) {
 		dbQuery[logical].whereNotNull(raw);
 		return;
@@ -256,12 +260,21 @@ function applyOperatorToRaw(
 		dbQuery[logical].whereNot(raw, compareValue);
 	}
 
+	// Case insensitivity only applies to strings, other values are compared like `_eq` / `_neq`
 	if (operator === '_ieq') {
-		dbQuery[logical].whereRaw(`LOWER(??) = ?`, [raw, `${compareValue.toLowerCase()}`]);
+		if (typeof compareValue === 'string') {
+			dbQuery[logical].whereRaw(`LOWER(??) = ?`, [raw, compareValue.toLowerCase()]);
+		} else {
+			dbQuery[logical].where(raw, '=', compareValue);
+		}
 	}
 
 	if (operator === '_nieq') {
-		dbQuery[logical].whereRaw(`LOWER(??) <> ?`, [raw, `${compareValue.toLowerCase()}`]);
+		if (typeof compareValue === 'string') {
+			dbQuery[logical].whereRaw(`LOWER(??) <> ?`, [raw, compareValue.toLowerCase()]);
+		} else {
+			dbQuery[logical].whereNot(raw, compareValue);
+		}
 	}
 
 	if (operator === '_contains') {
@@ -277,7 +290,7 @@ function applyOperatorToRaw(
 	}
 
 	if (operator === '_nicontains') {
-		dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [raw, `%${compareValue.toLowerCase()}%`]);
+		dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [raw, `%${String(compareValue).toLowerCase()}%`]);
 	}
 
 	if (operator === '_starts_with') {
