@@ -12,15 +12,14 @@ vi.mock('chalk', () => ({
 	},
 }));
 
-vi.mock('fs-extra', () => ({
-	default: {
-		pathExists: vi.fn(),
-		stat: vi.fn(),
-		readdir: vi.fn(),
-		mkdir: vi.fn(),
-		readFile: vi.fn(() => Promise.resolve('{"name":"create-directus-project","version":"12.0.1"}')),
-	},
+vi.mock('node:fs/promises', () => ({
+	stat: vi.fn(),
+	readdir: vi.fn(),
+	mkdir: vi.fn(),
+	readFile: vi.fn(() => Promise.resolve('{"name":"create-directus-project","version":"12.0.1"}')),
 }));
+
+const notFoundError = Object.assign(new Error('ENOENT'), { code: 'ENOENT' });
 
 vi.mock('execa', () => ({
 	execa: vi.fn(),
@@ -57,7 +56,7 @@ vi.mock('./check-requirements.js', () => ({
 const { create } = await import('./index.js');
 
 describe('create function', () => {
-	let mockFse;
+	let mockFs;
 	let mockExeca;
 	let mockOra;
 	let mockCheckForUpdate;
@@ -69,13 +68,13 @@ describe('create function', () => {
 
 	beforeEach(async () => {
 		// Import mocked modules
-		const fse = await import('fs-extra');
+		const fs = await import('node:fs/promises');
 		const { execa } = await import('execa');
 		const ora = await import('ora');
 		const checkForUpdate = await import('update-check');
 		const checkRequirements = await import('./check-requirements.js');
 
-		mockFse = fse.default;
+		mockFs = fs;
 		mockExeca = execa;
 		mockOra = ora.default;
 		mockCheckForUpdate = checkForUpdate.default;
@@ -106,21 +105,20 @@ describe('create function', () => {
 	describe('directory validation', () => {
 		it('should create directory if it does not exist', async () => {
 			// Arrange
-			mockFse.pathExists.mockResolvedValue(false);
-			mockFse.mkdir.mockResolvedValue();
+			mockFs.stat.mockRejectedValue(notFoundError);
+			mockFs.mkdir.mockResolvedValue();
 			mockExeca.mockResolvedValue();
 			mockCheckForUpdate.mockResolvedValue(null);
 
 			// Act & Assert
 			await expect(() => create('test-project')).rejects.toThrow('process.exit called with 0');
-			expect(mockFse.pathExists).toHaveBeenCalledWith(expect.stringContaining('test-project'));
-			expect(mockFse.mkdir).toHaveBeenCalledWith(expect.stringContaining('test-project'));
+			expect(mockFs.stat).toHaveBeenCalledWith(expect.stringContaining('test-project'));
+			expect(mockFs.mkdir).toHaveBeenCalledWith(expect.stringContaining('test-project'));
 		});
 
 		it('should exit if destination exists and is not a directory', async () => {
 			// Arrange
-			mockFse.pathExists.mockResolvedValue(true);
-			mockFse.stat.mockResolvedValue({ isDirectory: () => false });
+			mockFs.stat.mockResolvedValue({ isDirectory: () => false });
 
 			// Act & Assert
 			await expect(() => create('test-project')).rejects.toThrow('process.exit called with 1');
@@ -130,9 +128,8 @@ describe('create function', () => {
 
 		it('should exit if destination exists and is not empty', async () => {
 			// Arrange
-			mockFse.pathExists.mockResolvedValue(true);
-			mockFse.stat.mockResolvedValue({ isDirectory: () => true });
-			mockFse.readdir.mockResolvedValue(['file1.txt', 'file2.txt']);
+			mockFs.stat.mockResolvedValue({ isDirectory: () => true });
+			mockFs.readdir.mockResolvedValue(['file1.txt', 'file2.txt']);
 
 			// Act & Assert
 			await expect(() => create('test-project')).rejects.toThrow('process.exit called with 1');
@@ -145,24 +142,23 @@ describe('create function', () => {
 
 		it('should proceed if destination exists and is empty', async () => {
 			// Arrange
-			mockFse.pathExists.mockResolvedValue(true);
-			mockFse.stat.mockResolvedValue({ isDirectory: () => true });
-			mockFse.readdir.mockResolvedValue([]);
-			mockFse.mkdir.mockResolvedValue();
+			mockFs.stat.mockResolvedValue({ isDirectory: () => true });
+			mockFs.readdir.mockResolvedValue([]);
+			mockFs.mkdir.mockResolvedValue();
 			mockExeca.mockResolvedValue();
 			mockCheckForUpdate.mockResolvedValue(null);
 
 			// Act & Assert
 			await expect(() => create('test-project')).rejects.toThrow('process.exit called with 0');
-			expect(mockFse.mkdir).toHaveBeenCalledWith(expect.stringContaining('uploads'));
-			expect(mockFse.mkdir).toHaveBeenCalledWith(expect.stringContaining('extensions'));
+			expect(mockFs.mkdir).toHaveBeenCalledWith(expect.stringContaining('uploads'));
+			expect(mockFs.mkdir).toHaveBeenCalledWith(expect.stringContaining('extensions'));
 		});
 	});
 
 	describe('project setup', () => {
 		beforeEach(() => {
-			mockFse.pathExists.mockResolvedValue(false);
-			mockFse.mkdir.mockResolvedValue();
+			mockFs.stat.mockRejectedValue(notFoundError);
+			mockFs.mkdir.mockResolvedValue();
 		});
 
 		it('should create required directories', async () => {
@@ -172,8 +168,8 @@ describe('create function', () => {
 
 			// Act & Assert
 			await expect(() => create('test-project')).rejects.toThrow('process.exit called with 0');
-			expect(mockFse.mkdir).toHaveBeenCalledWith(expect.stringContaining('test-project/uploads'));
-			expect(mockFse.mkdir).toHaveBeenCalledWith(expect.stringContaining('test-project/extensions'));
+			expect(mockFs.mkdir).toHaveBeenCalledWith(expect.stringContaining('test-project/uploads'));
+			expect(mockFs.mkdir).toHaveBeenCalledWith(expect.stringContaining('test-project/extensions'));
 		});
 
 		it('should initialize npm project', async () => {
@@ -233,8 +229,8 @@ describe('create function', () => {
 
 	describe('error handling', () => {
 		beforeEach(() => {
-			mockFse.pathExists.mockResolvedValue(false);
-			mockFse.mkdir.mockResolvedValue();
+			mockFs.stat.mockRejectedValue(notFoundError);
+			mockFs.mkdir.mockResolvedValue();
 		});
 
 		it('should handle npm init error', async () => {
@@ -289,8 +285,8 @@ describe('create function', () => {
 
 	describe('spinner behavior', () => {
 		beforeEach(() => {
-			mockFse.pathExists.mockResolvedValue(false);
-			mockFse.mkdir.mockResolvedValue();
+			mockFs.stat.mockRejectedValue(notFoundError);
+			mockFs.mkdir.mockResolvedValue();
 			mockExeca.mockResolvedValue();
 			mockCheckForUpdate.mockResolvedValue(null);
 		});
@@ -319,8 +315,8 @@ describe('create function', () => {
 
 	describe('update checking', () => {
 		beforeEach(() => {
-			mockFse.pathExists.mockResolvedValue(false);
-			mockFse.mkdir.mockResolvedValue();
+			mockFs.stat.mockRejectedValue(notFoundError);
+			mockFs.mkdir.mockResolvedValue();
 			mockExeca.mockResolvedValue();
 		});
 
@@ -367,8 +363,8 @@ describe('create function', () => {
 	describe('requirements checking', () => {
 		it('should call checkRequirements at the start', async () => {
 			// Arrange
-			mockFse.pathExists.mockResolvedValue(false);
-			mockFse.mkdir.mockResolvedValue();
+			mockFs.stat.mockRejectedValue(notFoundError);
+			mockFs.mkdir.mockResolvedValue();
 			mockExeca.mockResolvedValue();
 			mockCheckForUpdate.mockResolvedValue(null);
 
@@ -381,8 +377,8 @@ describe('create function', () => {
 	describe('successful completion', () => {
 		it('should exit with code 0 on successful completion', async () => {
 			// Arrange
-			mockFse.pathExists.mockResolvedValue(false);
-			mockFse.mkdir.mockResolvedValue();
+			mockFs.stat.mockRejectedValue(notFoundError);
+			mockFs.mkdir.mockResolvedValue();
 			mockExeca.mockResolvedValue();
 			mockCheckForUpdate.mockResolvedValue(null);
 
@@ -395,8 +391,8 @@ describe('create function', () => {
 	describe('edge cases', () => {
 		it('should handle error without stderr or stdout', async () => {
 			// Arrange
-			mockFse.pathExists.mockResolvedValue(false);
-			mockFse.mkdir.mockResolvedValue();
+			mockFs.stat.mockRejectedValue(notFoundError);
+			mockFs.mkdir.mockResolvedValue();
 
 			const simpleError = new Error('Simple error');
 			mockExeca.mockRejectedValueOnce(simpleError);
@@ -409,8 +405,8 @@ describe('create function', () => {
 
 		it('should handle error with only stderr', async () => {
 			// Arrange
-			mockFse.pathExists.mockResolvedValue(false);
-			mockFse.mkdir.mockResolvedValue();
+			mockFs.stat.mockRejectedValue(notFoundError);
+			mockFs.mkdir.mockResolvedValue();
 
 			const errorWithStderr = new Error('Error with stderr');
 			Object.assign(errorWithStderr, { stderr: 'Error details in stderr' });
@@ -424,8 +420,8 @@ describe('create function', () => {
 
 		it('should handle error with only stdout', async () => {
 			// Arrange
-			mockFse.pathExists.mockResolvedValue(false);
-			mockFse.mkdir.mockResolvedValue();
+			mockFs.stat.mockRejectedValue(notFoundError);
+			mockFs.mkdir.mockResolvedValue();
 
 			const errorWithStdout = new Error('Error with stdout');
 			Object.assign(errorWithStdout, { stdout: 'Error details in stdout' });

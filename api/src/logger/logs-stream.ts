@@ -1,4 +1,4 @@
-import { Writable } from 'stream';
+import { Writable } from 'node:stream';
 import type { Bus } from '@directus/memory';
 import { nanoid } from 'nanoid';
 import { useBus } from '../bus/index.js';

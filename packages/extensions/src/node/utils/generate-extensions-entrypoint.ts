@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { isIn, isTypeIn, pathToRelativeUrl, pluralize } from '@directus/utils/node';
 import { APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
 import type {
@@ -21,7 +21,9 @@ export function generateExtensionsEntrypoint(
 
 	for (const [source, extensions] of Object.entries(extensionMaps)) {
 		for (const [folder, extension] of extensions.entries()) {
-			const settingsForExtension = settings.find((setting) => setting.source === source && setting.folder === folder);
+			const settingsForExtension = settings.find(
+				(setting) => setting.source === source && setting.folder === folder && setting.bundle === null,
+			);
 
 			if (!settingsForExtension) continue;
 

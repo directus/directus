@@ -8,6 +8,7 @@ export * from './ip-in-networks.js';
 export * from './ip-blocklist.js';
 export * from './is-readable-stream.js';
 export * from './list-folders.js';
+export * from './path-exists.js';
 export * from './path-to-relative-url.js';
 export * from './pluralize.js';
 export * from './process-id.js';

@@ -35,7 +35,6 @@
 		"@directus/constants": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"fs-extra": "catalog:",
 		"lodash-es": "catalog:",
 		"zod": "catalog:"
 	},
@@ -43,7 +42,6 @@
 		"@directus/tsconfig": "catalog:",
 		"@tiptap/core": "catalog:",
 		"@tiptap/pm": "catalog:",
-		"@types/fs-extra": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",

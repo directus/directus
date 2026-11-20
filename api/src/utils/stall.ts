@@ -1,4 +1,4 @@
-import { performance } from 'perf_hooks';
+import { performance } from 'node:perf_hooks';
 
 /**
  * Wait a specific time to meet the stall ms. Useful in cases where you need to make sure that every

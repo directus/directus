@@ -1,6 +1,7 @@
-import path from 'path';
+import { cp, readdir } from 'node:fs/promises';
+import path from 'node:path';
 import type { ExtensionType } from '@directus/types';
-import fse from 'fs-extra';
+import { pathExists } from '@directus/utils/node';
 import type { Language } from '../../types.js';
 import getTemplatePath from '../../utils/get-template-path.js';
 
@@ -16,14 +17,14 @@ async function copyTemplateFile(templateFile: TemplateFile, extensionPath: strin
 				? path.join(extensionPath, newName)
 				: path.resolve(extensionPath, sourcePath, newName);
 
-		await fse.copy(templateFile.path, targetPath, { overwrite: false });
+		await cp(templateFile.path, targetPath, { recursive: true, force: false });
 	}
 }
 
 async function getFilesInDir(templatePath: string): Promise<string[]> {
-	if (!(await fse.pathExists(templatePath))) return [];
+	if (!(await pathExists(templatePath))) return [];
 
-	const files = (await fse.readdir(templatePath)) as string[];
+	const files = await readdir(templatePath);
 
 	return files.map((file) => path.join(templatePath, file));
 }

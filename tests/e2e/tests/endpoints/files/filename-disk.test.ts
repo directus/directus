@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { createDirectus, deleteFile, readFile, rest, staticToken, updateFile, uploadFiles } from '@directus/sdk';
 import { port } from '@utils/constants.js';
 import { directusError } from '@utils/errors.js';

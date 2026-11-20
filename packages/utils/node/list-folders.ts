@@ -1,5 +1,5 @@
-import path from 'path';
-import fse from 'fs-extra';
+import { readdir, stat } from 'node:fs/promises';
+import path from 'node:path';
 
 interface ListFoldersOptions {
 	/**
@@ -10,7 +10,7 @@ interface ListFoldersOptions {
 
 export async function listFolders(location: string, options?: ListFoldersOptions): Promise<string[]> {
 	const fullPath = path.resolve(location);
-	const files = await fse.readdir(fullPath);
+	const files = await readdir(fullPath);
 
 	const directories: string[] = [];
 
@@ -21,7 +21,7 @@ export async function listFolders(location: string, options?: ListFoldersOptions
 
 		const filePath = path.join(fullPath, file);
 
-		const stats = await fse.stat(filePath);
+		const stats = await stat(filePath);
 
 		if (stats.isDirectory()) {
 			directories.push(file);

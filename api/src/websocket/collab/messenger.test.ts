@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { type BroadcastMessage, COLLAB_BUS } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { Messenger } from './messenger.js';

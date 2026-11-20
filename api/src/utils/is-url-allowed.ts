@@ -1,4 +1,4 @@
-import { URL } from 'url';
+import { URL } from 'node:url';
 import { toArray } from '@directus/utils';
 import { useLogger } from '../logger/index.js';
 

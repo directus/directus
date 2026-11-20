@@ -1,4 +1,4 @@
-import type { Server as httpServer } from 'http';
+import type { Server as httpServer } from 'node:http';
 import { useEnv } from '@directus/env';
 import type { WebSocketMessage } from '@directus/types';
 import type { Accountability } from '@directus/types';

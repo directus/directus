@@ -1,5 +1,5 @@
-import fs from 'fs/promises';
-import { join } from 'path';
+import fs from 'node:fs/promises';
+import { join } from 'node:path';
 import { createDirectus, rest, staticToken, uploadFiles } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';

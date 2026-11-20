@@ -1,5 +1,5 @@
-import { promises as fs } from 'fs';
-import path from 'path';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
 import type { Snapshot, SnapshotDiff, SnapshotField, SnapshotRelation, SnapshotSystemField } from '@directus/types';
 import type { ApiCollection } from '@directus/types';
 import { DiffKind } from '@directus/types';

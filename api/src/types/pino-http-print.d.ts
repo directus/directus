@@ -1,5 +1,5 @@
 declare module 'pino-http-print' {
-	import { Stream, Transform } from 'stream';
+	import { Stream, Transform } from 'node:stream';
 
 	export interface PrettyOptions {
 		colorize?: boolean;

@@ -119,7 +119,7 @@ export const getExtensionsSettings = async ({
 	};
 
 	for (const [folder, extension] of local.entries()) {
-		const existingSettings = localSettings.find((settings) => settings.folder === folder);
+		const existingSettings = localSettings.find((settings) => settings.folder === folder && settings.bundle === null);
 
 		if (existingSettings) {
 			if (extension.type === 'bundle') {
@@ -129,7 +129,9 @@ export const getExtensionsSettings = async ({
 			continue;
 		}
 
-		const settingsForName = localSettings.find((settings) => settings.folder === extension.name);
+		const settingsForName = localSettings.find(
+			(settings) => settings.folder === extension.name && settings.bundle === null,
+		);
 
 		/*
 		 * TODO: Consider removing this in follow-up versions after v10.10.0
@@ -149,7 +151,7 @@ export const getExtensionsSettings = async ({
 	}
 
 	for (const [folder, extension] of module.entries()) {
-		const existingSettings = moduleSettings.find((settings) => settings.folder === folder);
+		const existingSettings = moduleSettings.find((settings) => settings.folder === folder && settings.bundle === null);
 
 		if (!existingSettings) {
 			await generateSettingsEntry(folder, extension, 'module');
@@ -159,7 +161,9 @@ export const getExtensionsSettings = async ({
 	}
 
 	for (const [folder, extension] of registry.entries()) {
-		const existingSettings = registrySettings.find((settings) => settings.folder === folder);
+		const existingSettings = registrySettings.find(
+			(settings) => settings.folder === folder && settings.bundle === null,
+		);
 
 		if (!existingSettings) {
 			await generateSettingsEntry(folder, extension, 'registry');

@@ -1,4 +1,4 @@
-import type { Readable, Writable } from 'stream';
+import type { Readable, Writable } from 'node:stream';
 
 /**
  * Destroy the targetStream that is being piped into without destroying the sourceStream.

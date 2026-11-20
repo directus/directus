@@ -1,11 +1,15 @@
 import { rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { exists } from 'fs-extra';
+import { pathExists } from '@directus/utils/node';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getExtensionsPath } from '../get-extensions-path.js';
 import { getSyncStatus, isSynchronizing, setSyncStatus, SyncStatus } from './status.js';
 
-vi.mock('fs-extra');
+vi.mock('@directus/utils/node', async (importOriginal) => ({
+	...(await importOriginal<typeof import('@directus/utils/node')>()),
+	pathExists: vi.fn(),
+}));
+
 vi.mock('node:fs/promises');
 vi.mock('../get-extensions-path.js');
 
@@ -23,16 +27,14 @@ describe('extensions sync status', () => {
 
 	describe('getSyncStatus', () => {
 		test('should return SYNCING when status file exists', async () => {
-			// @ts-ignore
-			vi.mocked(exists).mockResolvedValue(true);
+			vi.mocked(pathExists).mockResolvedValue(true);
 
 			const status = await getSyncStatus();
 			expect(status).toBe(SyncStatus.SYNCING);
 		});
 
 		test('should return IDLE when status file does not exist', async () => {
-			// @ts-ignore
-			vi.mocked(exists).mockResolvedValue(false);
+			vi.mocked(pathExists).mockResolvedValue(false);
 
 			const status = await getSyncStatus();
 			expect(status).toBe(SyncStatus.IDLE);
@@ -57,16 +59,14 @@ describe('extensions sync status', () => {
 
 	describe('isSynchronizing', () => {
 		test('should return true when status file exists', async () => {
-			// @ts-ignore
-			vi.mocked(exists).mockResolvedValue(true);
+			vi.mocked(pathExists).mockResolvedValue(true);
 
 			const result = await isSynchronizing();
 			expect(result).toBe(true);
 		});
 
 		test('should return false when status file does not exist', async () => {
-			// @ts-ignore
-			vi.mocked(exists).mockResolvedValue(false);
+			vi.mocked(pathExists).mockResolvedValue(false);
 
 			const result = await isSynchronizing();
 			expect(result).toBe(false);

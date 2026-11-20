@@ -39,11 +39,14 @@ vi.mock('../../logger/index.js', () => ({
 	}),
 }));
 
-vi.mock('fs-extra', () => ({
-	default: {
-		pathExists: vi.fn().mockResolvedValue(true),
-		readFile: vi.fn().mockResolvedValue('<html>{{projectName}}</html>'),
-	},
+vi.mock('@directus/utils/node', async (importOriginal) => ({
+	...(await importOriginal<typeof import('@directus/utils/node')>()),
+	pathExists: vi.fn().mockResolvedValue(true),
+}));
+
+vi.mock('node:fs/promises', async (importOriginal) => ({
+	...(await importOriginal<typeof import('node:fs/promises')>()),
+	readFile: vi.fn().mockResolvedValue('<html>{{projectName}}</html>'),
 }));
 
 describe('MailService', () => {

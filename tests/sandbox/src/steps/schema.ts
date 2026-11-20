@@ -1,6 +1,6 @@
-import { spawn } from 'child_process';
-import { writeFile } from 'fs/promises';
-import { join, resolve } from 'path';
+import { spawn } from 'node:child_process';
+import { writeFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 import type { Snapshot } from '@directus/types';
 import { getRelationInfo } from '@directus/utils';
 import chalk from 'chalk';

@@ -1,5 +1,5 @@
-import * as http from 'http';
-import type { ListenOptions } from 'net';
+import * as http from 'node:http';
+import type { ListenOptions } from 'node:net';
 import { useEnv } from '@directus/env';
 import getPort from 'get-port';
 import { afterEach, describe, expect, test, vi } from 'vitest';

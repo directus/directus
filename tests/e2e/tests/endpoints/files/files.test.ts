@@ -1,6 +1,6 @@
-import { createHash } from 'crypto';
-import fs from 'fs/promises';
-import { join } from 'path';
+import { createHash } from 'node:crypto';
+import fs from 'node:fs/promises';
+import { join } from 'node:path';
 import {
 	createDirectus,
 	deleteFile,

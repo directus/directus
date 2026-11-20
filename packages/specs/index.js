@@ -1,7 +1,4 @@
 import { readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 
-export const spec = JSON.parse(
-	readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), './dist/openapi.json'), 'utf8'),
-);
+export const spec = JSON.parse(readFileSync(resolve(import.meta.dirname, './dist/openapi.json'), 'utf8'));

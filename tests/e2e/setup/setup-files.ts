@@ -1,7 +1,7 @@
-import { createHash } from 'crypto';
-import { access, readFile, writeFile } from 'fs/promises';
+import { createHash } from 'node:crypto';
+import { access, readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import util from 'node:util';
-import { join } from 'path';
 import { expect } from 'vitest';
 
 util.inspect.defaultOptions.depth = null;

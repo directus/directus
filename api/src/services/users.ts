@@ -1,4 +1,4 @@
-import { performance } from 'perf_hooks';
+import { performance } from 'node:perf_hooks';
 import { USER_INACTIVE_LICENSE_STATUS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';

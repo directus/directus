@@ -1,5 +1,5 @@
+import { performance } from 'node:perf_hooks';
 import { Readable } from 'node:stream';
-import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import { createKv } from '@directus/memory';

@@ -1,14 +1,13 @@
-import { spawn, spawnSync } from 'child_process';
-import { existsSync } from 'fs';
-import { unlink } from 'fs/promises';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { spawn, spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { unlink } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import chalk from 'chalk';
 import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
 import type { Database, Options } from '../sandbox.js';
 
-const fileName = fileURLToPath(import.meta.url);
+const fileName = import.meta.filename;
 const folderName = dirname(fileName);
 
 export async function dockerUp(database: Database, opts: Options, env: Env, logger: Logger) {

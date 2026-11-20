@@ -1,7 +1,7 @@
+import path from 'node:path';
 import type { Readable } from 'node:stream';
 import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
 import zlib from 'node:zlib';
-import path from 'path';
 import { useEnv } from '@directus/env';
 import {
 	ContentTooLargeError,

@@ -1,6 +1,5 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 
 export default function getTemplatePath(): string {
-	return resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'templates');
+	return resolve(import.meta.dirname, '..', '..', '..', 'templates');
 }

@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { createDirectus, createFlow, createOperation, rest, staticToken, updateFlow } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';

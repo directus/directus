@@ -1,5 +1,5 @@
-import fs from 'fs/promises';
-import { join } from 'path';
+import fs from 'node:fs/promises';
+import { join } from 'node:path';
 import { type sandbox as Sandbox } from '@directus/sandbox';
 import { createDirectus, readFile, rest, staticToken, uploadFiles } from '@directus/sdk';
 import { database } from '@utils/constants.js';

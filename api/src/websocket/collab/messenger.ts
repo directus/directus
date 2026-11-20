@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { useEnv } from '@directus/env';
 import { isDirectusError } from '@directus/errors';
 import type { Bus } from '@directus/memory';

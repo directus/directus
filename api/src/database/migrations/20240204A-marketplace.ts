@@ -1,11 +1,7 @@
 import { randomUUID } from 'node:crypto';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { resolvePackage } from '@directus/utils/node';
 import type { Knex } from 'knex';
 import { getHelpers } from '../helpers/index.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_extensions', (table) => {
@@ -33,7 +29,7 @@ export async function up(knex: Knex): Promise<void> {
 			try {
 				// The NPM package name is the name used in the database. If we can resolve the
 				// extension as a node module it's safe to assume it's a npm-module source
-				resolvePackage(name, __dirname);
+				resolvePackage(name, import.meta.dirname);
 				source = 'module';
 			} catch {
 				source = 'local';

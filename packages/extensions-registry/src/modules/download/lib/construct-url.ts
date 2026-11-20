@@ -1,4 +1,4 @@
-import { URL } from 'url';
+import { URL } from 'node:url';
 import { DEFAULT_REGISTRY } from '../../../constants.js';
 import type { DownloadOptions } from '../types/download-options.js';
 

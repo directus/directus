@@ -1,5 +1,4 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import { UnsupportedMediaTypeError } from '@directus/errors';
 import type { TransformationSet } from '@directus/types';
 import { z } from 'zod';
@@ -7,8 +6,6 @@ import { AssetsService } from '../../../services/assets.js';
 import { FilesService } from '../../../services/files.js';
 import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const AssetsValidateSchema = z.strictObject({
 	id: z.string(),
@@ -22,7 +19,7 @@ export const assets = defineTool<z.infer<typeof AssetsValidateSchema>>({
 	name: 'assets',
 	description:
 		'Retrieves image or audio file bytes for model inspection. Use after finding a Directus file id that needs visual or audio analysis.',
-	instructions: requireText(resolve(__dirname, './prompt.md')),
+	instructions: requireText(resolve(import.meta.dirname, './prompt.md')),
 	keywords: ['image', 'audio', 'media', 'vision', 'base64', 'file contents'],
 	annotations: {
 		title: 'Directus - Assets',

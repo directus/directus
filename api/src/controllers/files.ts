@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { useEnv } from '@directus/env';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import formatTitle from '@directus/format-title';

@@ -1,4 +1,4 @@
-import { URL } from 'url';
+import { URL } from 'node:url';
 import { DEFAULT_REGISTRY } from '../../../constants.js';
 import type { ListOptions } from '../types/list-options.js';
 import type { ListQuery } from '../types/list-query.js';
