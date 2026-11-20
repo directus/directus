@@ -313,7 +313,7 @@ function useImage() {
 
 const localDragMode = ref<'move' | 'crop' | 'focal_point'>('move');
 
-const storageAssetPresets = settingsStore.settings?.storage_asset_presets ?? [];
+const storageAssetPresets = computed(() => settingsStore.settings?.storage_asset_presets ?? []);
 
 // Cropper loads the raw pixels and reports EXIF orientation as rotate and flip,
 // so start from its size, not the upright size stored on the file
@@ -331,7 +331,7 @@ const croppingPresets = computed(() => {
 
 	const { width, height } = previewSize.value;
 
-	return storageAssetPresets.filter((preset) => getFocalPointCrop({ w: width, h: height }, null, preset));
+	return storageAssetPresets.value.filter((preset) => getFocalPointCrop({ w: width, h: height }, null, preset));
 });
 
 const showPresetPreviews = computed(() => localDragMode.value === 'focal_point' && croppingPresets.value.length > 0);
