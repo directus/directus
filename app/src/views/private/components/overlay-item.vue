@@ -11,6 +11,7 @@ import { useRouter } from 'vue-router';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import ComparisonModal from './comparison/comparison-modal.vue';
 import OverlayItemContent from './overlay-item-content.vue';
+import { hasStagedJunctionValues, mergeFetchedItemInitialValues } from './overlay-item-utils';
 import RenderTemplate from './render-template.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -396,7 +397,11 @@ function useItem() {
 
 			const response = await api.get(endpoint, { params });
 
-			initialValues.value = response.data.data;
+			initialValues.value = mergeFetchedItemInitialValues(
+				initialValues.value,
+				response.data.data,
+				junctionFieldInfo.value?.field ?? props.junctionField,
+			);
 		} catch (error) {
 			internalActive.value = false;
 			unexpectedError(error);
@@ -421,8 +426,10 @@ function useItem() {
 				[junctionFieldInfo.value.field]: response.data.data,
 			};
 		} catch (error) {
-			internalActive.value = false;
-			unexpectedError(error);
+			if (!hasStagedJunctionValues(props.edits, junctionFieldInfo.value.field)) {
+				internalActive.value = false;
+				unexpectedError(error);
+			}
 		} finally {
 			loading.value = false;
 		}
