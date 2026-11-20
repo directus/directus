@@ -660,6 +660,8 @@ file_moved: Fil flyttad
 collection_created: Kollektion skapad
 modified_on: Ändrad den
 card_size: Kortets storlek
+small: Liten
+large: Stor
 sort_field: Sortera fält
 add_sort_field: Lägg till sorteringsfält
 sort: Sortera
@@ -1464,6 +1466,7 @@ forgot_password: Glömt lösenord
 hidden: Dold
 hidden_in_group: Dold i {group}
 icon: Ikon
+image: Bild
 info: Info
 normal: Normal
 success: Slutförd
@@ -1727,6 +1730,8 @@ interfaces:
   select-radio:
     radio-buttons: Radioknappar
     description: Välj ett av flera val
+  system-file-image:
+    image: Bild
   list:
     repeater: Repeterare
     description: Skapa flera poster av samma struktur
@@ -2094,6 +2099,15 @@ triggers:
     collection_page: Samlingssida
 any_string_or_json: Valfri sträng eller JSON...
 operations:
+  ai-image:
+    background: Bakgrund
+    starting_points:
+      icon: Ikon
+  ai-text:
+    files: Filer
+    type_text: Text
+    view_fields: Fält
+    view_json: JSON
   condition:
     name: Villkor
   exec:

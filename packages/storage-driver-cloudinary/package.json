@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-cloudinary",
-	"version": "14.0.5",
+	"version": "14.0.6",
 	"description": "Cloudinary file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -36,6 +36,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "catalog:",
+		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

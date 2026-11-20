@@ -1323,6 +1323,82 @@ describe('#parseFilter', () => {
 		});
 	});
 
+	describe('shifting logical operators through nested fields', () => {
+		/**
+		 * `{ f0: { _or: [{ f1: { _or: [… { _or: [{ z0: { _eq: 0 } }, …] } …] } }] } }`, a chain of
+		 * fields each holding a single-branch `_or`, with `width` conditions at the bottom
+		 */
+		function nestedFieldChain(depth: number, width: number) {
+			let filter: Record<string, any> = {
+				_or: Array.from({ length: width }, (_, i) => ({ [`z${i}`]: { _eq: i } })),
+			};
+
+			for (let level = depth - 1; level >= 0; level--) {
+				filter = { [`f${level}`]: { _or: [filter] } };
+			}
+
+			return filter as Filter;
+		}
+
+		/**
+		 * Each bottom condition wrapped in every field above it. The single-branch `_or` of each level
+		 * stays behind as a nested `_or` around the bottom one.
+		 */
+		function shiftedNestedFieldChain(depth: number, width: number) {
+			let shifted: Record<string, any> = {
+				_or: Array.from({ length: width }, (_, i) => {
+					let condition: Record<string, any> = { [`z${i}`]: { _eq: i } };
+
+					for (let level = depth - 1; level >= 0; level--) {
+						condition = { [`f${level}`]: condition };
+					}
+
+					return condition;
+				}),
+			};
+
+			for (let level = 0; level < depth; level++) {
+				shifted = { _or: [shifted] };
+			}
+
+			return shifted;
+		}
+
+		/** Object key lookups made while parsing, a proxy for the work the shift does */
+		function countKeyLookups(filter: Filter) {
+			const spy = vi.spyOn(Object, 'keys');
+
+			try {
+				parseFilter(filter, null);
+				return spy.mock.calls.length;
+			} finally {
+				spy.mockRestore();
+			}
+		}
+
+		it('pushes every field below the logical operators of a deep chain', () => {
+			expect(parseFilter(nestedFieldChain(4, 3), null)).toStrictEqual(shiftedNestedFieldChain(4, 3));
+		});
+
+		it('does work linear in the nesting depth', () => {
+			const shallow = countKeyLookups(nestedFieldChain(20, 50));
+			const deep = countKeyLookups(nestedFieldChain(40, 50));
+
+			// Doubling the depth doubles the size of the result, since every condition is wrapped once
+			// per field above it. Re-shifting each lifted subtree made it at least quadratic.
+			expect(deep / shallow).toBeLessThan(2.5);
+		});
+
+		it('parses a deep chain with a wide bottom without stalling', () => {
+			const start = performance.now();
+
+			parseFilter(nestedFieldChain(24, 4900), null);
+
+			// Took several seconds when every lift re-shifted the subtree beneath it
+			expect(performance.now() - start).toBeLessThan(1000);
+		});
+	});
+
 	describe('null / edge cases', () => {
 		it('returns null for a null filter', () => {
 			expect(parseFilter(null, null)).toBeNull();

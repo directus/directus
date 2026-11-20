@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "18.1.1",
+	"version": "18.1.2",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -27,7 +27,7 @@
 	],
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
+		"dev": "tsc --watch --project tsconfig.prod.json",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
@@ -63,6 +63,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@types/fs-extra": "catalog:",
 		"@types/inquirer": "catalog:",
+		"@types/node": "catalog:",
 		"@types/semver": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"typescript": "catalog:",
