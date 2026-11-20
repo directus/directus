@@ -97,13 +97,41 @@ describe('ImagePresetPreviews', () => {
 		expect(wrapper.findAll('.ratio').map((ratio) => ratio.text())).toEqual(['3:1']);
 	});
 
-	it('replaces the previews with a notice while the image has unsaved edits', async () => {
-		const wrapper = mountPreviews();
+	it('draws the source turned a quarter inside the rotated image', () => {
+		const wrapper = mount(ImagePresetPreviews, {
+			props: {
+				src: '/assets/1',
+				width: 2000,
+				height: 3000,
+				focalPoint: null,
+				presets,
+				imageTransform: { rotate: -90, scaleX: 1, scaleY: 1 },
+			},
+			global,
+		});
 
-		await wrapper.setProps({ hasImageEdits: true });
+		expect(wrapper.findAll('.ratio').map((ratio) => ratio.text())).toEqual(['16:9', '3:2', '1:1']);
 
-		expect(wrapper.findComponent({ name: 'VNotice' }).exists()).toBe(true);
-		expect(wrapper.find('.groups').exists()).toBe(false);
+		const image = wrapper.find('.frame img').element as HTMLImageElement;
+		expect(image.style.transform).toContain('rotate(-90deg) scale(1, 1)');
+		expect(parseFloat(image.style.inlineSize)).toBeGreaterThan(parseFloat(image.style.blockSize));
+	});
+
+	it('flips the thumbnails with the image', () => {
+		const wrapper = mount(ImagePresetPreviews, {
+			props: {
+				src: '/assets/1',
+				width: 3000,
+				height: 2000,
+				focalPoint: null,
+				presets,
+				imageTransform: { rotate: 0, scaleX: -1, scaleY: 1 },
+			},
+			global,
+		});
+
+		const image = wrapper.find('.frame img').element as HTMLImageElement;
+		expect(image.style.transform).toContain('scale(-1, 1)');
 	});
 
 	it('reframes the thumbnails when the focal point changes', async () => {
