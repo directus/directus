@@ -1,7 +1,8 @@
 import { fileURLToPath } from 'node:url';
-import { sandbox } from '@directus/sandbox';
+import type { Sandbox } from '@directus/sandbox';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
+import { useSandbox } from '@utils/sandbox.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 /**
@@ -17,11 +18,11 @@ import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 const extensionsPath = fileURLToPath(new URL('./__fixtures__/extensions', import.meta.url));
 
 describe('isolated-vm extension sandbox', () => {
-	let directus: Awaited<ReturnType<typeof sandbox>>;
+	let directus: Sandbox;
 	let baseUrl: string;
 
 	beforeAll(async () => {
-		directus = await sandbox(database, {
+		directus = await useSandbox(database, {
 			env: {
 				DB_FILENAME: `directus_test_${getUID()}.db`,
 				EXTENSIONS_PATH: extensionsPath,
