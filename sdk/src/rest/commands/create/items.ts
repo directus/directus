@@ -22,7 +22,7 @@ export type CreateItemOutput<
 export const createItems =
 	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		items: NestedPartial<UnpackList<Schema[Collection]>>[],
+		items: NestedPartial<UnpackList<Schema[Collection]>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreateItemOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => {
@@ -51,7 +51,7 @@ export const createItems =
 export const createItem =
 	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		item: NestedPartial<UnpackList<Schema[Collection]>>,
+		item: NestedPartial<UnpackList<Schema[Collection]>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {

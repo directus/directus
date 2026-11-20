@@ -20,7 +20,7 @@ export type UpdateCollectionOutput<
 export const updateCollection =
 	<Schema, const TQuery extends Query<Schema, DirectusCollection<Schema>>>(
 		collection: DirectusCollection<Schema>['collection'],
-		item: NestedPartial<DirectusCollection<Schema>>,
+		item: NestedPartial<DirectusCollection<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateCollectionOutput<Schema, TQuery>, Schema> =>
 	() => {
@@ -42,7 +42,7 @@ export const updateCollection =
  */
 export const updateCollectionsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusCollection<Schema>>>(
-		items: NestedPartial<DirectusCollection<Schema>>[],
+		items: NestedPartial<DirectusCollection<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdateCollectionOutput<Schema, TQuery>, Schema> =>
 	() => ({

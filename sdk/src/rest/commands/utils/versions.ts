@@ -14,7 +14,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 export const saveToContentVersion =
 	<Schema, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
 		id: DirectusVersion<Schema>['id'],
-		item: NestedPartial<Item>,
+		item: NestedPartial<Item, Schema>,
 	): RestCommand<Item, Schema> =>
 	() => {
 		throwIfEmpty(id, 'ID cannot be empty');

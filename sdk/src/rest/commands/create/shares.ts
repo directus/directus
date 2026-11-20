@@ -18,7 +18,7 @@ export type CreateShareOutput<
  */
 export const createShares =
 	<Schema, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
-		items: NestedPartial<DirectusShare<Schema>>[],
+		items: NestedPartial<DirectusShare<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreateShareOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createShares =
  */
 export const createShare =
 	<Schema, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
-		item: NestedPartial<DirectusShare<Schema>>,
+		item: NestedPartial<DirectusShare<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateShareOutput<Schema, TQuery>, Schema> =>
 	() => ({

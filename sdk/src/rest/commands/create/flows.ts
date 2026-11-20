@@ -18,7 +18,7 @@ export type CreateFlowOutput<
  */
 export const createFlows =
 	<Schema, const TQuery extends Query<Schema, DirectusFlow<Schema>>>(
-		items: NestedPartial<DirectusFlow<Schema>>[],
+		items: NestedPartial<DirectusFlow<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreateFlowOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createFlows =
  */
 export const createFlow =
 	<Schema, TQuery extends Query<Schema, DirectusFlow<Schema>>>(
-		item: NestedPartial<DirectusFlow<Schema>>,
+		item: NestedPartial<DirectusFlow<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateFlowOutput<Schema, TQuery>, Schema> =>
 	() => ({

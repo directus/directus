@@ -18,7 +18,7 @@ export type CreateCommentOutput<
  */
 export const createComments =
 	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
-		items: NestedPartial<DirectusComment<Schema>>[],
+		items: NestedPartial<DirectusComment<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreateCommentOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createComments =
  */
 export const createComment =
 	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
-		item: NestedPartial<DirectusComment<Schema>>,
+		item: NestedPartial<DirectusComment<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateCommentOutput<Schema, TQuery>, Schema> =>
 	() => ({

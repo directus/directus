@@ -18,7 +18,7 @@ export type CreateDashboardOutput<
  */
 export const createDashboards =
 	<Schema, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
-		items: NestedPartial<DirectusDashboard<Schema>>[],
+		items: NestedPartial<DirectusDashboard<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreateDashboardOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createDashboards =
  */
 export const createDashboard =
 	<Schema, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
-		item: NestedPartial<DirectusDashboard<Schema>>,
+		item: NestedPartial<DirectusDashboard<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateDashboardOutput<Schema, TQuery>, Schema> =>
 	() => ({

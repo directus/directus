@@ -30,7 +30,7 @@ export const reinstallRegistryExtension =
 export const updateExtension =
 	<Schema>(
 		id: DirectusExtension<Schema>['id'],
-		data: NestedPartial<DirectusExtension<Schema>>,
+		data: NestedPartial<DirectusExtension<Schema>, Schema>,
 	): RestCommand<DirectusExtension<Schema>, Schema> =>
 	() => {
 		throwIfEmpty(id, 'Id cannot be empty');

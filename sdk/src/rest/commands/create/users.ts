@@ -18,7 +18,7 @@ export type CreateUserOutput<
  */
 export const createUsers =
 	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
-		items: NestedPartial<DirectusUser<Schema>>[],
+		items: NestedPartial<DirectusUser<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreateUserOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createUsers =
  */
 export const createUser =
 	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
-		item: NestedPartial<DirectusUser<Schema>>,
+		item: NestedPartial<DirectusUser<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateUserOutput<Schema, TQuery>, Schema> =>
 	() => ({

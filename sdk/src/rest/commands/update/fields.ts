@@ -23,7 +23,7 @@ export const updateField =
 	<Schema, const TQuery extends FieldQuery<Schema, DirectusField<Schema>>>(
 		collection: DirectusField<Schema>['collection'],
 		field: DirectusField<Schema>['field'],
-		item: NestedPartial<DirectusField<Schema>>,
+		item: NestedPartial<DirectusField<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateFieldOutput<Schema, TQuery>, Schema> =>
 	() => {
@@ -50,7 +50,7 @@ export const updateField =
 export const updateFields =
 	<Schema, const TQuery extends FieldQuery<Schema, DirectusField<Schema>>>(
 		collection: DirectusField<Schema>['collection'],
-		items: NestedPartial<DirectusField<Schema>>[],
+		items: NestedPartial<DirectusField<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdateFieldOutput<Schema, TQuery>[], Schema> =>
 	() => {

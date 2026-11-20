@@ -18,7 +18,7 @@ export type CreateRoleOutput<
  */
 export const createRoles =
 	<Schema, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
-		items: NestedPartial<DirectusRole<Schema>>[],
+		items: NestedPartial<DirectusRole<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreateRoleOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createRoles =
  */
 export const createRole =
 	<Schema, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
-		item: NestedPartial<DirectusRole<Schema>>,
+		item: NestedPartial<DirectusRole<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateRoleOutput<Schema, TQuery>, Schema> =>
 	() => ({

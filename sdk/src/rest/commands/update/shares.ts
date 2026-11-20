@@ -20,7 +20,7 @@ export type UpdateShareOutput<
 export const updateShares =
 	<Schema, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
 		keys: DirectusShare<Schema>['id'][],
-		item: NestedPartial<DirectusShare<Schema>>,
+		item: NestedPartial<DirectusShare<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateShareOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -42,7 +42,7 @@ export const updateShares =
  */
 export const updateSharesBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
-		items: NestedPartial<DirectusShare<Schema>>[],
+		items: NestedPartial<DirectusShare<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdateShareOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -63,7 +63,7 @@ export const updateSharesBatch =
 export const updateShare =
 	<Schema, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
 		key: DirectusShare<Schema>['id'],
-		item: NestedPartial<DirectusShare<Schema>>,
+		item: NestedPartial<DirectusShare<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateShareOutput<Schema, TQuery>, Schema> =>
 	() => {

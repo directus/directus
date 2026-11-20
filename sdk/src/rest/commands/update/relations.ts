@@ -21,7 +21,7 @@ export const updateRelation =
 	<Schema, const TQuery extends Query<Schema, DirectusRelation<Schema>>>(
 		collection: DirectusRelation<Schema>['collection'],
 		field: DirectusRelation<Schema>['field'],
-		item: NestedPartial<DirectusRelation<Schema>>,
+		item: NestedPartial<DirectusRelation<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateRelationOutput<Schema, TQuery>, Schema> =>
 	() => {

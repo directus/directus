@@ -18,7 +18,7 @@ export type CreateCollectionOutput<
  */
 export const createCollection =
 	<Schema, const TQuery extends FieldQuery<Schema, DirectusCollection<Schema>>>(
-		item: NestedPartial<DirectusCollection<Schema>>,
+		item: NestedPartial<DirectusCollection<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateCollectionOutput<Schema, TQuery>, Schema> =>
 	() => ({

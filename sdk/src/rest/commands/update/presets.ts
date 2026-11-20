@@ -20,7 +20,7 @@ export type UpdatePresetOutput<
 export const updatePresets =
 	<Schema, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
 		keys: DirectusPreset<Schema>['id'][],
-		item: NestedPartial<DirectusPreset<Schema>>,
+		item: NestedPartial<DirectusPreset<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdatePresetOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -42,7 +42,7 @@ export const updatePresets =
  */
 export const updatePresetsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
-		items: NestedPartial<DirectusPreset<Schema>>[],
+		items: NestedPartial<DirectusPreset<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdatePresetOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -63,7 +63,7 @@ export const updatePresetsBatch =
 export const updatePreset =
 	<Schema, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
 		key: DirectusPreset<Schema>['id'],
-		item: NestedPartial<DirectusPreset<Schema>>,
+		item: NestedPartial<DirectusPreset<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdatePresetOutput<Schema, TQuery>, Schema> =>
 	() => {

@@ -25,7 +25,7 @@ export const updateItems =
 	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
 		keysOrQuery: string[] | number[] | Query<Schema, Schema[Collection]>,
-		item: NestedPartial<UnpackList<Schema[Collection]>>,
+		item: NestedPartial<UnpackList<Schema[Collection]>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateItemOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => {
@@ -65,7 +65,7 @@ export const updateItems =
 export const updateItemsBatch =
 	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		items: NestedPartial<UnpackList<Schema[Collection]>>[],
+		items: NestedPartial<UnpackList<Schema[Collection]>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdateItemOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => {
@@ -102,7 +102,7 @@ export const updateItem =
 	>(
 		collection: Collection,
 		key: string | number,
-		item: NestedPartial<Item>,
+		item: NestedPartial<Item, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {

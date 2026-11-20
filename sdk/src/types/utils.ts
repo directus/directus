@@ -1,3 +1,6 @@
+import type { CoreSchema } from '../schema/index.js';
+import type { CompleteSchema, ItemType } from './schema.js';
+
 /**
  * Makes types mutable
  */
@@ -53,16 +56,63 @@ type Primitive = null | undefined | string | number | boolean | bigint | symbol;
 type Builtin = Primitive | Date | RegExp;
 
 /**
+ * A relation item's primary key type, falling back to `string | number` when it has none.
+ */
+export type RelationPrimaryKey<Item> = Item extends { id: infer PK } ? NonNullable<PK> : string | number;
+
+type IsSameType<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;
+
+type MatchSchemaItem<Item, SchemaItem> = SchemaItem extends any ? IsSameType<Item, SchemaItem> : never;
+
+/**
+ * The members of `Item` that are collection items in `Schema` (all for an `any` Schema, none for `unknown`).
+ * Items must be the same type as a schema item, not a structural subtype, so a JSON array of objects that
+ * merely extend one doesn't count.
+ * Core collections also match the unmerged `CoreSchema<any>`: custom fields make the merged type in
+ * `CompleteSchema` require keys that the plain `DirectusUser` lacks.
+ */
+type ExtractSchemaItem<Schema, Item> = IfAny<
+	Schema,
+	Item,
+	unknown extends Schema
+		? never
+		: Item extends any
+			? true extends MatchSchemaItem<Item, ItemType<CompleteSchema<Schema>> | ItemType<CoreSchema<any>>>
+				? Item
+				: never
+			: never
+>;
+
+/**
+ * The API's "Detailed" object syntax for relation array fields: create/update/delete by key,
+ * alongside the plain nested-array shorthand. Limited to arrays of collection items in `Schema`,
+ * since JSON fields store it as-is.
+ */
+export type NestedItemsInput<RawItem, Schema = unknown, Item = Exclude<Extract<RawItem, object>, Builtin>> = [
+	Item,
+] extends [never]
+	? never
+	: IfNever<ExtractSchemaItem<Schema, Item>, never, NestedItemsObject<Item, Schema>>;
+
+type NestedItemsObject<Item, Schema> = {
+	create?: NestedPartial<Item, Schema>[];
+	update?: (Item extends { id: any }
+		? NestedPartial<Item, Schema> & { id: RelationPrimaryKey<Item> }
+		: NestedPartial<Item, Schema>)[];
+	delete?: RelationPrimaryKey<Item>[];
+};
+
+/**
  * Recursively make properties optional
  */
-export type NestedPartial<Item> = Item extends any[]
+export type NestedPartial<Item, Schema = unknown> = Item extends any[]
 	? UnpackList<Item> extends infer RawItem
-		? NestedPartial<RawItem>[]
+		? NestedPartial<RawItem, Schema>[] | NestedItemsInput<RawItem, Schema>
 		: never
 	: Item extends Builtin
 		? Item
 		: Item extends object
-			? { [Key in keyof Item]?: NestedPartial<Item[Key]> }
+			? { [Key in keyof Item]?: NestedPartial<Item[Key], Schema> }
 			: Item;
 
 /**
