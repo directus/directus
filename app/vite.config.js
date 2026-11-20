@@ -1,7 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { APP_SHARED_DEPS } from '@directus/extensions';
-import { generateExtensionsEntrypoint, resolveFsExtensions, resolveModuleExtensions } from '@directus/extensions/node';
+import {
+	dedupeExtensions,
+	generateExtensionsEntrypoint,
+	resolveFsExtensions,
+	resolveModuleExtensions,
+} from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
 import { templateCompilerOptions } from '@tresjs/core';
 import { Unhead } from '@unhead/vue/vite';
@@ -183,12 +188,13 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		const localExtensions = extensionsPathExists ? await resolveFsExtensions(EXTENSIONS_PATH) : new Map();
-		const moduleExtensions = await resolveModuleExtensions(API_PATH);
+		const { extensions } = dedupeExtensions({
+			local: extensionsPathExists ? await resolveFsExtensions(EXTENSIONS_PATH) : new Map(),
+			registry: extensionsPathExists ? await resolveFsExtensions(path.join(EXTENSIONS_PATH, '.registry')) : new Map(),
+			module: await resolveModuleExtensions(API_PATH),
+		});
 
-		const registryExtensions = extensionsPathExists
-			? await resolveFsExtensions(path.join(EXTENSIONS_PATH, '.registry'))
-			: new Map();
+		const { local: localExtensions, registry: registryExtensions, module: moduleExtensions } = extensions;
 
 		const mockSetting = (source, folder, extension) => {
 			const settings = [

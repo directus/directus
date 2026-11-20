@@ -23,6 +23,7 @@ vi.mock('../../utils/get-schema.js', () => ({
 const mockReadByQuery = vi.fn();
 const mockCreateMany = vi.fn();
 const mockDeleteMany = vi.fn();
+const mockUpdateOne = vi.fn();
 
 vi.mock('../../services/extensions.js', () => ({
 	ExtensionsService: vi.fn(function () {
@@ -31,6 +32,7 @@ vi.mock('../../services/extensions.js', () => ({
 				readByQuery: mockReadByQuery,
 				createMany: mockCreateMany,
 				deleteMany: mockDeleteMany,
+				updateOne: mockUpdateOne,
 			},
 		};
 	}),
@@ -108,6 +110,58 @@ describe('getExtensionsSettings', () => {
 			});
 
 			expect(list).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('bundle entry settings', () => {
+		const bundleSettings = { id: 'bundle-id', enabled: true, source: 'local', bundle: null, folder: 'my-bundle' };
+		const bundleEntrySettings = { id: 'entry-id', enabled: true, source: 'local', bundle: 'bundle-id', folder: 'foo' };
+
+		const standaloneExtension: Extension = {
+			name: 'foo',
+			type: 'interface',
+			path: './extensions/foo',
+			local: true,
+			entrypoint: 'index.js',
+			host: '^11.0.0',
+			version: '1.0.0',
+		};
+
+		test.each(['local', 'module', 'registry'] as const)(
+			'should create settings for a %s extension whose folder matches a bundle entry name',
+			async (source) => {
+				vi.mocked(list).mockResolvedValue({ data: [], meta: {} } as any);
+
+				mockReadByQuery.mockResolvedValue([
+					{ ...bundleSettings, source },
+					{ ...bundleEntrySettings, source },
+				]);
+
+				const maps = { local: new Map(), module: new Map(), registry: new Map() };
+				maps[source].set('foo', standaloneExtension);
+
+				await getExtensionsSettings(maps);
+
+				expect(mockCreateMany).toHaveBeenCalledWith([
+					expect.objectContaining({ source, folder: 'foo', bundle: null, enabled: true }),
+				]);
+			},
+		);
+
+		test('should not take over bundle entry settings when migrating legacy name-based settings', async () => {
+			mockReadByQuery.mockResolvedValue([bundleSettings, bundleEntrySettings]);
+
+			await getExtensionsSettings({
+				local: new Map([['foo-folder', standaloneExtension]]),
+				module: new Map(),
+				registry: new Map(),
+			});
+
+			expect(mockUpdateOne).not.toHaveBeenCalled();
+
+			expect(mockCreateMany).toHaveBeenCalledWith([
+				expect.objectContaining({ source: 'local', folder: 'foo-folder', bundle: null }),
+			]);
 		});
 	});
 });
