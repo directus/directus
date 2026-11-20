@@ -292,7 +292,7 @@ export class RelationsService {
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 				});
 
-				change.sync([relation.collection!]);
+				change.sync(relation.collection!);
 			});
 		} finally {
 			if (opts?.autoPurgeSystemCache !== false) {
@@ -430,7 +430,7 @@ export class RelationsService {
 					}
 				}
 
-				change.sync([collection]);
+				change.sync(collection);
 			});
 		} finally {
 			if (opts?.autoPurgeSystemCache !== false) {
@@ -495,7 +495,7 @@ export class RelationsService {
 					await trx('directus_relations').delete().where({ many_collection: collection, many_field: field });
 				}
 
-				change.sync([collection]);
+				change.sync(collection);
 
 				const actionEvent = {
 					event: 'relations.delete',

@@ -41,7 +41,13 @@ vi.mock('../../database/helpers/index.js', () => ({
 	}),
 }));
 
-const db = {} as Knex;
+const db = {
+	schema: {
+		dropTable: async (table: string) => {
+			calls.push(`drop ${table}`);
+		},
+	},
+} as unknown as Knex;
 const schema = { collections: { articles: { versioned: true } }, relations: [] } as unknown as SchemaOverview;
 
 const unversionedSchema = {
@@ -56,8 +62,8 @@ beforeEach(() => {
 describe('runSchemaChange', () => {
 	test('syncs the version tables after the change, within the transaction', async () => {
 		const result = await runSchemaChange({ knex: db, schema }, async (_trx, change) => {
-			change.sync(['articles']);
-			change.sync(['authors']);
+			change.sync('articles');
+			change.sync('authors');
 			calls.push('change');
 			return 'done';
 		});
@@ -74,17 +80,18 @@ describe('runSchemaChange', () => {
 		]);
 	});
 
-	test('removes a collection from the version tables right away when it is dropped', async () => {
+	test('drops a collection after removing it from the version tables', async () => {
 		await runSchemaChange({ knex: db, schema }, async (_trx, change) => {
-			await change.beforeDrop('authors');
-			calls.push('drop');
+			change.drop('authors');
+			calls.push('change');
 		});
 
 		expect(calls).toEqual([
 			'disable foreign keys',
 			'begin',
+			'change',
 			'sync authors {"exclude":["authors"]}',
-			'drop',
+			'drop authors',
 			'commit',
 			'enable foreign keys',
 		]);
@@ -92,11 +99,12 @@ describe('runSchemaChange', () => {
 
 	test('defers the syncs of nested calls to the outermost call, syncing each collection once', async () => {
 		await runSchemaChange({ knex: db, schema }, async (trx, change) => {
-			change.sync(['articles']);
+			change.sync('articles');
 
 			await runSchemaChange({ knex: trx, schema }, async (_trx, nested) => {
-				nested.sync(['articles', 'authors']);
-				nested.sync(['authors']);
+				nested.sync('articles');
+				nested.sync('authors');
+				nested.sync('authors');
 				calls.push('nested change');
 			});
 
@@ -114,37 +122,41 @@ describe('runSchemaChange', () => {
 		]);
 	});
 
-	test('does not sync dropped collections after the change', async () => {
-		await runSchemaChange({ knex: db, schema }, async (_trx, change) => {
-			change.sync(['articles', 'authors']);
-			await change.beforeDrop('authors');
+	test('syncs the changed and dropped collections at once, excluding the dropped ones', async () => {
+		await runSchemaChange({ knex: db, schema }, async (trx, change) => {
+			change.sync('articles');
+			change.sync('authors');
+
+			await runSchemaChange({ knex: trx, schema }, async (_trx, nested) => {
+				nested.drop('authors');
+			});
 		});
 
 		expect(calls).toEqual([
 			'disable foreign keys',
 			'begin',
-			'sync authors {"exclude":["authors"]}',
 			'sync articles,authors {"exclude":["authors"]}',
+			'drop authors',
 			'commit',
 			'enable foreign keys',
 		]);
 	});
 
-	test('skips the syncs when the schema has no versioned collection', async () => {
+	test('skips the syncs but still drops when the schema has no versioned collection', async () => {
 		await runSchemaChange({ knex: db, schema: unversionedSchema }, async (_trx, change) => {
-			change.sync(['articles']);
-			await change.beforeDrop('authors');
+			change.sync('articles');
+			change.drop('authors');
 		});
 
-		expect(calls).toEqual(['disable foreign keys', 'begin', 'commit', 'enable foreign keys']);
+		expect(calls).toEqual(['disable foreign keys', 'begin', 'drop authors', 'commit', 'enable foreign keys']);
 	});
 
 	test('syncs without versioned collections when the change toggles versioning', async () => {
 		await runSchemaChange({ knex: db, schema: unversionedSchema }, async (trx, change) => {
-			change.sync(['articles']);
+			change.sync('articles');
 
 			await runSchemaChange({ knex: trx, schema: unversionedSchema }, async (_trx, nested) => {
-				nested.sync(['authors'], { versioningChanged: true });
+				nested.sync('authors', { force: true });
 			});
 		});
 
@@ -154,7 +166,7 @@ describe('runSchemaChange', () => {
 	test('does not sync when the change fails', async () => {
 		await expect(
 			runSchemaChange({ knex: db, schema }, async (_trx, change) => {
-				change.sync(['articles']);
+				change.sync('articles');
 				throw new Error('failed');
 			}),
 		).rejects.toThrow('failed');

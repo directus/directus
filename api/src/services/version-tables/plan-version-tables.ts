@@ -2,6 +2,7 @@ import type { Column, ForeignKey } from '@directus/schema';
 import type { Relation } from '@directus/types';
 import { partition } from 'lodash-es';
 import type { VersioningHelper } from '../../database/helpers/versioning/types.js';
+import type { InspectedSchema } from '../version-tables.js';
 import { assertVersionSystemFields } from './assert-field-names.js';
 import { VERSION_SYSTEM_FIELDS } from './constants.js';
 import { isVersioningTable } from './utils.js';
@@ -83,44 +84,17 @@ export type Plan = {
  * Plan the changes to the version tables of the given live collections. Only the version tables of these collections
  * are planned, so `existing` is expected to hold just their version tables: any other table in it is dropped.
  *
- * @param collections - Live collections to plan the version tables for, keyed by collection name
- * @param versioned - All collections that have versioning enabled, including ones not being planned
- * @param existing - Current shadow and link tables of the planned collections
+ * @param schema - Inspected Schema
  * @param helper - Provides the vendor specific names and foreign key rules of the version tables
  */
-export function planVersioning(
-	collections: LiveCollections,
-	versioned: Set<string>,
-	existing: InspectedTables,
-	helper: VersioningHelper,
-): Plan {
-	const target = planTables(collections, { versioned, helper });
-	const tables = planTableChanges(target, existing.columns);
+export function planVersioning(schema: InspectedSchema, helper: VersioningHelper): Plan {
+	const { liveCollections, shadowTables, versionedTables } = schema;
 
-	const isForeignKeyOutdated = (foreignKey: ForeignKey) => {
-		const table = target[foreignKey.table];
-		const alteration = tables.alter[foreignKey.table];
+	const target = planTables(liveCollections, { versioned: versionedTables, helper });
+	const tables = planTableChanges(target, shadowTables.columns);
+	const foreignKeys = planForeignKeyChanges(target, tables, shadowTables.foreignKeys);
 
-		if (!table) return true;
-		if (alteration?.drop.includes(foreignKey.column)) return true;
-		if (alteration?.alter.some(({ column }) => column.name === foreignKey.column)) return true;
-
-		return !table.foreignKeys.some((planned) => isSameForeignKey(foreignKey, planned));
-	};
-
-	const [drop, kept] = partition(existing.foreignKeys, isForeignKeyOutdated);
-
-	const add: Record<string, VersionTableForeignKey[]> = {};
-
-	for (const table of Object.values(target)) {
-		const missing = table.foreignKeys.filter(
-			(foreignKey) => !kept.some((kept) => kept.table === table.table && isSameForeignKey(kept, foreignKey)),
-		);
-
-		if (missing.length > 0) add[table.table] = missing;
-	}
-
-	return { tables, foreignKeys: { drop, add } };
+	return { tables, foreignKeys };
 }
 
 /**
@@ -184,6 +158,31 @@ function planTableChanges(target: VersionTables, existingColumns: ColumnsByTable
 	}
 
 	return changes;
+}
+
+function planForeignKeyChanges(target: VersionTables, tables: TableChanges, foreignKeys: ForeignKey[]) {
+	const [drop, kept] = partition(foreignKeys, (foreignKey: ForeignKey) => {
+		const table = target[foreignKey.table];
+		const alteration = tables.alter[foreignKey.table];
+
+		if (!table) return true;
+		if (alteration?.drop.includes(foreignKey.column)) return true;
+		if (alteration?.alter.some(({ column }) => column.name === foreignKey.column)) return true;
+
+		return !table.foreignKeys.some((planned) => isSameForeignKey(foreignKey, planned));
+	});
+
+	const add: Record<string, VersionTableForeignKey[]> = {};
+
+	for (const table of Object.values(target)) {
+		const missing = table.foreignKeys.filter(
+			(foreignKey) => !kept.some((kept) => kept.table === table.table && isSameForeignKey(kept, foreignKey)),
+		);
+
+		if (missing.length > 0) add[table.table] = missing;
+	}
+
+	return { drop, add };
 }
 
 type PlanContext = { versioned: Set<string>; helper: VersioningHelper };

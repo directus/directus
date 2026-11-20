@@ -21,12 +21,11 @@ import {
 } from './version-tables/plan-version-tables.js';
 import { isVersioningTable } from './version-tables/utils.js';
 
-/** Versioned collections, version tables, live tables and relation meta rows to plan a sync from */
-type InspectedSchema = {
+/** Versioned collections, version tables and live collections to plan a sync from */
+export type InspectedSchema = {
 	versionedTables: Set<string>;
 	shadowTables: InspectedTables;
-	liveTables: InspectedTables;
-	relationsMeta: RelationMeta[];
+	liveCollections: LiveCollections;
 };
 
 export type SyncCollectionsOptions = {
@@ -70,26 +69,7 @@ export class VersionTablesService {
 
 		if (!inspected) return;
 
-		const { versionedTables, shadowTables, liveTables, relationsMeta } = inspected;
-
-		const isIncluded = (collection: string | null) => !collection || !exclude.has(collection);
-
-		const relations = stitchRelations(relationsMeta, liveTables.foreignKeys).filter((relation) =>
-			isIncluded(relation.related_collection),
-		);
-
-		const relationsByCollection = groupBy(relations, 'collection');
-
-		const liveCollections: LiveCollections = mapValues(
-			pickBy(liveTables.columns, (_columns, collection) => isIncluded(collection)),
-			(columns, collection) => ({
-				collection,
-				columns: Object.values(columns),
-				relations: relationsByCollection[collection] ?? [],
-			}),
-		);
-
-		const plan = planVersioning(liveCollections, versionedTables, shadowTables, this.helpers.versioning);
+		const plan = planVersioning(inspected, this.helpers.versioning);
 
 		await this.applyPlan(plan);
 	}
@@ -130,11 +110,13 @@ export class VersionTablesService {
 
 			if (versionedTables.size === 0 && shadowTables.length === 0) return null;
 
+			const shadowTablesInspected = await this.inspectTables(shadowTables);
+			const liveTables = await this.inspectTables(collections.filter((collection) => !exclude.has(collection)));
+
 			return {
 				versionedTables,
-				shadowTables: await this.inspectTables(shadowTables),
-				liveTables: await this.inspectTables(collections.filter((collection) => !exclude.has(collection))),
-				relationsMeta: await this.readRelationsMeta(collections),
+				shadowTables: shadowTablesInspected,
+				liveCollections: toLiveCollections(liveTables, await this.readRelationsMeta(collections), exclude),
 			};
 		}
 
@@ -152,8 +134,11 @@ export class VersionTablesService {
 		return {
 			versionedTables,
 			shadowTables: { columns: keyColumns(shadowColumns), foreignKeys: shadowForeignKeys },
-			liveTables: { columns: keyColumns(liveColumns), foreignKeys: liveForeignKeys },
-			relationsMeta: await this.readRelationsMeta(),
+			liveCollections: toLiveCollections(
+				{ columns: keyColumns(liveColumns), foreignKeys: liveForeignKeys },
+				await this.readRelationsMeta(),
+				exclude,
+			),
 		};
 	}
 
@@ -312,4 +297,28 @@ function keyColumns(columns: Column[]): ColumnsByTable {
 	}
 
 	return result;
+}
+
+/**
+ * Combine the live tables with their stitched relations, dropping excluded collections and relations to them
+ */
+function toLiveCollections(
+	liveTables: InspectedTables,
+	relationsMeta: RelationMeta[],
+	exclude: Set<string>,
+): LiveCollections {
+	const relations = stitchRelations(relationsMeta, liveTables.foreignKeys).filter(
+		(relation) => !relation.related_collection || !exclude.has(relation.related_collection),
+	);
+
+	const relationsByCollection = groupBy(relations, 'collection');
+
+	return mapValues(
+		pickBy(liveTables.columns, (_columns, collection) => !exclude.has(collection)),
+		(columns, collection) => ({
+			collection,
+			columns: Object.values(columns),
+			relations: relationsByCollection[collection] ?? [],
+		}),
+	);
 }

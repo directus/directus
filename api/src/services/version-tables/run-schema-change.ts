@@ -10,19 +10,20 @@ export type SchemaChange = {
 	 * Set `versioningChanged` when the change toggles versioning, as the sync is skipped otherwise if no collection of
 	 * the schema is versioned.
 	 */
-	sync(collections: string[], options?: { versioningChanged?: boolean }): void;
+	sync(collections: string, options?: { force?: boolean }): void;
 	/**
-	 * Remove the version tables of a live collection, as well as the references to it from the version tables of other
-	 * collections.
+	 * Drop the table of a live collection once all changes are done, after its version tables and the references to it
+	 * from the version tables of other collections were removed.
 	 */
-	beforeDrop(collection: string): Promise<void>;
+	drop(collection: string): void;
 };
 
 const activeChanges = new WeakMap<Knex, SchemaChange>();
 
 /**
  * Run a live schema change in a transaction with foreign keys disabled, then sync the version tables of all
- * collections passed to `change.sync` before committing. Nested calls reuse the outer transaction and sync.
+ * collections passed to `change.sync` and drop the tables passed to `change.drop` before committing. Nested calls reuse
+ * the outer transaction, sync and drops.
  */
 export async function runSchemaChange<T>(
 	options: { knex: Knex; schema: SchemaOverview },
@@ -42,15 +43,12 @@ export async function runSchemaChange<T>(
 			let shouldSync = Object.values(schema.collections).some((c) => c.versioned);
 
 			const change: SchemaChange = {
-				sync: (collections, options) => {
-					for (const collection of collections) pending.add(collection);
-					if (options?.versioningChanged) shouldSync = true;
+				sync: (collection, options) => {
+					pending.add(collection);
+
+					if (options?.force) shouldSync = true;
 				},
-				beforeDrop: async (collection) => {
-					dropped.add(collection);
-					if (!shouldSync) return;
-					await service.syncCollections([collection], { exclude: [collection] });
-				},
+				drop: dropped.add,
 			};
 
 			activeChanges.set(trx, change);
@@ -63,8 +61,15 @@ export async function runSchemaChange<T>(
 				activeChanges.delete(trx);
 			}
 
-			if (pending.size > 0 && shouldSync) {
-				await service.syncCollections([...pending], { exclude: [...dropped] });
+			const collections = new Set([...pending, ...dropped]);
+
+			// Version tables reference the live tables, so they have to be removed before the live tables are dropped
+			if (collections.size > 0 && shouldSync) {
+				await service.syncCollections([...collections], { exclude: [...dropped] });
+			}
+
+			for (const collection of dropped) {
+				await trx.schema.dropTable(collection);
 			}
 
 			return result;

@@ -435,7 +435,7 @@ export class FieldsService {
 							});
 						});
 
-						change.sync([collection]);
+						change.sync(collection);
 					}
 				}
 
@@ -578,7 +578,7 @@ export class FieldsService {
 								});
 							});
 
-							change.sync([collection]);
+							change.sync(collection);
 						});
 
 						// concurrent index creation cannot be done inside the transaction
@@ -770,7 +770,7 @@ export class FieldsService {
 							.update({ one_field: null })
 							.where({ many_collection: relation.collection, many_field: relation.field });
 
-						change.sync([relation.collection]);
+						change.sync(relation.collection);
 					}
 				}
 
@@ -784,7 +784,7 @@ export class FieldsService {
 						table.dropColumn(field);
 					});
 
-					change.sync([collection]);
+					change.sync(collection);
 				}
 
 				const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(

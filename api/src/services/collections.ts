@@ -250,7 +250,7 @@ export class CollectionsService {
 
 				// Creating version tables alters the existing shadow and link tables of related collections
 				if (payload.meta?.versioning) {
-					change.sync([payload.collection], { versioningChanged: true });
+					change.sync(payload.collection, { force: true });
 				}
 			});
 
@@ -517,7 +517,7 @@ export class CollectionsService {
 
 				// Toggling versioning creates / drops the shadow and link tables
 				if ('versioning' in payload.meta!) {
-					change.sync([collectionKey], { versioningChanged: true });
+					change.sync(collectionKey, { force: true });
 				}
 			});
 
@@ -676,10 +676,7 @@ export class CollectionsService {
 
 			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
 				if (collectionToBeDeleted!.schema) {
-					// Version tables reference the live table, so they need to be cleaned up before it can be dropped
-					await change.beforeDrop(collectionKey);
-
-					await trx.schema.dropTable(collectionKey);
+					change.drop(collectionKey);
 				}
 
 				// Make sure this collection isn't used as a group in any other collections
