@@ -80,6 +80,7 @@ const {
 	cropping,
 	liveFocalPoint,
 	imageTransform,
+	naturalSize,
 } = useCropper();
 
 watch(internalActive, (isActive) => {
@@ -314,10 +315,12 @@ const localDragMode = ref<'move' | 'crop' | 'focal_point'>('move');
 
 const storageAssetPresets = settingsStore.settings?.storage_asset_presets ?? [];
 
-// The image presets will crop once saved, so a quarter turn swaps its sides
+// Cropper loads the raw pixels and reports EXIF orientation as rotate and flip,
+// so start from its size, not the upright size stored on the file
 const previewSize = computed(() => {
-	const { width, height } = imageData.value ?? {};
-	if (!width || !height) return null;
+	if (!naturalSize.value) return null;
+
+	const { width, height } = naturalSize.value;
 
 	return imageTransform.value.rotate % 180 === 0 ? { width, height } : { width: height, height: width };
 });
@@ -469,6 +472,8 @@ function useCropper() {
 
 	const imageTransform = ref<ImageTransform>({ rotate: 0, scaleX: 1, scaleY: 1 });
 
+	const naturalSize = ref<{ width: number; height: number } | null>(null);
+
 	const cropping = computed({
 		get() {
 			return localCropping.value;
@@ -495,6 +500,7 @@ function useCropper() {
 		cropping,
 		liveFocalPoint,
 		imageTransform,
+		naturalSize,
 	};
 
 	function initCropper() {
@@ -507,6 +513,7 @@ function useCropper() {
 		localCropping.value = false;
 		localDragMode.value = 'move';
 		imageTransform.value = { rotate: 0, scaleX: 1, scaleY: 1 };
+		naturalSize.value = null;
 
 		let boxDragStart: { x: number; y: number; left: number; top: number } | null = null;
 
@@ -516,6 +523,14 @@ function useCropper() {
 			toggleDragModeOnDblclick: false,
 			dragMode: 'move',
 			viewMode: 1,
+			ready() {
+				const loadedImage = cropperInstance.value?.getImageData();
+				if (!loadedImage) return;
+
+				const { naturalWidth, naturalHeight, rotate = 0, scaleX = 1, scaleY = 1 } = loadedImage;
+				naturalSize.value = { width: naturalWidth, height: naturalHeight };
+				imageTransform.value = { rotate, scaleX, scaleY };
+			},
 			cropstart(event) {
 				const pointer = getPointer(event.detail.originalEvent);
 

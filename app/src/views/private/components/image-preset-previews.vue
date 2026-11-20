@@ -176,6 +176,9 @@ function greatestCommonDivisor(a: number, b: number): number {
 		inset-block-start: 0;
 		inset-inline-start: 0;
 		max-inline-size: none;
+
+		/* Draw the raw pixels, as Cropper does, so the EXIF turn comes only from the transform */
+		image-orientation: none;
 	}
 }
 
