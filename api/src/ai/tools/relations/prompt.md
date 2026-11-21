@@ -1,5 +1,8 @@
 Create and manage relationships between Directus Collections.
 
+Only change the schema when the user asks for a schema change. If a task needs a field, collection, or relation that
+doesn't exist, tell the user what's missing instead of creating it.
+
 <prerequisites>
 Before creating relations:
 ✓ Collections must exist (use `collections` tool)

@@ -85,7 +85,7 @@ export const fields = defineTool<z.infer<typeof FieldsValidateSchema>, z.infer<t
 	name: 'fields',
 	admin: true,
 	description:
-		'Reads and changes Directus fields. Use to inspect, add, update, or delete fields on collections, including relational and alias fields.',
+		'Reads and changes Directus fields. Use to inspect, add, update, or delete fields on collections, including relational and alias fields. Only change the schema when the user asks for a schema change. If a task needs a field or collection that is missing, tell the user instead of creating it.',
 	instructions: requireText(resolve(__dirname, './prompt.md')),
 	keywords: ['columns', 'properties', 'field types', 'interfaces', 'aliases', 'database fields'],
 	annotations: {

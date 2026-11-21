@@ -53,7 +53,7 @@ export const collections = defineTool<
 	name: 'collections',
 	admin: true,
 	description:
-		'Reads and changes Directus collections. Use to create content models, folders, collection metadata, or inspect existing collections.',
+		'Reads and changes Directus collections. Use to create content models, folders, collection metadata, or inspect existing collections. Only change the schema when the user asks for a schema change. If a task needs a field or collection that is missing, tell the user instead of creating it.',
 	instructions: requireText(resolve(__dirname, './prompt.md')),
 	keywords: ['data model', 'content model', 'tables', 'schema folders', 'collection metadata'],
 	annotations: {
