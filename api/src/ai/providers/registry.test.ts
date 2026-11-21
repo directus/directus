@@ -28,6 +28,7 @@ vi.mock('@openrouter/ai-sdk-provider', () => ({
 }));
 
 vi.mock('ai', () => ({
+	customProvider: vi.fn(),
 	createProviderRegistry: vi.fn(() => ({
 		languageModel: vi.fn(),
 	})),
@@ -197,6 +198,8 @@ describe('createAIProviderRegistry', () => {
 			baseURL: 'http://localhost:11434/v1',
 			headers: {},
 		});
+
+		expect(createOpenAI).not.toHaveBeenCalled();
 	});
 
 	it('uses custom name for OpenAI-compatible provider when provided in settings', () => {

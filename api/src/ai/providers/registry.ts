@@ -97,6 +97,25 @@ export function createAIProviderRegistry(configs: ProviderConfig[], settings?: A
 						baseURL: config.baseUrl,
 						headers: customHeaders,
 					});
+
+					const responsesModels = settings?.openaiCompatibleModels?.filter((model) => model.api === 'responses') ?? [];
+
+					if (responsesModels.length === 0) {
+						providers['openai-compatible'] = chatProvider;
+						break;
+					}
+
+					const responsesProvider = createOpenAI({
+						apiKey: config.apiKey,
+						baseURL: config.baseUrl,
+						headers: customHeaders,
+					});
+
+					const languageModels = Object.fromEntries(
+						responsesModels.map((model) => [model.id, responsesProvider.responses(model.id)]),
+					);
+
+					providers['openai-compatible'] = customProvider({ languageModels, fallbackProvider: chatProvider });
 				}
 
 				break;
