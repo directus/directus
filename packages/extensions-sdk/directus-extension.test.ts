@@ -132,6 +132,44 @@ describe('create and build', () => {
 
 		expect(output).toMatch(/from\s*["']@tiptap\/core["']/);
 	}, 60_000);
+
+	test('should preserve existing devDependency specifiers when adding a bundle entry', async () => {
+		const testExtensionPath = `${TEST_PREFIX}-add-preserve-deps-${Date.now()}`;
+
+		await create('bundle', testExtensionPath, { install: false });
+
+		const packageJsonPath = resolve(testExtensionPath, 'package.json');
+		const packageJson = await fse.readJson(packageJsonPath);
+
+		packageJson.devDependencies = {
+			...packageJson.devDependencies,
+			vue: 'catalog:',
+			typescript: '5.9.2',
+			'@directus/extensions-sdk': 'workspace:*',
+			'left-pad': '1.3.0',
+		};
+
+		await fse.writeJson(packageJsonPath, packageJson);
+
+		prompt.mockResolvedValueOnce({ type: 'richtext', name: 'my-richtext', language: 'typescript' });
+
+		const cwd = process.cwd();
+
+		try {
+			process.chdir(testExtensionPath);
+			await add({ install: false });
+		} finally {
+			process.chdir(cwd);
+		}
+
+		const manifest = await fse.readJson(packageJsonPath);
+
+		expect(manifest.devDependencies.vue).toBe('catalog:');
+		expect(manifest.devDependencies.typescript).toBe('5.9.2');
+		expect(manifest.devDependencies['@directus/extensions-sdk']).toBe('workspace:*');
+		expect(manifest.devDependencies['left-pad']).toBe('1.3.0');
+		expect(manifest.devDependencies).toHaveProperty('@tiptap/core');
+	}, 60_000);
 });
 
 describe('validate extension', async () => {

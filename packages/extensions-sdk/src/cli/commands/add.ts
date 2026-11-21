@@ -143,11 +143,11 @@ export default async function add(options: AddOptions): Promise<void> {
 			...extensionManifest,
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
 			devDependencies: {
-				...extensionManifest.devDependencies,
 				...(await getExtensionDevDeps(
 					newEntries.map((entry) => entry.type),
 					getLanguageFromEntries(newEntries),
 				)),
+				...extensionManifest.devDependencies,
 			},
 		};
 
@@ -296,11 +296,11 @@ export default async function add(options: AddOptions): Promise<void> {
 			keywords: ['directus', 'directus-extension', 'directus-extension-bundle'],
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
 			devDependencies: {
-				...extensionManifest.devDependencies,
 				...(await getExtensionDevDeps(
 					entries.map((entry) => entry.type),
 					getLanguageFromEntries(entries),
 				)),
+				...extensionManifest.devDependencies,
 			},
 		};
 
