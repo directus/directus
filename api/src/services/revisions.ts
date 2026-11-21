@@ -1,5 +1,6 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey, Query, QueryOptions } from '@directus/types';
+import { omit } from 'lodash-es';
 import { getHistoryFilterQuery } from '../utils/get-history-filter-query.js';
 import { ItemsService } from './items.js';
 
@@ -17,13 +18,22 @@ export class RevisionsService extends ItemsService {
 
 		if (!revision['data']) throw new InvalidPayloadError({ reason: `Revision doesn't contain data to revert to` });
 
-		const service = new ItemsService(revision['collection'], {
+		const { getService } = await import('../utils/get-service.js');
+
+		const service = getService(revision['collection'], {
 			accountability: this.accountability,
 			knex: this.knex,
 			schema: this.schema,
 		});
 
-		await service.updateOne(revision['item'], revision['data']);
+		// Snapshots are captured through the read pipeline, so concealed values can't be restored
+		const concealedFields = Object.values(this.schema.collections[revision['collection']]?.fields ?? {})
+			.filter((field) => field.special.includes('conceal'))
+			.map((field) => field.field);
+
+		const data = omit(revision['data'], concealedFields);
+
+		await service.updateOne(revision['item'], data);
 	}
 
 	private setDefaultOptions(opts?: MutationOptions): MutationOptions {
