@@ -1,4 +1,4 @@
-import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
 	type CallToolRequest,
@@ -23,7 +23,7 @@ import { ALL_TOOLS, type RegistryError, type RegistryExecuteResult, ToolRegistry
 import type { RootTool, ToolResult } from '../tools/types.js';
 import { DirectusTransport } from './transport.js';
 import type { MCPOptions, Prompt } from './types.js';
-import { buildMcpWWWAuthenticateHeader, getMcpUrls, MCP_ACCESS_SCOPE } from './utils.js';
+import { buildMcpWWWAuthenticateHeader, getMcpUrls, MCP_ACCESS_SCOPE, normalizeMcpErrors } from './utils.js';
 
 type McpToolMode = 'legacy' | 'registry';
 
@@ -386,33 +386,7 @@ export class DirectusMCP {
 	}
 
 	toExecutionError(err: unknown) {
-		const errors: { error: string; code?: string }[] = [];
-		const receivedErrors: unknown[] = Array.isArray(err) ? err : [err];
-
-		for (const error of receivedErrors) {
-			if (isDirectusError(error)) {
-				errors.push({
-					error: error.message || 'Unknown error',
-					code: error.code,
-				});
-			} else {
-				// Handle generic errors
-				let message = 'An unknown error occurred.';
-				let code: string | undefined;
-
-				if (error instanceof Error) {
-					message = error.message;
-					code = 'code' in error ? String(error.code) : undefined;
-				} else if (typeof error === 'object' && error !== null) {
-					message = 'message' in error ? String(error.message) : message;
-					code = 'code' in error ? String(error.code) : undefined;
-				} else if (typeof error === 'string') {
-					message = error;
-				}
-
-				errors.push({ error: message, ...(code && { code }) });
-			}
-		}
+		const errors = normalizeMcpErrors(err).map(({ message, code }) => ({ error: message, ...(code && { code }) }));
 
 		return {
 			isError: true,
