@@ -23,6 +23,9 @@ const DEFAULT_BLOCKED_TLDS = ['test', 'localhost', 'invalid', 'example', 'local'
  */
 const FORBIDDEN_AUTH_METHODS = new Set(['client_secret_basic', 'client_secret_post', 'client_secret_jwt']);
 
+/** Token endpoint auth methods Directus can verify for CIMD clients */
+const CIMD_AUTH_METHODS = ['none'];
+
 export interface CimdMetadata {
 	client_id: string;
 	client_name: string;
@@ -373,20 +376,7 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 		}
 	}
 
-	// token_endpoint_auth_method: default to "none", only "none" accepted
-	if (doc.token_endpoint_auth_method !== undefined && typeof doc.token_endpoint_auth_method !== 'string') {
-		throw new OAuthError(400, 'invalid_client_metadata', 'token_endpoint_auth_method must be a string');
-	}
-
-	const authMethod = doc.token_endpoint_auth_method ?? 'none';
-
-	if (FORBIDDEN_AUTH_METHODS.has(authMethod)) {
-		throw new OAuthError(400, 'invalid_client_metadata', 'Shared-secret authentication methods are forbidden for CIMD');
-	}
-
-	if (authMethod !== 'none') {
-		throw new OAuthError(400, 'invalid_client_metadata', `Unsupported token_endpoint_auth_method: ${authMethod}`);
-	}
+	const authMethod = selectAuthMethod(doc.token_endpoint_auth_method, doc.token_endpoint_auth_methods_supported);
 
 	// Optional URI fields
 	for (const field of ['client_uri', 'logo_uri', 'tos_uri', 'policy_uri'] as const) {
@@ -416,4 +406,50 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 		etag: (responseHeaders['etag'] as string) ?? null,
 		ttlMs: resolveCacheTtl(responseHeaders),
 	};
+}
+
+/**
+ * Pick the token endpoint auth method from what the client offers. `token_endpoint_auth_method` is its preference and
+ * `token_endpoint_auth_methods_supported` lists every method it can use, so a client like ChatGPT that prefers
+ * `private_key_jwt` but also offers `none` gets `none`.
+ */
+function selectAuthMethod(preferred: unknown, supported: unknown): string {
+	if (preferred !== undefined && typeof preferred !== 'string') {
+		throw new OAuthError(400, 'invalid_client_metadata', 'token_endpoint_auth_method must be a string');
+	}
+
+	if (
+		supported !== undefined &&
+		(!Array.isArray(supported) || supported.length === 0 || supported.some((method) => typeof method !== 'string'))
+	) {
+		throw new OAuthError(
+			400,
+			'invalid_client_metadata',
+			'token_endpoint_auth_methods_supported must be a non-empty array of strings',
+		);
+	}
+
+	if (preferred !== undefined && supported !== undefined && !supported.includes(preferred)) {
+		throw new OAuthError(
+			400,
+			'invalid_client_metadata',
+			'token_endpoint_auth_method must be one of token_endpoint_auth_methods_supported',
+		);
+	}
+
+	const offered: string[] = supported ?? [preferred ?? 'none'];
+
+	if (offered.some((method) => FORBIDDEN_AUTH_METHODS.has(method))) {
+		throw new OAuthError(400, 'invalid_client_metadata', 'Shared-secret authentication methods are forbidden for CIMD');
+	}
+
+	// The client's preference first, then the rest in its order
+	const ordered = preferred === undefined ? offered : [preferred, ...offered.filter((method) => method !== preferred)];
+	const selected = ordered.find((method) => CIMD_AUTH_METHODS.includes(method));
+
+	if (!selected) {
+		throw new OAuthError(400, 'invalid_client', `Unsupported token_endpoint_auth_method: ${offered.join(', ')}`);
+	}
+
+	return selected;
 }

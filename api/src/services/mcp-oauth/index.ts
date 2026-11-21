@@ -89,6 +89,8 @@ export interface DecisionParams {
 export interface AuthParams {
 	client_id?: string;
 	client_secret?: string;
+	client_assertion?: string;
+	client_assertion_type?: string;
 	authorization_header?: string;
 }
 
@@ -1664,6 +1666,10 @@ export class McpOAuthService {
 
 			if (hasBodySecret) {
 				throw new OAuthError(400, 'invalid_request', 'client_secret not allowed for public clients');
+			}
+
+			if (params.client_assertion !== undefined || params.client_assertion_type !== undefined) {
+				throw new OAuthError(400, 'invalid_request', 'client_assertion not allowed for public clients');
 			}
 
 			return;

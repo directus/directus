@@ -436,11 +436,81 @@ describe('fetchCimdMetadata', () => {
 		);
 	});
 
-	it('rejects private_key_jwt (not supported by server)', async () => {
+	it('rejects private_key_jwt when the client offers nothing else', async () => {
 		mockAxiosGet.mockResolvedValue({
 			status: 200,
 			headers: { 'content-type': 'application/json' },
 			data: { ...validMetadata, token_endpoint_auth_method: 'private_key_jwt' },
+		});
+
+		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), {
+			status: 400,
+			code: 'invalid_client',
+		});
+	});
+
+	it('picks none when the client prefers private_key_jwt but also offers none (ChatGPT)', async () => {
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+			data: {
+				...validMetadata,
+				token_endpoint_auth_method: 'private_key_jwt',
+				token_endpoint_auth_methods_supported: ['none', 'private_key_jwt'],
+				jwks_uri: 'https://myapp.example.com/jwks.json',
+			},
+		});
+
+		const result = await fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client');
+
+		expect(result.metadata!.token_endpoint_auth_method).toBe('none');
+	});
+
+	it('picks none from the supported list when no preference is given', async () => {
+		const { token_endpoint_auth_method: _, ...meta } = validMetadata;
+
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+			data: { ...meta, token_endpoint_auth_methods_supported: ['private_key_jwt', 'none'] },
+		});
+
+		const result = await fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client');
+
+		expect(result.metadata!.token_endpoint_auth_method).toBe('none');
+	});
+
+	it('rejects a supported list with no method the server can verify', async () => {
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+			data: {
+				...validMetadata,
+				token_endpoint_auth_method: 'private_key_jwt',
+				token_endpoint_auth_methods_supported: ['private_key_jwt'],
+			},
+		});
+
+		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), {
+			status: 400,
+			code: 'invalid_client',
+		});
+	});
+
+	it.each([
+		['a preference missing from the supported list', { token_endpoint_auth_methods_supported: ['private_key_jwt'] }],
+		[
+			'a shared-secret method in the supported list',
+			{ token_endpoint_auth_methods_supported: ['none', 'client_secret_post'] },
+		],
+		['an empty supported list', { token_endpoint_auth_methods_supported: [] }],
+		['a supported list that is not an array', { token_endpoint_auth_methods_supported: 'none' }],
+		['a non-string in the supported list', { token_endpoint_auth_methods_supported: ['none', 1] }],
+	])('rejects %s', async (_, fields) => {
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+			data: { ...validMetadata, ...fields },
 		});
 
 		await expectOAuthError(

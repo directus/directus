@@ -3972,6 +3972,23 @@ describe('McpOAuthService', () => {
 			}
 		});
 
+		it('none: rejects a client assertion', () => {
+			const client = { token_endpoint_auth_method: 'none' };
+
+			try {
+				service.authenticateClient(client, {
+					client_assertion: 'eyJ.header.sig',
+					client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+				});
+
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(400);
+				expect((err as OAuthError).code).toBe('invalid_request');
+			}
+		});
+
 		it('none: rejects client_secret in body', () => {
 			const client = { token_endpoint_auth_method: 'none' };
 
