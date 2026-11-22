@@ -113,7 +113,7 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey], refresh);
+	watch([collection, primaryKey], refresh, { flush: 'sync' });
 
 	watch(query, () => {
 		const canRefetchSilently = item.value !== null;
