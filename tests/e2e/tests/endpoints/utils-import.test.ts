@@ -3,10 +3,14 @@ import {
 	createCollection,
 	createDirectus,
 	createField,
+	createFlow,
 	createItem,
+	createOperations,
 	createRelation,
 	deleteCollection,
+	deleteFlow,
 	readItems,
+	readOperations,
 	rest,
 	staticToken,
 } from '@directus/sdk';
@@ -117,6 +121,57 @@ afterAll(async () => {
 });
 
 describe('POST /utils/import', () => {
+	test.each(['resolve', 'reject'] as const)('moves an existing operation %s link to a new operation', async (link) => {
+		const flow = await api.request(createFlow({ name: `${prefix}${link}`, trigger: 'manual', status: 'inactive' }));
+		const [a, b, c] = [randomUUID(), randomUUID(), randomUUID()] as const;
+		const operation = { flow: flow.id, type: 'log', position_x: 19, position_y: 1 };
+		const readGraph = async () => {
+			const rows = await api.request(
+				readOperations({ filter: { flow: { _eq: flow.id } }, fields: ['key', link], sort: ['key'] }),
+			);
+
+			return rows.map((row) => [row.key, row[link] === null ? null : lower(row[link])]);
+		};
+
+		try {
+			await api.request(
+				createOperations([
+					{ ...operation, id: c, key: 'c', name: 'C' },
+					{ ...operation, id: a, key: 'a', name: 'A', [link]: c },
+				]),
+			);
+
+			const batch = [
+				{
+					collection: 'directus_operations',
+					items: [
+						{ ...operation, id: b, key: 'b', name: 'B', [link]: c },
+						{ id: a, [link]: b },
+					],
+				},
+			];
+
+			const preview = await importData(batch, { mode: 'merge', dryRun: 'true' });
+			expect(preview.status, JSON.stringify(preview.body)).toBe(200);
+			expect(preview.body.data.applied).toBe(false);
+			expect(await readGraph()).toEqual([
+				['a', lower(c)],
+				['c', null],
+			]);
+
+			const pushed = await importData(batch, { mode: 'merge' });
+			expect(pushed.status, JSON.stringify(pushed.body)).toBe(200);
+			expect(pushed.body.data.applied).toBe(true);
+			expect(await readGraph()).toEqual([
+				['a', lower(b)],
+				['b', lower(c)],
+				['c', null],
+			]);
+		} finally {
+			await api.request(deleteFlow(flow.id));
+		}
+	});
+
 	test('imports a linear relation in dependency order and remaps foreign keys (add mode)', async () => {
 		const authors = await makeCollection('lin_authors');
 		await makeField(authors, 'name');
