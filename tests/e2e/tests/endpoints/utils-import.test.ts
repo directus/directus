@@ -125,6 +125,7 @@ describe('POST /utils/import', () => {
 		const flow = await api.request(createFlow({ name: `${prefix}${link}`, trigger: 'manual', status: 'inactive' }));
 		const [a, b, c] = [randomUUID(), randomUUID(), randomUUID()] as const;
 		const operation = { flow: flow.id, type: 'log', position_x: 19, position_y: 1 };
+
 		const readGraph = async () => {
 			const rows = await api.request(
 				readOperations({ filter: { flow: { _eq: flow.id } }, fields: ['key', link], sort: ['key'] }),
@@ -154,6 +155,7 @@ describe('POST /utils/import', () => {
 			const preview = await importData(batch, { mode: 'merge', dryRun: 'true' });
 			expect(preview.status, JSON.stringify(preview.body)).toBe(200);
 			expect(preview.body.data.applied).toBe(false);
+
 			expect(await readGraph()).toEqual([
 				['a', lower(c)],
 				['c', null],
@@ -162,6 +164,7 @@ describe('POST /utils/import', () => {
 			const pushed = await importData(batch, { mode: 'merge' });
 			expect(pushed.status, JSON.stringify(pushed.body)).toBe(200);
 			expect(pushed.body.data.applied).toBe(true);
+
 			expect(await readGraph()).toEqual([
 				['a', lower(b)],
 				['b', lower(c)],
