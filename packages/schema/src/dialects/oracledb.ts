@@ -39,7 +39,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		name: rawColumn.COLUMN_NAME,
 		table: rawColumn.TABLE_NAME,
 		data_type: rawColumn.DATA_TYPE,
-		full_data_type: getFullDataType(rawColumn),
+		full_data_type: getDeclaredType(rawColumn),
 		default_value: !is_generated ? default_value : null,
 		generation_expression: is_generated ? default_value : null,
 		max_length: rawColumn.DATA_LENGTH,
@@ -70,7 +70,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 /**
  * Rebuild the declared type, as `DATA_TYPE` only holds the precision of timestamps and intervals
  */
-export function getFullDataType(rawColumn: RawColumn): string {
+export function getDeclaredType(rawColumn: RawColumn): string {
 	const {
 		DATA_TYPE: dataType,
 		DATA_LENGTH: dataLength,

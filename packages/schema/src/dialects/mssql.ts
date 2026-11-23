@@ -36,7 +36,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		name: rawColumn.name,
 		table: rawColumn.table,
 		data_type: rawColumn.data_type,
-		full_data_type: getFullDataType(rawColumn),
+		full_data_type: getDeclaredType(rawColumn),
 		default_value: parseDefaultValue(rawColumn.default_value),
 		generation_expression: rawColumn.generation_expression || null,
 		max_length: parseMaxLength(rawColumn),
@@ -85,7 +85,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 /**
  * Rebuild the declared type, as `sys.types` only holds the type name
  */
-export function getFullDataType(rawColumn: RawColumn): string {
+export function getDeclaredType(rawColumn: RawColumn): string {
 	const { data_type: dataType, max_length: maxLength, numeric_precision: precision, numeric_scale: scale } = rawColumn;
 
 	switch (dataType) {
