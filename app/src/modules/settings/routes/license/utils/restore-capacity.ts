@@ -2,18 +2,22 @@ import type { LicenseResolvedKey, LicenseResolvedOutput, LicenseRestoreInput } f
 
 export type RestoreSelectionCounts = Record<LicenseResolvedKey, number>;
 
-export function effectiveUsage(direction: 'deactivate' | 'restore', usage: number, selected: number): number {
+export type ResolutionDirection = 'deactivate' | 'restore';
+
+export function effectiveUsage(direction: ResolutionDirection, usage: number, selected: number): number {
 	return direction === 'restore' ? usage + selected : usage - selected;
 }
 
-export function isAtCapacity(limit: number, usage: number, selected: number): boolean {
-	if (limit === -1) return false;
-	return usage + selected >= limit;
+function fits(limit: number, usage: number, selected: number): boolean {
+	return limit === -1 || usage + selected <= limit;
 }
 
-function fits(section: { limit: number; usage: number } | undefined, selected: number): boolean {
-	if (!section || section.limit === -1) return true;
-	return section.usage + selected <= section.limit;
+export function isAtCapacity(limit: number, usage: number, selected: number): boolean {
+	return !fits(limit, usage, selected + 1);
+}
+
+function sectionFits(section: { limit: number; usage: number } | undefined, selected: number): boolean {
+	return !section || fits(section.limit, section.usage, selected);
 }
 
 export function canSubmitRestore(output: LicenseResolvedOutput, selected: RestoreSelectionCounts): boolean {
@@ -23,9 +27,9 @@ export function canSubmitRestore(output: LicenseResolvedOutput, selected: Restor
 	if (selected.sso_users > 0 && output.sso_users?.entitled !== true) return false;
 
 	return (
-		fits(output.collections, selected.collections) &&
-		fits(output.flows, selected.flows) &&
-		fits(output.seats ?? output.sso_users, selected.seats + selected.sso_users)
+		sectionFits(output.collections, selected.collections) &&
+		sectionFits(output.flows, selected.flows) &&
+		sectionFits(output.seats ?? output.sso_users, selected.seats + selected.sso_users)
 	);
 }
 

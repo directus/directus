@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import type { LicenseResolvedUser } from '@directus/types';
+import type {
+	LicenseResolvedKey,
+	LicenseResolvedOutput,
+	LicenseResolvedUser,
+	LicenseRestoreInput,
+} from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { canSubmitRestore, countNotRestored } from '../utils/restore-capacity';
+import { canSubmitRestore, countNotRestored, type RestoreSelectionCounts } from '../utils/restore-capacity';
 import ResolutionLimitSection from './resolution-limit-section.vue';
 import ResolutionUserItem from './resolution-user-item.vue';
 import VButton from '@/components/v-button.vue';
@@ -29,7 +34,7 @@ const { t } = useI18n();
 const licenseStore = useLicenseStore();
 const { resolvedItems } = storeToRefs(licenseStore);
 
-type FlowCandidate = { id: string; name: string };
+const KEYS: LicenseResolvedKey[] = ['collections', 'seats', 'flows', 'sso_users'];
 
 const selected = reactive({
 	collections: new Set<string>(),
@@ -52,21 +57,17 @@ const seats = computed(() => resolvedItems.value?.seats);
 const flows = computed(() => resolvedItems.value?.flows);
 const ssoUsers = computed(() => resolvedItems.value?.sso_users);
 
-const collectionGroups = computed(() => [
-	{ caption: t('licensing.restore_section_collections_caption'), candidates: collections.value?.candidates ?? [] },
-]);
+const CAPTIONS: Record<LicenseResolvedKey, string> = {
+	collections: 'licensing.restore_section_collections_caption',
+	seats: 'licensing.restore_section_seats_caption',
+	flows: 'licensing.restore_section_flows_caption',
+	sso_users: 'licensing.restore_section_sso_caption',
+};
 
-const seatGroups = computed(() => [
-	{ caption: t('licensing.restore_section_seats_caption'), candidates: seats.value?.candidates ?? [] },
-]);
-
-const flowGroups = computed(() => [
-	{ caption: t('licensing.restore_section_flows_caption'), candidates: flows.value?.candidates ?? [] },
-]);
-
-const ssoGroups = computed(() => [
-	{ caption: t('licensing.restore_section_sso_caption'), candidates: ssoUsers.value?.candidates ?? [] },
-]);
+function groupsFor<K extends LicenseResolvedKey>(key: K) {
+	const candidates: NonNullable<LicenseResolvedOutput[K]>['candidates'] = resolvedItems.value?.[key]?.candidates ?? [];
+	return [{ caption: t(CAPTIONS[key]), candidates }];
+}
 
 // Seats and SSO users share the seat entitlement
 const seatUsage = computed(() => seats.value?.usage ?? ssoUsers.value?.usage ?? 0);
@@ -74,12 +75,10 @@ const seatUsage = computed(() => seats.value?.usage ?? ssoUsers.value?.usage ?? 
 const isValid = computed(() => {
 	if (!resolvedItems.value) return false;
 
-	return canSubmitRestore(resolvedItems.value, {
-		collections: selected.collections.size,
-		flows: selected.flows.size,
-		seats: selected.seats.size,
-		sso_users: selected.sso_users.size,
-	});
+	return canSubmitRestore(
+		resolvedItems.value,
+		Object.fromEntries(KEYS.map((key) => [key, selected[key].size])) as RestoreSelectionCounts,
+	);
 });
 
 const submitting = ref(false);
@@ -90,12 +89,9 @@ async function submit() {
 	submitting.value = true;
 
 	try {
-		const payload = {
-			...(selected.collections.size > 0 ? { collections: [...selected.collections] } : {}),
-			...(selected.seats.size > 0 ? { seats: [...selected.seats] } : {}),
-			...(selected.flows.size > 0 ? { flows: [...selected.flows] } : {}),
-			...(selected.sso_users.size > 0 ? { sso_users: [...selected.sso_users] } : {}),
-		};
+		const payload: LicenseRestoreInput = Object.fromEntries(
+			KEYS.filter((key) => selected[key].size > 0).map((key) => [key, [...selected[key]]]),
+		);
 
 		const restored = await licenseStore.restore(payload);
 		const notRestored = countNotRestored(payload, restored);
@@ -154,7 +150,7 @@ function openUserDrawer(candidate: LicenseResolvedUser) {
 					:title="t('licensing.resolve_section_collections')"
 					:usage="collections.usage"
 					:limit="collections.limit"
-					:groups="collectionGroups"
+					:groups="groupsFor('collections')"
 					:id-for="(collection: { id: string }) => collection.id"
 				/>
 
@@ -166,7 +162,7 @@ function openUserDrawer(candidate: LicenseResolvedUser) {
 					:title="t('licensing.resolve_section_seats')"
 					:usage="seatUsage + selected.sso_users.size"
 					:limit="seats.limit"
-					:groups="seatGroups"
+					:groups="groupsFor('seats')"
 					:id-for="(user: LicenseResolvedUser) => user.id"
 					linkable
 					@open-item="openUserDrawer"
@@ -184,8 +180,8 @@ function openUserDrawer(candidate: LicenseResolvedUser) {
 					:title="t('licensing.resolve_section_flows')"
 					:usage="flows.usage"
 					:limit="flows.limit"
-					:groups="flowGroups"
-					:id-for="(flow: FlowCandidate) => flow.id"
+					:groups="groupsFor('flows')"
+					:id-for="(flow: { id: string }) => flow.id"
 				>
 					<template #item="{ candidate }">
 						<span class="item-label">{{ candidate.name }}</span>
@@ -204,7 +200,7 @@ function openUserDrawer(candidate: LicenseResolvedUser) {
 						:title="t('licensing.restore_section_sso')"
 						:usage="seatUsage + selected.seats.size"
 						:limit="ssoUsers.limit"
-						:groups="ssoGroups"
+						:groups="groupsFor('sso_users')"
 						:id-for="(user: LicenseResolvedUser) => user.id"
 						:disabled-for="() => !ssoUsers!.entitled"
 						linkable

@@ -1,7 +1,11 @@
 <script setup lang="ts" generic="TCandidate">
 import { computed, reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { effectiveUsage as computeEffectiveUsage, isAtCapacity } from '../utils/restore-capacity';
+import {
+	effectiveUsage as computeEffectiveUsage,
+	isAtCapacity,
+	type ResolutionDirection,
+} from '../utils/restore-capacity';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
@@ -35,7 +39,7 @@ const props = withDefaults(
 		/** Number of candidates rendered per group before the "Show more" toggle expands the rest */
 		initialVisible?: number;
 		/** Whether selecting a candidate frees a slot (deactivate) or takes one (restore) */
-		direction?: 'deactivate' | 'restore';
+		direction?: ResolutionDirection;
 	}>(),
 	{
 		initialVisible: 8,

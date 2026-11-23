@@ -54,7 +54,7 @@ const boundaryDate = computed(() => {
 
 onMounted(async () => {
 	await licenseStore.hydrate();
-	licenseStore.hydrateResolvedItems();
+	licenseStore.hydrateResolvedItems().catch(unexpectedError);
 
 	// Core tier has no addons (source === null), skip the request.
 	if (licenseStore.info?.source != null) {
@@ -112,16 +112,26 @@ async function handleActivate() {
 
 		addLicenseDrawer.value = false;
 		resetAddLicenseForm();
-
-		await licenseStore.hydrateResolvedItems();
-
-		if (licenseStore.info?.source != null && licenseStore.resolvedCount > 0) {
-			restoreDialogOpen.value = true;
-		}
 	} catch (err) {
 		unexpectedError(err);
+		return;
 	} finally {
 		activateLoading.value = false;
+	}
+
+	await offerRestore();
+}
+
+async function offerRestore() {
+	try {
+		await licenseStore.hydrateResolvedItems();
+	} catch (err) {
+		unexpectedError(err);
+		return;
+	}
+
+	if (licenseStore.info?.source != null && licenseStore.resolvedCount > 0) {
+		restoreDialogOpen.value = true;
 	}
 }
 

@@ -23,15 +23,16 @@ export function mergeResolvedItems(
 	return result;
 }
 
-export function removeResolvedIds(
+// Matching on resolved_at keeps entries a concurrent resolve recorded again after the snapshot was read
+export function removeResolvedEntries(
 	current: LicenseResolvedItems | null,
-	removed: LicenseRestoreInput,
+	removed: LicenseResolvedItems,
 ): LicenseResolvedItems {
 	const result: LicenseResolvedItems = {};
 
 	for (const [key, list] of entries(current ?? {})) {
-		const ids = removed[key] ?? [];
-		const remaining = (list ?? []).filter((entry) => !ids.includes(entry.id));
+		const stamps = new Map((removed[key] ?? []).map((entry) => [entry.id, entry.resolved_at]));
+		const remaining = (list ?? []).filter((entry) => stamps.get(entry.id) !== entry.resolved_at);
 
 		if (remaining.length > 0) result[key] = remaining;
 	}

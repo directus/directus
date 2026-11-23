@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { mergeResolvedItems, removeResolvedIds } from './merge.js';
+import { mergeResolvedItems, removeResolvedEntries } from './merge.js';
 
 const JAN = '2026-01-01T00:00:00.000Z';
 const FEB = '2026-02-01T00:00:00.000Z';
@@ -36,8 +36,8 @@ describe('mergeResolvedItems', () => {
 	});
 });
 
-describe('removeResolvedIds', () => {
-	test('removes only the given ids', () => {
+describe('removeResolvedEntries', () => {
+	test('removes only the given entries', () => {
 		const current = {
 			flows: [
 				{ id: 'f1', resolved_at: JAN },
@@ -45,14 +45,24 @@ describe('removeResolvedIds', () => {
 			],
 		};
 
-		expect(removeResolvedIds(current, { flows: ['f1'] })).toEqual({ flows: [{ id: 'f2', resolved_at: JAN }] });
+		expect(removeResolvedEntries(current, { flows: [{ id: 'f1', resolved_at: JAN }] })).toEqual({
+			flows: [{ id: 'f2', resolved_at: JAN }],
+		});
+	});
+
+	test('keeps entries recorded again since the snapshot', () => {
+		const current = { flows: [{ id: 'f1', resolved_at: FEB }] };
+
+		expect(removeResolvedEntries(current, { flows: [{ id: 'f1', resolved_at: JAN }] })).toEqual(current);
 	});
 
 	test('drops keys that become empty', () => {
-		expect(removeResolvedIds({ flows: [{ id: 'f', resolved_at: JAN }] }, { flows: ['f'] })).toEqual({});
+		const current = { flows: [{ id: 'f', resolved_at: JAN }] };
+
+		expect(removeResolvedEntries(current, current)).toEqual({});
 	});
 
 	test('treats null current as empty', () => {
-		expect(removeResolvedIds(null, { flows: ['f'] })).toEqual({});
+		expect(removeResolvedEntries(null, { flows: [{ id: 'f', resolved_at: JAN }] })).toEqual({});
 	});
 });

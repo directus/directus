@@ -936,6 +936,18 @@ describe('getResolvedItems', () => {
 		expect(toResolvedOutput).toHaveBeenCalledWith({ flows: [{ id: 'f1', resolved_at: AT }] });
 	});
 
+	test('keeps a stale entry recorded again while pruning ran', async () => {
+		vi.mocked(readResolvedItems).mockResolvedValue({ flows: [{ id: 'gone', resolved_at: AT }] });
+		vi.mocked(pruneResolvedItems).mockResolvedValueOnce({});
+
+		await new LicenseManager().getResolvedItems();
+
+		const update = vi.mocked(updateResolvedItems).mock.calls[0]![0];
+		const rerecorded = { flows: [{ id: 'gone', resolved_at: '2026-11-21T00:00:00.000Z' }] };
+
+		expect(update(rerecorded)).toEqual(rerecorded);
+	});
+
 	test('does not write when pruning changed nothing', async () => {
 		vi.mocked(readResolvedItems).mockResolvedValue({ flows: [{ id: 'f1', resolved_at: AT }] });
 
@@ -1027,5 +1039,14 @@ describe('restoreResolution', () => {
 
 		expect(entitlements.clearCache).toHaveBeenCalledWith('collections', 'flows', 'seats', 'sso_enabled');
 		expect(clearPermissionCache).toHaveBeenCalledTimes(1);
+	});
+
+	test('keeps entries recorded again while the restore ran', async () => {
+		await new LicenseManager().restoreResolution({ flows: ['f1'] }, ctx);
+
+		const update = vi.mocked(updateResolvedItems).mock.calls[0]![0];
+		const rerecorded = { flows: [{ id: 'f1', resolved_at: '2026-11-21T00:00:00.000Z' }] };
+
+		expect(update(rerecorded)).toEqual(rerecorded);
 	});
 });

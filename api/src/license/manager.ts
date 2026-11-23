@@ -45,7 +45,7 @@ import { getActiveFlows } from './entitlements/lib/flows.js';
 import { getActiveSeats } from './entitlements/lib/seats.js';
 import { splitSsoUsers } from './entitlements/lib/sso-enabled.js';
 import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
-import { mergeResolvedItems, removeResolvedIds } from './resolved-items/merge.js';
+import { mergeResolvedItems, removeResolvedEntries } from './resolved-items/merge.js';
 import { pruneResolvedItems, toResolvedOutput } from './resolved-items/read.js';
 import { readResolvedItems, updateResolvedItems } from './resolved-items/store.js';
 import { computeLicenseAction, type LicenseAction } from './utils/compute-license-action.js';
@@ -817,7 +817,7 @@ export class LicenseManager {
 
 		if (!items) return {};
 
-		const pruned = await this.pruneResolvedItems(items);
+		const pruned = await this.pruneAndPersist(items);
 
 		return toResolvedOutput(pruned);
 	}
@@ -828,7 +828,7 @@ export class LicenseManager {
 		ctx: { accountability: Accountability | null },
 	): Promise<LicenseRestoreInput> {
 		const entitlementManager = getEntitlementManager();
-		const pruned = await this.pruneResolvedItems((await readResolvedItems()) ?? {});
+		const pruned = await this.pruneAndPersist((await readResolvedItems()) ?? {});
 
 		const selected: Record<LicenseResolvedKey, string[]> = { collections: [], flows: [], seats: [], sso_users: [] };
 
@@ -872,27 +872,32 @@ export class LicenseManager {
 
 		if (cachesToClear.size === 0) return restored;
 
-		await updateResolvedItems((current) => removeResolvedIds(current, restored));
+		const restoredEntries: LicenseResolvedItems = {};
+
+		for (const [key, ids] of Object.entries(restored) as [LicenseResolvedKey, string[]][]) {
+			restoredEntries[key] = (pruned[key] ?? []).filter((entry) => ids.includes(entry.id));
+		}
+
+		await updateResolvedItems((current) => removeResolvedEntries(current, restoredEntries));
 		await entitlementManager.clearCache(...cachesToClear);
 		await clearPermissionCache();
 
 		return restored;
 	}
 
-	/** Prune stale entries, removing them from the stored record when any were found */
-	private async pruneResolvedItems(items: LicenseResolvedItems): Promise<LicenseResolvedItems> {
+	private async pruneAndPersist(items: LicenseResolvedItems): Promise<LicenseResolvedItems> {
 		const pruned = await pruneResolvedItems(items);
-		const stale: LicenseRestoreInput = {};
+		const stale: LicenseResolvedItems = {};
 
 		for (const key of RESTORE_ORDER) {
 			const kept = new Set((pruned[key] ?? []).map((entry) => entry.id));
-			const removed = (items[key] ?? []).map((entry) => entry.id).filter((id) => !kept.has(id));
+			const removed = (items[key] ?? []).filter((entry) => !kept.has(entry.id));
 
 			if (removed.length > 0) stale[key] = removed;
 		}
 
 		if (Object.keys(stale).length > 0) {
-			await updateResolvedItems((current) => removeResolvedIds(current, stale));
+			await updateResolvedItems((current) => removeResolvedEntries(current, stale));
 		}
 
 		return pruned;

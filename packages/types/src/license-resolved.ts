@@ -10,7 +10,6 @@ export type LicenseResolvedUser = {
 	last_name: string | null;
 	avatar: string | null;
 	email: string | null;
-	admin?: boolean;
 };
 
 type Resolved<T> = T & { resolved_at: string };
