@@ -17,7 +17,7 @@ export async function validateLinkAccess(
 
 	const { versioning } = getHelpers(context.knex);
 
-	if (versioning.isVersionedCollection(context.schema, collection)) {
+	if (context.schema.collections[collection]?.versioned) {
 		await validateAccess({ accountability, action, collection: versioning.getShadowTableName(collection) }, context);
 	} else {
 		await validateAccess({ accountability, action, collection, primaryKeys: keys }, context);

@@ -34,10 +34,12 @@ const schema = new SchemaBuilder()
 		c.field('category').m2o('categories');
 		c.field('comments').o2m('comments', 'article');
 	})
+	.options({ versioning: true })
 	.collection('authors', (c) => {
 		c.field('id').id();
 		c.field('name').string();
 	})
+	.options({ versioning: true })
 	.collection('categories', (c) => {
 		c.field('id').id();
 		c.field('name').string();
@@ -46,6 +48,7 @@ const schema = new SchemaBuilder()
 		c.field('id').id();
 		c.field('label').string();
 	})
+	.options({ versioning: true })
 	.collection('directus_shadow_articles', (c) => {
 		versionMeta(c);
 		c.field('id').integer();
@@ -82,6 +85,7 @@ const schema = new SchemaBuilder()
 		c.field('slug').string().primary();
 		c.field('body').text();
 	})
+	.options({ versioning: true })
 	.collection('directus_shadow_pages', (c) => {
 		versionMeta(c);
 		c.field('slug').string();

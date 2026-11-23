@@ -1,4 +1,4 @@
-import type { Relation, SchemaOverview } from '@directus/types';
+import type { Relation } from '@directus/types';
 import { getSimpleHash } from '@directus/utils';
 import type { Knex } from 'knex';
 import {
@@ -40,13 +40,6 @@ export class VersioningHelper extends DatabaseHelper {
 	 */
 	getVersionReferenceField(field: string): string {
 		return this.prefixName(VERSION_REFERENCE_PREFIX, field);
-	}
-
-	/**
-	 * A collection is versioned as long as its shadow table exists, which keeps this in sync with the database
-	 */
-	isVersionedCollection(schema: SchemaOverview, collection: string): boolean {
-		return this.getShadowTableName(collection) in schema.collections;
 	}
 
 	/**

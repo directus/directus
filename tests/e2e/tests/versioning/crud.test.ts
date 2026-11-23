@@ -156,6 +156,37 @@ test('archiving removes the live item, versions keep its id and publishing resto
 
 	expect(restored).toEqual({ id });
 	expect(await api.request(readItem(collections.posts, id))).toMatchObject({ title: 'Archive draft' });
+
+	// An item is never published and archived at the same time
+	expect(await readVersion(api, collections.posts, published.directus_version.id, STATE)).toEqual({
+		id,
+		title: 'Archive',
+		directus_version: { id: published.directus_version.id, type: 'draft' },
+	});
+});
+
+test('archiving fails for items that are not published', async () => {
+	const draft = await versions.create(collections.posts, { title: 'Never published' });
+
+	await expect(versions.archive(collections.posts, draft.directus_version.id)).rejects.toMatchObject(
+		directusError('INVALID_PAYLOAD'),
+	);
+
+	const published = await versions.create(collections.posts, { title: 'Archive twice' });
+	const { id } = await versions.publish(collections.posts, published.directus_version.id);
+	const otherDraft = await versions.create(collections.posts, { id, title: 'Archive twice draft' });
+
+	await versions.archive(collections.posts, published.directus_version.id);
+
+	await expect(versions.archive(collections.posts, otherDraft.directus_version.id)).rejects.toMatchObject(
+		directusError('INVALID_PAYLOAD'),
+	);
+
+	expect(await readVersion(api, collections.posts, otherDraft.directus_version.id, STATE)).toEqual({
+		id,
+		title: 'Archive twice draft',
+		directus_version: { id: otherDraft.directus_version.id, type: 'draft' },
+	});
 });
 
 test('reading an item with versions returns the live item or its archived version, never drafts', async () => {

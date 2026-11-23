@@ -70,7 +70,7 @@ export class VersionedItemsService {
 			throw new ForbiddenError();
 		}
 
-		if (!this.versioning.isVersionedCollection(this.schema, collection)) {
+		if (!this.schema.collections[collection]?.versioned) {
 			throw new InvalidPayloadError({ reason: `Versioning isn't enabled for collection "${collection}"` });
 		}
 	}
@@ -138,25 +138,26 @@ export class VersionedItemsService {
 			const row = await this.readVersionRow(trx, this.collection, versionId, 'update');
 			const liveKey = row[primary];
 
-			let archivedId = versionId;
+			const published =
+				liveKey !== null
+					? await trx(shadowTable)
+							.select(VERSION_SYSTEM_FIELDS.id)
+							.where(primary, liveKey)
+							.where(VERSION_SYSTEM_FIELDS.type, 'published')
+							.first()
+					: undefined;
 
-			if (liveKey !== null) {
-				const published = await trx(shadowTable)
-					.select(VERSION_SYSTEM_FIELDS.id)
-					.where(primary, liveKey)
-					.where(VERSION_SYSTEM_FIELDS.type, 'published')
-					.first();
-
-				if (published) archivedId = published[VERSION_SYSTEM_FIELDS.id];
+			if (!published) {
+				throw new InvalidPayloadError({ reason: `Version "${versionId}" doesn't belong to a published item` });
 			}
+
+			const archivedId = published[VERSION_SYSTEM_FIELDS.id];
 
 			await trx(shadowTable)
 				.where(VERSION_SYSTEM_FIELDS.id, archivedId)
 				.update({ [VERSION_SYSTEM_FIELDS.type]: 'archived' });
 
-			if (liveKey !== null) {
-				await this.removeLiveItem(trx, this.collection, liveKey, { keepReference: true });
-			}
+			await this.removeLiveItem(trx, this.collection, liveKey, { keepReference: true });
 
 			return archivedId;
 		});
@@ -294,7 +295,7 @@ export class VersionedItemsService {
 
 		const relatedCollection = relation.related_collection ?? current[relation.meta?.one_collection_field ?? ''];
 
-		if (!hasReference || !relatedCollection || !this.versioning.isVersionedCollection(this.schema, relatedCollection)) {
+		if (!hasReference || !relatedCollection || !this.schema.collections[relatedCollection]?.versioned) {
 			throw new InvalidPayloadError({
 				reason: `Field "${relation.field}" in "${collection}" can only link to existing items, as the related collection isn't versioned`,
 			});
@@ -363,7 +364,7 @@ export class VersionedItemsService {
 			const key = this.getO2MLinkKey(relation, item);
 
 			if (key === null) {
-				if (!this.versioning.isVersionedCollection(this.schema, relatedCollection)) {
+				if (!this.schema.collections[relatedCollection]?.versioned) {
 					throw new InvalidPayloadError({
 						reason: `Field "${relation.meta!.one_field}" can only link to existing items, as "${relatedCollection}" isn't versioned`,
 					});
@@ -535,7 +536,7 @@ export class VersionedItemsService {
 
 			const relatedCollection = relation.related_collection ?? row[relation.meta?.one_collection_field ?? ''];
 
-			if (!relatedCollection || !this.versioning.isVersionedCollection(this.schema, relatedCollection)) continue;
+			if (!relatedCollection || !this.schema.collections[relatedCollection]?.versioned) continue;
 
 			const relatedKey = await this.publishVersion(trx, relatedCollection, referenceId, visited);
 
@@ -570,11 +571,11 @@ export class VersionedItemsService {
 			await trx(collection).update(rawValues).where(primary, liveKey);
 		}
 
-		// The previously published version of the item goes back to being a draft
+		// The previously published or archived versions of the item go back to being drafts
 		await trx(shadowTable)
 			.update({ [VERSION_SYSTEM_FIELDS.type]: 'draft' })
 			.where(primary, liveKey)
-			.where(VERSION_SYSTEM_FIELDS.type, 'published')
+			.whereIn(VERSION_SYSTEM_FIELDS.type, ['published', 'archived'])
 			.whereNot(VERSION_SYSTEM_FIELDS.id, versionId);
 
 		const managedFields = Object.values(fields)
@@ -714,10 +715,7 @@ export class VersionedItemsService {
 			.update({ [primary]: null })
 			.whereIn(VERSION_SYSTEM_FIELDS.id, versionIds);
 
-		// The item might already be gone, e.g. when archiving a version of an archived item
-		const exists = await trx(collection).select(primary).where(primary, liveKey).first();
-
-		if (exists) await this.getItemsService(trx, collection).deleteOne(liveKey);
+		await this.getItemsService(trx, collection).deleteOne(liveKey);
 
 		if (options.keepReference && versionIds.length > 0) {
 			await trx(shadowTable)

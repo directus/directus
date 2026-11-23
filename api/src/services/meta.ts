@@ -2,7 +2,6 @@ import type { AbstractServiceOptions, Accountability, Permission, Query, SchemaO
 import { mergeFilters } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isArray } from 'lodash-es';
-import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import applyQuery from '../database/run-ast/lib/apply-query/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
@@ -30,7 +29,7 @@ export class MetaService {
 			query.meta.map((metaVal: string) => {
 				if (
 					isVersionedQuery(query) &&
-					getHelpers(this.knex).versioning.isVersionedCollection(this.schema, collection)
+					this.schema.collections[collection]?.versioned
 				) {
 					const context = { knex: this.knex, schema: this.schema, accountability: this.accountability };
 

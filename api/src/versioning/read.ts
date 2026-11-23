@@ -341,7 +341,7 @@ async function resolveM2O(items: Item[], relation: Relation, subfields: string[]
 	const related = relation.related_collection;
 
 	// a2o references and requests for keys only return the reference itself
-	if (!related || subfields.length === 0 || !versioning.isVersionedCollection(context.schema, related)) {
+	if (!related || subfields.length === 0 || !context.schema.collections[related]?.versioned) {
 		for (const item of pending) {
 			item[relation.field] = { [VERSION_META_FIELD]: { id: item[referenceField] } };
 		}
@@ -492,7 +492,7 @@ async function readLiveById(collection: string, subfields: string[], keys: unkno
 
 	let items: Item[];
 
-	if (getHelpers(knex).versioning.isVersionedCollection(schema, collection)) {
+	if (schema.collections[collection]?.versioned) {
 		items = await readVersionedItems(
 			collection,
 			{

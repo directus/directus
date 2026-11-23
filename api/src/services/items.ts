@@ -518,11 +518,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
 		await this.assertCollectionActive('read');
 
-		// `version=true` on collections with shadow tables reads live items and versions together
-		if (
-			isVersionedQuery(query) &&
-			getHelpers(this.knex).versioning.isVersionedCollection(this.schema, this.collection)
-		) {
+		if (isVersionedQuery(query) && this.schema.collections[this.collection]?.versioned) {
 			return (await readVersionedItems(this.collection, query, {
 				knex: this.knex,
 				schema: this.schema,
@@ -627,10 +623,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		validateKeys(this.schema, this.collection, primaryKeyField, key);
 
 		// With versions, a key refers to the live item, or its latest archived version once the item is gone. Never drafts
-		if (
-			isVersionedQuery(query) &&
-			getHelpers(this.knex).versioning.isVersionedCollection(this.schema, this.collection)
-		) {
+		if (isVersionedQuery(query) && this.schema.collections[this.collection]?.versioned) {
 			const filter = {
 				_and: [
 					{ [primaryKeyField]: { _eq: key } },
@@ -639,8 +632,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				],
 			} as Filter;
 
-			const sort = [`-${VERSION_META_FIELD}.type`, `-${VERSION_META_FIELD}.id`];
-			const [result] = await this.readByQuery({ ...query, filter, sort, limit: 1 }, { ...opts, key });
+			const [result] = await this.readByQuery({ ...query, filter, limit: 1 }, { ...opts, key });
 
 			if (!result) throw new ForbiddenError();
 
@@ -650,13 +642,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
-		const results: Item[] = await this.readByQuery(queryWithKey, { ...opts, key });
+		const [result] = (await this.readByQuery(queryWithKey, { ...opts, key })) as Item[];
 
-		if (results.length === 0) {
-			throw new ForbiddenError();
-		}
+		if (!result) throw new ForbiddenError();
 
-		return results[0]!;
+		return result;
 	}
 
 	/**
@@ -1194,7 +1184,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			// Versions of an item are deleted along with it
 			const { versioning } = getHelpers(trx);
 
-			if (versioning.isVersionedCollection(this.schema, this.collection)) {
+			if (this.schema.collections[this.collection]?.versioned) {
 				await trx(versioning.getShadowTableName(this.collection)).whereIn(primaryKeyField, keysAfterHooks).delete();
 			}
 
