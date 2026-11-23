@@ -8,7 +8,7 @@ describe('getPreviewVersionKey', () => {
 		expect(getPreviewVersionKey(null)).toBe(VERSION_KEY_PUBLISHED);
 	});
 
-	test('resolves to the published key when the selected version is not persisted yet', () => {
+	test('resolves to the draft key when the selected draft is not persisted yet', () => {
 		const unsavedDraft: NewContentVersion = {
 			id: '+',
 			key: VERSION_KEY_DRAFT,
@@ -16,7 +16,7 @@ describe('getPreviewVersionKey', () => {
 			type: 'global',
 		};
 
-		expect(getPreviewVersionKey(unsavedDraft)).toBe(VERSION_KEY_PUBLISHED);
+		expect(getPreviewVersionKey(unsavedDraft)).toBe(VERSION_KEY_DRAFT);
 	});
 
 	test('resolves to the version key once the selected version is persisted', () => {
