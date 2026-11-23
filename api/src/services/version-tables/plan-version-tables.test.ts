@@ -5,8 +5,8 @@ import { keyBy, mapValues } from 'lodash-es';
 import { describe, expect, test, vi } from 'vitest';
 import type { SchemaHelper } from '../../database/helpers/schema/types.js';
 import { VersioningHelper } from '../../database/helpers/versioning/types.js';
+import type { VersionedTables } from '../version-tables.js';
 import {
-	type InspectedTables,
 	type LiveCollection,
 	type LiveCollections,
 	planVersioning,
@@ -90,10 +90,13 @@ const collectionList: LiveCollection[] = [
 
 const collections: LiveCollections = keyBy(collectionList, 'collection');
 
-const noTables: InspectedTables = { columns: {}, foreignKeys: [] };
+const noTables: VersionedTables = { columns: {}, foreignKeys: [] };
 
-function planChanges(liveCollections: LiveCollections, versionedTables: Set<string>, shadowTables: InspectedTables) {
-	return planVersioning({ liveCollections, versionedTables, shadowTables }, helper);
+function planChanges(liveCollections: LiveCollections, versionedTables: Set<string>, shadowTables: VersionedTables) {
+	return planVersioning(
+		{ sourceCollections: liveCollections, versionedCollections: versionedTables, versionTables: shadowTables },
+		helper,
+	);
 }
 
 function planTables(collections: LiveCollections, versioned: Set<string>) {
@@ -272,8 +275,8 @@ describe('planVersionTables', () => {
 });
 
 /** The inspected state of the given version tables, as if they were created from them */
-function inspect(tables: VersionTables): InspectedTables {
-	const inspected: InspectedTables = { columns: {}, foreignKeys: [] };
+function inspect(tables: VersionTables): VersionedTables {
+	const inspected: VersionedTables = { columns: {}, foreignKeys: [] };
 
 	for (const table of Object.values(tables)) {
 		inspected.columns[table.table] = Object.fromEntries(

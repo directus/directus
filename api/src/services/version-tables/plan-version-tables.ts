@@ -1,7 +1,8 @@
 import type { Column, ForeignKey } from '@directus/schema';
 import type { Relation } from '@directus/types';
+import { keyBy } from 'lodash-es';
 import type { VersioningHelper } from '../../database/helpers/versioning/types.js';
-import type { InspectedSchema } from '../version-tables.js';
+import type { VersioningState } from '../version-tables.js';
 import { VERSION_SYSTEM_FIELDS } from './constants.js';
 import { assertVersionSystemField, isVersioningTable } from './utils.js';
 
@@ -54,12 +55,6 @@ export type LiveCollection = {
 
 export type VersionTables = Record<string, VersionTable>;
 export type LiveCollections = Record<string, LiveCollection>;
-export type TablesMapped = Record<string, Record<string, Column>>;
-
-export type InspectedTables = {
-	columns: TablesMapped;
-	foreignKeys: ForeignKey[];
-};
 
 export type TableAlteration = {
 	create: VersionTableColumn[];
@@ -81,12 +76,12 @@ type TableChanges = Plan['tables'];
  * @param schema - Inspected Schema
  * @param helper - Provides the vendor specific names and foreign key rules of the version tables
  */
-export function planVersioning(schema: InspectedSchema, helper: VersioningHelper): Plan {
-	const { liveCollections, shadowTables, versionedTables } = schema;
+export function planVersioning(schema: VersioningState, helper: VersioningHelper): Plan {
+	const { sourceCollections, versionTables, versionedCollections } = schema;
 
-	const spec = getVersionSpec(liveCollections, { versioned: versionedTables, helper });
-	const tables = diffTables(spec, shadowTables.columns);
-	const foreignKeys = diffForeignKeys(spec, tables, shadowTables.foreignKeys);
+	const spec = getVersionSpec(sourceCollections, { versioned: versionedCollections, helper });
+	const tables = diffTables(spec, versionTables.columns);
+	const foreignKeys = diffForeignKeys(spec, tables, versionTables.foreignKeys);
 
 	return { tables, foreignKeys };
 }
@@ -130,7 +125,7 @@ function getVersionSpec(collections: LiveCollections, context: PlanContext): Ver
 /**
  * Diff the target tables against the existing ones
  */
-function diffTables(spec: VersionTables, existingTables: TablesMapped): TableChanges {
+function diffTables(spec: VersionTables, existingTables: Record<string, Column[]>): TableChanges {
 	const changes: TableChanges = {
 		drop: Object.keys(existingTables).filter((table) => !spec[table]),
 		create: [],
@@ -145,6 +140,8 @@ function diffTables(spec: VersionTables, existingTables: TablesMapped): TableCha
 			continue;
 		}
 
+		const columns = keyBy(existing, 'name');
+
 		const plannedNames = new Set(table.columns.map((column) => column.name));
 
 		const alteration: TableAlteration = {
@@ -154,7 +151,7 @@ function diffTables(spec: VersionTables, existingTables: TablesMapped): TableCha
 		};
 
 		for (const column of table.columns) {
-			const existingColumn = existing[column.name];
+			const existingColumn = columns[column.name];
 
 			if (!existingColumn) {
 				alteration.create.push(column);
