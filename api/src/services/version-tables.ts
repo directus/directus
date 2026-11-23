@@ -142,9 +142,15 @@ export class VersionTablesService {
 		};
 	}
 
+	// Queries run sequentially as MSSQL can't run concurrent requests within a transaction
 	private async filterExistingTables(tables: string[]): Promise<string[]> {
-		const exists = await Promise.all(tables.map((table) => this.schemaInspector.hasTable(table)));
-		return tables.filter((_table, index) => exists[index]);
+		const existing: string[] = [];
+
+		for (const table of tables) {
+			if (await this.schemaInspector.hasTable(table)) existing.push(table);
+		}
+
+		return existing;
 	}
 
 	/**
@@ -171,20 +177,21 @@ export class VersionTablesService {
 
 	private async inspectTables(tables: string[] | null): Promise<{ columns: Column[]; foreignKeys: ForeignKey[] }> {
 		if (!tables) {
-			const [columns, foreignKeys] = await Promise.all([
-				this.schemaInspector.columnInfo(),
-				this.schemaInspector.foreignKeys(),
-			]);
+			const columns = await this.schemaInspector.columnInfo();
+			const foreignKeys = await this.schemaInspector.foreignKeys();
 
 			return { columns, foreignKeys };
 		}
 
-		const [columns, foreignKeys] = await Promise.all([
-			Promise.all(tables.map((table) => this.schemaInspector.columnInfo(table))),
-			Promise.all(tables.map((table) => this.schemaInspector.foreignKeys(table))),
-		]);
+		const columns: Column[] = [];
+		const foreignKeys: ForeignKey[] = [];
 
-		return { columns: columns.flat(), foreignKeys: foreignKeys.flat() };
+		for (const table of tables) {
+			columns.push(...(await this.schemaInspector.columnInfo(table)));
+			foreignKeys.push(...(await this.schemaInspector.foreignKeys(table)));
+		}
+
+		return { columns, foreignKeys };
 	}
 
 	private async applyPlan(plan: Plan): Promise<void> {
