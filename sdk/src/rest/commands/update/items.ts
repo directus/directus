@@ -102,7 +102,7 @@ export const updateItem =
 	>(
 		collection: Collection,
 		key: string | number,
-		item: NestedPartial<Item>,
+		item: NestedPartial<NoInfer<Item>>,
 		query?: TQuery,
 	): RestCommand<UpdateItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
