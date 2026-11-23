@@ -1955,6 +1955,7 @@ fields:
     last_page: Last Page
     last_access: Last Access
     email_notifications: Email Notifications
+    appearance: Appearance
     theme_light: Theme Light
     theme_dark: Theme Dark
     theme_light_overrides: Light Theme Customization
