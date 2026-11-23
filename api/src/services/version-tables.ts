@@ -1,57 +1,34 @@
 import { type Column, createInspector, type ForeignKey, type SchemaInspector } from '@directus/schema';
 import { systemRelationRows } from '@directus/system-data';
-import type { AbstractServiceOptions, Accountability, RelationMeta, SchemaOverview, Type } from '@directus/types';
+import type { AbstractServiceOptions, Accountability, RelationMeta, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { groupBy, intersection, mapValues, partition, pickBy, uniq } from 'lodash-es';
+import { groupBy, mapValues, partition, pickBy } from 'lodash-es';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
-import getLocalType from '../utils/get-local-type.js';
 import { stitchRelations } from '../utils/stitch-relations.js';
-import { FieldsService } from './fields.js';
+import { VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
 import {
-	getLinkTableName,
-	getShadowTableName,
-	isShadowTable,
-	VERSION_META_FIELDS,
-} from './version-tables/constants.js';
-import {
+	type InspectedTables,
 	type LiveCollections,
-	normalizeOnDelete,
-	planShadowTables,
+	normalizeAction,
+	type Plan,
+	planVersioning,
+	type TablesMapped,
 	type VersionTableColumn,
-	type VersionTableForeignKey,
-	type VersionTables,
 } from './version-tables/plan-version-tables.js';
+import { isVersioningTable } from './version-tables/utils.js';
 
-/** Names of the shadow and link table of each given collection */
-function getVersionTableNames(collections: string[]): string[] {
-	return collections.flatMap((collection) => [getShadowTableName(collection), getLinkTableName(collection)]);
-}
-
-type ColumnChanges = { add: VersionTableColumn[]; alter: VersionTableColumn[]; drop: string[] };
-
-/** Columns keyed by table, then by column name */
-type ColumnsByTable = Record<string, Record<string, Column>>;
-
-/** Columns and foreign keys of a set of tables */
-export type InspectedTables = {
-	columns: ColumnsByTable;
-	foreignKeys: ForeignKey[];
-};
-
-/** Version tables, live tables and relation meta rows to plan a sync from */
-type InspectedSchema = {
+/** Versioned collections, version tables and live collections to plan a sync from */
+export type InspectedSchema = {
+	versionedTables: Set<string>;
 	shadowTables: InspectedTables;
-	liveTables: InspectedTables;
-	relationsMeta: RelationMeta[];
+	liveCollections: LiveCollections;
 };
 
 export type SyncCollectionsOptions = {
-	/** Also sync collections with a m2o / a2o relation to the given collections */
-	includeRelating?: boolean;
 	/** Collections to treat as deleted */
 	exclude?: string[];
 };
@@ -79,71 +56,46 @@ export class VersionTablesService {
 	/**
 	 * Bring the version tables in line with the current schema
 	 *
-	 * @param collections - Collections to sync, excluding shadow/link tables. Syncs every version table if omitted.
+	 * @param collections - Collections to sync, excluding shadow/link tables, together with the collections that have a m2o / a2o relation to them. Syncs every version table if omitted.
 	 */
-	async syncCollections(collections?: string[], options?: SyncCollectionsOptions): Promise<void> {
+	async syncCollections(collections: string[] | null, options?: SyncCollectionsOptions): Promise<void> {
 		const exclude = new Set(options?.exclude ?? []);
 
-		if (collections && options?.includeRelating) {
-			collections = this.resolveRelatedCollections(collections);
+		if (collections) {
+			const related = this.getReferencingCollections(collections);
+			collections.push(...related);
 		}
 
-		const state = await this.readVersioningState(exclude, collections);
+		const inspected = await this.inspect(exclude, collections);
 
-		if (!state) return;
+		if (!inspected) return;
 
-		const { shadowTables, liveTables, relationsMeta } = collections
-			? await this.inspectCollections(collections, state.shadowTables, exclude)
-			: await this.inspectAll();
+		const plan = planVersioning(inspected, this.helpers.versioning);
 
-		const isIncluded = (collection: string | null) => !collection || !exclude.has(collection);
-
-		const relations = stitchRelations(relationsMeta, liveTables.foreignKeys).filter((relation) =>
-			isIncluded(relation.related_collection),
-		);
-
-		const relationsByCollection = groupBy(relations, 'collection');
-
-		const liveCollections: LiveCollections = mapValues(
-			pickBy(liveTables.columns, (_columns, collection) => isIncluded(collection)),
-			(columns, collection) => ({
-				collection,
-				columns: Object.values(columns),
-				relations: relationsByCollection[collection] ?? [],
-			}),
-		);
-
-		let plannedShadowTables = planShadowTables(liveCollections, state.versionedTables);
-		plannedShadowTables = this.helpers.schema.applyShadowForeignKeyRules(plannedShadowTables);
-
-		await this.applyChanges(plannedShadowTables, shadowTables);
+		await this.applyPlan(plan);
 	}
 
 	/**
-	 * Add the collections with a m2o / a2o relation to the given collections, if requested
+	 * Add the collections with a m2o / a2o relation to the given collections
 	 */
-	private resolveRelatedCollections(collections: string[]): string[] {
-		const relatingCollections = this.schema.relations
+	private getReferencingCollections(collections: string[]): string[] {
+		const based = new Set(collections);
+
+		return this.schema.relations
 			.filter(
 				(relation) =>
-					(relation.related_collection && collections.includes(relation.related_collection)) ||
-					intersection(relation.meta?.one_allowed_collections, collections).length > 0,
+					((relation.related_collection && based.has(relation.related_collection)) ||
+						relation.meta?.one_allowed_collections?.some((collection) => based.has(collection))) &&
+					!based.has(relation.collection),
 			)
 			.map((relation) => relation.collection);
-
-		collections = [...collections, ...relatingCollections];
-
-		return uniq(collections);
 	}
 
 	/**
-	 * Read the versioned collections and existing version tables, limited to the ones of the given collections.
-	 * Returns `null` if neither exist, so projects without versioning skip the schema inspection.
+	 * Inspect the versioned collections, version tables and live tables of the given collections, or all if omitted.
+	 * Returns `null` if there is nothing to sync.
 	 */
-	private async readVersioningState(
-		exclude: Set<string>,
-		collections?: string[],
-	): Promise<{ versionedTables: Set<string>; shadowTables: string[] } | null> {
+	private async inspect(exclude: Set<string>, collections: string[] | null): Promise<InspectedSchema | null> {
 		const rows = await this.knex
 			.select('collection')
 			.from('directus_collections')
@@ -152,59 +104,43 @@ export class VersionTablesService {
 
 		const versionedTables = new Set<string>(rows.map(({ collection }) => collection));
 
-		// Without versioned collections, only leftover version tables of the given collections have to be dropped.
-		// Probe for those instead of listing every table of the database on each schema change.
-		const shadowTables =
-			versionedTables.size === 0 && collections
-				? await this.filterExistingTables(getVersionTableNames(collections))
-				: (await this.schemaInspector.tables()).filter(isShadowTable);
+		if (collections) {
+			// Probe for the few candidates instead of listing every table of the database on each schema change
+			const candidates = this.helpers.versioning.getVersionTableNames(collections);
+			const exists = await Promise.all(candidates.map((table) => this.schemaInspector.hasTable(table)));
+			const shadowTables = candidates.filter((_table, index) => exists[index]);
 
-		if (versionedTables.size === 0 && shadowTables.length === 0) return null;
+			if (versionedTables.size === 0 && shadowTables.length === 0) return null;
 
-		return { versionedTables, shadowTables };
-	}
+			const shadowTablesInspected = await this.inspectTables(shadowTables);
+			const liveTables = await this.inspectTables(collections.filter((collection) => !exclude.has(collection)));
 
-	private async filterExistingTables(tables: string[]): Promise<string[]> {
-		const exists = await Promise.all(tables.map((table) => this.schemaInspector.hasTable(table)));
+			return {
+				versionedTables,
+				shadowTables: shadowTablesInspected,
+				liveCollections: toLiveCollections(liveTables, await this.readRelationsMeta(collections), exclude),
+			};
+		}
 
-		return tables.filter((_table, index) => exists[index]);
-	}
+		if (versionedTables.size === 0 && !(await this.schemaInspector.tables()).some(isVersioningTable)) return null;
 
-	/**
-	 * Inspect the version tables and live tables of the given collections only, table by table
-	 */
-	private async inspectCollections(
-		collections: string[],
-		allShadowTables: string[],
-		exclude: Set<string>,
-	): Promise<InspectedSchema> {
-		// Only the version tables of these collections, so the ones of other collections aren't dropped
-		const shadowTables = getVersionTableNames(collections).filter((table) => allShadowTables.includes(table));
-
-		return {
-			shadowTables: await this.inspectTables(shadowTables),
-			liveTables: await this.inspectTables(collections.filter((collection) => !exclude.has(collection))),
-			relationsMeta: await this.readRelationsMeta(collections),
-		};
-	}
-
-	/**
-	 * Inspect every version table and live table. Inspecting the whole database at once is a lot faster than
-	 * inspecting each table on its own.
-	 */
-	private async inspectAll(): Promise<InspectedSchema> {
+		// Inspecting the whole database at once is a lot faster than table by table
 		const [shadowColumns, liveColumns] = partition(await this.schemaInspector.columnInfo(), (column) =>
-			isShadowTable(column.table),
+			isVersioningTable(column.table),
 		);
 
 		const [shadowForeignKeys, liveForeignKeys] = partition(await this.schemaInspector.foreignKeys(), (foreignKey) =>
-			isShadowTable(foreignKey.table),
+			isVersioningTable(foreignKey.table),
 		);
 
 		return {
+			versionedTables,
 			shadowTables: { columns: keyColumns(shadowColumns), foreignKeys: shadowForeignKeys },
-			liveTables: { columns: keyColumns(liveColumns), foreignKeys: liveForeignKeys },
-			relationsMeta: await this.readRelationsMeta(),
+			liveCollections: toLiveCollections(
+				{ columns: keyColumns(liveColumns), foreignKeys: liveForeignKeys },
+				await this.readRelationsMeta(),
+				exclude,
+			),
 		};
 	}
 
@@ -242,88 +178,51 @@ export class VersionTablesService {
 		return { columns: keyColumns(columns), foreignKeys };
 	}
 
-	/**
-	 * Diff the planned version tables against the current shadow tables and apply the difference
-	 */
-	private async applyChanges(planned: VersionTables, shadow: InspectedTables): Promise<void> {
-		const columnChanges = getColumnChanges(planned, shadow.columns);
-
-		const tablesToDrop = Object.keys(shadow.columns).filter((table) => !planned[table]);
-		const tablesToCreate = Object.values(planned).filter((table) => !shadow.columns[table.table]);
-
-		const isForeignKeyOutdated = (foreignKey: ForeignKey) => {
-			const plannedTable = planned[foreignKey.table];
-			const changes = columnChanges.get(foreignKey.table);
-
-			if (!plannedTable) return true;
-			if (changes?.drop.includes(foreignKey.column)) return true;
-			if (changes?.alter.some((column) => column.name === foreignKey.column)) return true;
-
-			return !plannedTable.foreignKeys.some((plannedForeignKey) => isSameForeignKey(foreignKey, plannedForeignKey));
-		};
-
-		const foreignKeysToDrop = shadow.foreignKeys.filter(isForeignKeyOutdated);
-		const foreignKeysToKeep = shadow.foreignKeys.filter((foreignKey) => !foreignKeysToDrop.includes(foreignKey));
-
-		// Drop foreign keys first, so tables and columns can be changed in any order
-		await this.dropForeignKeys(foreignKeysToDrop);
-
-		for (const table of tablesToDrop) {
-			await this.knex.schema.dropTable(table);
-		}
-
-		const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
-
-		for (const table of tablesToCreate) {
-			await this.knex.schema.createTable(table.table, (builder) => {
-				for (const column of table.columns) {
-					this.addColumn(fieldsService, builder, table.table, column);
-				}
-			});
-		}
-
-		for (const [table, changes] of columnChanges) {
+	private async applyPlan(plan: Plan): Promise<void> {
+		for (const [table, foreignKeys] of Object.entries(plan.foreignKeys.drop)) {
 			await this.knex.schema.alterTable(table, (builder) => {
-				if (changes.drop.length > 0) builder.dropColumns(...changes.drop);
-
-				for (const column of changes.add) {
-					this.addColumn(fieldsService, builder, table, column);
-				}
-
-				for (const column of changes.alter) {
-					this.addColumn(fieldsService, builder, table, column, shadow.columns[table]![column.name]);
-				}
-			});
-		}
-
-		await this.addForeignKeys(planned, foreignKeysToKeep);
-	}
-
-	private async dropForeignKeys(foreignKeys: ForeignKey[]) {
-		for (const [table, tableForeignKeys] of Object.entries(groupBy(foreignKeys, 'table'))) {
-			await this.knex.schema.alterTable(table, (builder) => {
-				for (const foreignKey of tableForeignKeys) {
+				// We have to drop at the start so collection deletions and field updates dont fail
+				for (const foreignKey of foreignKeys) {
 					builder.dropForeign(foreignKey.column, foreignKey.constraint_name ?? undefined);
 				}
 			});
 		}
-	}
 
-	private async addForeignKeys(planned: VersionTables, existing: ForeignKey[]) {
-		for (const table of Object.values(planned)) {
-			const missing = table.foreignKeys.filter(
-				(foreignKey) => !existing.some((other) => other.table === table.table && isSameForeignKey(other, foreignKey)),
-			);
+		for (const table of plan.tables.drop) {
+			await this.knex.schema.dropTable(table);
+		}
 
-			if (missing.length === 0) continue;
+		for (const table of plan.tables.create) {
+			await this.knex.schema.createTable(table.table, (builder) => {
+				for (const column of table.columns) {
+					this.addColumn(builder, column);
+				}
+			});
+		}
 
-			await this.knex.schema.alterTable(table.table, (builder) => {
-				for (const foreignKey of missing) {
+		for (const [table, alteration] of Object.entries(plan.tables.update)) {
+			await this.knex.schema.alterTable(table, (builder) => {
+				if (alteration.drop.length > 0) builder.dropColumns(...alteration.drop);
+
+				for (const column of alteration.create) {
+					this.addColumn(builder, column);
+				}
+
+				for (const { column, existing } of alteration.update) {
+					this.addColumn(builder, column, existing);
+				}
+			});
+		}
+
+		for (const [table, foreignKeys] of Object.entries(plan.foreignKeys.create)) {
+			await this.knex.schema.alterTable(table, (builder) => {
+				for (const foreignKey of foreignKeys) {
 					const constraint = builder
-						.foreign(foreignKey.column, getDefaultIndexName('foreign', table.table, foreignKey.column))
+						.foreign(foreignKey.column, getDefaultIndexName('foreign', table, foreignKey.column))
 						.references(`${foreignKey.foreign_key_table}.${foreignKey.foreign_key_column}`);
 
 					if (foreignKey.on_delete) constraint.onDelete(foreignKey.on_delete);
+					if (normalizeAction(foreignKey.on_update) !== 'NO ACTION') constraint.onUpdate(foreignKey.on_update!);
 				}
 			});
 		}
@@ -332,81 +231,65 @@ export class VersionTablesService {
 	/**
 	 * Add a column to the builder, or alter it if `existing` is given
 	 */
-	private addColumn(
-		fieldsService: FieldsService,
-		builder: Knex.CreateTableBuilder,
-		table: string,
-		column: VersionTableColumn,
-		existing?: Column,
-	) {
-		if (column.kind === 'meta') {
-			this.addMetaColumn(builder, column.name);
+	private addColumn(builder: Knex.CreateTableBuilder, column: VersionTableColumn, existing?: Column) {
+		if (column.kind === 'system') {
+			this.addSystemColumn(builder, column.name);
 			return;
 		}
 
 		if (column.kind === 'reference') {
 			// `unsigned` matches `increments` in MySQL, other vendors ignore it
+			// Integer because it points at the version_id of shadow tables
 			builder.integer(column.name).unsigned().nullable();
 			return;
 		}
 
-		const { source } = column;
-		const type = getLocalType(source);
+		const columnBuilder = builder.specificType(column.name, column.type);
+		const nullable = !column.primary;
 
-		// Knex would default strings without a length to 255. MSSQL's `nvarchar(max)` is handled by `addColumnToTable`.
-		const isUnboundedString =
-			type === 'string' && source.max_length === null && !this.helpers.schema.isOneOfClients(['mssql']);
-
-		if (requiresExactType(source) || isUnboundedString) {
-			const columnBuilder = builder.specificType(column.name, source.data_type);
-
-			if (column.primary) columnBuilder.primary().notNullable();
-			else columnBuilder.nullable();
-
-			if (existing) columnBuilder.alter();
+		if (!existing) {
+			if (column.primary) {
+				columnBuilder.primary().notNullable();
+			} else {
+				columnBuilder.nullable();
+			}
 
 			return;
 		}
 
-		// Mirrored columns drop all constraints apart from relations
-		fieldsService.addColumnToTable(
-			builder,
-			table,
-			{
-				field: column.name,
-				type: type as Type,
-				schema: {
-					max_length: source.max_length,
-					numeric_precision: source.numeric_precision,
-					numeric_scale: source.numeric_scale,
-					default_value: null,
-					is_nullable: !column.primary,
-					is_primary_key: Boolean(column.primary),
-				},
-			},
-			{ existing: existing ?? null },
-		);
+		// Only touch the nullability when it changes: Oracle rejects setting the one a column already has and Postgres
+		// can't drop the `not null` of a primary key. Re-adding the primary key while altering would fail as well
+		// TODO: WHY?
+		if (existing.is_nullable === nullable) {
+			columnBuilder.alter({ alterNullable: false });
+			return;
+		}
+
+		if (nullable) columnBuilder.nullable();
+		else columnBuilder.notNullable();
+
+		columnBuilder.alter();
 	}
 
-	private addMetaColumn(builder: Knex.CreateTableBuilder, name: string) {
+	private addSystemColumn(builder: Knex.CreateTableBuilder, name: string) {
 		switch (name) {
-			case VERSION_META_FIELDS.id:
+			case VERSION_SYSTEM_FIELDS.id:
 				builder.increments(name);
 				break;
-			case VERSION_META_FIELDS.name:
+			case VERSION_SYSTEM_FIELDS.name:
 				builder.string(name).nullable();
 				break;
-			case VERSION_META_FIELDS.type:
+			case VERSION_SYSTEM_FIELDS.type:
 				builder.string(name, 16).notNullable().defaultTo('draft');
 				break;
-			case VERSION_META_FIELDS.dateCreated:
+			case VERSION_SYSTEM_FIELDS.dateCreated:
 				builder.timestamp(name, { useTz: true }).defaultTo(this.knex.fn.now());
 				break;
-			case VERSION_META_FIELDS.dateUpdated:
+			case VERSION_SYSTEM_FIELDS.dateUpdated:
 				builder.timestamp(name, { useTz: true }).nullable();
 				break;
-			case VERSION_META_FIELDS.userCreated:
-			case VERSION_META_FIELDS.userUpdated:
+			case VERSION_SYSTEM_FIELDS.userCreated:
+			case VERSION_SYSTEM_FIELDS.userUpdated:
 				builder.uuid(name).nullable();
 				break;
 		}
@@ -414,8 +297,8 @@ export class VersionTablesService {
 }
 
 // Groups columns by table and name
-function keyColumns(columns: Column[]): ColumnsByTable {
-	const result: ColumnsByTable = {};
+function keyColumns(columns: Column[]): TablesMapped {
+	const result: TablesMapped = {};
 
 	for (const column of columns) {
 		(result[column.table] ??= {})[column.name] = column;
@@ -425,64 +308,25 @@ function keyColumns(columns: Column[]): ColumnsByTable {
 }
 
 /**
- * Column changes per existing table. Tables without changes are left out.
+ * Combine the live tables with their stitched relations, dropping excluded collections and relations to them
  */
-function getColumnChanges(planned: VersionTables, existingColumns: ColumnsByTable) {
-	const result = new Map<string, ColumnChanges>();
-
-	for (const table of Object.values(planned)) {
-		const existing = existingColumns[table.table];
-
-		if (!existing) continue;
-
-		const plannedNames = new Set(table.columns.map((column) => column.name));
-
-		const changes: ColumnChanges = {
-			add: table.columns.filter((column) => !existing[column.name]),
-			alter: table.columns.filter((column) => {
-				const current = existing[column.name];
-				return current && column.kind === 'mirror' && !column.primary && hasTypeChanged(column.source, current);
-			}),
-			drop: Object.keys(existing).filter((name) => !plannedNames.has(name)),
-		};
-
-		if (changes.add.length || changes.alter.length || changes.drop.length) {
-			result.set(table.table, changes);
-		}
-	}
-
-	return result;
-}
-
-/**
- * Whether a column has to be created with its raw database type: types without a Directus equivalent, and MySQL
- * unsigned integers (Directus would create them signed, which breaks foreign keys to them).
- */
-function requiresExactType(column: Column) {
-	const type = getLocalType(column);
-
-	return type === 'unknown' || type === 'alias' || column.data_type.toLowerCase().includes('unsigned');
-}
-
-function hasTypeChanged(source: Column, existing: Column) {
-	if (getLocalType(source) !== getLocalType(existing)) return true;
-
-	if (requiresExactType(source) || requiresExactType(existing)) {
-		return source.data_type.toLowerCase() !== existing.data_type.toLowerCase();
-	}
-
-	return (
-		source.max_length !== existing.max_length ||
-		source.numeric_precision !== existing.numeric_precision ||
-		source.numeric_scale !== existing.numeric_scale
+function toLiveCollections(
+	liveTables: InspectedTables,
+	relationsMeta: RelationMeta[],
+	exclude: Set<string>,
+): LiveCollections {
+	const relations = stitchRelations(relationsMeta, liveTables.foreignKeys).filter(
+		(relation) => !relation.related_collection || !exclude.has(relation.related_collection),
 	);
-}
 
-function isSameForeignKey(existing: ForeignKey, planned: VersionTableForeignKey) {
-	return (
-		existing.column === planned.column &&
-		existing.foreign_key_table === planned.foreign_key_table &&
-		existing.foreign_key_column === planned.foreign_key_column &&
-		normalizeOnDelete(existing.on_delete) === normalizeOnDelete(planned.on_delete)
+	const relationsByCollection = groupBy(relations, 'collection');
+
+	return mapValues(
+		pickBy(liveTables.columns, (_columns, collection) => !exclude.has(collection)),
+		(columns, collection) => ({
+			collection,
+			columns: Object.values(columns),
+			relations: relationsByCollection[collection] ?? [],
+		}),
 	);
 }

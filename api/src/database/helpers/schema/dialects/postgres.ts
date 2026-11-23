@@ -3,20 +3,26 @@ import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types.js';
 
-const env = useEnv();
+const { DB_DATABASE } = useEnv();
 
 export class SchemaHelperPostgres extends SchemaHelper {
+	override getMaxIdentifierLength(): number {
+		// Identifiers longer than NAMEDATALEN - 1 are silently truncated
+		// https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+		return 63;
+	}
+
 	override generateIndexName(
 		type: 'unique' | 'foreign' | 'index',
 		collection: string,
 		fields: string | string[],
 	): string {
-		return getDefaultIndexName(type, collection, fields, { maxLength: 63 });
+		return getDefaultIndexName(type, collection, fields, { maxLength: this.getMaxIdentifierLength() });
 	}
 
 	override async getDatabaseSize(): Promise<number | null> {
 		try {
-			const result = await this.knex.select(this.knex.raw(`pg_database_size(?) as size;`, [env['DB_DATABASE']]));
+			const result = await this.knex.select(this.knex.raw(`pg_database_size(?) as size;`, [DB_DATABASE]));
 
 			return result[0]?.['size'] ? Number(result[0]?.['size']) : null;
 		} catch {

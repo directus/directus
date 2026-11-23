@@ -2,7 +2,8 @@ import { InvalidQueryError } from '@directus/errors';
 import type { Filter, SchemaOverview } from '@directus/types';
 import { getRelationInfo, toArray } from '@directus/utils';
 import { isPlainObject, mapKeys } from 'lodash-es';
-import { getVersionReferenceField, VERSION_META_FIELD } from '../services/version-tables/constants.js';
+import type { VersioningHelper } from '../database/helpers/versioning/types.js';
+import { VERSION_META_FIELD } from '../services/version-tables/constants.js';
 import { getMetaColumn, PUBLISHED_META } from './fields.js';
 
 /**
@@ -40,6 +41,7 @@ export function stripMetaFilter(filter: Filter | null | undefined): Filter | nul
 
 export type FilterLevel = {
 	schema: SchemaOverview;
+	versioning: VersioningHelper;
 	/** Collection the filter applies to, which is the virtual collection, a shadow table or a live collection */
 	collection: string;
 	/** Whether the rows have version meta columns, otherwise they're live items and match the meta of published items */
@@ -104,7 +106,7 @@ export function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 		}
 
 		const live = nestOrExists(key, rewriteAt(value, oppositeCollection, false));
-		const referenceField = getVersionReferenceField(key);
+		const referenceField = level.versioning.getVersionReferenceField(key);
 
 		const shadow = level.references
 			? getRelationInfo(level.schema.relations, level.collection, referenceField).oppositeCollection

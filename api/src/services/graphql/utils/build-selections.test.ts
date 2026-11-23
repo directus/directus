@@ -132,10 +132,23 @@ const inliningCases: SelectionCase[] = [
 		expected: [buildField('id'), buildField('title')],
 	},
 	{
+		// What that repetition can cost is bounded up front by the `limitSelections` validation rule
 		name: 'repeats the selections when the same fragment is spread twice',
 		selections: [buildFragmentSpread('Fields'), buildFragmentSpread('Fields')],
 		fragments: { Fields: buildFragmentDefinition('Fields', 'Page', [buildField('title')]) },
 		expected: [buildField('title'), buildField('title')],
+	},
+	{
+		name: 'inlines the same fragment again in a nested selection set',
+		selections: [
+			buildField('author', { alias: 'first', children: [buildFragmentSpread('Ident')] }),
+			buildField('author', { alias: 'second', children: [buildFragmentSpread('Ident')] }),
+		],
+		fragments: { Ident: buildFragmentDefinition('Ident', 'author', [buildField('id')]) },
+		expected: [
+			buildField('author', { alias: 'first', children: [buildField('id')] }),
+			buildField('author', { alias: 'second', children: [buildField('id')] }),
+		],
 	},
 	{
 		name: 'inlines a fragment inside a function selection set',
@@ -210,6 +223,29 @@ const unionCases: SelectionCase[] = [
 				}),
 			]),
 		]),
+	},
+	{
+		// A visited set shared across the members used to skip the second spread, so the fields of
+		// the second member came back null
+		name: 'inlines a union fragment under every member it is spread into',
+		selections: buildContentItem([
+			buildInlineFragment('ComponentText', [buildFragmentSpread('AnyBlock')]),
+			buildInlineFragment('ComponentImage', [buildFragmentSpread('AnyBlock')]),
+		]),
+		fragments: {
+			AnyBlock: buildFragmentDefinition('AnyBlock', 'page_content_item_union', [
+				buildInlineFragment('ComponentText', [buildField('text')]),
+				buildInlineFragment('ComponentImage', [buildField('src')]),
+			]),
+		},
+		expected: buildContentItem(
+			['ComponentText', 'ComponentImage'].map((member) =>
+				buildInlineFragment(member, [
+					buildInlineFragment('ComponentText', [buildField('text')]),
+					buildInlineFragment('ComponentImage', [buildField('src')]),
+				]),
+			),
+		),
 	},
 	{
 		name: 'keeps the condition where the same fragment narrows, and drops it where it does not',

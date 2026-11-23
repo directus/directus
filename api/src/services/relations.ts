@@ -30,8 +30,9 @@ import { getSchema } from '../utils/get-schema.js';
 import { stitchRelations } from '../utils/stitch-relations.js';
 import { ItemsService } from './items.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
+import { isVersioningTable } from './version-tables/utils.js';
 
-const env = useEnv();
+const { CACHE_SCHEMA } = useEnv();
 
 export class RelationsService {
 	knex: Knex;
@@ -64,7 +65,7 @@ export class RelationsService {
 	}
 
 	async foreignKeys(collection?: string) {
-		const schemaCacheIsEnabled = Boolean(env['CACHE_SCHEMA']);
+		const schemaCacheIsEnabled = Boolean(CACHE_SCHEMA);
 
 		let foreignKeys: ForeignKey[] | null = null;
 
@@ -128,11 +129,16 @@ export class RelationsService {
 			schemaRows = schemaRows.filter((row) => row.table === collection);
 		}
 
+		// Foreign keys of version tables are managed by versioning
+		schemaRows = schemaRows.filter((row) => !isVersioningTable(row.table));
+
 		const results = stitchRelations(metaRows, schemaRows);
 		return await this.filterForbidden(results);
 	}
 
 	async readOne(collection: string, field: string): Promise<Relation> {
+		if (isVersioningTable(collection)) throw new ForbiddenError();
+
 		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
 				{
@@ -286,7 +292,7 @@ export class RelationsService {
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 				});
 
-				change.sync([relation.collection!]);
+				change.sync(relation.collection!);
 			});
 		} finally {
 			if (opts?.autoPurgeSystemCache !== false) {
@@ -424,7 +430,7 @@ export class RelationsService {
 					}
 				}
 
-				change.sync([collection]);
+				change.sync(collection);
 			});
 		} finally {
 			if (opts?.autoPurgeSystemCache !== false) {
@@ -489,7 +495,7 @@ export class RelationsService {
 					await trx('directus_relations').delete().where({ many_collection: collection, many_field: field });
 				}
 
-				change.sync([collection]);
+				change.sync(collection);
 
 				const actionEvent = {
 					event: 'relations.delete',

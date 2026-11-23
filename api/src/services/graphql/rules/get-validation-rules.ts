@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import type { ValidationRule } from 'graphql';
 import { NoSchemaIntrospectionCustomRule, specifiedRules } from 'graphql';
 import { BlockFieldSuggestionsRule } from './block-field-suggestions.js';
+import { limitSelections } from './limit-selections.js';
 import { limitSensitiveMutations } from './limit-sensitive-mutations.js';
 
 export interface GetValidationRulesOptions {
@@ -12,11 +13,15 @@ export interface GetValidationRulesOptions {
  * Build the GraphQL validation rules.
  */
 export function getValidationRules({ operationName }: GetValidationRulesOptions = {}): ValidationRule[] {
-	const env = useEnv();
+	const { GRAPHQL_INTROSPECTION } = useEnv();
 
-	const rules: ValidationRule[] = [...specifiedRules, limitSensitiveMutations(operationName)];
+	const rules: ValidationRule[] = [
+		...specifiedRules,
+		limitSensitiveMutations(operationName),
+		limitSelections(operationName),
+	];
 
-	if (env['GRAPHQL_INTROSPECTION'] === false) {
+	if (!GRAPHQL_INTROSPECTION) {
 		rules.push(NoSchemaIntrospectionCustomRule);
 		rules.push(BlockFieldSuggestionsRule);
 	}

@@ -5,6 +5,7 @@ import type { Accountability, Field, RawField } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
+import { mockEnv } from '../test-utils/env.js';
 import {
 	createMockKnex,
 	createMockTableBuilder,
@@ -17,9 +18,10 @@ import * as getSchemaModule from '../utils/get-schema.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
+});
 
 vi.mock('./version-tables.js', () => ({
 	VersionTablesService: class {
@@ -92,7 +94,6 @@ vi.mock('../database/helpers/index.js', () => ({
 		schema: {
 			createIndex: mockCreateIndexSpy,
 			processFieldType: vi.fn((field) => field.type),
-			withForeignKeysDisabled: vi.fn((fn) => fn()),
 			setNullable: vi.fn(),
 			generateIndexName: vi.fn((type, collection, field) => `${collection}_${field}_${type}`),
 			isOneOfClients: vi.fn(() => mockIsOneOfClientsMSSQL),
@@ -199,9 +200,12 @@ describe('Integration Tests', () => {
 
 				vi.mocked(cacheModule.getCacheValue).mockResolvedValueOnce(mockColumns);
 
-				vi.mocked(useEnv).mockReturnValue({
-					CACHE_SCHEMA: true,
-				});
+				vi.mocked(useEnv).mockReturnValue(
+					mockEnv({
+						AUTH_PROVIDERS: [],
+						CACHE_SCHEMA: true,
+					}),
+				);
 
 				// Re-import FieldsService to pick up the new env mock
 				vi.resetModules();
@@ -413,6 +417,35 @@ describe('Integration Tests', () => {
 				expect(createOneSpy).toHaveBeenCalled();
 			});
 
+			test.each(['version_type', 'version_ref_author'])(
+				'should reject reserved versioning field name "%s" in a versioned collection before altering the table',
+				async (fieldName) => {
+					const versionedSchema = new SchemaBuilder()
+						.collection('test_collection', (c) => {
+							c.field('id').integer().primary();
+						})
+						.options({ versioning: true })
+						.build();
+
+					const service = new FieldsService({
+						knex: db,
+						schema: versionedSchema,
+						accountability: null,
+					});
+
+					tracker.on.select('directus_fields').response([]);
+
+					const alterTableSpy = vi.fn();
+					db.schema.alterTable = alterTableSpy;
+
+					await expect(service.createField('test_collection', { field: fieldName, type: 'string' })).rejects.toThrow(
+						InvalidPayloadError,
+					);
+
+					expect(alterTableSpy).not.toHaveBeenCalled();
+				},
+			);
+
 			test('should not create schema column for alias fields', async () => {
 				const service = new FieldsService({
 					knex: db,
@@ -489,6 +522,19 @@ describe('Integration Tests', () => {
 				await service.createField('test_collection', field);
 
 				expect(clearSpy).toHaveBeenCalled();
+			});
+		});
+
+		describe('version tables', () => {
+			const service = () => new FieldsService({ knex: db, schema, accountability: null });
+
+			test('should reject reading and changing fields of version tables', async () => {
+				const table = 'directus_shadow_test_collection';
+
+				await expect(service().readOne(table, 'id')).rejects.toThrow(ForbiddenError);
+				await expect(service().createField(table, { field: 'x', type: 'string' })).rejects.toThrow(ForbiddenError);
+				await expect(service().updateField(table, { field: 'id', type: 'integer' })).rejects.toThrow(ForbiddenError);
+				await expect(service().deleteField(table, 'id')).rejects.toThrow(ForbiddenError);
 			});
 		});
 

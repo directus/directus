@@ -6,11 +6,12 @@ import { getSchema } from './get-schema.js';
 import { runExclusive } from './run-exclusive.js';
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
+	const { mockUseEnv } = await import('../test-utils/env.js');
 
-	return mockEnv({
+	return mockUseEnv({
 		CACHE_SCHEMA: true,
 		CACHE_SCHEMA_SYNC_TIMEOUT: 10000,
+		DB_EXCLUDE_TABLES: [],
 	});
 });
 
@@ -25,8 +26,10 @@ vi.mock('../logger/index.js', () => ({
 	useLogger: () => ({ trace: vi.fn(), warn: vi.fn() }),
 }));
 
+const inspector = vi.hoisted(() => ({ overview: {} as Record<string, unknown> }));
+
 vi.mock('@directus/schema', () => ({
-	createInspector: () => ({ overview: async () => ({}) }),
+	createInspector: () => ({ overview: async () => inspector.overview }),
 }));
 
 vi.mock('../services/relations.js', () => ({
@@ -37,10 +40,16 @@ vi.mock('../services/relations.js', () => ({
 
 const SCHEMA: SchemaOverview = { collections: {}, relations: [] };
 
-const database = { select: () => ({ from: async () => [] }) } as unknown as Knex;
+const rows = { collections: [] as Record<string, unknown>[] };
+
+const database = {
+	select: () => ({ from: async (table: string) => (table === 'directus_collections' ? rows.collections : []) }),
+} as unknown as Knex;
 
 afterEach(() => {
 	vi.clearAllMocks();
+	inspector.overview = {};
+	rows.collections = [];
 });
 
 describe('getSchema', () => {
@@ -77,5 +86,35 @@ describe('getSchema', () => {
 
 		expect(runExclusive).toHaveBeenCalledOnce();
 		expect(setMemorySchemaCache).not.toHaveBeenCalled();
+	});
+
+	test('leaves out version tables', async () => {
+		vi.mocked(runExclusive).mockImplementation(async (_key, fn) => ({ result: await fn(), leader: true }));
+
+		const table = { primary: 'id', columns: {} };
+
+		inspector.overview = {
+			articles: table,
+			directus_shadow_articles: table,
+			directus_link_articles: table,
+		};
+
+		const schema = await getSchema({ database });
+
+		expect(Object.keys(schema.collections)).toEqual(['articles']);
+	});
+
+	test('marks collections with versioning enabled as versioned', async () => {
+		vi.mocked(runExclusive).mockImplementation(async (_key, fn) => ({ result: await fn(), leader: true }));
+
+		const table = { primary: 'id', columns: {} };
+
+		inspector.overview = { articles: table, authors: table };
+		rows.collections = [{ collection: 'articles', versioning: true }];
+
+		const schema = await getSchema({ database });
+
+		expect(schema.collections['articles']?.versioned).toBe(true);
+		expect(schema.collections['authors']?.versioned).toBe(false);
 	});
 });

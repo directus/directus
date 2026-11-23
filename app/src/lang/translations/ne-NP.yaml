@@ -1230,6 +1230,7 @@ forgot_password: पासवर्ड भुल्नुभयो
 hidden: लुकेको
 hidden_in_group: '{group} मा लुकेको'
 icon: आइकन
+image: तस्बिर
 info: जानकारी
 normal: सामान्य
 success: सफल
@@ -1436,6 +1437,8 @@ interfaces:
     system_default: पूर्वनिर्धारित प्रणाली
   select-radio:
     radio-buttons: रेडियो बटनहरू
+  system-file-image:
+    image: तस्बिर
   list:
     edit_fields: फिल्ड सम्पादन
     sort: क्रमबद्ध
@@ -1744,6 +1747,15 @@ a_flow_uuid: "ट्रिगर गर्न फ्लो चयन गर्�
 any_string_or_json: कुनै पनि स्ट्रिङ वा JSON...
 item_payload_placeholder: "यो JSON वस्तुको फिल्ड मानहरू अद्यावधिक गर्न प्रयोग गरिन्छ...\n"
 operations:
+  ai-image:
+    background: पृष्ठभूमि
+    emit_events: घटनाहरू उत्सर्जन गर्नुहोस्
+    starting_points:
+      icon: आइकन
+  ai-text:
+    files: फाइलहरू
+    type_text: पाठ
+    view_json: JSON
   condition:
     name: र्शत
   exec:

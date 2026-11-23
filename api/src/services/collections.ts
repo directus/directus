@@ -36,8 +36,8 @@ import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.j
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
-import { isShadowTable } from './version-tables/constants.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
+import { isVersioningTable } from './version-tables/utils.js';
 
 export class CollectionsService {
 	knex: Knex;
@@ -240,7 +240,7 @@ export class CollectionsService {
 
 				// Creating version tables alters the existing shadow and link tables of related collections
 				if (payload.meta?.versioning) {
-					change.sync([payload.collection]);
+					change.sync(payload.collection, { force: true });
 				}
 			});
 
@@ -333,7 +333,7 @@ export class CollectionsService {
 	 * Read all collections. Currently doesn't support any query.
 	 */
 	async readByQuery(): Promise<Collection[]> {
-		const env = useEnv();
+		const { DB_EXCLUDE_TABLES } = useEnv();
 
 		const collectionsItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
@@ -342,7 +342,7 @@ export class CollectionsService {
 		});
 
 		// Shadow and link tables are managed by versioning and shouldn't be exposed as collections
-		let tablesInDatabase = (await this.schemaInspector.tableInfo()).filter((table) => !isShadowTable(table.name));
+		let tablesInDatabase = (await this.schemaInspector.tableInfo()).filter((table) => !isVersioningTable(table.name));
 
 		let meta = (await collectionsItemsService.readByQuery({
 			limit: -1,
@@ -411,10 +411,8 @@ export class CollectionsService {
 			}
 		}
 
-		if (env['DB_EXCLUDE_TABLES']) {
-			return collections.filter(
-				(collection) => (env['DB_EXCLUDE_TABLES'] as string[]).includes(collection.collection) === false,
-			);
+		if (DB_EXCLUDE_TABLES.length > 0) {
+			return collections.filter((collection) => DB_EXCLUDE_TABLES.includes(collection.collection) === false);
 		}
 
 		return collections;
@@ -509,7 +507,7 @@ export class CollectionsService {
 
 				// Toggling versioning creates / drops the shadow and link tables
 				if ('versioning' in payload.meta!) {
-					change.sync([collectionKey]);
+					change.sync(collectionKey, { force: true });
 				}
 			});
 
@@ -668,10 +666,7 @@ export class CollectionsService {
 
 			await runSchemaChange({ knex: this.knex, schema: this.schema }, async (trx, change) => {
 				if (collectionToBeDeleted!.schema) {
-					// Version tables reference the live table, so they need to be cleaned up before it can be dropped
-					await change.beforeDrop(collectionKey);
-
-					await trx.schema.dropTable(collectionKey);
+					change.drop(collectionKey);
 				}
 
 				// Make sure this collection isn't used as a group in any other collections
@@ -771,9 +766,6 @@ export class CollectionsService {
 					}
 
 					const relations = this.schema.relations.filter((relation) => {
-						// Version tables have already been cleaned up above
-						if (isShadowTable(relation.collection)) return false;
-
 						return relation.collection === collectionKey || relation.related_collection === collectionKey;
 					});
 

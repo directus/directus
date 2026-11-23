@@ -12,22 +12,16 @@ import type {
 import { getRelationInfo } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEqual, isPlainObject, pick } from 'lodash-es';
+import { getHelpers } from '../database/helpers/index.js';
+import type { VersioningHelper } from '../database/helpers/versioning/types.js';
 import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { transaction } from '../utils/transaction.js';
 import { validateLinkAccess } from '../versioning/link-access.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
-import {
-	getLinkTableName,
-	getShadowTableName,
-	getVersionReferenceField,
-	isShadowTable,
-	isVersionedCollection,
-	toVersionMeta,
-	VERSION_META_FIELD,
-	VERSION_META_FIELDS,
-} from './version-tables/constants.js';
+import { toVersionMeta, VERSION_META_FIELD, VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
+import { isVersioningTable } from './version-tables/utils.js';
 
 type VersionMeta = {
 	id: PrimaryKey | null;
@@ -63,18 +57,20 @@ export class VersionedItemsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
+	versioning: VersioningHelper;
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.collection = collection;
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
+		this.versioning = getHelpers(this.knex).versioning;
 
-		if (!(collection in this.schema.collections) || isShadowTable(collection)) {
+		if (!(collection in this.schema.collections) || isVersioningTable(collection)) {
 			throw new ForbiddenError();
 		}
 
-		if (!isVersionedCollection(this.schema, collection)) {
+		if (!this.versioning.isVersionedCollection(this.schema, collection)) {
 			throw new InvalidPayloadError({ reason: `Versioning isn't enabled for collection "${collection}"` });
 		}
 	}
@@ -100,7 +96,9 @@ export class VersionedItemsService {
 			const liveKey = await this.publishVersion(trx, this.collection, versionId, new Set());
 
 			if (options?.deleteVersion) {
-				await trx(getShadowTableName(this.collection)).where(VERSION_META_FIELDS.id, versionId).delete();
+				await trx(this.versioning.getShadowTableName(this.collection))
+					.where(VERSION_SYSTEM_FIELDS.id, versionId)
+					.delete();
 			}
 
 			return liveKey;
@@ -115,13 +113,13 @@ export class VersionedItemsService {
 			const { primary } = this.schema.collections[this.collection]!;
 			const row = await this.readVersionRow(trx, this.collection, versionId, 'update');
 
-			if (row[VERSION_META_FIELDS.type] !== 'published' || row[primary] === null) {
+			if (row[VERSION_SYSTEM_FIELDS.type] !== 'published' || row[primary] === null) {
 				throw new InvalidPayloadError({ reason: `Version "${versionId}" isn't published` });
 			}
 
-			await trx(getShadowTableName(this.collection))
-				.where(VERSION_META_FIELDS.id, versionId)
-				.update({ [VERSION_META_FIELDS.type]: 'draft' });
+			await trx(this.versioning.getShadowTableName(this.collection))
+				.where(VERSION_SYSTEM_FIELDS.id, versionId)
+				.update({ [VERSION_SYSTEM_FIELDS.type]: 'draft' });
 
 			await this.removeLiveItem(trx, this.collection, row[primary], { keepReference: false });
 		});
@@ -136,7 +134,7 @@ export class VersionedItemsService {
 	async archive(versionId: PrimaryKey): Promise<PrimaryKey> {
 		return transaction(this.knex, async (trx) => {
 			const { primary } = this.schema.collections[this.collection]!;
-			const shadowTable = getShadowTableName(this.collection);
+			const shadowTable = this.versioning.getShadowTableName(this.collection);
 			const row = await this.readVersionRow(trx, this.collection, versionId, 'update');
 			const liveKey = row[primary];
 
@@ -144,17 +142,17 @@ export class VersionedItemsService {
 
 			if (liveKey !== null) {
 				const published = await trx(shadowTable)
-					.select(VERSION_META_FIELDS.id)
+					.select(VERSION_SYSTEM_FIELDS.id)
 					.where(primary, liveKey)
-					.where(VERSION_META_FIELDS.type, 'published')
+					.where(VERSION_SYSTEM_FIELDS.type, 'published')
 					.first();
 
-				if (published) archivedId = published[VERSION_META_FIELDS.id];
+				if (published) archivedId = published[VERSION_SYSTEM_FIELDS.id];
 			}
 
 			await trx(shadowTable)
-				.where(VERSION_META_FIELDS.id, archivedId)
-				.update({ [VERSION_META_FIELDS.type]: 'archived' });
+				.where(VERSION_SYSTEM_FIELDS.id, archivedId)
+				.update({ [VERSION_SYSTEM_FIELDS.type]: 'archived' });
 
 			if (liveKey !== null) {
 				await this.removeLiveItem(trx, this.collection, liveKey, { keepReference: true });
@@ -170,7 +168,7 @@ export class VersionedItemsService {
 	async readOne(versionId: PrimaryKey, query?: { fields?: string[] | null }): Promise<Item> {
 		const row = await this.readVersionRow(this.knex, this.collection, versionId, 'read');
 		const { fields } = this.schema.collections[this.collection]!;
-		const shadowFields = this.schema.collections[getShadowTableName(this.collection)]!.fields;
+		const shadowFields = this.schema.collections[this.versioning.getShadowTableName(this.collection)]!.fields;
 
 		const values: Item = {};
 
@@ -188,7 +186,7 @@ export class VersionedItemsService {
 
 		// Show references to versions of related items in the same format they're written in
 		for (const relation of this.getM2ORelations(this.collection)) {
-			const referenceField = getVersionReferenceField(relation.field);
+			const referenceField = this.versioning.getVersionReferenceField(relation.field);
 
 			if (referenceField in shadowFields && item[relation.field] === null && row[referenceField] !== null) {
 				item[relation.field] = { [VERSION_META_FIELD]: { id: row[referenceField] } };
@@ -257,19 +255,19 @@ export class VersionedItemsService {
 		Object.assign(record, pick(processed, Object.keys(plainValues)));
 
 		if (meta && 'name' in meta) {
-			record[VERSION_META_FIELDS.name] = meta.name ?? null;
+			record[VERSION_SYSTEM_FIELDS.name] = meta.name ?? null;
 		}
 
 		// Writes go through the shadow collection, so its permissions, validation and presets apply as usual
 		const shadowService = this.getShadowService(trx, collection);
 
 		if (existing) {
-			record[VERSION_META_FIELDS.dateUpdated] = new Date();
-			record[VERSION_META_FIELDS.userUpdated] = this.accountability?.user ?? null;
+			record[VERSION_SYSTEM_FIELDS.dateUpdated] = new Date();
+			record[VERSION_SYSTEM_FIELDS.userUpdated] = this.accountability?.user ?? null;
 
 			await shadowService.updateOne(versionId!, record);
 		} else {
-			record[VERSION_META_FIELDS.userCreated] = this.accountability?.user ?? null;
+			record[VERSION_SYSTEM_FIELDS.userCreated] = this.accountability?.user ?? null;
 
 			versionId = await shadowService.createOne(record);
 		}
@@ -286,8 +284,8 @@ export class VersionedItemsService {
 	 * which is only possible if the related collection is versioned.
 	 */
 	private async saveM2O(trx: Knex, collection: string, relation: Relation, value: unknown, current: Item) {
-		const shadowFields = this.schema.collections[getShadowTableName(collection)]!.fields;
-		const referenceField = getVersionReferenceField(relation.field);
+		const shadowFields = this.schema.collections[this.versioning.getShadowTableName(collection)]!.fields;
+		const referenceField = this.versioning.getVersionReferenceField(relation.field);
 		const hasReference = referenceField in shadowFields;
 
 		if (!isPlainObject(value)) {
@@ -296,7 +294,7 @@ export class VersionedItemsService {
 
 		const relatedCollection = relation.related_collection ?? current[relation.meta?.one_collection_field ?? ''];
 
-		if (!hasReference || !relatedCollection || !isVersionedCollection(this.schema, relatedCollection)) {
+		if (!hasReference || !relatedCollection || !this.versioning.isVersionedCollection(this.schema, relatedCollection)) {
 			throw new InvalidPayloadError({
 				reason: `Field "${relation.field}" in "${collection}" can only link to existing items, as the related collection isn't versioned`,
 			});
@@ -358,14 +356,14 @@ export class VersionedItemsService {
 	private async linkO2M(trx: Knex, relation: Relation, versionId: PrimaryKey, items: unknown[]) {
 		const relatedCollection = relation.collection;
 		const { primary } = this.schema.collections[relatedCollection]!;
-		const linkTable = getLinkTableName(relatedCollection);
+		const linkTable = this.versioning.getLinkTableName(relatedCollection);
 		const linked = { keys: [] as PrimaryKey[], versionIds: [] as PrimaryKey[] };
 
 		for (const item of items) {
 			const key = this.getO2MLinkKey(relation, item);
 
 			if (key === null) {
-				if (!isVersionedCollection(this.schema, relatedCollection)) {
+				if (!this.versioning.isVersionedCollection(this.schema, relatedCollection)) {
 					throw new InvalidPayloadError({
 						reason: `Field "${relation.meta!.one_field}" can only link to existing items, as "${relatedCollection}" isn't versioned`,
 					});
@@ -413,9 +411,9 @@ export class VersionedItemsService {
 	) {
 		const relatedCollection = relation.collection;
 		const { primary } = this.schema.collections[relatedCollection]!;
-		const linkTable = getLinkTableName(relatedCollection);
-		const relatedShadowTable = getShadowTableName(relatedCollection);
-		const referenceField = getVersionReferenceField(relation.field);
+		const linkTable = this.versioning.getLinkTableName(relatedCollection);
+		const relatedShadowTable = this.versioning.getShadowTableName(relatedCollection);
+		const referenceField = this.versioning.getVersionReferenceField(relation.field);
 
 		const scope = async (query: Knex.QueryBuilder, column: string, values: PrimaryKey[]): Promise<Item[]> =>
 			options.except ? query.whereNotIn(column, values) : query.whereIn(column, values);
@@ -439,11 +437,11 @@ export class VersionedItemsService {
 
 		const unlinkedVersionIds = (
 			await scope(
-				trx(relatedShadowTable).select(VERSION_META_FIELDS.id).where(referenceField, versionId),
-				VERSION_META_FIELDS.id,
+				trx(relatedShadowTable).select(VERSION_SYSTEM_FIELDS.id).where(referenceField, versionId),
+				VERSION_SYSTEM_FIELDS.id,
 				items.versionIds,
 			)
-		).map((row) => row[VERSION_META_FIELDS.id]);
+		).map((row) => row[VERSION_SYSTEM_FIELDS.id]);
 
 		if (unlinkedVersionIds.length === 0) return;
 
@@ -499,7 +497,7 @@ export class VersionedItemsService {
 		visited: Set<string>,
 	): Promise<PrimaryKey> {
 		const { primary, fields } = this.schema.collections[collection]!;
-		const shadowTable = getShadowTableName(collection);
+		const shadowTable = this.versioning.getShadowTableName(collection);
 		const row = await this.readVersionRow(trx, collection, versionId, 'read');
 
 		// Prevents endless loops for circular references between versions
@@ -530,14 +528,14 @@ export class VersionedItemsService {
 
 		// Versions of related items are published first, so the live item can reference them
 		for (const relation of this.getM2ORelations(collection)) {
-			const referenceId = row[getVersionReferenceField(relation.field)];
+			const referenceId = row[this.versioning.getVersionReferenceField(relation.field)];
 
 			// Links to live items take precedence over references to versions
 			if (referenceId === undefined || referenceId === null || row[relation.field] !== null) continue;
 
 			const relatedCollection = relation.related_collection ?? row[relation.meta?.one_collection_field ?? ''];
 
-			if (!relatedCollection || !isVersionedCollection(this.schema, relatedCollection)) continue;
+			if (!relatedCollection || !this.versioning.isVersionedCollection(this.schema, relatedCollection)) continue;
 
 			const relatedKey = await this.publishVersion(trx, relatedCollection, referenceId, visited);
 
@@ -574,10 +572,10 @@ export class VersionedItemsService {
 
 		// The previously published version of the item goes back to being a draft
 		await trx(shadowTable)
-			.update({ [VERSION_META_FIELDS.type]: 'draft' })
+			.update({ [VERSION_SYSTEM_FIELDS.type]: 'draft' })
 			.where(primary, liveKey)
-			.where(VERSION_META_FIELDS.type, 'published')
-			.whereNot(VERSION_META_FIELDS.id, versionId);
+			.where(VERSION_SYSTEM_FIELDS.type, 'published')
+			.whereNot(VERSION_SYSTEM_FIELDS.id, versionId);
 
 		const managedFields = Object.values(fields)
 			.filter((field) => !field.alias && hasSpecial(field, MANAGED_SPECIALS))
@@ -591,11 +589,11 @@ export class VersionedItemsService {
 				...shadowUpdates,
 				...managedValues,
 				[primary]: liveKey,
-				[VERSION_META_FIELDS.type]: 'published',
-				[VERSION_META_FIELDS.dateUpdated]: trx.fn.now(),
-				[VERSION_META_FIELDS.userUpdated]: this.accountability?.user ?? null,
+				[VERSION_SYSTEM_FIELDS.type]: 'published',
+				[VERSION_SYSTEM_FIELDS.dateUpdated]: trx.fn.now(),
+				[VERSION_SYSTEM_FIELDS.userUpdated]: this.accountability?.user ?? null,
 			})
-			.where(VERSION_META_FIELDS.id, versionId);
+			.where(VERSION_SYSTEM_FIELDS.id, versionId);
 
 		await this.publishRelatedItems(trx, collection, versionId, liveKey, visited);
 
@@ -639,16 +637,16 @@ export class VersionedItemsService {
 	) {
 		const relations = this.schema.relations.filter(
 			(relation) =>
-				!isShadowTable(relation.collection) &&
+				!isVersioningTable(relation.collection) &&
 				(relation.related_collection === collection || relation.meta?.one_allowed_collections?.includes(collection)),
 		);
 
 		for (const relation of relations) {
 			const relatedCollection = relation.collection;
 			const { primary } = this.schema.collections[relatedCollection]!;
-			const linkTable = getLinkTableName(relatedCollection);
-			const relatedShadowTable = getShadowTableName(relatedCollection);
-			const referenceField = getVersionReferenceField(relation.field);
+			const linkTable = this.versioning.getLinkTableName(relatedCollection);
+			const relatedShadowTable = this.versioning.getShadowTableName(relatedCollection);
+			const referenceField = this.versioning.getVersionReferenceField(relation.field);
 
 			// a2o references only store the id, the collection is in a separate field of the item
 			const collectionField = relation.related_collection ? null : relation.meta!.one_collection_field!;
@@ -676,16 +674,16 @@ export class VersionedItemsService {
 			}
 
 			if (this.schema.collections[relatedShadowTable]?.fields[referenceField]) {
-				const query = trx(relatedShadowTable).select(VERSION_META_FIELDS.id).where(referenceField, versionId);
+				const query = trx(relatedShadowTable).select(VERSION_SYSTEM_FIELDS.id).where(referenceField, versionId);
 
 				if (collectionField) query.where(collectionField, collection);
 
-				const relatedVersionIds = (await query).map((row) => row[VERSION_META_FIELDS.id]);
+				const relatedVersionIds = (await query).map((row) => row[VERSION_SYSTEM_FIELDS.id]);
 
 				for (const relatedVersionId of relatedVersionIds) {
 					await trx(relatedShadowTable)
 						.update({ [relation.field]: liveKey })
-						.where(VERSION_META_FIELDS.id, relatedVersionId);
+						.where(VERSION_SYSTEM_FIELDS.id, relatedVersionId);
 
 					await this.publishVersion(trx, relatedCollection, relatedVersionId, visited);
 				}
@@ -705,16 +703,16 @@ export class VersionedItemsService {
 		options: { keepReference: boolean },
 	) {
 		const { primary } = this.schema.collections[collection]!;
-		const shadowTable = getShadowTableName(collection);
+		const shadowTable = this.versioning.getShadowTableName(collection);
 
-		const versionIds = (await trx(shadowTable).select(VERSION_META_FIELDS.id).where(primary, liveKey)).map(
-			(row) => row[VERSION_META_FIELDS.id],
+		const versionIds = (await trx(shadowTable).select(VERSION_SYSTEM_FIELDS.id).where(primary, liveKey)).map(
+			(row) => row[VERSION_SYSTEM_FIELDS.id],
 		);
 
 		// Deleting a live item deletes its versions as well, so they are detached while it's removed
 		await trx(shadowTable)
 			.update({ [primary]: null })
-			.whereIn(VERSION_META_FIELDS.id, versionIds);
+			.whereIn(VERSION_SYSTEM_FIELDS.id, versionIds);
 
 		// The item might already be gone, e.g. when archiving a version of an archived item
 		const exists = await trx(collection).select(primary).where(primary, liveKey).first();
@@ -724,7 +722,7 @@ export class VersionedItemsService {
 		if (options.keepReference && versionIds.length > 0) {
 			await trx(shadowTable)
 				.update({ [primary]: liveKey })
-				.whereIn(VERSION_META_FIELDS.id, versionIds);
+				.whereIn(VERSION_SYSTEM_FIELDS.id, versionIds);
 		}
 	}
 
@@ -733,11 +731,11 @@ export class VersionedItemsService {
 	}
 
 	private getShadowService(knex: Knex, collection: string) {
-		return this.getItemsService(knex, getShadowTableName(collection));
+		return this.getItemsService(knex, this.versioning.getShadowTableName(collection));
 	}
 
 	private async readVersionRow(knex: Knex, collection: string, versionId: PrimaryKey, action: PermissionsAction) {
-		const shadowTable = getShadowTableName(collection);
+		const shadowTable = this.versioning.getShadowTableName(collection);
 
 		if (this.accountability) {
 			await validateAccess(
@@ -746,7 +744,7 @@ export class VersionedItemsService {
 			);
 		}
 
-		const row = await knex.select('*').from(shadowTable).where(VERSION_META_FIELDS.id, versionId).first();
+		const row = await knex.select('*').from(shadowTable).where(VERSION_SYSTEM_FIELDS.id, versionId).first();
 
 		if (!row) throw new ForbiddenError();
 

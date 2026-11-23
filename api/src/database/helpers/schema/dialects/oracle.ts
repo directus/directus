@@ -9,6 +9,11 @@ import { SchemaHelper } from '../types.js';
 import { prepQueryParams } from '../utils/prep-query-params.js';
 
 export class SchemaHelperOracle extends SchemaHelper {
+	override getMaxIdentifierLength(): number {
+		// https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Database-Object-Names-and-Qualifiers.html
+		return 128;
+	}
+
 	override generateIndexName(
 		type: 'unique' | 'foreign' | 'index',
 		collection: string,
@@ -19,7 +24,7 @@ export class SchemaHelperOracle extends SchemaHelper {
 
 		// Knex generates a hash of the name if it is above the allowed value
 		// https://github.com/knex/knex/blob/master/lib/dialects/oracle/utils.js#L20
-		if (indexName.length > 128) {
+		if (indexName.length > this.getMaxIdentifierLength()) {
 			// generates the sha1 of the name and encode it with base64
 			indexName = crypto.createHash('sha1').update(indexName).digest('base64').replace('=', '');
 		}

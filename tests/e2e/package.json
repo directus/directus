@@ -16,6 +16,7 @@
 		"@directus/license": "catalog:",
 		"@directus/mock-license-server": "catalog:",
 		"@directus/sandbox": "workspace:*",
+		"@directus/schema": "workspace:*",
 		"@directus/schema-builder": "workspace:*",
 		"@directus/sdk": "workspace:*",
 		"@directus/system-data": "workspace:*",
@@ -32,7 +33,6 @@
 		"@types/node": "catalog:",
 		"tsx": "catalog:",
 		"typescript": "catalog:",
-		"vite-tsconfig-paths": "catalog:",
 		"vitest": "catalog:"
 	},
 	"engines": {

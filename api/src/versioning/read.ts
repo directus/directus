@@ -11,14 +11,10 @@ import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { ItemsService } from '../services/items.js';
 import {
-	getLinkTableName,
-	getShadowTableName,
-	getVersionReferenceField,
-	isVersionedCollection,
 	toVersionMeta,
 	VERSION_META_FIELD,
-	VERSION_META_FIELDS,
 	VERSION_REFERENCE_PREFIX,
+	VERSION_SYSTEM_FIELDS,
 } from '../services/version-tables/constants.js';
 import type { FieldNode } from '../types/ast.js';
 import {
@@ -66,10 +62,11 @@ export async function readVersionedItems(
 	mode: ReadMode = 'items',
 ): Promise<Item[]> {
 	const { knex, schema, accountability } = context;
+	const { versioning } = getHelpers(knex);
 
 	if (accountability && !accountability.admin) {
 		await validateAccess(
-			{ accountability, action: 'read', collection: getShadowTableName(collection) },
+			{ accountability, action: 'read', collection: versioning.getShadowTableName(collection) },
 			{ knex, schema },
 		);
 	}
@@ -106,6 +103,7 @@ export async function readVersionedItems(
 		filter: query.filter
 			? rewriteFilter(query.filter, {
 					schema: virtual.schema,
+					versioning,
 					collection: virtual.name,
 					hasMeta: true,
 					references: true,
@@ -187,21 +185,22 @@ function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection:
 	const name = `directus_versioned_${collection}`;
 	const live = schema.collections[collection]!;
 	const { primary } = live;
-	const shadowTable = getShadowTableName(collection);
+	const { versioning } = getHelpers(knex);
+	const shadowTable = versioning.getShadowTableName(collection);
 	const shadow = schema.collections[shadowTable]!;
-	const linkTable = getLinkTableName(collection);
+	const linkTable = versioning.getLinkTableName(collection);
 	const link = schema.collections[linkTable];
 
 	const columns = Object.values(live.fields)
 		.filter((field) => !field.alias)
 		.map((field) => field.field);
 
-	const metaFields: string[] = Object.values(VERSION_META_FIELDS);
+	const metaFields: string[] = Object.values(VERSION_SYSTEM_FIELDS);
 	const linkedFields = link ? Object.keys(link.fields).filter((field) => field !== primary) : [];
 
 	const referenceFields = uniq([
 		...Object.keys(shadow.fields).filter((field) => field.startsWith(VERSION_REFERENCE_PREFIX)),
-		...linkedFields.map(getVersionReferenceField),
+		...linkedFields.map((field) => versioning.getVersionReferenceField(field)),
 	]);
 
 	const isNumericKey = ['integer', 'bigInteger'].includes(live.fields[primary]!.type);
@@ -223,7 +222,7 @@ function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection:
 			...columns.map((column) => selectColumn(shadowTable, column in shadow.fields, column)),
 			...metaFields.map((column) => selectColumn(shadowTable, true, column)),
 			...referenceFields.map((column) => selectColumn(shadowTable, column in shadow.fields, column)),
-			selectKey(negatedVersionId, [`${shadowTable}.${VERSION_META_FIELDS.id}`]),
+			selectKey(negatedVersionId, [`${shadowTable}.${VERSION_SYSTEM_FIELDS.id}`]),
 		])
 		.from(shadowTable);
 
@@ -231,13 +230,13 @@ function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection:
 
 	if (mode === 'items') {
 		// Published versions are represented by the live item
-		versionsQuery.whereNot(`${shadowTable}.${VERSION_META_FIELDS.type}`, 'published');
+		versionsQuery.whereNot(`${shadowTable}.${VERSION_SYSTEM_FIELDS.type}`, 'published');
 
 		const itemsQuery = knex
 			.select([
 				...columns.map((column) => selectColumn(collection, true, column)),
 				...metaFields.map((column) =>
-					column === VERSION_META_FIELDS.type
+					column === VERSION_SYSTEM_FIELDS.type
 						? knex.raw(`'published' as ??`, [column])
 						: selectColumn('published', true, column),
 				),
@@ -250,7 +249,7 @@ function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection:
 			.from(collection)
 			.leftJoin({ published: shadowTable }, function () {
 				this.on(`published.${primary}`, '=', `${collection}.${primary}`).andOnVal(
-					`published.${VERSION_META_FIELDS.type}`,
+					`published.${VERSION_SYSTEM_FIELDS.type}`,
 					'=',
 					'published',
 				);
@@ -264,7 +263,7 @@ function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection:
 	}
 
 	const versionField = (field: string): FieldOverview => ({
-		...(shadow.fields[field] ?? shadow.fields[VERSION_META_FIELDS.id]!),
+		...(shadow.fields[field] ?? shadow.fields[VERSION_SYSTEM_FIELDS.id]!),
 		field,
 	});
 
@@ -321,7 +320,7 @@ async function resolveVersionReferences(
 		if (relationType === 'm2o' || relationType === 'a2o') {
 			await resolveM2O(items, relation!, subfields, context);
 		} else if (relationType === 'o2m') {
-			const versions = items.filter((item) => mode === 'versions' || item[VERSION_META_FIELDS.type] !== 'published');
+			const versions = items.filter((item) => mode === 'versions' || item[VERSION_SYSTEM_FIELDS.type] !== 'published');
 
 			await resolveO2M(versions, relation!, subfields, context);
 		}
@@ -333,7 +332,8 @@ async function resolveVersionReferences(
  * requested subfields, or for related collections that aren't versioned, only `{ directus_version: { id } }` is set.
  */
 async function resolveM2O(items: Item[], relation: Relation, subfields: string[], context: Context) {
-	const referenceField = getVersionReferenceField(relation.field);
+	const { versioning } = getHelpers(context.knex);
+	const referenceField = versioning.getVersionReferenceField(relation.field);
 	const pending = items.filter((item) => isNil(item[relation.field]) && !isNil(item[referenceField]));
 
 	if (pending.length === 0) return;
@@ -341,7 +341,7 @@ async function resolveM2O(items: Item[], relation: Relation, subfields: string[]
 	const related = relation.related_collection;
 
 	// a2o references and requests for keys only return the reference itself
-	if (!related || subfields.length === 0 || !isVersionedCollection(context.schema, related)) {
+	if (!related || subfields.length === 0 || !versioning.isVersionedCollection(context.schema, related)) {
 		for (const item of pending) {
 			item[relation.field] = { [VERSION_META_FIELD]: { id: item[referenceField] } };
 		}
@@ -369,15 +369,16 @@ async function resolveM2O(items: Item[], relation: Relation, subfields: string[]
 async function resolveO2M(versions: Item[], relation: Relation, subfields: string[], context: Context) {
 	const { knex, schema } = context;
 	const field = relation.meta!.one_field!;
-	const versionIds = versions.map((item) => item[VERSION_META_FIELDS.id]).filter((id) => !isNil(id));
+	const versionIds = versions.map((item) => item[VERSION_SYSTEM_FIELDS.id]).filter((id) => !isNil(id));
 
 	if (versionIds.length === 0) return;
 
 	const related = relation.collection;
 	const { primary } = schema.collections[related]!;
-	const linkTable = getLinkTableName(related);
-	const shadowTable = getShadowTableName(related);
-	const referenceField = getVersionReferenceField(relation.field);
+	const { versioning } = getHelpers(knex);
+	const linkTable = versioning.getLinkTableName(related);
+	const shadowTable = versioning.getShadowTableName(related);
+	const referenceField = versioning.getVersionReferenceField(relation.field);
 	const children = new Map<string, unknown[]>();
 
 	const addChild = (versionId: unknown, child: unknown) => {
@@ -427,7 +428,7 @@ async function resolveO2M(versions: Item[], relation: Relation, subfields: strin
 	// Versions of related items that belong to the versions
 	if (schema.collections[shadowTable]?.fields[referenceField]) {
 		const references = await knex(shadowTable)
-			.select(VERSION_META_FIELDS.id, referenceField)
+			.select(VERSION_SYSTEM_FIELDS.id, referenceField)
 			.whereIn(referenceField, versionIds);
 
 		const relatedVersions =
@@ -435,13 +436,13 @@ async function resolveO2M(versions: Item[], relation: Relation, subfields: strin
 				? await readVersionsById(
 						related,
 						subfields,
-						references.map((reference) => reference[VERSION_META_FIELDS.id]),
+						references.map((reference) => reference[VERSION_SYSTEM_FIELDS.id]),
 						context,
 					)
 				: null;
 
 		for (const reference of references) {
-			const versionId = reference[VERSION_META_FIELDS.id];
+			const versionId = reference[VERSION_SYSTEM_FIELDS.id];
 
 			addChild(
 				reference[referenceField],
@@ -451,7 +452,7 @@ async function resolveO2M(versions: Item[], relation: Relation, subfields: strin
 	}
 
 	for (const item of versions) {
-		item[field] = children.get(String(item[VERSION_META_FIELDS.id])) ?? [];
+		item[field] = children.get(String(item[VERSION_SYSTEM_FIELDS.id])) ?? [];
 	}
 }
 
@@ -491,7 +492,7 @@ async function readLiveById(collection: string, subfields: string[], keys: unkno
 
 	let items: Item[];
 
-	if (isVersionedCollection(schema, collection)) {
+	if (getHelpers(knex).versioning.isVersionedCollection(schema, collection)) {
 		items = await readVersionedItems(
 			collection,
 			{

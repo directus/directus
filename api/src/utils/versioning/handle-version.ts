@@ -127,7 +127,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 							};
 						}
 					},
-					true,
+					{ forceNew: true },
 				);
 			} catch (error: any) {
 				// Throw an error for single item requests
@@ -257,9 +257,9 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 		return result;
 	});
 
-	const env = useEnv();
+	const { QUERY_LIMIT_DEFAULT } = useEnv();
 
-	const effectiveLimit = query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']);
+	const effectiveLimit = query.limit ?? QUERY_LIMIT_DEFAULT;
 
 	if (effectiveLimit === -1 || results.length < effectiveLimit) {
 		results.push(

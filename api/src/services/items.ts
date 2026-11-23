@@ -41,7 +41,7 @@ import { captureSeatCount, validateUserCountIntegrity } from '../utils/validate-
 import { handleVersion } from '../utils/versioning/handle-version.js';
 import { isVersionedQuery, readVersionedItems } from '../versioning/read.js';
 import { PayloadService } from './payload.js';
-import { getShadowTableName, isVersionedCollection, VERSION_META_FIELD } from './version-tables/constants.js';
+import { VERSION_META_FIELD } from './version-tables/constants.js';
 
 export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
 	implements AbstractService<Item>
@@ -519,7 +519,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		await this.assertCollectionActive('read');
 
 		// `version=true` on collections with shadow tables reads live items and versions together
-		if (isVersionedQuery(query) && isVersionedCollection(this.schema, this.collection)) {
+		if (
+			isVersionedQuery(query) &&
+			getHelpers(this.knex).versioning.isVersionedCollection(this.schema, this.collection)
+		) {
 			return (await readVersionedItems(this.collection, query, {
 				knex: this.knex,
 				schema: this.schema,
@@ -624,7 +627,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		validateKeys(this.schema, this.collection, primaryKeyField, key);
 
 		// With versions, a key refers to the live item, or its latest archived version once the item is gone. Never drafts
-		if (isVersionedQuery(query) && isVersionedCollection(this.schema, this.collection)) {
+		if (
+			isVersionedQuery(query) &&
+			getHelpers(this.knex).versioning.isVersionedCollection(this.schema, this.collection)
+		) {
 			const filter = {
 				_and: [
 					{ [primaryKeyField]: { _eq: key } },
@@ -1186,8 +1192,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const previousSeatCount = await captureSeatCount(trx, opts.userIntegrityCheckFlags);
 
 			// Versions of an item are deleted along with it
-			if (isVersionedCollection(this.schema, this.collection)) {
-				await trx(getShadowTableName(this.collection)).whereIn(primaryKeyField, keysAfterHooks).delete();
+			const { versioning } = getHelpers(trx);
+
+			if (versioning.isVersionedCollection(this.schema, this.collection)) {
+				await trx(versioning.getShadowTableName(this.collection)).whereIn(primaryKeyField, keysAfterHooks).delete();
 			}
 
 			await trx(this.collection).whereIn(primaryKeyField, keysAfterHooks).delete();

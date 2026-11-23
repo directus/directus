@@ -2,6 +2,7 @@ import type { AbstractServiceOptions, Accountability, Permission, Query, SchemaO
 import { mergeFilters } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isArray } from 'lodash-es';
+import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import applyQuery from '../database/run-ast/lib/apply-query/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
@@ -10,7 +11,6 @@ import { getCases } from '../permissions/modules/process-ast/lib/get-cases.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { isAdmin } from '../utils/is-admin.js';
 import { countVersionedItems, isVersionedQuery } from '../versioning/read.js';
-import { isVersionedCollection } from './version-tables/constants.js';
 
 export class MetaService {
 	knex: Knex;
@@ -28,7 +28,10 @@ export class MetaService {
 
 		const results = await Promise.all(
 			query.meta.map((metaVal: string) => {
-				if (isVersionedQuery(query) && isVersionedCollection(this.schema, collection)) {
+				if (
+					isVersionedQuery(query) &&
+					getHelpers(this.knex).versioning.isVersionedCollection(this.schema, collection)
+				) {
 					const context = { knex: this.knex, schema: this.schema, accountability: this.accountability };
 
 					if (metaVal === 'total_count') return countVersionedItems(collection, {}, context);

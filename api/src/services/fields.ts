@@ -49,9 +49,10 @@ import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
 import { runSchemaChange } from './version-tables/run-schema-change.js';
+import { assertVersionSystemField, isVersioningTable } from './version-tables/utils.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
-const env = useEnv();
+const { CACHE_SCHEMA } = useEnv();
 
 export const systemFieldUpdateSchema = z
 	.object({
@@ -96,18 +97,16 @@ export class FieldsService {
 	async columnInfo(collection?: string): Promise<Column[]>;
 	async columnInfo(collection: string, field: string): Promise<Column>;
 	async columnInfo(collection?: string, field?: string): Promise<Column | Column[]> {
-		const schemaCacheIsEnabled = Boolean(env['CACHE_SCHEMA']);
-
 		let columnInfo: Column[] | null = null;
 
-		if (schemaCacheIsEnabled) {
+		if (CACHE_SCHEMA) {
 			columnInfo = await getCacheValue(this.schemaCache, 'columnInfo');
 		}
 
 		if (!columnInfo) {
 			columnInfo = await this.schemaInspector.columnInfo();
 
-			if (schemaCacheIsEnabled) {
+			if (CACHE_SCHEMA) {
 				await setCacheValue(this.schemaCache, 'columnInfo', columnInfo);
 			}
 		}
@@ -281,6 +280,8 @@ export class FieldsService {
 	}
 
 	async readOne(collection: string, field: string): Promise<Record<string, any>> {
+		if (isVersioningTable(collection)) throw new ForbiddenError();
+
 		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
 				{
@@ -366,6 +367,8 @@ export class FieldsService {
 			throw new ForbiddenError();
 		}
 
+		if (isVersioningTable(collection)) throw new ForbiddenError();
+
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
@@ -427,7 +430,7 @@ export class FieldsService {
 							});
 						});
 
-						change.sync([collection]);
+						change.sync(collection);
 					}
 				}
 
@@ -498,6 +501,8 @@ export class FieldsService {
 	}
 
 	async updateField(collection: string, field: RawField, opts?: FieldMutationOptions): Promise<string> {
+		if (isVersioningTable(collection)) throw new ForbiddenError();
+
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -568,7 +573,7 @@ export class FieldsService {
 								});
 							});
 
-							change.sync([collection]);
+							change.sync(collection);
 						});
 
 						// concurrent index creation cannot be done inside the transaction
@@ -689,6 +694,8 @@ export class FieldsService {
 	}
 
 	async deleteField(collection: string, field: string, opts?: MutationOptions): Promise<void> {
+		if (isVersioningTable(collection)) throw new ForbiddenError();
+
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -757,6 +764,8 @@ export class FieldsService {
 						await trx('directus_relations')
 							.update({ one_field: null })
 							.where({ many_collection: relation.collection, many_field: relation.field });
+
+						change.sync(relation.collection);
 					}
 				}
 
@@ -770,7 +779,7 @@ export class FieldsService {
 						table.dropColumn(field);
 					});
 
-					change.sync([collection]);
+					change.sync(collection);
 				}
 
 				const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(
@@ -899,6 +908,8 @@ export class FieldsService {
 		field: RawField | Field,
 		options?: { attemptConcurrentIndex?: boolean; existing?: Column | null },
 	): void {
+		assertVersionSystemField(collection, field.field);
+
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields

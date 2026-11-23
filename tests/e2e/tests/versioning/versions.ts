@@ -1,12 +1,7 @@
-import {
-	customEndpoint,
-	type DirectusClient,
-	queryToParams,
-	readFieldsByCollection,
-	readItems,
-	type RestClient,
-} from '@directus/sdk';
-import { port } from '@utils/constants.js';
+import { createKnex } from '@directus/sandbox';
+import { type Column, createInspector, type ForeignKey } from '@directus/schema';
+import { customEndpoint, type DirectusClient, queryToParams, readItems, type RestClient } from '@directus/sdk';
+import { env, options, port } from '@utils/constants.js';
 
 type Client = DirectusClient<any> & RestClient<any>;
 type VersionQuery = Record<string, any>;
@@ -59,16 +54,29 @@ export async function readVersion(
 	return item as Record<string, any> | undefined;
 }
 
+// Version tables aren't exposed through the API, so they are inspected in the database directly
+export const knex = createKnex(env, options);
+
+const inspector = createInspector(knex);
+
 /**
  * Names of the columns of a table, or null if the table doesn't exist
  */
-export async function getColumns(client: Client, table: string): Promise<string[] | null> {
-	try {
-		const fields = await client.request(readFieldsByCollection(table));
-		return fields.length > 0 ? fields.map((field: any) => field.field as string).sort() : null;
-	} catch {
-		return null;
-	}
+export async function getColumns(table: string): Promise<string[] | null> {
+	if (!(await inspector.hasTable(table))) return null;
+
+	return (await inspector.columnInfo(table)).map((column) => column.name).sort();
+}
+
+export async function getColumn(table: string, column: string): Promise<Column> {
+	return inspector.columnInfo(table, column);
+}
+
+export async function getForeignKey(table: string, column: string): Promise<ForeignKey | undefined> {
+	// SQLite answers `pragma foreign_key_list` from the connection's cached schema, reading the table list refreshes it
+	await inspector.hasTable(table);
+
+	return (await inspector.foreignKeys(table)).find((foreignKey) => foreignKey.column === column);
 }
 
 /**

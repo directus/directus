@@ -14,8 +14,8 @@ const entitlements = vi.hoisted(() => ({ assert: vi.fn(), clearCache: vi.fn() })
 vi.mock('../license/index.js', () => ({ getEntitlementManager: () => entitlements }));
 
 vi.mock('@directus/env', async () => {
-	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv();
+	const { mockUseEnv } = await import('../test-utils/env.js');
+	return mockUseEnv();
 });
 
 vi.mock('../../src/database/index', async () => {
@@ -150,6 +150,23 @@ describe('Integration Tests', () => {
 				const service = new CollectionsService({ knex: db, schema, accountability: null });
 
 				await expect(service.createOne({ collection: 'existing_collection' })).rejects.toThrow(InvalidPayloadError);
+			});
+
+			test('should reject reserved versioning field names in a versioned collection before creating the table', async () => {
+				tracker.on.select('directus_collections').response([]);
+				const createTableSpy = vi.spyOn(db.schema, 'createTable');
+				const service = new CollectionsService({ knex: db, schema, accountability: null });
+
+				await expect(
+					service.createOne({
+						collection: 'new_collection',
+						schema: {},
+						meta: { versioning: true } as any,
+						fields: [{ field: 'version_type', type: 'string' } as any],
+					}),
+				).rejects.toThrow(InvalidPayloadError);
+
+				expect(createTableSpy).not.toHaveBeenCalled();
 			});
 
 			test('should create collection with schema and default primary key', async () => {

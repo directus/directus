@@ -1,7 +1,7 @@
 import type { Accountability, PermissionsAction, PrimaryKey, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
+import { getHelpers } from '../database/helpers/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { getShadowTableName, isVersionedCollection } from '../services/version-tables/constants.js';
 
 /**
  * Link tables have no permissions of their own. They mirror the shadow table of the same collection,
@@ -15,8 +15,10 @@ export async function validateLinkAccess(
 
 	if (!accountability || keys.length === 0) return;
 
-	if (isVersionedCollection(context.schema, collection)) {
-		await validateAccess({ accountability, action, collection: getShadowTableName(collection) }, context);
+	const { versioning } = getHelpers(context.knex);
+
+	if (versioning.isVersionedCollection(context.schema, collection)) {
+		await validateAccess({ accountability, action, collection: versioning.getShadowTableName(collection) }, context);
 	} else {
 		await validateAccess({ accountability, action, collection, primaryKeys: keys }, context);
 	}

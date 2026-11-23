@@ -18,6 +18,7 @@
 		"eslint": "catalog:",
 		"eslint-config-prettier": "catalog:",
 		"eslint-plugin-import-x": "catalog:",
+		"eslint-plugin-regexp": "catalog:",
 		"eslint-plugin-vue": "catalog:",
 		"globals": "catalog:",
 		"postcss-html": "catalog:",
@@ -27,6 +28,7 @@
 		"stylelint-config-standard-scss": "catalog:",
 		"stylelint-config-standard-vue": "catalog:",
 		"stylelint-use-logical": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"typescript-eslint": "catalog:",
 		"vue-eslint-parser": "catalog:"

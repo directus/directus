@@ -4,8 +4,6 @@ import type { Column } from '@directus/schema';
 import type { DatabaseClient, Field, RawField, Relation, Type } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { mapValues } from 'lodash-es';
-import type { VersionTables } from '../../../services/version-tables/plan-version-tables.js';
 import { getDefaultIndexName } from '../../../utils/get-default-index-name.js';
 import { getDatabaseClient } from '../../index.js';
 import { DatabaseHelper } from '../types.js';
@@ -40,6 +38,13 @@ export abstract class SchemaHelper extends DatabaseHelper {
 				builder.dropNullable(column);
 			}
 		});
+	}
+
+	/**
+	 * The maximum length of table and column names. Longer names are truncated or rejected by the database.
+	 */
+	getMaxIdentifierLength(): number {
+		return Infinity;
 	}
 
 	generateIndexName(type: 'unique' | 'foreign' | 'index', collection: string, fields: string | string[]): string {
@@ -140,31 +145,16 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		}
 	}
 
-	/**
-	 * Run schema changes with foreign key enforcement disabled, for vendors that rebuild tables to alter them.
-	 * Must be called outside of a transaction, as some vendors ignore toggling the enforcement within one.
-	 */
-	async withForeignKeysDisabled<T>(fn: () => Promise<T>): Promise<T> {
-		return fn();
+	async preColumnChange(): Promise<boolean> {
+		return false;
+	}
+
+	async postColumnChange(): Promise<void> {
+		return;
 	}
 
 	preRelationChange(_relation: Partial<Relation>): void {
 		return;
-	}
-
-	/**
-	 * Adjust `on_delete` of the version table foreign keys the same way as for regular relations, as not every vendor
-	 * supports every action
-	 */
-	applyShadowForeignKeyRules(tables: VersionTables): VersionTables {
-		return mapValues(tables, (table) => ({
-			...table,
-			foreignKeys: table.foreignKeys.map((foreignKey) => {
-				const schema = { on_delete: foreignKey.on_delete } as NonNullable<Relation['schema']>;
-				this.preRelationChange({ collection: table.table, related_collection: foreignKey.foreign_key_table, schema });
-				return { ...foreignKey, on_delete: schema.on_delete };
-			}),
-		}));
 	}
 
 	setNullable(column: Knex.ColumnBuilder, field: RawField | Field, existing: Column | null): void {

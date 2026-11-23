@@ -1,6 +1,9 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Filter, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { describe, expect, test } from 'vitest';
+import type { SchemaHelper } from '../database/helpers/schema/types.js';
+import { VersioningHelper } from '../database/helpers/versioning/types.js';
 import {
 	type FilterLevel,
 	isFieldCondition,
@@ -42,11 +45,17 @@ const schema = new SchemaBuilder()
 	})
 	.build() as SchemaOverview;
 
+const versioning = new VersioningHelper(
+	{} as Knex,
+	{ getMaxIdentifierLength: () => Infinity } as unknown as SchemaHelper,
+);
+
 function rewrite(filter: Filter, level: Partial<FilterLevel> = {}) {
 	const shadows = new Set<string>();
 
 	const result = rewriteFilter(filter, {
 		schema,
+		versioning,
 		collection: 'articles',
 		hasMeta: true,
 		references: true,

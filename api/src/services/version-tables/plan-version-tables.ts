@@ -1,26 +1,30 @@
-import { InvalidPayloadError } from '@directus/errors';
 import type { Column, ForeignKey } from '@directus/schema';
 import type { Relation } from '@directus/types';
-import {
-	getLinkTableName,
-	getShadowTableName,
-	getVersionReferenceField,
-	isShadowTable,
-	VERSION_META_FIELDS,
-} from './constants.js';
+import type { VersioningHelper } from '../../database/helpers/versioning/types.js';
+import type { InspectedSchema } from '../version-tables.js';
+import { VERSION_SYSTEM_FIELDS } from './constants.js';
+import { assertVersionSystemField, isVersioningTable } from './utils.js';
 
-export type OnDelete = ForeignKey['on_delete'];
+export type ReferentialAction = ForeignKey['on_delete'];
 
 /** Vendors report the default action differently, but they all behave the same */
-export function normalizeOnDelete(onDelete: OnDelete) {
-	return onDelete === null || onDelete === 'RESTRICT' ? 'NO ACTION' : onDelete;
+export function normalizeAction(action: ReferentialAction) {
+	return action === null || action === 'RESTRICT' ? 'NO ACTION' : action;
 }
 
+/** Copy of a live column */
+export type MirrorColumn = {
+	kind: 'mirror';
+	name: string;
+	source: Column;
+	/** Database type as declared on the live column */
+	type: string;
+	primary?: boolean;
+};
+
 export type VersionTableColumn =
-	/** One of the version meta fields, only present on shadow tables */
-	| { kind: 'meta'; name: string }
-	/** Copy of a live column, without any of its constraints */
-	| { kind: 'mirror'; name: string; source: Column; primary?: boolean }
+	| { kind: 'system'; name: string }
+	| MirrorColumn
 	/** Reference to the `version_id` of a shadow table */
 	| { kind: 'reference'; name: string };
 
@@ -28,7 +32,8 @@ export type VersionTableForeignKey = {
 	column: string;
 	foreign_key_table: string;
 	foreign_key_column: string;
-	on_delete: OnDelete;
+	on_delete: ReferentialAction;
+	on_update: ReferentialAction;
 };
 
 export type VersionTable = {
@@ -43,201 +48,332 @@ export type VersionTable = {
  */
 export type LiveCollection = {
 	collection: string;
-	/** Columns of the live table, in table order */
 	columns: Column[];
-	/** m2o and a2o relations where this collection is the "many" side */
 	relations: Relation[];
 };
 
-/** Version tables keyed by table name */
 export type VersionTables = Record<string, VersionTable>;
-
-/** Live collections keyed by collection name */
 export type LiveCollections = Record<string, LiveCollection>;
+export type TablesMapped = Record<string, Record<string, Column>>;
+
+export type InspectedTables = {
+	columns: TablesMapped;
+	foreignKeys: ForeignKey[];
+};
+
+export type TableAlteration = {
+	create: VersionTableColumn[];
+	update: { column: MirrorColumn; existing: Column }[];
+	drop: string[];
+};
+
+export type Plan = {
+	tables: { create: VersionTable[]; update: Record<string, TableAlteration>; drop: string[] };
+	foreignKeys: { create: Record<string, VersionTableForeignKey[]>; drop: Record<string, ForeignKey[]> };
+};
+
+type TableChanges = Plan['tables'];
 
 /**
- * Compute the shadow and link tables that should exist for the given live collections. Only the version tables of
- * these collections are planned, the version tables of any other collection are left out.
+ * Plan the changes to the version tables of the given live collections. Only the version tables of these collections
+ * are planned, so `existing` is expected to hold just their version tables: any other table in it is dropped.
  *
- * @param collections - Live collections to plan the version tables for, keyed by collection name
- * @param versioned - All collections that have versioning enabled, including ones not being planned
- * @param schemaHelper - Adjusts the foreign keys to what the vendor supports
+ * @param schema - Inspected Schema
+ * @param helper - Provides the vendor specific names and foreign key rules of the version tables
  */
-export function planShadowTables(collections: LiveCollections, versioned: Set<string>): VersionTables {
+export function planVersioning(schema: InspectedSchema, helper: VersioningHelper): Plan {
+	const { liveCollections, shadowTables, versionedTables } = schema;
+
+	const spec = getVersionSpec(liveCollections, { versioned: versionedTables, helper });
+	const tables = diffTables(spec, shadowTables.columns);
+	const foreignKeys = diffForeignKeys(spec, tables, shadowTables.foreignKeys);
+
+	return { tables, foreignKeys };
+}
+
+/**
+ * Compute the shadow and link tables that should exist for the given live collections
+ */
+function getVersionSpec(collections: LiveCollections, context: PlanContext): VersionTables {
 	const tables: VersionTables = {};
 
 	for (const collection of Object.values(collections)) {
-		if (!versioned.has(collection.collection) || isShadowTable(collection.collection)) continue;
+		if (isVersioningTable(collection.collection)) continue;
 
-		const shadowTable = planShadowTable(collection, versioned);
+		if (context.versioned.has(collection.collection)) {
+			const shadowTable = buildShadowTable(collection, context);
+			tables[shadowTable.table] = shadowTable;
+		}
 
-		tables[shadowTable.table] = shadowTable;
-	}
+		const primaryKeyColumn = getPrimaryKeyColumn(collection);
 
-	for (const collection of Object.values(collections)) {
-		if (isShadowTable(collection.collection)) continue;
+		if (!primaryKeyColumn) continue;
 
-		const linkTable = planLinkTable(collection, versioned);
+		const hasVersionedO2M = collection.relations.some(
+			(relation) =>
+				relation.field !== primaryKeyColumn.name &&
+				relation.meta?.one_field &&
+				relation.related_collection &&
+				context.versioned.has(relation.related_collection),
+		);
 
-		if (linkTable) tables[linkTable.table] = linkTable;
+		if (!hasVersionedO2M) continue;
+
+		const linkTable = buildLinkTable(collection, primaryKeyColumn, context);
+
+		tables[linkTable.table] = linkTable;
 	}
 
 	return tables;
 }
 
-function getPrimaryKey(collection: LiveCollection) {
+/**
+ * Diff the target tables against the existing ones
+ */
+function diffTables(spec: VersionTables, existingTables: TablesMapped): TableChanges {
+	const changes: TableChanges = {
+		drop: Object.keys(existingTables).filter((table) => !spec[table]),
+		create: [],
+		update: {},
+	};
+
+	for (const table of Object.values(spec)) {
+		const existing = existingTables[table.table];
+
+		if (!existing) {
+			changes.create.push(table);
+			continue;
+		}
+
+		const plannedNames = new Set(table.columns.map((column) => column.name));
+
+		const alteration: TableAlteration = {
+			create: [],
+			update: [],
+			drop: Object.keys(existing).filter((name) => !plannedNames.has(name)),
+		};
+
+		for (const column of table.columns) {
+			const existingColumn = existing[column.name];
+
+			if (!existingColumn) {
+				alteration.create.push(column);
+				continue;
+			}
+
+			if (column.kind !== 'mirror' || column.type.toLowerCase() === getColumnType(existingColumn).toLowerCase())
+				continue;
+
+			alteration.update.push({ column, existing: existingColumn });
+		}
+
+		if (alteration.create.length || alteration.update.length || alteration.drop.length) {
+			changes.update[table.table] = alteration;
+		}
+	}
+
+	return changes;
+}
+
+function diffForeignKeys(spec: VersionTables, changes: TableChanges, existingForeignKeys: ForeignKey[]) {
+	const drop: Record<string, ForeignKey[]> = {};
+	const kept = new Set<VersionTableForeignKey>();
+
+	for (const foreignKey of existingForeignKeys) {
+		const alteration = changes.update[foreignKey.table];
+
+		const match = spec[foreignKey.table]?.foreignKeys.find(
+			(planned) => !kept.has(planned) && isSameForeignKey(foreignKey, planned),
+		);
+
+		const mustDrop =
+			!match ||
+			// if the column changes, most DBs dont allow changes unless the fk is removed.
+			alteration?.update.some(({ column }) => column.name === foreignKey.column);
+
+		if (mustDrop) {
+			(drop[foreignKey.table] ??= []).push(foreignKey);
+		} else {
+			kept.add(match);
+		}
+	}
+
+	const create: Record<string, VersionTableForeignKey[]> = {};
+
+	for (const table of Object.values(spec)) {
+		const missing = table.foreignKeys.filter((foreignKey) => !kept.has(foreignKey));
+
+		if (missing.length > 0) create[table.table] = missing;
+	}
+
+	return { drop, create };
+}
+
+type PlanContext = { versioned: Set<string>; helper: VersioningHelper };
+
+function getPrimaryKeyColumn(collection: LiveCollection) {
 	return collection.columns.find((column) => column.is_primary_key);
 }
 
-function planShadowTable(liveCollection: LiveCollection, versioned: Set<string>): VersionTable {
+function buildShadowTable(liveCollection: LiveCollection, context: PlanContext): VersionTable {
 	const { collection, columns, relations } = liveCollection;
-	const primary = getPrimaryKey(liveCollection)?.name;
-	const metaFields: string[] = Object.values(VERSION_META_FIELDS);
+	const primary = getPrimaryKeyColumn(liveCollection)?.name;
 
 	const shadow: VersionTable = {
-		table: getShadowTableName(collection),
+		table: context.helper.getShadowTableName(collection),
 		type: 'shadow',
-		columns: metaFields.map((name) => ({ kind: 'meta', name })),
+		columns: Object.values(VERSION_SYSTEM_FIELDS).map((name) => ({ kind: 'system', name })),
 		foreignKeys: [
 			{
-				column: VERSION_META_FIELDS.userCreated,
+				column: VERSION_SYSTEM_FIELDS.userCreated,
 				foreign_key_table: 'directus_users',
 				foreign_key_column: 'id',
 				on_delete: 'SET NULL',
+				on_update: null,
 			},
 			{
-				column: VERSION_META_FIELDS.userUpdated,
+				column: VERSION_SYSTEM_FIELDS.userUpdated,
 				foreign_key_table: 'directus_users',
 				foreign_key_column: 'id',
 				on_delete: 'SET NULL',
+				on_update: null,
 			},
 		],
 	};
 
-	const usedNames = new Set(metaFields);
+	for (const column of columns) {
+		const field = column.name;
+		// Field creation only checks this while the collection is versioned, not for fields that existed before
+		assertVersionSystemField(collection, field);
 
-	const reserveName = (name: string, field: string) => {
-		if (usedNames.has(name)) {
-			throw new InvalidPayloadError({
-				reason: `Field "${field}" in collection "${collection}" conflicts with the versioning field "${name}"`,
-			});
-		}
+		shadow.columns.push(buildMirrorColumn(column));
 
-		usedNames.add(name);
-	};
-
-	for (const source of columns) {
-		const field = source.name;
-
-		reserveName(field, field);
-		shadow.columns.push({ kind: 'mirror', name: field, source });
-
-		// The live primary key references the live item and is null until the version is published. It has no foreign
-		// key, so archived versions keep the id of their item after the live item is removed
+		// Dont create a relation for the mirrored primary key so archiving works
 		if (field === primary) continue;
 
 		const relation = relations.find((relation) => relation.field === field);
 
 		if (!relation) continue;
 
-		const reference = getVersionReference(relation, versioned);
+		const reference = buildVersionReference(relation, context);
 
-		// Relational constraints are the only constraints that are kept on the mirrored columns
-		if (relation.schema && reference.relatedCollection) {
+		// Only database o2m fk constrains are mirrored
+		if (relation.schema && reference.related_collection) {
 			shadow.foreignKeys.push({
 				column: field,
-				foreign_key_table: reference.relatedCollection,
+				foreign_key_table: reference.related_collection,
 				foreign_key_column: relation.schema.foreign_key_column,
 				on_delete: relation.schema.on_delete,
+				on_update: relation.schema.on_update ?? null,
 			});
 		}
 
 		if (!reference.versioned) continue;
 
-		const referenceField = getVersionReferenceField(field);
+		const referenceField = context.helper.getVersionReferenceField(field);
 
-		reserveName(referenceField, field);
 		shadow.columns.push({ kind: 'reference', name: referenceField });
 
-		if (reference.foreignKey) {
-			shadow.foreignKeys.push({ ...reference.foreignKey, column: referenceField });
+		if (reference.foreign_key) {
+			shadow.foreignKeys.push({ ...reference.foreign_key, column: referenceField });
 		}
 	}
+
+	shadow.foreignKeys = context.helper.adjustForeignKeyActions(shadow.table, shadow.foreignKeys);
 
 	return shadow;
 }
 
 /**
- * Link tables store references from live items to versions of related collections, which is needed for o2m relations
- * on versioned collections without having to modify the live table.
- * Only created when at least one m2o / a2o of the collection points to a versioned collection.
+ * Link tables store references from live items to versions of related collections.
  */
-function planLinkTable(liveCollection: LiveCollection, versioned: Set<string>): VersionTable | null {
-	const { collection, relations } = liveCollection;
-	const source = getPrimaryKey(liveCollection);
-
-	if (!source) return null;
-
-	const primary = source.name;
+function buildLinkTable(collection: LiveCollection, primaryKeyColumn: Column, context: PlanContext): VersionTable {
+	const primary = primaryKeyColumn.name;
 
 	const link: VersionTable = {
-		table: getLinkTableName(collection),
+		table: context.helper.getLinkTableName(collection.collection),
 		type: 'link',
-		columns: [{ kind: 'mirror', name: primary, source, primary: true }],
+		columns: [buildMirrorColumn(primaryKeyColumn, true)],
 		foreignKeys: [
 			{
 				column: primary,
-				foreign_key_table: collection,
+				foreign_key_table: collection.collection,
 				foreign_key_column: primary,
 				on_delete: 'CASCADE',
+				on_update: null,
 			},
 		],
 	};
 
-	for (const relation of relations) {
+	for (const relation of collection.relations) {
 		if (relation.field === primary) continue;
 
-		const reference = getVersionReference(relation, versioned);
+		const reference = buildVersionReference(relation, context);
 
 		if (!reference.versioned) continue;
 
-		link.columns.push({ kind: 'reference', name: relation.field });
+		const referenceField = context.helper.getVersionReferenceField(relation.field);
 
-		if (reference.foreignKey) {
-			link.foreignKeys.push({ ...reference.foreignKey, column: relation.field });
+		link.columns.push({ kind: 'reference', name: referenceField });
+
+		if (reference.foreign_key) {
+			link.foreignKeys.push({ ...reference.foreign_key, column: referenceField });
 		}
 	}
 
-	return link.columns.length > 1 ? link : null;
+	link.foreignKeys = context.helper.adjustForeignKeyActions(link.table, link.foreignKeys);
+
+	return link;
 }
 
 /**
  * Figure out if a m2o / a2o relation can point to a version and how that reference should be constrained.
- * Relations to collections that no longer exist are expected to be left out by the caller.
  */
-function getVersionReference(relation: Relation, versioned: Set<string>) {
-	const relatedCollection = relation.related_collection;
+function buildVersionReference(relation: Relation, context: PlanContext) {
+	const related_collection = relation.related_collection;
 
-	if (relatedCollection) {
-		if (!versioned.has(relatedCollection)) return { relatedCollection, versioned: false } as const;
+	if (related_collection) {
+		if (!context.versioned.has(related_collection)) {
+			return { related_collection, versioned: false };
+		}
 
 		return {
-			relatedCollection,
+			related_collection,
 			versioned: true,
-			foreignKey: {
-				foreign_key_table: getShadowTableName(relatedCollection),
-				foreign_key_column: VERSION_META_FIELDS.id,
+			foreign_key: {
+				foreign_key_table: context.helper.getShadowTableName(related_collection),
+				foreign_key_column: VERSION_SYSTEM_FIELDS.id,
 				on_delete: relation.schema?.on_delete ?? 'SET NULL',
+				on_update: null,
 			},
-		} as const;
+		};
 	}
 
 	// a2o relations can't have a foreign key, as the related collection is stored in a separate field
 	const allowedCollections = relation.meta?.one_allowed_collections ?? [];
 
 	return {
-		relatedCollection: null,
-		versioned: allowedCollections.some((allowedCollection) => versioned.has(allowedCollection)),
-		foreignKey: null,
-	} as const;
+		related_collection: null,
+		versioned: allowedCollections.some((allowedCollection) => context.versioned.has(allowedCollection)),
+		foreign_key: null,
+	};
+}
+
+// Mirrored columns drop all constraints apart from relations
+function buildMirrorColumn(source: Column, primary?: boolean): MirrorColumn {
+	return { kind: 'mirror', name: source.name, source, type: getColumnType(source), ...(primary && { primary }) };
+}
+
+function getColumnType(column: Column): string {
+	return column.full_data_type ?? column.data_type;
+}
+
+function isSameForeignKey(existing: ForeignKey, planned: VersionTableForeignKey) {
+	return (
+		existing.column === planned.column &&
+		existing.foreign_key_table === planned.foreign_key_table &&
+		existing.foreign_key_column === planned.foreign_key_column &&
+		normalizeAction(existing.on_delete) === normalizeAction(planned.on_delete) &&
+		normalizeAction(existing.on_update) === normalizeAction(planned.on_update)
+	);
 }
