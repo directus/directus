@@ -7,6 +7,7 @@ import PrivateViewHeaderBarActionButton from '../private-view/components/private
 import api from '@/api';
 import VDrawer from '@/components/v-drawer.vue';
 import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
 import { VALIDATION_TYPES } from '@/constants';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -40,8 +41,10 @@ const { internalActive } = useActiveState();
 const { save, cancel, saving, validationErrors } = useActions();
 
 const { collection } = toRefs(props);
-const { primaryKeyField } = useCollection(collection);
+const { info, primaryKeyField } = useCollection(collection);
 const { getTranslationsFields, saveBatchWithTranslations } = useTranslationsFields();
+
+const showVersioningNotice = computed(() => !props.stageOnSave && !!info.value?.meta?.versioning);
 
 function useEdits() {
 	const localEdits = ref<Record<string, any>>({});
@@ -249,6 +252,10 @@ function useTranslationsFields() {
 		</template>
 
 		<div class="drawer-batch-content">
+			<VNotice v-if="showVersioningNotice" type="warning" class="versioning-notice">
+				{{ $t('batch_edit_versioned_notice') }}
+			</VNotice>
+
 			<VForm
 				v-model="internalEdits"
 				:collection="collection"
@@ -268,5 +275,9 @@ function useTranslationsFields() {
 .drawer-batch-content {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
+}
+
+.versioning-notice {
+	margin-block-end: var(--theme--form--row-gap);
 }
 </style>
