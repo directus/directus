@@ -15,6 +15,8 @@ export const schema = new SchemaBuilder().collection('fields', (c) => {
 	c.field('date_time').dateTime();
 	c.field('timestamp').timestamp();
 	c.field('hash').hash();
+	c.field('csv').csv();
+	c.field('json').json();
 });
 
 export const snapshot = schema.snapshot();

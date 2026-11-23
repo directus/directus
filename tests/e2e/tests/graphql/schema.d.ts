@@ -1,0 +1,72 @@
+export interface Schema {
+	articles: Articles[];
+	blogs: Blogs[];
+	date_blocks: DateBlocks[];
+	text_blocks: TextBlocks[];
+	tags: Tags[];
+	users: Users[];
+	links: Links[];
+	articles_tags_junction: ArticlesTagsJunction[];
+	articles_blocks: ArticlesBlocks[];
+	blogs_blocks: BlogsBlocks[];
+}
+
+export interface Articles {
+	id: number;
+	title: string | null;
+	author: number | Users | null;
+	tags: number[] | ArticlesTagsJunction[];
+	links: number[] | Links[];
+	blocks: number[] | ArticlesBlocks[];
+}
+
+export interface Blogs {
+	id: number;
+	blocks: number[] | BlogsBlocks[];
+}
+
+export interface DateBlocks {
+	id: number;
+	date: string | null;
+}
+
+export interface TextBlocks {
+	id: number;
+	text: string | null;
+}
+
+export interface Tags {
+	id: number;
+	tag: string | null;
+}
+
+export interface Users {
+	id: number;
+	name: string | null;
+}
+
+export interface Links {
+	id: number;
+	link: string | null;
+	article_id: number | Articles | null;
+}
+
+export interface ArticlesTagsJunction {
+	id: number;
+	articles_id: number | Articles | null;
+	tags_id: number | Tags | null;
+}
+
+export interface ArticlesBlocks {
+	id: number;
+	articles_id: number | Articles | null;
+	item: string | DateBlocks | TextBlocks | null;
+	collection: string | null;
+}
+
+export interface BlogsBlocks {
+	id: number;
+	blogs_id: number | Blogs | null;
+	item: string | TextBlocks | null;
+	collection: string | null;
+}
