@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, Comment, MutationOptions, PrimaryKey } from '@directus/types';
 import { isValidUuid } from '@directus/utils';
 import { uniq } from 'lodash-es';
@@ -7,6 +7,7 @@ import { useLogger } from '../logger/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { assertHardcodedUser } from '../permissions/utils/assert-hardcoded-auth.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
 import { ItemsService } from './items.js';
@@ -27,7 +28,7 @@ export class CommentsService extends ItemsService<Comment> {
 	}
 
 	override async createOne(data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey> {
-		if (!this.accountability?.user) throw new ForbiddenError();
+		assertHardcodedUser(this.accountability, 'directus_comments', 'create');
 
 		if (!data['comment']) {
 			throw new InvalidPayloadError({ reason: `"comment" is required` });
@@ -164,7 +165,7 @@ ${comment}
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (!this.accountability?.user) throw new ForbiddenError();
+		assertHardcodedUser(this.accountability, 'directus_comments', 'update');
 
 		if ('user_created' in data) {
 			throw new InvalidPayloadError({ reason: `You can't change the "user_created" value manually` });
@@ -206,7 +207,7 @@ ${comment}
 	}
 
 	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (!this.accountability?.user) throw new ForbiddenError();
+		assertHardcodedUser(this.accountability, 'directus_comments', 'delete');
 
 		return super.deleteMany(keys, opts);
 	}

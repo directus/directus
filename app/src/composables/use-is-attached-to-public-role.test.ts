@@ -28,6 +28,14 @@ test('queries the access rows attaching the policy to the Public role', async ()
 	});
 });
 
+test('is false without querying for a policy that is not saved yet', async () => {
+	const isAttachedToPublicRole = useIsAttachedToPublicRole(ref('+'));
+	await flushPromises();
+
+	expect(isAttachedToPublicRole.value).toBe(false);
+	expect(api.get).not.toHaveBeenCalled();
+});
+
 test('is false when the policy is not attached to the Public role', async () => {
 	vi.mocked(api.get).mockResolvedValue({ data: { data: [] } });
 
