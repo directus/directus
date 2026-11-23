@@ -1955,7 +1955,6 @@ fields:
     last_page: Last Page
     last_access: Last Access
     email_notifications: Email Notifications
-    appearance: Appearance
     theme_light: Theme Light
     theme_dark: Theme Dark
     theme_light_overrides: Light Theme Customization
@@ -2894,6 +2893,10 @@ interfaces:
     color_off: Color Off
     label_placeholder: Enter a label...
     label_default: Enabled
+    control: Control
+    control_note: Show the field as a checkbox or a switch
+    checkbox: Checkbox
+    switch: Switch
   translations:
     display_template: Display Template
     no_collection: No Collection

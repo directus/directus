@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import VCheckbox from '@/components/v-checkbox.vue';
+import VSwitch from '@/components/v-switch.vue';
 
 withDefaults(
 	defineProps<{
@@ -11,12 +12,14 @@ withDefaults(
 		iconOff?: string;
 		colorOn?: string;
 		colorOff?: string;
+		control?: 'checkbox' | 'switch';
 	}>(),
 	{
 		iconOn: 'check_box',
 		iconOff: 'check_box_outline_blank',
 		colorOn: 'var(--theme--primary)',
 		colorOff: 'var(--theme--form--field--input--foreground-subdued)',
+		control: 'checkbox',
 	},
 );
 
@@ -26,7 +29,21 @@ defineEmits<{
 </script>
 
 <template>
+	<VSwitch
+		v-if="control === 'switch'"
+		block
+		:label="label || $t('enabled')"
+		:model-value="value"
+		:disabled="disabled"
+		:non-editable="nonEditable"
+		:style="{
+			'--v-switch-color': colorOn,
+			'--v-switch-unchecked-color': colorOff,
+		}"
+		@update:model-value="$emit('input', $event)"
+	/>
 	<VCheckbox
+		v-else
 		block
 		:icon-on="iconOn"
 		:icon-off="iconOff"
