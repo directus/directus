@@ -1521,7 +1521,7 @@ creating_unit: 'Creating {unit}'
 editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 batch_edit_versioned_notice:
-  Bulk edits make the changes immediately in this release of Directus. In an upcoming release, this behavior will
+  Bulk edits to versioned items make changes on the published version of each item, so any changes will immediately go live. In an upcoming release, this behavior will
   change.
 no_options_available: No options available
 settings_data_model: Data Model
