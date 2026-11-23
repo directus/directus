@@ -731,6 +731,13 @@ export class ImportService {
 						} else if (mode === 'merge') {
 							matchedExisting = oldPk != null && (await keyExists(trx, collection, pkField, oldPk));
 
+							if (matchedExisting && collection === 'directus_operations') {
+								// Free unique links before the second pass can assign them to another operation.
+								for (const field of ['resolve', 'reject']) {
+									if (secondPassFields.has(field) && item[field] !== undefined) payload[field] = null;
+								}
+							}
+
 							if (!matchedExisting && isAutoIncrement) {
 								// Key doesn't exist: remap so the auto-increment sequence keeps advancing naturally
 								delete payload[pkField];
