@@ -1,3 +1,4 @@
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import type { Filter, Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
@@ -50,6 +51,15 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 	const versions = await versionsService.getVersionSaves(query.version!, self.collection, key, false);
 
 	if (key && versions.length === 0) {
+		// The draft version conceptually always exists — it is the main item plus
+		// an optional delta — so fall back to the main item when no draft has
+		// been saved yet. This keeps `?version=draft` safe for preview frontends
+		// before the first draft save, matching the `versionRaw` handling above.
+		if (query.version === VERSION_KEY_DRAFT) {
+			delete query.version;
+			return self.readByQuery(query, opts);
+		}
+
 		throw new ForbiddenError();
 	}
 
