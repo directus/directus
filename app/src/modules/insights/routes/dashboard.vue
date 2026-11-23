@@ -5,6 +5,7 @@ import { assign, isEmpty } from 'lodash-es';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { RouterView } from 'vue-router';
 import InsightsNavigation from '../components/navigation.vue';
+import { usePanelPermissions } from '../composables/use-panel-permissions';
 import InsightsNotFound from './not-found.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -21,7 +22,7 @@ import VSelect from '@/components/v-select/v-select.vue';
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import VWorkspace from '@/components/v-workspace.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useItemPermissions } from '@/composables/use-permissions';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
 import { useInsightsStore } from '@/stores/insights';
@@ -47,11 +48,16 @@ const { loading, errors, data, saving, hasEdits, refreshIntervals, variables } =
 
 const zoomToFit = ref(false);
 
-const { updateAllowed } = useItemPermissions('directus_panels', props.primaryKey, false);
+const { createAllowed, updateAllowed, deleteAllowed } = useCollectionPermissions('directus_panels');
+
+const editAllowed = computed(() => createAllowed.value || updateAllowed.value || deleteAllowed.value);
 
 const now = new Date();
 
 const editMode = ref(false);
+
+const panelIds = computed(() => insightsStore.getPanelsForDashboard(props.primaryKey).map(({ id }) => id));
+const panelPermissions = usePanelPermissions(panelIds, editMode);
 
 const inactivePanelIds = computed(
 	() =>
@@ -78,6 +84,7 @@ const tiles = computed<AppTile[]>(() => {
 
 	const tiles: AppTile[] = panelsWithCoordinates
 		.map((panel) => {
+			const permissions = panelPermissions.value[panel.id]!;
 			let topLeftIntersects = false;
 			let topRightIntersects = false;
 			let bottomRightIntersects = false;
@@ -125,7 +132,10 @@ const tiles = computed<AppTile[]>(() => {
 				showHeader: panel.show_header === true,
 				minWidth: panelType?.minWidth,
 				minHeight: panelType?.minHeight,
-				draggable: true,
+				draggable: permissions.update,
+				createAllowed: createAllowed.value,
+				updateAllowed: permissions.update,
+				deleteAllowed: permissions.delete,
 				borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
 				data: {
 					options: applyOptionsData(panel.options ?? {}, unref(variables), panelType?.skipUndefinedKeys),
@@ -244,6 +254,8 @@ const refreshInterval = computed({
 			<template v-if="editMode">
 				<PrivateViewHeaderBarActionButton
 					:label="$t('create_panel')"
+					:disabled="!createAllowed"
+					:tooltip="createAllowed ? undefined : $t('not_allowed')"
 					secondary
 					:to="{ name: 'panel-detail', params: { primaryKey: currentDashboard.id, panelKey: '+' } }"
 					icon="add"
@@ -262,7 +274,8 @@ const refreshInterval = computed({
 				v-else
 				:label="$t('edit_panels')"
 				class="edit"
-				:disabled="!updateAllowed"
+				:disabled="!editAllowed"
+				:tooltip="editAllowed ? undefined : $t('not_allowed')"
 				icon="edit"
 				@click="editMode = !editMode"
 			/>
