@@ -13,12 +13,12 @@ export function normalizeAction(action: ReferentialAction) {
 	return action === null || action === 'RESTRICT' ? 'NO ACTION' : action;
 }
 
-/** Copy of a live column */
+/** Copy of a source column */
 export type MirrorColumn = {
 	kind: 'mirror';
 	name: string;
 	source: Column;
-	/** Database type as declared on the live column */
+	/** Database type as declared on the source column */
 	type: string;
 	primary?: boolean;
 };
@@ -45,16 +45,16 @@ export type VersionTable = {
 };
 
 /**
- * A live collection together with everything needed to plan its version tables
+ * A source collection together with everything needed to plan its version tables
  */
-export type LiveCollection = {
+export type SourceCollection = {
 	collection: string;
 	columns: Column[];
 	relations: Relation[];
 };
 
 export type VersionTables = Record<string, VersionTable>;
-export type LiveCollections = Record<string, LiveCollection>;
+export type SourceCollections = Record<string, SourceCollection>;
 
 export type TableAlteration = {
 	create: VersionTableColumn[];
@@ -70,7 +70,7 @@ export type Plan = {
 type TableChanges = Plan['tables'];
 
 /**
- * Plan the changes to the version tables of the given live collections. Only the version tables of these collections
+ * Plan the changes to the version tables of the given source collections. Only the version tables of these collections
  * are planned, so `existing` is expected to hold just their version tables: any other table in it is dropped.
  *
  * @param schema - Inspected Schema
@@ -87,9 +87,9 @@ export function planVersioning(schema: VersioningState, helper: VersioningHelper
 }
 
 /**
- * Compute the shadow and link tables that should exist for the given live collections
+ * Compute the shadow and link tables that should exist for the given source collections
  */
-function getVersionSpec(collections: LiveCollections, context: PlanContext): VersionTables {
+function getVersionSpec(collections: SourceCollections, context: PlanContext): VersionTables {
 	const tables: VersionTables = {};
 
 	for (const collection of Object.values(collections)) {
@@ -208,13 +208,13 @@ function diffForeignKeys(spec: VersionTables, changes: TableChanges, existingFor
 
 type PlanContext = { versioned: Set<string>; helper: VersioningHelper };
 
-function getPrimaryKeyColumn(collection: LiveCollection) {
+function getPrimaryKeyColumn(collection: SourceCollection) {
 	return collection.columns.find((column) => column.is_primary_key);
 }
 
-function buildShadowTable(liveCollection: LiveCollection, context: PlanContext): VersionTable {
-	const { collection, columns, relations } = liveCollection;
-	const primary = getPrimaryKeyColumn(liveCollection)?.name;
+function buildShadowTable(sourceCollection: SourceCollection, context: PlanContext): VersionTable {
+	const { collection, columns, relations } = sourceCollection;
+	const primary = getPrimaryKeyColumn(sourceCollection)?.name;
 
 	const shadow: VersionTable = {
 		table: context.helper.getShadowTableName(collection),
@@ -282,9 +282,9 @@ function buildShadowTable(liveCollection: LiveCollection, context: PlanContext):
 }
 
 /**
- * Link tables store references from live items to versions of related collections.
+ * Link tables store references from source items to versions of related collections.
  */
-function buildLinkTable(collection: LiveCollection, primaryKeyColumn: Column, context: PlanContext): VersionTable {
+function buildLinkTable(collection: SourceCollection, primaryKeyColumn: Column, context: PlanContext): VersionTable {
 	const primary = primaryKeyColumn.name;
 
 	const link: VersionTable = {

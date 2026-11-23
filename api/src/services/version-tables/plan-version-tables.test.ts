@@ -7,8 +7,8 @@ import type { SchemaHelper } from '../../database/helpers/schema/types.js';
 import { VersioningHelper } from '../../database/helpers/versioning/types.js';
 import type { VersionedTables } from '../version-tables.js';
 import {
-	type LiveCollection,
-	type LiveCollections,
+	type SourceCollection,
+	type SourceCollections,
 	planVersioning,
 	type VersionTables,
 } from './plan-version-tables.js';
@@ -64,7 +64,7 @@ const columns = {
 	],
 };
 
-const collectionList: LiveCollection[] = [
+const collectionList: SourceCollection[] = [
 	{ collection: 'articles', columns: columns.articles, relations: [m2o('articles', 'author', 'authors')] },
 	{ collection: 'authors', columns: columns.authors, relations: [] },
 	{
@@ -88,18 +88,18 @@ const collectionList: LiveCollection[] = [
 	},
 ];
 
-const collections: LiveCollections = keyBy(collectionList, 'collection');
+const collections: SourceCollections = keyBy(collectionList, 'collection');
 
 const noTables: VersionedTables = { columns: {}, foreignKeys: [] };
 
-function planChanges(liveCollections: LiveCollections, versionedTables: Set<string>, shadowTables: VersionedTables) {
+function planChanges(liveCollections: SourceCollections, versionedTables: Set<string>, shadowTables: VersionedTables) {
 	return planVersioning(
 		{ sourceCollections: liveCollections, versionedCollections: versionedTables, versionTables: shadowTables },
 		helper,
 	);
 }
 
-function planTables(collections: LiveCollections, versioned: Set<string>) {
+function planTables(collections: SourceCollections, versioned: Set<string>) {
 	return keyBy(planChanges(collections, versioned, noTables).tables.create, 'table');
 }
 
@@ -211,7 +211,7 @@ describe('planVersionTables', () => {
 	});
 
 	test('references all versioned collections once a link table is needed', () => {
-		const junction: LiveCollections = {
+		const junction: SourceCollections = {
 			junction: {
 				collection: 'junction',
 				columns: [column('junction', 'id'), column('junction', 'articles_id'), column('junction', 'authors_id')],
@@ -240,7 +240,7 @@ describe('planVersionTables', () => {
 	});
 
 	test('throws when a live field conflicts with a version field', () => {
-		const conflicting: LiveCollections = {
+		const conflicting: SourceCollections = {
 			authors: {
 				collection: 'authors',
 				columns: [column('authors', 'id'), column('authors', 'version_name', 'varchar')],
@@ -400,7 +400,7 @@ describe('planVersionTables changes', () => {
 
 describe('mirror column types', () => {
 	function typeOf(source: Column) {
-		const live: LiveCollections = {
+		const live: SourceCollections = {
 			authors: { collection: 'authors', columns: [column('authors', 'id'), source], relations: [] },
 		};
 

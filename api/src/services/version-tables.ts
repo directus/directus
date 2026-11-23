@@ -11,10 +11,10 @@ import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { stitchRelations } from '../utils/stitch-relations.js';
 import { VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
 import {
-	type LiveCollections,
 	normalizeAction,
 	type Plan,
 	planVersioning,
+	type SourceCollections,
 	type VersionTableColumn,
 } from './version-tables/plan-version-tables.js';
 import { isVersioningTable } from './version-tables/utils.js';
@@ -24,11 +24,11 @@ export type VersionedTables = {
 	foreignKeys: ForeignKey[];
 };
 
-/** Versioned collections, version tables and live collections to plan a sync from */
+/** Versioned collections, version tables and source collections to plan a sync from */
 export type VersioningState = {
 	versionedCollections: Set<string>;
 	versionTables: VersionedTables;
-	sourceCollections: LiveCollections;
+	sourceCollections: SourceCollections;
 };
 
 export type SyncCollectionsOptions = {
@@ -39,7 +39,7 @@ export type SyncCollectionsOptions = {
 /**
  * Manages the shadow and link tables of versioned collections.
  *
- * Should run in the same transaction as the live schema change, after it was made.
+ * Should run in the same transaction as the source schema change, after it was made.
  */
 export class VersionTablesService {
 	knex: Knex;
