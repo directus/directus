@@ -967,7 +967,7 @@ export class PayloadService {
 
 							// add sort field value if it is not supplied in the item
 							if (parent !== null && record[sortField] === undefined) {
-								record[sortField] = highestOrderNumber?.max ? highestOrderNumber.max + index + 1 : index + 1;
+								record[sortField] = highestOrderNumber?.max != null ? highestOrderNumber.max + index + 1 : index + 1;
 							}
 
 							return {
