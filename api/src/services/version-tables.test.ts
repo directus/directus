@@ -291,6 +291,12 @@ describe('VersionTablesService.syncCollections', () => {
 			  "version_ref_author" integer null
 			);
 
+			create table "directus_link_articles" (
+			  "id" integer not null,
+			  "version_ref_author" integer null,
+			  constraint "directus_link_articles_pkey" primary key ("id")
+			);
+
 			create table "directus_shadow_authors" (
 			  "version_id" serial primary key,
 			  "version_name" varchar(255) null,
@@ -301,12 +307,6 @@ describe('VersionTablesService.syncCollections', () => {
 			  "version_user_updated" uuid null,
 			  "id" integer null,
 			  "name" varchar(255) null
-			);
-
-			create table "directus_link_articles" (
-			  "id" integer not null,
-			  "author" integer null,
-			  constraint "directus_link_articles_pkey" primary key ("id")
 			);
 
 			alter table "directus_shadow_articles"
@@ -321,17 +321,17 @@ describe('VersionTablesService.syncCollections', () => {
 			alter table "directus_shadow_articles"
 			add constraint "directus_shadow_articles_version_ref_author_foreign" foreign key ("version_ref_author") references "directus_shadow_authors" ("version_id") on delete SET NULL;
 
-			alter table "directus_shadow_authors"
-			add constraint "directus_shadow_authors_version_user_created_foreign" foreign key ("version_user_created") references "directus_users" ("id") on delete SET NULL;
-
-			alter table "directus_shadow_authors"
-			add constraint "directus_shadow_authors_version_user_updated_foreign" foreign key ("version_user_updated") references "directus_users" ("id") on delete SET NULL;
-
 			alter table "directus_link_articles"
 			add constraint "directus_link_articles_id_foreign" foreign key ("id") references "articles" ("id") on delete CASCADE;
 
 			alter table "directus_link_articles"
-			add constraint "directus_link_articles_author_foreign" foreign key ("author") references "directus_shadow_authors" ("version_id") on delete SET NULL"
+			add constraint "directus_link_articles_version_ref_author_foreign" foreign key ("version_ref_author") references "directus_shadow_authors" ("version_id") on delete SET NULL;
+
+			alter table "directus_shadow_authors"
+			add constraint "directus_shadow_authors_version_user_created_foreign" foreign key ("version_user_created") references "directus_users" ("id") on delete SET NULL;
+
+			alter table "directus_shadow_authors"
+			add constraint "directus_shadow_authors_version_user_updated_foreign" foreign key ("version_user_updated") references "directus_users" ("id") on delete SET NULL"
 		`);
 
 		expect(bindings).toMatchInlineSnapshot(`
@@ -548,7 +548,7 @@ describe('scoped changes', () => {
 
 			create table "directus_link_articles" (
 			  "id" integer not null,
-			  "author" integer null,
+			  "version_ref_author" integer null,
 			  constraint "directus_link_articles_pkey" primary key ("id")
 			);
 
@@ -568,7 +568,7 @@ describe('scoped changes', () => {
 			add constraint "directus_link_articles_id_foreign" foreign key ("id") references "articles" ("id") on delete CASCADE;
 
 			alter table "directus_link_articles"
-			add constraint "directus_link_articles_author_foreign" foreign key ("author") references "directus_shadow_authors" ("version_id") on delete SET NULL"
+			add constraint "directus_link_articles_version_ref_author_foreign" foreign key ("version_ref_author") references "directus_shadow_authors" ("version_id") on delete SET NULL"
 		`);
 	});
 
@@ -766,7 +766,7 @@ describe('dialects', () => {
 		expect(sql).toMatchInlineSnapshot(`
 			"create table "directus_link_articles" (
 			  "id" CHAR(36 BYTE) not null,
-			  "author" integer null
+			  "version_ref_author" integer null
 			);
 
 			alter table "directus_link_articles"
@@ -776,7 +776,7 @@ describe('dialects', () => {
 			add constraint "directus_link_articles_id_foreign" foreign key ("id") references "articles" ("id") on delete CASCADE;
 
 			alter table "directus_link_articles"
-			add constraint "directus_link_articles_author_foreign" foreign key ("author") references "directus_shadow_authors" ("version_id") on delete SET NULL"
+			add constraint "directus_link_articles_version_ref_author_foreign" foreign key ("version_ref_author") references "directus_shadow_authors" ("version_id") on delete SET NULL"
 		`);
 	});
 
@@ -792,10 +792,10 @@ describe('dialects', () => {
 			),
 			shadow: {
 				tables: ['directus_link_articles'],
-				columns: [column('directus_link_articles', 'id'), column('directus_link_articles', 'author')],
+				columns: [column('directus_link_articles', 'id'), column('directus_link_articles', 'version_ref_author')],
 				foreignKeys: [
 					foreignKey('directus_link_articles', 'id', 'articles', 'CASCADE'),
-					foreignKey('directus_link_articles', 'author', 'directus_shadow_authors', 'SET NULL'),
+					foreignKey('directus_link_articles', 'version_ref_author', 'directus_shadow_authors', 'SET NULL'),
 				],
 			},
 			run: (service) => service.syncCollections(['articles']),

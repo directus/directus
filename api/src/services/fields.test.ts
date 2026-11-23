@@ -418,7 +418,7 @@ describe('Integration Tests', () => {
 			});
 
 			test.each(['version_type', 'version_ref_author'])(
-				'should reject reserved versioning field name "%s" in a versioned collection before altering the table',
+				'should reject reserved versioning field name "%s" before adding the column',
 				async (fieldName) => {
 					const versionedSchema = new SchemaBuilder()
 						.collection('test_collection', (c) => {
@@ -435,14 +435,18 @@ describe('Integration Tests', () => {
 
 					tracker.on.select('directus_fields').response([]);
 
-					const alterTableSpy = vi.fn();
-					db.schema.alterTable = alterTableSpy;
+					const table = createMockTableBuilder();
+
+					db.schema.alterTable = vi.fn((_name, callback) => {
+						callback(table);
+						return Promise.resolve();
+					}) as any;
 
 					await expect(service.createField('test_collection', { field: fieldName, type: 'string' })).rejects.toThrow(
 						InvalidPayloadError,
 					);
 
-					expect(alterTableSpy).not.toHaveBeenCalled();
+					expect(table.string).not.toHaveBeenCalled();
 				},
 			);
 
