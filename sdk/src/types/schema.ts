@@ -2,13 +2,14 @@ import type { CoreSchema } from '../schema/index.js';
 import type { IfAny, StringLiteralUnion, UnpackList } from './utils.js';
 
 /**
- * Get all available top level Item types from a given Schema
+ * Get all available top level Item types from a given Schema, including core collections
+ * (even when the schema doesn't declare them itself)
  */
 export type ItemType<Schema> =
 	| Schema[keyof Schema]
-	| {
-			[K in keyof Schema]: Schema[K] extends any[] ? Schema[K][number] : never;
-	  }[keyof Schema];
+	| UnpackList<Schema[keyof Schema]>
+	| CompleteSchema<Schema>[keyof CompleteSchema<Schema>]
+	| UnpackList<CompleteSchema<Schema>[keyof CompleteSchema<Schema>]>;
 
 /**
  * Return singular collection type

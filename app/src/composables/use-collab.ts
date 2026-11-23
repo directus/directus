@@ -1,5 +1,5 @@
 import { ErrorCode } from '@directus/errors';
-import { DirectusUser, readUser, readUsers, realtime, RemoveEventHandler, WebSocketClient } from '@directus/sdk';
+import { readUser, readUsers, realtime, RemoveEventHandler, WebSocketClient } from '@directus/sdk';
 import {
 	ACTION,
 	Avatar,
@@ -33,17 +33,6 @@ type LeaveMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.LEAVE 
 type UpdateMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.UPDATE }>;
 type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS }>;
 type DiscardMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.DISCARD }>;
-
-/**
- * User info returned from SDK queries.
- * TODO: Remove once https://linear.app/directus/issue/CMS-1702 is done
- */
-type CollabUserInfo = {
-	id: string;
-	first_name?: string | null;
-	last_name?: string | null;
-	avatar?: { id: string; modified_on: string } | null;
-};
 
 type NonInitServerAction = Exclude<ServerMessage['action'], typeof ACTION.SERVER.INIT>;
 
@@ -349,15 +338,13 @@ export function useCollab(
 							_in: Array.from(new Set(message.users.map((user) => user.user))),
 						},
 					},
-					//  Object syntax for nested fields - SDK types require schema definition for full support
-					// TODO: Update this once https://github.com/directus/directus/issues/26558 is Done
-					fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on'] }] as (keyof DirectusUser)[],
+					fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on'] }],
 				}),
 			);
 
 			users.value = message.users
 				.map(({ user, color, connection }) => {
-					const info = usersInfo.find((u) => u.id === user) as CollabUserInfo | undefined;
+					const info = usersInfo.find((u) => u.id === user);
 
 					if (message.connection === connection) {
 						sessionStorage.setItem(SESSION_COLOR_KEY, color);
@@ -449,8 +436,7 @@ export function useCollab(
 			: await sdk
 					.request(
 						readUser(message.user, {
-							// TODO: Update this once https://github.com/directus/directus/issues/26558 is Done
-							fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on'] }] as (keyof DirectusUser)[],
+							fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on'] }],
 						}),
 					)
 					.catch(() => ({}));
