@@ -279,13 +279,10 @@ function inspect(tables: VersionTables): VersionedTables {
 	const inspected: VersionedTables = { columns: {}, foreignKeys: [] };
 
 	for (const table of Object.values(tables)) {
-		inspected.columns[table.table] = Object.fromEntries(
-			table.columns.map((planned) => [
-				planned.name,
-				planned.kind === 'mirror'
-					? { ...planned.source, table: table.table }
-					: column(table.table, planned.name, planned.kind === 'system' ? 'varchar' : 'integer'),
-			]),
+		inspected.columns[table.table] = table.columns.map((planned) =>
+			planned.kind === 'mirror'
+				? { ...planned.source, table: table.table }
+				: column(table.table, planned.name, planned.kind === 'system' ? 'varchar' : 'integer'),
 		);
 
 		inspected.foreignKeys.push(
@@ -300,6 +297,18 @@ function inspect(tables: VersionTables): VersionedTables {
 	}
 
 	return inspected;
+}
+
+/** Replace the column of the same name in the inspected table, or add it */
+function setColumn(inspected: VersionedTables, table: string, replacement: Column) {
+	inspected.columns[table] = [
+		...inspected.columns[table]!.filter((column) => column.name !== replacement.name),
+		replacement,
+	];
+}
+
+function removeColumn(inspected: VersionedTables, table: string, name: string) {
+	inspected.columns[table] = inspected.columns[table]!.filter((column) => column.name !== name);
 }
 
 describe('planVersionTables changes', () => {
@@ -337,10 +346,9 @@ describe('planVersionTables changes', () => {
 
 	test('adds missing columns and drops removed ones', () => {
 		const existing = inspect(target);
-		const authors = existing.columns['directus_shadow_authors']!;
 
-		delete authors['name'];
-		authors['removed'] = column('directus_shadow_authors', 'removed');
+		removeColumn(existing, 'directus_shadow_authors', 'name');
+		setColumn(existing, 'directus_shadow_authors', column('directus_shadow_authors', 'removed'));
 
 		const plan = planChanges(collections, versioned, existing);
 
@@ -357,7 +365,7 @@ describe('planVersionTables changes', () => {
 		const existing = inspect(target);
 		const author = column('directus_shadow_articles', 'author', 'varchar');
 
-		existing.columns['directus_shadow_articles']!['author'] = author;
+		setColumn(existing, 'directus_shadow_articles', author);
 
 		const plan = planChanges(collections, versioned, existing);
 
@@ -416,7 +424,7 @@ describe('mirror column types', () => {
 		const versioned = new Set(['authors']);
 		const inspected = inspect(planTables(collections, versioned));
 
-		inspected.columns['directus_shadow_authors']!['name'] = existing;
+		setColumn(inspected, 'directus_shadow_authors', existing);
 
 		const plan = planChanges(
 			{ authors: { ...collections['authors']!, columns: [columns.authors[0]!, live] } },

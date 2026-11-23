@@ -147,7 +147,7 @@ function diffTables(spec: VersionTables, existingTables: Record<string, Column[]
 		const alteration: TableAlteration = {
 			create: [],
 			update: [],
-			drop: Object.keys(existing).filter((name) => !plannedNames.has(name)),
+			drop: Object.keys(columns).filter((name) => !plannedNames.has(name)),
 		};
 
 		for (const column of table.columns) {
