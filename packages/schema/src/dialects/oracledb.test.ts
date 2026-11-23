@@ -22,10 +22,10 @@ const baseRawColumn: Parameters<typeof rawColumnToColumn>[0] = {
 };
 
 function fullType(overrides: Partial<typeof baseRawColumn>) {
-	return rawColumnToColumn({ ...baseRawColumn, ...overrides }).full_data_type;
+	return rawColumnToColumn({ ...baseRawColumn, ...overrides }).declared_type;
 }
 
-describe('full_data_type', () => {
+describe('declared_type', () => {
 	test('keeps the length semantics of character types', () => {
 		expect(fullType({ DATA_TYPE: 'VARCHAR2', DATA_LENGTH: 40, CHAR_LENGTH: 10, CHAR_USED: 'C' })).toBe(
 			'VARCHAR2(10 CHAR)',

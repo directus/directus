@@ -411,7 +411,7 @@ describe('mirror column types', () => {
 	}
 
 	test('mirrors the declared type of the live column', () => {
-		const source = column('authors', 'price', 'numeric', { full_data_type: 'numeric(10,2)' });
+		const source = column('authors', 'price', 'numeric', { declared_type: 'numeric(10,2)' });
 
 		expect(typeOf(source)).toBe('numeric(10,2)');
 	});
@@ -436,8 +436,8 @@ describe('mirror column types', () => {
 	}
 
 	test('alters columns whose declared type changed', () => {
-		const live = column('authors', 'name', 'varchar', { full_data_type: 'varchar(500)' });
-		const existing = column('directus_shadow_authors', 'name', 'varchar', { full_data_type: 'varchar(255)' });
+		const live = column('authors', 'name', 'varchar', { declared_type: 'varchar(500)' });
+		const existing = column('directus_shadow_authors', 'name', 'varchar', { declared_type: 'varchar(255)' });
 
 		expect(planAlteration(live, existing)).toEqual([
 			{ column: expect.objectContaining({ name: 'name', type: 'varchar(500)' }), existing },
@@ -445,8 +445,8 @@ describe('mirror column types', () => {
 	});
 
 	test('compares declared types case insensitively', () => {
-		const live = column('authors', 'name', 'varchar', { full_data_type: 'VARCHAR2(255 CHAR)' });
-		const existing = column('directus_shadow_authors', 'name', 'varchar', { full_data_type: 'varchar2(255 char)' });
+		const live = column('authors', 'name', 'varchar', { declared_type: 'VARCHAR2(255 CHAR)' });
+		const existing = column('directus_shadow_authors', 'name', 'varchar', { declared_type: 'varchar2(255 char)' });
 
 		expect(planAlteration(live, existing)).toEqual([]);
 	});

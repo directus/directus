@@ -58,7 +58,7 @@ function column(table: string, name: string, data_type = 'integer', overrides: P
 		table,
 		name,
 		data_type,
-		full_data_type: data_type === 'varchar' ? 'varchar(255)' : data_type,
+		declared_type: data_type === 'varchar' ? 'varchar(255)' : data_type,
 		max_length: data_type === 'varchar' ? 255 : null,
 		numeric_precision: null,
 		numeric_scale: null,
@@ -81,7 +81,7 @@ function vendorColumns(types: { integer: string; varchar: string }) {
 	return LIVE_COLUMNS.map((live) => {
 		const type = live.data_type === 'integer' ? types.integer : types.varchar;
 
-		return { ...live, data_type: type.replace(/\(.*\)/, ''), full_data_type: type };
+		return { ...live, data_type: type.replace(/\(.*\)/, ''), declared_type: type };
 	});
 }
 
@@ -90,7 +90,7 @@ function systemColumns(table: string) {
 	return [
 		column(table, 'version_id'),
 		column(table, 'version_name', 'varchar'),
-		column(table, 'version_type', 'varchar', { max_length: 16, full_data_type: 'varchar(16)' }),
+		column(table, 'version_type', 'varchar', { max_length: 16, declared_type: 'varchar(16)' }),
 		column(table, 'version_date_created', 'timestamp with time zone'),
 		column(table, 'version_date_updated', 'timestamp with time zone'),
 		column(table, 'version_user_created', 'uuid'),
@@ -396,7 +396,7 @@ describe('VersionTablesService.syncCollections', () => {
 			},
 			live: LIVE_COLUMNS.map((live) =>
 				live.table === 'articles' && live.name === 'title'
-					? { ...live, max_length: 500, full_data_type: 'varchar(500)' }
+					? { ...live, max_length: 500, declared_type: 'varchar(500)' }
 					: live,
 			),
 		});
@@ -654,7 +654,7 @@ describe('dialects', () => {
 
 	// MySQL doesn't accept foreign keys between signed and unsigned integers, keys created by Directus are unsigned
 	const UNSIGNED_COLUMNS = LIVE_COLUMNS.map((live) =>
-		live.data_type === 'integer' ? { ...live, data_type: 'int unsigned', full_data_type: 'int unsigned' } : live,
+		live.data_type === 'integer' ? { ...live, data_type: 'int unsigned', declared_type: 'int unsigned' } : live,
 	);
 
 	test('keeps unsigned integers on mysql, so foreign keys to unsigned keys can be added', async () => {
@@ -693,7 +693,7 @@ describe('dialects', () => {
 			shadow: {
 				...ARTICLES_SHADOW,
 				columns: ARTICLES_SHADOW.columns.map((column) =>
-					column.data_type === 'integer' ? { ...column, data_type: 'int', full_data_type: 'int' } : column,
+					column.data_type === 'integer' ? { ...column, data_type: 'int', declared_type: 'int' } : column,
 				),
 				foreignKeys: ARTICLES_SHADOW.foreignKeys.filter((foreignKey) => foreignKey.column !== 'author'),
 			},
@@ -712,11 +712,11 @@ describe('dialects', () => {
 	// Oracle reports decimals as `NUMBER` with a precision and scale, which Directus would otherwise mirror as integer
 	const ORACLE_DECIMAL_COLUMNS = [
 		...LIVE_COLUMNS,
-		column('articles', 'price', 'NUMBER', { numeric_precision: 10, numeric_scale: 5, full_data_type: 'NUMBER(10,5)' }),
+		column('articles', 'price', 'NUMBER', { numeric_precision: 10, numeric_scale: 5, declared_type: 'NUMBER(10,5)' }),
 		column('articles', 'amount', 'NUMBER', {
 			numeric_precision: null,
 			numeric_scale: 0,
-			full_data_type: 'NUMBER(*,0)',
+			declared_type: 'NUMBER(*,0)',
 		}),
 	];
 
@@ -732,12 +732,12 @@ describe('dialects', () => {
 					column('directus_shadow_articles', 'price', 'NUMBER', {
 						numeric_precision: null,
 						numeric_scale: 0,
-						full_data_type: 'NUMBER(*,0)',
+						declared_type: 'NUMBER(*,0)',
 					}),
 					column('directus_shadow_articles', 'amount', 'NUMBER', {
 						numeric_precision: null,
 						numeric_scale: 0,
-						full_data_type: 'NUMBER(*,0)',
+						declared_type: 'NUMBER(*,0)',
 					}),
 				],
 			},
@@ -756,7 +756,7 @@ describe('dialects', () => {
 			relations: [AUTHOR_O2M],
 			live: LIVE_COLUMNS.map((live) =>
 				live.table === 'articles' && live.name === 'id'
-					? { ...live, data_type: 'CHAR', max_length: 36, full_data_type: 'CHAR(36 BYTE)' }
+					? { ...live, data_type: 'CHAR', max_length: 36, declared_type: 'CHAR(36 BYTE)' }
 					: live,
 			),
 			shadow: { tables: [], columns: [], foreignKeys: [] },
@@ -787,7 +787,7 @@ describe('dialects', () => {
 			relations: [AUTHOR_O2M],
 			live: LIVE_COLUMNS.map((live) =>
 				live.table === 'articles' && live.name === 'id'
-					? { ...live, data_type: 'CHAR', max_length: 36, full_data_type: 'CHAR(36 BYTE)' }
+					? { ...live, data_type: 'CHAR', max_length: 36, declared_type: 'CHAR(36 BYTE)' }
 					: live,
 			),
 			shadow: {

@@ -36,7 +36,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		name: rawColumn.name,
 		table: rawColumn.table,
 		data_type: rawColumn.data_type,
-		full_data_type: getDeclaredType(rawColumn),
+		declared_type: getDeclaredType(rawColumn),
 		default_value: parseDefaultValue(rawColumn.default_value),
 		generation_expression: rawColumn.generation_expression || null,
 		max_length: parseMaxLength(rawColumn),

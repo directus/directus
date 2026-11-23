@@ -362,7 +362,7 @@ function buildMirrorColumn(source: Column, primary?: boolean): MirrorColumn {
 }
 
 function getColumnType(column: Column): string {
-	return column.full_data_type ?? column.data_type;
+	return column.declared_type ?? column.data_type;
 }
 
 function isSameForeignKey(existing: ForeignKey, planned: VersionTableForeignKey) {
