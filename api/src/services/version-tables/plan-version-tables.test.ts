@@ -7,9 +7,9 @@ import type { SchemaHelper } from '../../database/helpers/schema/types.js';
 import { VersioningHelper } from '../../database/helpers/versioning/types.js';
 import type { VersionedTables } from '../version-tables.js';
 import {
+	planVersioning,
 	type SourceCollection,
 	type SourceCollections,
-	planVersioning,
 	type VersionTables,
 } from './plan-version-tables.js';
 
