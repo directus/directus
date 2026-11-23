@@ -36,6 +36,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		name: rawColumn.name,
 		table: rawColumn.table,
 		data_type: rawColumn.data_type,
+		declared_type: getDeclaredType(rawColumn),
 		default_value: parseDefaultValue(rawColumn.default_value),
 		generation_expression: rawColumn.generation_expression || null,
 		max_length: parseMaxLength(rawColumn),
@@ -78,6 +79,34 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		}
 
 		return max_length === -1 ? null : max_length;
+	}
+}
+
+/**
+ * Rebuild the declared type, as `sys.types` only holds the type name
+ */
+export function getDeclaredType(rawColumn: RawColumn): string {
+	const { data_type: dataType, max_length: maxLength, numeric_precision: precision, numeric_scale: scale } = rawColumn;
+
+	switch (dataType) {
+		case 'char':
+		case 'varchar':
+		case 'binary':
+		case 'varbinary':
+			return `${dataType}(${maxLength === -1 ? 'max' : maxLength})`;
+		case 'nchar':
+		case 'nvarchar':
+			// Lengths are reported in bytes, n-types store every character in 2 bytes
+			return `${dataType}(${maxLength === -1 ? 'max' : Number(maxLength) / 2})`;
+		case 'decimal':
+		case 'numeric':
+			return `${dataType}(${precision},${scale})`;
+		case 'time':
+		case 'datetime2':
+		case 'datetimeoffset':
+			return `${dataType}(${scale})`;
+		default:
+			return dataType;
 	}
 }
 

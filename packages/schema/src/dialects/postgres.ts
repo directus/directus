@@ -11,6 +11,7 @@ type RawColumn = {
 	table: string;
 	schema: string;
 	data_type: string;
+	declared_type: string;
 	is_nullable: boolean;
 	index_name: null | string;
 	generation_expression: null | string;
@@ -386,6 +387,7 @@ export default class Postgres implements SchemaInspector {
 			  rel.relname AS table,
 			  rel.relnamespace::regnamespace::text as schema,
 			  att.atttypid::regtype::text AS data_type,
+			  format_type(att.atttypid, att.atttypmod) AS declared_type,
 			  ix_rel.relname as index_name,
 			  NOT att.attnotnull AS is_nullable,
 			  ${generationSelect}
@@ -484,6 +486,7 @@ export default class Postgres implements SchemaInspector {
 				name: col.name,
 				table: col.table,
 				data_type: col.data_type,
+				declared_type: col.declared_type,
 				default_value: parseDefaultValue(col.default_value),
 				generation_expression: col.generation_expression,
 				max_length: col.max_length,

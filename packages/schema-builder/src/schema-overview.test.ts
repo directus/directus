@@ -14,7 +14,7 @@ function createBuilder() {
 			c.field('tags').m2m('tags');
 			c.field('sort').integer().sort();
 		})
-		.options({ singleton: true, accountability: 'activity' });
+		.options({ singleton: true, versioning: true, accountability: 'activity' });
 }
 
 describe('snapshot', () => {
@@ -106,6 +106,7 @@ describe('toSchemaOverview', () => {
 		expect(collections['articles']).toMatchObject({
 			primary: 'id',
 			singleton: true,
+			versioned: true,
 			accountability: 'activity',
 			sortField: 'sort',
 			status: 'active',
@@ -154,6 +155,7 @@ describe('toSchemaOverview', () => {
 			collection: 'articles',
 			primary: 'id',
 			singleton: false,
+			versioned: false,
 			note: null,
 			sortField: null,
 			accountability: 'all',

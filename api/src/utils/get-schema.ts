@@ -11,6 +11,7 @@ import { ALIAS_TYPES } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { RelationsService } from '../services/relations.js';
+import { isVersioningTable } from '../services/version-tables/utils.js';
 import getDefaultValue from './get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from './get-field-system-rows.js';
 import getLocalType from './get-local-type.js';
@@ -95,6 +96,9 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 	const collections: (BaseCollectionMeta & Partial<CollectionMeta>)[] = [...allCollections, ...systemCollectionRows];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
+		// Version tables are managed by versioning and only accessed through it
+		if (isVersioningTable(collection)) continue;
+
 		if (env.DB_EXCLUDE_TABLES.includes(collection)) {
 			logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
 			continue;
@@ -121,6 +125,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 			collection,
 			primary: info.primary,
 			singleton: toBoolean(collectionMeta?.singleton),
+			versioned: toBoolean(collectionMeta?.versioning),
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
 			accountability: collectionMeta ? collectionMeta.accountability : 'all',

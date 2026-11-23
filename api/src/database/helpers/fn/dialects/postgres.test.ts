@@ -15,6 +15,7 @@ function makeSchema(dbType: 'json' | 'jsonb'): SchemaOverview {
 				collection: 'items',
 				primary: 'id',
 				singleton: false,
+				versioned: false,
 				sortField: null,
 				note: null,
 				accountability: null,

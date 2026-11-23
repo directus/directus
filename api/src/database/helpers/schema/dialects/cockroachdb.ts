@@ -9,6 +9,11 @@ import { SchemaHelper } from '../types.js';
 const { DB_DATABASE } = useEnv();
 
 export class SchemaHelperCockroachDb extends SchemaHelper {
+	override getMaxIdentifierLength(): number {
+		// Matches the identifier length limit of Postgres for compatibility
+		return 63;
+	}
+
 	override async changeToType(
 		table: string,
 		column: string,

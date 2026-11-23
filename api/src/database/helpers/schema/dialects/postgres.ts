@@ -6,12 +6,18 @@ import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types
 const { DB_DATABASE } = useEnv();
 
 export class SchemaHelperPostgres extends SchemaHelper {
+	override getMaxIdentifierLength(): number {
+		// Identifiers longer than NAMEDATALEN - 1 are silently truncated
+		// https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+		return 63;
+	}
+
 	override generateIndexName(
 		type: 'unique' | 'foreign' | 'index',
 		collection: string,
 		fields: string | string[],
 	): string {
-		return getDefaultIndexName(type, collection, fields, { maxLength: 63 });
+		return getDefaultIndexName(type, collection, fields, { maxLength: this.getMaxIdentifierLength() });
 	}
 
 	override async getDatabaseSize(): Promise<number | null> {

@@ -9,12 +9,17 @@ const { DB_DATABASE } = useEnv();
 let lowerCaseTableNames: number | undefined;
 
 export class SchemaHelperMySQL extends SchemaHelper {
+	override getMaxIdentifierLength(): number {
+		// https://dev.mysql.com/doc/refman/8.4/en/identifier-length.html
+		return 64;
+	}
+
 	override generateIndexName(
 		type: 'unique' | 'foreign' | 'index',
 		collection: string,
 		fields: string | string[],
 	): string {
-		return getDefaultIndexName(type, collection, fields, { maxLength: 64 });
+		return getDefaultIndexName(type, collection, fields, { maxLength: this.getMaxIdentifierLength() });
 	}
 
 	override async changePrimaryKey(table: string, to: string | string[]): Promise<void> {

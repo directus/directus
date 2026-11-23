@@ -207,6 +207,7 @@ export default class SQLite implements SchemaInspector {
 					name: raw.name,
 					table: table,
 					data_type: extractType(raw.type),
+					declared_type: raw.type,
 					default_value: parseDefaultValue(raw.dflt_value),
 					max_length: extractMaxLength(raw.type),
 					/** @NOTE SQLite3 doesn't support precision/scale */

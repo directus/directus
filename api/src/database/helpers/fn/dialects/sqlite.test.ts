@@ -14,6 +14,7 @@ const schema: SchemaOverview = {
 			collection: 'items',
 			primary: 'id',
 			singleton: false,
+			versioned: false,
 			sortField: null,
 			note: null,
 			accountability: null,

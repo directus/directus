@@ -1,27 +1,27 @@
 import { describe, expect, it } from 'vitest';
 import { parseDefaultValue, rawColumnToColumn } from './mssql.js';
 
+const baseRawColumn = {
+	table: 'test_table',
+	name: 'test_column',
+	data_type: 'nvarchar',
+	max_length: null as number | null,
+	numeric_precision: null as number | null,
+	numeric_scale: null as number | null,
+	is_generated: null,
+	is_nullable: 'YES' as const,
+	index_name: null,
+	default_value: null,
+	is_unique: null,
+	is_primary_key: null,
+	has_auto_increment: 'NO' as const,
+	foreign_key_table: null,
+	foreign_key_column: null,
+	generation_expression: null,
+};
+
 describe('MSSQL dialect', () => {
 	describe('rawColumnToColumn', () => {
-		const baseRawColumn = {
-			table: 'test_table',
-			name: 'test_column',
-			data_type: 'nvarchar',
-			max_length: null as number | null,
-			numeric_precision: null,
-			numeric_scale: null,
-			is_generated: null,
-			is_nullable: 'YES' as const,
-			index_name: null,
-			default_value: null,
-			is_unique: null,
-			is_primary_key: null,
-			has_auto_increment: 'NO' as const,
-			foreign_key_table: null,
-			foreign_key_column: null,
-			generation_expression: null,
-		};
-
 		describe('parseMaxLength', () => {
 			it('returns null for nvarchar with max_length -1 (MAX)', () => {
 				const result = rawColumnToColumn({ ...baseRawColumn, data_type: 'nvarchar', max_length: -1 });
@@ -111,6 +111,37 @@ describe('MSSQL dialect', () => {
 				const result = rawColumnToColumn({ ...baseRawColumn, data_type: 'varbinary', max_length: 100 });
 				expect(result.max_length).toBe(100);
 			});
+		});
+	});
+
+	describe('declared_type', () => {
+		const fullType = (overrides: Partial<typeof baseRawColumn>) =>
+			rawColumnToColumn({ ...baseRawColumn, ...overrides }).declared_type;
+
+		it('adds the length of character types', () => {
+			expect(fullType({ data_type: 'varchar', max_length: 100 })).toBe('varchar(100)');
+		});
+
+		it('converts the byte length of n-types to characters', () => {
+			expect(fullType({ data_type: 'nvarchar', max_length: 200 })).toBe('nvarchar(100)');
+		});
+
+		it('reports max lengths', () => {
+			expect(fullType({ data_type: 'nvarchar', max_length: -1 })).toBe('nvarchar(max)');
+			expect(fullType({ data_type: 'varbinary', max_length: -1 })).toBe('varbinary(max)');
+		});
+
+		it('adds the precision and scale of decimals', () => {
+			expect(fullType({ data_type: 'decimal', numeric_precision: 10, numeric_scale: 2 })).toBe('decimal(10,2)');
+		});
+
+		it('adds the fractional seconds precision of time types', () => {
+			expect(fullType({ data_type: 'datetime2', numeric_precision: 27, numeric_scale: 7 })).toBe('datetime2(7)');
+		});
+
+		it('keeps types without modifiers as is', () => {
+			expect(fullType({ data_type: 'uniqueidentifier', max_length: 16 })).toBe('uniqueidentifier');
+			expect(fullType({ data_type: 'int', max_length: 4 })).toBe('int');
 		});
 	});
 

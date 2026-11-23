@@ -48,6 +48,12 @@ vi.mock('../utils/transaction.js', async () => {
 	return mockTransaction();
 });
 
+vi.mock('./version-tables.js', () => ({
+	VersionTablesService: class {
+		syncCollections = vi.fn();
+	},
+}));
+
 vi.mock('../utils/get-schema.js', () => ({
 	getSchema: vi.fn(),
 }));

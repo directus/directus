@@ -127,7 +127,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 							};
 						}
 					},
-					true,
+					{ forceNew: true },
 				);
 			} catch (error: any) {
 				// Throw an error for single item requests

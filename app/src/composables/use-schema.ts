@@ -38,6 +38,7 @@ export function useSchemaOverview(): ComputedRef<SchemaOverview> {
 					note: collection.meta?.note ?? null,
 					primary: fieldsStore.getPrimaryKeyFieldForCollection(collection.collection)!.field,
 					singleton: collection.meta?.singleton ?? false,
+					versioned: collection.meta?.versioning ?? false,
 					sortField: collection.meta?.sort_field ?? null,
 				};
 
