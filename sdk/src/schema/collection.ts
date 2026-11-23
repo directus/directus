@@ -44,7 +44,7 @@ export type DirectusCollection<Schema = any> = {
 				comment: string | null;
 		  } & Record<string, unknown>)
 		| null;
-	fields?: NestedPartial<DirectusField<Schema>>[];
+	fields?: NestedPartial<DirectusField<Schema>, Schema>[];
 };
 
 export type CollectionMetaTranslationType = {

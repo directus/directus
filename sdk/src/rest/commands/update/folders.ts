@@ -20,7 +20,7 @@ export type UpdateFolderOutput<
 export const updateFolders =
 	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		keys: DirectusFolder<Schema>['id'][],
-		item: NestedPartial<DirectusFolder<Schema>>,
+		item: NestedPartial<DirectusFolder<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateFolderOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -42,7 +42,7 @@ export const updateFolders =
  */
 export const updateFoldersBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
-		items: NestedPartial<DirectusFolder<Schema>>[],
+		items: NestedPartial<DirectusFolder<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdateFolderOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -63,7 +63,7 @@ export const updateFoldersBatch =
 export const updateFolder =
 	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		key: DirectusFolder<Schema>['id'],
-		item: NestedPartial<DirectusFolder<Schema>>,
+		item: NestedPartial<DirectusFolder<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateFolderOutput<Schema, TQuery>, Schema> =>
 	() => {

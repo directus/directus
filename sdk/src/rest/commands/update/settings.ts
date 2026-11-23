@@ -16,7 +16,7 @@ export type UpdateSettingOutput<
  */
 export const updateSettings =
 	<Schema, const TQuery extends Query<Schema, DirectusSettings<Schema>>>(
-		item: NestedPartial<DirectusSettings<Schema>>,
+		item: NestedPartial<DirectusSettings<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateSettingOutput<Schema, TQuery>[], Schema> =>
 	() => ({

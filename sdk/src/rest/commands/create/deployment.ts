@@ -18,7 +18,7 @@ export type CreateDeploymentOutput<
  */
 export const createDeployment =
 	<Schema, const TQuery extends Query<Schema, DirectusDeployment<Schema>>>(
-		item: NestedPartial<DirectusDeployment<Schema>>,
+		item: NestedPartial<DirectusDeployment<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateDeploymentOutput<Schema, TQuery>, Schema> =>
 	() => ({

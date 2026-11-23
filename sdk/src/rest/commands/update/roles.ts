@@ -20,7 +20,7 @@ export type UpdateRoleOutput<
 export const updateRoles =
 	<Schema, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
 		keys: DirectusRole<Schema>['id'][],
-		item: NestedPartial<DirectusRole<Schema>>,
+		item: NestedPartial<DirectusRole<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateRoleOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -42,7 +42,7 @@ export const updateRoles =
  */
 export const updateRolesBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
-		items: NestedPartial<DirectusRole<Schema>>[],
+		items: NestedPartial<DirectusRole<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdateRoleOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -63,7 +63,7 @@ export const updateRolesBatch =
 export const updateRole =
 	<Schema, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
 		key: DirectusRole<Schema>['id'],
-		item: NestedPartial<DirectusRole<Schema>>,
+		item: NestedPartial<DirectusRole<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateRoleOutput<Schema, TQuery>, Schema> =>
 	() => {

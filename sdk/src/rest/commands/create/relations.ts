@@ -17,7 +17,7 @@ export type CreateRelationOutput<Schema, Item extends object = DirectusRelation<
  * @returns Returns the relation object for the created relation.
  */
 export const createRelation =
-	<Schema>(item: NestedPartial<DirectusRelation<Schema>>): RestCommand<CreateRelationOutput<Schema>, Schema> =>
+	<Schema>(item: NestedPartial<DirectusRelation<Schema>, Schema>): RestCommand<CreateRelationOutput<Schema>, Schema> =>
 	() => ({
 		path: `/relations`,
 		body: JSON.stringify(item),

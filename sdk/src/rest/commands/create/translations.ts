@@ -18,7 +18,7 @@ export type CreateTranslationOutput<
  */
 export const createTranslations =
 	<Schema, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
-		items: NestedPartial<DirectusTranslation<Schema>>[],
+		items: NestedPartial<DirectusTranslation<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreateTranslationOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createTranslations =
  */
 export const createTranslation =
 	<Schema, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
-		item: NestedPartial<DirectusTranslation<Schema>>,
+		item: NestedPartial<DirectusTranslation<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateTranslationOutput<Schema, TQuery>, Schema> =>
 	() => ({

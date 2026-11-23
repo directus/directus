@@ -18,7 +18,7 @@ export type CreatePresetOutput<
  */
 export const createPresets =
 	<Schema, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
-		items: NestedPartial<DirectusPreset<Schema>>[],
+		items: NestedPartial<DirectusPreset<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreatePresetOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createPresets =
  */
 export const createPreset =
 	<Schema, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
-		item: NestedPartial<DirectusPreset<Schema>>,
+		item: NestedPartial<DirectusPreset<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreatePresetOutput<Schema, TQuery>, Schema> =>
 	() => ({

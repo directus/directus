@@ -22,7 +22,7 @@ export type CreateFieldOutput<
 export const createField =
 	<Schema, const TQuery extends FieldQuery<Schema, DirectusField<Schema>>>(
 		collection: keyof Schema,
-		item: NestedPartial<DirectusField<Schema>>,
+		item: NestedPartial<DirectusField<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreateFieldOutput<Schema, TQuery>, Schema> =>
 	() => {

@@ -18,7 +18,7 @@ export type CreatePolicyOutput<
  */
 export const createPolicies =
 	<Schema, const TQuery extends Query<Schema, DirectusPolicy<Schema>>>(
-		items: NestedPartial<DirectusPolicy<Schema>>[],
+		items: NestedPartial<DirectusPolicy<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<CreatePolicyOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createPolicies =
  */
 export const createPolicy =
 	<Schema, const TQuery extends Query<Schema, DirectusPolicy<Schema>>>(
-		item: NestedPartial<DirectusPolicy<Schema>>,
+		item: NestedPartial<DirectusPolicy<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<CreatePolicyOutput<Schema, TQuery>, Schema> =>
 	() => ({

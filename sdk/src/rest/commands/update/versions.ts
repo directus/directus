@@ -20,7 +20,7 @@ export type UpdateContentVersionOutput<
 export const updateContentVersions =
 	<Schema, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
 		keys: DirectusVersion<Schema>['id'][],
-		item: NestedPartial<DirectusVersion<Schema>>,
+		item: NestedPartial<DirectusVersion<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateContentVersionOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -42,7 +42,7 @@ export const updateContentVersions =
  */
 export const updateContentVersionsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
-		items: NestedPartial<DirectusVersion<Schema>>[],
+		items: NestedPartial<DirectusVersion<Schema>, Schema>[],
 		query?: TQuery,
 	): RestCommand<UpdateContentVersionOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -63,7 +63,7 @@ export const updateContentVersionsBatch =
 export const updateContentVersion =
 	<Schema, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
 		key: DirectusVersion<Schema>['id'],
-		item: NestedPartial<DirectusVersion<Schema>>,
+		item: NestedPartial<DirectusVersion<Schema>, Schema>,
 		query?: TQuery,
 	): RestCommand<UpdateContentVersionOutput<Schema, TQuery>, Schema> =>
 	() => {
