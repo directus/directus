@@ -6,7 +6,7 @@ export interface Column {
 	 * Type as declared on the column including its length, precision and other modifiers, e.g. `varchar(255)`.
 	 * Always reported by the inspector, optional for column schemas created by hand.
 	 */
-	full_data_type?: string;
+	declared_type?: string;
 	default_value: string | number | boolean | null;
 	max_length: number | null;
 	numeric_precision: number | null;

@@ -3,7 +3,7 @@ import { systemRelationRows } from '@directus/system-data';
 import type { AbstractServiceOptions, Accountability, RelationMeta, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { groupBy, mapValues, partition, pickBy } from 'lodash-es';
+import { groupBy, mapValues, partition } from 'lodash-es';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
@@ -11,21 +11,24 @@ import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { stitchRelations } from '../utils/stitch-relations.js';
 import { VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
 import {
-	type InspectedTables,
-	type LiveCollections,
 	normalizeAction,
 	type Plan,
 	planVersioning,
-	type TablesMapped,
+	type SourceCollections,
 	type VersionTableColumn,
 } from './version-tables/plan-version-tables.js';
 import { isVersioningTable } from './version-tables/utils.js';
 
-/** Versioned collections, version tables and live collections to plan a sync from */
-export type InspectedSchema = {
-	versionedTables: Set<string>;
-	shadowTables: InspectedTables;
-	liveCollections: LiveCollections;
+export type VersionedTables = {
+	columns: Record<string, Column[]>;
+	foreignKeys: ForeignKey[];
+};
+
+/** Versioned collections, version tables and source collections to plan a sync from */
+export type VersioningState = {
+	versionedCollections: Set<string>;
+	versionTables: VersionedTables;
+	sourceCollections: SourceCollections;
 };
 
 export type SyncCollectionsOptions = {
@@ -36,7 +39,7 @@ export type SyncCollectionsOptions = {
 /**
  * Manages the shadow and link tables of versioned collections.
  *
- * Should run in the same transaction as the live schema change, after it was made.
+ * Should run in the same transaction as the source schema change, after it was made.
  */
 export class VersionTablesService {
 	knex: Knex;
@@ -66,7 +69,7 @@ export class VersionTablesService {
 			collections.push(...related);
 		}
 
-		const inspected = await this.inspect(exclude, collections);
+		const inspected = await this.inspect(collections, exclude);
 
 		if (!inspected) return;
 
@@ -92,56 +95,62 @@ export class VersionTablesService {
 	}
 
 	/**
-	 * Inspect the versioned collections, version tables and live tables of the given collections, or all if omitted.
+	 * Inspect the versioned collections, version tables and source tables of the given collections, or all if omitted.
 	 * Returns `null` if there is nothing to sync.
 	 */
-	private async inspect(exclude: Set<string>, collections: string[] | null): Promise<InspectedSchema | null> {
+	private async inspect(collections: string[] | null, exclude: Set<string>): Promise<VersioningState | null> {
 		const rows = await this.knex
 			.select('collection')
 			.from('directus_collections')
 			.where('versioning', true)
 			.whereNotIn('collection', [...exclude]);
 
-		const versionedTables = new Set<string>(rows.map(({ collection }) => collection));
+		const versionedCollections = new Set<string>(rows.map(({ collection }) => collection));
 
-		if (collections) {
-			// Probe for the few candidates instead of listing every table of the database on each schema change
-			const candidates = this.helpers.versioning.getVersionTableNames(collections);
-			const exists = await Promise.all(candidates.map((table) => this.schemaInspector.hasTable(table)));
-			const shadowTables = candidates.filter((_table, index) => exists[index]);
+		const versionTables = collections
+			? await this.filterExistingTables(this.helpers.versioning.getVersionTableNames(collections))
+			: (await this.schemaInspector.tables()).filter(isVersioningTable);
 
-			if (versionedTables.size === 0 && shadowTables.length === 0) return null;
+		if (versionedCollections.size === 0 && versionTables.length === 0) return null;
 
-			const shadowTablesInspected = await this.inspectTables(shadowTables);
-			const liveTables = await this.inspectTables(collections.filter((collection) => !exclude.has(collection)));
-
-			return {
-				versionedTables,
-				shadowTables: shadowTablesInspected,
-				liveCollections: toLiveCollections(liveTables, await this.readRelationsMeta(collections), exclude),
-			};
-		}
-
-		if (versionedTables.size === 0 && !(await this.schemaInspector.tables()).some(isVersioningTable)) return null;
-
-		// Inspecting the whole database at once is a lot faster than table by table
-		const [shadowColumns, liveColumns] = partition(await this.schemaInspector.columnInfo(), (column) =>
-			isVersioningTable(column.table),
+		const { columns, foreignKeys } = await this.inspectTables(
+			collections ? [...versionTables, ...collections.filter((collection) => !exclude.has(collection))] : null,
 		);
 
-		const [shadowForeignKeys, liveForeignKeys] = partition(await this.schemaInspector.foreignKeys(), (foreignKey) =>
-			isVersioningTable(foreignKey.table),
+		const [versionColumns, sourceColumns] = partition(columns, (column) => isVersioningTable(column.table));
+		const [versionForeignKeys, sourceForeignKeys] = partition(foreignKeys, (fk) => isVersioningTable(fk.table));
+
+		const relations = stitchRelations(await this.readRelationsMeta(collections ?? undefined), sourceForeignKeys).filter(
+			(relation) => !relation.related_collection || !exclude.has(relation.related_collection),
+		);
+
+		const relationsByCollection = groupBy(relations, 'collection');
+
+		const sourceColumnsByCollection = groupBy(
+			sourceColumns.filter((column) => !exclude.has(column.table)),
+			'table',
 		);
 
 		return {
-			versionedTables,
-			shadowTables: { columns: keyColumns(shadowColumns), foreignKeys: shadowForeignKeys },
-			liveCollections: toLiveCollections(
-				{ columns: keyColumns(liveColumns), foreignKeys: liveForeignKeys },
-				await this.readRelationsMeta(),
-				exclude,
-			),
+			versionedCollections,
+			versionTables: { columns: groupBy(versionColumns, 'table'), foreignKeys: versionForeignKeys },
+			sourceCollections: mapValues(sourceColumnsByCollection, (columns, collection) => ({
+				collection,
+				columns,
+				relations: relationsByCollection[collection] ?? [],
+			})),
 		};
+	}
+
+	// Queries run sequentially as MSSQL can't run concurrent requests within a transaction
+	private async filterExistingTables(tables: string[]): Promise<string[]> {
+		const existing: string[] = [];
+
+		for (const table of tables) {
+			if (await this.schemaInspector.hasTable(table)) existing.push(table);
+		}
+
+		return existing;
 	}
 
 	/**
@@ -166,7 +175,14 @@ export class VersionTablesService {
 		return [...rows, ...systemRows];
 	}
 
-	private async inspectTables(tables: string[]): Promise<InspectedTables> {
+	private async inspectTables(tables: string[] | null): Promise<{ columns: Column[]; foreignKeys: ForeignKey[] }> {
+		if (!tables) {
+			const columns = await this.schemaInspector.columnInfo();
+			const foreignKeys = await this.schemaInspector.foreignKeys();
+
+			return { columns, foreignKeys };
+		}
+
 		const columns: Column[] = [];
 		const foreignKeys: ForeignKey[] = [];
 
@@ -175,7 +191,7 @@ export class VersionTablesService {
 			foreignKeys.push(...(await this.schemaInspector.foreignKeys(table)));
 		}
 
-		return { columns: keyColumns(columns), foreignKeys };
+		return { columns, foreignKeys };
 	}
 
 	private async applyPlan(plan: Plan): Promise<void> {
@@ -294,39 +310,4 @@ export class VersionTablesService {
 				break;
 		}
 	}
-}
-
-// Groups columns by table and name
-function keyColumns(columns: Column[]): TablesMapped {
-	const result: TablesMapped = {};
-
-	for (const column of columns) {
-		(result[column.table] ??= {})[column.name] = column;
-	}
-
-	return result;
-}
-
-/**
- * Combine the live tables with their stitched relations, dropping excluded collections and relations to them
- */
-function toLiveCollections(
-	liveTables: InspectedTables,
-	relationsMeta: RelationMeta[],
-	exclude: Set<string>,
-): LiveCollections {
-	const relations = stitchRelations(relationsMeta, liveTables.foreignKeys).filter(
-		(relation) => !relation.related_collection || !exclude.has(relation.related_collection),
-	);
-
-	const relationsByCollection = groupBy(relations, 'collection');
-
-	return mapValues(
-		pickBy(liveTables.columns, (_columns, collection) => !exclude.has(collection)),
-		(columns, collection) => ({
-			collection,
-			columns: Object.values(columns),
-			relations: relationsByCollection[collection] ?? [],
-		}),
-	);
 }

@@ -119,12 +119,15 @@ test('creates link tables only for collections with an o2m from a versioned coll
 	expect(await getColumns(LINK + collections.posts)).toBeNull();
 	expect(await getColumns(LINK + collections.notes)).toEqual(columns('id', 'version_ref_post_id'));
 	expect(await getColumns(LINK + collections.links)).toEqual(columns('id', 'version_ref_post_id'));
+
 	expect(await getColumns(LINK + collections.posts_tags_junction)).toEqual(
 		columns('id', 'version_ref_posts_id', 'version_ref_tags_id'),
 	);
+
 	expect(await getColumns(LINK + collections.posts_blocks)).toEqual(
 		columns('id', 'version_ref_posts_id', 'version_ref_item'),
 	);
+
 	expect(await getColumns(LINK + collections.posts_translations)).toEqual(columns('id', 'version_ref_posts_id'));
 
 	expect(await getColumns(LINK + collections.authors)).toBeNull();

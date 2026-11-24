@@ -114,9 +114,9 @@ describe('MSSQL dialect', () => {
 		});
 	});
 
-	describe('full_data_type', () => {
+	describe('declared_type', () => {
 		const fullType = (overrides: Partial<typeof baseRawColumn>) =>
-			rawColumnToColumn({ ...baseRawColumn, ...overrides }).full_data_type;
+			rawColumnToColumn({ ...baseRawColumn, ...overrides }).declared_type;
 
 		it('adds the length of character types', () => {
 			expect(fullType({ data_type: 'varchar', max_length: 100 })).toBe('varchar(100)');

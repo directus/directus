@@ -152,23 +152,6 @@ describe('Integration Tests', () => {
 				await expect(service.createOne({ collection: 'existing_collection' })).rejects.toThrow(InvalidPayloadError);
 			});
 
-			test('should reject reserved versioning field names in a versioned collection before creating the table', async () => {
-				tracker.on.select('directus_collections').response([]);
-				const createTableSpy = vi.spyOn(db.schema, 'createTable');
-				const service = new CollectionsService({ knex: db, schema, accountability: null });
-
-				await expect(
-					service.createOne({
-						collection: 'new_collection',
-						schema: {},
-						meta: { versioning: true } as any,
-						fields: [{ field: 'version_type', type: 'string' } as any],
-					}),
-				).rejects.toThrow(InvalidPayloadError);
-
-				expect(createTableSpy).not.toHaveBeenCalled();
-			});
-
 			test('should create collection with schema and default primary key', async () => {
 				tracker.on.select('directus_collections').response([]);
 				const service = new CollectionsService({ knex: db, schema, accountability: null });

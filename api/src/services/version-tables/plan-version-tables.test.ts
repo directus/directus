@@ -5,11 +5,11 @@ import { keyBy, mapValues } from 'lodash-es';
 import { describe, expect, test, vi } from 'vitest';
 import type { SchemaHelper } from '../../database/helpers/schema/types.js';
 import { VersioningHelper } from '../../database/helpers/versioning/types.js';
+import type { VersionedTables } from '../version-tables.js';
 import {
-	type InspectedTables,
-	type LiveCollection,
-	type LiveCollections,
 	planVersioning,
+	type SourceCollection,
+	type SourceCollections,
 	type VersionTables,
 } from './plan-version-tables.js';
 
@@ -64,7 +64,7 @@ const columns = {
 	],
 };
 
-const collectionList: LiveCollection[] = [
+const collectionList: SourceCollection[] = [
 	{ collection: 'articles', columns: columns.articles, relations: [m2o('articles', 'author', 'authors')] },
 	{ collection: 'authors', columns: columns.authors, relations: [] },
 	{
@@ -88,12 +88,19 @@ const collectionList: LiveCollection[] = [
 	},
 ];
 
-const collections: LiveCollections = keyBy(collectionList, 'collection');
+const collections: SourceCollections = keyBy(collectionList, 'collection');
 
-const noTables: InspectedTables = { columns: {}, foreignKeys: [] };
+const noTables: VersionedTables = { columns: {}, foreignKeys: [] };
 
-function planTables(collections: LiveCollections, versioned: Set<string>) {
-	return keyBy(planVersioning(collections, versioned, noTables, helper).changes.create, 'table');
+function planChanges(liveCollections: SourceCollections, versionedTables: Set<string>, shadowTables: VersionedTables) {
+	return planVersioning(
+		{ sourceCollections: liveCollections, versionedCollections: versionedTables, versionTables: shadowTables },
+		helper,
+	);
+}
+
+function planTables(collections: SourceCollections, versioned: Set<string>) {
+	return keyBy(planChanges(collections, versioned, noTables).tables.create, 'table');
 }
 
 describe('planVersionTables', () => {
@@ -204,7 +211,7 @@ describe('planVersionTables', () => {
 	});
 
 	test('references all versioned collections once a link table is needed', () => {
-		const junction: LiveCollections = {
+		const junction: SourceCollections = {
 			junction: {
 				collection: 'junction',
 				columns: [column('junction', 'id'), column('junction', 'articles_id'), column('junction', 'authors_id')],
@@ -233,7 +240,7 @@ describe('planVersionTables', () => {
 	});
 
 	test('throws when a live field conflicts with a version field', () => {
-		const conflicting: LiveCollections = {
+		const conflicting: SourceCollections = {
 			authors: {
 				collection: 'authors',
 				columns: [column('authors', 'id'), column('authors', 'version_name', 'varchar')],
@@ -268,17 +275,14 @@ describe('planVersionTables', () => {
 });
 
 /** The inspected state of the given version tables, as if they were created from them */
-function inspect(tables: VersionTables): InspectedTables {
-	const inspected: InspectedTables = { columns: {}, foreignKeys: [] };
+function inspect(tables: VersionTables): VersionedTables {
+	const inspected: VersionedTables = { columns: {}, foreignKeys: [] };
 
 	for (const table of Object.values(tables)) {
-		inspected.columns[table.table] = Object.fromEntries(
-			table.columns.map((planned) => [
-				planned.name,
-				planned.kind === 'mirror'
-					? { ...planned.source, table: table.table }
-					: column(table.table, planned.name, planned.kind === 'system' ? 'varchar' : 'integer'),
-			]),
+		inspected.columns[table.table] = table.columns.map((planned) =>
+			planned.kind === 'mirror'
+				? { ...planned.source, table: table.table }
+				: column(table.table, planned.name, planned.kind === 'system' ? 'varchar' : 'integer'),
 		);
 
 		inspected.foreignKeys.push(
@@ -295,24 +299,36 @@ function inspect(tables: VersionTables): InspectedTables {
 	return inspected;
 }
 
+/** Replace the column of the same name in the inspected table, or add it */
+function setColumn(inspected: VersionedTables, table: string, replacement: Column) {
+	inspected.columns[table] = [
+		...inspected.columns[table]!.filter((column) => column.name !== replacement.name),
+		replacement,
+	];
+}
+
+function removeColumn(inspected: VersionedTables, table: string, name: string) {
+	inspected.columns[table] = inspected.columns[table]!.filter((column) => column.name !== name);
+}
+
 describe('planVersionTables changes', () => {
 	const versioned = new Set(['articles', 'authors']);
 	const target = planTables(collections, versioned);
 
 	test('plans no changes when the version tables are up to date', () => {
-		const plan = planVersioning(collections, versioned, inspect(target), helper);
+		const plan = planChanges(collections, versioned, inspect(target));
 
 		expect(plan).toMatchObject({
-			tables: { drop: [], create: [], alter: {} },
-			foreignKeys: { drop: [], add: {} },
+			tables: { drop: [], create: [], update: {} },
+			foreignKeys: { drop: {}, create: {} },
 		});
 	});
 
 	test('creates missing tables together with their foreign keys', () => {
 		const { directus_shadow_authors: _authors, ...rest } = target;
-		const plan = planVersioning(collections, versioned, inspect(rest), helper);
+		const plan = planChanges(collections, versioned, inspect(rest));
 
-		expect(plan.changes.create).toEqual([target['directus_shadow_authors']]);
+		expect(plan.tables.create).toEqual([target['directus_shadow_authors']]);
 
 		expect(mapValues(plan.foreignKeys.create, (foreignKeys) => foreignKeys.map(({ column }) => column))).toEqual({
 			directus_shadow_authors: ['version_user_created', 'version_user_updated'],
@@ -321,26 +337,25 @@ describe('planVersionTables changes', () => {
 
 	test('drops tables that are no longer planned together with their foreign keys', () => {
 		const existing = inspect(planTables(collections, new Set(['articles', 'authors', 'tags'])));
-		const plan = planVersioning(collections, versioned, existing, helper);
+		const plan = planChanges(collections, versioned, existing);
 
-		expect(plan.changes.drop).toEqual(['directus_shadow_tags']);
-		expect(plan.foreignKeys.delete.every((foreignKey) => foreignKey.table === 'directus_shadow_tags')).toBe(true);
-		expect(plan.foreignKeys.delete).not.toHaveLength(0);
+		expect(plan.tables.drop).toEqual(['directus_shadow_tags']);
+		expect(Object.keys(plan.foreignKeys.drop)).toEqual(['directus_shadow_tags']);
+		expect(plan.foreignKeys.drop['directus_shadow_tags']).not.toHaveLength(0);
 	});
 
 	test('adds missing columns and drops removed ones', () => {
 		const existing = inspect(target);
-		const authors = existing.columns['directus_shadow_authors']!;
 
-		delete authors['name'];
-		authors['removed'] = column('directus_shadow_authors', 'removed');
+		removeColumn(existing, 'directus_shadow_authors', 'name');
+		setColumn(existing, 'directus_shadow_authors', column('directus_shadow_authors', 'removed'));
 
-		const plan = planVersioning(collections, versioned, existing, helper);
+		const plan = planChanges(collections, versioned, existing);
 
-		expect(plan.changes.alter).toEqual({
+		expect(plan.tables.update).toEqual({
 			directus_shadow_authors: {
-				add: [{ kind: 'mirror', name: 'name', source: columns.authors[1], type: 'varchar' }],
-				alter: [],
+				create: [{ kind: 'mirror', name: 'name', source: columns.authors[1], type: 'varchar' }],
+				update: [],
 				drop: ['removed'],
 			},
 		});
@@ -350,15 +365,17 @@ describe('planVersionTables changes', () => {
 		const existing = inspect(target);
 		const author = column('directus_shadow_articles', 'author', 'varchar');
 
-		existing.columns['directus_shadow_articles']!['author'] = author;
+		setColumn(existing, 'directus_shadow_articles', author);
 
-		const plan = planVersioning(collections, versioned, existing, helper);
+		const plan = planChanges(collections, versioned, existing);
 
-		expect(plan.changes.alter['directus_shadow_articles']!.alter).toEqual([
+		expect(plan.tables.update['directus_shadow_articles']!.update).toEqual([
 			{ column: expect.objectContaining({ name: 'author' }), existing: author },
 		]);
 
-		expect(plan.foreignKeys.delete.map((foreignKey) => foreignKey.column)).toEqual(['author']);
+		expect(mapValues(plan.foreignKeys.drop, (foreignKeys) => foreignKeys.map(({ column }) => column))).toEqual({
+			directus_shadow_articles: ['author'],
+		});
 
 		expect(plan.foreignKeys.create).toEqual({
 			directus_shadow_articles: [expect.objectContaining({ column: 'author' })],
@@ -371,9 +388,9 @@ describe('planVersionTables changes', () => {
 
 		foreignKey.on_delete = 'CASCADE';
 
-		const plan = planVersioning(collections, versioned, existing, helper);
+		const plan = planChanges(collections, versioned, existing);
 
-		expect(plan.foreignKeys.delete).toEqual([foreignKey]);
+		expect(plan.foreignKeys.drop).toEqual({ directus_shadow_articles: [foreignKey] });
 
 		expect(plan.foreignKeys.create).toEqual({
 			directus_shadow_articles: [expect.objectContaining({ column: 'version_ref_author', on_delete: 'SET NULL' })],
@@ -383,7 +400,7 @@ describe('planVersionTables changes', () => {
 
 describe('mirror column types', () => {
 	function typeOf(source: Column) {
-		const live: LiveCollections = {
+		const live: SourceCollections = {
 			authors: { collection: 'authors', columns: [column('authors', 'id'), source], relations: [] },
 		};
 
@@ -394,7 +411,7 @@ describe('mirror column types', () => {
 	}
 
 	test('mirrors the declared type of the live column', () => {
-		const source = column('authors', 'price', 'numeric', { full_data_type: 'numeric(10,2)' });
+		const source = column('authors', 'price', 'numeric', { declared_type: 'numeric(10,2)' });
 
 		expect(typeOf(source)).toBe('numeric(10,2)');
 	});
@@ -407,21 +424,20 @@ describe('mirror column types', () => {
 		const versioned = new Set(['authors']);
 		const inspected = inspect(planTables(collections, versioned));
 
-		inspected.columns['directus_shadow_authors']!['name'] = existing;
+		setColumn(inspected, 'directus_shadow_authors', existing);
 
-		const plan = planVersioning(
+		const plan = planChanges(
 			{ authors: { ...collections['authors']!, columns: [columns.authors[0]!, live] } },
 			versioned,
 			inspected,
-			helper,
 		);
 
-		return plan.changes.alter['directus_shadow_authors']?.alter ?? [];
+		return plan.tables.update['directus_shadow_authors']?.update ?? [];
 	}
 
 	test('alters columns whose declared type changed', () => {
-		const live = column('authors', 'name', 'varchar', { full_data_type: 'varchar(500)' });
-		const existing = column('directus_shadow_authors', 'name', 'varchar', { full_data_type: 'varchar(255)' });
+		const live = column('authors', 'name', 'varchar', { declared_type: 'varchar(500)' });
+		const existing = column('directus_shadow_authors', 'name', 'varchar', { declared_type: 'varchar(255)' });
 
 		expect(planAlteration(live, existing)).toEqual([
 			{ column: expect.objectContaining({ name: 'name', type: 'varchar(500)' }), existing },
@@ -429,8 +445,8 @@ describe('mirror column types', () => {
 	});
 
 	test('compares declared types case insensitively', () => {
-		const live = column('authors', 'name', 'varchar', { full_data_type: 'VARCHAR2(255 CHAR)' });
-		const existing = column('directus_shadow_authors', 'name', 'varchar', { full_data_type: 'varchar2(255 char)' });
+		const live = column('authors', 'name', 'varchar', { declared_type: 'VARCHAR2(255 CHAR)' });
+		const existing = column('directus_shadow_authors', 'name', 'varchar', { declared_type: 'varchar2(255 char)' });
 
 		expect(planAlteration(live, existing)).toEqual([]);
 	});
