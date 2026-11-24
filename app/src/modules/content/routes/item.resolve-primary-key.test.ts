@@ -1,6 +1,7 @@
 import type { Item, PrimaryKey } from '@directus/types';
 import { describe, expect, it } from 'vitest';
-import { computed, nextTick, ref, watch } from 'vue';
+import { nextTick, ref, watch } from 'vue';
+import { useResolvePrimaryKey } from './use-resolve-primary-key';
 
 describe('useResolvePrimaryKey', () => {
 	function setupResolvePrimaryKey(initial: {
@@ -11,36 +12,16 @@ describe('useResolvePrimaryKey', () => {
 		initialItem?: Item | null;
 	}) {
 		const collection = ref(initial.collection);
-		const primaryKeyParam = ref<string | null>(initial.primaryKey);
+		const primaryKeyParam = ref<PrimaryKey | null>(initial.primaryKey);
 		const isSingleton = ref(initial.isSingleton);
 		const primaryKeyField = ref({ field: initial.pkFieldName ?? 'id' });
 		const item = ref<Item | null>(initial.initialItem ?? null);
 
-		const resolvedPrimaryKey = ref<PrimaryKey | null>(primaryKeyParam.value);
-		const existingPrimaryKey = computed(() => (resolvedPrimaryKey.value === '+' ? null : resolvedPrimaryKey.value));
-
-		watch(
+		const { resolvedPrimaryKey, existingPrimaryKey, resolvePrimaryKey } = useResolvePrimaryKey({
 			collection,
-			() => {
-				resolvedPrimaryKey.value = primaryKeyParam.value;
-			},
-			{ flush: 'sync' },
-		);
-
-		function resolvePrimaryKey(newItem: Item | null, newIsSingleton: boolean, newPrimaryKeyParam: PrimaryKey | null) {
-			if (newIsSingleton) {
-				if (!newItem) {
-					resolvedPrimaryKey.value = null;
-					return;
-				}
-
-				const pkField = primaryKeyField.value?.field;
-				resolvedPrimaryKey.value = (pkField ? (newItem[pkField] ?? '+') : '+') as PrimaryKey;
-				return;
-			}
-
-			resolvedPrimaryKey.value = newPrimaryKeyParam;
-		}
+			primaryKeyParam,
+			primaryKeyField,
+		});
 
 		watch(
 			[item, isSingleton, primaryKeyParam],

@@ -1062,4 +1062,31 @@ describe('Save As Copy with M2M relation', () => {
 		expect(saveBody.children.create).toEqual([{ sort: 1, child_id: { name: 'edited' } }]);
 		expect(saveBody.children.update).toEqual([]);
 	});
+
+	test('clears cached item synchronously when collection changes', async () => {
+		vi.mocked(useCollection).mockReturnValue({
+			info: ref(null),
+			defaults: ref({}),
+			primaryKeyField: ref({ field: 'id' }),
+			isSingleton: ref(false),
+			fields: ref([]),
+		} as any);
+
+		const sdkSpy = vi.mocked(sdk.request).mockResolvedValue({ id: 'uuid-1', title: 'first' });
+
+		const collection = ref('items');
+		const primaryKey = ref<string | null>('uuid-1');
+
+		const { item } = useItem(collection, primaryKey);
+		await flushPromises();
+
+		expect(item.value).toEqual({ id: 'uuid-1', title: 'first' });
+
+		sdkSpy.mockReturnValue(new Promise(() => {}));
+		collection.value = 'singleton_settings';
+		primaryKey.value = '+';
+
+		// Sync flush clears the previous item immediately before the next tick
+		expect(item.value).toBeNull();
+	});
 });
