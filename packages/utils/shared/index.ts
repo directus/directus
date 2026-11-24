@@ -13,6 +13,7 @@ export * from './get-date-time-formatted.js';
 export * from './get-endpoint.js';
 export * from './get-fields-from-template.js';
 export * from './get-filter-operators-for-type.js';
+export * from './get-focal-point-crop.js';
 export * from './get-functions-for-type.js';
 export * from './get-output-type-for-function.js';
 export * from './get-redacted-string.js';
