@@ -1,7 +1,7 @@
-import type { Server as httpServer, IncomingMessage } from 'http';
 import { randomUUID } from 'node:crypto';
-import type internal from 'stream';
-import { parse } from 'url';
+import type { Server as httpServer, IncomingMessage } from 'node:http';
+import type internal from 'node:stream';
+import { parse } from 'node:url';
 import { useEnv } from '@directus/env';
 import { formatZodError, InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import type { Accountability } from '@directus/types';

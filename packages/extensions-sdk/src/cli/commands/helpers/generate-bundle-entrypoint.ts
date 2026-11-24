@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { API_EXTENSION_TYPES, APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import type { ExtensionOptionsBundleEntry } from '@directus/extensions';
 import { isIn, isTypeIn, pluralize } from '@directus/utils';

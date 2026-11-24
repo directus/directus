@@ -1,4 +1,4 @@
-import type { ReadableStream } from 'stream/web';
+import type { ReadableStream } from 'node:stream/web';
 import ky from 'ky';
 import { assertVersionCompatibility } from '../../utils/assert-version-compatibility.js';
 import { constructUrl } from './lib/construct-url.js';
@@ -31,8 +31,8 @@ export type { DownloadOptions } from './types/download-options.js';
  * const stream = await download('my-extension-v1.0.0');
  *
  * // Save to file system
- * import { createWriteStream } from 'fs';
- * import { pipeline } from 'stream/promises';
+ * import { createWriteStream } from 'node:fs';
+ * import { pipeline } from 'node:stream/promises';
  *
  * const fileStream = createWriteStream('./extension.zip');
  * await pipeline(Readable.fromWeb(stream), fileStream);

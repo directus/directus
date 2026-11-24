@@ -1,12 +1,11 @@
 import { execFile } from 'node:child_process';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { promisify } from 'node:util';
 import type { TestProject } from 'vitest/node';
 
 const exec = promisify(execFile);
 
-const COMPOSE_FILE = join(dirname(fileURLToPath(import.meta.url)), 'docker-compose.yml');
+const COMPOSE_FILE = join(import.meta.dirname, 'docker-compose.yml');
 
 /** Suffixed with the image so that switching `REDIS_IMAGE` doesn't reuse the previous container */
 const PROJECT = `directus-memory-test-${(process.env['REDIS_IMAGE'] ?? 'redis:6-alpine').replace(/[^a-z0-9]/gi, '-')}`;

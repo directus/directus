@@ -1,4 +1,4 @@
-import { performance } from 'perf_hooks';
+import { performance } from 'node:perf_hooks';
 import { useEnv } from '@directus/env';
 import { InvalidCredentialsError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability } from '@directus/types';

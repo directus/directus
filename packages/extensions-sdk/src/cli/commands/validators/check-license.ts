@@ -1,7 +1,7 @@
-import path from 'path';
-import fse from 'fs-extra';
+import path from 'node:path';
 import { type Ora } from 'ora';
 import type { Report } from '../../types.js';
+import { readJson } from '../../utils/json.js';
 
 const checkLicense = {
 	name: 'license',
@@ -9,7 +9,7 @@ const checkLicense = {
 		spinner.text = 'Check for license';
 
 		const packagePath = path.resolve('package.json');
-		const { license } = await fse.readJson(packagePath);
+		const { license } = await readJson(packagePath);
 
 		if (!license) {
 			const message = 'No license defined';

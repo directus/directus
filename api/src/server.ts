@@ -1,6 +1,6 @@
-import * as http from 'http';
-import * as https from 'https';
-import type { ListenOptions } from 'net';
+import * as http from 'node:http';
+import * as https from 'node:https';
+import type { ListenOptions } from 'node:net';
 import { useEnv } from '@directus/env';
 import { getNodeEnv } from '@directus/utils/node';
 import type { TerminusOptions } from '@godaddy/terminus';

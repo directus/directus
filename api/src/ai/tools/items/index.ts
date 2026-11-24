@@ -1,5 +1,4 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type { PrimaryKey } from '@directus/types';
@@ -18,8 +17,6 @@ import {
 	QueryValidateSchema,
 } from '../schema.js';
 import { buildSanitizedQueryFromArgs } from '../utils.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const PartialItemInputSchema = z.strictObject({
 	collection: z.string(),
@@ -63,7 +60,7 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 	name: 'items',
 	description:
 		'Reads and changes items in user collections. Use for content records like articles, products, pages, and other non-system collection data.',
-	instructions: requireText(resolve(__dirname, './prompt.md')),
+	instructions: requireText(resolve(import.meta.dirname, './prompt.md')),
 	keywords: ['content', 'records', 'entries', 'rows', 'publish', 'archive', 'status'],
 	annotations: {
 		title: 'Directus - Items',

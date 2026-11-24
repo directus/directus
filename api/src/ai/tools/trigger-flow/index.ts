@@ -1,5 +1,4 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import { InvalidPayloadError } from '@directus/errors';
 import { z } from 'zod';
 import { getFlowManager } from '../../../flows.js';
@@ -8,13 +7,11 @@ import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
 import { TriggerFlowInputSchema, TriggerFlowValidateSchema } from '../schema.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 export const triggerFlow = defineTool<z.infer<typeof TriggerFlowValidateSchema>>({
 	name: 'trigger-flow',
 	description:
 		'Runs an active manual Directus flow. Use when the user asks to trigger, execute, or test an existing manual flow.',
-	instructions: requireText(resolve(__dirname, './prompt.md')),
+	instructions: requireText(resolve(import.meta.dirname, './prompt.md')),
 	keywords: ['run flow', 'execute flow', 'manual flow', 'trigger automation', 'webhook flow'],
 	annotations: {
 		title: 'Directus - Trigger Flow',

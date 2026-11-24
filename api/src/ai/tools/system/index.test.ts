@@ -1,11 +1,8 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { describe, expect, test } from 'vitest';
 import { requireText } from '../../../utils/require-text.js';
 import { system } from './index.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('system tool', () => {
 	describe('prompt override', () => {
@@ -19,7 +16,7 @@ describe('system tool', () => {
 				accountability: mockAccountability,
 			});
 
-			expect(result).toEqual({ type: 'text', data: requireText(resolve(__dirname, './prompt.md')) });
+			expect(result).toEqual({ type: 'text', data: requireText(resolve(import.meta.dirname, './prompt.md')) });
 		});
 
 		test('should return custom prompt when provided', async () => {

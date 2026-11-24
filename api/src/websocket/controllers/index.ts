@@ -1,4 +1,4 @@
-import type { Server as httpServer } from 'http';
+import type { Server as httpServer } from 'node:http';
 import { useEnv } from '@directus/env';
 import { GraphQLSubscriptionController } from './graphql.js';
 import { LogsController } from './logs.js';

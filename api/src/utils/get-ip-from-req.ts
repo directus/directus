@@ -1,5 +1,5 @@
-import type { IncomingMessage } from 'http';
-import { isIP } from 'net';
+import type { IncomingMessage } from 'node:http';
+import { isIP } from 'node:net';
 import { useEnv } from '@directus/env';
 import type { Request } from 'express';
 import proxyAddr from 'proxy-addr';

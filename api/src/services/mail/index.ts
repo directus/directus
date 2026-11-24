@@ -1,10 +1,10 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
-import fse from 'fs-extra';
+import { pathExists } from '@directus/utils/node';
 import type { Knex } from 'knex';
 import { Liquid } from 'liquidjs';
 import type { SendMailOptions, Transporter } from 'nodemailer';
@@ -19,10 +19,8 @@ import { useEmailRateLimiterQueue } from './rate-limiter.js';
 const env = useEnv();
 const logger = useLogger();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 const liquidEngine = new Liquid({
-	root: [path.resolve(env.EMAIL_TEMPLATES_PATH), path.resolve(__dirname, 'templates')],
+	root: [path.resolve(env.EMAIL_TEMPLATES_PATH), path.resolve(import.meta.dirname, 'templates')],
 	extname: '.liquid',
 });
 
@@ -112,7 +110,7 @@ export class MailService {
 
 	private async renderTemplate(template: string, variables: Record<string, any>) {
 		const customTemplatesDir = path.resolve(env['EMAIL_TEMPLATES_PATH'] as string);
-		const systemTemplatesDir = path.resolve(__dirname, 'templates');
+		const systemTemplatesDir = path.resolve(import.meta.dirname, 'templates');
 
 		const customTemplatePath = path.resolve(customTemplatesDir, template + '.liquid');
 		const systemTemplatePath = path.resolve(systemTemplatesDir, template + '.liquid');
@@ -120,9 +118,9 @@ export class MailService {
 		// Prevent path traversal: only resolve templates that stay within their own templates directory.
 		let templatePath: string | null = null;
 
-		if (isWithinPath(customTemplatePath, customTemplatesDir) && (await fse.pathExists(customTemplatePath))) {
+		if (isWithinPath(customTemplatePath, customTemplatesDir) && (await pathExists(customTemplatePath))) {
 			templatePath = customTemplatePath;
-		} else if (isWithinPath(systemTemplatePath, systemTemplatesDir) && (await fse.pathExists(systemTemplatePath))) {
+		} else if (isWithinPath(systemTemplatePath, systemTemplatesDir) && (await pathExists(systemTemplatePath))) {
 			templatePath = systemTemplatePath;
 		}
 
@@ -130,7 +128,7 @@ export class MailService {
 			throw new InvalidPayloadError({ reason: `Template "${template}" doesn't exist` });
 		}
 
-		const templateString = await fse.readFile(templatePath, 'utf8');
+		const templateString = await readFile(templatePath, 'utf8');
 		const html = await liquidEngine.parseAndRender(templateString, variables);
 
 		return html;

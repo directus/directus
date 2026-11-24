@@ -1,5 +1,5 @@
-import type { IncomingMessage } from 'http';
-import type internal from 'stream';
+import type { IncomingMessage } from 'node:http';
+import type internal from 'node:stream';
 import type { Accountability, Query } from '@directus/types';
 import type { WebSocket } from 'ws';
 import type { AuthMode } from './messages.js';

@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { ExtensionsService } from '../../services/extensions.js';

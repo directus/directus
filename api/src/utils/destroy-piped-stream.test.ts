@@ -1,4 +1,4 @@
-import { PassThrough } from 'stream';
+import { PassThrough } from 'node:stream';
 import { expect, test } from 'vitest';
 import { destroyPipedStream } from './destroy-piped-stream.js';
 

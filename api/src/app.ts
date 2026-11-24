@@ -1,7 +1,7 @@
-import type { ServerResponse } from 'http';
 import { readFile } from 'node:fs/promises';
+import type { ServerResponse } from 'node:http';
 import { createRequire } from 'node:module';
-import path from 'path';
+import path from 'node:path';
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { handlePressure } from '@directus/pressure';

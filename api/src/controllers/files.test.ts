@@ -1,4 +1,4 @@
-import { PassThrough } from 'stream';
+import { PassThrough } from 'node:stream';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Request, Response } from 'express';
 import FormData from 'form-data';

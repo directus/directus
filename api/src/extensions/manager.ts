@@ -2,8 +2,6 @@ import type { ReadStream, Stats } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import os from 'node:os';
 import { dirname, join, relative, resolve, sep } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import path from 'path';
 import { HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { APP_SHARED_DEPS } from '@directus/extensions';
@@ -65,8 +63,6 @@ import { wrapEmbeds } from './lib/wrap-embeds.js';
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
 const alias = aliasDefault as unknown as typeof aliasDefault.default;
 const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.default;
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const env = useEnv();
 
@@ -447,9 +443,9 @@ export class ExtensionManager {
 	 * by looking up the folder name in the existing extension maps
 	 */
 	private isWatchedExtensionPath(filePath: string): boolean {
-		const extensionDir = path.resolve(getExtensionsPath());
+		const extensionDir = resolve(getExtensionsPath());
 
-		const folderName = path.relative(extensionDir, filePath).split(path.sep).shift();
+		const folderName = relative(extensionDir, filePath).split(sep).shift();
 
 		if (!folderName) return false;
 
@@ -457,16 +453,16 @@ export class ExtensionManager {
 
 		if (!extension) return false;
 
-		const resolvedPath = path.resolve(filePath);
+		const resolvedPath = resolve(filePath);
 
 		if (isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle') {
 			return (
-				path.resolve(extension.path, extension.entrypoint.app) === resolvedPath ||
-				path.resolve(extension.path, extension.entrypoint.api) === resolvedPath
+				resolve(extension.path, extension.entrypoint.app) === resolvedPath ||
+				resolve(extension.path, extension.entrypoint.api) === resolvedPath
 			);
 		}
 
-		return path.resolve(extension.path, extension.entrypoint) === resolvedPath;
+		return resolve(extension.path, extension.entrypoint) === resolvedPath;
 	}
 
 	/**
@@ -479,9 +475,9 @@ export class ExtensionManager {
 
 		const extensionDirPath = pathToRelativeUrl(getExtensionsPath());
 
-		const resolvedExtDir = path.resolve(extensionDirPath);
+		const resolvedExtDir = resolve(extensionDirPath);
 
-		this.watcher = chokidar.watch([path.resolve('package.json'), extensionDirPath], {
+		this.watcher = chokidar.watch([resolve('package.json'), extensionDirPath], {
 			ignoreInitial: true,
 			// Only top level watch inside extensions folder is necessary, "dist" paths are added via updateWatchedExtensions
 			depth: 1,
@@ -493,13 +489,13 @@ export class ExtensionManager {
 
 				// allow root package.json and package.json in direct extension dirs (extensionsDir/*/package.json)
 				if (val.endsWith('package.json')) {
-					const resolvedVal = path.resolve(val);
+					const resolvedVal = resolve(val);
 
 					// root package.json
-					if (!resolvedVal.startsWith(resolvedExtDir + path.sep)) return false;
+					if (!resolvedVal.startsWith(resolvedExtDir + sep)) return false;
 
 					// allow if within an extension folder dir
-					return path.dirname(resolvedVal) === resolvedExtDir;
+					return dirname(resolvedVal) === resolvedExtDir;
 				}
 
 				// allow "dist" entrypoints added via updateWatchedExtensions
@@ -544,19 +540,16 @@ export class ExtensionManager {
 	private updateWatchedExtensions(added: Extension[], removed: Extension[] = []): void {
 		if (!this.watcher) return;
 
-		const extensionDir = path.resolve(getExtensionsPath());
-		const registryDir = path.join(extensionDir, '.registry');
+		const extensionDir = resolve(getExtensionsPath());
+		const registryDir = join(extensionDir, '.registry');
 
 		const toPackageExtensionPaths = (extensions: Extension[]) =>
 			extensions
 				.filter((extension) => extension.local && !extension.path.startsWith(registryDir))
 				.flatMap((extension) =>
 					isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
-						? [
-								path.resolve(extension.path, extension.entrypoint.app),
-								path.resolve(extension.path, extension.entrypoint.api),
-							]
-						: path.resolve(extension.path, extension.entrypoint),
+						? [resolve(extension.path, extension.entrypoint.app), resolve(extension.path, extension.entrypoint.api)]
+						: resolve(extension.path, extension.entrypoint),
 				);
 
 		this.watcher.add(toPackageExtensionPaths(added));
@@ -617,7 +610,7 @@ export class ExtensionManager {
 	private async registerSandboxedApiExtension(extension: ApiExtension | HybridExtension) {
 		const logger = useLogger();
 
-		const entrypointPath = path.resolve(
+		const entrypointPath = resolve(
 			extension.path,
 			isTypeIn(extension, HYBRID_EXTENSION_TYPES) ? extension.entrypoint.api : extension.entrypoint,
 		);
@@ -686,7 +679,7 @@ export class ExtensionManager {
 				await Promise.all(
 					Array.from(extensions.entries()).map(async ([folder, extension]) => {
 						const { id, enabled } = this.extensionsSettings.find(
-							(settings) => settings.source === source && settings.folder === folder,
+							(settings) => settings.source === source && settings.folder === folder && settings.bundle === null,
 						) ?? { enabled: false };
 
 						if (!enabled) return;
@@ -718,7 +711,7 @@ export class ExtensionManager {
 			if (hook.sandbox?.enabled) {
 				await this.registerSandboxedApiExtension(hook);
 			} else {
-				const hookPath = path.resolve(hook.path, hook.entrypoint);
+				const hookPath = resolve(hook.path, hook.entrypoint);
 
 				const hookInstance: HookConfig | { default: HookConfig } = await importFileUrl(hookPath, import.meta.url, {
 					fresh: true,
@@ -744,7 +737,7 @@ export class ExtensionManager {
 			if (endpoint.sandbox?.enabled) {
 				await this.registerSandboxedApiExtension(endpoint);
 			} else {
-				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
+				const endpointPath = resolve(endpoint.path, endpoint.entrypoint);
 
 				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await importFileUrl(
 					endpointPath,
@@ -774,7 +767,7 @@ export class ExtensionManager {
 			if (operation.sandbox?.enabled) {
 				await this.registerSandboxedApiExtension(operation);
 			} else {
-				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+				const operationPath = resolve(operation.path, operation.entrypoint.api!);
 
 				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await importFileUrl(
 					operationPath,
@@ -814,7 +807,7 @@ export class ExtensionManager {
 		};
 
 		try {
-			const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
+			const bundlePath = resolve(bundle.path, bundle.entrypoint.api);
 
 			const bundleInstances: BundleConfig | { default: BundleConfig } = await importFileUrl(
 				bundlePath,
@@ -867,7 +860,7 @@ export class ExtensionManager {
 	 * registerOperation
 	 */
 	private async registerInternalOperations(): Promise<void> {
-		const internalOperations = await readdir(path.join(__dirname, '..', 'operations'));
+		const internalOperations = await readdir(join(import.meta.dirname, '..', 'operations'));
 
 		for (const operation of internalOperations) {
 			const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(

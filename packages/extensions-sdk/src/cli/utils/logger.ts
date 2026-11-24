@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import readline from 'readline';
+import readline from 'node:readline';
 import chalk from 'chalk';
 
 export function log(message: string, type?: 'info' | 'warn' | 'error'): void {

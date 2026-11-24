@@ -1,5 +1,5 @@
-import { promises as fs, constants as fsConstants } from 'fs';
-import path from 'path';
+import { promises as fs, constants as fsConstants } from 'node:fs';
+import path from 'node:path';
 import inquirer from 'inquirer';
 import { dump as toYaml } from 'js-yaml';
 import getDatabase from '../../../database/index.js';

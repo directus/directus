@@ -1,11 +1,13 @@
+import { existsSync } from 'node:fs';
+import { readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
 import { EXTENSION_LANGUAGES } from '@directus/extensions';
 import { execa } from 'execa';
-import fse from 'fs-extra';
 import { afterAll, describe, expect, test, vi } from 'vitest';
 import add from './src/cli/commands/add.js';
 import { create } from './src/cli/index.js';
+import { readJson, writeJson } from './src/cli/utils/json.js';
 import { languageToShort } from './src/cli/utils/languages.js';
 
 const { prompt } = vi.hoisted(() => ({ prompt: vi.fn() }));
@@ -16,10 +18,10 @@ const TEST_PREFIX = 'temp-extension';
 
 afterAll(async () => {
 	// Remove all temp test artifacts
-	const testArtifacts = (await fse.readdir(process.cwd())).filter((file) => file.startsWith(TEST_PREFIX));
+	const testArtifacts = (await readdir(process.cwd())).filter((file) => file.startsWith(TEST_PREFIX));
 
 	for (const tempArtifact of testArtifacts) {
-		await fse.remove(tempArtifact);
+		await rm(tempArtifact, { recursive: true, force: true });
 	}
 });
 
@@ -53,25 +55,23 @@ describe('create and build', () => {
 				await create(extensionType, testExtensionPath, { language });
 
 				if (extensionType === 'operation') {
-					expect(fse.pathExistsSync(resolve(testExtensionPath, 'src', `api.${languageToShort(language)}`))).toBe(true);
-					expect(fse.pathExistsSync(resolve(testExtensionPath, 'src', `app.${languageToShort(language)}`))).toBe(true);
+					expect(existsSync(resolve(testExtensionPath, 'src', `api.${languageToShort(language)}`))).toBe(true);
+					expect(existsSync(resolve(testExtensionPath, 'src', `app.${languageToShort(language)}`))).toBe(true);
 				} else {
-					expect(fse.pathExistsSync(resolve(testExtensionPath, 'src', `index.${languageToShort(language)}`))).toBe(
-						true,
-					);
+					expect(existsSync(resolve(testExtensionPath, 'src', `index.${languageToShort(language)}`))).toBe(true);
 				}
 
 				// Add dummy config file to verify they are loaded properly when building the extension
-				await fse.writeFile(resolve(testExtensionPath, configFileName), getConfigFileContent(configFileName));
+				await writeFile(resolve(testExtensionPath, configFileName), getConfigFileContent(configFileName));
 
 				// Build extension
 				await execa('node', ['../cli.js', 'build'], { cwd: testExtensionPath });
 
 				if (extensionType === 'operation') {
-					expect(fse.pathExistsSync(resolve(testExtensionPath, 'dist', 'api.js'))).toBe(true);
-					expect(fse.pathExistsSync(resolve(testExtensionPath, 'dist', 'app.js'))).toBe(true);
+					expect(existsSync(resolve(testExtensionPath, 'dist', 'api.js'))).toBe(true);
+					expect(existsSync(resolve(testExtensionPath, 'dist', 'app.js'))).toBe(true);
 				} else {
-					expect(fse.pathExistsSync(resolve(testExtensionPath, 'dist', 'index.js'))).toBe(true);
+					expect(existsSync(resolve(testExtensionPath, 'dist', 'index.js'))).toBe(true);
 				}
 			}
 		},
@@ -87,13 +87,13 @@ describe('create and build', () => {
 
 			await create('richtext', testExtensionPath, { language });
 
-			const { devDependencies } = await fse.readJson(resolve(testExtensionPath, 'package.json'));
+			const { devDependencies } = await readJson(resolve(testExtensionPath, 'package.json'));
 
 			expect(devDependencies).toHaveProperty('@tiptap/core');
 
 			await execa('node', ['../cli.js', 'build'], { cwd: testExtensionPath });
 
-			const output = await fse.readFile(resolve(testExtensionPath, 'dist', 'index.js'), 'utf8');
+			const output = await readFile(resolve(testExtensionPath, 'dist', 'index.js'), 'utf8');
 
 			expect(output).toMatch(/from\s*["']@tiptap\/core["']/);
 		}
@@ -115,7 +115,7 @@ describe('create and build', () => {
 			process.chdir(cwd);
 		}
 
-		const manifest = await fse.readJson(resolve(testExtensionPath, 'package.json'));
+		const manifest = await readJson(resolve(testExtensionPath, 'package.json'));
 
 		expect(manifest['directus:extension'].entries).toContainEqual({
 			type: 'richtext',
@@ -128,7 +128,7 @@ describe('create and build', () => {
 
 		await execa('node', ['../cli.js', 'build'], { cwd: testExtensionPath });
 
-		const output = await fse.readFile(resolve(testExtensionPath, 'dist', 'app.js'), 'utf8');
+		const output = await readFile(resolve(testExtensionPath, 'dist', 'app.js'), 'utf8');
 
 		expect(output).toMatch(/from\s*["']@tiptap\/core["']/);
 	}, 60_000);
@@ -173,9 +173,9 @@ describe('validate extension', async () => {
 
 		// Add license field
 		const packageJsonPath = resolve(testExtensionPath, 'package.json');
-		const packageJson = await fse.readJson(packageJsonPath);
+		const packageJson = await readJson(packageJsonPath);
 		packageJson.license = 'MIT';
-		await fse.writeJson(packageJsonPath, packageJson);
+		await writeJson(packageJsonPath, packageJson);
 
 		// Should pass now
 		await expect(runValidate('license')).resolves.toEqual(
@@ -191,7 +191,7 @@ describe('validate extension', async () => {
 
 		// Create readme
 		const readmePath = resolve(testExtensionPath, 'readme.md');
-		await fse.writeFile(readmePath, '# My Awesome Extension');
+		await writeFile(readmePath, '# My Awesome Extension');
 
 		// Should pass now
 		await expect(runValidate('readme')).resolves.toEqual(

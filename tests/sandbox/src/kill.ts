@@ -1,5 +1,5 @@
-import { ChildProcess, execSync } from 'child_process';
-import { once } from 'events';
+import { ChildProcess, execSync } from 'node:child_process';
+import { once } from 'node:events';
 
 /**
  * Windows doesn't properly cleanup child processes, forcing us to do this manually.

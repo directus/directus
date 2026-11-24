@@ -1,4 +1,4 @@
-import { setTimeout } from 'timers/promises';
+import { setTimeout } from 'node:timers/promises';
 import { getNodeEnv } from '@directus/utils/node';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { useLogger } from '../../logger/index.js';
@@ -10,7 +10,7 @@ import { track } from './track.js';
 
 vi.mock('./get-report.js');
 vi.mock('./send-report.js');
-vi.mock('timers/promises');
+vi.mock('node:timers/promises');
 vi.mock('../utils/get-random-wait-time.js');
 vi.mock('../../logger/index.js');
 vi.mock('@directus/utils/node');

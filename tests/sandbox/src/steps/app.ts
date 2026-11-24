@@ -1,4 +1,4 @@
-import { spawn } from 'child_process';
+import { spawn } from 'node:child_process';
 import chalk from 'chalk';
 import type { Logger } from '../logger.js';
 import { getPort } from '../port.js';
