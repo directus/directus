@@ -4,6 +4,7 @@ import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { assertCollectionActive } from '../assert-collection-active/assert-collection-active.js';
+import { validateAccess } from '../validate-access/validate-access.js';
 import { fieldMapFromAst } from './lib/field-map-from-ast.js';
 import { injectCases } from './lib/inject-cases.js';
 import type { FieldMap } from './types.js';
@@ -18,6 +19,12 @@ export interface ProcessAstOptions {
 }
 
 export async function processAst(options: ProcessAstOptions, context: Context) {
+	if (options.ast.versioning && options.accountability && !options.accountability.admin) {
+		for (const collection of options.ast.versioning.shadows) {
+			await validateAccess({ accountability: options.accountability, action: 'read', collection }, context);
+		}
+	}
+
 	// FieldMap is a Map of paths in the AST, with each path containing the collection and fields in
 	// that collection that the AST path tries to access
 	const fieldMap: FieldMap = fieldMapFromAst(options.ast, context.schema);

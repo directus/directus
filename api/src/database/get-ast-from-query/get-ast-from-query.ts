@@ -5,7 +5,8 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep, uniq } from 'lodash-es';
-import type { AST } from '../../types/index.js';
+import type { AST, VersionReadMode } from '../../types/index.js';
+import { parseVersionedQuery } from '../../versioning/query.js';
 import { parseFields } from './lib/parse-fields.js';
 import { getAllowedSort } from './utils/get-allowed-sort.js';
 
@@ -13,6 +14,10 @@ export interface GetAstFromQueryOptions {
 	collection: string;
 	query: Query;
 	accountability: Accountability | null;
+	/**
+	 * Include versions of the items, for versioned collections
+	 */
+	versioning?: VersionReadMode | undefined;
 }
 
 export interface GetAstFromQueryContext {
@@ -23,12 +28,19 @@ export interface GetAstFromQueryContext {
 export async function getAstFromQuery(options: GetAstFromQueryOptions, context: GetAstFromQueryContext): Promise<AST> {
 	options.query = cloneDeep(options.query);
 
+	const versioned = options.versioning
+		? parseVersionedQuery(options.collection, options.query, options.versioning, context)
+		: null;
+
+	if (versioned) options.query = versioned.query;
+
 	const ast: AST = {
 		type: 'root',
 		name: options.collection,
 		query: options.query,
 		children: [],
 		cases: [],
+		...(versioned ? { versioning: versioned.versioning } : {}),
 	};
 
 	let fields = ['*'];

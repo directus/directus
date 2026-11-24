@@ -1,7 +1,7 @@
 import type { AbstractServiceOptions, Accountability, Permission, Query, SchemaOverview } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import type { Knex } from 'knex';
-import { isArray } from 'lodash-es';
+import { isArray, isPlainObject } from 'lodash-es';
 import getDatabase from '../database/index.js';
 import applyQuery from '../database/run-ast/lib/apply-query/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
@@ -9,7 +9,8 @@ import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { getCases } from '../permissions/modules/process-ast/lib/get-cases.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { isAdmin } from '../utils/is-admin.js';
-import { countVersionedItems, isVersionedQuery } from '../versioning/read.js';
+import { isVersionedQuery } from '../versioning/query.js';
+import { ItemsService } from './items.js';
 
 export class MetaService {
 	knex: Knex;
@@ -28,10 +29,8 @@ export class MetaService {
 		const results = await Promise.all(
 			query.meta.map((metaVal: string) => {
 				if (isVersionedQuery(query) && this.schema.collections[collection]?.versioned) {
-					const context = { knex: this.knex, schema: this.schema, accountability: this.accountability };
-
-					if (metaVal === 'total_count') return countVersionedItems(collection, {}, context);
-					if (metaVal === 'filter_count') return countVersionedItems(collection, query, context);
+					if (metaVal === 'total_count') return this.versionedCount(collection, {});
+					if (metaVal === 'filter_count') return this.versionedCount(collection, query);
 				}
 
 				if (metaVal === 'total_count') return this.totalCount(collection);
@@ -46,6 +45,31 @@ export class MetaService {
 				[query.meta![index]]: value,
 			};
 		}, {});
+	}
+
+	/**
+	 * Count the live items and versions matching the filter and search of the query
+	 */
+	async versionedCount(collection: string, query: Query): Promise<number> {
+		const service = new ItemsService(collection, {
+			knex: this.knex,
+			schema: this.schema,
+			accountability: this.accountability,
+		});
+
+		const [result] = await service.readByQuery(
+			{
+				filter: query.filter ?? null,
+				search: query.search ?? null,
+				aggregate: { count: ['*'] },
+				version: 'true',
+			},
+			{ emitEvents: false },
+		);
+
+		const count = result?.['count'];
+
+		return Number((isPlainObject(count) ? count['*'] : count) ?? 0);
 	}
 
 	async totalCount(collection: string): Promise<number> {

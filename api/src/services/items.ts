@@ -39,7 +39,7 @@ import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { captureSeatCount, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { handleVersion } from '../utils/versioning/handle-version.js';
-import { isVersionedQuery, readVersionedItems } from '../versioning/read.js';
+import { isVersionedQuery } from '../versioning/query.js';
 import { PayloadService } from './payload.js';
 import { VERSION_FIELD } from './version-tables/constants.js';
 
@@ -518,15 +518,9 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
 		await this.assertCollectionActive('read');
 
-		if (isVersionedQuery(query) && this.schema.collections[this.collection]?.versioned) {
-			return (await readVersionedItems(this.collection, query, {
-				knex: this.knex,
-				schema: this.schema,
-				accountability: this.accountability,
-			})) as Item[];
-		}
+		const versioned = isVersionedQuery(query) && Boolean(this.schema.collections[this.collection]?.versioned);
 
-		if (query.version && !isPublishedVersionKey(query.version)) {
+		if (!versioned && query.version && !isPublishedVersionKey(query.version)) {
 			return (await handleVersion(this, opts?.key ?? null, query, opts)) as Item[];
 		}
 
@@ -553,6 +547,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				collection: this.collection,
 				query: updatedQuery,
 				accountability: this.accountability,
+				versioning: versioned ? 'items' : undefined,
 			},
 			{
 				schema: this.schema,

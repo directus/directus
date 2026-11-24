@@ -7,6 +7,7 @@ import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
 import { PayloadService } from '../../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../types/ast.js';
 import { extractFunctionName } from '../../utils/extract-function-name.js';
+import { runVersionedAst } from '../../versioning/read.js';
 import getDatabase from '../index.js';
 import { getDBQuery } from './lib/get-db-query.js';
 import { parseCurrentLevel } from './lib/parse-current-level.js';
@@ -25,6 +26,10 @@ export async function runAst(
 	accountability: Accountability | null,
 	options?: RunASTOptions,
 ): Promise<null | Item | Item[]> {
+	if (originalAST.type === 'root' && originalAST.versioning) {
+		return runVersionedAst({ ...originalAST, versioning: originalAST.versioning }, schema, accountability, options);
+	}
+
 	const ast = cloneDeep(originalAST);
 
 	const knex = options?.knex || getDatabase();

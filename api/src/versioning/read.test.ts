@@ -1,11 +1,14 @@
 import type { CollectionBuilder } from '@directus/schema-builder';
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Query, SchemaOverview } from '@directus/types';
+import type { Item, Query, SchemaOverview } from '@directus/types';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
 import { describe, expect, test } from 'vitest';
+import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
+import { runAst } from '../database/run-ast/run-ast.js';
+import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { formatSql } from '../test-utils/knex.js';
-import { countVersionedItems, isVersionedQuery, readVersionedItems } from './read.js';
+import { isVersionedQuery } from './query.js';
 
 // The database helpers derive the dialect from the class name of the client
 const CLIENTS = {
@@ -128,12 +131,16 @@ function setup(options: Options = {}) {
 async function read(collection: string, query: Query, options: Options = {}) {
 	const { db, queries } = setup(options);
 
-	const items = await readVersionedItems(
-		collection,
-		query,
-		{ knex: db, schema: schema as SchemaOverview, accountability: null },
-		options.mode,
+	const context = { knex: db, schema: schema as SchemaOverview };
+
+	let ast = await getAstFromQuery(
+		{ collection, query, accountability: null, versioning: options.mode ?? 'items' },
+		context,
 	);
+
+	ast = await processAst({ ast, action: 'read', accountability: null }, context);
+
+	const items = (await runAst(ast, context.schema, null, { knex: db })) as Item[];
 
 	return { items, ...queries() };
 }
@@ -1089,17 +1096,13 @@ describe('aggregate', () => {
 	});
 
 	test('counts items and versions', async () => {
-		const { db, queries } = setup({ responses: [['directus_versioned_articles', [{ count: 3 }]]] });
-
-		const count = await countVersionedItems(
+		const { items, sql, bindings } = await read(
 			'articles',
-			{ filter: { directus_version: { type: { _eq: 'draft' } } } },
-			{ knex: db, schema: schema as SchemaOverview, accountability: null },
+			{ filter: { directus_version: { type: { _eq: 'draft' } } }, aggregate: { count: ['*'] } },
+			{ responses: [['directus_versioned_articles', [{ count: 3 }]]] },
 		);
 
-		const { sql, bindings } = queries();
-
-		expect(count).toBe(3);
+		expect(items).toEqual([{ count: 3 }]);
 
 		expect(sql).toMatchInlineSnapshot(`
 			"select
