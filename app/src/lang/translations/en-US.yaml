@@ -2899,6 +2899,10 @@ interfaces:
     color_off: Color Off
     label_placeholder: Enter a label...
     label_default: Enabled
+    control: Control
+    control_note: Show the field as a checkbox or a switch
+    checkbox: Checkbox
+    switch: Switch
   translations:
     display_template: Display Template
     no_collection: No Collection
