@@ -21,7 +21,7 @@ import { validateLinkAccess } from '../versioning/link-access.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
-import { isVersioningTable, toVersionSystemFields } from './version-tables/utils.js';
+import { flattenVersionSystemFields, isVersioningTable, nestVersionSystemFields } from './version-tables/utils.js';
 
 type VersionSystemFields = {
 	id: PrimaryKey | null;
@@ -84,7 +84,11 @@ export class VersionedItemsService {
 	}
 
 	async deleteOne(versionId: PrimaryKey): Promise<PrimaryKey> {
-		return this.getShadowService(this.knex, this.collection).deleteOne(versionId);
+		return new ItemsService(this.versioning.getShadowTableName(this.collection), {
+			knex: this.knex,
+			schema: this.schema,
+			accountability: this.accountability,
+		}).deleteOne(versionId);
 	}
 
 	/**
@@ -111,7 +115,7 @@ export class VersionedItemsService {
 	async unpublish(versionId: PrimaryKey): Promise<PrimaryKey> {
 		await transaction(this.knex, async (trx) => {
 			const { primary } = this.schema.collections[this.collection]!;
-			const row = await this.readVersionRow(trx, this.collection, versionId, 'update');
+			const row = await this.readVersion(trx, this.collection, versionId, 'update');
 
 			if (row[VERSION_SYSTEM_FIELDS.type] !== 'published' || row[primary] === null) {
 				throw new InvalidPayloadError({ reason: `Version "${versionId}" isn't published` });
@@ -135,7 +139,7 @@ export class VersionedItemsService {
 		return transaction(this.knex, async (trx) => {
 			const { primary } = this.schema.collections[this.collection]!;
 			const shadowTable = this.versioning.getShadowTableName(this.collection);
-			const row = await this.readVersionRow(trx, this.collection, versionId, 'update');
+			const row = await this.readVersion(trx, this.collection, versionId, 'update');
 			const liveKey = row[primary];
 
 			const published =
@@ -167,14 +171,15 @@ export class VersionedItemsService {
 	 * Read a version in the shape of a live item, with the version system fields under `directus_version`
 	 */
 	async readOne(versionId: PrimaryKey, query?: { fields?: string[] | null }): Promise<Item> {
-		const row = await this.readVersionRow(this.knex, this.collection, versionId, 'read');
+		const row = await this.readVersion(this.knex, this.collection, versionId, 'read');
+		const { [VERSION_FIELD]: system, ...data } = nestVersionSystemFields(row);
 		const { fields } = this.schema.collections[this.collection]!;
 		const shadowFields = this.schema.collections[this.versioning.getShadowTableName(this.collection)]!.fields;
 
 		const values: Item = {};
 
 		for (const field of Object.values(fields)) {
-			if (!field.alias) values[field.field] = row[field.field];
+			if (!field.alias) values[field.field] = data[field.field];
 		}
 
 		const payloadService = new PayloadService(this.collection, {
@@ -189,12 +194,12 @@ export class VersionedItemsService {
 		for (const relation of this.getM2ORelations(this.collection)) {
 			const referenceField = this.versioning.getVersionReferenceField(relation.field);
 
-			if (referenceField in shadowFields && item[relation.field] === null && row[referenceField] !== null) {
-				item[relation.field] = { [VERSION_FIELD]: { id: row[referenceField] } };
+			if (referenceField in shadowFields && item[relation.field] === null && data[referenceField] !== null) {
+				item[relation.field] = { [VERSION_FIELD]: { id: data[referenceField] } };
 			}
 		}
 
-		item[VERSION_FIELD] = toVersionSystemFields(row);
+		item[VERSION_FIELD] = system;
 
 		return pickFields(item, query?.fields);
 	}
@@ -211,18 +216,28 @@ export class VersionedItemsService {
 
 		const { [VERSION_FIELD]: system, ...values } = data;
 		const { primary, fields } = this.schema.collections[collection]!;
+		const shadowFields = this.schema.collections[this.versioning.getShadowTableName(collection)]!.fields;
 
 		versionId ??= system?.id ?? null;
 
-		const existing = versionId !== null ? await this.readVersionRow(trx, collection, versionId, 'update') : null;
+		const existing = versionId !== null ? await this.readVersion(trx, collection, versionId, 'update') : null;
 
 		const record: Item = {};
 		const plainValues: Item = {};
 		const o2mValues: [Relation, unknown][] = [];
 
-		// A new version of an existing item starts out as a copy of it
+		// A new version of an existing item starts out as a copy of it, if it still exists
 		if (!existing && values[primary] !== undefined && values[primary] !== null) {
-			Object.assign(record, await this.readLiveRow(trx, collection, values[primary]));
+			const liveRow = await trx.select('*').from(collection).where(primary, values[primary]).first();
+
+			if (liveRow && this.accountability) {
+				await validateAccess(
+					{ accountability: this.accountability, action: 'read', collection, primaryKeys: [values[primary]] },
+					{ knex: trx, schema: this.schema },
+				);
+			}
+
+			Object.assign(record, liveRow);
 		}
 
 		for (const [field, value] of Object.entries(values)) {
@@ -232,8 +247,43 @@ export class VersionedItemsService {
 
 			const { relation, relationType } = getRelationInfo(this.schema.relations, collection, field);
 
+			// Primitive values link to live items. Objects create or update a version of the related item,
+			// which is only possible if the related collection is versioned.
 			if (relationType === 'm2o' || relationType === 'a2o') {
-				Object.assign(record, await this.saveM2O(trx, collection, relation!, value, { ...existing, ...values }));
+				const referenceField = this.versioning.getVersionReferenceField(field);
+				const hasReference = referenceField in shadowFields;
+
+				if (!isPlainObject(value)) {
+					record[field] = value ?? null;
+					if (hasReference) record[referenceField] = null;
+					continue;
+				}
+
+				const relatedCollection =
+					relation!.related_collection ?? { ...existing, ...values }[relation!.meta?.one_collection_field ?? ''];
+
+				if (!hasReference || !relatedCollection || !this.schema.collections[relatedCollection]?.versioned) {
+					throw new InvalidPayloadError({
+						reason: `Field "${field}" in "${collection}" can only link to existing items, as the related collection isn't versioned`,
+					});
+				}
+
+				const relatedVersion = value as VersionPayload;
+
+				const isLinkOnly =
+					Object.keys(relatedVersion).length === 1 && isEqual(Object.keys(relatedVersion[VERSION_FIELD] ?? {}), ['id']);
+
+				let relatedVersionId: PrimaryKey;
+
+				if (isLinkOnly) {
+					relatedVersionId = relatedVersion[VERSION_FIELD]!.id!;
+					await this.readVersion(trx, relatedCollection, relatedVersionId, 'read');
+				} else {
+					relatedVersionId = await this.saveVersion(trx, relatedCollection, null, relatedVersion);
+				}
+
+				record[field] = null;
+				record[referenceField] = relatedVersionId;
 				continue;
 			}
 
@@ -255,102 +305,83 @@ export class VersionedItemsService {
 		const processed = await payloadService.processValues(existing ? 'update' : 'create', { ...plainValues });
 		Object.assign(record, pick(processed, Object.keys(plainValues)));
 
+		const recordSystem: Record<string, unknown> = {};
+
 		if (system && 'name' in system) {
-			record[VERSION_SYSTEM_FIELDS.name] = system.name ?? null;
+			recordSystem['name'] = system.name ?? null;
 		}
 
 		// Writes go through the shadow collection, so its permissions, validation and presets apply as usual
-		const shadowService = this.getShadowService(trx, collection);
+		const shadowService = new ItemsService(this.versioning.getShadowTableName(collection), {
+			knex: trx,
+			schema: this.schema,
+			accountability: this.accountability,
+		});
 
 		if (existing) {
-			record[VERSION_SYSTEM_FIELDS.date_updated] = new Date();
-			record[VERSION_SYSTEM_FIELDS.user_updated] = this.accountability?.user ?? null;
-
-			await shadowService.updateOne(versionId!, record);
+			recordSystem['date_updated'] = new Date();
+			recordSystem['user_updated'] = this.accountability?.user ?? null;
 		} else {
-			record[VERSION_SYSTEM_FIELDS.user_created] = this.accountability?.user ?? null;
-
-			versionId = await shadowService.createOne(record);
+			recordSystem['user_created'] = this.accountability?.user ?? null;
 		}
 
+		const row = flattenVersionSystemFields({ ...record, [VERSION_FIELD]: recordSystem });
+
+		if (existing) {
+			await shadowService.updateOne(versionId!, row);
+		} else {
+			versionId = await shadowService.createOne(row);
+		}
+
+		// Supports the array format, which replaces all related items, and the detailed `{ create, update, delete }` format.
+		// Keys link live items to the version through the link table of the related collection.
+		// Objects create or update versions of related items that reference this version.
 		for (const [relation, value] of o2mValues) {
-			await this.saveO2M(trx, relation, versionId!, value);
+			const field = relation.meta!.one_field;
+
+			if (Array.isArray(value)) {
+				const linked = await this.linkO2M(trx, relation, versionId!, value);
+				await this.unlinkO2M(trx, relation, versionId!, linked, { except: true });
+				continue;
+			}
+
+			if (!isPlainObject(value)) {
+				throw new InvalidPayloadError({
+					reason: `Field "${field}" has to be an array or contain create, update or delete`,
+				});
+			}
+
+			const { create = [], update = [], delete: remove = [] } = value as Record<string, unknown>;
+
+			for (const [key, items] of Object.entries({ create, update, delete: remove })) {
+				if (!Array.isArray(items)) {
+					throw new InvalidPayloadError({ reason: `"${key}" of field "${field}" has to be an array` });
+				}
+			}
+
+			await this.linkO2M(trx, relation, versionId!, [...(create as unknown[]), ...(update as unknown[])]);
+
+			const removed = { keys: [] as PrimaryKey[], versionIds: [] as PrimaryKey[] };
+
+			for (const item of remove as unknown[]) {
+				const key = this.getO2MLinkKey(relation, item);
+				const removedVersionId = (item as VersionPayload)?.[VERSION_FIELD]?.id;
+
+				if (key !== null) {
+					removed.keys.push(key);
+				} else if (removedVersionId !== undefined && removedVersionId !== null) {
+					removed.versionIds.push(removedVersionId);
+				} else {
+					throw new InvalidPayloadError({
+						reason: `Items to delete from field "${field}" have to be keys or contain "directus_version.id"`,
+					});
+				}
+			}
+
+			await this.unlinkO2M(trx, relation, versionId!, removed, { except: false });
 		}
 
 		return versionId!;
-	}
-
-	/**
-	 * Primitive values link to live items. Objects create or update a version of the related item,
-	 * which is only possible if the related collection is versioned.
-	 */
-	private async saveM2O(trx: Knex, collection: string, relation: Relation, value: unknown, current: Item) {
-		const shadowFields = this.schema.collections[this.versioning.getShadowTableName(collection)]!.fields;
-		const referenceField = this.versioning.getVersionReferenceField(relation.field);
-		const hasReference = referenceField in shadowFields;
-
-		if (!isPlainObject(value)) {
-			return { [relation.field]: value ?? null, ...(hasReference ? { [referenceField]: null } : {}) };
-		}
-
-		const relatedCollection = relation.related_collection ?? current[relation.meta?.one_collection_field ?? ''];
-
-		if (!hasReference || !relatedCollection || !this.schema.collections[relatedCollection]?.versioned) {
-			throw new InvalidPayloadError({
-				reason: `Field "${relation.field}" in "${collection}" can only link to existing items, as the related collection isn't versioned`,
-			});
-		}
-
-		const relatedVersion = value as VersionPayload;
-
-		const isLinkOnly =
-			Object.keys(relatedVersion).length === 1 && isEqual(Object.keys(relatedVersion[VERSION_FIELD] ?? {}), ['id']);
-
-		let relatedVersionId: PrimaryKey;
-
-		if (isLinkOnly) {
-			relatedVersionId = relatedVersion[VERSION_FIELD]!.id!;
-			await this.readVersionRow(trx, relatedCollection, relatedVersionId, 'read');
-		} else {
-			relatedVersionId = await this.saveVersion(trx, relatedCollection, null, relatedVersion);
-		}
-
-		return { [relation.field]: null, [referenceField]: relatedVersionId };
-	}
-
-	/**
-	 * Supports the array format, which replaces all related items, and the detailed `{ create, update, delete }` format.
-	 * Keys link live items to the version through the link table of the related collection.
-	 * Objects create or update versions of related items that reference this version.
-	 */
-	private async saveO2M(trx: Knex, relation: Relation, versionId: PrimaryKey, value: unknown) {
-		const field = relation.meta!.one_field;
-
-		if (Array.isArray(value)) {
-			const linked = await this.linkO2M(trx, relation, versionId, value);
-			await this.unlinkO2M(trx, relation, versionId, linked, { except: true });
-			return;
-		}
-
-		if (!isPlainObject(value)) {
-			throw new InvalidPayloadError({
-				reason: `Field "${field}" has to be an array or contain create, update or delete`,
-			});
-		}
-
-		const { create = [], update = [], delete: remove = [] } = value as Record<string, unknown>;
-
-		for (const [key, items] of Object.entries({ create, update, delete: remove })) {
-			if (!Array.isArray(items)) {
-				throw new InvalidPayloadError({ reason: `"${key}" of field "${field}" has to be an array` });
-			}
-		}
-
-		await this.linkO2M(trx, relation, versionId, [...(create as unknown[]), ...(update as unknown[])]);
-
-		await this.unlinkO2M(trx, relation, versionId, this.splitO2MItems(relation, remove as unknown[]), {
-			except: false,
-		});
 	}
 
 	private async linkO2M(trx: Knex, relation: Relation, versionId: PrimaryKey, items: unknown[]) {
@@ -445,37 +476,17 @@ export class VersionedItemsService {
 
 		if (unlinkedVersionIds.length === 0) return;
 
-		const relatedShadowService = this.getShadowService(trx, relatedCollection);
+		const relatedShadowService = new ItemsService(this.versioning.getShadowTableName(relatedCollection), {
+			knex: trx,
+			schema: this.schema,
+			accountability: this.accountability,
+		});
 
 		if (relation.meta?.one_deselect_action === 'delete') {
 			await relatedShadowService.deleteMany(unlinkedVersionIds);
 		} else {
 			await relatedShadowService.updateMany(unlinkedVersionIds, { [referenceField]: null });
 		}
-	}
-
-	/**
-	 * Split the items to unlink into keys of live items and ids of versions
-	 */
-	private splitO2MItems(relation: Relation, items: unknown[]) {
-		const result = { keys: [] as PrimaryKey[], versionIds: [] as PrimaryKey[] };
-
-		for (const item of items) {
-			const key = this.getO2MLinkKey(relation, item);
-			const versionId = (item as VersionPayload)?.[VERSION_FIELD]?.id;
-
-			if (key !== null) {
-				result.keys.push(key);
-			} else if (versionId !== undefined && versionId !== null) {
-				result.versionIds.push(versionId);
-			} else {
-				throw new InvalidPayloadError({
-					reason: `Items to delete from field "${relation.meta!.one_field}" have to be keys or contain "directus_version.id"`,
-				});
-			}
-		}
-
-		return result;
 	}
 
 	/**
@@ -498,7 +509,7 @@ export class VersionedItemsService {
 	): Promise<PrimaryKey> {
 		const { primary, fields } = this.schema.collections[collection]!;
 		const shadowTable = this.versioning.getShadowTableName(collection);
-		const row = await this.readVersionRow(trx, collection, versionId, 'read');
+		const row = await this.readVersion(trx, collection, versionId, 'read');
 
 		// Prevents endless loops for circular references between versions
 		const visitKey = `${collection}:${versionId}`;
@@ -548,15 +559,27 @@ export class VersionedItemsService {
 		const payloadService = new PayloadService(collection, { knex: trx, schema: this.schema, accountability: null });
 		const payload = await payloadService.processValues('read', values);
 
-		const itemsService = this.getItemsService(trx, collection);
+		const itemsService = new ItemsService(collection, {
+			knex: trx,
+			schema: this.schema,
+			accountability: this.accountability,
+		});
 
 		let liveKey: PrimaryKey;
 
 		if (!liveRow) {
-			// Versions of removed items, like archived ones, recreate the item under its original id
-			liveKey = await this.withExplicitKey(trx, collection, currentKey !== null, () =>
-				itemsService.createOne(currentKey !== null ? { ...payload, [primary]: currentKey } : payload),
-			);
+			// Versions of removed items, like archived ones, recreate the item under its original id.
+			// MSSQL doesn't allow inserting explicit values into identity columns unless it's enabled for the table.
+			const needsIdentityInsert =
+				currentKey !== null && getDatabaseClient(trx) === 'mssql' && fields[primary]?.defaultValue === 'AUTO_INCREMENT';
+
+			if (needsIdentityInsert) await trx.raw('SET IDENTITY_INSERT ?? ON', [collection]);
+
+			try {
+				liveKey = await itemsService.createOne(currentKey !== null ? { ...payload, [primary]: currentKey } : payload);
+			} finally {
+				if (needsIdentityInsert) await trx.raw('SET IDENTITY_INSERT ?? OFF', [collection]);
+			}
 
 			// Some databases, like Oracle, return generated integer keys as strings
 			if (fields[primary]?.type === 'integer') liveKey = Number(liveKey);
@@ -595,55 +618,16 @@ export class VersionedItemsService {
 			})
 			.where(VERSION_SYSTEM_FIELDS.id, versionId);
 
-		await this.publishRelatedItems(trx, collection, versionId, liveKey, visited);
-
-		return liveKey;
-	}
-
-	/**
-	 * MSSQL doesn't allow inserting explicit values into identity columns unless it's enabled for the table
-	 */
-	private async withExplicitKey<T>(
-		trx: Knex,
-		collection: string,
-		hasExplicitKey: boolean,
-		callback: () => Promise<T>,
-	): Promise<T> {
-		const { primary, fields } = this.schema.collections[collection]!;
-
-		const needsIdentityInsert =
-			hasExplicitKey && getDatabaseClient(trx) === 'mssql' && fields[primary]?.defaultValue === 'AUTO_INCREMENT';
-
-		if (!needsIdentityInsert) return callback();
-
-		await trx.raw('SET IDENTITY_INSERT ?? ON', [collection]);
-
-		try {
-			return await callback();
-		} finally {
-			await trx.raw('SET IDENTITY_INSERT ?? OFF', [collection]);
-		}
-	}
-
-	/**
-	 * Point items that are related to the version through o2m relations to the published live item
-	 */
-	private async publishRelatedItems(
-		trx: Knex,
-		collection: string,
-		versionId: PrimaryKey,
-		liveKey: PrimaryKey,
-		visited: Set<string>,
-	) {
-		const relations = this.schema.relations.filter(
+		// Point items that are related to the version through o2m relations to the published live item
+		const o2mRelations = this.schema.relations.filter(
 			(relation) =>
 				!isVersioningTable(relation.collection) &&
 				(relation.related_collection === collection || relation.meta?.one_allowed_collections?.includes(collection)),
 		);
 
-		for (const relation of relations) {
+		for (const relation of o2mRelations) {
 			const relatedCollection = relation.collection;
-			const { primary } = this.schema.collections[relatedCollection]!;
+			const relatedPrimary = this.schema.collections[relatedCollection]!.primary;
 			const linkTable = this.versioning.getLinkTableName(relatedCollection);
 			const relatedShadowTable = this.versioning.getShadowTableName(relatedCollection);
 			const referenceField = this.versioning.getVersionReferenceField(relation.field);
@@ -653,23 +637,27 @@ export class VersionedItemsService {
 
 			if (this.schema.collections[linkTable]?.fields[relation.field]) {
 				const query = trx(linkTable)
-					.select(`${linkTable}.${primary}`)
+					.select(`${linkTable}.${relatedPrimary}`)
 					.where(`${linkTable}.${relation.field}`, versionId);
 
 				if (collectionField) {
 					query
-						.join(relatedCollection, `${relatedCollection}.${primary}`, `${linkTable}.${primary}`)
+						.join(relatedCollection, `${relatedCollection}.${relatedPrimary}`, `${linkTable}.${relatedPrimary}`)
 						.where(`${relatedCollection}.${collectionField}`, collection);
 				}
 
-				const linkedKeys = (await query).map((row) => row[primary]);
+				const linkedKeys = (await query).map((row) => row[relatedPrimary]);
 
 				if (linkedKeys.length > 0) {
-					await this.getItemsService(trx, relatedCollection).updateMany(linkedKeys, { [relation.field]: liveKey });
+					await new ItemsService(relatedCollection, {
+						knex: trx,
+						schema: this.schema,
+						accountability: this.accountability,
+					}).updateMany(linkedKeys, { [relation.field]: liveKey });
 
 					await trx(linkTable)
 						.update({ [relation.field]: null })
-						.whereIn(primary, linkedKeys);
+						.whereIn(relatedPrimary, linkedKeys);
 				}
 			}
 
@@ -689,6 +677,8 @@ export class VersionedItemsService {
 				}
 			}
 		}
+
+		return liveKey;
 	}
 
 	/**
@@ -714,7 +704,11 @@ export class VersionedItemsService {
 			.update({ [primary]: null })
 			.whereIn(VERSION_SYSTEM_FIELDS.id, versionIds);
 
-		await this.getItemsService(trx, collection).deleteOne(liveKey);
+		await new ItemsService(collection, {
+			knex: trx,
+			schema: this.schema,
+			accountability: this.accountability,
+		}).deleteOne(liveKey);
 
 		if (options.keepReference && versionIds.length > 0) {
 			await trx(shadowTable)
@@ -723,15 +717,7 @@ export class VersionedItemsService {
 		}
 	}
 
-	private getItemsService(knex: Knex, collection: string) {
-		return new ItemsService(collection, { knex, schema: this.schema, accountability: this.accountability });
-	}
-
-	private getShadowService(knex: Knex, collection: string) {
-		return this.getItemsService(knex, this.versioning.getShadowTableName(collection));
-	}
-
-	private async readVersionRow(knex: Knex, collection: string, versionId: PrimaryKey, action: PermissionsAction) {
+	private async readVersion(knex: Knex, collection: string, versionId: PrimaryKey, action: PermissionsAction) {
 		const shadowTable = this.versioning.getShadowTableName(collection);
 
 		if (this.accountability) {
@@ -744,28 +730,6 @@ export class VersionedItemsService {
 		const row = await knex.select('*').from(shadowTable).where(VERSION_SYSTEM_FIELDS.id, versionId).first();
 
 		if (!row) throw new ForbiddenError();
-
-		return row as Item;
-	}
-
-	/**
-	 * Read the raw values of a live item, returns nothing if it doesn't exist (anymore)
-	 */
-	private async readLiveRow(knex: Knex, collection: string, key: PrimaryKey) {
-		const row = await knex
-			.select('*')
-			.from(collection)
-			.where(this.schema.collections[collection]!.primary, key)
-			.first();
-
-		if (!row) return {};
-
-		if (this.accountability) {
-			await validateAccess(
-				{ accountability: this.accountability, action: 'read', collection, primaryKeys: [key] },
-				{ knex, schema: this.schema },
-			);
-		}
 
 		return row as Item;
 	}

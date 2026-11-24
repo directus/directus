@@ -15,7 +15,7 @@ import {
 	VERSION_REFERENCE_PREFIX,
 	VERSION_SYSTEM_FIELDS,
 } from '../services/version-tables/constants.js';
-import { toVersionSystemFields } from '../services/version-tables/utils.js';
+import { nestVersionSystemFields } from '../services/version-tables/utils.js';
 import type { FieldNode } from '../types/ast.js';
 import {
 	deletePath,
@@ -145,9 +145,7 @@ export async function readVersionedItems(
 
 	await resolveVersionReferences(collection, items, fields, context, mode);
 
-	return items.map((item) => {
-		item[VERSION_FIELD] = toVersionSystemFields(item);
-
+	return items.map(nestVersionSystemFields).map((item) => {
 		for (const field of addedFields) {
 			delete item[field];
 		}
