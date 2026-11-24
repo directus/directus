@@ -18,7 +18,6 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VTemplateInput from '@/components/v-template-input.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
-import { md } from '@/utils/md';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
@@ -54,7 +53,7 @@ watch(
 	() => props.existingComment,
 	() => {
 		if (props.existingComment?.comment) {
-			newCommentContent.value = md(props.existingComment.comment);
+			newCommentContent.value = props.existingComment.comment;
 		}
 	},
 	{ immediate: true },
