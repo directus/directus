@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { toArray } from '@directus/utils';
 import { DEFAULTS } from '../constants/defaults.js';
 import type { Env } from '../types/env.js';
 import { getConfigPath } from '../utils/get-config-path.js';
@@ -17,10 +18,21 @@ import { readConfigurationFromFile } from './read-configuration-from-file.js';
 export function createEnv(): Env {
 	const rawConfiguration = { ...readConfigurationFromProcess(), ...readConfigurationFromFile(getConfigPath()) };
 
+	// Directus variables are resolved first, so the allow-list itself can be provided through `FLOWS_ENV_ALLOW_LIST_FILE`
+	const entries = Object.entries(rawConfiguration).map(([key, value]) =>
+		isDirectusVariable(key) ? resolveFileValue(key, value) : ([key, value] as [string, unknown]),
+	);
+
+	const flowsEnvAllowList = toArray(Object.fromEntries(entries)['FLOWS_ENV_ALLOW_LIST']);
+
 	const output: Record<string, unknown> = {};
 
-	for (const [rawKey, rawValue] of Object.entries(rawConfiguration)) {
-		const [key, value] = resolveFileValue(rawKey, rawValue);
+	for (const [rawKey, rawValue] of entries) {
+		const [key, value] =
+			isFileKey(rawKey) && flowsEnvAllowList.includes(removeFileSuffix(rawKey))
+				? resolveFileValue(rawKey, rawValue)
+				: [rawKey, rawValue];
+
 		const parsedValue = parseValue(key, value);
 
 		if (parsedValue !== undefined) output[key] = parsedValue;
@@ -35,10 +47,10 @@ export function createEnv(): Env {
 }
 
 /**
- * Replaces `*_FILE` variables with the content of the file they point to, keeping the cast prefix if present
+ * Replaces `*_FILE` variables with the content of the file they point to, keeping the cast prefix if present.
  */
 function resolveFileValue(key: string, value: unknown): [string, unknown] {
-	if (!isFileKey(key) || !isDirectusVariable(key) || typeof value !== 'string') return [key, value];
+	if (!isFileKey(key) || typeof value !== 'string') return [key, value];
 
 	const castFlag = getCastFlag(value);
 	const castPrefix = castFlag ? castFlag + ':' : '';
