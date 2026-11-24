@@ -1,5 +1,8 @@
 Perform CRUD operations on Directus Fields.
 
+Only change the schema when the user asks for a schema change. If a task needs a field, collection, or relation that
+doesn't exist, tell the user what's missing instead of creating it.
+
 <actions>
 - `create`: Add one or multiple fields to a collection
 - `read`: View field configurations
