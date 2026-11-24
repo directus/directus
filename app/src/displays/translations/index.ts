@@ -173,7 +173,7 @@ export default defineDisplay({
 
 		const languagesRelation = relations.find((relation) => relation !== translationsRelation);
 
-		const translationCollection = translationsRelation?.related_collection;
+		const translationCollection = translationsRelation?.collection;
 		const languagesCollection = languagesRelation?.related_collection;
 
 		if (!translationCollection || !languagesCollection) return [];
