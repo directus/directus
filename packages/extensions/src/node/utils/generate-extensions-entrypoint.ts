@@ -21,7 +21,9 @@ export function generateExtensionsEntrypoint(
 
 	for (const [source, extensions] of Object.entries(extensionMaps)) {
 		for (const [folder, extension] of extensions.entries()) {
-			const settingsForExtension = settings.find((setting) => setting.source === source && setting.folder === folder);
+			const settingsForExtension = settings.find(
+				(setting) => setting.source === source && setting.folder === folder && setting.bundle === null,
+			);
 
 			if (!settingsForExtension) continue;
 

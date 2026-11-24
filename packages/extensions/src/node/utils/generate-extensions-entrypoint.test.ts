@@ -133,7 +133,9 @@ describe('generateExtensionsEntrypoint', () => {
 			local: true,
 		});
 
-		const mockSettings = [{ source: 'local', folder: 'mock-panel-extension', enabled: true }] as ExtensionSettings[];
+		const mockSettings = [
+			{ source: 'local', folder: 'mock-panel-extension', enabled: true, bundle: null },
+		] as ExtensionSettings[];
 
 		expect(afterLoadHelper(generateExtensionsEntrypoint(mockExtensions, mockSettings))).toMatchInlineSnapshot(
 			`"const [panel0] = await Promise.all([load("mock-panel-extension", () => import('./extensions/panel/index.js'))]);export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [panel0?.default].filter(Boolean);export const themes = [];export const richtexts = [];export const operations = [];"`,
@@ -168,8 +170,8 @@ describe('generateExtensionsEntrypoint', () => {
 		});
 
 		const mockSettings = [
-			{ source: 'local', folder: 'mock-callout-extension', enabled: true },
-			{ source: 'local', folder: 'mock-kbd-extension', enabled: false },
+			{ source: 'local', folder: 'mock-callout-extension', enabled: true, bundle: null },
+			{ source: 'local', folder: 'mock-kbd-extension', enabled: false, bundle: null },
 		] as ExtensionSettings[];
 
 		expect(afterLoadHelper(generateExtensionsEntrypoint(mockExtensions, mockSettings))).toMatchInlineSnapshot(
@@ -197,7 +199,7 @@ describe('generateExtensionsEntrypoint', () => {
 		});
 
 		const mockSettings = [
-			{ source: 'local', folder: 'mock-operation-extension', enabled: true },
+			{ source: 'local', folder: 'mock-operation-extension', enabled: true, bundle: null },
 		] as ExtensionSettings[];
 
 		expect(afterLoadHelper(generateExtensionsEntrypoint(mockExtensions, mockSettings))).toMatchInlineSnapshot(
@@ -233,7 +235,7 @@ describe('generateExtensionsEntrypoint', () => {
 		});
 
 		const mockSettings = [
-			{ id: 'mock-bundle-id', source: 'local', folder: 'mock-bundle-extension', enabled: true },
+			{ id: 'mock-bundle-id', source: 'local', folder: 'mock-bundle-extension', enabled: true, bundle: null },
 			{
 				id: 'mock-bundle-interface-id',
 				source: 'local',
@@ -412,6 +414,7 @@ describe('generateExtensionsEntrypoint load isolation', () => {
 			source: 'local',
 			folder,
 			enabled: true,
+			bundle: null,
 		})) as ExtensionSettings[];
 
 		const loaded = await importEntrypoint(generateExtensionsEntrypoint(extensions, settings));
