@@ -27,10 +27,7 @@ export class MetaService {
 
 		const results = await Promise.all(
 			query.meta.map((metaVal: string) => {
-				if (
-					isVersionedQuery(query) &&
-					this.schema.collections[collection]?.versioned
-				) {
+				if (isVersionedQuery(query) && this.schema.collections[collection]?.versioned) {
 					const context = { knex: this.knex, schema: this.schema, accountability: this.accountability };
 
 					if (metaVal === 'total_count') return countVersionedItems(collection, {}, context);
