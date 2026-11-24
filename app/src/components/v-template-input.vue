@@ -199,6 +199,11 @@ function processText(event: Event) {
 	emit('update:modelValue', input.innerText);
 }
 
+// Escape only what innerHTML serializes in text nodes, so the innerHTML comparison below stays stable
+function escapeHtmlText(text: string) {
+	return text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+}
+
 function parseHTML(innerText?: string, isDirectInput = false) {
 	if (!input.value) return;
 
@@ -211,7 +216,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 		hasTriggered = false;
 	}
 
-	let newHTML = input.value.innerText;
+	let newHTML = escapeHtmlText(input.value.innerText);
 	let caretPos = 0;
 
 	if (isDirectInput) {
