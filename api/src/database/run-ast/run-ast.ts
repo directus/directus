@@ -1,13 +1,14 @@
 import { useEnv } from '@directus/env';
 import type { Accountability, Filter, Item, Permission, Query, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
+import { toArray } from '@directus/utils';
 import { cloneDeep, merge } from 'lodash-es';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
 import { PayloadService } from '../../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../types/ast.js';
 import { extractFunctionName } from '../../utils/extract-function-name.js';
-import { runVersionedAst } from '../../versioning/read.js';
+import { formatAggregate } from '../../versioning/fields.js';
+import { formatVersionedLevel, getVersionedLevel } from '../../versioning/run.js';
 import getDatabase from '../index.js';
 import { getDBQuery } from './lib/get-db-query.js';
 import { parseCurrentLevel } from './lib/parse-current-level.js';
@@ -26,10 +27,6 @@ export async function runAst(
 	accountability: Accountability | null,
 	options?: RunASTOptions,
 ): Promise<null | Item | Item[]> {
-	if (originalAST.type === 'root' && originalAST.versioning) {
-		return runVersionedAst({ ...originalAST, versioning: originalAST.versioning }, schema, accountability, options);
-	}
-
 	const ast = cloneDeep(originalAST);
 
 	const knex = options?.knex || getDatabase();
@@ -48,8 +45,18 @@ export async function runAst(
 		}
 
 		return results;
+	} else if (ast.versioning) {
+		// Versioned nodes read from the combined rows of live items and versions of their collection
+		const level = getVersionedLevel({ ...ast, versioning: ast.versioning }, schema, knex);
+
+		const items = await run(level.name, level.children, level.query, ast.cases, accountability, level);
+
+		if (options?.nested || !items || !(level.query.group || level.query.aggregate)) return items;
+
+		// Aggregates on version system fields are returned in the format of the query
+		return toArray(items).map((item) => formatAggregate(item, level.query));
 	} else {
-		return await run(ast.name, ast.children, options?.query || ast.query, ast.cases, accountability, options?.source);
+		return await run(ast.name, ast.children, options?.query || ast.query, ast.cases, accountability);
 	}
 
 	async function run(
@@ -58,13 +65,14 @@ export async function runAst(
 		query: Query,
 		cases: Filter[],
 		accountability: Accountability | null,
-		source?: Knex.QueryBuilder,
+		level?: ReturnType<typeof getVersionedLevel>,
 	) {
 		const env = useEnv();
+		const levelSchema = level?.schema ?? schema;
 
 		// Retrieve the database columns to select in the current AST
 		const { fieldNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
-			schema,
+			levelSchema,
 			collection,
 			children,
 			query,
@@ -88,9 +96,9 @@ export async function runAst(
 				query,
 				cases,
 				permissions,
-				source,
+				source: level?.source,
 			},
-			{ schema, knex },
+			{ schema: levelSchema, knex },
 		);
 
 		const rawItems: Item | Item[] = await dbQuery;
@@ -98,7 +106,7 @@ export async function runAst(
 		if (!rawItems) return null;
 
 		// Run the items through the special transforms
-		const payloadService = new PayloadService(collection, { accountability, knex, schema });
+		const payloadService = new PayloadService(collection, { accountability, knex, schema: levelSchema });
 
 		// Build alias map that includes auto-generated json function field mappings
 		// so processJsonFunctionResults can detect and parse stringified JSON values
@@ -186,6 +194,8 @@ export async function runAst(
 				}
 			}
 		}
+
+		if (level) items = formatVersionedLevel(items, level.node, level.versionFields, knex);
 
 		// During the fetching of data, we have to inject a couple of required fields for the child nesting
 		// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching

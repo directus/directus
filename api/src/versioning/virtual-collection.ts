@@ -4,22 +4,22 @@ import { uniq } from 'lodash-es';
 import { getHelpers } from '../database/helpers/index.js';
 import { getDatabaseClient } from '../database/index.js';
 import { VERSION_REFERENCE_PREFIX, VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
-import type { VersionReadMode } from '../types/ast.js';
 
 /** Unique key of the combined rows, as live primary keys and version ids overlap */
 const KEY_FIELD = 'directus_version_key';
 
 /**
  * A collection that reads from the combined live and version rows. It has its own name and primary key,
- * as the live primary key isn't unique across those rows.
+ * as the live primary key isn't unique across those rows. Collections that aren't versioned only have live rows, with
+ * the system fields of published items and the references to versions from their link table.
  */
-export function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection: string, mode: VersionReadMode) {
+export function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection: string) {
 	const name = `directus_versioned_${collection}`;
 	const live = schema.collections[collection]!;
 	const { primary } = live;
 	const { versioning } = getHelpers(knex);
 	const shadowTable = versioning.getShadowTableName(collection);
-	const shadow = schema.collections[shadowTable]!;
+	const shadow = schema.collections[shadowTable];
 	const linkTable = versioning.getLinkTableName(collection);
 	const link = schema.collections[linkTable];
 
@@ -31,7 +31,7 @@ export function createVirtualCollection(knex: Knex, schema: SchemaOverview, coll
 	const linkedFields = link ? Object.keys(link.fields).filter((field) => field !== primary) : [];
 
 	const referenceFields = uniq([
-		...Object.keys(shadow.fields).filter((field) => field.startsWith(VERSION_REFERENCE_PREFIX)),
+		...Object.keys(shadow?.fields ?? {}).filter((field) => field.startsWith(VERSION_REFERENCE_PREFIX)),
 		...linkedFields.map((field) => versioning.getVersionReferenceField(field)),
 	]);
 
@@ -49,55 +49,64 @@ export function createVirtualCollection(knex: Knex, schema: SchemaOverview, coll
 	const selectColumn = (table: string, exists: boolean, column: string, alias = column) =>
 		exists ? knex.ref(`${table}.${column}`).as(alias) : knex.raw('NULL as ??', [alias]);
 
-	const versionsQuery = knex
+	const itemsQuery = knex
 		.select([
-			...columns.map((column) => selectColumn(shadowTable, column in shadow.fields, column)),
-			...systemFields.map((column) => selectColumn(shadowTable, true, column)),
-			...referenceFields.map((column) => selectColumn(shadowTable, column in shadow.fields, column)),
-			selectKey(negatedVersionId, [`${shadowTable}.${VERSION_SYSTEM_FIELDS.id}`]),
+			...columns.map((column) => selectColumn(collection, true, column)),
+			...systemFields.map((column) =>
+				column === VERSION_SYSTEM_FIELDS.type
+					? knex.raw(`'published' as ??`, [column])
+					: selectColumn('published', Boolean(shadow), column),
+			),
+			...referenceFields.map((column) => {
+				const field = column.slice(VERSION_REFERENCE_PREFIX.length);
+				return selectColumn(linkTable, linkedFields.includes(field), field, column);
+			}),
+			selectKey('??', [`${collection}.${primary}`]),
 		])
-		.from(shadowTable);
+		.from(collection);
 
-	let source = versionsQuery;
+	if (shadow) {
+		itemsQuery.leftJoin({ published: shadowTable }, function () {
+			this.on(`published.${primary}`, '=', `${collection}.${primary}`).andOnVal(
+				`published.${VERSION_SYSTEM_FIELDS.type}`,
+				'=',
+				'published',
+			);
+		});
+	}
 
-	if (mode === 'items') {
+	if (link) {
+		itemsQuery.leftJoin(linkTable, `${linkTable}.${primary}`, `${collection}.${primary}`);
+	}
+
+	let source = itemsQuery;
+
+	if (shadow) {
 		// Published versions are represented by the live item
-		versionsQuery.whereNot(`${shadowTable}.${VERSION_SYSTEM_FIELDS.type}`, 'published');
-
-		const itemsQuery = knex
+		const versionsQuery = knex
 			.select([
-				...columns.map((column) => selectColumn(collection, true, column)),
-				...systemFields.map((column) =>
-					column === VERSION_SYSTEM_FIELDS.type
-						? knex.raw(`'published' as ??`, [column])
-						: selectColumn('published', true, column),
-				),
-				...referenceFields.map((column) => {
-					const field = column.slice(VERSION_REFERENCE_PREFIX.length);
-					return selectColumn(linkTable, linkedFields.includes(field), field, column);
-				}),
-				selectKey('??', [`${collection}.${primary}`]),
+				...columns.map((column) => selectColumn(shadowTable, column in shadow.fields, column)),
+				...systemFields.map((column) => selectColumn(shadowTable, true, column)),
+				...referenceFields.map((column) => selectColumn(shadowTable, column in shadow.fields, column)),
+				selectKey(negatedVersionId, [`${shadowTable}.${VERSION_SYSTEM_FIELDS.id}`]),
 			])
-			.from(collection)
-			.leftJoin({ published: shadowTable }, function () {
-				this.on(`published.${primary}`, '=', `${collection}.${primary}`).andOnVal(
-					`published.${VERSION_SYSTEM_FIELDS.type}`,
-					'=',
-					'published',
-				);
-			});
-
-		if (link) {
-			itemsQuery.leftJoin(linkTable, `${linkTable}.${primary}`, `${collection}.${primary}`);
-		}
+			.from(shadowTable)
+			.whereNot(`${shadowTable}.${VERSION_SYSTEM_FIELDS.type}`, 'published');
 
 		source = itemsQuery.unionAll([versionsQuery]);
 	}
 
-	const versionField = (field: string): FieldOverview => ({
-		...(shadow.fields[field] ?? shadow.fields[VERSION_SYSTEM_FIELDS.id]!),
-		field,
-	});
+	const versionField = (field: string): FieldOverview => {
+		const linked = field.startsWith(VERSION_REFERENCE_PREFIX)
+			? link?.fields[field.slice(VERSION_REFERENCE_PREFIX.length)]
+			: undefined;
+
+		const base = shadow?.fields[field] ?? linked ?? shadow?.fields[VERSION_SYSTEM_FIELDS.id];
+
+		return base
+			? { ...base, field }
+			: { ...live.fields[primary]!, field, type: 'string', special: [], defaultValue: null, nullable: true };
+	};
 
 	const fields: Record<string, FieldOverview> = {
 		...live.fields,

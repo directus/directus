@@ -19,6 +19,11 @@ export type M2ONode = {
 	 * Permissions rules for the item access of the children of this item.
 	 */
 	cases: Filter[];
+
+	/**
+	 * Set when the read includes versions of the related items
+	 */
+	versioning?: VersionedNode;
 };
 
 export type A2MNode = {
@@ -70,6 +75,11 @@ export type O2MNode = {
 	 * Permissions rules for the item access of the children of this item.
 	 */
 	cases: Filter[];
+
+	/**
+	 * Set when the read includes versions of the related items
+	 */
+	versioning?: VersionedNode;
 };
 
 export type NestedCollectionNode = M2ONode | O2MNode | A2MNode;
@@ -105,28 +115,21 @@ export type FunctionFieldNode = {
 };
 
 /**
- * - `items`: live items, with the system fields of their published version, together with all other versions
- * - `versions`: all rows of the shadow table, used to resolve references to versions
+ * Read of a node that includes versions: live items, with the system fields of their published version, together with
+ * all other versions of the collection. The node itself describes the read of the live collection, which permissions
+ * are validated against.
  */
-export type VersionReadMode = 'items' | 'versions';
-
-/**
- * Read of a versioned collection. The AST itself describes the read of the live collection, so permissions are
- * validated against it, and is run against the combined rows of live items and versions.
- */
-export type VersionedAST = {
-	/** The live collection */
-	collection: string;
-	mode: VersionReadMode;
-	/** Requested fields, including version system fields */
-	fields: string[];
+export type VersionedNode = {
 	/** Parts of the query that apply to the combined rows, with version system fields mapped to their columns */
 	query: Pick<Query, 'filter' | 'sort' | 'group' | 'aggregate'>;
-	/** Columns to select in addition to the requested fields */
-	select: string[];
-	/** Fields that were only selected to read version system fields of related items, removed from the result */
-	added: string[];
-	/** Shadow tables that require read access */
+	/** Requested version system fields, returned under `directus_version` */
+	fields: string[];
+	/**
+	 * Column with references to versions, which links the node to its parent next to the live relation. It's on the
+	 * parent rows for m2o nodes and on the related rows for o2m nodes.
+	 */
+	reference: string | null;
+	/** Shadow tables the read requires access to */
 	shadows: string[];
 };
 
@@ -144,5 +147,5 @@ export type AST = {
 	/**
 	 * Set when the read includes versions of the items
 	 */
-	versioning?: VersionedAST;
+	versioning?: VersionedNode;
 };

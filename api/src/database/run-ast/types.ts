@@ -21,9 +21,4 @@ export interface RunASTOptions {
 	 * Whether or not to strip out non-requested required fields automatically (eg IDs / FKs)
 	 */
 	stripNonRequested?: boolean;
-
-	/**
-	 * Rows to read the root collection from instead of its table, exposed under the collection name
-	 */
-	source?: Knex.QueryBuilder;
 }

@@ -5,8 +5,8 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep, uniq } from 'lodash-es';
-import type { AST, VersionReadMode } from '../../types/index.js';
-import { parseVersionedQuery } from '../../versioning/query.js';
+import type { AST } from '../../types/index.js';
+import { annotateVersionedNodes, splitVersionedQuery, splitVersionFields } from '../../versioning/query.js';
 import { parseFields } from './lib/parse-fields.js';
 import { getAllowedSort } from './utils/get-allowed-sort.js';
 
@@ -17,7 +17,7 @@ export interface GetAstFromQueryOptions {
 	/**
 	 * Include versions of the items, for versioned collections
 	 */
-	versioning?: VersionReadMode | undefined;
+	versioning?: boolean | undefined;
 }
 
 export interface GetAstFromQueryContext {
@@ -27,21 +27,6 @@ export interface GetAstFromQueryContext {
 
 export async function getAstFromQuery(options: GetAstFromQueryOptions, context: GetAstFromQueryContext): Promise<AST> {
 	options.query = cloneDeep(options.query);
-
-	const versioned = options.versioning
-		? parseVersionedQuery(options.collection, options.query, options.versioning, context)
-		: null;
-
-	if (versioned) options.query = versioned.query;
-
-	const ast: AST = {
-		type: 'root',
-		name: options.collection,
-		query: options.query,
-		children: [],
-		cases: [],
-		...(versioned ? { versioning: versioned.versioning } : {}),
-	};
 
 	let fields = ['*'];
 
@@ -67,6 +52,21 @@ export async function getAstFromQuery(options: GetAstFromQueryOptions, context: 
 
 	fields = uniq(fields);
 
+	// Version system fields and filters are taken out of the query on the live collection and kept on the nodes
+	const versionFields = options.versioning ? splitVersionFields(context.schema, options.collection, fields) : null;
+	const versionedQuery = options.versioning ? splitVersionedQuery(options.collection, options.query, context) : null;
+
+	if (versionFields) fields = versionFields.fields;
+	if (versionedQuery) options.query = versionedQuery.query;
+
+	const ast: AST = {
+		type: 'root',
+		name: options.collection,
+		query: options.query,
+		children: [],
+		cases: [],
+	};
+
 	const deep = options.query.deep || {};
 
 	// Prevent fields/deep from showing up in the query object in further use
@@ -91,6 +91,8 @@ export async function getAstFromQuery(options: GetAstFromQueryOptions, context: 
 		},
 		context,
 	);
+
+	if (versionFields && versionedQuery) annotateVersionedNodes(ast, versionedQuery, versionFields, context);
 
 	return ast;
 }

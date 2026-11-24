@@ -1,5 +1,5 @@
 import type { Accountability, PermissionsAction } from '@directus/types';
-import type { AST } from '../../../types/ast.js';
+import type { AST, NestedCollectionNode } from '../../../types/ast.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
@@ -19,8 +19,8 @@ export interface ProcessAstOptions {
 }
 
 export async function processAst(options: ProcessAstOptions, context: Context) {
-	if (options.ast.versioning && options.accountability && !options.accountability.admin) {
-		for (const collection of options.ast.versioning.shadows) {
+	if (options.accountability && !options.accountability.admin) {
+		for (const collection of getVersionedShadows(options.ast)) {
 			await validateAccess({ accountability: options.accountability, action: 'read', collection }, context);
 		}
 	}
@@ -80,4 +80,19 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 	injectCases(options.ast, permissions);
 
 	return options.ast;
+}
+
+/**
+ * Shadow tables that versioned nodes read from, which require read access
+ */
+function getVersionedShadows(node: AST | NestedCollectionNode, shadows = new Set<string>()) {
+	if (node.type === 'a2o') return shadows;
+
+	node.versioning?.shadows.forEach((shadow) => shadows.add(shadow));
+
+	for (const child of node.children) {
+		if (child.type === 'm2o' || child.type === 'o2m') getVersionedShadows(child, shadows);
+	}
+
+	return shadows;
 }

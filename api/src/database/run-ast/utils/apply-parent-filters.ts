@@ -2,6 +2,7 @@ import type { Item, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { isNil, merge, uniq } from 'lodash-es';
 import type { NestedCollectionNode } from '../../../types/ast.js';
+import { applyVersionedParentFilter } from '../../../versioning/run.js';
 
 export function applyParentFilters(
 	schema: SchemaOverview,
@@ -13,7 +14,9 @@ export function applyParentFilters(
 	for (const nestedNode of nestedCollectionNodes) {
 		if (!nestedNode.relation) continue;
 
-		if (nestedNode.type === 'm2o') {
+		if (nestedNode.type === 'm2o' && nestedNode.versioning) {
+			applyVersionedParentFilter({ ...nestedNode, versioning: nestedNode.versioning }, parentItems, schema);
+		} else if (nestedNode.type === 'm2o') {
 			const foreignField = schema.collections[nestedNode.relation.related_collection!]!.primary;
 			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.relation.field])).filter((id) => !isNil(id));
 
@@ -41,6 +44,11 @@ export function applyParentFilters(
 					whenCase: [],
 					alias: false,
 				});
+			}
+
+			if (nestedNode.versioning) {
+				applyVersionedParentFilter({ ...nestedNode, versioning: nestedNode.versioning }, parentItems, schema);
+				continue;
 			}
 
 			const foreignField = nestedNode.relation.field;

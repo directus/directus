@@ -99,7 +99,6 @@ const schema = new SchemaBuilder()
 const SOURCE = /\(select "(?:directus_shadow_)?\w+"\."[^]*?\) as "(directus_versioned_\w+)"/g;
 
 type Options = {
-	mode?: 'items' | 'versions';
 	client?: keyof typeof CLIENTS;
 	/** Rows returned for queries whose SQL contains the key, in order */
 	responses?: [string, Record<string, unknown>[]][];
@@ -133,10 +132,7 @@ async function read(collection: string, query: Query, options: Options = {}) {
 
 	const context = { knex: db, schema: schema as SchemaOverview };
 
-	let ast = await getAstFromQuery(
-		{ collection, query, accountability: null, versioning: options.mode ?? 'items' },
-		context,
-	);
+	let ast = await getAstFromQuery({ collection, query, accountability: null, versioning: true }, context);
 
 	ast = await processAst({ ast, action: 'read', accountability: null }, context);
 
@@ -212,6 +208,8 @@ describe('source of the virtual collection', () => {
 			    where
 			      not "directus_shadow_articles"."version_type" = ?
 			  ) as "directus_versioned_articles"
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?"
 		`);
@@ -221,54 +219,6 @@ describe('source of the virtual collection', () => {
 			  [
 			    "published",
 			    "published",
-			    100,
-			  ],
-			]
-		`);
-	});
-
-	test('reads all versions, including published ones, in versions mode', async () => {
-		const { sql, bindings } = await read('articles', { fields: ['id', 'title'] }, { source: true, mode: 'versions' });
-
-		expect(sql).toMatchInlineSnapshot(`
-			"select
-			  "directus_versioned_articles"."id",
-			  "directus_versioned_articles"."title",
-			  "directus_versioned_articles"."version_id",
-			  "directus_versioned_articles"."version_name",
-			  "directus_versioned_articles"."version_type",
-			  "directus_versioned_articles"."version_date_created",
-			  "directus_versioned_articles"."version_date_updated",
-			  "directus_versioned_articles"."version_user_created",
-			  "directus_versioned_articles"."version_user_updated",
-			  "directus_versioned_articles"."version_ref_author",
-			  "directus_versioned_articles"."directus_version_key"
-			from
-			  (
-			    select
-			      "directus_shadow_articles"."id" as "id",
-			      "directus_shadow_articles"."title" as "title",
-			      "directus_shadow_articles"."author" as "author",
-			      NULL as "category",
-			      "directus_shadow_articles"."version_id" as "version_id",
-			      "directus_shadow_articles"."version_name" as "version_name",
-			      "directus_shadow_articles"."version_type" as "version_type",
-			      "directus_shadow_articles"."version_date_created" as "version_date_created",
-			      "directus_shadow_articles"."version_date_updated" as "version_date_updated",
-			      "directus_shadow_articles"."version_user_created" as "version_user_created",
-			      "directus_shadow_articles"."version_user_updated" as "version_user_updated",
-			      "directus_shadow_articles"."version_ref_author" as "version_ref_author",
-			      -1 * "directus_shadow_articles"."version_id" as "directus_version_key"
-			    from
-			      "directus_shadow_articles"
-			  ) as "directus_versioned_articles"
-			limit
-			  ?"
-		`);
-
-		expect(bindings).toMatchInlineSnapshot(`
-			[
-			  [
 			    100,
 			  ],
 			]
@@ -330,6 +280,8 @@ describe('source of the virtual collection', () => {
 			    where
 			      not "directus_shadow_tags"."version_type" = ?
 			  ) as "directus_versioned_tags"
+			order by
+			  "directus_versioned_tags"."id" asc
 			limit
 			  ?"
 		`);
@@ -396,6 +348,8 @@ describe('source of the virtual collection', () => {
 			    where
 			      not "directus_shadow_pages"."version_type" = ?
 			  ) as "directus_versioned_pages"
+			order by
+			  "directus_versioned_pages"."slug" asc
 			limit
 			  ?"
 		`);
@@ -442,6 +396,8 @@ describe('fields', () => {
 			  "directus_versioned_articles"."directus_version_key"
 			from
 			  "directus_versioned_articles"
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?"
 		`);
@@ -475,6 +431,8 @@ describe('fields', () => {
 			  "directus_versioned_articles"."directus_version_key"
 			from
 			  "directus_versioned_articles"
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?"
 		`);
@@ -515,6 +473,8 @@ describe('filter', () => {
 			where
 			  "directus_versioned_articles"."version_type" = ?
 			  and "directus_versioned_articles"."version_name" like ?
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?"
 		`);
@@ -561,6 +521,8 @@ describe('filter', () => {
 			      not "directus_versioned_articles"."version_type" = ?
 			    )
 			  )
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?"
 		`);
@@ -610,6 +572,8 @@ describe('filter', () => {
 			      )
 			    )
 			  )
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?"
 		`);
@@ -658,6 +622,8 @@ describe('filter', () => {
 			      )
 			    )
 			  )
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?"
 		`);
@@ -706,6 +672,8 @@ describe('filter', () => {
 			      )
 			    )
 			  )
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?"
 		`);
@@ -746,6 +714,8 @@ describe('filter', () => {
 			  left join "categories" as "wwbtm" on "directus_versioned_articles"."category" = "wwbtm"."id"
 			where
 			  ((1 = ?))
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?"
 		`);
@@ -784,6 +754,8 @@ describe('filter', () => {
 			  "directus_versioned_articles"
 			where
 			  "directus_versioned_articles"."category" is not null
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?"
 		`);
@@ -827,6 +799,8 @@ describe('filter', () => {
 			      and "ebrwj"."id" > ?
 			    )
 			  )
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?"
 		`);
@@ -882,6 +856,8 @@ describe('filter', () => {
 			      )
 			    )
 			  )
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?"
 		`);
@@ -920,6 +896,8 @@ describe('filter', () => {
 			  "directus_versioned_articles"
 			where
 			  "directus_versioned_articles"."author" is null
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?"
 		`);
@@ -957,7 +935,8 @@ describe('filter', () => {
 			  "directus_versioned_articles"
 			  inner join (
 			    select distinct
-			      "directus_versioned_articles"."directus_version_key"
+			      "directus_versioned_articles"."directus_version_key",
+			      "directus_versioned_articles"."id" as "iiqmb"
 			    from
 			      "directus_versioned_articles"
 			      left join "tags" as "rzthf" on "directus_versioned_articles"."directus_version_key" = "rzthf"."article"
@@ -971,9 +950,13 @@ describe('filter', () => {
 			          "tags"."article" is not null
 			          and "tags"."label" = ?
 			      )
+			    order by
+			      "directus_versioned_articles"."id" asc
 			    limit
 			      ?
-			  ) as "inner" on "directus_versioned_articles"."directus_version_key" = "inner"."directus_version_key""
+			  ) as "inner" on "directus_versioned_articles"."directus_version_key" = "inner"."directus_version_key"
+			order by
+			  "inner"."iiqmb" asc"
 		`);
 
 		expect(bindings).toMatchInlineSnapshot(`
@@ -1168,16 +1151,10 @@ describe('version references', () => {
 			  "directus_versioned_articles"."directus_version_key"
 			from
 			  "directus_versioned_articles"
+			order by
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?
-
-			select
-			  "authors"."name",
-			  "authors"."id"
-			from
-			  "authors"
-			where
-			  1 = ?
 
 			select
 			  "directus_versioned_authors"."name",
@@ -1204,9 +1181,8 @@ describe('version references', () => {
 			    100,
 			  ],
 			  [
-			    0,
-			  ],
-			  [
+			    "published",
+			    "published",
 			    7,
 			  ],
 			]
@@ -1222,10 +1198,20 @@ describe('version references', () => {
 			{
 				responses: [
 					['directus_versioned_articles', [{ id: 1, version_id: 3, version_type: 'draft', directus_version_key: -3 }]],
-					['"directus_link_tags"', [{ id: 10, article: 3 }]],
-					['"directus_versioned_tags"', [{ id: 10, label: 'live', directus_version_key: 10 }]],
-					['"directus_shadow_tags"', [{ version_id: 12, version_ref_article: 3 }]],
-					['"directus_versioned_tags"', [{ id: 11, label: 'draft', version_id: 12, directus_version_key: -12 }]],
+					[
+						'directus_versioned_tags',
+						[
+							{ id: 10, label: 'live', version_type: 'published', version_ref_article: 3, directus_version_key: 10 },
+							{
+								id: 11,
+								label: 'draft',
+								version_id: 12,
+								version_type: 'draft',
+								version_ref_article: 3,
+								directus_version_key: -12,
+							},
+						],
+					],
 				],
 			},
 		);
@@ -1244,32 +1230,14 @@ describe('version references', () => {
 			  "directus_versioned_articles"."directus_version_key"
 			from
 			  "directus_versioned_articles"
-			limit
-			  ?
-
-			select
-			  "tags"."label",
-			  "tags"."article",
-			  "tags"."id"
-			from
-			  "tags"
-			where
-			  "tags"."article" in (?)
 			order by
-			  "tags"."id" asc
+			  "directus_versioned_articles"."id" asc
 			limit
 			  ?
 
 			select
-			  "id",
-			  "article"
-			from
-			  "directus_link_tags"
-			where
-			  "article" in (?)
-
-			select
 			  "directus_versioned_tags"."label",
+			  "directus_versioned_tags"."article",
 			  "directus_versioned_tags"."id",
 			  "directus_versioned_tags"."version_id",
 			  "directus_versioned_tags"."version_name",
@@ -1283,35 +1251,11 @@ describe('version references', () => {
 			from
 			  "directus_versioned_tags"
 			where
-			  (
-			    "directus_versioned_tags"."id" in (?)
-			    and "directus_versioned_tags"."version_type" = ?
-			  )
-
-			select
-			  "version_id",
-			  "version_ref_article"
-			from
-			  "directus_shadow_tags"
-			where
-			  "version_ref_article" in (?)
-
-			select
-			  "directus_versioned_tags"."label",
-			  "directus_versioned_tags"."id",
-			  "directus_versioned_tags"."version_id",
-			  "directus_versioned_tags"."version_name",
-			  "directus_versioned_tags"."version_type",
-			  "directus_versioned_tags"."version_date_created",
-			  "directus_versioned_tags"."version_date_updated",
-			  "directus_versioned_tags"."version_user_created",
-			  "directus_versioned_tags"."version_user_updated",
-			  "directus_versioned_tags"."version_ref_article",
-			  "directus_versioned_tags"."directus_version_key"
-			from
-			  "directus_versioned_tags"
-			where
-			  "directus_versioned_tags"."version_id" in (?)"
+			  "directus_versioned_tags"."version_ref_article" in (?)
+			order by
+			  "directus_versioned_tags"."id" asc
+			limit
+			  ?"
 		`);
 
 		expect(bindings).toMatchInlineSnapshot(`
@@ -1322,23 +1266,10 @@ describe('version references', () => {
 			    100,
 			  ],
 			  [
-			    1,
+			    "published",
+			    "published",
+			    3,
 			    25000,
-			  ],
-			  [
-			    3,
-			  ],
-			  [
-			    "published",
-			    "published",
-			    10,
-			    "published",
-			  ],
-			  [
-			    3,
-			  ],
-			  [
-			    12,
 			  ],
 			]
 		`);
@@ -1371,8 +1302,13 @@ describe('version references', () => {
 			{
 				responses: [
 					['directus_versioned_articles', [{ id: 1, version_id: 3, version_type: 'draft', directus_version_key: -3 }]],
-					['"directus_link_tags"', [{ id: 10, article: 3 }]],
-					['"directus_shadow_tags"', [{ version_id: 12, version_ref_article: 3 }]],
+					[
+						'directus_versioned_tags',
+						[
+							{ id: 10, version_type: 'published', version_ref_article: 3, directus_version_key: 10 },
+							{ id: null, version_id: 12, version_type: 'draft', version_ref_article: 3, directus_version_key: -12 },
+						],
+					],
 				],
 			},
 		);
@@ -1380,8 +1316,8 @@ describe('version references', () => {
 		expect(items[0]!['tags']).toEqual([10, { directus_version: { id: 12 } }]);
 	});
 
-	test("doesn't resolve o2m related items of published items", async () => {
-		const { sql } = await read(
+	test('reads only live o2m related items of published items', async () => {
+		const { sql, bindings } = await read(
 			'articles',
 			{ fields: ['id', 'tags.label'] },
 			{
@@ -1394,8 +1330,125 @@ describe('version references', () => {
 			},
 		);
 
-		expect(sql).not.toContain('directus_link_tags');
-		expect(sql).not.toContain('directus_shadow_tags');
+		expect(sql.split('\n\n')[1]).toContain(`"directus_versioned_tags"."article" in (?)`);
+		expect(sql.split('\n\n')[1]).not.toContain('"directus_versioned_tags"."version_ref_article" in');
+		expect(bindings[1]).toEqual(['published', 'published', 1, 'published', 25000]);
+	});
+
+	test('links m2o related items through the live key, or the version reference without one', async () => {
+		const { items, bindings } = await read(
+			'articles',
+			{ fields: ['id', 'author.name'] },
+			{
+				responses: [
+					[
+						'directus_versioned_articles',
+						[
+							{ id: 1, author: 2, version_type: 'published', directus_version_key: 1 },
+							{
+								id: 1,
+								author: null,
+								version_ref_author: 7,
+								version_id: 3,
+								version_type: 'draft',
+								directus_version_key: -3,
+							},
+							{
+								id: 4,
+								author: null,
+								version_ref_author: 9,
+								version_id: 5,
+								version_type: 'draft',
+								directus_version_key: -5,
+							},
+						],
+					],
+					[
+						'directus_versioned_authors',
+						[
+							{ id: 2, name: 'Live', version_id: 9, version_type: 'published', directus_version_key: 2 },
+							{ id: 2, name: 'Draft', version_id: 7, version_type: 'draft', directus_version_key: -7 },
+						],
+					],
+				],
+			},
+		);
+
+		expect(bindings[1]).toEqual(['published', 'published', 2, 'published', 7, 9]);
+
+		// A reference to the published version resolves to the live item
+		expect(items.map((item) => item['author'])).toEqual([{ name: 'Live' }, { name: 'Draft' }, { name: 'Live' }]);
+	});
+
+	test('applies deep queries with version system fields to versions of related items', async () => {
+		const { sql, items } = await read(
+			'articles',
+			{
+				fields: ['id', 'tags.label', 'tags.directus_version.date_created'],
+				deep: {
+					tags: {
+						_filter: { directus_version: { type: { _eq: 'draft' } } },
+						_sort: ['-directus_version.date_created'],
+					},
+				},
+			} as Query,
+			{
+				responses: [
+					['directus_versioned_articles', [{ id: 1, version_id: 3, version_type: 'draft', directus_version_key: -3 }]],
+					[
+						'directus_versioned_tags',
+						[
+							{
+								id: 11,
+								label: 'old',
+								version_id: 12,
+								version_type: 'draft',
+								version_date_created: '2026-01-01',
+								version_ref_article: 3,
+							},
+							{
+								id: 13,
+								label: 'new',
+								version_id: 14,
+								version_type: 'draft',
+								version_date_created: '2026-02-01',
+								version_ref_article: 3,
+							},
+						],
+					],
+				],
+			},
+		);
+
+		expect(sql.split('\n\n')[1]).toContain(`"directus_versioned_tags"."version_type" = ?`);
+		expect(sql.split('\n\n')[1]).toContain(`order by\n  "directus_versioned_tags"."version_date_created" desc`);
+
+		expect(items[0]!['tags']).toEqual([
+			{ label: 'new', directus_version: { date_created: '2026-02-01T00:00:00.000Z' } },
+			{ label: 'old', directus_version: { date_created: '2026-01-01T00:00:00.000Z' } },
+		]);
+	});
+
+	test('reads versions referenced by versions of related items', async () => {
+		const { items } = await read(
+			'tags',
+			{ fields: ['label', 'article.author.name', 'article.directus_version.id'] },
+			{
+				responses: [
+					[
+						'directus_versioned_tags',
+						[{ id: 11, label: 'draft', version_ref_article: 3, version_id: 12, version_type: 'draft' }],
+					],
+					[
+						'directus_versioned_articles',
+						[{ id: null, author: null, version_ref_author: 7, version_id: 3, version_type: 'draft' }],
+					],
+					['directus_versioned_authors', [{ id: null, name: 'Jane', version_id: 7, version_type: 'draft' }]],
+				],
+			},
+		);
+
+		expect(items).toEqual([{ label: 'draft', article: { author: { name: 'Jane' }, directus_version: { id: 3 } } }]);
 	});
 
 	test("reads linked o2m related items in collections that aren't versioned", async () => {
@@ -1405,9 +1458,10 @@ describe('version references', () => {
 			{
 				responses: [
 					['directus_versioned_articles', [{ id: 1, version_id: 3, version_type: 'draft', directus_version_key: -3 }]],
-					['"comments"', []],
-					['"directus_link_comments"', [{ id: 5, article: 3 }]],
-					['"comments"', [{ id: 5, body: 'Hi' }]],
+					[
+						'directus_versioned_comments',
+						[{ id: 5, body: 'Hi', version_type: 'published', version_ref_article: 3, directus_version_key: 5 }],
+					],
 				],
 			},
 		);

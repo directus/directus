@@ -547,7 +547,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				collection: this.collection,
 				query: updatedQuery,
 				accountability: this.accountability,
-				versioning: versioned ? 'items' : undefined,
+				versioning: versioned,
 			},
 			{
 				schema: this.schema,

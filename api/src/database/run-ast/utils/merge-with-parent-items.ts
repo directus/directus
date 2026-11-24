@@ -2,7 +2,8 @@ import { useEnv } from '@directus/env';
 import type { Item, PrimaryKey, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { clone, isArray } from 'lodash-es';
-import type { NestedCollectionNode } from '../../../types/ast.js';
+import type { NestedCollectionNode, O2MNode } from '../../../types/ast.js';
+import { getVersionedValue, mergeVersionedM2O, mergeVersionedO2M } from '../../../versioning/run.js';
 
 export function mergeWithParentItems(
 	schema: SchemaOverview,
@@ -15,7 +16,9 @@ export function mergeWithParentItems(
 	const nestedItems = toArray(nestedItem);
 	const parentItems = clone(toArray(parentItem));
 
-	if (nestedNode.type === 'm2o') {
+	if (nestedNode.type === 'm2o' && nestedNode.versioning) {
+		mergeVersionedM2O({ ...nestedNode, versioning: nestedNode.versioning }, nestedItems, parentItems, schema);
+	} else if (nestedNode.type === 'm2o') {
 		const parentsByForeignKey = new Map<PrimaryKey, Item[]>();
 		const nestedPrimaryKeyField = schema.collections[nestedNode.relation.related_collection!]!.primary;
 
@@ -53,64 +56,13 @@ export function mergeWithParentItems(
 			}
 		}
 	} else if (nestedNode.type === 'o2m') {
-		const parentCollectionName = nestedNode.relation.related_collection;
-		const parentPrimaryKeyField = schema.collections[parentCollectionName!]!.primary;
 		const parentRelationField = nestedNode.fieldKey;
-		const nestedParentKeyField = nestedNode.relation.field;
-
-		const parentsByPrimaryKey = new Map<PrimaryKey, Item>();
-
-		for (const parentItem of parentItems) {
-			if (!parentItem[parentRelationField]) {
-				parentItem[parentRelationField] = [];
-			}
-
-			let parentPrimaryKey: PrimaryKey | null = parentItem[parentPrimaryKeyField];
-
-			// null if the user has no access to parent PK
-			if (parentPrimaryKey === null) {
-				continue;
-			} else {
-				// ensure key access is type agnostic
-				parentPrimaryKey = parentPrimaryKey.toString();
-			}
-
-			if (parentsByPrimaryKey.has(parentPrimaryKey)) {
-				throw new Error(
-					`Duplicate parent primary key '${parentPrimaryKey}' of '${parentCollectionName}' when merging o2m nested items`,
-				);
-			}
-
-			parentsByPrimaryKey.set(parentPrimaryKey, parentItem);
-		}
-
 		const toAddToAllParents: Item[] = [];
 
-		for (const nestedItem of nestedItems) {
-			if (nestedItem === null) {
-				continue;
-			}
-
-			if (Array.isArray(nestedItem[nestedParentKeyField])) {
-				toAddToAllParents.push(nestedItem); // TODO explain this odd case
-				continue; // Avoids adding the nestedItem twice
-			}
-
-			const parentPrimaryKey: PrimaryKey | null =
-				nestedItem[nestedParentKeyField]?.[parentPrimaryKeyField] ?? nestedItem[nestedParentKeyField];
-
-			if (parentPrimaryKey === null) {
-				continue;
-			}
-
-			const parentItem = parentsByPrimaryKey.get(parentPrimaryKey.toString());
-
-			// null if the user has no access to parent PK
-			if (!parentItem) {
-				continue;
-			}
-
-			parentItem[parentRelationField].push(nestedItem);
+		if (nestedNode.versioning) {
+			mergeVersionedO2M({ ...nestedNode, versioning: nestedNode.versioning }, nestedItems, parentItems);
+		} else {
+			mergeO2M(schema, nestedNode, nestedItems, parentItems, toAddToAllParents);
 		}
 
 		for (const [index, parentItem] of parentItems.entries()) {
@@ -137,7 +89,7 @@ export function mergeWithParentItems(
 
 			parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].sort((a: Item, b: Item) => {
 				// This is pre-filled in get-ast-from-query
-				const sortField = nestedNode.query.sort![0]!;
+				const sortField = (nestedNode.versioning?.query.sort ?? nestedNode.query.sort)![0]!;
 				let column = sortField;
 				let order: 'asc' | 'desc' = 'asc';
 
@@ -146,14 +98,17 @@ export function mergeWithParentItems(
 					order = 'desc';
 				}
 
-				if (a[column] === b[column]) return 0;
-				if (a[column] === null) return 1;
-				if (b[column] === null) return -1;
+				const valueA = nestedNode.versioning ? getVersionedValue(a, column) : a[column];
+				const valueB = nestedNode.versioning ? getVersionedValue(b, column) : b[column];
+
+				if (valueA === valueB) return 0;
+				if (valueA === null) return 1;
+				if (valueB === null) return -1;
 
 				if (order === 'asc') {
-					return a[column] < b[column] ? -1 : 1;
+					return valueA < valueB ? -1 : 1;
 				} else {
-					return a[column] < b[column] ? 1 : -1;
+					return valueA < valueB ? 1 : -1;
 				}
 			});
 		}
@@ -186,4 +141,70 @@ export function mergeWithParentItems(
 	}
 
 	return Array.isArray(parentItem) ? parentItems : parentItems[0];
+}
+
+function mergeO2M(
+	schema: SchemaOverview,
+	nestedNode: O2MNode,
+	nestedItems: Item[],
+	parentItems: Item[],
+	toAddToAllParents: Item[],
+) {
+	const parentCollectionName = nestedNode.relation.related_collection;
+	const parentPrimaryKeyField = schema.collections[parentCollectionName!]!.primary;
+	const parentRelationField = nestedNode.fieldKey;
+	const nestedParentKeyField = nestedNode.relation.field;
+
+	const parentsByPrimaryKey = new Map<PrimaryKey, Item>();
+
+	for (const parentItem of parentItems) {
+		if (!parentItem[parentRelationField]) {
+			parentItem[parentRelationField] = [];
+		}
+
+		let parentPrimaryKey: PrimaryKey | null = parentItem[parentPrimaryKeyField];
+
+		// null if the user has no access to parent PK
+		if (parentPrimaryKey === null) {
+			continue;
+		} else {
+			// ensure key access is type agnostic
+			parentPrimaryKey = parentPrimaryKey.toString();
+		}
+
+		if (parentsByPrimaryKey.has(parentPrimaryKey)) {
+			throw new Error(
+				`Duplicate parent primary key '${parentPrimaryKey}' of '${parentCollectionName}' when merging o2m nested items`,
+			);
+		}
+
+		parentsByPrimaryKey.set(parentPrimaryKey, parentItem);
+	}
+
+	for (const nestedItem of nestedItems) {
+		if (nestedItem === null) {
+			continue;
+		}
+
+		if (Array.isArray(nestedItem[nestedParentKeyField])) {
+			toAddToAllParents.push(nestedItem); // TODO explain this odd case
+			continue; // Avoids adding the nestedItem twice
+		}
+
+		const parentPrimaryKey: PrimaryKey | null =
+			nestedItem[nestedParentKeyField]?.[parentPrimaryKeyField] ?? nestedItem[nestedParentKeyField];
+
+		if (parentPrimaryKey === null) {
+			continue;
+		}
+
+		const parentItem = parentsByPrimaryKey.get(parentPrimaryKey.toString());
+
+		// null if the user has no access to parent PK
+		if (!parentItem) {
+			continue;
+		}
+
+		parentItem[parentRelationField].push(nestedItem);
+	}
 }

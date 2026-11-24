@@ -1,7 +1,7 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Aggregate, Item, Query, SchemaOverview } from '@directus/types';
-import { getRelationInfo, toArray } from '@directus/utils';
-import { isPlainObject, mapKeys, pick, uniq } from 'lodash-es';
+import { getRelationInfo } from '@directus/utils';
+import { isPlainObject, mapKeys } from 'lodash-es';
 import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
 
 /** Version system fields of live items without a version, which act as the published version */
@@ -76,37 +76,6 @@ export function formatAggregate(item: Item, query: Query) {
 }
 
 /**
- * Fields for the query against the live collection, without version system fields. Relations that only had version system fields
- * requested select their primary key instead, which is listed in `added` so it can be removed again afterwards.
- */
-export function getEngineFields(schema: SchemaOverview, collection: string, fields: string[]) {
-	const result: string[] = [];
-	const added: string[] = [];
-
-	for (const field of fields) {
-		const path = field.split('.');
-		const index = path.indexOf(VERSION_FIELD);
-
-		if (index === -1) {
-			result.push(field);
-			continue;
-		}
-
-		const related = index > 0 ? getRelatedCollection(schema, collection, path.slice(0, index)) : null;
-
-		if (related) {
-			const primaryPath = [...path.slice(0, index), schema.collections[related]!.primary].join('.');
-
-			if (!fields.includes(primaryPath)) added.push(primaryPath);
-
-			result.push(primaryPath);
-		}
-	}
-
-	return { fields: result.length > 0 ? uniq(result) : [schema.collections[collection]!.primary], added: uniq(added) };
-}
-
-/**
  * Collection at the end of a path of relational fields, or `null` if a segment isn't a relation to a single collection
  */
 export function getRelatedCollection(schema: SchemaOverview, collection: string, path: string[]) {
@@ -119,115 +88,4 @@ export function getRelatedCollection(schema: SchemaOverview, collection: string,
 	}
 
 	return current;
-}
-
-/**
- * Items that aren't versions show up with the system fields of a published item, if version system fields are requested for them.
- * Applies to related items as well, and trims the system fields to the requested keys.
- */
-export function injectPublishedSystemFields(item: Item, fields: string[]) {
-	if (!isPlainObject(item)) return;
-
-	if (item[VERSION_FIELD] === undefined && requestedSystemFields(fields).length > 0) {
-		item[VERSION_FIELD] = { ...PUBLISHED_SYSTEM_FIELDS };
-	}
-
-	if (item[VERSION_FIELD] !== undefined) trimSystemFields(item, fields);
-
-	for (const root of uniq(fields.map((field) => field.split('.')[0]!))) {
-		if (root === VERSION_FIELD || root === '*') continue;
-
-		const subfields = getSubfields(fields, root);
-
-		if (subfields.length === 0) continue;
-
-		for (const value of toArray(item[root] ?? [])) {
-			injectPublishedSystemFields(value, subfields);
-		}
-	}
-
-	return item;
-}
-
-/**
- * Limit the version system fields of an item to the requested keys, removing them entirely if none are requested
- */
-export function trimSystemFields(item: Item, fields: string[]) {
-	const keys = requestedSystemFields(fields);
-
-	if (keys.length === 0) {
-		delete item[VERSION_FIELD];
-	} else {
-		item[VERSION_FIELD] = pick(item[VERSION_FIELD], keys);
-	}
-}
-
-/**
- * Version system fields requested in the fields. `directus_version` and `directus_version.*` request all of them,
- * unknown keys throw.
- */
-export function requestedSystemFields(fields: string[]) {
-	const keys = new Set<string>();
-
-	for (const field of fields) {
-		const [root, key] = field.split('.');
-
-		if (root !== VERSION_FIELD) continue;
-
-		if (!key || key === '*') return Object.keys(VERSION_SYSTEM_FIELDS);
-
-		getSystemColumn(key);
-		keys.add(key);
-	}
-
-	return [...keys];
-}
-
-/**
- * Top level fields of the collection that are requested, with `*` expanded and version system fields left out
- */
-export function getRequestedRoots(schema: SchemaOverview, collection: string, fields: string[]) {
-	const roots = new Set<string>();
-
-	for (const field of fields) {
-		const root = field.split('.')[0]!;
-
-		if (root === '*') {
-			Object.keys(schema.collections[collection]!.fields).forEach((field) => roots.add(field));
-		} else if (root !== VERSION_FIELD) {
-			roots.add(root);
-		}
-	}
-
-	return [...roots];
-}
-
-/**
- * Fields requested below a top level field, relative to it. `*.<field>` applies to every top level field.
- */
-export function getSubfields(fields: string[], root: string) {
-	return fields.flatMap((field) => {
-		if (field.startsWith(`${root}.`)) return [field.slice(root.length + 1)];
-		if (field.startsWith('*.')) return [field.slice(2)];
-		return [];
-	});
-}
-
-/**
- * Delete a dotted path from an item. Arrays along the path, like o2m results, have the path deleted from every element.
- */
-export function deletePath(item: unknown, path: string) {
-	if (!isPlainObject(item)) return;
-
-	const [root, ...rest] = path.split('.');
-	const value = (item as Item)[root!];
-
-	if (rest.length === 0) {
-		delete (item as Item)[root!];
-		return;
-	}
-
-	for (const nested of toArray(value ?? [])) {
-		deletePath(nested, rest.join('.'));
-	}
 }
