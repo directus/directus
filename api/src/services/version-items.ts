@@ -21,7 +21,7 @@ import { validateLinkAccess } from '../versioning/link-access.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
-import { flattenVersionSystemFields, isVersioningTable, nestVersionSystemFields } from './version-tables/utils.js';
+import { flattenVersionSystemFields, isVersioningTable } from './version-tables/utils.js';
 
 type VersionSystemFields = {
 	id: PrimaryKey | null;
@@ -165,43 +165,6 @@ export class VersionedItemsService {
 
 			return archivedId;
 		});
-	}
-
-	/**
-	 * Read a version in the shape of a live item, with the version system fields under `directus_version`
-	 */
-	async readOne(versionId: PrimaryKey, query?: { fields?: string[] | null }): Promise<Item> {
-		const row = await this.readVersion(this.knex, this.collection, versionId, 'read');
-		const { [VERSION_FIELD]: system, ...data } = nestVersionSystemFields(row);
-		const { fields } = this.schema.collections[this.collection]!;
-		const shadowFields = this.schema.collections[this.versioning.getShadowTableName(this.collection)]!.fields;
-
-		const values: Item = {};
-
-		for (const field of Object.values(fields)) {
-			if (!field.alias) values[field.field] = data[field.field];
-		}
-
-		const payloadService = new PayloadService(this.collection, {
-			knex: this.knex,
-			schema: this.schema,
-			accountability: this.accountability,
-		});
-
-		const item = await payloadService.processValues('read', values);
-
-		// Show references to versions of related items in the same format they're written in
-		for (const relation of this.getM2ORelations(this.collection)) {
-			const referenceField = this.versioning.getVersionReferenceField(relation.field);
-
-			if (referenceField in shadowFields && item[relation.field] === null && data[referenceField] !== null) {
-				item[relation.field] = { [VERSION_FIELD]: { id: data[referenceField] } };
-			}
-		}
-
-		item[VERSION_FIELD] = system;
-
-		return pickFields(item, query?.fields);
 	}
 
 	private async saveVersion(
@@ -745,29 +708,4 @@ export class VersionedItemsService {
 
 function hasSpecial(field: FieldOverview, specials: string[]) {
 	return field.special.some((special) => specials.includes(special));
-}
-
-/**
- * Limit the item to the requested fields, nested selections are only supported for objects like `directus_version`
- */
-export function pickFields(item: Item, fields?: string[] | null): Item {
-	if (!fields || fields.includes('*')) return item;
-
-	const result: Item = {};
-
-	for (const field of fields) {
-		const [root, ...nested] = field.split('.');
-
-		if (!root || !(root in item)) continue;
-
-		const value = item[root];
-
-		if (nested.length === 0 || !isPlainObject(value)) {
-			result[root] = value;
-		} else {
-			result[root] = { ...result[root], ...pickFields(value, [nested.join('.')]) };
-		}
-	}
-
-	return result;
 }

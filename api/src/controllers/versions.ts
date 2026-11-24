@@ -1,5 +1,5 @@
 import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
-import type { PrimaryKey } from '@directus/types';
+import type { Filter, PrimaryKey } from '@directus/types';
 import express from 'express';
 import { assign } from 'lodash-es';
 import { respond } from '../middleware/respond.js';
@@ -8,6 +8,7 @@ import { validateBatch } from '../middleware/validate-batch.js';
 import { ItemsService } from '../services/items.js';
 import { MetaService } from '../services/meta.js';
 import { VersionedItemsService } from '../services/version-items.js';
+import { VERSION_FIELD } from '../services/version-tables/constants.js';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
@@ -278,14 +279,27 @@ router.post(
 	respond,
 );
 
-async function readHanlderVersion(
-	service: VersionedItemsService,
+async function readVersionHandler(
+	collection: string,
 	versionId: PrimaryKey,
 	req: express.Request,
 	res: express.Response,
 ) {
+	const itemsService = new ItemsService(collection, {
+		accountability: req.accountability,
+		schema: req.schema,
+	});
+
+	const filter = {
+		_and: [
+			{ [VERSION_FIELD]: { id: { _eq: versionId } } },
+			...(req.sanitizedQuery.filter ? [req.sanitizedQuery.filter] : []),
+		],
+	} as Filter;
+
 	try {
-		res.locals['payload'] = { data: await service.readOne(versionId, req.sanitizedQuery) };
+		const [item] = await itemsService.readByQuery({ ...req.sanitizedQuery, version: 'true', filter, limit: 1 });
+		res.locals['payload'] = { data: item ?? null };
 	} catch (error: any) {
 		if (!isDirectusError(error, ErrorCode.Forbidden)) throw error;
 	}
@@ -301,7 +315,7 @@ router.post(
 
 		const versionId = await service.createOne(req.body);
 
-		await readHanlderVersion(service, versionId, req, res);
+		await readVersionHandler(service.collection, versionId, req, res);
 
 		return next();
 	}),
@@ -318,7 +332,7 @@ router.patch(
 
 		const versionId = await service.updateOne(req.params['id']!, req.body);
 
-		await readHanlderVersion(service, versionId, req, res);
+		await readVersionHandler(service.collection, versionId, req, res);
 
 		return next();
 	}),
@@ -380,7 +394,7 @@ router.delete(
 
 		const versionId = await service.unpublish(req.params['id']!);
 
-		await readHanlderVersion(service, versionId, req, res);
+		await readVersionHandler(service.collection, versionId, req, res);
 
 		return next();
 	}),
@@ -397,7 +411,7 @@ router.post(
 
 		const versionId = await service.archive(req.params['id']!);
 
-		await readHanlderVersion(service, versionId, req, res);
+		await readVersionHandler(service.collection, versionId, req, res);
 
 		return next();
 	}),
