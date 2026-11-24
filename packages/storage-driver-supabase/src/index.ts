@@ -1,3 +1,5 @@
+import { Agent as HttpAgent, type AgentOptions as HttpAgentOptions } from 'node:http';
+import { Agent as HttpsAgent } from 'node:https';
 import { basename, join } from 'node:path';
 import { Readable } from 'node:stream';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
@@ -7,7 +9,7 @@ import { normalizePath } from '@directus/utils';
 import { StorageClient } from '@supabase/storage-js';
 import * as tus from 'tus-js-client';
 import type { RequestInit } from 'undici';
-import { fetch } from 'undici';
+import { EnvHttpProxyAgent, fetch as undiciFetch } from 'undici';
 
 export type DriverSupabaseConfig = {
 	bucket: string;
@@ -21,12 +23,31 @@ export type DriverSupabaseConfig = {
 	};
 };
 
+type ProxyEnv = { HTTP_PROXY: string | undefined; HTTPS_PROXY: string | undefined; NO_PROXY: string | undefined };
+
+/**
+ * Resolved once and handed to both undici and node:http, which would otherwise each read the environment their own
+ * way.
+ */
+function getProxyEnv(): ProxyEnv {
+	const getEnv = (key: string) => process.env[key] || process.env[key.toLowerCase()];
+
+	return {
+		HTTP_PROXY: getEnv('HTTP_PROXY'),
+		HTTPS_PROXY: getEnv('HTTPS_PROXY') || getEnv('HTTP_PROXY'),
+		NO_PROXY: getEnv('NO_PROXY'),
+	};
+}
+
 export class DriverSupabase implements TusDriver {
 	private config: DriverSupabaseConfig & { root: string };
 	private client: StorageClient;
 	private bucket: ReturnType<StorageClient['from']>;
 
+	private readonly fetch: typeof undiciFetch;
+
 	// TUS specific members
+	private readonly httpStack: tus.HttpStack;
 	private readonly preferredChunkSize: number;
 
 	constructor(config: DriverSupabaseConfig) {
@@ -37,8 +58,12 @@ export class DriverSupabase implements TusDriver {
 
 		this.preferredChunkSize = this.config.tus?.chunkSize ?? DEFAULT_CHUNK_SIZE;
 
+		const proxyEnv = getProxyEnv();
+
+		this.fetch = this.getFetch(proxyEnv);
 		this.client = this.getClient();
 		this.bucket = this.getBucket();
+		this.httpStack = this.getHttpStack(proxyEnv);
 	}
 
 	private get endpoint() {
@@ -54,10 +79,14 @@ export class DriverSupabase implements TusDriver {
 			throw new Error('`service_role` is required');
 		}
 
-		return new StorageClient(this.endpoint, {
-			apikey: this.config.serviceRole,
-			Authorization: `Bearer ${this.config.serviceRole}`,
-		});
+		return new StorageClient(
+			this.endpoint,
+			{
+				apikey: this.config.serviceRole,
+				Authorization: `Bearer ${this.config.serviceRole}`,
+			},
+			this.fetch as ConstructorParameters<typeof StorageClient>[2],
+		);
 	}
 
 	private getBucket() {
@@ -66,6 +95,39 @@ export class DriverSupabase implements TusDriver {
 		}
 
 		return this.client.from(this.config.bucket);
+	}
+
+	/**
+	 * The SDK and `read()` go through undici, the TUS uploads through node:http.
+	 *
+	 * The two don't share a proxy mechanism and therefore require different implementations
+	 */
+	private getFetch(proxyEnv: ProxyEnv): typeof undiciFetch {
+		// Empty strings rather than undefined, as undici would otherwise read the environment itself
+		const dispatcher = new EnvHttpProxyAgent({
+			httpProxy: proxyEnv.HTTP_PROXY ?? '',
+			httpsProxy: proxyEnv.HTTPS_PROXY ?? '',
+			noProxy: proxyEnv.NO_PROXY ?? '',
+		});
+
+		return (input, init) => undiciFetch(input, { ...init, dispatcher });
+	}
+
+	private getHttpStack(proxyEnv: ProxyEnv): tus.HttpStack {
+		// Same keep-alive timeout as Node's global agents
+		const agentOptions: HttpAgentOptions = { proxyEnv, keepAlive: true, timeout: 5000 };
+		const http = new tus.DefaultHttpStack({ agent: new HttpAgent(agentOptions) });
+		const https = new tus.DefaultHttpStack({ agent: new HttpsAgent(agentOptions) });
+
+		return {
+			createRequest: (method, url) => {
+				// Done per request as scheme can change mid-upload, and Node rejects a mismatched protocol agent
+				const stack = url.startsWith('http://') ? http : https;
+
+				return stack.createRequest(method, url);
+			},
+			getName: () => 'ProxyAwareNodeHttpStack',
+		};
 	}
 
 	private fullPath(filepath: string) {
@@ -96,7 +158,7 @@ export class DriverSupabase implements TusDriver {
 			requestInit.headers['Range'] = `bytes=${range.start ?? ''}-${range.end ?? ''}`;
 		}
 
-		const response = await fetch(this.getAuthenticatedUrl(filepath), requestInit);
+		const response = await this.fetch(this.getAuthenticatedUrl(filepath), requestInit);
 
 		if (response.status >= 400 || !response.body) {
 			// An unread body holds its connection open
@@ -215,7 +277,11 @@ export class DriverSupabase implements TusDriver {
 				search,
 			});
 
-			if (!data || error) {
+			if (error) {
+				throw new Error(`Can't list for prefix "${prefix}"`, { cause: error });
+			}
+
+			if (!data) {
 				break;
 			}
 
@@ -263,6 +329,7 @@ export class DriverSupabase implements TusDriver {
 		await new Promise((resolve, reject) => {
 			const upload = new tus.Upload(content, {
 				endpoint: this.getResumableUrl(),
+				httpStack: this.httpStack,
 				// @ts-expect-error
 				fileReader: new FileReader(),
 				headers: {
