@@ -418,8 +418,8 @@ export class UsersService extends ItemsService {
 
 		for (const versionedCollection of versionedCollections) {
 			const userFields = [
-				VERSION_SYSTEM_FIELDS.userCreated,
-				VERSION_SYSTEM_FIELDS.userUpdated,
+				VERSION_SYSTEM_FIELDS.user_created,
+				VERSION_SYSTEM_FIELDS.user_updated,
 				...this.schema.relations
 					.filter(
 						(relation) =>

@@ -8,14 +8,14 @@ import {
 	type FilterLevel,
 	isFieldCondition,
 	matchesOperator,
-	matchesPublishedMeta,
+	matchesPublishedSystemFields,
 	nestFilter,
 	nestOrExists,
 	rewriteFilter,
-	stripMetaFilter,
+	stripSystemFilter,
 } from './filter.js';
 
-// `articles` stands in for the virtual collection, which has the meta columns and references to versions
+// `articles` stands in for the virtual collection, which has the system columns and references to versions
 const schema = new SchemaBuilder()
 	.collection('articles', (c) => {
 		c.field('id').id();
@@ -57,7 +57,7 @@ function rewrite(filter: Filter, level: Partial<FilterLevel> = {}) {
 		schema,
 		versioning,
 		collection: 'articles',
-		hasMeta: true,
+		hasSystemFields: true,
 		references: true,
 		shadows,
 		...level,
@@ -66,15 +66,15 @@ function rewrite(filter: Filter, level: Partial<FilterLevel> = {}) {
 	return { result, shadows: [...shadows] };
 }
 
-describe('stripMetaFilter', () => {
+describe('stripSystemFilter', () => {
 	test('returns null for empty filters', () => {
-		expect(stripMetaFilter(null)).toBeNull();
-		expect(stripMetaFilter(undefined)).toBeNull();
+		expect(stripSystemFilter(null)).toBeNull();
+		expect(stripSystemFilter(undefined)).toBeNull();
 	});
 
-	test('removes version meta at any depth', () => {
+	test('removes version system fields at any depth', () => {
 		expect(
-			stripMetaFilter({
+			stripSystemFilter({
 				title: { _eq: 'a' },
 				directus_version: { type: { _eq: 'draft' } },
 				author: { name: { _eq: 'Jane' }, directus_version: { type: { _eq: 'draft' } } },
@@ -84,7 +84,7 @@ describe('stripMetaFilter', () => {
 
 	test('removes objects and logical operators left empty', () => {
 		expect(
-			stripMetaFilter({
+			stripSystemFilter({
 				_and: [{ directus_version: { type: { _eq: 'draft' } } }, { title: { _eq: 'a' } }],
 				_or: [{ directus_version: { id: { _eq: 1 } } }],
 				author: { directus_version: { type: { _eq: 'draft' } } },
@@ -93,12 +93,12 @@ describe('stripMetaFilter', () => {
 	});
 
 	test('keeps array arguments of operators', () => {
-		expect(stripMetaFilter({ id: { _in: [1, 2] } })).toEqual({ id: { _in: [1, 2] } });
+		expect(stripSystemFilter({ id: { _in: [1, 2] } })).toEqual({ id: { _in: [1, 2] } });
 	});
 });
 
 describe('rewriteFilter', () => {
-	test('maps version meta to the meta columns', () => {
+	test('maps version system fields to the system columns', () => {
 		expect(rewrite({ title: { _eq: 'a' }, directus_version: { type: { _eq: 'draft' } } } as Filter).result).toEqual({
 			title: { _eq: 'a' },
 			version_type: { _eq: 'draft' },
@@ -117,16 +117,18 @@ describe('rewriteFilter', () => {
 		});
 	});
 
-	test('never matches version meta that live items without meta columns lack', () => {
-		expect(rewrite({ directus_version: { type: { _eq: 'draft' } } } as Filter, { hasMeta: false }).result).toEqual({
+	test('never matches version system fields that live items without system columns lack', () => {
+		expect(
+			rewrite({ directus_version: { type: { _eq: 'draft' } } } as Filter, { hasSystemFields: false }).result,
+		).toEqual({
 			_and: [{ id: { _in: [] } }],
 		});
 	});
 
-	test('drops version meta that live items without meta columns match', () => {
+	test('drops version system fields that live items without system columns match', () => {
 		expect(
 			rewrite({ title: { _eq: 'a' }, directus_version: { type: { _eq: 'published' } } } as Filter, {
-				hasMeta: false,
+				hasSystemFields: false,
 			}).result,
 		).toEqual({ title: { _eq: 'a' } });
 	});
@@ -152,7 +154,7 @@ describe('rewriteFilter', () => {
 		expect(shadows).toEqual(['directus_shadow_authors']);
 	});
 
-	test('applies version meta on related items to the live item and the referenced version', () => {
+	test('applies version system fields on related items to the live item and the referenced version', () => {
 		expect(rewrite({ author: { directus_version: { type: { _eq: 'draft' } } } } as Filter).result).toEqual({
 			_and: [
 				{
@@ -238,18 +240,18 @@ describe('isFieldCondition', () => {
 	});
 });
 
-describe('matchesPublishedMeta', () => {
-	test('matches conditions met by published meta', () => {
-		expect(matchesPublishedMeta({ type: { _eq: 'published' }, id: { _null: true } })).toBe(true);
-		expect(matchesPublishedMeta({})).toBe(true);
+describe('matchesPublishedSystemFields', () => {
+	test('matches conditions met by published system fields', () => {
+		expect(matchesPublishedSystemFields({ type: { _eq: 'published' }, id: { _null: true } })).toBe(true);
+		expect(matchesPublishedSystemFields({})).toBe(true);
 	});
 
-	test("doesn't match conditions published meta doesn't meet", () => {
-		expect(matchesPublishedMeta({ type: { _eq: 'published' }, id: { _nnull: true } })).toBe(false);
+	test("doesn't match conditions published system fields don't meet", () => {
+		expect(matchesPublishedSystemFields({ type: { _eq: 'published' }, id: { _nnull: true } })).toBe(false);
 	});
 
 	test('throws on unknown keys', () => {
-		expect(() => matchesPublishedMeta({ unknown: { _eq: 1 } })).toThrow();
+		expect(() => matchesPublishedSystemFields({ unknown: { _eq: 1 } })).toThrow();
 	});
 });
 

@@ -5,18 +5,18 @@ import {
 	deletePath,
 	formatAggregate,
 	getEngineFields,
-	getMetaColumn,
 	getRelatedCollection,
 	getRequestedRoots,
 	getSubfields,
-	injectPublishedMeta,
-	isMetaField,
+	getSystemColumn,
+	injectPublishedSystemFields,
+	isSystemField,
 	mapAggregate,
-	PUBLISHED_META,
-	requestedMetaKeys,
+	PUBLISHED_SYSTEM_FIELDS,
+	requestedSystemFields,
 	rewriteSort,
-	toMetaColumn,
-	trimVersionMeta,
+	toSystemColumn,
+	trimSystemFields,
 } from './fields.js';
 
 const schema = new SchemaBuilder()
@@ -36,7 +36,7 @@ const schema = new SchemaBuilder()
 	})
 	.build() as SchemaOverview;
 
-describe('isMetaField', () => {
+describe('isSystemField', () => {
 	test.each([
 		['directus_version', true],
 		['directus_version.type', true],
@@ -44,28 +44,28 @@ describe('isMetaField', () => {
 		['title', false],
 		['author.directus_version.type', false],
 	])('%s → %s', (field, expected) => {
-		expect(isMetaField(field)).toBe(expected);
+		expect(isSystemField(field)).toBe(expected);
 	});
 });
 
-describe('getMetaColumn', () => {
-	test('returns the shadow table column of a meta key', () => {
-		expect(getMetaColumn('type')).toBe('version_type');
-		expect(getMetaColumn('date_created')).toBe('version_date_created');
+describe('getSystemColumn', () => {
+	test('returns the shadow table column of a system field', () => {
+		expect(getSystemColumn('type')).toBe('version_type');
+		expect(getSystemColumn('date_created')).toBe('version_date_created');
 	});
 
 	test('throws on unknown keys', () => {
-		expect(() => getMetaColumn('unknown')).toThrow('"directus_version.unknown" doesn\'t exist');
+		expect(() => getSystemColumn('unknown')).toThrow('"directus_version.unknown" doesn\'t exist');
 	});
 });
 
-describe('toMetaColumn', () => {
-	test('maps version meta fields to their column', () => {
-		expect(toMetaColumn('directus_version.user_created')).toBe('version_user_created');
+describe('toSystemColumn', () => {
+	test('maps version system fields to their column', () => {
+		expect(toSystemColumn('directus_version.user_created')).toBe('version_user_created');
 	});
 
 	test('keeps other fields', () => {
-		expect(toMetaColumn('title')).toBe('title');
+		expect(toSystemColumn('title')).toBe('title');
 	});
 });
 
@@ -89,14 +89,14 @@ describe('mapAggregate', () => {
 });
 
 describe('formatAggregate', () => {
-	test('moves grouped meta columns into directus_version', () => {
+	test('moves grouped system columns into directus_version', () => {
 		expect(formatAggregate({ version_type: 'draft', count: 2 }, { aggregate: { count: ['*'] } })).toEqual({
 			directus_version: { type: 'draft' },
 			count: 2,
 		});
 	});
 
-	test('renames aggregated meta columns to their field', () => {
+	test('renames aggregated system columns to their field', () => {
 		expect(
 			formatAggregate(
 				{ countDistinct: { version_user_created: 2, title: 3 } },
@@ -124,21 +124,21 @@ describe('getRelatedCollection', () => {
 });
 
 describe('getEngineFields', () => {
-	test('keeps fields without version meta', () => {
+	test('keeps fields without version system fields', () => {
 		expect(getEngineFields(schema, 'articles', ['title', 'author.name'])).toEqual({
 			fields: ['title', 'author.name'],
 			added: [],
 		});
 	});
 
-	test('drops version meta of the collection itself', () => {
+	test('drops version system fields of the collection itself', () => {
 		expect(getEngineFields(schema, 'articles', ['title', 'directus_version.type'])).toEqual({
 			fields: ['title'],
 			added: [],
 		});
 	});
 
-	test('selects the primary key of related items that only have version meta requested', () => {
+	test('selects the primary key of related items that only have version system fields requested', () => {
 		expect(getEngineFields(schema, 'articles', ['author.directus_version.type', 'tags.directus_version.id'])).toEqual({
 			fields: ['author.id', 'tags.id'],
 			added: ['author.id', 'tags.id'],
@@ -157,60 +157,62 @@ describe('getEngineFields', () => {
 	});
 });
 
-describe('requestedMetaKeys', () => {
+describe('requestedSystemFields', () => {
 	test('returns the requested keys', () => {
-		expect(requestedMetaKeys(['title', 'directus_version.type', 'directus_version.id'])).toEqual(['type', 'id']);
+		expect(requestedSystemFields(['title', 'directus_version.type', 'directus_version.id'])).toEqual(['type', 'id']);
 	});
 
 	test.each([['directus_version'], ['directus_version.*']])('%s requests all keys', (field) => {
-		expect(requestedMetaKeys([field])).toEqual(Object.keys(PUBLISHED_META));
+		expect(requestedSystemFields([field])).toEqual(Object.keys(PUBLISHED_SYSTEM_FIELDS));
 	});
 
-	test('ignores version meta of related items', () => {
-		expect(requestedMetaKeys(['author.directus_version.type'])).toEqual([]);
+	test('ignores version system fields of related items', () => {
+		expect(requestedSystemFields(['author.directus_version.type'])).toEqual([]);
 	});
 
 	test('throws on unknown keys', () => {
-		expect(() => requestedMetaKeys(['directus_version.unknown'])).toThrow();
+		expect(() => requestedSystemFields(['directus_version.unknown'])).toThrow();
 	});
 });
 
-describe('trimVersionMeta', () => {
+describe('trimSystemFields', () => {
 	test('keeps only the requested keys', () => {
 		const item = { directus_version: { id: 1, type: 'draft', name: null } };
 
-		trimVersionMeta(item, ['directus_version.type']);
+		trimSystemFields(item, ['directus_version.type']);
 
 		expect(item).toEqual({ directus_version: { type: 'draft' } });
 	});
 
-	test('removes the meta if none is requested', () => {
+	test('removes the system fields if none are requested', () => {
 		const item = { id: 1, directus_version: { id: 1 } };
 
-		trimVersionMeta(item, ['id']);
+		trimSystemFields(item, ['id']);
 
 		expect(item).toEqual({ id: 1 });
 	});
 });
 
-describe('injectPublishedMeta', () => {
-	test('adds published meta to items without meta', () => {
-		expect(injectPublishedMeta({ id: 1 }, ['id', 'directus_version.type', 'directus_version.id'])).toEqual({
+describe('injectPublishedSystemFields', () => {
+	test('adds published system fields to items without system fields', () => {
+		expect(injectPublishedSystemFields({ id: 1 }, ['id', 'directus_version.type', 'directus_version.id'])).toEqual({
 			id: 1,
 			directus_version: { type: 'published', id: null },
 		});
 	});
 
-	test('keeps existing meta, trimmed to the requested keys', () => {
+	test('keeps existing system fields, trimmed to the requested keys', () => {
 		expect(
-			injectPublishedMeta({ directus_version: { id: 3, type: 'draft', name: 'Draft' } }, ['directus_version.type']),
+			injectPublishedSystemFields({ directus_version: { id: 3, type: 'draft', name: 'Draft' } }, [
+				'directus_version.type',
+			]),
 		).toEqual({ directus_version: { type: 'draft' } });
 	});
 
-	test('adds published meta to m2o and o2m related items', () => {
+	test('adds published system fields to m2o and o2m related items', () => {
 		const item = { author: { id: 1 }, tags: [{ id: 2 }, { id: 3, directus_version: { type: 'draft' } }] };
 
-		injectPublishedMeta(item, ['author.directus_version.type', 'tags.directus_version.type']);
+		injectPublishedSystemFields(item, ['author.directus_version.type', 'tags.directus_version.type']);
 
 		expect(item).toEqual({
 			author: { id: 1, directus_version: { type: 'published' } },
@@ -221,8 +223,8 @@ describe('injectPublishedMeta', () => {
 		});
 	});
 
-	test("doesn't add meta if none is requested", () => {
-		expect(injectPublishedMeta({ id: 1, author: { id: 2 } }, ['id', 'author.id'])).toEqual({
+	test("doesn't add system fields if none are requested", () => {
+		expect(injectPublishedSystemFields({ id: 1, author: { id: 2 } }, ['id', 'author.id'])).toEqual({
 			id: 1,
 			author: { id: 2 },
 		});
@@ -231,7 +233,7 @@ describe('injectPublishedMeta', () => {
 	test('ignores values that are no objects', () => {
 		const item = { author: 2, tags: [3] };
 
-		injectPublishedMeta(item, ['author.directus_version.type', 'tags.directus_version.type']);
+		injectPublishedSystemFields(item, ['author.directus_version.type', 'tags.directus_version.type']);
 
 		expect(item).toEqual({ author: 2, tags: [3] });
 	});
@@ -246,7 +248,7 @@ describe('getRequestedRoots', () => {
 		expect(getRequestedRoots(schema, 'articles', ['*'])).toEqual(['id', 'title', 'author', 'tags']);
 	});
 
-	test('leaves out version meta', () => {
+	test('leaves out version system fields', () => {
 		expect(getRequestedRoots(schema, 'articles', ['directus_version.type', 'title'])).toEqual(['title']);
 	});
 });

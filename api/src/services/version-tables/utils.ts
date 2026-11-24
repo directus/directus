@@ -17,6 +17,13 @@ export function isVersionSystemField(field: string) {
 }
 
 /**
+ * Map the system columns of a shadow table row to the keys of the `directus_version` object
+ */
+export function toVersionSystemFields(row: Record<string, unknown>): Record<string, any> {
+	return Object.fromEntries(Object.entries(VERSION_SYSTEM_FIELDS).map(([key, column]) => [key, row[column] ?? null]));
+}
+
+/**
  * Reject field names that collide with the shadow table columns of a versioned collection. Has to run before the live
  * schema is changed, as MySQL, MariaDB, CockroachDB and Oracle can't roll back DDL once the version table sync fails.
  */

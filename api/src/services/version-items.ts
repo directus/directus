@@ -20,10 +20,10 @@ import { transaction } from '../utils/transaction.js';
 import { validateLinkAccess } from '../versioning/link-access.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
-import { toVersionMeta, VERSION_META_FIELD, VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
-import { isVersioningTable } from './version-tables/utils.js';
+import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
+import { isVersioningTable, toVersionSystemFields } from './version-tables/utils.js';
 
-type VersionMeta = {
+type VersionSystemFields = {
 	id: PrimaryKey | null;
 	name: string | null;
 	type: 'draft' | 'published' | 'archived';
@@ -33,7 +33,7 @@ type VersionMeta = {
 	user_updated: string | null;
 };
 
-type VersionPayload = Item & { [VERSION_META_FIELD]?: Partial<Pick<VersionMeta, 'id' | 'name'>> };
+type VersionPayload = Item & { [VERSION_FIELD]?: Partial<Pick<VersionSystemFields, 'id' | 'name'>> };
 
 /** Values of these fields are maintained by the live collection on publish */
 const MANAGED_SPECIALS = [
@@ -164,7 +164,7 @@ export class VersionedItemsService {
 	}
 
 	/**
-	 * Read a version in the shape of a live item, with the version meta under `directus_version`
+	 * Read a version in the shape of a live item, with the version system fields under `directus_version`
 	 */
 	async readOne(versionId: PrimaryKey, query?: { fields?: string[] | null }): Promise<Item> {
 		const row = await this.readVersionRow(this.knex, this.collection, versionId, 'read');
@@ -190,11 +190,11 @@ export class VersionedItemsService {
 			const referenceField = this.versioning.getVersionReferenceField(relation.field);
 
 			if (referenceField in shadowFields && item[relation.field] === null && row[referenceField] !== null) {
-				item[relation.field] = { [VERSION_META_FIELD]: { id: row[referenceField] } };
+				item[relation.field] = { [VERSION_FIELD]: { id: row[referenceField] } };
 			}
 		}
 
-		item[VERSION_META_FIELD] = toVersionMeta(row);
+		item[VERSION_FIELD] = toVersionSystemFields(row);
 
 		return pickFields(item, query?.fields);
 	}
@@ -209,10 +209,10 @@ export class VersionedItemsService {
 			throw new InvalidPayloadError({ reason: `Version of "${collection}" has to be an object` });
 		}
 
-		const { [VERSION_META_FIELD]: meta, ...values } = data;
+		const { [VERSION_FIELD]: system, ...values } = data;
 		const { primary, fields } = this.schema.collections[collection]!;
 
-		versionId ??= meta?.id ?? null;
+		versionId ??= system?.id ?? null;
 
 		const existing = versionId !== null ? await this.readVersionRow(trx, collection, versionId, 'update') : null;
 
@@ -255,20 +255,20 @@ export class VersionedItemsService {
 		const processed = await payloadService.processValues(existing ? 'update' : 'create', { ...plainValues });
 		Object.assign(record, pick(processed, Object.keys(plainValues)));
 
-		if (meta && 'name' in meta) {
-			record[VERSION_SYSTEM_FIELDS.name] = meta.name ?? null;
+		if (system && 'name' in system) {
+			record[VERSION_SYSTEM_FIELDS.name] = system.name ?? null;
 		}
 
 		// Writes go through the shadow collection, so its permissions, validation and presets apply as usual
 		const shadowService = this.getShadowService(trx, collection);
 
 		if (existing) {
-			record[VERSION_SYSTEM_FIELDS.dateUpdated] = new Date();
-			record[VERSION_SYSTEM_FIELDS.userUpdated] = this.accountability?.user ?? null;
+			record[VERSION_SYSTEM_FIELDS.date_updated] = new Date();
+			record[VERSION_SYSTEM_FIELDS.user_updated] = this.accountability?.user ?? null;
 
 			await shadowService.updateOne(versionId!, record);
 		} else {
-			record[VERSION_SYSTEM_FIELDS.userCreated] = this.accountability?.user ?? null;
+			record[VERSION_SYSTEM_FIELDS.user_created] = this.accountability?.user ?? null;
 
 			versionId = await shadowService.createOne(record);
 		}
@@ -304,13 +304,12 @@ export class VersionedItemsService {
 		const relatedVersion = value as VersionPayload;
 
 		const isLinkOnly =
-			Object.keys(relatedVersion).length === 1 &&
-			isEqual(Object.keys(relatedVersion[VERSION_META_FIELD] ?? {}), ['id']);
+			Object.keys(relatedVersion).length === 1 && isEqual(Object.keys(relatedVersion[VERSION_FIELD] ?? {}), ['id']);
 
 		let relatedVersionId: PrimaryKey;
 
 		if (isLinkOnly) {
-			relatedVersionId = relatedVersion[VERSION_META_FIELD]!.id!;
+			relatedVersionId = relatedVersion[VERSION_FIELD]!.id!;
 			await this.readVersionRow(trx, relatedCollection, relatedVersionId, 'read');
 		} else {
 			relatedVersionId = await this.saveVersion(trx, relatedCollection, null, relatedVersion);
@@ -373,7 +372,7 @@ export class VersionedItemsService {
 				linked.versionIds.push(
 					await this.saveVersion(trx, relatedCollection, null, {
 						...(item as Item),
-						[relation.field]: { [VERSION_META_FIELD]: { id: versionId } },
+						[relation.field]: { [VERSION_FIELD]: { id: versionId } },
 					}),
 				);
 
@@ -463,7 +462,7 @@ export class VersionedItemsService {
 
 		for (const item of items) {
 			const key = this.getO2MLinkKey(relation, item);
-			const versionId = (item as VersionPayload)?.[VERSION_META_FIELD]?.id;
+			const versionId = (item as VersionPayload)?.[VERSION_FIELD]?.id;
 
 			if (key !== null) {
 				result.keys.push(key);
@@ -591,8 +590,8 @@ export class VersionedItemsService {
 				...managedValues,
 				[primary]: liveKey,
 				[VERSION_SYSTEM_FIELDS.type]: 'published',
-				[VERSION_SYSTEM_FIELDS.dateUpdated]: trx.fn.now(),
-				[VERSION_SYSTEM_FIELDS.userUpdated]: this.accountability?.user ?? null,
+				[VERSION_SYSTEM_FIELDS.date_updated]: trx.fn.now(),
+				[VERSION_SYSTEM_FIELDS.user_updated]: this.accountability?.user ?? null,
 			})
 			.where(VERSION_SYSTEM_FIELDS.id, versionId);
 

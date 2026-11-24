@@ -2,46 +2,46 @@ import { InvalidQueryError } from '@directus/errors';
 import type { Aggregate, Item, Query, SchemaOverview } from '@directus/types';
 import { getRelationInfo, toArray } from '@directus/utils';
 import { isPlainObject, mapKeys, pick, uniq } from 'lodash-es';
-import { VERSION_META_FIELD, VERSION_META_KEYS } from '../services/version-tables/constants.js';
+import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
 
-/** Version meta of live items without a version, which act as the published version */
-export const PUBLISHED_META: Record<string, unknown> = {
-	...Object.fromEntries(Object.keys(VERSION_META_KEYS).map((key) => [key, null])),
+/** Version system fields of live items without a version, which act as the published version */
+export const PUBLISHED_SYSTEM_FIELDS: Record<string, unknown> = {
+	...Object.fromEntries(Object.keys(VERSION_SYSTEM_FIELDS).map((key) => [key, null])),
 	type: 'published',
 };
 
 /**
- * Whether the field refers to the version meta, either `directus_version` itself or one of its keys
+ * Whether the field refers to the version system fields, either `directus_version` itself or one of its keys
  */
-export function isMetaField(field: string) {
-	return field === VERSION_META_FIELD || field.startsWith(`${VERSION_META_FIELD}.`);
+export function isSystemField(field: string) {
+	return field === VERSION_FIELD || field.startsWith(`${VERSION_FIELD}.`);
 }
 
 /**
  * Column of a `directus_version.<key>` field in the shadow table, other fields are returned as is
  */
-export function toMetaColumn(field: string) {
-	return isMetaField(field) ? getMetaColumn(field.slice(VERSION_META_FIELD.length + 1)) : field;
+export function toSystemColumn(field: string) {
+	return isSystemField(field) ? getSystemColumn(field.slice(VERSION_FIELD.length + 1)) : field;
 }
 
 /**
- * Column of a version meta key in the shadow table, throws for keys that don't exist
+ * Column of a version system field in the shadow table, throws for keys that don't exist
  */
-export function getMetaColumn(key: string) {
-	const column = VERSION_META_KEYS[key];
+export function getSystemColumn(key: string) {
+	if (!Object.hasOwn(VERSION_SYSTEM_FIELDS, key)) {
+		throw new InvalidQueryError({ reason: `"${VERSION_FIELD}.${key}" doesn't exist` });
+	}
 
-	if (!column) throw new InvalidQueryError({ reason: `"${VERSION_META_FIELD}.${key}" doesn't exist` });
-
-	return column;
+	return VERSION_SYSTEM_FIELDS[key as keyof typeof VERSION_SYSTEM_FIELDS];
 }
 
 /**
- * Map a sort on version meta to its column, keeping the direction
+ * Map a sort on version system fields to its column, keeping the direction
  */
 export function rewriteSort(sort: string) {
 	const descending = sort.startsWith('-');
 
-	return `${descending ? '-' : ''}${toMetaColumn(descending ? sort.slice(1) : sort)}`;
+	return `${descending ? '-' : ''}${toSystemColumn(descending ? sort.slice(1) : sort)}`;
 }
 
 /**
@@ -52,14 +52,14 @@ export function mapAggregate(aggregate: Aggregate, map: (fields: string[]) => st
 }
 
 /**
- * Group and aggregate results on version meta use the same format as the query: grouped meta values end up in
+ * Group and aggregate results on version system fields use the same format as the query: grouped system field values end up in
  * `directus_version`, aggregated ones under their `directus_version.<key>` name
  */
 export function formatAggregate(item: Item, query: Query) {
-	for (const [key, column] of Object.entries(VERSION_META_KEYS)) {
+	for (const [key, column] of Object.entries(VERSION_SYSTEM_FIELDS)) {
 		if (!(column in item)) continue;
 
-		item[VERSION_META_FIELD] = { ...item[VERSION_META_FIELD], [key]: item[column] };
+		item[VERSION_FIELD] = { ...item[VERSION_FIELD], [key]: item[column] };
 		delete item[column];
 	}
 
@@ -67,8 +67,8 @@ export function formatAggregate(item: Item, query: Query) {
 		if (!isPlainObject(item[aggregate])) continue;
 
 		item[aggregate] = mapKeys(item[aggregate], (_value, column) => {
-			const key = Object.keys(VERSION_META_KEYS).find((key) => VERSION_META_KEYS[key] === column);
-			return key ? `${VERSION_META_FIELD}.${key}` : column;
+			const key = Object.entries(VERSION_SYSTEM_FIELDS).find(([, systemColumn]) => systemColumn === column)?.[0];
+			return key ? `${VERSION_FIELD}.${key}` : column;
 		});
 	}
 
@@ -76,7 +76,7 @@ export function formatAggregate(item: Item, query: Query) {
 }
 
 /**
- * Fields for the query against the live collection, without version meta. Relations that only had version meta
+ * Fields for the query against the live collection, without version system fields. Relations that only had version system fields
  * requested select their primary key instead, which is listed in `added` so it can be removed again afterwards.
  */
 export function getEngineFields(schema: SchemaOverview, collection: string, fields: string[]) {
@@ -85,7 +85,7 @@ export function getEngineFields(schema: SchemaOverview, collection: string, fiel
 
 	for (const field of fields) {
 		const path = field.split('.');
-		const index = path.indexOf(VERSION_META_FIELD);
+		const index = path.indexOf(VERSION_FIELD);
 
 		if (index === -1) {
 			result.push(field);
@@ -122,27 +122,27 @@ export function getRelatedCollection(schema: SchemaOverview, collection: string,
 }
 
 /**
- * Items that aren't versions show up with the meta of a published item, if version meta is requested for them.
- * Applies to related items as well, and trims the meta to the requested keys.
+ * Items that aren't versions show up with the system fields of a published item, if version system fields are requested for them.
+ * Applies to related items as well, and trims the system fields to the requested keys.
  */
-export function injectPublishedMeta(item: Item, fields: string[]) {
+export function injectPublishedSystemFields(item: Item, fields: string[]) {
 	if (!isPlainObject(item)) return;
 
-	if (item[VERSION_META_FIELD] === undefined && requestedMetaKeys(fields).length > 0) {
-		item[VERSION_META_FIELD] = { ...PUBLISHED_META };
+	if (item[VERSION_FIELD] === undefined && requestedSystemFields(fields).length > 0) {
+		item[VERSION_FIELD] = { ...PUBLISHED_SYSTEM_FIELDS };
 	}
 
-	if (item[VERSION_META_FIELD] !== undefined) trimVersionMeta(item, fields);
+	if (item[VERSION_FIELD] !== undefined) trimSystemFields(item, fields);
 
 	for (const root of uniq(fields.map((field) => field.split('.')[0]!))) {
-		if (root === VERSION_META_FIELD || root === '*') continue;
+		if (root === VERSION_FIELD || root === '*') continue;
 
 		const subfields = getSubfields(fields, root);
 
 		if (subfields.length === 0) continue;
 
 		for (const value of toArray(item[root] ?? [])) {
-			injectPublishedMeta(value, subfields);
+			injectPublishedSystemFields(value, subfields);
 		}
 	}
 
@@ -150,33 +150,33 @@ export function injectPublishedMeta(item: Item, fields: string[]) {
 }
 
 /**
- * Limit the version meta of an item to the requested keys, removing it entirely if none are requested
+ * Limit the version system fields of an item to the requested keys, removing them entirely if none are requested
  */
-export function trimVersionMeta(item: Item, fields: string[]) {
-	const keys = requestedMetaKeys(fields);
+export function trimSystemFields(item: Item, fields: string[]) {
+	const keys = requestedSystemFields(fields);
 
 	if (keys.length === 0) {
-		delete item[VERSION_META_FIELD];
+		delete item[VERSION_FIELD];
 	} else {
-		item[VERSION_META_FIELD] = pick(item[VERSION_META_FIELD], keys);
+		item[VERSION_FIELD] = pick(item[VERSION_FIELD], keys);
 	}
 }
 
 /**
- * Version meta keys requested in the fields. `directus_version` and `directus_version.*` request all of them,
+ * Version system fields requested in the fields. `directus_version` and `directus_version.*` request all of them,
  * unknown keys throw.
  */
-export function requestedMetaKeys(fields: string[]) {
+export function requestedSystemFields(fields: string[]) {
 	const keys = new Set<string>();
 
 	for (const field of fields) {
 		const [root, key] = field.split('.');
 
-		if (root !== VERSION_META_FIELD) continue;
+		if (root !== VERSION_FIELD) continue;
 
-		if (!key || key === '*') return Object.keys(VERSION_META_KEYS);
+		if (!key || key === '*') return Object.keys(VERSION_SYSTEM_FIELDS);
 
-		getMetaColumn(key);
+		getSystemColumn(key);
 		keys.add(key);
 	}
 
@@ -184,7 +184,7 @@ export function requestedMetaKeys(fields: string[]) {
 }
 
 /**
- * Top level fields of the collection that are requested, with `*` expanded and version meta left out
+ * Top level fields of the collection that are requested, with `*` expanded and version system fields left out
  */
 export function getRequestedRoots(schema: SchemaOverview, collection: string, fields: string[]) {
 	const roots = new Set<string>();
@@ -194,7 +194,7 @@ export function getRequestedRoots(schema: SchemaOverview, collection: string, fi
 
 		if (root === '*') {
 			Object.keys(schema.collections[collection]!.fields).forEach((field) => roots.add(field));
-		} else if (root !== VERSION_META_FIELD) {
+		} else if (root !== VERSION_FIELD) {
 			roots.add(root);
 		}
 	}

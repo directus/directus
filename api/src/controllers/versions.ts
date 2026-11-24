@@ -5,9 +5,9 @@ import { assign } from 'lodash-es';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
+import { ItemsService } from '../services/items.js';
 import { MetaService } from '../services/meta.js';
-import { pickFields, VersionedItemsService } from '../services/version-items.js';
-import { VERSION_META_FIELD } from '../services/version-tables/constants.js';
+import { VersionedItemsService } from '../services/version-items.js';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
@@ -278,11 +278,7 @@ router.post(
 	respond,
 );
 
-/**
- * Versions stored in the shadow table of a versioned collection
- */
-
-async function respondWithVersion(
+async function readHanlderVersion(
 	service: VersionedItemsService,
 	versionId: PrimaryKey,
 	req: express.Request,
@@ -305,7 +301,7 @@ router.post(
 
 		const versionId = await service.createOne(req.body);
 
-		await respondWithVersion(service, versionId, req, res);
+		await readHanlderVersion(service, versionId, req, res);
 
 		return next();
 	}),
@@ -322,7 +318,7 @@ router.patch(
 
 		const versionId = await service.updateOne(req.params['id']!, req.body);
 
-		await respondWithVersion(service, versionId, req, res);
+		await readHanlderVersion(service, versionId, req, res);
 
 		return next();
 	}),
@@ -356,17 +352,17 @@ router.post(
 
 		const liveKey = await service.publish(req.params['id']!, { deleteVersion });
 
-		if (deleteVersion) {
-			const { primary } = req.schema.collections[service.collection]!;
+		const itemsService = new ItemsService(service.collection, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
+		try {
 			res.locals['payload'] = {
-				data: pickFields(
-					{ [primary]: liveKey, [VERSION_META_FIELD]: { id: null, type: 'published' } },
-					req.sanitizedQuery.fields,
-				),
+				data: await itemsService.readOne(liveKey, { ...req.sanitizedQuery, version: 'true' }),
 			};
-		} else {
-			await respondWithVersion(service, req.params['id']!, req, res);
+		} catch (error: any) {
+			if (!isDirectusError(error, ErrorCode.Forbidden)) throw error;
 		}
 
 		return next();
@@ -384,7 +380,7 @@ router.delete(
 
 		const versionId = await service.unpublish(req.params['id']!);
 
-		await respondWithVersion(service, versionId, req, res);
+		await readHanlderVersion(service, versionId, req, res);
 
 		return next();
 	}),
@@ -401,7 +397,7 @@ router.post(
 
 		const versionId = await service.archive(req.params['id']!);
 
-		await respondWithVersion(service, versionId, req, res);
+		await readHanlderVersion(service, versionId, req, res);
 
 		return next();
 	}),

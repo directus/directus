@@ -222,14 +222,14 @@ function buildShadowTable(sourceCollection: SourceCollection, context: PlanConte
 		columns: Object.values(VERSION_SYSTEM_FIELDS).map((name) => ({ kind: 'system', name })),
 		foreignKeys: [
 			{
-				column: VERSION_SYSTEM_FIELDS.userCreated,
+				column: VERSION_SYSTEM_FIELDS.user_created,
 				foreign_key_table: 'directus_users',
 				foreign_key_column: 'id',
 				on_delete: 'SET NULL',
 				on_update: null,
 			},
 			{
-				column: VERSION_SYSTEM_FIELDS.userUpdated,
+				column: VERSION_SYSTEM_FIELDS.user_updated,
 				foreign_key_table: 'directus_users',
 				foreign_key_column: 'id',
 				on_delete: 'SET NULL',

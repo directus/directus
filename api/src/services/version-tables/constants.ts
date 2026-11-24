@@ -7,33 +7,13 @@ export const VERSION_SYSTEM_FIELDS = {
 	id: 'version_id',
 	name: 'version_name',
 	type: 'version_type',
-	dateCreated: 'version_date_created',
-	dateUpdated: 'version_date_updated',
-	userCreated: 'version_user_created',
-	userUpdated: 'version_user_updated',
+	date_created: 'version_date_created',
+	date_updated: 'version_date_updated',
+	user_created: 'version_user_created',
+	user_updated: 'version_user_updated',
 } as const;
 
 export const VERSION_TYPES = ['draft', 'published', 'archived'] as const;
 
-/** Field that holds the version meta of an item in the API */
-export const VERSION_META_FIELD = 'directus_version';
-
-/**
- * Keys of the `directus_version` object in the API, mapped to the shadow table columns
- */
-export const VERSION_META_KEYS: Record<string, string> = {
-	id: VERSION_SYSTEM_FIELDS.id,
-	name: VERSION_SYSTEM_FIELDS.name,
-	type: VERSION_SYSTEM_FIELDS.type,
-	date_created: VERSION_SYSTEM_FIELDS.dateCreated,
-	date_updated: VERSION_SYSTEM_FIELDS.dateUpdated,
-	user_created: VERSION_SYSTEM_FIELDS.userCreated,
-	user_updated: VERSION_SYSTEM_FIELDS.userUpdated,
-};
-
-/**
- * Map the system columns of a shadow table row to the keys of the `directus_version` object
- */
-export function toVersionMeta(row: Record<string, unknown>): Record<string, any> {
-	return Object.fromEntries(Object.entries(VERSION_META_KEYS).map(([key, column]) => [key, row[column] ?? null]));
-}
+/** Field that holds the version system fields of an item in the API */
+export const VERSION_FIELD = 'directus_version';

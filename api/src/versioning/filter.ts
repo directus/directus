@@ -3,14 +3,14 @@ import type { Filter, SchemaOverview } from '@directus/types';
 import { getRelationInfo, toArray } from '@directus/utils';
 import { isPlainObject, mapKeys } from 'lodash-es';
 import type { VersioningHelper } from '../database/helpers/versioning/types.js';
-import { VERSION_META_FIELD } from '../services/version-tables/constants.js';
-import { getMetaColumn, PUBLISHED_META } from './fields.js';
+import { VERSION_FIELD } from '../services/version-tables/constants.js';
+import { getSystemColumn, PUBLISHED_SYSTEM_FIELDS } from './fields.js';
 
 /**
- * Remove version meta from a filter, which leaves the parts that can be validated against the live collection.
+ * Remove version system fields from a filter, which leaves the parts that can be validated against the live collection.
  * Objects and logical operators left empty are removed as well.
  */
-export function stripMetaFilter(filter: Filter | null | undefined): Filter | null {
+export function stripSystemFilter(filter: Filter | null | undefined): Filter | null {
 	if (!filter) return null;
 
 	const strip = (value: unknown): unknown => {
@@ -23,7 +23,7 @@ export function stripMetaFilter(filter: Filter | null | undefined): Filter | nul
 		const result: Record<string, unknown> = {};
 
 		for (const [key, nested] of Object.entries(value as object)) {
-			if (key === VERSION_META_FIELD) continue;
+			if (key === VERSION_FIELD) continue;
 
 			const stripped = strip(nested);
 
@@ -44,8 +44,8 @@ export type FilterLevel = {
 	versioning: VersioningHelper;
 	/** Collection the filter applies to, which is the virtual collection, a shadow table or a live collection */
 	collection: string;
-	/** Whether the rows have version meta columns, otherwise they're live items and match the meta of published items */
-	hasMeta: boolean;
+	/** Whether the rows have system columns, otherwise they're live items and match the system fields of published items */
+	hasSystemFields: boolean;
 	/** Whether m2o relations can reference versions of related items */
 	references: boolean;
 	/** Shadow tables the filter reads from */
@@ -53,15 +53,15 @@ export type FilterLevel = {
 };
 
 /**
- * Map version meta in the filter to the meta columns. An m2o relation to a versioned collection matches either
- * the linked live item or the referenced version, so nested filters (including version meta) apply to both.
+ * Map version system fields in the filter to the system columns. An m2o relation to a versioned collection matches either
+ * the linked live item or the referenced version, so nested filters (including version system fields) apply to both.
  */
 export function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 	const result: Record<string, unknown> = {};
 	const conditions: Filter[] = [];
 
 	const rewriteAt = (value: unknown, collection: string, versioned: boolean) =>
-		rewriteFilter(value as Filter, { ...level, collection, hasMeta: versioned, references: versioned });
+		rewriteFilter(value as Filter, { ...level, collection, hasSystemFields: versioned, references: versioned });
 
 	for (const [key, value] of Object.entries(filter)) {
 		if ((key === '_and' || key === '_or') && Array.isArray(value)) {
@@ -74,13 +74,13 @@ export function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 			continue;
 		}
 
-		if (key === VERSION_META_FIELD) {
-			if (level.hasMeta) {
+		if (key === VERSION_FIELD) {
+			if (level.hasSystemFields) {
 				Object.assign(
 					result,
-					mapKeys(value ?? {}, (_, metaKey) => getMetaColumn(metaKey)),
+					mapKeys(value ?? {}, (_, systemKey) => getSystemColumn(systemKey)),
 				);
-			} else if (!matchesPublishedMeta(value as Record<string, Record<string, unknown>>)) {
+			} else if (!matchesPublishedSystemFields(value as Record<string, Record<string, unknown>>)) {
 				// Never matches, as an empty `_in` compiles to `1 = 0`. A `_null` check on the primary key would still match
 				// rows without a related item, as relations are left joined
 				conditions.push({ [level.schema.collections[level.collection]!.primary]: { _in: [] } } as Filter);
@@ -160,21 +160,21 @@ export function isFieldCondition(value: Record<string, unknown>) {
 }
 
 /**
- * Whether a filter on version meta matches the meta of published live items, which is evaluated in memory as live
- * items of collections that aren't versioned have no meta columns. Throws on unknown keys.
+ * Whether a filter on version system fields matches the system fields of published live items, which is evaluated in memory as live
+ * items of collections that aren't versioned have no system columns. Throws on unknown keys.
  */
-export function matchesPublishedMeta(filter: Record<string, Record<string, unknown>>) {
+export function matchesPublishedSystemFields(filter: Record<string, Record<string, unknown>>) {
 	return Object.entries(filter ?? {}).every(([key, condition]) => {
-		getMetaColumn(key);
+		getSystemColumn(key);
 
 		return Object.entries(condition ?? {}).every(([operator, argument]) =>
-			matchesOperator(PUBLISHED_META[key], operator, argument),
+			matchesOperator(PUBLISHED_SYSTEM_FIELDS[key], operator, argument),
 		);
 	});
 }
 
 /**
- * Evaluate a single filter operator against a value of the published meta. String operators ignore case. Other
+ * Evaluate a single filter operator against a value of the published system fields. String operators ignore case. Other
  * operators throw, unless the value is `null`, which never matches a comparison.
  */
 export function matchesOperator(value: unknown, operator: string, argument: unknown) {
@@ -209,7 +209,7 @@ export function matchesOperator(value: unknown, operator: string, argument: unkn
 			if (value === null) return false;
 
 			throw new InvalidQueryError({
-				reason: `Operator "${operator}" isn't supported on "${VERSION_META_FIELD}" of live items`,
+				reason: `Operator "${operator}" isn't supported on "${VERSION_FIELD}" of live items`,
 			});
 	}
 }

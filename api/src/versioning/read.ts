@@ -11,11 +11,11 @@ import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { ItemsService } from '../services/items.js';
 import {
-	toVersionMeta,
-	VERSION_META_FIELD,
+	VERSION_FIELD,
 	VERSION_REFERENCE_PREFIX,
 	VERSION_SYSTEM_FIELDS,
 } from '../services/version-tables/constants.js';
+import { toVersionSystemFields } from '../services/version-tables/utils.js';
 import type { FieldNode } from '../types/ast.js';
 import {
 	deletePath,
@@ -23,20 +23,20 @@ import {
 	getEngineFields,
 	getRequestedRoots,
 	getSubfields,
-	injectPublishedMeta,
-	isMetaField,
+	injectPublishedSystemFields,
+	isSystemField,
 	mapAggregate,
 	rewriteSort,
-	toMetaColumn,
-	trimVersionMeta,
+	toSystemColumn,
+	trimSystemFields,
 } from './fields.js';
-import { rewriteFilter, stripMetaFilter } from './filter.js';
+import { rewriteFilter, stripSystemFilter } from './filter.js';
 import { validateLinkAccess } from './link-access.js';
 
 type Context = { knex: Knex; schema: SchemaOverview; accountability: Accountability | null };
 
 /**
- * - `items`: live items, with the meta of their published version, together with all other versions
+ * - `items`: live items, with the system fields of their published version, together with all other versions
  * - `versions`: all rows of the shadow table, used to resolve references to versions
  */
 type ReadMode = 'items' | 'versions';
@@ -52,7 +52,7 @@ export function isVersionedQuery(query: Query) {
 }
 
 /**
- * Read live items and versions of a versioned collection in one result. Fields, filters and sorts on the version meta
+ * Read live items and versions of a versioned collection in one result. Fields, filters and sorts on the version system fields
  * use the `directus_version.<key>` format. References to versions of related items are resolved as well.
  */
 export async function readVersionedItems(
@@ -76,16 +76,16 @@ export async function readVersionedItems(
 	const { primary } = schema.collections[collection]!;
 	const engineFields = getEngineFields(schema, collection, fields);
 
-	// The query is validated against the live collection, so its permissions apply. Version meta isn't part of it
+	// The query is validated against the live collection, so its permissions apply. Version system fields aren't part of it
 	const liveQuery: Query = {
 		...query,
 		...(isAggregate ? {} : { fields: engineFields.fields }),
-		...(query.group ? { group: query.group.filter((field) => !isMetaField(field)) } : {}),
+		...(query.group ? { group: query.group.filter((field) => !isSystemField(field)) } : {}),
 		...(query.aggregate
-			? { aggregate: mapAggregate(query.aggregate, (fields) => fields.filter((field) => !isMetaField(field))) }
+			? { aggregate: mapAggregate(query.aggregate, (fields) => fields.filter((field) => !isSystemField(field))) }
 			: {}),
-		filter: stripMetaFilter(query.filter),
-		sort: query.sort?.filter((sort) => !isMetaField(sort.replace(/^-/, ''))) ?? null,
+		filter: stripSystemFilter(query.filter),
+		sort: query.sort?.filter((sort) => !isSystemField(sort.replace(/^-/, ''))) ?? null,
 	};
 
 	delete liveQuery.version;
@@ -105,14 +105,14 @@ export async function readVersionedItems(
 					schema: virtual.schema,
 					versioning,
 					collection: virtual.name,
-					hasMeta: true,
+					hasSystemFields: true,
 					references: true,
 					shadows: filterShadows,
 				})
 			: null,
 		sort: query.sort?.map(rewriteSort) ?? null,
-		...(query.group ? { group: query.group.map(toMetaColumn) } : {}),
-		...(query.aggregate ? { aggregate: mapAggregate(query.aggregate, (fields) => fields.map(toMetaColumn)) } : {}),
+		...(query.group ? { group: query.group.map(toSystemColumn) } : {}),
+		...(query.aggregate ? { aggregate: mapAggregate(query.aggregate, (fields) => fields.map(toSystemColumn)) } : {}),
 	};
 
 	// Filters on versions of related items require access to them
@@ -130,7 +130,7 @@ export async function readVersionedItems(
 	const hasPrimary = ast.children.some((child) => child.type === 'field' && child.fieldKey === primary);
 
 	const addedFields = isAggregate
-		? (query.group ?? []).filter(isMetaField).map(toMetaColumn)
+		? (query.group ?? []).filter(isSystemField).map(toSystemColumn)
 		: [...(hasPrimary ? [] : [primary]), ...virtual.versionFields];
 
 	ast.children.push(
@@ -146,7 +146,7 @@ export async function readVersionedItems(
 	await resolveVersionReferences(collection, items, fields, context, mode);
 
 	return items.map((item) => {
-		item[VERSION_META_FIELD] = toVersionMeta(item);
+		item[VERSION_FIELD] = toVersionSystemFields(item);
 
 		for (const field of addedFields) {
 			delete item[field];
@@ -156,7 +156,7 @@ export async function readVersionedItems(
 			deletePath(item, path);
 		}
 
-		injectPublishedMeta(item, fields);
+		injectPublishedSystemFields(item, fields);
 
 		return item;
 	});
@@ -195,7 +195,7 @@ function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection:
 		.filter((field) => !field.alias)
 		.map((field) => field.field);
 
-	const metaFields: string[] = Object.values(VERSION_SYSTEM_FIELDS);
+	const systemFields: string[] = Object.values(VERSION_SYSTEM_FIELDS);
 	const linkedFields = link ? Object.keys(link.fields).filter((field) => field !== primary) : [];
 
 	const referenceFields = uniq([
@@ -220,7 +220,7 @@ function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection:
 	const versionsQuery = knex
 		.select([
 			...columns.map((column) => selectColumn(shadowTable, column in shadow.fields, column)),
-			...metaFields.map((column) => selectColumn(shadowTable, true, column)),
+			...systemFields.map((column) => selectColumn(shadowTable, true, column)),
 			...referenceFields.map((column) => selectColumn(shadowTable, column in shadow.fields, column)),
 			selectKey(negatedVersionId, [`${shadowTable}.${VERSION_SYSTEM_FIELDS.id}`]),
 		])
@@ -235,7 +235,7 @@ function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection:
 		const itemsQuery = knex
 			.select([
 				...columns.map((column) => selectColumn(collection, true, column)),
-				...metaFields.map((column) =>
+				...systemFields.map((column) =>
 					column === VERSION_SYSTEM_FIELDS.type
 						? knex.raw(`'published' as ??`, [column])
 						: selectColumn('published', true, column),
@@ -269,7 +269,7 @@ function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection:
 
 	const fields: Record<string, FieldOverview> = {
 		...live.fields,
-		...Object.fromEntries([...metaFields, ...referenceFields].map((field) => [field, versionField(field)])),
+		...Object.fromEntries([...systemFields, ...referenceFields].map((field) => [field, versionField(field)])),
 		[KEY_FIELD]: {
 			...live.fields[primary]!,
 			field: KEY_FIELD,
@@ -292,7 +292,7 @@ function createVirtualCollection(knex: Knex, schema: SchemaOverview, collection:
 	return {
 		name,
 		source,
-		versionFields: [...metaFields, ...referenceFields],
+		versionFields: [...systemFields, ...referenceFields],
 		schema: {
 			collections: { ...schema.collections, [name]: { ...live, collection: name, primary: KEY_FIELD, fields } },
 			relations: [...schema.relations, ...relations],
@@ -343,7 +343,7 @@ async function resolveM2O(items: Item[], relation: Relation, subfields: string[]
 	// a2o references and requests for keys only return the reference itself
 	if (!related || subfields.length === 0 || !context.schema.collections[related]?.versioned) {
 		for (const item of pending) {
-			item[relation.field] = { [VERSION_META_FIELD]: { id: item[referenceField] } };
+			item[relation.field] = { [VERSION_FIELD]: { id: item[referenceField] } };
 		}
 
 		return;
@@ -446,7 +446,7 @@ async function resolveO2M(versions: Item[], relation: Relation, subfields: strin
 
 			addChild(
 				reference[referenceField],
-				relatedVersions ? relatedVersions.get(String(versionId)) : { [VERSION_META_FIELD]: { id: versionId } },
+				relatedVersions ? relatedVersions.get(String(versionId)) : { [VERSION_FIELD]: { id: versionId } },
 			);
 		}
 	}
@@ -463,8 +463,8 @@ async function readVersionsById(collection: string, subfields: string[], ids: un
 	const items = await readVersionedItems(
 		collection,
 		{
-			fields: [...subfields, `${VERSION_META_FIELD}.id`],
-			filter: { [VERSION_META_FIELD]: { id: { _in: uniq(ids) } } } as Filter,
+			fields: [...subfields, `${VERSION_FIELD}.id`],
+			filter: { [VERSION_FIELD]: { id: { _in: uniq(ids) } } } as Filter,
 			limit: -1,
 		},
 		context,
@@ -473,8 +473,8 @@ async function readVersionsById(collection: string, subfields: string[], ids: un
 
 	return new Map(
 		items.map((item) => {
-			const id = String(item[VERSION_META_FIELD].id);
-			trimVersionMeta(item, subfields);
+			const id = String(item[VERSION_FIELD].id);
+			trimSystemFields(item, subfields);
 			return [id, item];
 		}),
 	);
@@ -497,7 +497,7 @@ async function readLiveById(collection: string, subfields: string[], keys: unkno
 			collection,
 			{
 				fields,
-				filter: { _and: [filter, { [VERSION_META_FIELD]: { type: { _eq: 'published' } } }] } as Filter,
+				filter: { _and: [filter, { [VERSION_FIELD]: { type: { _eq: 'published' } } }] } as Filter,
 				limit: -1,
 			},
 			context,
@@ -510,7 +510,7 @@ async function readLiveById(collection: string, subfields: string[], keys: unkno
 
 		for (const item of items) {
 			for (const path of engineFields.added) deletePath(item, path);
-			injectPublishedMeta(item, fields);
+			injectPublishedSystemFields(item, fields);
 		}
 	}
 

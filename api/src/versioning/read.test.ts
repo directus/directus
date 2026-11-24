@@ -15,7 +15,7 @@ const CLIENTS = {
 	oracle: class Client_Oracledb extends MockClient {},
 };
 
-function versionMeta(c: CollectionBuilder) {
+function versionSystemFields(c: CollectionBuilder) {
 	c.field('version_id').id();
 	c.field('version_name').string();
 	c.field('version_type').string();
@@ -50,19 +50,19 @@ const schema = new SchemaBuilder()
 	})
 	.options({ versioning: true })
 	.collection('directus_shadow_articles', (c) => {
-		versionMeta(c);
+		versionSystemFields(c);
 		c.field('id').integer();
 		c.field('title').string();
 		c.field('author').integer();
 		c.field('version_ref_author').m2o('directus_shadow_authors');
 	})
 	.collection('directus_shadow_authors', (c) => {
-		versionMeta(c);
+		versionSystemFields(c);
 		c.field('id').integer();
 		c.field('name').string();
 	})
 	.collection('directus_shadow_tags', (c) => {
-		versionMeta(c);
+		versionSystemFields(c);
 		c.field('id').integer();
 		c.field('label').string();
 		c.field('version_ref_article').m2o('directus_shadow_articles');
@@ -87,7 +87,7 @@ const schema = new SchemaBuilder()
 	})
 	.options({ versioning: true })
 	.collection('directus_shadow_pages', (c) => {
-		versionMeta(c);
+		versionSystemFields(c);
 		c.field('slug').string();
 	})
 	.build();
@@ -149,7 +149,7 @@ describe('isVersionedQuery', () => {
 });
 
 describe('source of the virtual collection', () => {
-	test('combines live items with their published meta and all unpublished versions', async () => {
+	test('combines live items with their published system fields and all unpublished versions', async () => {
 		const { sql, bindings } = await read('articles', { fields: ['id', 'title'] }, { source: true });
 
 		expect(sql).toMatchInlineSnapshot(`
@@ -417,7 +417,7 @@ describe('source of the virtual collection', () => {
 });
 
 describe('fields', () => {
-	test('selects the primary key and version meta when not requested', async () => {
+	test('selects the primary key and version system fields when not requested', async () => {
 		const { sql, bindings } = await read('articles', { fields: ['title'] });
 
 		expect(sql).toMatchInlineSnapshot(`
@@ -450,7 +450,7 @@ describe('fields', () => {
 		`);
 	});
 
-	test('ignores version meta fields in the selection of live columns', async () => {
+	test('ignores version system fields in the selection of live columns', async () => {
 		const { sql, bindings } = await read('articles', { fields: ['title', 'directus_version.name'] });
 
 		expect(sql).toMatchInlineSnapshot(`
@@ -485,7 +485,7 @@ describe('fields', () => {
 });
 
 describe('filter', () => {
-	test('maps version meta to the meta columns', async () => {
+	test('maps version system fields to the system columns', async () => {
 		const { sql, bindings } = await read('articles', {
 			fields: ['id'],
 			filter: { directus_version: { type: { _eq: 'draft' }, name: { _contains: 'review' } } },
@@ -525,7 +525,7 @@ describe('filter', () => {
 		`);
 	});
 
-	test('maps version meta nested in logical operators', async () => {
+	test('maps version system fields nested in logical operators', async () => {
 		const { sql, bindings } = await read('articles', {
 			fields: ['id'],
 			filter: {
@@ -620,7 +620,7 @@ describe('filter', () => {
 		`);
 	});
 
-	test('applies version meta on related items to referenced versions and published live items', async () => {
+	test('applies version system fields on related items to referenced versions and published live items', async () => {
 		const { sql, bindings } = await read('articles', {
 			fields: ['id'],
 			filter: { author: { directus_version: { type: { _eq: 'published' } } } },
@@ -667,7 +667,7 @@ describe('filter', () => {
 		`);
 	});
 
-	test('never matches live related items with version meta that only versions have', async () => {
+	test('never matches live related items with version system fields that only versions have', async () => {
 		const { sql, bindings } = await read('articles', {
 			fields: ['id'],
 			filter: { author: { directus_version: { type: { _eq: 'draft' } } } },
@@ -716,7 +716,7 @@ describe('filter', () => {
 		`);
 	});
 
-	test("never matches version meta of related items in collections that aren't versioned", async () => {
+	test("never matches version system fields of related items in collections that aren't versioned", async () => {
 		const { sql, bindings } = await read('articles', {
 			fields: ['id'],
 			filter: { category: { directus_version: { type: { _eq: 'draft' } } } },
@@ -755,7 +755,7 @@ describe('filter', () => {
 		`);
 	});
 
-	test("matches published version meta of related items in collections that aren't versioned", async () => {
+	test("matches published version system fields of related items in collections that aren't versioned", async () => {
 		const { sql, bindings } = await read('articles', {
 			fields: ['id'],
 			filter: { category: { directus_version: { type: { _eq: 'published' } } } },
@@ -837,7 +837,7 @@ describe('filter', () => {
 		`);
 	});
 
-	test('combines field and version meta conditions on related items', async () => {
+	test('combines field and version system fields conditions on related items', async () => {
 		const { sql, bindings } = await read('articles', {
 			fields: ['id'],
 			filter: { author: { name: { _eq: 'Jane' }, directus_version: { type: { _eq: 'draft' } } } },
@@ -983,13 +983,13 @@ describe('filter', () => {
 		`);
 	});
 
-	test('throws on unknown version meta', async () => {
+	test('throws on unknown version system fields', async () => {
 		await expect(
 			read('articles', { fields: ['id'], filter: { directus_version: { unknown: { _eq: 1 } } } }),
 		).rejects.toThrow('"directus_version.unknown" doesn\'t exist');
 	});
 
-	test('throws on unsupported operators on version meta of live related items', async () => {
+	test('throws on unsupported operators on version system fields of live related items', async () => {
 		await expect(
 			read('articles', {
 				fields: ['id'],
@@ -1000,7 +1000,7 @@ describe('filter', () => {
 });
 
 describe('sort', () => {
-	test('maps version meta to the meta columns', async () => {
+	test('maps version system fields to the system columns', async () => {
 		const { sql, bindings } = await read('articles', {
 			fields: ['id'],
 			sort: ['-directus_version.date_created', 'title'],
@@ -1040,7 +1040,7 @@ describe('sort', () => {
 });
 
 describe('aggregate', () => {
-	test('groups by version meta', async () => {
+	test('groups by version system fields', async () => {
 		const { sql, bindings } = await read('articles', {
 			aggregate: { count: ['*'], countDistinct: ['directus_version.user_created'] },
 			group: ['directus_version.type'],
@@ -1072,7 +1072,7 @@ describe('aggregate', () => {
 		`);
 	});
 
-	test('formats aggregated version meta like the query', async () => {
+	test('formats aggregated version system fields like the query', async () => {
 		const { items } = await read(
 			'articles',
 			{ aggregate: { countDistinct: ['directus_version.user_created'] }, group: ['directus_version.type'] },

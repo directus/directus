@@ -298,14 +298,14 @@ export class VersionTablesService {
 			case VERSION_SYSTEM_FIELDS.type:
 				builder.string(name, 16).notNullable().defaultTo('draft');
 				break;
-			case VERSION_SYSTEM_FIELDS.dateCreated:
+			case VERSION_SYSTEM_FIELDS.date_created:
 				builder.timestamp(name, { useTz: true }).defaultTo(this.knex.fn.now());
 				break;
-			case VERSION_SYSTEM_FIELDS.dateUpdated:
+			case VERSION_SYSTEM_FIELDS.date_updated:
 				builder.timestamp(name, { useTz: true }).nullable();
 				break;
-			case VERSION_SYSTEM_FIELDS.userCreated:
-			case VERSION_SYSTEM_FIELDS.userUpdated:
+			case VERSION_SYSTEM_FIELDS.user_created:
+			case VERSION_SYSTEM_FIELDS.user_updated:
 				builder.uuid(name).nullable();
 				break;
 		}

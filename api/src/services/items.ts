@@ -41,7 +41,7 @@ import { captureSeatCount, validateUserCountIntegrity } from '../utils/validate-
 import { handleVersion } from '../utils/versioning/handle-version.js';
 import { isVersionedQuery, readVersionedItems } from '../versioning/read.js';
 import { PayloadService } from './payload.js';
-import { VERSION_META_FIELD } from './version-tables/constants.js';
+import { VERSION_FIELD } from './version-tables/constants.js';
 
 export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
 	implements AbstractService<Item>
@@ -627,7 +627,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const filter = {
 				_and: [
 					{ [primaryKeyField]: { _eq: key } },
-					{ [VERSION_META_FIELD]: { type: { _in: ['published', 'archived'] } } },
+					{ [VERSION_FIELD]: { type: { _in: ['published', 'archived'] } } },
 					...(query.filter ? [query.filter] : []),
 				],
 			} as Filter;

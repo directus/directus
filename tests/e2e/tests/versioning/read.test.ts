@@ -61,14 +61,14 @@ test('reading with versions returns live items together with drafts and archived
 	]);
 });
 
-test('the wildcard does not include the version meta', async () => {
+test('the wildcard does not include the version system fields', async () => {
 	const [item] = await read({ fields: ['*'], filter: { title: { _eq: 'Gamma' } } });
 
 	expect(item).not.toHaveProperty('directus_version');
 	expect(item).toMatchObject({ id: null, title: 'Gamma', views: 30 });
 });
 
-test('filters, sorts and paginates on the version meta', async () => {
+test('filters, sorts and paginates on the version system fields', async () => {
 	const drafts = { directus_version: { type: { _eq: 'draft' } } };
 
 	expect(await read({ fields: ['title'], filter: drafts, sort: ['-directus_version.id'] })).toEqual([
@@ -94,7 +94,7 @@ test('filters, sorts and paginates on the version meta', async () => {
 	expect(await read({ fields: ['title'], search: 'Gamm' })).toEqual([{ title: 'Gamma' }]);
 });
 
-test('rejects unknown version meta', async () => {
+test('rejects unknown version system fields', async () => {
 	await expect(read({ fields: ['directus_version.nope'] })).rejects.toMatchObject(directusError('INVALID_QUERY'));
 
 	await expect(read({ filter: { directus_version: { nope: { _eq: 1 } } } })).rejects.toMatchObject(
@@ -102,7 +102,7 @@ test('rejects unknown version meta', async () => {
 	);
 });
 
-test('groups and aggregates on the version meta', async () => {
+test('groups and aggregates on the version system fields', async () => {
 	const grouped = await api.request(
 		aggregate(collections.posts, {
 			aggregate: { count: '*' },
@@ -140,7 +140,7 @@ test('counts versions in the response meta', async () => {
 	expect(result.data).toHaveLength(3);
 });
 
-test('filters on the version meta of related items', async () => {
+test('filters on the version system fields of related items', async () => {
 	expect(
 		await read({ fields: ['title'], filter: { author: { directus_version: { type: { _eq: 'draft' } } } } }),
 	).toEqual([{ title: 'Epsilon' }]);
@@ -155,7 +155,7 @@ test('filters on the version meta of related items', async () => {
 	]);
 });
 
-test('selects the version meta of related items', async () => {
+test('selects the version system fields of related items', async () => {
 	const items = await read({
 		fields: ['title', 'author.name', 'author.directus_version.type'],
 		filter: { author: { _nnull: true } },
