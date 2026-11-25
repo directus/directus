@@ -1,11 +1,10 @@
 import type { Accountability, PermissionsAction } from '@directus/types';
-import type { AST, NestedCollectionNode } from '../../../types/ast.js';
-import { getVersionTablesSchema } from '../../../versioning/schema.js';
+import type { AST } from '../../../types/ast.js';
+import { getAstLevels } from '../../../utils/get-ast-levels.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { assertCollectionActive } from '../assert-collection-active/assert-collection-active.js';
-import { validateAccess } from '../validate-access/validate-access.js';
 import { fieldMapFromAst } from './lib/field-map-from-ast.js';
 import { injectCases } from './lib/inject-cases.js';
 import type { FieldMap } from './types.js';
@@ -23,22 +22,11 @@ export interface ProcessAstOptions {
  * Second step of reading data: validates an AST from `getAstFromQuery` against the schema and the
  * accountability's permissions, before it is executed with `runAst`.
  * Throws if a requested field doesn't exist, a traversed collection is inactive, or access is missing
- * (including read access to the shadow tables of versioned nodes).
+ * (including read access to the shadow tables of versioned nodes and the fields their filters read from them).
  * For non-admins, also injects the permission rules as `cases` into the AST, which `runAst` uses to
  * restrict rows and null out fields the user may not see. Mutates and returns the given AST.
  */
 export async function processAst(options: ProcessAstOptions, context: Context) {
-	const shadows = getVersionedShadows(options.ast);
-
-	if (options.accountability && !options.accountability.admin) {
-		for (const collection of shadows) {
-			await validateAccess(
-				{ accountability: options.accountability, action: 'read', collection },
-				{ ...context, schema: getVersionTablesSchema(context.schema) },
-			);
-		}
-	}
-
 	// FieldMap is a Map of paths in the AST, with each path containing the collection and fields in
 	// that collection that the AST path tries to access
 	const fieldMap: FieldMap = fieldMapFromAst(options.ast, context.schema);
@@ -63,11 +51,13 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 
 	const policies = await fetchPolicies(options.accountability, context);
 
+	const shadows = getVersionedShadows(options.ast);
+
 	// Version rows of versioned nodes are limited by the permissions of their shadow table
-	const permissionCollections = [...collections, ...shadows];
+	collections.push(...new Set(shadows.map(({ shadow }) => shadow)));
 
 	const permissions = await fetchPermissions(
-		{ action: options.action, policies, collections: permissionCollections, accountability: options.accountability },
+		{ action: options.action, policies, collections, accountability: options.accountability },
 		context,
 	);
 
@@ -75,7 +65,7 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 		options.action === 'read'
 			? permissions
 			: await fetchPermissions(
-					{ action: 'read', policies, collections: permissionCollections, accountability: options.accountability },
+					{ action: 'read', policies, collections, accountability: options.accountability },
 					context,
 				);
 
@@ -94,25 +84,27 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 		validatePathPermissions(path, readPermissions, collection, fields);
 	}
 
+	// Shadow tables aren't part of the field map, as their version rows and the versions filters reach are read
+	// through the versioned read collection
+	for (const { path, shadow, fields } of shadows) {
+		validatePathPermissions(path, readPermissions, shadow, fields);
+	}
+
 	injectCases(options.ast, permissions);
 
 	return options.ast;
 }
 
 /**
- * Shadow tables that versioned nodes read from, which require read access
+ * Shadow tables that versioned nodes read from, which require read access, with the query path of the node and the
+ * fields its filter reads from them
  */
-function getVersionedShadows(node: AST | NestedCollectionNode, shadows = new Set<string>()) {
-	const branches =
-		node.type === 'a2o'
-			? node.names.map((collection) => [node.versioning?.[collection], node.children[collection]!] as const)
-			: [[node.versioning, node.children] as const];
+function getVersionedShadows(ast: AST) {
+	const shadows: { path: string; shadow: string; fields: Set<string> }[] = [];
 
-	for (const [versioning, children] of branches) {
-		versioning?.shadows.forEach((shadow) => shadows.add(shadow));
-
-		for (const child of children) {
-			if (child.type !== 'field' && child.type !== 'functionField') getVersionedShadows(child, shadows);
+	for (const { path, versioning } of getAstLevels(ast)) {
+		for (const [shadow, fields] of Object.entries(versioning?.shadows ?? {})) {
+			shadows.push({ path: path.join('.'), shadow, fields: new Set(fields) });
 		}
 	}
 

@@ -138,8 +138,8 @@ export type VersionedNode = {
 	reference: string | null;
 	/** Shadow table the versions of the node are read from, whose permissions apply to those rows */
 	shadow: string | null;
-	/** Shadow tables the read requires access to */
-	shadows: string[];
+	/** Shadow tables the read requires access to, with the fields its filter reads from them */
+	shadows: Record<string, string[]>;
 };
 
 export type AST = {

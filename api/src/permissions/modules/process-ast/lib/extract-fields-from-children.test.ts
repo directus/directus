@@ -39,6 +39,7 @@ describe('a2o', () => {
 			{
 				type: 'a2o',
 				fieldKey: 'test-a2o-a',
+				names: ['test-collection-a', 'test-collection-b'],
 				children: {
 					'test-collection-a': [{ type: 'field', fieldKey: 'test-field-key-a', name: 'test-field-name-a' }],
 					'test-collection-b': [{ type: 'field', fieldKey: 'test-field-key-b', name: 'test-field-name-b' }],
@@ -90,6 +91,7 @@ describe('a2o', () => {
 			{
 				type: 'a2o',
 				fieldKey: 'test-a2o-a',
+				names: ['test-collection-a', 'test-collection-b'],
 				children: {
 					'test-collection-a': [{ type: 'field', fieldKey: 'test-field-key-a', name: 'test-field-name-a' }],
 					'test-collection-b': [{ type: 'field', fieldKey: 'test-field-key-b', name: 'test-field-name-b' }],
@@ -97,10 +99,12 @@ describe('a2o', () => {
 				relation: {
 					field: 'test-a2o-a',
 				},
+				query: {},
 			},
 			{
 				type: 'a2o',
 				fieldKey: 'test-a2o-b',
+				names: ['test-collection-a', 'test-collection-c'],
 				children: {
 					'test-collection-a': [{ type: 'field', fieldKey: 'test-field-key-a2', name: 'test-field-name-a2' }],
 					'test-collection-c': [{ type: 'field', fieldKey: 'test-field-key-c', name: 'test-field-name-c' }],
@@ -108,6 +112,7 @@ describe('a2o', () => {
 				relation: {
 					field: 'test-a2o-b',
 				},
+				query: {},
 			},
 		] as unknown as Partial<NestedCollectionNode>[];
 

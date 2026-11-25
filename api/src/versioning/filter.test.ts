@@ -51,7 +51,7 @@ const versioning = new VersioningHelper(
 );
 
 function rewrite(filter: Filter, level: Partial<FilterLevel> = {}) {
-	const shadows = new Set<string>();
+	const shadows: FilterLevel['shadows'] = new Map();
 
 	const result = rewriteFilter(filter, {
 		schema,
@@ -63,7 +63,11 @@ function rewrite(filter: Filter, level: Partial<FilterLevel> = {}) {
 		...level,
 	});
 
-	return { result, shadows: [...shadows] };
+	return {
+		result,
+		shadows: [...shadows.keys()],
+		fields: Object.fromEntries([...shadows].map(([shadow, fields]) => [shadow, [...fields]])),
+	};
 }
 
 describe('stripSystemFilter', () => {
@@ -152,6 +156,14 @@ describe('rewriteFilter', () => {
 		});
 
 		expect(shadows).toEqual(['directus_shadow_authors']);
+	});
+
+	test('collects the fields filters read from shadow tables', () => {
+		const { fields } = rewrite({
+			_or: [{ author: { name: { _eq: 'Jane' } } }, { author: { directus_version: { name: { _eq: 'draft' } } } }],
+		} as Filter);
+
+		expect(fields).toEqual({ directus_shadow_authors: ['name'] });
 	});
 
 	test('applies version system fields on related items to the live item and the referenced version', () => {

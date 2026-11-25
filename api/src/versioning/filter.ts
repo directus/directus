@@ -48,8 +48,8 @@ export type FilterLevel = {
 	hasSystemFields: boolean;
 	/** Whether m2o relations can reference versions of related items */
 	references: boolean;
-	/** Shadow tables the filter reads from */
-	shadows: Set<string>;
+	/** Shadow tables the filter reads from, with the fields it reads from them */
+	shadows: Map<string, Set<string>>;
 };
 
 /**
@@ -73,6 +73,8 @@ export function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 			result[key] = rewriteFilter(value as Filter, level);
 			continue;
 		}
+
+		if (key !== VERSION_FIELD) level.shadows.get(level.collection)?.add(key.split(':')[0]!);
 
 		if (key === VERSION_FIELD) {
 			if (level.hasSystemFields) {
@@ -122,7 +124,7 @@ export function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 			: null;
 
 		if (shadow) {
-			level.shadows.add(shadow);
+			addShadow(level.shadows, shadow);
 
 			const version = nestOrExists(referenceField, rewriteAt(value, shadow, true));
 			conditions.push({ _or: [live, { _and: [{ [key]: { _null: true } }, version] }] } as Filter);
@@ -174,11 +176,15 @@ function rewriteA2OFilter(
 
 	if (!shadow) return live;
 
-	level.shadows.add(shadow);
+	addShadow(level.shadows, shadow);
 
 	const version = nestOrExists(column, rewriteAt(value, shadow, true));
 
 	return { _or: [live, { _and: [{ [field!]: { _null: true } }, version] }] } as Filter;
+}
+
+export function addShadow(shadows: FilterLevel['shadows'], shadow: string) {
+	if (!shadows.has(shadow)) shadows.set(shadow, new Set());
 }
 
 /** Nest a filter under an m2o field. A filter left without conditions still requires the related item to exist */

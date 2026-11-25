@@ -2,7 +2,8 @@ import type { Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { getHelpers } from '../database/helpers/index.js';
 import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
-import type { A2MNode, AST, FieldNode, FunctionFieldNode, NestedCollectionNode, VersionedNode } from '../types/ast.js';
+import type { AST, NestedCollectionNode, VersionedNode } from '../types/ast.js';
+import { type AstLevel, getAstLevels } from '../utils/get-ast-levels.js';
 import {
 	getRelatedCollection,
 	getSystemColumn,
@@ -11,7 +12,7 @@ import {
 	rewriteSort,
 	toSystemColumn,
 } from './fields.js';
-import { rewriteFilter, stripSystemFilter } from './filter.js';
+import { addShadow, type FilterLevel, rewriteFilter, stripSystemFilter } from './filter.js';
 import { getVersionedRead } from './schema.js';
 
 type Context = { knex: Knex; schema: SchemaOverview };
@@ -45,9 +46,9 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 	delete liveQuery.version;
 
 	const read = getVersionedRead(knex, schema, collection);
-	const shadows = new Set<string>();
+	const shadows: FilterLevel['shadows'] = new Map();
 
-	if (schema.collections[collection]?.versioned) shadows.add(versioning.getShadowTableName(collection));
+	if (schema.collections[collection]?.versioned) addShadow(shadows, versioning.getShadowTableName(collection));
 
 	// Filters on versions of related items require access to them as well
 	const filter = query.filter
@@ -69,7 +70,7 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 			...(query.aggregate ? { aggregate: mapAggregate(query.aggregate, (fields) => fields.map(toSystemColumn)) } : {}),
 		},
 		shadow: read.shadow,
-		shadows: [...shadows],
+		shadows: Object.fromEntries([...shadows].map(([shadow, fields]) => [shadow, [...fields]])),
 	};
 
 	return { query: liveQuery, versioning: versioned, versionFields: read.versionFields };
@@ -145,79 +146,34 @@ export function annotateVersionedNodes(
 	fields: ReturnType<typeof splitVersionFields>,
 	context: Context,
 ) {
-	ast.versioning = { ...root.versioning, fields: fields.systemFields.get('') ?? [], reference: null };
-
-	annotateChildren(ast.children, root.versionFields, [], fields, context);
-}
-
-function annotateChildren(
-	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
-	parentVersionFields: string[],
-	path: string[],
-	fields: ReturnType<typeof splitVersionFields>,
-	context: Context,
-) {
 	const { versioning } = getHelpers(context.knex);
+	const versionFields = new Map<AstLevel, string[]>();
 
-	for (const child of children) {
-		if (child.type === 'a2o') {
-			annotateA2O(child, parentVersionFields, path, fields, context);
+	for (const level of getAstLevels(ast)) {
+		if (!level.parent) {
+			level.versioning = { ...root.versioning, fields: fields.systemFields.get('') ?? [], reference: null };
+			versionFields.set(level, root.versionFields);
 			continue;
 		}
 
-		if (child.type !== 'm2o' && child.type !== 'o2m') continue;
+		const key = level.path.join('.');
+		const node = level.node as NestedCollectionNode;
+		const split = splitVersionedQuery(level.collection, level.query, context);
+		const reference = versioning.getVersionReferenceField(node.relation.field);
 
-		const childPath = [...path, child.fieldKey];
-		const key = childPath.join('.');
-		const split = splitVersionedQuery(child.name, child.query, context);
-		const reference = versioning.getVersionReferenceField(child.relation.field);
-		const referenceColumns = child.type === 'm2o' ? parentVersionFields : split.versionFields;
+		// The parent holds the references of m2o and a2o nodes, the related rows the ones of o2m nodes
+		const referenceColumns = node.type === 'o2m' ? split.versionFields : versionFields.get(level.parent)!;
 
-		child.query = split.query;
+		level.query = split.query;
 
-		if (fields.added.has(key)) child.children = [];
+		if (fields.added.has(key)) level.children = [];
 
-		child.versioning = {
+		level.versioning = {
 			...split.versioning,
 			fields: fields.systemFields.get(key) ?? [],
 			reference: referenceColumns.includes(reference) ? reference : null,
 		};
 
-		annotateChildren(child.children, split.versionFields, childPath, fields, context);
-	}
-}
-
-/**
- * Each related collection of an a2o node is read from its combined rows. The parent references versions of the related
- * item through one column, as the related collection is stored in a separate field.
- */
-function annotateA2O(
-	child: A2MNode,
-	parentVersionFields: string[],
-	path: string[],
-	fields: ReturnType<typeof splitVersionFields>,
-	context: Context,
-) {
-	const { versioning } = getHelpers(context.knex);
-	const reference = versioning.getVersionReferenceField(child.relation.field);
-
-	child.versioning = {};
-
-	for (const collection of child.names) {
-		const childPath = [...path, `${child.fieldKey}:${collection}`];
-		const key = childPath.join('.');
-		const split = splitVersionedQuery(collection, child.query[collection]!, context);
-
-		child.query[collection] = split.query;
-
-		if (fields.added.has(key)) child.children[collection] = [];
-
-		child.versioning[collection] = {
-			...split.versioning,
-			fields: fields.systemFields.get(key) ?? [],
-			reference: parentVersionFields.includes(reference) ? reference : null,
-		};
-
-		annotateChildren(child.children[collection]!, split.versionFields, childPath, fields, context);
+		versionFields.set(level, split.versionFields);
 	}
 }

@@ -1,7 +1,8 @@
 import type { Filter, Permission } from '@directus/types';
 import { range, uniq } from 'lodash-es';
 import { VERSION_SYSTEM_FIELDS } from '../../../../services/version-tables/constants.js';
-import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
+import type { AST } from '../../../../types/ast.js';
+import { type AstLevel, getAstLevels } from '../../../../utils/get-ast-levels.js';
 import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
 import { getCases } from './get-cases.js';
 
@@ -14,23 +15,20 @@ type Access = ReturnType<typeof getCases>;
  * @param permissions - Expected to be filtered down for the policies and action already
  */
 export function injectCases(ast: AST, permissions: Permission[]) {
-	ast.cases = processChildren(ast.name, ast.children, permissions, ast.versioning?.shadow);
+	for (const level of getAstLevels(ast)) {
+		level.cases = getLevelCases(level, permissions);
+	}
 }
 
 /**
- * @param shadow - Shadow table of a versioned node, whose permissions apply to the version rows instead of the ones
- * of the collection
+ * Cases of the level, with the cases that apply to each of its children set on them. The permissions of the shadow
+ * table of a versioned level apply to its version rows instead of the ones of the collection.
  */
-function processChildren(
-	collection: string,
-	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
-	permissions: Permission[],
-	shadow?: string | null,
-) {
+function getLevelCases({ collection, children, versioning }: AstLevel, permissions: Permission[]) {
 	// Use uniq here, since there might be multiple duplications due to aliases or functions
 	const requestedKeys = uniq(children.map(getUnaliasedFieldKey));
 	const live = getCases(collection, permissions, requestedKeys);
-	const versions = shadow ? getCases(shadow, permissions, requestedKeys) : null;
+	const versions = versioning?.shadow ? getCases(versioning.shadow, permissions, requestedKeys) : null;
 
 	const cases = versions
 		? [...live.cases.map((rule) => withType(rule, '_eq')), ...versions.cases.map((rule) => withType(rule, '_neq'))]
@@ -61,33 +59,8 @@ function processChildren(
 			];
 		}
 
-		if (child.type === 'm2o') {
-			child.cases = processChildren(
-				child.relation.related_collection!,
-				child.children,
-				permissions,
-				child.versioning?.shadow,
-			);
-		}
-
-		if (child.type === 'o2m') {
-			child.cases = processChildren(child.relation.collection, child.children, permissions, child.versioning?.shadow);
-		}
-
-		if (child.type === 'a2o') {
-			for (const collection of child.names) {
-				child.cases[collection] = processChildren(
-					collection,
-					child.children[collection] ?? [],
-					permissions,
-					child.versioning?.[collection]?.shadow,
-				);
-			}
-		}
-
 		if (child.type === 'functionField') {
-			const { cases } = getCases(child.relatedCollection, permissions, []);
-			child.cases = cases;
+			child.cases = getCases(child.relatedCollection, permissions, []).cases;
 		}
 	}
 

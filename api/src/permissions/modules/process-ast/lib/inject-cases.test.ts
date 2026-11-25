@@ -356,7 +356,7 @@ test('Limits the rows of a versioned node to the live and shadow permissions', (
 			{ fieldKey: 'title', whenCase: [] },
 			{ fieldKey: 'body', whenCase: [] },
 		],
-		versioning: { shadow: 'directus_shadow_articles', shadows: ['directus_shadow_articles'] },
+		versioning: { shadow: 'directus_shadow_articles', shadows: { directus_shadow_articles: [] } },
 	};
 
 	const permissions: DeepPartial<Permission>[] = [
@@ -387,7 +387,7 @@ test('Excludes the version rows of a versioned node without shadow permissions',
 		name: 'articles',
 		cases: [],
 		children: [{ fieldKey: 'title', whenCase: [] }],
-		versioning: { shadow: 'directus_shadow_articles', shadows: ['directus_shadow_articles'] },
+		versioning: { shadow: 'directus_shadow_articles', shadows: { directus_shadow_articles: [] } },
 	};
 
 	const permissions: DeepPartial<Permission>[] = [
@@ -411,7 +411,7 @@ test('Uses the shadow permissions of versioned nested nodes', () => {
 				whenCase: [],
 				relation: { related_collection: 'authors' },
 				children: [{ fieldKey: 'name', whenCase: [] }],
-				versioning: { shadow: 'directus_shadow_authors', shadows: ['directus_shadow_authors'] },
+				versioning: { shadow: 'directus_shadow_authors', shadows: { directus_shadow_authors: [] } },
 			},
 		],
 	};

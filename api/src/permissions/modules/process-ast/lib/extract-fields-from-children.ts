@@ -1,11 +1,14 @@
 import type { SchemaOverview } from '@directus/types';
-import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
+import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
+import { getAstLevels } from '../../../../utils/get-ast-levels.js';
 import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
 import type { FieldMap, QueryPath } from '../types.js';
-import { formatA2oKey } from '../utils/format-a2o-key.js';
 import { getInfoForPath } from '../utils/get-info-for-path.js';
 import { extractFieldsFromQuery } from './extract-fields-from-query.js';
 
+/**
+ * Add the fields the children read to the field map, together with the fields the queries of nested nodes read
+ */
 export function extractFieldsFromChildren(
 	collection: string,
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
@@ -13,49 +16,26 @@ export function extractFieldsFromChildren(
 	schema: SchemaOverview,
 	path: QueryPath = [],
 ) {
-	const info = getInfoForPath(fieldMap, 'other', path, collection);
+	const ast: AST = { type: 'root', name: collection, children, query: {}, cases: [] };
 
-	for (const child of children) {
-		info.fields.add(getUnaliasedFieldKey(child));
+	for (const level of getAstLevels(ast, path)) {
+		const info = getInfoForPath(fieldMap, 'other', level.path, level.collection);
 
-		if (child.type === 'a2o') {
-			for (const [collection, children] of Object.entries(child.children)) {
-				extractFieldsFromChildren(collection, children, fieldMap, schema, [
-					...path,
-					formatA2oKey(child.fieldKey, collection),
-				]);
+		for (const child of level.children) {
+			info.fields.add(getUnaliasedFieldKey(child));
+
+			if (child.type === 'functionField') {
+				// functionFields operate on a related o2m collection, we have to make sure we include a
+				// no-field read check to the related collection
+				const childPath = [...level.path, child.fieldKey];
+
+				getInfoForPath(fieldMap, 'other', childPath, child.relatedCollection);
+				extractFieldsFromQuery(child.relatedCollection, child.query, fieldMap, schema, childPath);
 			}
-
-			if (child.query) {
-				for (const [collection, query] of Object.entries(child.query)) {
-					extractFieldsFromQuery(collection, query, fieldMap, schema, [
-						...path,
-						formatA2oKey(child.fieldKey, collection),
-					]);
-				}
-			}
-		} else if (child.type === 'm2o') {
-			extractFieldsFromChildren(child.relation.related_collection!, child.children, fieldMap, schema, [
-				...path,
-				child.fieldKey,
-			]);
-
-			extractFieldsFromQuery(child.relation.related_collection!, child.query, fieldMap, schema, [
-				...path,
-				child.fieldKey,
-			]);
-		} else if (child.type === 'o2m') {
-			extractFieldsFromChildren(child.relation.collection!, child.children, fieldMap, schema, [
-				...path,
-				child.fieldKey,
-			]);
-
-			extractFieldsFromQuery(child.relation.collection!, child.query, fieldMap, schema, [...path, child.fieldKey]);
-		} else if (child.type === 'functionField') {
-			// functionFields operate on a related o2m collection, we have to make sure we include a
-			// no-field read check to the related collection
-			extractFieldsFromChildren(child.relatedCollection, [], fieldMap, schema, [...path, child.fieldKey]);
-			extractFieldsFromQuery(child.relatedCollection, child.query, fieldMap, schema, [...path, child.fieldKey]);
 		}
+
+		// The query of the root is extracted separately
+		if (level.parent && level.query)
+			extractFieldsFromQuery(level.collection, level.query, fieldMap, schema, level.path);
 	}
 }

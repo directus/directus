@@ -1688,8 +1688,8 @@ describe('version references', () => {
 		const node = ast.children.find((child) => child.type === 'a2o')!;
 
 		expect(node.type === 'a2o' && node.versioning).toEqual({
-			authors: expect.objectContaining({ reference: 'version_ref_item', shadows: ['directus_shadow_authors'] }),
-			categories: expect.objectContaining({ reference: 'version_ref_item', shadows: [] }),
+			authors: expect.objectContaining({ reference: 'version_ref_item', shadows: { directus_shadow_authors: [] } }),
+			categories: expect.objectContaining({ reference: 'version_ref_item', shadows: {} }),
 		});
 	});
 
@@ -1888,7 +1888,7 @@ describe('a2o filter', () => {
 			context,
 		);
 
-		expect(ast.versioning?.shadows).toEqual(['directus_shadow_posts', 'directus_shadow_authors']);
+		expect(ast.versioning?.shadows).toEqual({ directus_shadow_posts: [], directus_shadow_authors: ['name'] });
 	});
 });
 
@@ -1972,9 +1972,26 @@ describe('permissions', () => {
 		`);
 	});
 
+	test('rejects filters on fields of versions of related items without access to them', async () => {
+		const permissions = (fields: string[]) => [
+			{ collection: 'articles', fields: ['*'] },
+			{ collection: 'authors', fields: ['*'] },
+			{ collection: 'directus_shadow_articles', fields: ['*'] },
+			{ collection: 'directus_shadow_authors', fields },
+		];
+
+		const query = { fields: ['id'], filter: { author: { name: { _eq: 'Jane' } } } };
+
+		await expect(read('articles', query, { permissions: permissions(['id']) })).rejects.toThrow(
+			'You don\'t have permission to access field "name" in collection "directus_shadow_authors" or it does not exist. Queried in root.',
+		);
+
+		await expect(read('articles', query, { permissions: permissions(['name']) })).resolves.toBeDefined();
+	});
+
 	test('rejects reading versions without access to the shadow table', async () => {
 		await expect(
 			read('articles', { fields: ['id', 'title'] }, { permissions: [{ collection: 'articles', fields: ['*'] }] }),
-		).rejects.toThrow('You don\'t have permission to perform "read" for collection "directus_shadow_articles"');
+		).rejects.toThrow('You don\'t have permission to access collection "directus_shadow_articles"');
 	});
 });
