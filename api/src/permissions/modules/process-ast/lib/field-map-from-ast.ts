@@ -1,14 +1,14 @@
 import type { SchemaOverview } from '@directus/types';
 import type { AST } from '../../../../types/ast.js';
+import { extractFunctionName } from '../../../../utils/extract-function-name.js';
 import { getAstLevels } from '../../../../utils/get-ast-levels.js';
 import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
-import type { FieldMap } from '../types.js';
-import { getInfoForPath } from '../utils/get-info-for-path.js';
 import { extractFieldsFromQuery } from './extract-fields-from-query.js';
+import { addToFieldMap, createFieldMap, type FieldMap } from './field-map.js';
 
 /**
  * Collect every field the AST touches, grouped by query path, so it can be validated against the schema and the
- * permissions before the AST is run. Fields that are fetched or used in `aggregate`/`group` land in `other` and require
+ * permissions before the AST is run. Fields that are fetched or used in `aggregate`/`group` land in `action` and require
  * permission for the action of the request; fields only used in `filter`/`sort` land in `read` and only require read
  * permission.
  *
@@ -18,25 +18,23 @@ import { extractFieldsFromQuery } from './extract-fields-from-query.js';
  * For example, `fields=title,author.name&filter[category][name][_eq]=News` on `articles` results in:
  *
  * ```
- * other: '' → articles { title, author }, 'author' → authors { name }
- * read:  '' → articles { category }, 'category' → categories { name }
+ * action: '' → articles { title, author }, 'author' → authors { name }
+ * read:   '' → articles { category }, 'category' → categories { name }
  * ```
  */
 export function fieldMapFromAst(ast: AST, schema: SchemaOverview): FieldMap {
-	const fieldMap: FieldMap = { read: new Map(), other: new Map() };
+	const fieldMap = createFieldMap();
 
 	for (const { path, collection, children, query } of getAstLevels(ast)) {
-		const info = getInfoForPath(fieldMap, 'other', path, collection);
+		addToFieldMap(fieldMap, 'action', path, collection);
 
 		for (const child of children) {
-			info.fields.add(getUnaliasedFieldKey(child));
+			addToFieldMap(fieldMap, 'action', path, collection, getUnaliasedFieldKey(child));
 
-			// Function fields read a related o2m collection, which requires read access to it
-			if (child.type === 'functionField') {
-				const childPath = [...path, child.fieldKey];
-
-				getInfoForPath(fieldMap, 'other', childPath, child.relatedCollection);
-				extractFieldsFromQuery(child.relatedCollection, child.query, fieldMap, schema, childPath);
+			// Relational counts read the related o2m collection, which requires access to it and its permissions to be
+			// loaded for the cases of the count
+			if (child.type === 'functionField' && extractFunctionName(child.name) !== 'json') {
+				addToFieldMap(fieldMap, 'action', [...path, child.fieldKey], child.relatedCollection);
 			}
 		}
 

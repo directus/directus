@@ -1,6 +1,18 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import { describe, expect, test } from 'vitest';
-import { getRelationInfo } from './get-relation-info.js';
+import { getRelationInfo, isImplicitRelation } from './get-relation-info.js';
+
+describe('isImplicitRelation', () => {
+	test.each([
+		['$FOLLOW(comments, article)', true],
+		['$FOLLOW(blocks, item, collection)', true],
+		['$FOLLOW(comments, article', false],
+		['comments', false],
+		['count($FOLLOW(comments, article))', false],
+	])('%s → %s', (field, expected) => {
+		expect(isImplicitRelation(field)).toBe(expected);
+	});
+});
 
 describe('getRelationInfo', () => {
 	test('Error on suspiciously long implicit $FOLLOW', () => {

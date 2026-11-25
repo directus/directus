@@ -9,7 +9,7 @@ vi.mock('@directus/env', () => ({
 }));
 
 test('Returns empty lists when query does not contain filter sort or aggregate', () => {
-	expect(extractPathsFromQuery({})).toEqual({ paths: [], readOnlyPaths: [] });
+	expect(extractPathsFromQuery({})).toEqual({ actionPaths: [], readPaths: [] });
 });
 
 test('Returns flattened filter paths if filter exists', () => {
@@ -23,7 +23,7 @@ test('Returns flattened filter paths if filter exists', () => {
 		},
 	};
 
-	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['author', 'name']]);
+	expect(extractPathsFromQuery(query).readPaths).toEqual([['author', 'name']]);
 });
 
 test('Returns sort values split on `.`', () => {
@@ -31,7 +31,7 @@ test('Returns sort values split on `.`', () => {
 		sort: ['title', 'author.age'],
 	};
 
-	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['title'], ['author', 'age']]);
+	expect(extractPathsFromQuery(query).readPaths).toEqual([['title'], ['author', 'age']]);
 });
 
 test('Drops - from sort values', () => {
@@ -39,7 +39,7 @@ test('Drops - from sort values', () => {
 		sort: ['-title'],
 	};
 
-	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['title']]);
+	expect(extractPathsFromQuery(query).readPaths).toEqual([['title']]);
 });
 
 test('Returns fields used in aggregation', () => {
@@ -50,7 +50,7 @@ test('Returns fields used in aggregation', () => {
 		},
 	};
 
-	expect(extractPathsFromQuery(query).paths).toEqual([['price'], ['id'], ['author', 'age']]);
+	expect(extractPathsFromQuery(query).actionPaths).toEqual([['price'], ['id'], ['author', 'age']]);
 });
 
 test('Returns fields used in grouping', () => {
@@ -58,7 +58,7 @@ test('Returns fields used in grouping', () => {
 		group: ['category', 'author.email'],
 	};
 
-	expect(extractPathsFromQuery(query).paths).toEqual([['category'], ['author', 'email']]);
+	expect(extractPathsFromQuery(query).actionPaths).toEqual([['category'], ['author', 'email']]);
 });
 
 test('Returns only unique field paths', () => {
@@ -69,7 +69,7 @@ test('Returns only unique field paths', () => {
 		group: ['category', 'author.email'],
 	};
 
-	expect(extractPathsFromQuery(query).paths).toEqual([['category'], ['author', 'email']]);
+	expect(extractPathsFromQuery(query).actionPaths).toEqual([['category'], ['author', 'email']]);
 });
 
 test('Returns only unique filter paths', () => {
@@ -86,7 +86,7 @@ test('Returns only unique filter paths', () => {
 		},
 	};
 
-	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['author']]);
+	expect(extractPathsFromQuery(query).readPaths).toEqual([['author']]);
 });
 
 test('Does not include wildcard field from aggregate', () => {
@@ -96,7 +96,7 @@ test('Does not include wildcard field from aggregate', () => {
 		},
 	};
 
-	expect(extractPathsFromQuery(query).paths).toEqual([]);
+	expect(extractPathsFromQuery(query).actionPaths).toEqual([]);
 });
 
 test('Extracts underlying field from json() sort expression', () => {
@@ -104,7 +104,7 @@ test('Extracts underlying field from json() sort expression', () => {
 		sort: ['json(metadata, color)'],
 	};
 
-	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['metadata']]);
+	expect(extractPathsFromQuery(query).readPaths).toEqual([['metadata']]);
 });
 
 test('Extracts underlying field from descending json() sort expression', () => {
@@ -112,7 +112,7 @@ test('Extracts underlying field from descending json() sort expression', () => {
 		sort: ['-json(metadata, color)'],
 	};
 
-	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['metadata']]);
+	expect(extractPathsFromQuery(query).readPaths).toEqual([['metadata']]);
 });
 
 test('Extracts underlying field from json() sort with dotted path', () => {
@@ -120,7 +120,7 @@ test('Extracts underlying field from json() sort with dotted path', () => {
 		sort: ['json(metadata, dimensions.width)'],
 	};
 
-	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['metadata']]);
+	expect(extractPathsFromQuery(query).readPaths).toEqual([['metadata']]);
 });
 
 test('Resolves alias to json() expression and extracts underlying field', () => {
@@ -129,7 +129,7 @@ test('Resolves alias to json() expression and extracts underlying field', () => 
 		alias: { my_color: 'json(metadata, color)' },
 	};
 
-	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['metadata']]);
+	expect(extractPathsFromQuery(query).readPaths).toEqual([['metadata']]);
 });
 
 test('Resolves descending alias to json() expression and extracts underlying field', () => {
@@ -138,7 +138,7 @@ test('Resolves descending alias to json() expression and extracts underlying fie
 		alias: { my_color: 'json(metadata, color)' },
 	};
 
-	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['metadata']]);
+	expect(extractPathsFromQuery(query).readPaths).toEqual([['metadata']]);
 });
 
 test('Resolves non-json alias to the target field name', () => {
@@ -147,7 +147,7 @@ test('Resolves non-json alias to the target field name', () => {
 		alias: { label: 'name' },
 	};
 
-	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['name']]);
+	expect(extractPathsFromQuery(query).readPaths).toEqual([['name']]);
 });
 
 test('Deduplicates when multiple json() sort expressions resolve to the same field', () => {
@@ -155,5 +155,5 @@ test('Deduplicates when multiple json() sort expressions resolve to the same fie
 		sort: ['json(metadata, color)', 'json(metadata, size)'],
 	};
 
-	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['metadata']]);
+	expect(extractPathsFromQuery(query).readPaths).toEqual([['metadata']]);
 });

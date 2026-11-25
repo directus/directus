@@ -6,9 +6,8 @@ import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { assertCollectionActive } from '../assert-collection-active/assert-collection-active.js';
 import { fieldMapFromAst } from './lib/field-map-from-ast.js';
+import { collectionsInFieldMap, fieldMapEntries } from './lib/field-map.js';
 import { injectCases } from './lib/inject-cases.js';
-import type { FieldMap } from './types.js';
-import { collectionsInFieldMap } from './utils/collections-in-field-map.js';
 import { validatePathExistence } from './utils/validate-path/validate-path-existence.js';
 import { validatePathPermissions } from './utils/validate-path/validate-path-permissions.js';
 
@@ -29,7 +28,7 @@ export interface ProcessAstOptions {
 export async function processAst(options: ProcessAstOptions, context: Context) {
 	// FieldMap is a Map of paths in the AST, with each path containing the collection and fields in
 	// that collection that the AST path tries to access
-	const fieldMap: FieldMap = fieldMapFromAst(options.ast, context.schema);
+	const fieldMap = fieldMapFromAst(options.ast, context.schema);
 	const collections = collectionsInFieldMap(fieldMap);
 
 	// Every collection the query traverses into has to be active, not just the one it is addressed at.
@@ -42,7 +41,7 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 
 	if (!options.accountability || options.accountability.admin) {
 		// Validate the field existence, even if no permissions apply to the current accountability
-		for (const [path, { collection, fields }] of [...fieldMap.read.entries(), ...fieldMap.other.entries()]) {
+		for (const [path, { collection, fields }] of fieldMapEntries(fieldMap)) {
 			validatePathExistence(path, collection, fields, context.schema);
 		}
 
@@ -74,12 +73,12 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 				);
 
 	// Validate field existence first
-	for (const [path, { collection, fields }] of [...fieldMap.read.entries(), ...fieldMap.other.entries()]) {
+	for (const [path, { collection, fields }] of fieldMapEntries(fieldMap)) {
 		validatePathExistence(path, collection, fields, context.schema);
 	}
 
 	// Validate permissions for the fields
-	for (const [path, { collection, fields }] of fieldMap.other.entries()) {
+	for (const [path, { collection, fields }] of fieldMap.action.entries()) {
 		validatePathPermissions(path, permissions, collection, fields);
 	}
 

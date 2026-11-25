@@ -2,8 +2,8 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import type { DeepPartial, SchemaOverview } from '@directus/types';
 import { describe, expect, it, test } from 'vitest';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
-import type { FieldMap } from '../types.js';
 import { fieldMapFromAst } from './field-map-from-ast.js';
+import type { FieldMapEntries } from './field-map.js';
 
 test('Extracts fields from children and query', () => {
 	const ast: DeepPartial<AST> = {
@@ -92,7 +92,7 @@ test('Extracts fields from children and query', () => {
 		['item:headings', { collection: 'headings', fields: new Set(['status']) }],
 	]);
 
-	const expectedOther = new Map([
+	const expectedAction = new Map([
 		[
 			'',
 			{
@@ -106,19 +106,19 @@ test('Extracts fields from children and query', () => {
 	]);
 
 	expect(fieldMap.read).toEqual(expectedRead);
-	expect(fieldMap.other).toEqual(expectedOther);
+	expect(fieldMap.action).toEqual(expectedAction);
 });
 
 function extract(
 	collection: string,
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
 	schema: SchemaOverview,
-): FieldMap {
+) {
 	return fieldMapFromAst({ type: 'root', name: collection, children, query: {}, cases: [] }, schema);
 }
 
-function createFieldMap({ read, other }: Partial<FieldMap> = {}): FieldMap {
-	return { read: new Map(read), other: new Map(other) };
+function createFieldMap({ read, action }: { read?: FieldMapEntries; action?: FieldMapEntries } = {}) {
+	return { read: new Map(read), action: new Map(action) };
 }
 
 describe('Global', () => {
@@ -126,7 +126,7 @@ describe('Global', () => {
 		const fieldMap = extract('test-collection', [], {} as SchemaOverview);
 
 		expect(fieldMap).toEqual(
-			createFieldMap({ other: new Map([['', { collection: 'test-collection', fields: new Set() }]]) }),
+			createFieldMap({ action: new Map([['', { collection: 'test-collection', fields: new Set() }]]) }),
 		);
 	});
 });
@@ -161,7 +161,7 @@ describe('a2o', () => {
 
 		expect(fieldMap).toEqual(
 			createFieldMap({
-				other: new Map([
+				action: new Map([
 					['', { collection: 'test-collection', fields: new Set(['test-a2o-a']) }],
 					['test-a2o-a:test-collection-a', { collection: 'test-collection-a', fields: new Set(['test-field-name-a']) }],
 					['test-a2o-a:test-collection-b', { collection: 'test-collection-b', fields: new Set(['test-field-name-b']) }],
@@ -210,7 +210,7 @@ describe('a2o', () => {
 
 		expect(fieldMap).toEqual(
 			createFieldMap({
-				other: new Map([
+				action: new Map([
 					['', { collection: 'test-collection', fields: new Set(['test-a2o-a', 'test-a2o-b']) }],
 					['test-a2o-a:test-collection-a', { collection: 'test-collection-a', fields: new Set(['test-field-name-a']) }],
 					['test-a2o-a:test-collection-b', { collection: 'test-collection-b', fields: new Set(['test-field-name-b']) }],
@@ -258,7 +258,7 @@ describe('m2o', () => {
 
 		expect(fieldMap).toEqual(
 			createFieldMap({
-				other: new Map([
+				action: new Map([
 					['', { collection: 'test-collection', fields: new Set(['test-m2o-a', 'test-m2o-b']) }],
 					[
 						'test-m2o-a',
@@ -297,7 +297,7 @@ describe('m2o', () => {
 
 		expect(fieldMap).toEqual(
 			createFieldMap({
-				other: new Map([
+				action: new Map([
 					['', { collection: 'test-collection', fields: new Set(['test-m2o-a']) }],
 					['test-m2o-a', { collection: 'test-related-collection-a', fields: new Set(['test-field-name-a']) }],
 				]),
@@ -346,7 +346,7 @@ describe('o2m', () => {
 
 		expect(fieldMap).toEqual(
 			createFieldMap({
-				other: new Map([
+				action: new Map([
 					['', { collection: 'test-collection', fields: new Set(['test-o2m-a', 'test-o2m-b']) }],
 					[
 						'test-o2m-a',
@@ -383,7 +383,7 @@ describe('o2m', () => {
 
 		expect(fieldMap).toEqual(
 			createFieldMap({
-				other: new Map([
+				action: new Map([
 					['', { collection: 'test-collection', fields: new Set(['test-o2m-a']) }],
 					['test-o2m-a', { collection: 'test-related-collection-a', fields: new Set(['test-field-name-a']) }],
 				]),
@@ -411,7 +411,7 @@ describe('functionField', () => {
 
 		expect(fieldMap).toEqual(
 			createFieldMap({
-				other: new Map([
+				action: new Map([
 					['', { collection: 'test-collection', fields: new Set(['test-field-name-a']) }],
 					['year(test-field-key-a)', { collection: 'test-related-collection', fields: new Set([]) }],
 				]),
@@ -419,30 +419,22 @@ describe('functionField', () => {
 		);
 	});
 
-	it('Processes query', () => {
-		const children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [
+	it('Does not add the parent collection for json functions', () => {
+		const children = [
 			{
 				type: 'functionField',
-				fieldKey: 'year(test-field-key-a)',
-				name: 'test-field-name-a',
-				query: {
-					sort: ['rating'],
-				},
-				relatedCollection: 'test-related-collection',
+				fieldKey: 'json(metadata, color)',
+				name: 'json(metadata, color)',
+				query: {},
+				relatedCollection: 'test-collection',
 			},
 		] as FunctionFieldNode[];
 
-		const fieldMap = extract('test-collection', children, new SchemaBuilder().build());
+		const fieldMap = extract('test-collection', children, {} as SchemaOverview);
 
 		expect(fieldMap).toEqual(
 			createFieldMap({
-				other: new Map([
-					['', { collection: 'test-collection', fields: new Set(['test-field-name-a']) }],
-					['year(test-field-key-a)', { collection: 'test-related-collection', fields: new Set() }],
-				]),
-				read: new Map([
-					['year(test-field-key-a)', { collection: 'test-related-collection', fields: new Set(['rating']) }],
-				]),
+				action: new Map([['', { collection: 'test-collection', fields: new Set(['metadata']) }]]),
 			}),
 		);
 	});
@@ -459,7 +451,7 @@ describe('field', () => {
 
 		expect(fieldMap).toEqual(
 			createFieldMap({
-				other: new Map([
+				action: new Map([
 					['', { collection: 'test-collection', fields: new Set(['test-field-name-a', 'test-field-name-b']) }],
 				]),
 			}),
@@ -475,7 +467,7 @@ describe('field', () => {
 
 		expect(fieldMap).toEqual(
 			createFieldMap({
-				other: new Map([['', { collection: 'test-collection', fields: new Set(['test-field-name-a']) }]]),
+				action: new Map([['', { collection: 'test-collection', fields: new Set(['test-field-name-a']) }]]),
 			}),
 		);
 	});

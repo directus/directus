@@ -1,9 +1,9 @@
 import type { Query, SchemaOverview } from '@directus/types';
-import { getRelationInfo } from '@directus/utils';
+import { getRelationInfo, isImplicitRelation } from '@directus/utils';
 import { parseFilterKey } from '../../../../utils/parse-filter-key.js';
-import type { CollectionKey, FieldKey, FieldMap } from '../types.js';
+import type { CollectionKey, FieldKey } from '../types.js';
 import { extractPathsFromQuery } from '../utils/extract-paths-from-query.js';
-import { getInfoForPath } from '../utils/get-info-for-path.js';
+import { addToFieldMap, type FieldMap, type FieldMapGroup } from './field-map.js';
 
 /**
  * Add the fields that a query uses to the field map. Each path from `extractPathsFromQuery` is followed through the
@@ -22,14 +22,14 @@ export function extractFieldsFromQuery(
 ) {
 	if (!query) return;
 
-	const { paths: otherPaths, readOnlyPaths } = extractPathsFromQuery(query);
+	const { actionPaths, readPaths } = extractPathsFromQuery(query);
 
 	const groupedPaths = {
-		other: otherPaths,
-		read: readOnlyPaths,
+		action: actionPaths,
+		read: readPaths,
 	};
 
-	for (const [group, paths] of Object.entries(groupedPaths) as [keyof FieldMap, string[][]][]) {
+	for (const [group, paths] of Object.entries(groupedPaths) as [FieldMapGroup, string[][]][]) {
 		for (const path of paths) {
 			/**
 			 * Current path stack. For each iteration of the path loop this will be appended with the
@@ -46,22 +46,22 @@ export function extractFieldsFromQuery(
 			let collectionContext = collection;
 
 			for (const part of path) {
-				const info = getInfoForPath(fieldMap, group, [...pathPrefix, ...stack], collectionContext);
+				// a2o parts are scoped to a related collection, `item:pages`
+				const [field, a2oCollection] = part.split(':') as [string, string | undefined];
 
-				// A2o specifier field fetch
-				if (part.includes(':')) {
-					const [fieldKey, collection] = part.split(':') as [string, string];
-					info.fields.add(fieldKey);
-					collectionContext = collection;
+				// Don't add implicit $FOLLOW relation fields, as they're accounted for in the reverse direction
+				addToFieldMap(
+					fieldMap,
+					group,
+					[...pathPrefix, ...stack],
+					collectionContext,
+					isImplicitRelation(part) ? undefined : parseFilterKey(field).fieldName,
+				);
+
+				if (a2oCollection) {
+					collectionContext = a2oCollection;
 					stack.push(part);
 					continue;
-				}
-
-				if (part.startsWith('$FOLLOW(') && part.endsWith(')')) {
-					// Don't add this implicit relation field to fields, as it will be accounted for in the reverse direction
-				} else {
-					const { fieldName } = parseFilterKey(part);
-					info.fields.add(fieldName);
 				}
 
 				/**

@@ -1,6 +1,6 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
-import { getRelationInfo, isCollectionActive, parseFilterFunctionPath } from '@directus/utils';
+import { getRelationInfo, isCollectionActive, isImplicitRelation, parseFilterFunctionPath } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
@@ -214,7 +214,7 @@ export async function parseFields(
 		}
 
 		// Implicit $FOLLOW relations are only supported in filters, not as queryable fields
-		if (fieldName.startsWith('$FOLLOW')) continue;
+		if (isImplicitRelation(fieldName)) continue;
 
 		const {
 			relation,
