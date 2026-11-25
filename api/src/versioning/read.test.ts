@@ -73,7 +73,7 @@ const builtSchema = new SchemaBuilder()
 	})
 	.collection('directus_link_tags', (c) => {
 		c.field('id').id();
-		c.field('article').integer();
+		c.field('version_ref_article').integer();
 	})
 	// Not versioned, but linked to versions of articles
 	.collection('comments', (c) => {
@@ -82,7 +82,7 @@ const builtSchema = new SchemaBuilder()
 	})
 	.collection('directus_link_comments', (c) => {
 		c.field('id').id();
-		c.field('article').integer();
+		c.field('version_ref_article').integer();
 	})
 	// String primary key, and a shadow table that's missing a live column
 	.collection('pages', (c) => {
@@ -271,7 +271,7 @@ describe('source of the versioned read collection', () => {
 			      "published"."version_date_updated" as "version_date_updated",
 			      "published"."version_user_created" as "version_user_created",
 			      "published"."version_user_updated" as "version_user_updated",
-			      "directus_link_tags"."article" as "version_ref_article",
+			      "directus_link_tags"."version_ref_article" as "version_ref_article",
 			      "tags"."id" as "directus_version_key"
 			    from
 			      "tags"

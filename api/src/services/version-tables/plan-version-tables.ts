@@ -13,11 +13,14 @@ export function normalizeAction(action: ReferentialAction) {
 	return action === null || action === 'RESTRICT' ? 'NO ACTION' : action;
 }
 
+/** The parts of a source column that decide the layout of the version tables */
+export type SourceColumn = Pick<Column, 'name' | 'data_type' | 'declared_type' | 'is_primary_key'>;
+
 /** Copy of a source column */
 export type MirrorColumn = {
 	kind: 'mirror';
 	name: string;
-	source: Column;
+	source: SourceColumn;
 	/** Database type as declared on the source column */
 	type: string;
 	primary?: boolean;
@@ -49,7 +52,7 @@ export type VersionTable = {
  */
 export type SourceCollection = {
 	collection: string;
-	columns: Column[];
+	columns: SourceColumn[];
 	relations: Relation[];
 };
 
@@ -89,7 +92,7 @@ export function planVersioning(schema: VersioningState, helper: VersioningHelper
 /**
  * Compute the shadow and link tables that should exist for the given source collections
  */
-function getVersionSpec(collections: SourceCollections, context: PlanContext): VersionTables {
+export function getVersionSpec(collections: SourceCollections, context: PlanContext): VersionTables {
 	const tables: VersionTables = {};
 
 	for (const collection of Object.values(collections)) {
@@ -206,7 +209,7 @@ function diffForeignKeys(spec: VersionTables, changes: TableChanges, existingFor
 	return { drop, create };
 }
 
-type PlanContext = { versioned: Set<string>; helper: VersioningHelper };
+export type PlanContext = { versioned: Set<string>; helper: VersioningHelper };
 
 function getPrimaryKeyColumn(collection: SourceCollection) {
 	return collection.columns.find((column) => column.is_primary_key);
@@ -284,7 +287,11 @@ function buildShadowTable(sourceCollection: SourceCollection, context: PlanConte
 /**
  * Link tables store references from source items to versions of related collections.
  */
-function buildLinkTable(collection: SourceCollection, primaryKeyColumn: Column, context: PlanContext): VersionTable {
+function buildLinkTable(
+	collection: SourceCollection,
+	primaryKeyColumn: SourceColumn,
+	context: PlanContext,
+): VersionTable {
 	const primary = primaryKeyColumn.name;
 
 	const link: VersionTable = {
@@ -357,11 +364,11 @@ function buildVersionReference(relation: Relation, context: PlanContext) {
 }
 
 // Mirrored columns drop all constraints apart from relations
-function buildMirrorColumn(source: Column, primary?: boolean): MirrorColumn {
+function buildMirrorColumn(source: SourceColumn, primary?: boolean): MirrorColumn {
 	return { kind: 'mirror', name: source.name, source, type: getColumnType(source), ...(primary && { primary }) };
 }
 
-function getColumnType(column: Column): string {
+function getColumnType(column: SourceColumn): string {
 	return column.declared_type ?? column.data_type;
 }
 

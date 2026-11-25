@@ -26,15 +26,15 @@ vi.mock('../logger/index.js', () => ({
 	useLogger: () => ({ trace: vi.fn(), warn: vi.fn() }),
 }));
 
-const inspector = vi.hoisted(() => ({ overview: {} as Record<string, unknown>, foreignKeys: [] as unknown[] }));
+const inspector = vi.hoisted(() => ({ overview: {} as Record<string, unknown>, relations: [] as unknown[] }));
 
 vi.mock('@directus/schema', () => ({
-	createInspector: () => ({ overview: async () => inspector.overview, foreignKeys: async () => inspector.foreignKeys }),
+	createInspector: () => ({ overview: async () => inspector.overview }),
 }));
 
 vi.mock('../services/relations.js', () => ({
 	RelationsService: class {
-		readAll = async () => [];
+		readAll = async () => inspector.relations;
 	},
 }));
 
@@ -46,14 +46,16 @@ const SCHEMA: SchemaOverview = {
 
 const rows = { collections: [] as Record<string, unknown>[] };
 
+// The database helpers derive the dialect from the class name of the client
 const database = {
+	client: new (class Client_PG {})(),
 	select: () => ({ from: async (table: string) => (table === 'directus_collections' ? rows.collections : []) }),
 } as unknown as Knex;
 
 afterEach(() => {
 	vi.clearAllMocks();
 	inspector.overview = {};
-	inspector.foreignKeys = [];
+	inspector.relations = [];
 	rows.collections = [];
 });
 
@@ -93,30 +95,43 @@ describe('getSchema', () => {
 		expect(setMemorySchemaCache).not.toHaveBeenCalled();
 	});
 
-	test('moves version tables and their relations to versioning', async () => {
+	test('derives the version tables that exist from the live collections', async () => {
 		vi.mocked(runExclusive).mockImplementation(async (_key, fn) => ({ result: await fn(), leader: true }));
 
 		const column = (name: string) => ({ column_name: name, data_type: 'integer', is_nullable: true });
 
 		inspector.overview = {
-			articles: { primary: 'id', columns: { id: column('id') } },
+			articles: { primary: 'id', columns: { id: column('id'), author: column('author') } },
+			authors: { primary: 'id', columns: { id: column('id') } },
 			directus_shadow_articles: { primary: 'version_id', columns: { version_id: column('version_id') } },
-			directus_link_articles: { primary: 'id', columns: { id: column('id'), author: column('author') } },
 		};
 
-		inspector.foreignKeys = [
-			{ table: 'directus_link_articles', column: 'author', foreign_key_table: 'directus_shadow_authors' },
-			{ table: 'articles', column: 'author', foreign_key_table: 'authors' },
+		inspector.relations = [
+			{ collection: 'articles', field: 'author', related_collection: 'authors', schema: null, meta: null },
+		];
+
+		rows.collections = [
+			{ collection: 'articles', versioning: true },
+			{ collection: 'authors', versioning: true },
 		];
 
 		const schema = await getSchema({ database });
 
-		expect(Object.keys(schema.collections)).toEqual(['articles']);
-		expect(Object.keys(schema.versioning!.collections)).toEqual(['directus_shadow_articles', 'directus_link_articles']);
+		expect(Object.keys(schema.collections)).toEqual(['articles', 'authors']);
+		// The shadow table of authors isn't created yet
+		expect(Object.keys(schema.versioning!.collections)).toEqual(['directus_shadow_articles']);
 
-		expect(schema.versioning!.relations).toMatchObject([
-			{ collection: 'directus_link_articles', field: 'author', related_collection: 'directus_shadow_authors' },
-		]);
+		expect(Object.keys(schema.versioning!.collections['directus_shadow_articles']!.fields)).toEqual(
+			expect.arrayContaining(['version_id', 'id', 'author', 'version_ref_author']),
+		);
+
+		expect(schema.versioning!.relations).toContainEqual(
+			expect.objectContaining({
+				collection: 'directus_shadow_articles',
+				field: 'version_ref_author',
+				related_collection: 'directus_shadow_authors',
+			}),
+		);
 	});
 
 	test('marks collections with versioning enabled as versioned', async () => {

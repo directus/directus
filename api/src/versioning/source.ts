@@ -2,11 +2,7 @@ import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { getHelpers } from '../database/helpers/index.js';
 import { getDatabaseClient } from '../database/index.js';
-import {
-	VERSION_REFERENCE_PREFIX,
-	VERSION_SYSTEM_FIELDS,
-	VERSIONED_KEY_FIELD,
-} from '../services/version-tables/constants.js';
+import { VERSION_SYSTEM_FIELDS, VERSIONED_KEY_FIELD } from '../services/version-tables/constants.js';
 import { getVersionedRead } from './schema.js';
 
 const ROWS_ALIAS = 'directus_versioned_rows';
@@ -54,10 +50,7 @@ export function getVersionedSource(knex: Knex, schema: SchemaOverview, collectio
 					? knex.raw(`'published' as ??`, [column])
 					: selectColumn('published', Boolean(shadow), column),
 			),
-			...referenceFields.map((column) => {
-				const field = column.slice(VERSION_REFERENCE_PREFIX.length);
-				return selectColumn(linkTable, linkedFields.includes(field), field, column);
-			}),
+			...referenceFields.map((column) => selectColumn(linkTable, linkedFields.includes(column), column)),
 			selectKey('??', [`${collection}.${primary}`]),
 		])
 		.from(collection);

@@ -352,6 +352,7 @@ export class VersionedItemsService {
 		const relatedCollection = relation.collection;
 		const { primary } = this.schema.collections[relatedCollection]!;
 		const linkTable = this.versioning.getLinkTableName(relatedCollection);
+		const referenceField = this.versioning.getVersionReferenceField(relation.field);
 		const linked = { keys: [] as PrimaryKey[], versionIds: [] as PrimaryKey[] };
 
 		for (const item of items) {
@@ -380,11 +381,11 @@ export class VersionedItemsService {
 			);
 
 			const updated = await trx(linkTable)
-				.update({ [relation.field]: versionId })
+				.update({ [referenceField]: versionId })
 				.where(primary, key);
 
 			if (!updated) {
-				await trx(linkTable).insert({ [primary]: key, [relation.field]: versionId });
+				await trx(linkTable).insert({ [primary]: key, [referenceField]: versionId });
 			}
 
 			linked.keys.push(key);
@@ -414,7 +415,7 @@ export class VersionedItemsService {
 			options.except ? query.whereNotIn(column, values) : query.whereIn(column, values);
 
 		const unlinkedKeys = (
-			await scope(trx(linkTable).select(primary).where(relation.field, versionId), primary, items.keys)
+			await scope(trx(linkTable).select(primary).where(referenceField, versionId), primary, items.keys)
 		).map((row) => row[primary]);
 
 		if (unlinkedKeys.length > 0) {
@@ -424,7 +425,7 @@ export class VersionedItemsService {
 			);
 
 			await trx(linkTable)
-				.update({ [relation.field]: null })
+				.update({ [referenceField]: null })
 				.whereIn(primary, unlinkedKeys);
 		}
 
@@ -599,10 +600,10 @@ export class VersionedItemsService {
 			// a2o references only store the id, the collection is in a separate field of the item
 			const collectionField = relation.related_collection ? null : relation.meta!.one_collection_field!;
 
-			if (this.schema.collections[linkTable]?.fields[relation.field]) {
+			if (this.schema.collections[linkTable]?.fields[referenceField]) {
 				const query = trx(linkTable)
 					.select(`${linkTable}.${relatedPrimary}`)
-					.where(`${linkTable}.${relation.field}`, versionId);
+					.where(`${linkTable}.${referenceField}`, versionId);
 
 				if (collectionField) {
 					query
@@ -620,7 +621,7 @@ export class VersionedItemsService {
 					}).updateMany(linkedKeys, { [relation.field]: liveKey });
 
 					await trx(linkTable)
-						.update({ [relation.field]: null })
+						.update({ [referenceField]: null })
 						.whereIn(relatedPrimary, linkedKeys);
 				}
 			}

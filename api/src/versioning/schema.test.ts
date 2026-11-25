@@ -2,8 +2,9 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { describe, expect, test } from 'vitest';
+import { getHelpers } from '../database/helpers/index.js';
 import { VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
-import { extractVersioning, getVersionedRead, getVersionTablesSchema } from './schema.js';
+import { deriveVersionTables, extractVersioning, getVersionedRead, getVersionTablesSchema } from './schema.js';
 
 // The database helpers derive the dialect from the class name of the client
 const db = knex.default({ client: class Client_PG extends MockClient {} });
@@ -43,6 +44,86 @@ describe('extractVersioning', () => {
 
 		expect(schema.relations.map((relation) => relation.collection)).toEqual(['articles']);
 		expect(schema.versioning!.relations.map((relation) => relation.field)).toEqual(['version_ref_author']);
+	});
+});
+
+describe('deriveVersionTables', () => {
+	const live = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+
+			c.field('title')
+				.string()
+				.options({ special: ['cast-json'], defaultValue: 'Untitled' });
+
+			c.field('author').m2o('authors');
+			c.field('tags').o2m('tags', 'article');
+		})
+		.options({ versioning: true })
+		.collection('authors', (c) => {
+			c.field('id').id();
+		})
+		.collection('tags', (c) => {
+			c.field('id').id();
+		})
+		.build();
+
+	const helper = getHelpers(db).versioning;
+
+	test('derives the shadow table of versioned collections', () => {
+		const { collections } = deriveVersionTables(live, helper);
+		const shadow = collections['directus_shadow_articles']!;
+
+		expect(shadow.primary).toBe(VERSION_SYSTEM_FIELDS.id);
+
+		expect(Object.keys(shadow.fields)).toEqual([...Object.values(VERSION_SYSTEM_FIELDS), 'id', 'title', 'author']);
+
+		expect(shadow.fields['id']).toMatchObject({ type: 'integer', nullable: true, defaultValue: null });
+		expect(shadow.fields['title']).toMatchObject({ type: 'string', special: [], defaultValue: null });
+	});
+
+	test('adds references and link tables only for versioned related collections', () => {
+		const schema = new SchemaBuilder()
+			.collection('articles', (c) => {
+				c.field('id').id();
+				c.field('author').m2o('authors');
+				c.field('tags').o2m('tags', 'article');
+			})
+			.options({ versioning: true })
+			.collection('authors', (c) => {
+				c.field('id').id();
+			})
+			.options({ versioning: true })
+			.collection('tags', (c) => {
+				c.field('id').id();
+			})
+			.build();
+
+		const { collections, relations } = deriveVersionTables(schema, helper);
+
+		expect(Object.keys(collections).sort()).toEqual([
+			'directus_link_tags',
+			'directus_shadow_articles',
+			'directus_shadow_authors',
+		]);
+
+		expect(collections['directus_shadow_articles']!.fields['version_ref_author']).toMatchObject({ type: 'integer' });
+		expect(collections['directus_link_tags']).toMatchObject({ primary: 'id' });
+		expect(Object.keys(collections['directus_link_tags']!.fields)).toEqual(['id', 'version_ref_article']);
+
+		expect(relations).toContainEqual(
+			expect.objectContaining({
+				collection: 'directus_link_tags',
+				field: 'version_ref_article',
+				related_collection: 'directus_shadow_articles',
+			}),
+		);
+	});
+
+	test('leaves out tables that do not exist', () => {
+		const { collections } = deriveVersionTables(live, helper, () => false);
+
+		expect(collections).toEqual({});
 	});
 });
 

@@ -1,12 +1,21 @@
-import type { CollectionsOverview, FieldOverview, Relation, SchemaOverview } from '@directus/types';
+import type {
+	CollectionOverview,
+	CollectionsOverview,
+	FieldOverview,
+	Relation,
+	SchemaOverview,
+	VersioningOverview,
+} from '@directus/types';
 import type { Knex } from 'knex';
-import { partition, uniq } from 'lodash-es';
+import { groupBy, partition, uniq } from 'lodash-es';
 import { getHelpers } from '../database/helpers/index.js';
+import type { VersioningHelper } from '../database/helpers/versioning/types.js';
 import {
 	VERSION_REFERENCE_PREFIX,
 	VERSION_SYSTEM_FIELDS,
 	VERSIONED_KEY_FIELD,
 } from '../services/version-tables/constants.js';
+import { getVersionSpec, type SourceCollections } from '../services/version-tables/plan-version-tables.js';
 import { isVersioningTable } from '../services/version-tables/utils.js';
 
 /**
@@ -59,6 +68,129 @@ export function extractVersioning(schema: SchemaOverview): SchemaOverview {
 
 	return { collections, relations, versioning: { collections: tables, relations: tableRelations } };
 }
+
+/**
+ * Derive the shadow and link tables from the live collections, using the same layout the version table sync creates
+ * them with. Mirrored fields take the type of their live field, but none of its defaults or specials, as the values
+ * written to versions are already processed against the live collection.
+ *
+ * @param exists - Whether a table exists in the database, to leave out tables a pending sync hasn't created yet
+ */
+export function deriveVersionTables(
+	schema: SchemaOverview,
+	helper: VersioningHelper,
+	exists: (table: string) => boolean = () => true,
+): VersioningOverview {
+	const live = Object.values(schema.collections).filter((collection) => !isVersioningTable(collection.collection));
+	const relationsByCollection = groupBy(schema.relations, 'collection');
+	const sources: SourceCollections = {};
+	const tableSources = new Map<string, CollectionOverview>();
+
+	for (const collection of live) {
+		sources[collection.collection] = {
+			collection: collection.collection,
+			columns: Object.values(collection.fields)
+				.filter((field) => !field.alias)
+				.map((field) => ({
+					name: field.field,
+					data_type: field.dbType ?? field.type,
+					is_primary_key: field.field === collection.primary,
+				})),
+			relations: relationsByCollection[collection.collection] ?? [],
+		};
+
+		tableSources.set(helper.getShadowTableName(collection.collection), collection);
+		tableSources.set(helper.getLinkTableName(collection.collection), collection);
+	}
+
+	const versioned = new Set(
+		live.filter((collection) => collection.versioned).map((collection) => collection.collection),
+	);
+
+	const spec = getVersionSpec(sources, { versioned, helper });
+	const result: VersioningOverview = { collections: {}, relations: [] };
+
+	for (const table of Object.values(spec)) {
+		if (!exists(table.table)) continue;
+
+		const source = tableSources.get(table.table)!;
+		const fields: Record<string, FieldOverview> = {};
+
+		for (const column of table.columns) {
+			if (column.kind === 'system') fields[column.name] = SYSTEM_FIELD_OVERVIEWS[column.name]!;
+			else if (column.kind === 'reference') fields[column.name] = { ...REFERENCE_FIELD_OVERVIEW, field: column.name };
+			else fields[column.name] = mirrorField(source.fields[column.name]!, Boolean(column.primary));
+		}
+
+		result.collections[table.table] = {
+			collection: table.table,
+			primary: table.type === 'shadow' ? VERSION_SYSTEM_FIELDS.id : source.primary,
+			singleton: false,
+			versioned: false,
+			sortField: null,
+			note: null,
+			accountability: 'all',
+			status: 'active',
+			fields,
+		};
+
+		for (const foreignKey of table.foreignKeys) {
+			result.relations.push({
+				collection: table.table,
+				field: foreignKey.column,
+				related_collection: foreignKey.foreign_key_table,
+				schema: { ...foreignKey, table: table.table, constraint_name: null },
+				meta: null,
+			});
+		}
+	}
+
+	return result;
+}
+
+// Mirrored columns drop all constraints of the live column, see `buildMirrorColumn`
+function mirrorField(field: FieldOverview, primary: boolean): FieldOverview {
+	return {
+		...field,
+		defaultValue: null,
+		nullable: !primary,
+		generated: false,
+		special: [],
+		note: null,
+		validation: null,
+	};
+}
+
+const BASE_FIELD_OVERVIEW: Omit<FieldOverview, 'field' | 'type'> = {
+	defaultValue: null,
+	nullable: true,
+	generated: false,
+	dbType: null,
+	precision: null,
+	scale: null,
+	special: [],
+	note: null,
+	validation: null,
+	alias: false,
+	searchable: true,
+};
+
+const REFERENCE_FIELD_OVERVIEW: FieldOverview = { ...BASE_FIELD_OVERVIEW, field: '', type: 'integer' };
+
+// Matches the columns created by `VersionTablesService.addSystemColumn`
+const SYSTEM_FIELD_OVERVIEWS: Record<string, FieldOverview> = Object.fromEntries(
+	(
+		[
+			[VERSION_SYSTEM_FIELDS.id, { type: 'integer', nullable: false, defaultValue: 'AUTO_INCREMENT' }],
+			[VERSION_SYSTEM_FIELDS.name, { type: 'string' }],
+			[VERSION_SYSTEM_FIELDS.type, { type: 'string', nullable: false, defaultValue: 'draft' }],
+			[VERSION_SYSTEM_FIELDS.date_created, { type: 'timestamp', defaultValue: 'CURRENT_TIMESTAMP' }],
+			[VERSION_SYSTEM_FIELDS.date_updated, { type: 'timestamp' }],
+			[VERSION_SYSTEM_FIELDS.user_created, { type: 'uuid' }],
+			[VERSION_SYSTEM_FIELDS.user_updated, { type: 'uuid' }],
+		] as [string, Partial<FieldOverview>][]
+	).map(([field, overrides]) => [field, { ...BASE_FIELD_OVERVIEW, type: 'string', ...overrides, field }]),
+);
 
 const tableSchemas = new WeakMap<SchemaOverview, SchemaOverview>();
 const mergedSchemas = new WeakSet<SchemaOverview>();
@@ -128,17 +260,13 @@ function createVersionedRead(knex: Knex, schema: SchemaOverview, collection: str
 
 	const referenceFields = uniq([
 		...Object.keys(shadow?.fields ?? {}).filter((field) => field.startsWith(VERSION_REFERENCE_PREFIX)),
-		...linkedFields.map((field) => helper.getVersionReferenceField(field)),
+		...linkedFields,
 	]);
 
 	const isNumericKey = ['integer', 'bigInteger'].includes(live.fields[primary]?.type ?? '');
 
 	const versionField = (field: string): FieldOverview => {
-		const linked = field.startsWith(VERSION_REFERENCE_PREFIX)
-			? link?.fields[field.slice(VERSION_REFERENCE_PREFIX.length)]
-			: undefined;
-
-		const base = shadow?.fields[field] ?? linked ?? shadow?.fields[VERSION_SYSTEM_FIELDS.id];
+		const base = shadow?.fields[field] ?? link?.fields[field] ?? shadow?.fields[VERSION_SYSTEM_FIELDS.id];
 
 		return base
 			? { ...base, field }

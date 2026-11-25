@@ -8,16 +8,16 @@ import type { Knex } from 'knex';
 import { mapValues } from 'lodash-es';
 import { getMemorySchemaCache, setMemorySchemaCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
+import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { RelationsService } from '../services/relations.js';
 import { isVersioningTable } from '../services/version-tables/utils.js';
-import { extractVersioning } from '../versioning/schema.js';
+import { deriveVersionTables } from '../versioning/schema.js';
 import getDefaultValue from './get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from './get-field-system-rows.js';
 import getLocalType from './get-local-type.js';
 import { runExclusive } from './run-exclusive.js';
-import { stitchRelations } from './stitch-relations.js';
 import { TimeoutError } from './with-timeout.js';
 
 const logger = useLogger();
@@ -98,6 +98,9 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 	const collections: (BaseCollectionMeta & Partial<CollectionMeta>)[] = [...allCollections, ...systemCollectionRows];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
+		// Version tables are derived from the live collections below
+		if (isVersioningTable(collection)) continue;
+
 		if (env.DB_EXCLUDE_TABLES.includes(collection)) {
 			logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
 			continue;
@@ -200,18 +203,8 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 	const relationsService = new RelationsService({ knex: database, schema: result });
 	result.relations = await relationsService.readAll(undefined, undefined, true);
 
-	// Foreign keys of version tables are left out of the relations of the project, but versioning reads through them
-	if (Object.keys(result.collections).some(isVersioningTable)) {
-		const foreignKeys = await schemaInspector.foreignKeys();
-
-		result.relations.push(
-			...stitchRelations(
-				[],
-				foreignKeys.filter((foreignKey) => isVersioningTable(foreignKey.table)),
-			),
-		);
-	}
-
 	// Version tables are managed by versioning and only accessed through it
-	return extractVersioning(result);
+	result.versioning = deriveVersionTables(result, getHelpers(database).versioning, (table) => table in schemaOverview);
+
+	return result;
 }

@@ -19,7 +19,10 @@ import { mergeWithParentItems } from './utils/merge-with-parent-items.js';
 import { removeTemporaryFields } from './utils/remove-temporary-fields.js';
 
 /**
- * Execute a given AST using Knex. Returns array of items based on requested AST.
+ * Final step of reading data: executes an AST that went through `processAst` using Knex.
+ * Queries each level of the tree (versioned nodes read from the combined live and shadow rows),
+ * applies the permission `cases`, merges nested relational results into their parent items and
+ * runs the items through the payload transforms. Returns the item(s), or a map per collection for a2o nodes.
  */
 export async function runAst(
 	originalAST: AST | NestedCollectionNode,

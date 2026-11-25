@@ -19,6 +19,14 @@ export interface ProcessAstOptions {
 	accountability: Accountability | null;
 }
 
+/**
+ * Second step of reading data: validates an AST from `getAstFromQuery` against the schema and the
+ * accountability's permissions, before it is executed with `runAst`.
+ * Throws if a requested field doesn't exist, a traversed collection is inactive, or access is missing
+ * (including read access to the shadow tables of versioned nodes).
+ * For non-admins, also injects the permission rules as `cases` into the AST, which `runAst` uses to
+ * restrict rows and null out fields the user may not see. Mutates and returns the given AST.
+ */
 export async function processAst(options: ProcessAstOptions, context: Context) {
 	if (options.accountability && !options.accountability.admin) {
 		const tablesContext = { ...context, schema: getVersionTablesSchema(context.schema) };

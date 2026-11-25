@@ -1,7 +1,3 @@
-/**
- * Generate an AST based on a given collection and query
- */
-
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep, uniq } from 'lodash-es';
@@ -25,6 +21,13 @@ export interface GetAstFromQueryContext {
 	schema: SchemaOverview;
 }
 
+/**
+ * First step of reading data: turns a collection + query into an AST.
+ * Resolves the requested fields (wildcards, aliases, functions, nested relations) into a tree of nodes,
+ * each holding the query for its level. With `versioning`, version fields and filters are split off and
+ * versioned nodes are annotated with the shadow tables they read from.
+ * Performs no permission checks; the result is meant to go through `processAst` before `runAst`.
+ */
 export async function getAstFromQuery(options: GetAstFromQueryOptions, context: GetAstFromQueryContext): Promise<AST> {
 	options.query = cloneDeep(options.query);
 
