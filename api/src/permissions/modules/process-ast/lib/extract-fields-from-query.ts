@@ -5,6 +5,14 @@ import type { CollectionKey, FieldKey, FieldMap } from '../types.js';
 import { extractPathsFromQuery } from '../utils/extract-paths-from-query.js';
 import { getInfoForPath } from '../utils/get-info-for-path.js';
 
+/**
+ * Add the fields that a query uses to the field map. Each path from `extractPathsFromQuery` is followed through the
+ * relations of the schema, adding each part to the collection it belongs to under the path leading to it. `item:pages`
+ * switches to the related collection of an a2o field, and `$FOLLOW(...)` reverse relations are followed without adding
+ * a field.
+ *
+ * @param pathPrefix - Query path of the node the query belongs to
+ */
 export function extractFieldsFromQuery(
 	collection: CollectionKey,
 	query: Query,

@@ -51,13 +51,17 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 
 	const policies = await fetchPolicies(options.accountability, context);
 
-	const shadows = getVersionedShadows(options.ast);
+	const shadows: { path: string; shadow: string; fields: Set<string> }[] = [];
 
-	// Version rows of versioned nodes are limited by the permissions of their shadow table
-	collections.push(...new Set(shadows.map(({ shadow }) => shadow)));
+	for (const { path, versioning } of getAstLevels(options.ast)) {
+		for (const [shadow, fields] of Object.entries(versioning?.shadows ?? {})) {
+			shadows.push({ path: path.join('.'), shadow, fields: new Set(fields) });
+			collections.add(shadow);
+		}
+	}
 
 	const permissions = await fetchPermissions(
-		{ action: options.action, policies, collections, accountability: options.accountability },
+		{ action: options.action, policies, collections: [...collections], accountability: options.accountability },
 		context,
 	);
 
@@ -65,7 +69,7 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 		options.action === 'read'
 			? permissions
 			: await fetchPermissions(
-					{ action: 'read', policies, collections, accountability: options.accountability },
+					{ action: 'read', policies, collections: [...collections], accountability: options.accountability },
 					context,
 				);
 
@@ -93,20 +97,4 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 	injectCases(options.ast, permissions);
 
 	return options.ast;
-}
-
-/**
- * Shadow tables that versioned nodes read from, which require read access, with the query path of the node and the
- * fields its filter reads from them
- */
-function getVersionedShadows(ast: AST) {
-	const shadows: { path: string; shadow: string; fields: Set<string> }[] = [];
-
-	for (const { path, versioning } of getAstLevels(ast)) {
-		for (const [shadow, fields] of Object.entries(versioning?.shadows ?? {})) {
-			shadows.push({ path: path.join('.'), shadow, fields: new Set(fields) });
-		}
-	}
-
-	return shadows;
 }

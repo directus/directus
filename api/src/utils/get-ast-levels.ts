@@ -1,5 +1,4 @@
 import type { Filter, Query } from '@directus/types';
-import { formatA2oKey } from '../permissions/modules/process-ast/utils/format-a2o-key.js';
 import type {
 	A2MNode,
 	AST,
@@ -45,9 +44,7 @@ function* walk(level: AstLevel): Generator<AstLevel> {
 	for (const child of level.children) {
 		if (child.type === 'a2o') {
 			for (const collection of child.names) {
-				yield* walk(
-					createA2OLevel(child, collection, [...level.path, formatA2oKey(child.fieldKey, collection)], level),
-				);
+				yield* walk(createA2OLevel(child, collection, [...level.path, `${child.fieldKey}:${collection}`], level));
 			}
 		} else if (child.type === 'm2o') {
 			yield* walk(createLevel(child, child.relation.related_collection!, [...level.path, child.fieldKey], level));

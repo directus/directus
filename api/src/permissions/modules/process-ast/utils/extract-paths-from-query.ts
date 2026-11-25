@@ -6,7 +6,7 @@ import type { FieldKey } from '../types.js';
 import { flattenFilter } from './flatten-filter.js';
 
 /**
- * Converts the passed Query object into a unique list of path arrays, for example:
+ * Converts the passed Query object into unique lists of path arrays, for example:
  *
  * ```
  * [
@@ -14,6 +14,9 @@ import { flattenFilter } from './flatten-filter.js';
  * 	['category']
  * ]
  * ```
+ *
+ * `readOnlyPaths` come from `filter` and `sort`, which only need read permission, `paths` from `aggregate` and `group`,
+ * which need permission for the action of the request.
  */
 export function extractPathsFromQuery(query: Query) {
 	/**
