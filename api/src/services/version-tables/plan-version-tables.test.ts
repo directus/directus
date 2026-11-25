@@ -281,7 +281,7 @@ function inspect(tables: VersionTables): VersionedTables {
 	for (const table of Object.values(tables)) {
 		inspected.columns[table.table] = table.columns.map((planned) =>
 			planned.kind === 'mirror'
-				? { ...column(table.table, planned.name), ...planned.source, table: table.table }
+				? { ...planned.source, table: table.table }
 				: column(table.table, planned.name, planned.kind === 'system' ? 'varchar' : 'integer'),
 		);
 
