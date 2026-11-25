@@ -125,6 +125,7 @@ const emit = defineEmits<{
 	}
 
 	.null {
+		white-space: nowrap;
 		cursor: not-allowed;
 	}
 
