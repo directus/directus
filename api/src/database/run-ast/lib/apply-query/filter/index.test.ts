@@ -1,5 +1,6 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Permission } from '@directus/types';
+import type { Filter, Permission } from '@directus/types';
+import { parseFilter } from '@directus/utils';
 import knex from 'knex';
 import { describe, expect, test, vi } from 'vitest';
 import { DEFUAULT_PERMISSION } from '../../../../../permissions/utils/default-permission.js';
@@ -265,7 +266,116 @@ for (const quantifier of ['_some', '_none']) {
 
 		expect(rawQuery.bindings).toEqual([2]);
 	});
+
+	for (const logical of ['_and', '_or']) {
+		test(`filtering o2m relation with ${quantifier} containing ${logical}`, async () => {
+			const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+			const queryBuilder = db.queryBuilder();
+
+			applyFilter(
+				db,
+				o2m_schema,
+				queryBuilder,
+				{
+					links: {
+						[quantifier]: {
+							[logical]: [{ name: { _eq: 2 } }, { name: { _eq: 3 } }],
+						},
+					},
+				},
+				'article',
+				{},
+				[],
+				[],
+			);
+
+			const rawQuery = queryBuilder.toSQL();
+			const operator = quantifier === '_none' ? 'not in' : 'in';
+			const joiner = logical === '_or' ? 'or' : 'and';
+
+			expect(rawQuery.sql).toContain(
+				`where "article"."id" ${operator} (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and ("links_list"."name" = ? ${joiner} "links_list"."name" = ?))`,
+			);
+
+			expect(rawQuery.bindings).toEqual([2, 3]);
+		});
+	}
+
+	test(`filtering o2m relation with empty ${quantifier} is a no-op`, async () => {
+		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+		const queryBuilder = db.queryBuilder();
+
+		applyFilter(db, o2m_schema, queryBuilder, { links: { [quantifier]: {} } }, 'article', {}, [], []);
+
+		const rawQuery = queryBuilder.toSQL();
+
+		expect(rawQuery.sql).not.toContain('where');
+		expect(rawQuery.bindings).toEqual([]);
+	});
+
+	const invalidFilters: [string, Filter][] = [
+		['a non-relational field', { title: { [quantifier]: { _eq: 'x' } } }],
+		['a m2o field', { author: { [quantifier]: { name: { _eq: 'x' } } } }],
+		['a m2o field with an empty sub-filter', { author: { [quantifier]: {} } }],
+		['a m2o field with a logical sub-filter', { author: { [quantifier]: { _and: [{ name: { _eq: 'x' } }] } } }],
+		['a field below the top level field', { links: { name: { [quantifier]: { _eq: 'x' } } } }],
+	];
+
+	for (const [description, filter] of invalidFilters) {
+		test(`filtering ${description} with ${quantifier} throws`, () => {
+			const schema = new SchemaBuilder()
+				.collection('article', (c) => {
+					c.field('id').id();
+					c.field('title').string();
+					c.field('author').m2o('users');
+					c.field('links').o2m('links_list', 'article_id');
+				})
+				.collection('users', (c) => {
+					c.field('id').id();
+					c.field('name').string();
+				})
+				.collection('links_list', (c) => {
+					c.field('id').id();
+					c.field('name').string();
+				})
+				.build();
+
+			const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+
+			expect(() => applyFilter(db, schema, db.queryBuilder(), filter, 'article', {}, [], [])).toThrow(
+				`"${quantifier}" can only be used with top level relational alias field`,
+			);
+		});
+	}
 }
+
+describe('_some and _none sub-filters are applied rather than dropped', () => {
+	const subFilters: [string, Record<string, any>, unknown[]][] = [
+		['a single condition', { name: { _eq: 'a' } }, ['a']],
+		['_and', { _and: [{ name: { _eq: 'a' } }, { name: { _eq: 'b' } }] }, ['a', 'b']],
+		['_or', { _or: [{ name: { _eq: 'a' } }, { name: { _eq: 'b' } }] }, ['a', 'b']],
+		['multiple fields', { name: { _eq: 'a' }, id: { _gt: 1 } }, ['a', 1]],
+		['multiple conditions on one field', { name: { _eq: 'a', _neq: 'b' } }, ['a', 'b']],
+	];
+
+	for (const relationalOperator of ['_some', '_none']) {
+		for (const [description, subFilter, bindings] of subFilters) {
+			test(`${relationalOperator} with ${description}`, () => {
+				const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+				const queryBuilder = db.queryBuilder();
+				const filter = parseFilter({ links: { [relationalOperator]: subFilter } }, null)!;
+
+				applyFilter(db, o2m_schema, queryBuilder, filter, 'article', {}, [], []);
+
+				const rawQuery = queryBuilder.toSQL();
+				const operator = relationalOperator === '_none' ? 'not in' : 'in';
+
+				expect(rawQuery.sql).toContain(`where "article"."id" ${operator} (select "links_list"."article_id"`);
+				expect(rawQuery.bindings).toEqual(bindings);
+			});
+		}
+	}
+});
 
 test(`filtering a2o relation`, async () => {
 	const schema = new SchemaBuilder()

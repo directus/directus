@@ -1,5 +1,7 @@
+import { LOGICAL_FILTER_OPERATORS, RELATIONAL_FILTER_OPERATORS } from '@directus/constants';
 import type { Accountability, Filter, Policy, Role, User } from '@directus/types';
 import { isObjectLike } from 'lodash-es';
+import { isIn } from './array-helpers.js';
 import { deepMap } from './deep-map.js';
 import { get } from './get-with-arrays.js';
 import { isObject } from './is-object.js';
@@ -42,17 +44,20 @@ export function parseFilter(
 	return shiftLogicalOperatorsUp(parsedFilter);
 }
 
-const logicalFilterOperators = ['_and', '_or'];
-const bypassOperators = ['_none', '_some'];
-
 function shiftLogicalOperatorsUp(filter: any): any {
 	const key = Object.keys(filter)[0];
 	if (!key) return filter;
 
-	if (logicalFilterOperators.includes(key)) {
+	if (isIn(key, LOGICAL_FILTER_OPERATORS)) {
 		return {
 			[key]: filter[key].map(shiftLogicalOperatorsUp),
 		};
+	}
+
+	// Shift logical operators within the relational sub-filter, but keep them nested under _some/_none.
+	// Moving them outside changes the semantics: _none: { _or: [a, b] } vs _or: [{ _none: a }, { _none: b }].
+	if (isIn(key, RELATIONAL_FILTER_OPERATORS) && isObject(filter[key])) {
+		return { [key]: shiftLogicalOperatorsUp(filter[key]) };
 	}
 
 	if (key.startsWith('_')) return filter;
@@ -68,7 +73,7 @@ function shiftLogicalOperatorsUp(filter: any): any {
 function wrapField(key: string, shifted: any): any {
 	const childKey = Object.keys(shifted)[0];
 
-	if (childKey && logicalFilterOperators.includes(childKey)) {
+	if (childKey && isIn(childKey, LOGICAL_FILTER_OPERATORS)) {
 		return {
 			[childKey]: shifted[childKey].map((nestedFilter: any) => wrapField(key, nestedFilter)),
 		};
@@ -121,7 +126,7 @@ function parseFilterEntry(
 	accountability: BasicAccountability | null,
 	context: ParseFilterContext,
 ): Filter {
-	if (['_or', '_and'].includes(String(key))) {
+	if (isIn(String(key), LOGICAL_FILTER_OPERATORS)) {
 		return { [key]: value.map((filter: Filter) => parseFilterRecursive(filter, accountability, context)) };
 	} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
 		// When array indices are above 20 (default value),
@@ -137,7 +142,7 @@ function parseFilterEntry(
 		};
 	} else if (String(key) === '_json') {
 		return { [key]: parseJsonFilterValue(value, accountability, context) };
-	} else if (String(key).startsWith('_') && !bypassOperators.includes(key)) {
+	} else if (String(key).startsWith('_') && !isIn(key, RELATIONAL_FILTER_OPERATORS)) {
 		return { [key]: parseDynamicVariable(value, accountability, context) };
 	} else {
 		return { [key]: parseFilterRecursive(value, accountability, context) } as Filter;
@@ -152,7 +157,7 @@ function parseJsonFilterValue(
 	const result: Record<string, any> = {};
 
 	for (const [key, value] of Object.entries(jsonFilter)) {
-		if (key === '_or' || key === '_and') {
+		if (isIn(key, LOGICAL_FILTER_OPERATORS)) {
 			result[key] = (value as Record<string, any>[]).map((subFilter) =>
 				parseJsonFilterValue(subFilter, accountability, context),
 			);

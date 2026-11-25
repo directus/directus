@@ -1,6 +1,7 @@
+import { LOGICAL_FILTER_OPERATORS, RELATIONAL_FILTER_OPERATORS } from '@directus/constants';
 import { InvalidQueryError } from '@directus/errors';
 import type { Filter, Permission, Relation, SchemaOverview } from '@directus/types';
-import { getRelationInfo } from '@directus/utils';
+import { getRelationInfo, isIn, isObject } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getCases } from '../../../../../permissions/modules/process-ast/lib/get-cases.js';
 import type { AliasMap } from '../../../../../utils/get-column-path.js';
@@ -36,7 +37,7 @@ export function applyFilter(
 	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
 		// eslint-disable-next-line prefer-const
 		for (let [key, value] of Object.entries(filter)) {
-			if (key === '_or' || key === '_and') {
+			if (isIn(key, LOGICAL_FILTER_OPERATORS)) {
 				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
 				// permission checks, as {} already matches full permissions.
 				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0)) {
@@ -61,10 +62,7 @@ export function applyFilter(
 
 			const filterPath = getFilterPath(key, value);
 
-			if (
-				filterPath.length > 1 ||
-				(!(key.includes('(') && key.includes(')')) && schema.collections[collection]?.fields[key]?.type === 'alias')
-			) {
+			if (isRelationalFilter(filterPath)) {
 				const { hasMultiRelational, isJoinAdded } = addJoin({
 					path: filterPath,
 					collection,
@@ -93,7 +91,7 @@ export function applyFilter(
 		logical: 'and' | 'or' = 'and',
 	) {
 		for (const [key, value] of Object.entries(filter)) {
-			if (key === '_or' || key === '_and') {
+			if (isIn(key, LOGICAL_FILTER_OPERATORS)) {
 				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
 				// permission checks, as {} already matches full permissions.
 				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0)) {
@@ -119,92 +117,58 @@ export function applyFilter(
 
 			const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
 
+			const relationalOperator = filterPath.find((segment) => isIn(segment, RELATIONAL_FILTER_OPERATORS));
+
+			// _some/_none apply a sub-filter, not a field operation; using getOperation (as we do for regular operators) would skip it
+			if (relationalOperator) {
+				const isTopLevel = filterPath[1] === relationalOperator;
+				const isToMany = relationType === 'o2m' || relationType === 'o2a';
+
+				if (!relation || !isTopLevel || !isToMany) {
+					throw new InvalidQueryError({
+						reason: `"${relationalOperator}" can only be used with top level relational alias field`,
+					});
+				}
+
+				const subFilter = value[relationalOperator] as Filter;
+
+				// An empty sub-filter is a no-op
+				if (isObject(subFilter) && Object.keys(subFilter).length === 0) continue;
+
+				let pkField: Knex.Raw | string = `${collection}.${schema.collections[relation.related_collection!]!.primary}`;
+
+				if (relationType === 'o2a') {
+					pkField = knex.raw(getHelpers(knex).schema.castA2oPrimaryKey(), [pkField]);
+				}
+
+				const foreignKeyColumn = `${relation.collection}.${relation.field}`;
+				const { cases: subCases } = getCases(relation.collection, permissions, []);
+
+				const relatedKeysQuery = (subQueryKnex: Knex.QueryBuilder) => {
+					subQueryKnex
+						.select({ [relation.field]: foreignKeyColumn })
+						.from(relation.collection)
+						.whereNotNull(foreignKeyColumn);
+
+					applyQuery(knex, relation.collection, subQueryKnex, { filter: subFilter }, schema, subCases, permissions);
+				};
+
+				if (relationalOperator === '_none') {
+					dbQuery[logical].whereNotIn(pkField as string, relatedKeysQuery);
+				} else {
+					dbQuery[logical].whereIn(pkField as string, relatedKeysQuery);
+				}
+
+				continue;
+			}
+
 			const operation = getOperation(key, value);
 
 			if (!operation) continue;
 
 			const { operator: filterOperator, value: filterValue } = operation;
 
-			if (
-				filterPath.length > 1 ||
-				(!(key.includes('(') && key.includes(')')) && schema.collections[collection]?.fields[key]?.type === 'alias')
-			) {
-				if (!relation) continue;
-
-				if (relationType === 'o2m' || relationType === 'o2a') {
-					let pkField: Knex.Raw<any> | string = `${collection}.${
-						schema.collections[relation!.related_collection!]!.primary
-					}`;
-
-					if (relationType === 'o2a') {
-						pkField = knex.raw(getHelpers(knex).schema.castA2oPrimaryKey(), [pkField]);
-					}
-
-					const childKey = Object.keys(value)?.[0];
-
-					if (childKey === '_none' || childKey === '_some') {
-						const subQueryBuilder =
-							(filter: Filter, cases: Filter[]) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
-								const field = relation!.field;
-								const collection = relation!.collection;
-								const column = `${collection}.${field}`;
-
-								subQueryKnex
-									.select({ [field]: column })
-									.from(collection)
-									.whereNotNull(column);
-
-								applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, cases, permissions);
-							};
-
-						const { cases: subCases } = getCases(relation!.collection, permissions, []);
-
-						if (childKey === '_none') {
-							dbQuery[logical].whereNotIn(
-								pkField as string,
-								subQueryBuilder(Object.values(value)[0] as Filter, subCases),
-							);
-
-							continue;
-						} else if (childKey === '_some') {
-							dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter, subCases));
-							continue;
-						}
-					}
-				}
-
-				if (filterPath.includes('_none') || filterPath.includes('_some')) {
-					throw new InvalidQueryError({
-						reason: `"${
-							filterPath.includes('_none') ? '_none' : '_some'
-						}" can only be used with top level relational alias field`,
-					});
-				}
-
-				const { columnPath, targetCollection, addNestedPkField } = getColumnPath({
-					path: filterPath,
-					collection,
-					relations,
-					aliasMap,
-					schema,
-				});
-
-				if (addNestedPkField) {
-					filterPath.push(addNestedPkField);
-				}
-
-				if (!columnPath) continue;
-
-				const { type, special } = getFilterType(
-					schema.collections[targetCollection]!.fields,
-					filterPath.at(-1)!,
-					targetCollection,
-				)!;
-
-				validateOperator(type, filterOperator, special);
-
-				applyOperator(knex, dbQuery, schema, columnPath, filterOperator, filterValue, logical, targetCollection);
-			} else {
+			if (isRelationalFilter(filterPath) === false) {
 				const { type, special } = getFilterType(schema.collections[collection]!.fields, filterPath[0]!, collection)!;
 
 				validateOperator(type, filterOperator, special);
@@ -221,7 +185,42 @@ export function applyFilter(
 					logical,
 					collection,
 				);
+
+				continue;
 			}
+
+			if (!relation) continue;
+
+			const { columnPath, targetCollection, addNestedPkField } = getColumnPath({
+				path: filterPath,
+				collection,
+				relations,
+				aliasMap,
+				schema,
+			});
+
+			if (addNestedPkField) {
+				filterPath.push(addNestedPkField);
+			}
+
+			if (!columnPath) continue;
+
+			const { type, special } = getFilterType(
+				schema.collections[targetCollection]!.fields,
+				filterPath.at(-1)!,
+				targetCollection,
+			)!;
+
+			validateOperator(type, filterOperator, special);
+
+			applyOperator(knex, dbQuery, schema, columnPath, filterOperator, filterValue, logical, targetCollection);
 		}
+	}
+
+	/**
+	 * A filter is considered relational if it follows a path into another collection, or targets an alias field
+	 */
+	function isRelationalFilter(filterPath: string[]) {
+		return filterPath.length > 1 || schema.collections[collection]?.fields[filterPath[0]!]?.type === 'alias';
 	}
 }
