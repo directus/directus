@@ -1,5 +1,5 @@
 import type { Item, PrimaryKey } from '@directus/types';
-import { type Ref, computed, ref, watch } from 'vue';
+import { computed, type Ref, ref, watch } from 'vue';
 
 interface UseResolvePrimaryKeyOptions {
 	collection: Ref<string>;
