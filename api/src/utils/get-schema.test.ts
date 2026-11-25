@@ -41,12 +41,13 @@ vi.mock('../services/relations.js', () => ({
 const SCHEMA: SchemaOverview = {
 	collections: {},
 	relations: [],
-	versioning: { collections: {}, relations: [] },
+	versioning: { collections: {}, relations: [], readCollections: {}, readRelations: [] },
 };
 
 const rows = { collections: [] as Record<string, unknown>[] };
 
 const database = {
+	client: new (class Client_PG {})(),
 	select: () => ({ from: async (table: string) => (table === 'directus_collections' ? rows.collections : []) }),
 } as unknown as Knex;
 

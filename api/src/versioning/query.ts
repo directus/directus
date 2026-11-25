@@ -53,7 +53,7 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 	// Filters on versions of related items require access to them as well
 	const filter = query.filter
 		? rewriteFilter(query.filter, {
-				schema: getVersionedReadSchema(schema, collection, read),
+				schema: getVersionedReadSchema(schema),
 				versioning,
 				collection: read.name,
 				hasSystemFields: true,

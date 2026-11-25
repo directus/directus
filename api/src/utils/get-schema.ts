@@ -213,5 +213,5 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 	}
 
 	// Version tables are managed by versioning and only accessed through it
-	return extractVersioning(result);
+	return extractVersioning(database, result);
 }

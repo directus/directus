@@ -59,7 +59,7 @@ export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOvervi
 	return {
 		node,
 		name,
-		schema: getVersionedReadSchema(schema, node.name, node.versioning),
+		schema: getVersionedReadSchema(schema),
 		source: getVersionedSource(knex, schema, node.name, node.versioning),
 		query,
 		children: [

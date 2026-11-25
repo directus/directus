@@ -50,4 +50,8 @@ export type VersioningOverview = {
 	collections: CollectionsOverview;
 	/** Relations of the shadow and link tables */
 	relations: Relation[];
+	/** Collections that read the live items of a collection together with their versions, one per collection */
+	readCollections: CollectionsOverview;
+	/** Relations of the read collections, which follow the ones of their live collection */
+	readRelations: Relation[];
 };

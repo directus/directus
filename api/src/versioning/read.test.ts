@@ -1,6 +1,6 @@
 import type { CollectionBuilder } from '@directus/schema-builder';
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Accountability, Item, Permission, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Item, Permission, Query } from '@directus/types';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
 import { describe, expect, test, vi } from 'vitest';
@@ -114,8 +114,6 @@ const builtSchema = new SchemaBuilder()
 	})
 	.build();
 
-const schema = extractVersioning(builtSchema);
-
 /** The rows of the versioned read collection, which are the same in every query of a collection */
 const SOURCE = /\(select "(?:directus_shadow_)?\w+"\."[^]*?\) as "(directus_versioned_\w+)"/g;
 
@@ -153,7 +151,7 @@ function setup(options: Options = {}) {
 async function read(collection: string, query: Query, options: Options = {}) {
 	const { db, queries } = setup(options);
 
-	const context = { knex: db, schema: schema as SchemaOverview };
+	const context = { knex: db, schema: extractVersioning(db, builtSchema) };
 
 	const accountability = options.permissions ? ({ user: 'user', role: null, admin: false } as Accountability) : null;
 
@@ -1673,7 +1671,7 @@ describe('version references', () => {
 
 	test('marks each related collection of a2o nodes as versioned, with the shadow tables they read', async () => {
 		const db = knex.default({ client: CLIENTS.postgres });
-		const context = { knex: db, schema: schema as SchemaOverview };
+		const context = { knex: db, schema: extractVersioning(db, builtSchema) };
 
 		const ast = await getAstFromQuery(
 			{
@@ -1876,7 +1874,7 @@ describe('a2o filter', () => {
 
 	test('requires read access to the shadow tables of referenced versions', async () => {
 		const db = knex.default({ client: CLIENTS.postgres });
-		const context = { knex: db, schema: schema as SchemaOverview };
+		const context = { knex: db, schema: extractVersioning(db, builtSchema) };
 
 		const ast = await getAstFromQuery(
 			{

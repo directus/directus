@@ -1,4 +1,4 @@
-import type { CollectionsOverview, FieldOverview, Relation, SchemaOverview } from '@directus/types';
+import type { CollectionOverview, CollectionsOverview, FieldOverview, Relation, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { partition, uniq } from 'lodash-es';
 import { getHelpers } from '../database/helpers/index.js';
@@ -14,9 +14,9 @@ type ReadFields = 'name' | 'shadow' | 'link' | 'versionFields' | 'a2oReferences'
 
 /**
  * Move the shadow and link tables of the schema to `versioning`, which keeps them out of everything that lists the
- * collections of the project
+ * collections of the project, and add the read collection of every collection there
  */
-export function extractVersioning(schema: SchemaOverview): SchemaOverview {
+export function extractVersioning(knex: Knex, schema: SchemaOverview): SchemaOverview {
 	const collections: CollectionsOverview = {};
 	const tables: CollectionsOverview = {};
 
@@ -30,7 +30,24 @@ export function extractVersioning(schema: SchemaOverview): SchemaOverview {
 		(relation) => isVersioningTable(relation.collection) || isVersioningTable(relation.related_collection ?? ''),
 	);
 
-	return { collections, relations, versioning: { collections: tables, relations: tableRelations } };
+	const result: SchemaOverview = {
+		collections,
+		relations,
+		versioning: { collections: tables, relations: tableRelations, readCollections: {}, readRelations: [] },
+	};
+
+	const merged = getVersionTablesSchema(result);
+	const versioning = result.versioning!;
+
+	for (const collection of Object.keys(collections)) {
+		const read = getVersionedRead(knex, merged, collection);
+		const { readCollection, readRelations } = createReadCollection(merged, collection, read);
+
+		versioning.readCollections[read.name] = readCollection;
+		versioning.readRelations.push(...readRelations);
+	}
+
+	return result;
 }
 
 const tableSchemas = new WeakMap<SchemaOverview, SchemaOverview>();
@@ -121,44 +138,46 @@ export function getVersionedRead(
 	};
 }
 
-const readSchemas = new WeakMap<SchemaOverview, Map<string, SchemaOverview>>();
+const readSchemas = new WeakMap<SchemaOverview, SchemaOverview>();
+const builtReadSchemas = new WeakSet<SchemaOverview>();
 
 /**
- * The schema with the shadow and link tables, and the read collection of the versioned read with its relations.
- * Built once per schema, as it copies all of its collections and relations.
+ * The schema with the shadow and link tables, and the read collections with their relations, for reading the live
+ * items of collections together with their versions. The relations of the read collections follow the ones of the
+ * project, so lookups that match both find the relation of the live collection first.
  */
-export function getVersionedReadSchema(
-	schema: SchemaOverview,
-	collection: string,
-	read: Pick<VersionedNode, ReadFields>,
-): SchemaOverview {
+export function getVersionedReadSchema(schema: SchemaOverview): SchemaOverview {
+	if (builtReadSchemas.has(schema)) return schema;
+
 	const tables = getVersionTablesSchema(schema);
-	let cache = readSchemas.get(tables);
 
-	if (!cache) {
-		cache = new Map();
-		readSchemas.set(tables, cache);
-	}
+	if (!tables.versioning) return tables;
 
-	let readSchema = cache.get(collection);
+	let readSchema = readSchemas.get(tables);
 
 	if (!readSchema) {
-		readSchema = createVersionedReadSchema(tables, collection, read);
-		cache.set(collection, readSchema);
+		const { readCollections, readRelations } = tables.versioning;
+
+		readSchema = {
+			collections: { ...tables.collections, ...readCollections },
+			relations: [...tables.relations, ...readRelations],
+			versioning: tables.versioning,
+		};
+
+		readSchemas.set(tables, readSchema);
 		mergedSchemas.add(readSchema);
+		builtReadSchemas.add(readSchema);
 	}
 
 	return readSchema;
 }
 
 /**
+ * The read collection of a collection, with the version fields and the key of the combined rows, and its relations
+ *
  * @param schema - The schema with the shadow and link tables as collections
  */
-function createVersionedReadSchema(
-	schema: SchemaOverview,
-	collection: string,
-	read: Pick<VersionedNode, ReadFields>,
-): SchemaOverview {
+function createReadCollection(schema: SchemaOverview, collection: string, read: Pick<VersionedNode, ReadFields>) {
 	const live = schema.collections[collection]!;
 	const { primary } = live;
 	const shadow = read.shadow ? schema.collections[read.shadow] : undefined;
@@ -191,7 +210,7 @@ function createVersionedReadSchema(
 
 	// Relations of the live collection apply to the read collection as well, the references to versions of related
 	// items come from the shadow table
-	const relations = schema.relations.flatMap((relation): Relation[] => [
+	const readRelations = schema.relations.flatMap((relation): Relation[] => [
 		...(relation.collection === collection ||
 		(relation.collection === read.shadow && relation.field.startsWith(VERSION_REFERENCE_PREFIX))
 			? [{ ...relation, collection: read.name }]
@@ -200,15 +219,15 @@ function createVersionedReadSchema(
 	]);
 
 	for (const { column, shadow } of read.a2oReferences) {
-		relations.push({ collection: read.name, field: column, related_collection: shadow, schema: null, meta: null });
+		readRelations.push({ collection: read.name, field: column, related_collection: shadow, schema: null, meta: null });
 	}
 
-	return {
-		collections: {
-			...schema.collections,
-			[read.name]: { ...live, collection: read.name, primary: VERSIONED_KEY_FIELD, fields },
-		},
-		relations: [...schema.relations, ...relations],
-		...(schema.versioning ? { versioning: schema.versioning } : {}),
+	const readCollection: CollectionOverview = {
+		...live,
+		collection: read.name,
+		primary: VERSIONED_KEY_FIELD,
+		fields,
 	};
+
+	return { readCollection, readRelations };
 }
