@@ -1,5 +1,6 @@
 import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
 import type { Filter, PrimaryKey } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
 import express from 'express';
 import { assign } from 'lodash-es';
 import { respond } from '../middleware/respond.js';
@@ -290,12 +291,10 @@ async function readVersionHandler(
 		schema: req.schema,
 	});
 
-	const filter = {
-		_and: [
-			{ [VERSION_FIELD]: { id: { _eq: versionId } } },
-			...(req.sanitizedQuery.filter ? [req.sanitizedQuery.filter] : []),
-		],
-	} as Filter;
+	const filter = mergeFilters(
+		{ [VERSION_FIELD]: { id: { _eq: versionId } } } as Filter,
+		req.sanitizedQuery.filter ?? null,
+	);
 
 	try {
 		const [item] = await itemsService.readByQuery({ ...req.sanitizedQuery, version: 'true', filter, limit: 1 });

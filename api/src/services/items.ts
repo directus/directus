@@ -17,7 +17,7 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
-import { getRelationsForCollection } from '@directus/utils';
+import { getRelationsForCollection, mergeFilters } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, difference, omit, pick, without } from 'lodash-es';
@@ -619,13 +619,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		// With versions, a key refers to the live item, or its latest archived version once the item is gone. Never drafts
 		if (isVersionedQuery(query) && this.schema.collections[this.collection]?.versioned) {
-			const filter = {
-				_and: [
-					{ [primaryKeyField]: { _eq: key } },
-					{ [VERSION_FIELD]: { type: { _in: ['published', 'archived'] } } },
-					...(query.filter ? [query.filter] : []),
-				],
-			} as Filter;
+			const filter = mergeFilters([
+				{ [primaryKeyField]: { _eq: key } },
+				{ [VERSION_FIELD]: { type: { _in: ['published', 'archived'] } } } as Filter,
+				query.filter,
+			]);
 
 			const [result] = await this.readByQuery({ ...query, filter, limit: 1 }, { ...opts, key });
 

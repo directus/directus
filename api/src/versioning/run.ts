@@ -1,5 +1,5 @@
 import type { Filter, Item, Query, SchemaOverview } from '@directus/types';
-import { toArray } from '@directus/utils';
+import { mergeFilters, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isNil, uniq } from 'lodash-es';
 import { getHelpers } from '../database/helpers/index.js';
@@ -211,9 +211,7 @@ function getRelatedRowsFilter(keyColumn: string, keys: unknown[], idColumn: stri
 }
 
 function addFilter(versioning: VersionedNode, filter: Filter) {
-	const current = versioning.query.filter;
-
-	versioning.query.filter = current ? ({ _and: [current, filter] } as Filter) : filter;
+	versioning.query.filter = mergeFilters(versioning.query.filter ?? null, filter);
 }
 
 /**
