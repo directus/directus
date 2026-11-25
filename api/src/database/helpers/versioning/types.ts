@@ -37,7 +37,7 @@ export class VersioningHelper extends DatabaseHelper {
 	}
 
 	/**
-	 * Name of the collection that reads the live items of a collection together with its versions
+	 * Alias for the UNION of live an shadow collection
 	 */
 	getVersionedReadName(collection: string): string {
 		return this.prefixName(VERSIONED_READ_PREFIX, collection);

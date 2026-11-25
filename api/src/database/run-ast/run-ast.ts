@@ -8,7 +8,7 @@ import { PayloadService } from '../../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../types/ast.js';
 import { extractFunctionName } from '../../utils/extract-function-name.js';
 import { formatAggregate } from '../../versioning/fields.js';
-import { formatVersionedLevel, getVersionedLevel } from '../../versioning/run.js';
+import { formatVersionedLevel, planVersionedRead, type VersionedReadPlan } from '../../versioning/run.js';
 import getDatabase from '../index.js';
 import { getDBQuery } from './lib/get-db-query.js';
 import { parseCurrentLevel } from './lib/parse-current-level.js';
@@ -48,15 +48,15 @@ export async function runAst(
 					versioning,
 				};
 
-				const level = getVersionedLevel(node, schema, knex);
+				const plan = planVersionedRead(node, schema, knex);
 
 				results[collection] = await run(
-					level.name,
-					level.children,
-					level.query,
+					plan.name,
+					plan.children,
+					plan.query,
 					ast.cases[collection] ?? [],
 					accountability,
-					level,
+					plan,
 				);
 
 				continue;
@@ -74,32 +74,52 @@ export async function runAst(
 		return results;
 	} else if (ast.versioning) {
 		// Versioned nodes read from the combined rows of live items and versions of their collection
-		const level = getVersionedLevel({ ...ast, versioning: ast.versioning }, schema, knex);
+		const plan = planVersionedRead({ ...ast, versioning: ast.versioning }, schema, knex);
 
-		const items = await run(level.name, level.children, level.query, ast.cases, accountability, level);
+		const items = await run(plan.name, plan.children, plan.query, ast.cases, accountability, plan);
 
-		if (options?.nested || !items || !(level.query.group || level.query.aggregate)) return items;
+		if (options?.nested || !items || !(plan.query.group || plan.query.aggregate)) return items;
 
 		// Aggregates on version system fields are returned in the format of the query
-		return toArray(items).map((item) => formatAggregate(item, level.query));
+		return toArray(items).map((item) => formatAggregate(item, plan.query));
 	} else {
 		return await run(ast.name, ast.children, options?.query || ast.query, ast.cases, accountability);
 	}
 
+	/**
+	 * Reads one level of the AST and recursively resolves its nested relations.
+	 *
+	 * 1. Determines the columns to select and the nested relational nodes of this level.
+	 * 2. Queries the items of this level, applying the permission `cases` and, for versioned levels, reading from the
+	 *    combined live and version rows (`plan.source`).
+	 * 3. Runs the raw rows through the payload transforms.
+	 * 4. Limits every nested node to the fetched items (`applyParentFilters`), fetches it with a nested `runAst` call
+	 *    (o2m in batches of `RELATIONAL_BATCH_SIZE`, honoring per-item field access flags) and merges the results into
+	 *    the parent items.
+	 * 5. Formats versioned rows and, for the root call, strips fields that were only added for nesting.
+	 *
+	 * @param collection - The collection to read from, or the name of the combined versioned read
+	 * @param children - The field and relational nodes requested at this level
+	 * @param query - The query to apply to this level
+	 * @param cases - Permission filters the `whenCase` indices of the children refer to
+	 * @param accountability - The accountability used for permissions and payload transforms
+	 * @param plan - Set when reading a versioned node, as returned by `planVersionedRead`
+	 * @returns The item(s) of this level with their nested relations, or `null` if nothing was found
+	 */
 	async function run(
 		collection: string,
 		children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
 		query: Query,
 		cases: Filter[],
 		accountability: Accountability | null,
-		level?: ReturnType<typeof getVersionedLevel>,
+		plan?: VersionedReadPlan,
 	) {
 		const env = useEnv();
-		const levelSchema = level?.schema ?? schema;
+		const readSchema = plan?.schema ?? schema;
 
 		// Retrieve the database columns to select in the current AST
 		const { fieldNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
-			levelSchema,
+			readSchema,
 			collection,
 			children,
 			query,
@@ -123,9 +143,9 @@ export async function runAst(
 				query,
 				cases,
 				permissions,
-				source: level?.source,
+				source: plan?.source,
 			},
-			{ schema: levelSchema, knex },
+			{ schema: readSchema, knex },
 		);
 
 		const rawItems: Item | Item[] = await dbQuery;
@@ -133,7 +153,7 @@ export async function runAst(
 		if (!rawItems) return null;
 
 		// Run the items through the special transforms
-		const payloadService = new PayloadService(collection, { accountability, knex, schema: levelSchema });
+		const payloadService = new PayloadService(collection, { accountability, knex, schema: readSchema });
 
 		// Build alias map that includes auto-generated json function field mappings
 		// so processJsonFunctionResults can detect and parse stringified JSON values
@@ -222,7 +242,7 @@ export async function runAst(
 			}
 		}
 
-		if (level) items = formatVersionedLevel(items, level.node, level.versionFields, knex);
+		if (plan) items = formatVersionedLevel(items, plan.node, knex);
 
 		// During the fetching of data, we have to inject a couple of required fields for the child nesting
 		// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching

@@ -78,7 +78,18 @@ describe('getAstLevels', () => {
 
 		pages.cases = [{ id: { _eq: 1 } }];
 		pages.query = { limit: 1 };
-		pages.versioning = { query: {}, fields: [], reference: null, shadow: null, shadows: {} };
+
+		pages.versioning = {
+			name: 'directus_versioned_pages',
+			shadow: null,
+			link: null,
+			versionFields: [],
+			a2oReferences: [],
+			query: {},
+			fields: [],
+			reference: null,
+			shadows: {},
+		};
 
 		const a2o = ast.children[2] as any;
 

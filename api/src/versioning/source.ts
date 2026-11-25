@@ -3,7 +3,8 @@ import type { Knex } from 'knex';
 import { getHelpers } from '../database/helpers/index.js';
 import { getDatabaseClient } from '../database/index.js';
 import { VERSION_SYSTEM_FIELDS, VERSIONED_KEY_FIELD } from '../services/version-tables/constants.js';
-import { getVersionedRead } from './schema.js';
+import type { VersionedNode } from '../types/ast.js';
+import { getVersionTablesSchema } from './schema.js';
 
 const ROWS_ALIAS = 'directus_versioned_rows';
 
@@ -12,14 +13,19 @@ const ROWS_ALIAS = 'directus_versioned_rows';
  * aren't versioned only have live rows, with the system fields of published items and the references to versions from
  * their link table.
  */
-export function getVersionedSource(knex: Knex, schema: SchemaOverview, collection: string): Knex.QueryBuilder {
-	const read = getVersionedRead(knex, schema, collection);
+export function getVersionedSource(
+	knex: Knex,
+	schema: SchemaOverview,
+	collection: string,
+	read: Pick<VersionedNode, 'shadow' | 'link' | 'versionFields' | 'a2oReferences'>,
+): Knex.QueryBuilder {
+	const tables = getVersionTablesSchema(schema);
 	const live = schema.collections[collection]!;
 	const { primary } = live;
 	const shadowTable = read.shadow;
-	const shadow = shadowTable ? read.schema.collections[shadowTable] : undefined;
+	const shadow = shadowTable ? tables.collections[shadowTable] : undefined;
 	const linkTable = read.link;
-	const link = linkTable ? read.schema.collections[linkTable] : undefined;
+	const link = linkTable ? tables.collections[linkTable] : undefined;
 
 	const columns = Object.values(live.fields)
 		.filter((field) => !field.alias)

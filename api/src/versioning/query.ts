@@ -3,7 +3,7 @@ import type { Knex } from 'knex';
 import { getHelpers } from '../database/helpers/index.js';
 import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
 import type { AST, NestedCollectionNode, VersionedNode } from '../types/ast.js';
-import { type AstLevel, getAstLevels } from '../utils/get-ast-levels.js';
+import { getAstLevels } from '../utils/get-ast-levels.js';
 import {
 	getRelatedCollection,
 	getSystemColumn,
@@ -13,7 +13,7 @@ import {
 	toSystemColumn,
 } from './fields.js';
 import { addShadow, type FilterLevel, rewriteFilter, stripSystemFilter } from './filter.js';
-import { getVersionedRead } from './schema.js';
+import { getVersionedRead, getVersionedReadSchema } from './schema.js';
 
 type Context = { knex: Knex; schema: SchemaOverview };
 
@@ -53,7 +53,7 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 	// Filters on versions of related items require access to them as well
 	const filter = query.filter
 		? rewriteFilter(query.filter, {
-				schema: read.schema,
+				schema: getVersionedReadSchema(schema, collection, read),
 				versioning,
 				collection: read.name,
 				hasSystemFields: true,
@@ -63,17 +63,17 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 		: null;
 
 	const versioned: Omit<VersionedNode, 'fields' | 'reference'> = {
+		...read,
 		query: {
 			filter,
 			...(query.sort ? { sort: query.sort.map(rewriteSort) } : {}),
 			...(query.group ? { group: query.group.map(toSystemColumn) } : {}),
 			...(query.aggregate ? { aggregate: mapAggregate(query.aggregate, (fields) => fields.map(toSystemColumn)) } : {}),
 		},
-		shadow: read.shadow,
 		shadows: Object.fromEntries([...shadows].map(([shadow, fields]) => [shadow, [...fields]])),
 	};
 
-	return { query: liveQuery, versioning: versioned, versionFields: read.versionFields };
+	return { query: liveQuery, versioning: versioned };
 }
 
 /**
@@ -147,12 +147,10 @@ export function annotateVersionedNodes(
 	context: Context,
 ) {
 	const { versioning } = getHelpers(context.knex);
-	const versionFields = new Map<AstLevel, string[]>();
 
 	for (const level of getAstLevels(ast)) {
 		if (!level.parent) {
 			level.versioning = { ...root.versioning, fields: fields.systemFields.get('') ?? [], reference: null };
-			versionFields.set(level, root.versionFields);
 			continue;
 		}
 
@@ -162,7 +160,8 @@ export function annotateVersionedNodes(
 		const reference = versioning.getVersionReferenceField(node.relation.field);
 
 		// The parent holds the references of m2o and a2o nodes, the related rows the ones of o2m nodes
-		const referenceColumns = node.type === 'o2m' ? split.versionFields : versionFields.get(level.parent)!;
+		const referenceColumns =
+			node.type === 'o2m' ? split.versioning.versionFields : level.parent.versioning!.versionFields;
 
 		level.query = split.query;
 
@@ -173,7 +172,5 @@ export function annotateVersionedNodes(
 			fields: fields.systemFields.get(key) ?? [],
 			reference: referenceColumns.includes(reference) ? reference : null,
 		};
-
-		versionFields.set(level, split.versionFields);
 	}
 }

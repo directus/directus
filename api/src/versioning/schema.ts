@@ -8,36 +8,9 @@ import {
 	VERSIONED_KEY_FIELD,
 } from '../services/version-tables/constants.js';
 import { isVersioningTable } from '../services/version-tables/utils.js';
+import type { A2OReference, VersionedNode } from '../types/ast.js';
 
-/**
- * How a collection is read together with its versions: through a collection of its own name and primary key, as the
- * live primary key isn't unique across the live items and versions
- */
-export type VersionedRead = {
-	/** Name of the collection that reads the live items together with their versions */
-	name: string;
-	/** The schema with the shadow and link tables, and the read collection with its relations */
-	schema: SchemaOverview;
-	shadow: string | null;
-	link: string | null;
-	/** Version system fields and references to versions of related items, which the live collection doesn't have */
-	versionFields: string[];
-	/** Columns that split the version references of a2o fields per related collection */
-	a2oReferences: A2OReference[];
-};
-
-/**
- * Column of a versioned read collection with the version references of an a2o field for one related collection, and a
- * relation to its shadow table
- */
-export type A2OReference = {
-	column: string;
-	/** Column with the version references of the a2o field */
-	reference: string;
-	collectionField: string;
-	collection: string;
-	shadow: string;
-};
+type ReadFields = 'name' | 'shadow' | 'link' | 'versionFields' | 'a2oReferences';
 
 /**
  * Move the shadow and link tables of the schema to `versioning`, which keeps them out of everything that lists the
@@ -85,43 +58,25 @@ export function getVersionTablesSchema(schema: SchemaOverview): SchemaOverview {
 	return merged;
 }
 
-const reads = new WeakMap<SchemaOverview, Map<string, VersionedRead>>();
-
 /**
- * How the collection is read together with its versions, derived once per schema
+ * How the collection is read together with its versions: through a collection of its own name and primary key, as the
+ * live primary key isn't unique across the live items and versions. Kept on the versioned nodes of the AST.
  */
-export function getVersionedRead(knex: Knex, schema: SchemaOverview, collection: string): VersionedRead {
-	const tables = getVersionTablesSchema(schema);
-	let cache = reads.get(tables);
-
-	if (!cache) {
-		cache = new Map();
-		reads.set(tables, cache);
-	}
-
-	let read = cache.get(collection);
-
-	if (!read) {
-		read = createVersionedRead(knex, tables, collection);
-		cache.set(collection, read);
-		mergedSchemas.add(read.schema);
-	}
-
-	return read;
-}
-
-/**
- * @param schema - The schema with the shadow and link tables as collections
- */
-function createVersionedRead(knex: Knex, schema: SchemaOverview, collection: string): VersionedRead {
+export function getVersionedRead(
+	knex: Knex,
+	schema: SchemaOverview,
+	collection: string,
+): Pick<VersionedNode, ReadFields> {
 	const { versioning: helper } = getHelpers(knex);
+	const tables = getVersionTablesSchema(schema);
+
 	const name = helper.getVersionedReadName(collection);
-	const live = schema.collections[collection]!;
-	const { primary } = live;
 	const shadowTable = helper.getShadowTableName(collection);
-	const shadow = schema.versioning?.collections[shadowTable];
 	const linkTable = helper.getLinkTableName(collection);
-	const link = schema.versioning?.collections[linkTable];
+
+	const { primary } = tables.collections[collection]!;
+	const shadow = tables.versioning?.collections[shadowTable];
+	const link = tables.versioning?.collections[linkTable];
 
 	const systemFields: string[] = Object.values(VERSION_SYSTEM_FIELDS);
 	const linkedFields = link ? Object.keys(link.fields).filter((field) => field !== primary) : [];
@@ -131,29 +86,7 @@ function createVersionedRead(knex: Knex, schema: SchemaOverview, collection: str
 		...linkedFields,
 	]);
 
-	const isNumericKey = ['integer', 'bigInteger'].includes(live.fields[primary]?.type ?? '');
-
-	const versionField = (field: string): FieldOverview => {
-		const base = shadow?.fields[field] ?? link?.fields[field] ?? shadow?.fields[VERSION_SYSTEM_FIELDS.id];
-
-		return base
-			? { ...base, field }
-			: { ...live.fields[primary]!, field, type: 'string', special: [], defaultValue: null, nullable: true };
-	};
-
-	const fields: Record<string, FieldOverview> = {
-		...live.fields,
-		...Object.fromEntries([...systemFields, ...referenceFields].map((field) => [field, versionField(field)])),
-		[VERSIONED_KEY_FIELD]: {
-			...live.fields[primary]!,
-			field: VERSIONED_KEY_FIELD,
-			type: isNumericKey ? live.fields[primary]!.type : 'string',
-			special: [],
-			defaultValue: null,
-		},
-	};
-
-	const a2oReferences = schema.relations.flatMap((relation): A2OReference[] => {
+	const a2oReferences = tables.relations.flatMap((relation): A2OReference[] => {
 		const allowed = relation.meta?.one_allowed_collections;
 
 		if (relation.collection !== collection || relation.related_collection || !allowed) return [];
@@ -165,7 +98,7 @@ function createVersionedRead(knex: Knex, schema: SchemaOverview, collection: str
 		return allowed.flatMap((related) => {
 			const relatedShadow = helper.getShadowTableName(related);
 
-			if (!schema.collections[relatedShadow]) return [];
+			if (!tables.collections[relatedShadow]) return [];
 
 			return [
 				{
@@ -179,7 +112,80 @@ function createVersionedRead(knex: Knex, schema: SchemaOverview, collection: str
 		});
 	});
 
-	for (const { column, reference } of a2oReferences) {
+	return {
+		name,
+		shadow: shadow ? shadowTable : null,
+		link: link ? linkTable : null,
+		versionFields: [...systemFields, ...referenceFields],
+		a2oReferences,
+	};
+}
+
+const readSchemas = new WeakMap<SchemaOverview, Map<string, SchemaOverview>>();
+
+/**
+ * The schema with the shadow and link tables, and the read collection of the versioned read with its relations.
+ * Built once per schema, as it copies all of its collections and relations.
+ */
+export function getVersionedReadSchema(
+	schema: SchemaOverview,
+	collection: string,
+	read: Pick<VersionedNode, ReadFields>,
+): SchemaOverview {
+	const tables = getVersionTablesSchema(schema);
+	let cache = readSchemas.get(tables);
+
+	if (!cache) {
+		cache = new Map();
+		readSchemas.set(tables, cache);
+	}
+
+	let readSchema = cache.get(collection);
+
+	if (!readSchema) {
+		readSchema = createVersionedReadSchema(tables, collection, read);
+		cache.set(collection, readSchema);
+		mergedSchemas.add(readSchema);
+	}
+
+	return readSchema;
+}
+
+/**
+ * @param schema - The schema with the shadow and link tables as collections
+ */
+function createVersionedReadSchema(
+	schema: SchemaOverview,
+	collection: string,
+	read: Pick<VersionedNode, ReadFields>,
+): SchemaOverview {
+	const live = schema.collections[collection]!;
+	const { primary } = live;
+	const shadow = read.shadow ? schema.collections[read.shadow] : undefined;
+	const link = read.link ? schema.collections[read.link] : undefined;
+	const isNumericKey = ['integer', 'bigInteger'].includes(live.fields[primary]?.type ?? '');
+
+	const versionField = (field: string): FieldOverview => {
+		const base = shadow?.fields[field] ?? link?.fields[field] ?? shadow?.fields[VERSION_SYSTEM_FIELDS.id];
+
+		return base
+			? { ...base, field }
+			: { ...live.fields[primary]!, field, type: 'string', special: [], defaultValue: null, nullable: true };
+	};
+
+	const fields: Record<string, FieldOverview> = {
+		...live.fields,
+		...Object.fromEntries(read.versionFields.map((field) => [field, versionField(field)])),
+		[VERSIONED_KEY_FIELD]: {
+			...live.fields[primary]!,
+			field: VERSIONED_KEY_FIELD,
+			type: isNumericKey ? live.fields[primary]!.type : 'string',
+			special: [],
+			defaultValue: null,
+		},
+	};
+
+	for (const { column, reference } of read.a2oReferences) {
 		fields[column] = { ...fields[reference]!, field: column };
 	}
 
@@ -187,29 +193,22 @@ function createVersionedRead(knex: Knex, schema: SchemaOverview, collection: str
 	// items come from the shadow table
 	const relations = schema.relations.flatMap((relation): Relation[] => [
 		...(relation.collection === collection ||
-		(relation.collection === shadowTable && relation.field.startsWith(VERSION_REFERENCE_PREFIX))
-			? [{ ...relation, collection: name }]
+		(relation.collection === read.shadow && relation.field.startsWith(VERSION_REFERENCE_PREFIX))
+			? [{ ...relation, collection: read.name }]
 			: []),
-		...(relation.related_collection === collection ? [{ ...relation, related_collection: name }] : []),
+		...(relation.related_collection === collection ? [{ ...relation, related_collection: read.name }] : []),
 	]);
 
-	for (const { column, shadow } of a2oReferences) {
-		relations.push({ collection: name, field: column, related_collection: shadow, schema: null, meta: null });
+	for (const { column, shadow } of read.a2oReferences) {
+		relations.push({ collection: read.name, field: column, related_collection: shadow, schema: null, meta: null });
 	}
 
 	return {
-		name,
-		schema: {
-			collections: {
-				...schema.collections,
-				[name]: { ...live, collection: name, primary: VERSIONED_KEY_FIELD, fields },
-			},
-			relations: [...schema.relations, ...relations],
-			...(schema.versioning ? { versioning: schema.versioning } : {}),
+		collections: {
+			...schema.collections,
+			[read.name]: { ...live, collection: read.name, primary: VERSIONED_KEY_FIELD, fields },
 		},
-		shadow: shadow ? shadowTable : null,
-		link: link ? linkTable : null,
-		versionFields: [...systemFields, ...referenceFields],
-		a2oReferences,
+		relations: [...schema.relations, ...relations],
+		...(schema.versioning ? { versioning: schema.versioning } : {}),
 	};
 }

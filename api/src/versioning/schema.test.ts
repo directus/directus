@@ -3,7 +3,7 @@ import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { describe, expect, test } from 'vitest';
 import { VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
-import { extractVersioning, getVersionedRead, getVersionTablesSchema } from './schema.js';
+import { extractVersioning, getVersionedRead, getVersionedReadSchema, getVersionTablesSchema } from './schema.js';
 
 // The database helpers derive the dialect from the class name of the client
 const db = knex.default({ client: class Client_PG extends MockClient {} });
@@ -57,14 +57,11 @@ describe('getVersionTablesSchema', () => {
 });
 
 describe('getVersionedRead', () => {
-	test('derives the read collection on first use and reuses it', () => {
+	test('describes the read collection of a versioned collection', () => {
 		const read = getVersionedRead(db, schema, 'articles');
 
 		expect(read).toMatchObject({ name: 'directus_versioned_articles', shadow: 'directus_shadow_articles', link: null });
-		expect(read.schema.collections[read.name]?.primary).toBe('directus_version_key');
 		expect(read.versionFields).toContain('version_ref_author');
-		expect(getVersionedRead(db, schema, 'articles')).toBe(read);
-		expect(getVersionedRead(db, getVersionTablesSchema(schema), 'articles')).toBe(read);
 	});
 
 	test('reads collections without version tables as live items only', () => {
@@ -72,5 +69,18 @@ describe('getVersionedRead', () => {
 
 		expect(read).toMatchObject({ shadow: null, link: null });
 		expect(read.versionFields).toEqual(Object.values(VERSION_SYSTEM_FIELDS));
+	});
+});
+
+describe('getVersionedReadSchema', () => {
+	test('builds the read collection on first use and reuses it', () => {
+		const read = getVersionedRead(db, schema, 'articles');
+		const readSchema = getVersionedReadSchema(schema, 'articles', read);
+
+		expect(readSchema.collections[read.name]?.primary).toBe('directus_version_key');
+		expect(readSchema.collections[read.name]?.fields['version_ref_author']).toBeDefined();
+		expect(getVersionedReadSchema(schema, 'articles', read)).toBe(readSchema);
+		expect(getVersionedReadSchema(getVersionTablesSchema(schema), 'articles', read)).toBe(readSchema);
+		expect(getVersionTablesSchema(readSchema)).toBe(readSchema);
 	});
 });

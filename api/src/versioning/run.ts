@@ -14,7 +14,7 @@ import type {
 	O2MNode,
 	VersionedNode,
 } from '../types/ast.js';
-import { getVersionedRead } from './schema.js';
+import { getVersionedReadSchema } from './schema.js';
 import { getVersionedSource } from './source.js';
 
 /** A node, or a related collection of an a2o node, that's read from the combined rows of its collection */
@@ -27,13 +27,14 @@ export type VersionedLevelNode = {
 
 const SYSTEM_COLUMNS: string[] = Object.values(VERSION_SYSTEM_FIELDS);
 
+export type VersionedReadPlan = ReturnType<typeof planVersionedRead>;
+
 /**
- * The level of a versioned node as it's read from the combined rows of its collection: the read collection with its
- * schema and source, the query with the version system fields mapped to their columns, and the system columns selected.
+ * How to read a versioned node from the combined rows of its collection: the read collection with its schema and
+ * source, the query with the version system fields mapped to their columns, and the system columns selected.
  */
-export function getVersionedLevel(node: VersionedLevelNode, schema: SchemaOverview, knex: Knex) {
-	const read = getVersionedRead(knex, schema, node.name);
-	const { name } = read;
+export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOverview, knex: Knex) {
+	const { name, versionFields } = node.versioning;
 	const { primary } = schema.collections[node.name]!;
 	const query = { ...node.query, ...node.versioning.query };
 	const isAggregate = Boolean(query.group || Object.keys(query.aggregate ?? {}).length > 0);
@@ -53,14 +54,13 @@ export function getVersionedLevel(node: VersionedLevelNode, schema: SchemaOvervi
 	// The live primary key and system columns link the rows to the nested nodes and their parent
 	const selected = isAggregate
 		? (query.group ?? []).filter((field) => SYSTEM_COLUMNS.includes(field))
-		: [...(hasPrimary ? [] : [primary]), ...read.versionFields];
+		: [...(hasPrimary ? [] : [primary]), ...versionFields];
 
 	return {
 		node,
 		name,
-		schema: read.schema,
-		source: getVersionedSource(knex, schema, node.name),
-		versionFields: read.versionFields,
+		schema: getVersionedReadSchema(schema, node.name, node.versioning),
+		source: getVersionedSource(knex, schema, node.name, node.versioning),
 		query,
 		children: [
 			...children,
@@ -75,13 +75,9 @@ export function getVersionedLevel(node: VersionedLevelNode, schema: SchemaOvervi
  * Move the system columns of the rows of a versioned level under `directus_version`. m2o relations that reference a
  * version instead of a live item, and aren't read as nested node, are set to `{ directus_version: { id } }`.
  */
-export function formatVersionedLevel(
-	items: Item | Item[],
-	node: VersionedLevelNode,
-	versionFields: string[],
-	knex: Knex,
-): Item | Item[] {
+export function formatVersionedLevel(items: Item | Item[], node: VersionedLevelNode, knex: Knex): Item | Item[] {
 	const { versioning } = getHelpers(knex);
+	const { versionFields } = node.versioning;
 	const rows = toArray(items);
 
 	for (const child of node.children) {
