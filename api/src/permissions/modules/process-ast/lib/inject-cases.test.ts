@@ -347,3 +347,87 @@ test('Processes a2o children recursively', () => {
 		},
 	]);
 });
+
+test('Limits the rows of a versioned node to the live and shadow permissions', () => {
+	const ast: DeepPartial<AST> = {
+		name: 'articles',
+		cases: [],
+		children: [
+			{ fieldKey: 'title', whenCase: [] },
+			{ fieldKey: 'body', whenCase: [] },
+		],
+		versioning: { shadow: 'directus_shadow_articles', shadows: ['directus_shadow_articles'] },
+	};
+
+	const permissions: DeepPartial<Permission>[] = [
+		{ collection: 'articles', permissions: {}, fields: ['*'] },
+		{
+			collection: 'directus_shadow_articles',
+			permissions: { version_user_created: { _eq: 'user' } },
+			fields: ['title'],
+		},
+	];
+
+	injectCases(ast as AST, permissions as Permission[]);
+
+	expect(ast.cases).toEqual([
+		{ _and: [{}, { version_type: { _eq: 'published' } }] },
+		{ _and: [{ version_user_created: { _eq: 'user' } }, { version_type: { _neq: 'published' } }] },
+	]);
+
+	// Fields the shadow permissions don't allow are only returned for live rows
+	expect(ast.children).toEqual([
+		{ fieldKey: 'title', whenCase: [0, 1] },
+		{ fieldKey: 'body', whenCase: [0] },
+	]);
+});
+
+test('Excludes the version rows of a versioned node without shadow permissions', () => {
+	const ast: DeepPartial<AST> = {
+		name: 'articles',
+		cases: [],
+		children: [{ fieldKey: 'title', whenCase: [] }],
+		versioning: { shadow: 'directus_shadow_articles', shadows: ['directus_shadow_articles'] },
+	};
+
+	const permissions: DeepPartial<Permission>[] = [
+		{ collection: 'articles', permissions: { status: { _eq: 'published' } }, fields: ['title'] },
+	];
+
+	injectCases(ast as AST, permissions as Permission[]);
+
+	expect(ast.cases).toEqual([{ _and: [{ status: { _eq: 'published' } }, { version_type: { _eq: 'published' } }] }]);
+	expect(ast.children).toEqual([{ fieldKey: 'title', whenCase: [0] }]);
+});
+
+test('Uses the shadow permissions of versioned nested nodes', () => {
+	const ast: DeepPartial<AST> = {
+		name: 'articles',
+		cases: [],
+		children: [
+			{
+				type: 'm2o',
+				fieldKey: 'author',
+				whenCase: [],
+				relation: { related_collection: 'authors' },
+				children: [{ fieldKey: 'name', whenCase: [] }],
+				versioning: { shadow: 'directus_shadow_authors', shadows: ['directus_shadow_authors'] },
+			},
+		],
+	};
+
+	const permissions: DeepPartial<Permission>[] = [
+		{ collection: 'articles', permissions: {}, fields: ['*'] },
+		{ collection: 'authors', permissions: {}, fields: ['*'] },
+		{ collection: 'directus_shadow_authors', permissions: {}, fields: ['*'] },
+	];
+
+	injectCases(ast as AST, permissions as Permission[]);
+
+	expect((ast.children![0] as any).cases).toEqual([
+		{ _and: [{}, { version_type: { _eq: 'published' } }] },
+		{ _and: [{}, { version_type: { _neq: 'published' } }] },
+	]);
+
+	expect((ast.children![0] as any).children).toEqual([{ fieldKey: 'name', whenCase: [] }]);
+});

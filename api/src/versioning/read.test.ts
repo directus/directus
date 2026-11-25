@@ -1,15 +1,19 @@
 import type { CollectionBuilder } from '@directus/schema-builder';
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Item, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Item, Permission, Query, SchemaOverview } from '@directus/types';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
 import { runAst } from '../database/run-ast/run-ast.js';
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { formatSql } from '../test-utils/knex.js';
 import { isVersionedQuery } from './query.js';
 import { extractVersioning } from './schema.js';
+
+vi.mock('../permissions/lib/fetch-policies.js', () => ({ fetchPolicies: vi.fn().mockResolvedValue(['policy']) }));
+vi.mock('../permissions/lib/fetch-permissions.js', () => ({ fetchPermissions: vi.fn().mockResolvedValue([]) }));
 
 // The database helpers derive the dialect from the class name of the client
 const CLIENTS = {
@@ -121,6 +125,8 @@ type Options = {
 	responses?: [string, Record<string, unknown>[]][];
 	/** Keep the rows of the versioned read collection in the SQL instead of replacing them with its name */
 	source?: boolean;
+	/** Read permissions of a user that isn't an admin, the read is done as admin otherwise */
+	permissions?: Partial<Permission>[];
 };
 
 function setup(options: Options = {}) {
@@ -149,11 +155,19 @@ async function read(collection: string, query: Query, options: Options = {}) {
 
 	const context = { knex: db, schema: schema as SchemaOverview };
 
-	let ast = await getAstFromQuery({ collection, query, accountability: null, versioning: true }, context);
+	const accountability = options.permissions ? ({ user: 'user', role: null, admin: false } as Accountability) : null;
 
-	ast = await processAst({ ast, action: 'read', accountability: null }, context);
+	vi.mocked(fetchPermissions).mockImplementation(async ({ collections }) =>
+		(options.permissions ?? [])
+			.filter((permission) => !collections || collections.includes(permission.collection!))
+			.map((permission) => ({ action: 'read', permissions: {}, fields: ['*'], ...permission }) as Permission),
+	);
 
-	const items = (await runAst(ast, context.schema, null, { knex: db })) as Item[];
+	let ast = await getAstFromQuery({ collection, query, accountability, versioning: true }, context);
+
+	ast = await processAst({ ast, action: 'read', accountability }, context);
+
+	const items = (await runAst(ast, context.schema, accountability, { knex: db })) as Item[];
 
 	return { items, ...queries() };
 }
@@ -1875,5 +1889,92 @@ describe('a2o filter', () => {
 		);
 
 		expect(ast.versioning?.shadows).toEqual(['directus_shadow_posts', 'directus_shadow_authors']);
+	});
+});
+
+describe('permissions', () => {
+	test('limits version rows to the permissions of the shadow table', async () => {
+		const { sql, bindings } = await read(
+			'articles',
+			{ fields: ['id', 'title'] },
+			{
+				permissions: [
+					{ collection: 'articles', fields: ['id', 'title'] },
+					{
+						collection: 'directus_shadow_articles',
+						permissions: { version_user_created: { _eq: 'user' } },
+						fields: ['id'],
+					},
+				],
+			},
+		);
+
+		expect(sql).toMatchInlineSnapshot(`
+			"select
+			  (
+			    CASE
+			      WHEN (
+			        ("directus_versioned_articles"."version_type" = ?)
+			        or (
+			          "directus_versioned_articles"."version_user_created" = ?
+			          and not "directus_versioned_articles"."version_type" = ?
+			        )
+			      ) THEN "directus_versioned_articles"."id"
+			    END
+			  ) AS "id",
+			  (
+			    CASE
+			      WHEN (
+			        ("directus_versioned_articles"."version_type" = ?)
+			      ) THEN "directus_versioned_articles"."title"
+			    END
+			  ) AS "title",
+			  "directus_versioned_articles"."version_id",
+			  "directus_versioned_articles"."version_name",
+			  "directus_versioned_articles"."version_type",
+			  "directus_versioned_articles"."version_date_created",
+			  "directus_versioned_articles"."version_date_updated",
+			  "directus_versioned_articles"."version_user_created",
+			  "directus_versioned_articles"."version_user_updated",
+			  "directus_versioned_articles"."version_ref_author",
+			  "directus_versioned_articles"."directus_version_key"
+			from
+			  "directus_versioned_articles"
+			where
+			  (
+			    ("directus_versioned_articles"."version_type" = ?)
+			    or (
+			      "directus_versioned_articles"."version_user_created" = ?
+			      and not "directus_versioned_articles"."version_type" = ?
+			    )
+			  )
+			order by
+			  "directus_versioned_articles"."id" asc
+			limit
+			  ?"
+		`);
+
+		expect(bindings).toMatchInlineSnapshot(`
+			[
+			  [
+			    "published",
+			    "user",
+			    "published",
+			    "published",
+			    "published",
+			    "published",
+			    "published",
+			    "user",
+			    "published",
+			    100,
+			  ],
+			]
+		`);
+	});
+
+	test('rejects reading versions without access to the shadow table', async () => {
+		await expect(
+			read('articles', { fields: ['id', 'title'] }, { permissions: [{ collection: 'articles', fields: ['*'] }] }),
+		).rejects.toThrow('You don\'t have permission to perform "read" for collection "directus_shadow_articles"');
 	});
 });

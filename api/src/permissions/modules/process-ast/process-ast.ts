@@ -28,11 +28,14 @@ export interface ProcessAstOptions {
  * restrict rows and null out fields the user may not see. Mutates and returns the given AST.
  */
 export async function processAst(options: ProcessAstOptions, context: Context) {
-	if (options.accountability && !options.accountability.admin) {
-		const tablesContext = { ...context, schema: getVersionTablesSchema(context.schema) };
+	const shadows = getVersionedShadows(options.ast);
 
-		for (const collection of getVersionedShadows(options.ast)) {
-			await validateAccess({ accountability: options.accountability, action: 'read', collection }, tablesContext);
+	if (options.accountability && !options.accountability.admin) {
+		for (const collection of shadows) {
+			await validateAccess(
+				{ accountability: options.accountability, action: 'read', collection },
+				{ ...context, schema: getVersionTablesSchema(context.schema) },
+			);
 		}
 	}
 
@@ -60,8 +63,11 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 
 	const policies = await fetchPolicies(options.accountability, context);
 
+	// Version rows of versioned nodes are limited by the permissions of their shadow table
+	const permissionCollections = [...collections, ...shadows];
+
 	const permissions = await fetchPermissions(
-		{ action: options.action, policies, collections, accountability: options.accountability },
+		{ action: options.action, policies, collections: permissionCollections, accountability: options.accountability },
 		context,
 	);
 
@@ -69,7 +75,7 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 		options.action === 'read'
 			? permissions
 			: await fetchPermissions(
-					{ action: 'read', policies, collections, accountability: options.accountability },
+					{ action: 'read', policies, collections: permissionCollections, accountability: options.accountability },
 					context,
 				);
 
@@ -97,23 +103,18 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
  * Shadow tables that versioned nodes read from, which require read access
  */
 function getVersionedShadows(node: AST | NestedCollectionNode, shadows = new Set<string>()) {
-	if (node.type === 'a2o') {
-		for (const collection of node.names) {
-			node.versioning?.[collection]?.shadows.forEach((shadow) => shadows.add(shadow));
-			addChildShadows(node.children[collection]!, shadows);
+	const branches =
+		node.type === 'a2o'
+			? node.names.map((collection) => [node.versioning?.[collection], node.children[collection]!] as const)
+			: [[node.versioning, node.children] as const];
+
+	for (const [versioning, children] of branches) {
+		versioning?.shadows.forEach((shadow) => shadows.add(shadow));
+
+		for (const child of children) {
+			if (child.type !== 'field' && child.type !== 'functionField') getVersionedShadows(child, shadows);
 		}
-
-		return shadows;
 	}
-
-	node.versioning?.shadows.forEach((shadow) => shadows.add(shadow));
-	addChildShadows(node.children, shadows);
 
 	return shadows;
-}
-
-function addChildShadows(children: AST['children'], shadows: Set<string>) {
-	for (const child of children) {
-		if (child.type !== 'field' && child.type !== 'functionField') getVersionedShadows(child, shadows);
-	}
 }

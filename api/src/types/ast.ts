@@ -136,6 +136,8 @@ export type VersionedNode = {
 	 * parent rows for m2o and a2o nodes and on the related rows for o2m nodes.
 	 */
 	reference: string | null;
+	/** Shadow table the versions of the node are read from, whose permissions apply to those rows */
+	shadow: string | null;
 	/** Shadow tables the read requires access to */
 	shadows: string[];
 };

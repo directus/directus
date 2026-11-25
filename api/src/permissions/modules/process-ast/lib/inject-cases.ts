@@ -1,8 +1,11 @@
-import type { Permission } from '@directus/types';
-import { uniq } from 'lodash-es';
+import type { Filter, Permission } from '@directus/types';
+import { range, uniq } from 'lodash-es';
+import { VERSION_SYSTEM_FIELDS } from '../../../../services/version-tables/constants.js';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
 import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
 import { getCases } from './get-cases.js';
+
+type Access = ReturnType<typeof getCases>;
 
 /**
  * Mutates passed AST
@@ -11,55 +14,74 @@ import { getCases } from './get-cases.js';
  * @param permissions - Expected to be filtered down for the policies and action already
  */
 export function injectCases(ast: AST, permissions: Permission[]) {
-	ast.cases = processChildren(ast.name, ast.children, permissions);
+	ast.cases = processChildren(ast.name, ast.children, permissions, ast.versioning?.shadow);
 }
 
+/**
+ * @param shadow - Shadow table of a versioned node, whose permissions apply to the version rows instead of the ones
+ * of the collection
+ */
 function processChildren(
 	collection: string,
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
 	permissions: Permission[],
+	shadow?: string | null,
 ) {
 	// Use uniq here, since there might be multiple duplications due to aliases or functions
 	const requestedKeys = uniq(children.map(getUnaliasedFieldKey));
-	const { cases, caseMap, allowedFields } = getCases(collection, permissions, requestedKeys);
+	const live = getCases(collection, permissions, requestedKeys);
+	const versions = shadow ? getCases(shadow, permissions, requestedKeys) : null;
 
-	// TODO this can be optimized if there is only one rule to skip the whole case/where system,
-	//  since fields that are not allowed at all are already filtered out
-
-	// TODO this can be optimized if all cases are the same for all requested keys, as those should be
-	//
+	const cases = versions
+		? [...live.cases.map((rule) => withType(rule, '_eq')), ...versions.cases.map((rule) => withType(rule, '_neq'))]
+		: live.cases;
 
 	for (const child of children) {
 		const fieldKey = getUnaliasedFieldKey(child);
 
-		const globalWhenCase = caseMap['*'];
-		const fieldWhenCase = caseMap[fieldKey];
-
 		// Validation should catch any fields that are attempted to be read that don't have any access control configured.
 		// When there are no access rules for this field, and no rules for "all" fields `*`, we missed something in the validation
 		// and should abort.
-		if (!globalWhenCase && !fieldWhenCase) {
+		if (!live.caseMap['*'] && !live.caseMap[fieldKey]) {
 			throw new Error(`Cannot extract access permissions for field "${fieldKey}" in collection "${collection}"`);
 		}
 
+		const liveCases = getFieldCases(live, fieldKey);
+		const versionCases = versions ? getFieldCases(versions, fieldKey) : null;
+
 		// The case/when system only needs to take place if no full access is given on this field,
 		// otherwise we can skip and thus safe some query perf overhead
-		if (!allowedFields.has('*') && !allowedFields.has(fieldKey)) {
-			// Global and field can't both be undefined as per the error check prior
-			child.whenCase = [...(globalWhenCase ?? []), ...(fieldWhenCase ?? [])];
+		if (!versions) {
+			if (liveCases) child.whenCase = liveCases;
+		} else if (liveCases || versionCases) {
+			// Version rows without access to the field return it as null
+			child.whenCase = [
+				...(liveCases ?? range(live.cases.length)),
+				...(versionCases ?? range(versions.cases.length)).map((index) => index + live.cases.length),
+			];
 		}
 
 		if (child.type === 'm2o') {
-			child.cases = processChildren(child.relation.related_collection!, child.children, permissions);
+			child.cases = processChildren(
+				child.relation.related_collection!,
+				child.children,
+				permissions,
+				child.versioning?.shadow,
+			);
 		}
 
 		if (child.type === 'o2m') {
-			child.cases = processChildren(child.relation.collection, child.children, permissions);
+			child.cases = processChildren(child.relation.collection, child.children, permissions, child.versioning?.shadow);
 		}
 
 		if (child.type === 'a2o') {
 			for (const collection of child.names) {
-				child.cases[collection] = processChildren(collection, child.children[collection] ?? [], permissions);
+				child.cases[collection] = processChildren(
+					collection,
+					child.children[collection] ?? [],
+					permissions,
+					child.versioning?.[collection]?.shadow,
+				);
 			}
 		}
 
@@ -70,4 +92,21 @@ function processChildren(
 	}
 
 	return cases;
+}
+
+/**
+ * Indexes of the cases that allow reading the field, or null if every row that can be read may read it
+ */
+function getFieldCases({ caseMap, allowedFields }: Access, fieldKey: string): number[] | null {
+	if (allowedFields.has('*') || allowedFields.has(fieldKey)) return null;
+
+	return [...(caseMap['*'] ?? []), ...(caseMap[fieldKey] ?? [])];
+}
+
+/**
+ * Limit a rule to the live rows (`_eq`) or the version rows (`_neq`) of a versioned read, as live items are read as
+ * their published version
+ */
+function withType(rule: Filter, operator: '_eq' | '_neq'): Filter {
+	return { _and: [rule, { [VERSION_SYSTEM_FIELDS.type]: { [operator]: 'published' } }] } as Filter;
 }

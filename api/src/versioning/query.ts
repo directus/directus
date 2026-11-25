@@ -68,6 +68,7 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 			...(query.group ? { group: query.group.map(toSystemColumn) } : {}),
 			...(query.aggregate ? { aggregate: mapAggregate(query.aggregate, (fields) => fields.map(toSystemColumn)) } : {}),
 		},
+		shadow: read.shadow,
 		shadows: [...shadows],
 	};
 
