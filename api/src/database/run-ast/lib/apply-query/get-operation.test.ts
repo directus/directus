@@ -1,81 +1,70 @@
-import { expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { getOperation } from './get-operation.js';
 
-test('key object without operator', () => {
-	const result = getOperation('key', {
-		key: 'Hi',
+describe('getOperation', () => {
+	test('should return the operator and value of a field filter', () => {
+		expect(getOperation('title', { _neq: 'a' })).toEqual({ operator: '_neq', value: 'a' });
 	});
 
-	expect(result).toEqual({
-		operator: '_eq',
-		value: 'Hi',
-	});
-});
-
-test('key object with _neq operator', () => {
-	const result = getOperation('key', {
-		_neq: 'Hi',
-	});
-
-	expect(result).toEqual({
-		operator: '_neq',
-		value: 'Hi',
-	});
-});
-
-test('key object with nested _in operator', () => {
-	const result = getOperation('key', {
-		nested: {
-			_in: [1, 2, 3],
-		},
-	});
-
-	expect(result).toEqual({
-		operator: '_in',
-		value: [1, 2, 3],
-	});
-});
-
-test('key as _eq object with nested _in operator', () => {
-	const result = getOperation('_eq', 123);
-
-	expect(result).toEqual({
-		operator: '_eq',
-		value: 123,
-	});
-});
-
-for (const key of ['_some', '_none']) {
-	test(`skipping of ${key}`, () => {
-		const result = getOperation(key, {
-			field: 1,
-		});
-
-		expect(result).toEqual({
-			operator: '_eq',
-			value: 1,
+	test('should follow nested fields down to the operator', () => {
+		expect(getOperation('author', { role: { name: { _in: ['a', 'b'] } } })).toEqual({
+			operator: '_in',
+			value: ['a', 'b'],
 		});
 	});
-}
 
-for (const key of ['_and', '_or']) {
-	test(`key as invalid ${key}`, () => {
-		const result = getOperation(key, {});
-
-		expect(result).toBeNull();
-	});
-}
-
-test('empty object', () => {
-	const result = getOperation('key', {});
-
-	expect(result).toBeNull();
-});
-
-test('nested empty object', () => {
-	const result = getOperation('_or', {
-		nested: {},
+	test('should treat a function key like a field', () => {
+		expect(getOperation('year(release)', { _eq: 2020 })).toEqual({ operator: '_eq', value: 2020 });
 	});
 
-	expect(result).toBeNull();
+	test('should return the key itself when it is an operator', () => {
+		expect(getOperation('_gt', 1)).toEqual({ operator: '_gt', value: 1 });
+	});
+
+	test.each([
+		['_json', { level: { _gt: 1 } }],
+		['_intersects', { type: 'Point', coordinates: [1, 2] }],
+	])('should return %s with its whole value without walking into it', (operator, value) => {
+		expect(getOperation('metadata', { [operator]: value })).toEqual({ operator, value });
+	});
+
+	test.each([
+		['a string', 'a'],
+		['a number', 1],
+		['false', false],
+		['null', null],
+	])('should default to _eq for %s as a direct value', (_, value) => {
+		expect(getOperation('title', value)).toEqual({ operator: '_eq', value });
+	});
+
+	test('should default to _eq for a nested direct value', () => {
+		expect(getOperation('author', { name: 'a' })).toEqual({ operator: '_eq', value: 'a' });
+	});
+
+	test('should only follow the first key at each level', () => {
+		expect(getOperation('title', { _eq: 'a', _neq: 'b' })).toEqual({ operator: '_eq', value: 'a' });
+	});
+
+	const nonFieldOperators: [string, unknown][] = [
+		['_and', [{ name: { _eq: 'a' } }]],
+		['_or', [{ name: { _eq: 'a' } }]],
+		['_some', { name: { _eq: 'a' } }],
+		['_none', { name: { _eq: 'a' } }],
+	];
+
+	test.each(nonFieldOperators)('should return null for %s', (key, value) => {
+		expect(getOperation(key, value)).toBeNull();
+	});
+
+	test.each(nonFieldOperators)('should return null for a nested %s', (key, value) => {
+		expect(getOperation('author', { [key]: value })).toBeNull();
+	});
+
+	test('should return null for an empty filter', () => {
+		expect(getOperation('title', {})).toBeNull();
+	});
+
+	test('should return null for a nested empty filter', () => {
+		expect(getOperation('author', { name: {} })).toBeNull();
+	});
 });

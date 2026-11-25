@@ -258,6 +258,31 @@ test(`_some and _none on o2m relation`, async () => {
 	expect(none.map((item) => item.title)).toEqual([`${marker}-without`]);
 });
 
+test(`_some and _none with logical and multiple conditions on o2m relation`, async () => {
+	const marker = 'filter-some-none-conditions';
+
+	for (const suffix of ['a', 'b', 'c']) {
+		await api.request(
+			createItem(collections.articles, { title: `${marker}-${suffix}`, links: [{ link: `${marker}-${suffix}` }] }),
+		);
+	}
+
+	const readTitles = async (links: Record<string, unknown>) => {
+		const result = await api.request(
+			readItems(collections.articles, { filter: { title: { _starts_with: marker }, links }, sort: ['title'] } as any),
+		);
+
+		return result.map((item) => item.title);
+	};
+
+	const linkIsAOrB = { _or: [{ link: { _eq: `${marker}-a` } }, { link: { _eq: `${marker}-b` } }] };
+
+	expect(await readTitles({ _some: linkIsAOrB })).toEqual([`${marker}-a`, `${marker}-b`]);
+	expect(await readTitles({ _none: linkIsAOrB })).toEqual([`${marker}-c`]);
+
+	expect(await readTitles({ _some: { link: { _starts_with: marker, _ends_with: '-a' } } })).toEqual([`${marker}-a`]);
+});
+
 test(`count() function filter on the top level`, async () => {
 	const marker = 'filter-fn-count';
 

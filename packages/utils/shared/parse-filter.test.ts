@@ -364,6 +364,29 @@ describe('#parseFilter', () => {
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
 	});
 
+	it.each(['_some', '_none'])('shifts up implicit logical operators inside %s, not above it', (quantifier) => {
+		const mockFilter = {
+			authors: {
+				[quantifier]: {
+					authors_id: {
+						status: { _eq: 'archived' },
+						email: { _nnull: true },
+					},
+				},
+			},
+		} as Filter;
+
+		const mockResult = {
+			authors: {
+				[quantifier]: {
+					_and: [{ authors_id: { status: { _eq: 'archived' } } }, { authors_id: { email: { _nnull: true } } }],
+				},
+			},
+		} as Filter;
+
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
+	});
+
 	it('leaves explicit logical operator as is', () => {
 		const mockFilter = {
 			_and: [

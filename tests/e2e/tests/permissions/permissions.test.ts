@@ -15,7 +15,7 @@ import {
 	updateItems,
 	updatePolicy,
 } from '@directus/sdk';
-import { port } from '@utils/constants.js';
+import { database, port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
@@ -291,4 +291,47 @@ test('deduplicates primary keys when validating item access', async () => {
 	expect(
 		await userApi.request(updateItems(collections.trains, [String(train.id), String(train.id)], { name: 'Deduped' })),
 	).toBeDefined();
+});
+
+// MSSQL doesn't allow a subquery inside an aggregate, and permission rules are evaluated within
+// COUNT(CASE WHEN <rule> ...), so any _some/_none rule fails there until that's resolved
+test.skipIf(database === 'mssql')('read with a relational _some permission rule containing _or', async () => {
+	const [stavanger, oslo, bergen] = await api.request(
+		createItems(collections.trains, [
+			{ name: 'From Stavanger', tracks: [{ from: 'Stavanger', to: 'Oslo' }] },
+			{ name: 'From Oslo', tracks: [{ from: 'Oslo', to: 'Bergen' }] },
+			{ name: 'From Bergen', tracks: [{ from: 'Bergen', to: 'Trondheim' }] },
+		]),
+	);
+
+	await api.request(
+		updatePolicy(policy.id, {
+			permissions: [
+				{
+					action: 'read',
+					collection: collections.trains,
+					fields: ['*'],
+					permissions: {
+						tracks: { _some: { _or: [{ from: { _eq: 'Stavanger' } }, { from: { _eq: 'Oslo' } }] } },
+					},
+				} as any,
+				{
+					action: 'read',
+					collection: collections.tracks,
+					fields: ['*'],
+				} as any,
+			],
+		}),
+	);
+
+	const trains = await userApi.request(
+		readItems(collections.trains, {
+			filter: { id: { _in: [stavanger!.id!, oslo!.id!, bergen!.id!] } },
+			fields: ['id'],
+		}),
+	);
+
+	expect(trains.map((item) => item.id).sort()).toEqual([stavanger!.id, oslo!.id].sort());
+
+	await expect(() => userApi.request(readItem(collections.trains, bergen!.id!))).rejects.toThrowError();
 });
