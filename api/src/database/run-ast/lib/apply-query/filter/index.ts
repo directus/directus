@@ -12,6 +12,7 @@ import { getFilterPath } from '../get-filter-path.js';
 import { getOperation } from '../get-operation.js';
 import applyQuery from '../index.js';
 import { getFilterType } from './get-filter-type.js';
+import { isRelationalFilter } from './is-relational-filter.js';
 import { applyOperator } from './operator.js';
 import { validateOperator } from './validate-operator.js';
 
@@ -62,7 +63,7 @@ export function applyFilter(
 
 			const filterPath = getFilterPath(key, value);
 
-			if (isRelationalFilter(filterPath)) {
+			if (isRelationalFilter(schema, collection, filterPath)) {
 				const { hasMultiRelational, isJoinAdded } = addJoin({
 					path: filterPath,
 					collection,
@@ -110,9 +111,7 @@ export function applyFilter(
 
 			const filterPath = getFilterPath(key, value);
 
-			/**
-			 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
-			 */
+			// For A2M fields, the path can contain an optional collection scope <field>:<scope>
 			const pathRoot = filterPath[0]!.split(':')[0]!;
 
 			const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
@@ -168,7 +167,7 @@ export function applyFilter(
 
 			const { operator: filterOperator, value: filterValue } = operation;
 
-			if (isRelationalFilter(filterPath) === false) {
+			if (!isRelationalFilter(schema, collection, filterPath)) {
 				const { type, special } = getFilterType(schema.collections[collection]!.fields, filterPath[0]!, collection)!;
 
 				validateOperator(type, filterOperator, special);
@@ -215,12 +214,5 @@ export function applyFilter(
 
 			applyOperator(knex, dbQuery, schema, columnPath, filterOperator, filterValue, logical, targetCollection);
 		}
-	}
-
-	/**
-	 * A filter is considered relational if it follows a path into another collection, or targets an alias field
-	 */
-	function isRelationalFilter(filterPath: string[]) {
-		return filterPath.length > 1 || schema.collections[collection]?.fields[filterPath[0]!]?.type === 'alias';
 	}
 }
