@@ -5,6 +5,7 @@ import {
 	LINK_TABLE_PREFIX,
 	SHADOW_TABLE_PREFIX,
 	VERSION_REFERENCE_PREFIX,
+	VERSIONED_READ_PREFIX,
 } from '../../../services/version-tables/constants.js';
 import type { VersionTableForeignKey } from '../../../services/version-tables/plan-version-tables.js';
 import type { SchemaHelper } from '../schema/types.js';
@@ -33,6 +34,13 @@ export class VersioningHelper extends DatabaseHelper {
 
 	getLinkTableName(collection: string): string {
 		return this.prefixName(LINK_TABLE_PREFIX, collection, PRIMARY_KEY_SUFFIX.length);
+	}
+
+	/**
+	 * Name of the collection that reads the live items of a collection together with its versions
+	 */
+	getVersionedReadName(collection: string): string {
+		return this.prefixName(VERSIONED_READ_PREFIX, collection);
 	}
 
 	/**

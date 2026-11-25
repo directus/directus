@@ -12,7 +12,7 @@ import {
 	toSystemColumn,
 } from './fields.js';
 import { rewriteFilter, stripSystemFilter } from './filter.js';
-import { createVirtualCollection } from './virtual-collection.js';
+import { getVersionedRead } from './schema.js';
 
 type Context = { knex: Knex; schema: SchemaOverview };
 
@@ -44,7 +44,7 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 
 	delete liveQuery.version;
 
-	const virtual = createVirtualCollection(knex, schema, collection);
+	const read = getVersionedRead(knex, schema, collection);
 	const shadows = new Set<string>();
 
 	if (schema.collections[collection]?.versioned) shadows.add(versioning.getShadowTableName(collection));
@@ -52,9 +52,9 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 	// Filters on versions of related items require access to them as well
 	const filter = query.filter
 		? rewriteFilter(query.filter, {
-				schema: virtual.schema,
+				schema: read.schema,
 				versioning,
-				collection: virtual.name,
+				collection: read.name,
 				hasSystemFields: true,
 				references: true,
 				shadows,
@@ -71,7 +71,7 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 		shadows: [...shadows],
 	};
 
-	return { query: liveQuery, versioning: versioned, versionFields: virtual.versionFields };
+	return { query: liveQuery, versioning: versioned, versionFields: read.versionFields };
 }
 
 /**

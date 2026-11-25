@@ -6,28 +6,30 @@ import { getHelpers } from '../database/helpers/index.js';
 import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
 import { nestVersionSystemFields } from '../services/version-tables/utils.js';
 import type { AST, FieldNode, M2ONode, O2MNode, VersionedNode } from '../types/ast.js';
-import { createVirtualCollection } from './virtual-collection.js';
+import { getVersionedRead } from './schema.js';
+import { getVersionedSource } from './source.js';
 
 export type VersionedLevelNode = (AST | M2ONode | O2MNode) & { versioning: VersionedNode };
 
 const SYSTEM_COLUMNS: string[] = Object.values(VERSION_SYSTEM_FIELDS);
 
 /**
- * The level of a versioned node as it's read from the combined rows of its collection: the virtual collection with its
+ * The level of a versioned node as it's read from the combined rows of its collection: the read collection with its
  * schema and source, the query with the version system fields mapped to their columns, and the system columns selected.
  */
 export function getVersionedLevel(node: VersionedLevelNode, schema: SchemaOverview, knex: Knex) {
-	const virtual = createVirtualCollection(knex, schema, node.name);
+	const read = getVersionedRead(knex, schema, node.name);
+	const { name } = read;
 	const { primary } = schema.collections[node.name]!;
 	const query = { ...node.query, ...node.versioning.query };
 	const isAggregate = Boolean(query.group || Object.keys(query.aggregate ?? {}).length > 0);
 
 	const children = node.children.map((child) => {
 		if (child.type === 'm2o' || child.type === 'a2o') {
-			return { ...child, relation: { ...child.relation, collection: virtual.name } };
+			return { ...child, relation: { ...child.relation, collection: name } };
 		}
 
-		if (child.type === 'o2m') return { ...child, relation: { ...child.relation, related_collection: virtual.name } };
+		if (child.type === 'o2m') return { ...child, relation: { ...child.relation, related_collection: name } };
 
 		return child;
 	});
@@ -37,14 +39,14 @@ export function getVersionedLevel(node: VersionedLevelNode, schema: SchemaOvervi
 	// The live primary key and system columns link the rows to the nested nodes and their parent
 	const selected = isAggregate
 		? (query.group ?? []).filter((field) => SYSTEM_COLUMNS.includes(field))
-		: [...(hasPrimary ? [] : [primary]), ...virtual.versionFields];
+		: [...(hasPrimary ? [] : [primary]), ...read.versionFields];
 
 	return {
 		node,
-		name: virtual.name,
-		schema: virtual.schema,
-		source: virtual.source,
-		versionFields: virtual.versionFields,
+		name,
+		schema: read.schema,
+		source: getVersionedSource(knex, schema, node.name),
+		versionFields: read.versionFields,
 		query,
 		children: [
 			...children,

@@ -42,7 +42,7 @@ export function stripSystemFilter(filter: Filter | null | undefined): Filter | n
 export type FilterLevel = {
 	schema: SchemaOverview;
 	versioning: VersioningHelper;
-	/** Collection the filter applies to, which is the virtual collection, a shadow table or a live collection */
+	/** Collection the filter applies to, which is a versioned read collection, a shadow table or a live collection */
 	collection: string;
 	/** Whether the rows have system columns, otherwise they're live items and match the system fields of published items */
 	hasSystemFields: boolean;

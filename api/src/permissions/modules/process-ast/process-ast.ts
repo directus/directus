@@ -1,5 +1,6 @@
 import type { Accountability, PermissionsAction } from '@directus/types';
 import type { AST, NestedCollectionNode } from '../../../types/ast.js';
+import { getVersionTablesSchema } from '../../../versioning/schema.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
@@ -20,8 +21,10 @@ export interface ProcessAstOptions {
 
 export async function processAst(options: ProcessAstOptions, context: Context) {
 	if (options.accountability && !options.accountability.admin) {
+		const tablesContext = { ...context, schema: getVersionTablesSchema(context.schema) };
+
 		for (const collection of getVersionedShadows(options.ast)) {
-			await validateAccess({ accountability: options.accountability, action: 'read', collection }, context);
+			await validateAccess({ accountability: options.accountability, action: 'read', collection }, tablesContext);
 		}
 	}
 

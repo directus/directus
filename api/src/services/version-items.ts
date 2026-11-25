@@ -18,6 +18,7 @@ import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { transaction } from '../utils/transaction.js';
 import { validateLinkAccess } from '../versioning/link-access.js';
+import { getVersionTablesSchema } from '../versioning/schema.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from './version-tables/constants.js';
@@ -63,7 +64,7 @@ export class VersionedItemsService {
 		this.collection = collection;
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
-		this.schema = options.schema;
+		this.schema = getVersionTablesSchema(options.schema);
 		this.versioning = getHelpers(this.knex).versioning;
 
 		if (!(collection in this.schema.collections) || isVersioningTable(collection)) {

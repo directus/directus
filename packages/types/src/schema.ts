@@ -39,4 +39,15 @@ export type CollectionsOverview = {
 export type SchemaOverview = {
 	collections: CollectionsOverview;
 	relations: Relation[];
+	/**
+	 * Tables managed by versioning, kept apart from the collections of the project
+	 */
+	versioning?: VersioningOverview;
+};
+
+export type VersioningOverview = {
+	/** Shadow and link tables */
+	collections: CollectionsOverview;
+	/** Relations of the shadow and link tables */
+	relations: Relation[];
 };

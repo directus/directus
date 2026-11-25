@@ -9,6 +9,7 @@ import { runAst } from '../database/run-ast/run-ast.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { formatSql } from '../test-utils/knex.js';
 import { isVersionedQuery } from './query.js';
+import { extractVersioning } from './schema.js';
 
 // The database helpers derive the dialect from the class name of the client
 const CLIENTS = {
@@ -28,7 +29,7 @@ function versionSystemFields(c: CollectionBuilder) {
 	c.field('version_user_updated').uuid();
 }
 
-const schema = new SchemaBuilder()
+const builtSchema = new SchemaBuilder()
 	.collection('articles', (c) => {
 		c.field('id').id();
 		c.field('title').string();
@@ -95,14 +96,16 @@ const schema = new SchemaBuilder()
 	})
 	.build();
 
-/** The rows of the virtual collection, which are the same in every query of a collection */
+const schema = extractVersioning(builtSchema);
+
+/** The rows of the versioned read collection, which are the same in every query of a collection */
 const SOURCE = /\(select "(?:directus_shadow_)?\w+"\."[^]*?\) as "(directus_versioned_\w+)"/g;
 
 type Options = {
 	client?: keyof typeof CLIENTS;
 	/** Rows returned for queries whose SQL contains the key, in order */
 	responses?: [string, Record<string, unknown>[]][];
-	/** Keep the rows of the virtual collection in the SQL instead of replacing them with its name */
+	/** Keep the rows of the versioned read collection in the SQL instead of replacing them with its name */
 	source?: boolean;
 };
 
@@ -151,7 +154,7 @@ describe('isVersionedQuery', () => {
 	});
 });
 
-describe('source of the virtual collection', () => {
+describe('source of the versioned read collection', () => {
 	test('combines live items with their published system fields and all unpublished versions', async () => {
 		const { sql, bindings } = await read('articles', { fields: ['id', 'title'] }, { source: true });
 
