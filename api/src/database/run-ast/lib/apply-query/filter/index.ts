@@ -114,12 +114,12 @@ export function applyFilter(
 			// For A2M fields, the path can contain an optional collection scope <field>:<scope>
 			const pathRoot = filterPath[0]!.split(':')[0]!;
 
-			const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
-
 			const relationalOperator = filterPath.find((segment) => isIn(segment, RELATIONAL_FILTER_OPERATORS));
 
 			// _some/_none apply a sub-filter, not a field operation; using getOperation (as we do for regular operators) would skip it
 			if (relationalOperator) {
+				const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
+
 				const isTopLevel = filterPath[1] === relationalOperator;
 				const isToMany = relationType === 'o2m' || relationType === 'o2a';
 
@@ -187,6 +187,8 @@ export function applyFilter(
 
 				continue;
 			}
+
+			const { relation } = getRelationInfo(relations, collection, pathRoot);
 
 			if (!relation) continue;
 
