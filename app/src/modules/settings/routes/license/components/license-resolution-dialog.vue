@@ -17,19 +17,17 @@ import { useRouter } from 'vue-router';
 import ResolutionLimitSection from './resolution-limit-section.vue';
 import ResolutionSsoAdminDialog from './resolution-sso-admin-dialog.vue';
 import ResolutionSsoSection from './resolution-sso-section.vue';
-import VAvatar from '@/components/v-avatar.vue';
+import ResolutionUserItem from './resolution-user-item.vue';
 import VButton from '@/components/v-button.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCard from '@/components/v-card.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDialog from '@/components/v-dialog.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useLicenseStore } from '@/stores/license';
 import { useUserStore } from '@/stores/user';
 import { localizedFormat } from '@/utils/localized-format';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { userName } from '@/utils/user-name';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 
 defineProps<{
@@ -182,14 +180,6 @@ const aiTranslations = computed(
 
 function find(kind: LicensePendingResolution['kind'], key: string): LicensePendingResolution | undefined {
 	return pendingResolution.value?.find((entry: LicensePendingResolution) => entry.kind === kind && entry.key === key);
-}
-
-function toUser(candidate: SeatCandidate) {
-	return {
-		first_name: candidate.first_name ?? undefined,
-		last_name: candidate.last_name ?? undefined,
-		email: candidate.email ?? undefined,
-	};
 }
 
 const selected = reactive({
@@ -407,11 +397,7 @@ function onEsc() {
 					@open-item="openUserDrawer"
 				>
 					<template #item="{ candidate }">
-						<VAvatar x-small round>
-							<img v-if="candidate.avatar" :src="`/assets/${candidate.avatar}`" :alt="userName(toUser(candidate))" />
-							<VIcon v-else name="person" small />
-						</VAvatar>
-						<span class="item-label">{{ userName(toUser(candidate)) }}</span>
+						<ResolutionUserItem :user="candidate" />
 					</template>
 				</ResolutionLimitSection>
 

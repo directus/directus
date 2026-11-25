@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, LimitExceededError, ResourceRestrictedError } from '@directus/errors';
 import {
 	activateKey,
 	billingPortal,
@@ -25,7 +25,13 @@ import {
 	updateKey,
 	verifyLicense,
 } from '@directus/license';
-import type { Accountability } from '@directus/types';
+import type {
+	Accountability,
+	LicenseResolvedItems,
+	LicenseResolvedKey,
+	LicenseResolvedOutput,
+	LicenseRestoreInput,
+} from '@directus/types';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionCache } from '../permissions/cache.js';
 import { UsersService } from '../services/index.js';
@@ -37,7 +43,11 @@ import { useStore } from '../utils/store.js';
 import { getActiveCollections } from './entitlements/lib/collections.js';
 import { getActiveFlows } from './entitlements/lib/flows.js';
 import { getActiveSeats } from './entitlements/lib/seats.js';
+import { splitSsoUsers } from './entitlements/lib/sso-enabled.js';
 import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
+import { mergeResolvedItems, removeResolvedEntries } from './resolved-items/merge.js';
+import { pruneResolvedItems, toResolvedOutput } from './resolved-items/read.js';
+import { readResolvedItems, updateResolvedItems } from './resolved-items/store.js';
 import { computeLicenseAction, type LicenseAction } from './utils/compute-license-action.js';
 import { computeLicenseStatus } from './utils/compute-license-status.js';
 import { durationToCron } from './utils/duration-to-cron.js';
@@ -45,6 +55,8 @@ import { isActivationMissing, toReason, translateLicenseError } from './utils/er
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
 import { type RPC, useRPC } from './utils/use-rpc.js';
+
+const RESTORE_ORDER: LicenseResolvedKey[] = ['collections', 'flows', 'seats', 'sso_users'];
 
 const env = useEnv();
 const logger = useLogger();
@@ -731,28 +743,63 @@ export class LicenseManager {
 	public async applyResolution(resolution: ResolveInput, ctx?: { accountability?: Accountability | undefined }) {
 		const entitlementManager = getEntitlementManager();
 		const cachesToClear: (CountableEntitlementKey | FeatureFlagEntitlementKey)[] = [];
+		const resolved: LicenseRestoreInput = {};
+		let resolveError: unknown;
 
-		if (resolution.collections && resolution.collections.length > 0) {
-			await entitlementManager.resolve('collections', resolution.collections, { accountability: ctx?.accountability });
-			cachesToClear.push('collections');
+		try {
+			if (resolution.collections && resolution.collections.length > 0) {
+				resolved.collections = await entitlementManager.resolve('collections', resolution.collections, {
+					accountability: ctx?.accountability,
+				});
+
+				cachesToClear.push('collections');
+			}
+
+			if (resolution.seats && resolution.seats.length > 0) {
+				const seatIds = await entitlementManager.resolve('seats', resolution.seats, {
+					accountability: ctx?.accountability,
+				});
+
+				Object.assign(resolved, await splitSsoUsers(seatIds));
+
+				cachesToClear.push('seats');
+			}
+
+			if (resolution.flows && resolution.flows.length > 0) {
+				resolved.flows = await entitlementManager.resolve('flows', resolution.flows, {
+					accountability: ctx?.accountability,
+				});
+
+				cachesToClear.push('flows');
+			}
+
+			// Disable SSO users, optionally setting the current admin's email and password
+			if (resolution.sso_enabled) {
+				const ssoIds = await entitlementManager.resolve('sso_enabled', resolution.sso_enabled, {
+					accountability: ctx?.accountability,
+				});
+
+				resolved.sso_users = [...(resolved.sso_users ?? []), ...ssoIds];
+
+				if (!cachesToClear.includes('seats')) cachesToClear.push('seats');
+				cachesToClear.push('sso_enabled');
+			}
+		} catch (error) {
+			resolveError = error;
 		}
 
-		if (resolution.seats && resolution.seats.length > 0) {
-			await entitlementManager.resolve('seats', resolution.seats, { accountability: ctx?.accountability });
-			cachesToClear.push('seats');
+		if (Object.values(resolved).some((ids) => ids && ids.length > 0)) {
+			const now = new Date().toISOString();
+
+			try {
+				await updateResolvedItems((current) => mergeResolvedItems(current, resolved, now));
+			} catch (error) {
+				if (resolveError === undefined) throw error;
+				logger.error(error, 'Could not record items deactivated by license resolution');
+			}
 		}
 
-		if (resolution.flows && resolution.flows.length > 0) {
-			await entitlementManager.resolve('flows', resolution.flows, { accountability: ctx?.accountability });
-			cachesToClear.push('flows');
-		}
-
-		// Disable SSO users, optionally setting the current admin's email and password
-		if (resolution.sso_enabled) {
-			await entitlementManager.resolve('sso_enabled', resolution.sso_enabled, { accountability: ctx?.accountability });
-			if (!cachesToClear.includes('seats')) cachesToClear.push('seats');
-			cachesToClear.push('sso_enabled');
-		}
+		if (resolveError !== undefined) throw resolveError;
 
 		if (cachesToClear.length > 0) {
 			await entitlementManager.clearCache(...cachesToClear);
@@ -762,6 +809,98 @@ export class LicenseManager {
 			// No broadcast needed, the reason lives in the shared store
 			await this.setInvalidReason(null);
 		}
+	}
+
+	/** Items deactivated by license resolution that can still be restored */
+	public async getResolvedItems(): Promise<LicenseResolvedOutput> {
+		const items = await readResolvedItems();
+
+		if (!items) return {};
+
+		const pruned = await this.pruneAndPersist(items);
+
+		return toResolvedOutput(pruned);
+	}
+
+	/** Reactivate recorded items, checking every limit before changing anything */
+	public async restoreResolution(
+		input: LicenseRestoreInput,
+		ctx: { accountability: Accountability | null },
+	): Promise<LicenseRestoreInput> {
+		const entitlementManager = getEntitlementManager();
+		const pruned = await this.pruneAndPersist((await readResolvedItems()) ?? {});
+
+		const selected: Record<LicenseResolvedKey, string[]> = { collections: [], flows: [], seats: [], sso_users: [] };
+
+		for (const key of RESTORE_ORDER) {
+			const recorded = new Set((pruned[key] ?? []).map((entry) => entry.id));
+			selected[key] = [...new Set(input[key] ?? [])].filter((id) => recorded.has(id));
+		}
+
+		if (selected.sso_users.length > 0 && !entitlementManager.isEntitled('sso_enabled')) {
+			throw new ResourceRestrictedError({ category: 'sso_enabled' });
+		}
+
+		const adding: Record<CountableEntitlementKey, number> = {
+			collections: selected.collections.length,
+			flows: selected.flows.length,
+			seats: selected.seats.length + selected.sso_users.length,
+		};
+
+		for (const key of COUNTABLE_ENTITLEMENT_KEYS) {
+			if (adding[key] === 0) continue;
+
+			const { allowed } = await entitlementManager.check(key, { adding: adding[key] });
+
+			if (!allowed) throw new LimitExceededError({ category: key });
+		}
+
+		const restored: LicenseRestoreInput = {};
+		const cachesToClear = new Set<CountableEntitlementKey | FeatureFlagEntitlementKey>();
+
+		for (const key of RESTORE_ORDER) {
+			if (selected[key].length === 0) continue;
+
+			restored[key] = await entitlementManager.restore(key, selected[key], ctx);
+
+			if (key === 'sso_users') {
+				cachesToClear.add('seats').add('sso_enabled');
+			} else {
+				cachesToClear.add(key);
+			}
+		}
+
+		if (cachesToClear.size === 0) return restored;
+
+		const restoredEntries: LicenseResolvedItems = {};
+
+		for (const [key, ids] of Object.entries(restored) as [LicenseResolvedKey, string[]][]) {
+			restoredEntries[key] = (pruned[key] ?? []).filter((entry) => ids.includes(entry.id));
+		}
+
+		await updateResolvedItems((current) => removeResolvedEntries(current, restoredEntries));
+		await entitlementManager.clearCache(...cachesToClear);
+		await clearPermissionCache();
+
+		return restored;
+	}
+
+	private async pruneAndPersist(items: LicenseResolvedItems): Promise<LicenseResolvedItems> {
+		const pruned = await pruneResolvedItems(items);
+		const stale: LicenseResolvedItems = {};
+
+		for (const key of RESTORE_ORDER) {
+			const kept = new Set((pruned[key] ?? []).map((entry) => entry.id));
+			const removed = (items[key] ?? []).filter((entry) => !kept.has(entry.id));
+
+			if (removed.length > 0) stale[key] = removed;
+		}
+
+		if (Object.keys(stale).length > 0) {
+			await updateResolvedItems((current) => removeResolvedEntries(current, stale));
+		}
+
+		return pruned;
 	}
 
 	/** Apply a license change and propagate it to all instances */

@@ -1,6 +1,7 @@
-import { ForbiddenError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import checkIsAdmin from '../middleware/is-admin.js';
 import { createMockRequest, createMockResponse, getRouteHandler } from '../test-utils/controllers.js';
 
 const licenseManager = vi.hoisted(() => ({
@@ -11,6 +12,8 @@ const licenseManager = vi.hoisted(() => ({
 	getEditable: vi.fn(),
 	getSource: vi.fn(),
 	billingPortalUrl: vi.fn(),
+	getResolvedItems: vi.fn(),
+	restoreResolution: vi.fn(),
 }));
 
 const isSetupCompleted = vi.hoisted(() => vi.fn());
@@ -114,5 +117,66 @@ describe('GET /portal', () => {
 		await handler!.handle(createMockRequest(), res, vi.fn());
 
 		expect(res.redirect).toHaveBeenCalledWith('https://billing.example.com/session/abc');
+	});
+});
+
+describe('GET /resolved', () => {
+	const [guard, handler] = getRouteHandler(router, 'GET', '/resolved');
+
+	test('is admin only', () => {
+		expect(guard!.handle).toBe(checkIsAdmin);
+	});
+
+	test('returns getResolvedItems output', async () => {
+		const output = { flows: { limit: 5, usage: 1, candidates: [] } };
+		licenseManager.getResolvedItems.mockResolvedValue(output);
+
+		const res = createMockResponse();
+		await handler!.handle(createMockRequest(), res, vi.fn());
+
+		expect(res.locals['payload']).toEqual({ data: output });
+	});
+});
+
+describe('POST /restore', () => {
+	const [guard, handler] = getRouteHandler(router, 'POST', '/restore');
+	const accountability = { user: 'admin', admin: true } as Accountability;
+
+	const restore = async (body: unknown) => {
+		const next = vi.fn();
+		await handler!.handle(createMockRequest({ accountability, body }), createMockResponse(), next);
+		return next.mock.calls[0]?.[0];
+	};
+
+	test('is admin only', () => {
+		expect(guard!.handle).toBe(checkIsAdmin);
+	});
+
+	test('returns the restored ids', async () => {
+		licenseManager.restoreResolution.mockResolvedValue({ flows: ['f1'] });
+
+		const res = createMockResponse();
+		await handler!.handle(createMockRequest({ accountability, body: { flows: ['f1'] } }), res, vi.fn());
+
+		expect(res.locals['payload']).toEqual({ data: { flows: ['f1'] } });
+	});
+
+	test('passes parsed input and accountability', async () => {
+		expect(await restore({ flows: ['f1'], sso_users: ['s1'] })).toBeUndefined();
+
+		expect(licenseManager.restoreResolution).toHaveBeenCalledWith(
+			{ flows: ['f1'], sso_users: ['s1'] },
+			{ accountability },
+		);
+	});
+
+	test.each([
+		['unknown keys', { roles: ['r1'] }],
+		['non-string ids', { flows: [1] }],
+		['an empty selection', { flows: [] }],
+		['no body', {}],
+	])('rejects %s', async (_label, body) => {
+		expect(await restore(body)).toBeInstanceOf(InvalidPayloadError);
+		expect(licenseManager.restoreResolution).not.toHaveBeenCalled();
 	});
 });

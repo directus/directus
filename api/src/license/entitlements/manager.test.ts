@@ -4,16 +4,26 @@ import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { checkCustomLLM } from './lib/custom-llms-enabled.js';
-import { countActiveFlows } from './lib/flows.js';
+import { countActiveFlows, resolveFlows, restoreFlows } from './lib/flows.js';
 import { EntitlementManager } from './manager.js';
 
 vi.mock('../../bus/index.js', () => ({ useBus: () => ({ publish: vi.fn(), subscribe: vi.fn() }) }));
-vi.mock('./lib/collections.js', () => ({ countActiveCollections: vi.fn(), resolveCollections: vi.fn() }));
-vi.mock('./lib/flows.js', () => ({ countActiveFlows: vi.fn(), resolveFlows: vi.fn() }));
-vi.mock('./lib/seats.js', () => ({ countActiveSeats: vi.fn(), resolveSeats: vi.fn() }));
+
+vi.mock('./lib/collections.js', () => ({
+	countActiveCollections: vi.fn(),
+	resolveCollections: vi.fn(),
+	restoreCollections: vi.fn(),
+}));
+
+vi.mock('./lib/flows.js', () => ({ countActiveFlows: vi.fn(), resolveFlows: vi.fn(), restoreFlows: vi.fn() }));
+vi.mock('./lib/seats.js', () => ({ countActiveSeats: vi.fn(), resolveSeats: vi.fn(), restoreSeats: vi.fn() }));
 vi.mock('./lib/custom-llms-enabled.js', () => ({ checkCustomLLM: vi.fn() }));
 vi.mock('./lib/custom-permission-rules-enabled.js', () => ({ checkCustomPermissionRules: vi.fn() }));
-vi.mock('./lib/sso-enabled.js', () => ({ checkUsersSSO: vi.fn(), resolveSSOUsers: vi.fn() }));
+
+vi.mock('./lib/sso-enabled.js', () => ({
+	checkUsersSSO: vi.fn(),
+	resolveSSOUsers: vi.fn(),
+}));
 
 afterEach(() => {
 	vi.clearAllMocks();
@@ -120,5 +130,28 @@ describe('assert (feature flag)', () => {
 		await expect(
 			managerWith({ custom_llms_enabled: { default: false } }).assert('custom_llms_enabled'),
 		).resolves.toBeUndefined();
+	});
+});
+
+describe('resolve', () => {
+	test("returns the resolver's ids", async () => {
+		vi.mocked(resolveFlows).mockResolvedValue(['f1']);
+
+		await expect(managerWith({}).resolve('flows', ['f1', 'f2'])).resolves.toEqual(['f1']);
+	});
+});
+
+describe('restore', () => {
+	test('calls the registered restorer', async () => {
+		vi.mocked(restoreFlows).mockResolvedValue(['f1']);
+
+		await expect(managerWith({}).restore('flows', ['f1'], { accountability: null })).resolves.toEqual(['f1']);
+		expect(restoreFlows).toHaveBeenCalledWith(['f1'], { accountability: null });
+	});
+
+	test('registerRestorer throws on duplicate key', () => {
+		expect(() => managerWith({}).registerRestorer('flows', vi.fn())).toThrow(
+			'Restorer was already registered for entitlement "flows"',
+		);
 	});
 });

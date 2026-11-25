@@ -4,7 +4,6 @@ import type {
 	CountableEntitlementKey,
 	Directus,
 	EntitlementCheckResult,
-	EntitlementResolver,
 	FeatureFlagCheckResult,
 	FeatureFlagEntitlementKey,
 	FeatureFlagValidator,
@@ -13,15 +12,16 @@ import type {
 	UsageCounter,
 } from '@directus/license';
 import { COUNTABLE_ENTITLEMENT_KEYS, DIRECTUS_CORE_LICENSE, FEATURE_FLAG_ENTITLEMENT_KEYS } from '@directus/license';
-import type { Accountability } from '@directus/types';
+import type { Accountability, LicenseResolvedKey } from '@directus/types';
 import type { Knex } from 'knex';
 import { useBus } from '../../bus/index.js';
-import { countActiveCollections, resolveCollections } from './lib/collections.js';
+import { countActiveCollections, resolveCollections, restoreCollections } from './lib/collections.js';
 import { checkCustomLLM } from './lib/custom-llms-enabled.js';
 import { checkCustomPermissionRules } from './lib/custom-permission-rules-enabled.js';
-import { countActiveFlows, resolveFlows } from './lib/flows.js';
-import { countActiveSeats, resolveSeats } from './lib/seats.js';
+import { countActiveFlows, resolveFlows, restoreFlows } from './lib/flows.js';
+import { countActiveSeats, resolveSeats, restoreSeats } from './lib/seats.js';
 import { checkUsersSSO, resolveSSOUsers } from './lib/sso-enabled.js';
+import type { Resolver, Restorer } from './types.js';
 
 type EntitlementCacheKey = CountableEntitlementKey | FeatureFlagEntitlementKey;
 
@@ -45,7 +45,8 @@ export class EntitlementManager {
 	private entitlements: Directus.Entitlements = DIRECTUS_CORE_LICENSE['entitlements'];
 	private counterSources = new Map<CountableEntitlementKey, UsageCounter>();
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
-	private resolverSources = new Map<keyof ResolveInput, EntitlementResolver<any>>();
+	private resolverSources = new Map<keyof ResolveInput, Resolver<any>>();
+	private restorerSources = new Map<LicenseResolvedKey, Restorer>();
 	private cache = new Map<EntitlementCacheKey, number | boolean>();
 	private initialized = false;
 
@@ -69,6 +70,12 @@ export class EntitlementManager {
 		this.registerResolver('seats', resolveSeats);
 		this.registerResolver('flows', resolveFlows);
 		this.registerResolver('sso_enabled', resolveSSOUsers);
+
+		// restorers
+		this.registerRestorer('collections', restoreCollections);
+		this.registerRestorer('seats', restoreSeats);
+		this.registerRestorer('flows', restoreFlows);
+		this.registerRestorer('sso_users', restoreSeats);
 	}
 
 	initialize() {
@@ -101,6 +108,7 @@ export class EntitlementManager {
 		forked.counterSources = this.counterSources;
 		forked.validatorSources = this.validatorSources;
 		forked.resolverSources = this.resolverSources;
+		forked.restorerSources = this.restorerSources;
 		forked.cache = this.cache;
 		return forked;
 	}
@@ -220,12 +228,23 @@ export class EntitlementManager {
 	/**
 	 * Wire up a resolver function for an entitlement.
 	 */
-	registerResolver<K extends keyof ResolveInput>(key: K, source: EntitlementResolver<K>) {
+	registerResolver<K extends keyof ResolveInput>(key: K, source: Resolver<K>) {
 		if (this.resolverSources.has(key)) {
 			throw new Error(`Resolver was already registered for entitlement "${String(key)}"`);
 		}
 
-		this.resolverSources.set(key, source as EntitlementResolver<any>);
+		this.resolverSources.set(key, source as Resolver<any>);
+	}
+
+	/**
+	 * Wire up a restorer function that reactivates items a resolver deactivated.
+	 */
+	registerRestorer(key: LicenseResolvedKey, source: Restorer) {
+		if (this.restorerSources.has(key)) {
+			throw new Error(`Restorer was already registered for entitlement "${String(key)}"`);
+		}
+
+		this.restorerSources.set(key, source);
 	}
 
 	/**
@@ -382,14 +401,31 @@ export class EntitlementManager {
 		key: K,
 		input: NonNullable<ResolveInput[K]>,
 		ctx?: { accountability?: Accountability | undefined },
-	): Promise<void> {
+	): Promise<string[]> {
 		const source = this.resolverSources.get(key);
 
 		if (!source) {
 			throw new Error(`No resolver registered for entitlement "${String(key)}"`);
 		}
 
-		await source(input, ctx);
+		return source(input, ctx);
+	}
+
+	/**
+	 * Reactivate previously resolved items, returning the ids that were reactivated
+	 */
+	async restore(
+		key: LicenseResolvedKey,
+		ids: string[],
+		ctx: { accountability: Accountability | null },
+	): Promise<string[]> {
+		const source = this.restorerSources.get(key);
+
+		if (!source) {
+			throw new Error(`No restorer registered for entitlement "${String(key)}"`);
+		}
+
+		return source(ids, ctx);
 	}
 
 	private isCountableKey(key: CountableEntitlementKey | FeatureFlagEntitlementKey): key is CountableEntitlementKey {

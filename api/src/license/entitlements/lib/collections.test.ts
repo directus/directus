@@ -5,7 +5,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import { CollectionsService } from '../../../services/index.js';
 import { mockEnv } from '../../../test-utils/env.js';
 import type { Collection } from '../../../types/collection.js';
-import { getActiveCollections } from './collections.js';
+import { getActiveCollections, resolveCollections, restoreCollections } from './collections.js';
 
 vi.mock('@directus/env', async () => {
 	const { mockUseEnv } = await import('../../../test-utils/env.js');
@@ -117,5 +117,47 @@ describe('getActiveCollections', () => {
 		const result = await getActiveCollections();
 
 		expect(result).toEqual(['articles', 'authors']);
+	});
+});
+
+describe('resolveCollections', () => {
+	test('skips collections that are not active', async () => {
+		vi.mocked(CollectionsService.prototype.readByQuery).mockResolvedValue([
+			makeCollection('a'),
+			makeCollection('b', { meta: { status: 'inactive' } }),
+		]);
+
+		CollectionsService.prototype.updateOne = vi.fn(async (collection: string) => collection);
+
+		await expect(resolveCollections(['a', 'b'])).resolves.toEqual(['a']);
+		expect(CollectionsService.prototype.updateOne).not.toHaveBeenCalledWith('b', expect.anything());
+	});
+
+	test('returns only ids whose update fulfilled', async () => {
+		vi.mocked(CollectionsService.prototype.readByQuery).mockResolvedValue([
+			makeCollection('a'),
+			makeCollection('broken'),
+			makeCollection('b'),
+		]);
+
+		CollectionsService.prototype.updateOne = vi.fn(async (collection: string) => {
+			if (collection === 'broken') throw new Error('fail');
+			return collection;
+		});
+
+		await expect(resolveCollections(['a', 'broken', 'b'])).resolves.toEqual(['a', 'b']);
+		expect(CollectionsService.prototype.updateOne).toHaveBeenCalledWith('a', { meta: { status: 'inactive' } });
+	});
+});
+
+describe('restoreCollections', () => {
+	test('sets meta.status active and returns fulfilled ids', async () => {
+		CollectionsService.prototype.updateOne = vi.fn(async (collection: string) => {
+			if (collection === 'broken') throw new Error('fail');
+			return collection;
+		});
+
+		await expect(restoreCollections(['a', 'broken'], { accountability: null })).resolves.toEqual(['a']);
+		expect(CollectionsService.prototype.updateOne).toHaveBeenCalledWith('a', { meta: { status: 'active' } });
 	});
 });

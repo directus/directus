@@ -3,7 +3,7 @@ import type { Accountability } from '@directus/types';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { DEFAULT_AUTH_PROVIDER } from '../../../constants.js';
 import { UsersService } from '../../../services/index.js';
-import { checkUsersSSO, resolveSSOUsers } from './sso-enabled.js';
+import { checkUsersSSO, resolveSSOUsers, splitSsoUsers } from './sso-enabled.js';
 
 vi.mock('../../../utils/get-schema.js', () => ({
 	getSchema: vi.fn(),
@@ -41,23 +41,53 @@ describe('resolveSSOUsers', () => {
 	const ctx = { accountability: { user: 'admin' } as Accountability };
 
 	test('no-op when no acting user', async () => {
-		await resolveSSOUsers(true, {});
+		await expect(resolveSSOUsers(true, {})).resolves.toEqual([]);
 
-		expect(UsersService.prototype.updateByQuery).not.toHaveBeenCalled();
+		expect(UsersService.prototype.updateMany).not.toHaveBeenCalled();
 		expect(UsersService.prototype.updateOne).not.toHaveBeenCalled();
 	});
 
-	test('deactivates non-default-provider users while excluding the acting admin', async () => {
-		await resolveSSOUsers(true, ctx);
+	test('deactivates and returns only active non-admin SSO users', async () => {
+		vi.mocked(UsersService.prototype.readByQuery).mockResolvedValue([{ id: 's1' }, { id: 's2' }]);
 
-		expect(UsersService.prototype.updateByQuery).toHaveBeenCalledWith(
-			{
-				filter: {
-					_and: [{ provider: { _neq: DEFAULT_AUTH_PROVIDER, _nnull: true } }, { id: { _neq: 'admin' } }],
-				},
+		await expect(resolveSSOUsers(true, ctx)).resolves.toEqual(['s1', 's2']);
+
+		expect(UsersService.prototype.readByQuery).toHaveBeenCalledWith({
+			fields: ['id'],
+			filter: {
+				_and: [
+					{ provider: { _neq: DEFAULT_AUTH_PROVIDER, _nnull: true } },
+					{ id: { _neq: 'admin' } },
+					{ status: { _eq: 'active' } },
+				],
 			},
-			{ status: USER_INACTIVE_LICENSE_STATUS },
-		);
+			limit: -1,
+		});
+
+		expect(UsersService.prototype.updateMany).toHaveBeenCalledWith(['s1', 's2'], {
+			status: USER_INACTIVE_LICENSE_STATUS,
+		});
+	});
+
+	test('returns [] and changes nothing when no SSO user matches', async () => {
+		vi.mocked(UsersService.prototype.readByQuery).mockResolvedValue([]);
+
+		await expect(resolveSSOUsers(true, ctx)).resolves.toEqual([]);
+		expect(UsersService.prototype.updateMany).not.toHaveBeenCalled();
+	});
+
+	test('updates the admin credentials before deactivating SSO users', async () => {
+		vi.mocked(UsersService.prototype.readByQuery).mockResolvedValue([{ id: 's1' }]);
+		vi.mocked(UsersService.prototype.updateOne).mockRejectedValueOnce(new Error('password policy'));
+
+		await expect(resolveSSOUsers({ admin: { password: 'weak' } }, ctx)).rejects.toThrow('password policy');
+		expect(UsersService.prototype.updateMany).not.toHaveBeenCalled();
+	});
+
+	test('the admin credential change is not in the returned ids', async () => {
+		vi.mocked(UsersService.prototype.readByQuery).mockResolvedValue([{ id: 's1' }]);
+
+		await expect(resolveSSOUsers({ admin: { email: 'a@b.com' } }, ctx)).resolves.toEqual(['s1']);
 	});
 
 	test.each([
@@ -80,5 +110,21 @@ describe('resolveSSOUsers', () => {
 			provider: DEFAULT_AUTH_PROVIDER,
 			...expected,
 		});
+	});
+});
+
+describe('splitSsoUsers', () => {
+	test('separates users with a non-default provider', async () => {
+		vi.mocked(UsersService.prototype.readByQuery).mockResolvedValue([
+			{ id: 'u1', provider: 'default' },
+			{ id: 's1', provider: 'github' },
+		]);
+
+		await expect(splitSsoUsers(['u1', 's1'])).resolves.toEqual({ seats: ['u1'], sso_users: ['s1'] });
+	});
+
+	test('skips the query for an empty list', async () => {
+		await expect(splitSsoUsers([])).resolves.toEqual({ seats: [], sso_users: [] });
+		expect(UsersService.prototype.readByQuery).not.toHaveBeenCalled();
 	});
 });

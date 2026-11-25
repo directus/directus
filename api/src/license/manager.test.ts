@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError } from '@directus/errors';
+import { ForbiddenError, LimitExceededError, ResourceRestrictedError } from '@directus/errors';
 import {
 	activateKey,
 	deactivateKey,
@@ -15,8 +15,11 @@ import { clearCache as clearPermissionCache } from '../permissions/cache.js';
 import { UsersService } from '../services/index.js';
 import { runExclusive } from '../utils/run-exclusive.js';
 import { scheduleSynchronizedJob } from '../utils/schedule.js';
+import { splitSsoUsers } from './entitlements/lib/sso-enabled.js';
 import { EntitlementManager } from './entitlements/manager.js';
 import { LicenseManager } from './manager.js';
+import { pruneResolvedItems, toResolvedOutput } from './resolved-items/read.js';
+import { readResolvedItems, updateResolvedItems } from './resolved-items/store.js';
 import { durationToCron } from './utils/duration-to-cron.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
@@ -29,6 +32,9 @@ const entitlements = vi.hoisted(() => ({
 	resolve: vi.fn(),
 	clearCache: vi.fn(),
 	checkAll: vi.fn(),
+	check: vi.fn(),
+	isEntitled: vi.fn(),
+	restore: vi.fn(),
 }));
 
 vi.mock('@directus/env', async () => {
@@ -87,7 +93,22 @@ vi.mock('./entitlements/manager.js', () => ({
 
 vi.mock('./entitlements/lib/collections.js', () => ({ getActiveCollections: vi.fn() }));
 vi.mock('./entitlements/lib/flows.js', () => ({ getActiveFlows: vi.fn() }));
+
 vi.mock('./entitlements/lib/seats.js', () => ({ getActiveSeats: vi.fn() }));
+
+vi.mock('./entitlements/lib/sso-enabled.js', () => ({
+	splitSsoUsers: vi.fn(async (ids: string[]) => ({ seats: ids, sso_users: [] })),
+}));
+
+vi.mock('./resolved-items/read.js', () => ({
+	pruneResolvedItems: vi.fn(async (items: unknown) => items),
+	toResolvedOutput: vi.fn(async () => ({})),
+}));
+
+vi.mock('./resolved-items/store.js', () => ({
+	readResolvedItems: vi.fn(),
+	updateResolvedItems: vi.fn(async (fn: (current: null) => unknown) => fn(null)),
+}));
 
 const env = useEnv();
 
@@ -741,6 +762,93 @@ describe('applyResolution', () => {
 		expect(broadcast).not.toHaveBeenCalled();
 	});
 
+	test('records the ids each resolver returned', async () => {
+		const manager = await managerWithReason();
+		entitlements.checkAll.mockResolvedValue(true);
+
+		entitlements.resolve.mockImplementation(async (key: string) => {
+			return { collections: ['c1'], seats: ['u1'], flows: ['f1'], sso_enabled: ['s1'] }[key];
+		});
+
+		await manager.applyResolution({ collections: ['c1'], seats: ['u1'], flows: ['f1'], sso_enabled: true });
+
+		expect(updateResolvedItems).toHaveBeenCalledTimes(1);
+
+		const recorded = await vi.mocked(updateResolvedItems).mock.results[0]!.value;
+
+		expect(recorded).toEqual({
+			collections: [{ id: 'c1', resolved_at: expect.any(String) }],
+			seats: [{ id: 'u1', resolved_at: expect.any(String) }],
+			flows: [{ id: 'f1', resolved_at: expect.any(String) }],
+			sso_users: [{ id: 's1', resolved_at: expect.any(String) }],
+		});
+	});
+
+	test('records seat users with an SSO provider under sso_users', async () => {
+		const manager = await managerWithReason();
+		entitlements.checkAll.mockResolvedValue(true);
+
+		entitlements.resolve.mockImplementation(async (key: string) => {
+			return { seats: ['u1', 's9'], sso_enabled: ['s1'] }[key] ?? [];
+		});
+
+		vi.mocked(splitSsoUsers).mockResolvedValueOnce({ seats: ['u1'], sso_users: ['s9'] });
+
+		await manager.applyResolution({ seats: ['u1', 's9'], sso_enabled: true });
+
+		const recorded = await vi.mocked(updateResolvedItems).mock.results[0]!.value;
+
+		expect(recorded).toEqual({
+			seats: [{ id: 'u1', resolved_at: expect.any(String) }],
+			sso_users: [
+				{ id: 's9', resolved_at: expect.any(String) },
+				{ id: 's1', resolved_at: expect.any(String) },
+			],
+		});
+	});
+
+	test('records ids from earlier resolvers when a later resolver throws', async () => {
+		const manager = await managerWithReason();
+
+		entitlements.resolve.mockImplementation(async (key: string) => {
+			if (key === 'sso_enabled') throw new Error('password policy');
+			return { collections: ['c1'] }[key] ?? [];
+		});
+
+		await expect(manager.applyResolution({ collections: ['c1'], sso_enabled: true })).rejects.toThrow(
+			'password policy',
+		);
+
+		const recorded = await vi.mocked(updateResolvedItems).mock.results[0]!.value;
+
+		expect(recorded).toEqual({ collections: [{ id: 'c1', resolved_at: expect.any(String) }] });
+	});
+
+	test('rethrows the resolver error when recording also fails', async () => {
+		const manager = await managerWithReason();
+
+		entitlements.resolve.mockImplementation(async (key: string) => {
+			if (key === 'sso_enabled') throw new Error('password policy');
+			return { collections: ['c1'] }[key] ?? [];
+		});
+
+		vi.mocked(updateResolvedItems).mockRejectedValueOnce(new Error('database locked'));
+
+		await expect(manager.applyResolution({ collections: ['c1'], sso_enabled: true })).rejects.toThrow(
+			'password policy',
+		);
+	});
+
+	test('does not record anything when every resolver returns []', async () => {
+		const manager = await managerWithReason();
+		entitlements.checkAll.mockResolvedValue(true);
+		entitlements.resolve.mockResolvedValue([]);
+
+		await manager.applyResolution({ collections: ['c1'], sso_enabled: true });
+
+		expect(updateResolvedItems).not.toHaveBeenCalled();
+	});
+
 	test('keeps the recorded reason while a limit is still exceeded', async () => {
 		const manager = await managerWithReason();
 		entitlements.checkAll.mockResolvedValue(false);
@@ -795,5 +903,150 @@ describe('syncState', () => {
 
 		expect(entitlements.setEntitlements).toHaveBeenLastCalledWith(DIRECTUS_CORE_LICENSE.entitlements);
 		expect(manager.getSource()).toBeNull();
+	});
+});
+
+describe('getResolvedItems', () => {
+	const AT = '2026-11-20T00:00:00.000Z';
+
+	test('returns an empty output when nothing is recorded', async () => {
+		vi.mocked(readResolvedItems).mockResolvedValue(null);
+
+		await expect(new LicenseManager().getResolvedItems()).resolves.toEqual({});
+	});
+
+	test('writes back only the ids that pruning removed', async () => {
+		vi.mocked(readResolvedItems).mockResolvedValue({
+			flows: [
+				{ id: 'f1', resolved_at: AT },
+				{ id: 'gone', resolved_at: AT },
+			],
+		});
+
+		vi.mocked(pruneResolvedItems).mockResolvedValueOnce({ flows: [{ id: 'f1', resolved_at: AT }] });
+
+		await new LicenseManager().getResolvedItems();
+
+		const update = vi.mocked(updateResolvedItems).mock.calls[0]![0];
+
+		expect(update({ flows: [{ id: 'gone', resolved_at: AT }], seats: [{ id: 'new', resolved_at: AT }] })).toEqual({
+			seats: [{ id: 'new', resolved_at: AT }],
+		});
+
+		expect(toResolvedOutput).toHaveBeenCalledWith({ flows: [{ id: 'f1', resolved_at: AT }] });
+	});
+
+	test('keeps a stale entry recorded again while pruning ran', async () => {
+		vi.mocked(readResolvedItems).mockResolvedValue({ flows: [{ id: 'gone', resolved_at: AT }] });
+		vi.mocked(pruneResolvedItems).mockResolvedValueOnce({});
+
+		await new LicenseManager().getResolvedItems();
+
+		const update = vi.mocked(updateResolvedItems).mock.calls[0]![0];
+		const rerecorded = { flows: [{ id: 'gone', resolved_at: '2026-11-21T00:00:00.000Z' }] };
+
+		expect(update(rerecorded)).toEqual(rerecorded);
+	});
+
+	test('does not write when pruning changed nothing', async () => {
+		vi.mocked(readResolvedItems).mockResolvedValue({ flows: [{ id: 'f1', resolved_at: AT }] });
+
+		await new LicenseManager().getResolvedItems();
+
+		expect(updateResolvedItems).not.toHaveBeenCalled();
+	});
+});
+
+describe('restoreResolution', () => {
+	const AT = '2026-11-20T00:00:00.000Z';
+	const ctx = { accountability: null };
+
+	beforeEach(() => {
+		vi.mocked(readResolvedItems).mockResolvedValue({
+			collections: [
+				{ id: 'c1', resolved_at: AT },
+				{ id: 'c2', resolved_at: AT },
+			],
+			seats: [{ id: 'u1', resolved_at: AT }],
+			flows: [{ id: 'f1', resolved_at: AT }],
+			sso_users: [
+				{ id: 's1', resolved_at: AT },
+				{ id: 's2', resolved_at: AT },
+			],
+		});
+
+		entitlements.check.mockResolvedValue({ allowed: true });
+		entitlements.isEntitled.mockReturnValue(true);
+		entitlements.restore.mockImplementation(async (_key: string, ids: string[]) => ids);
+	});
+
+	test('rejects with LimitExceededError before any restore when collections exceed the limit', async () => {
+		entitlements.check.mockImplementation(async (key: string) => ({ allowed: key !== 'collections' }));
+
+		await expect(new LicenseManager().restoreResolution({ collections: ['c1', 'c2'] }, ctx)).rejects.toBeInstanceOf(
+			LimitExceededError,
+		);
+
+		expect(entitlements.check).toHaveBeenCalledWith('collections', { adding: 2 });
+		expect(entitlements.restore).not.toHaveBeenCalled();
+	});
+
+	test('counts sso users against seats', async () => {
+		await new LicenseManager().restoreResolution({ seats: ['u1'], sso_users: ['s1', 's2'] }, ctx);
+
+		expect(entitlements.check).toHaveBeenCalledWith('seats', { adding: 3 });
+	});
+
+	test('rejects sso_users with ResourceRestrictedError when not entitled', async () => {
+		entitlements.isEntitled.mockReturnValue(false);
+
+		await expect(new LicenseManager().restoreResolution({ sso_users: ['s1'] }, ctx)).rejects.toBeInstanceOf(
+			ResourceRestrictedError,
+		);
+
+		expect(entitlements.restore).not.toHaveBeenCalled();
+	});
+
+	test('returns the ids each restorer reactivated', async () => {
+		entitlements.restore.mockImplementation(async (key: string, ids: string[]) => (key === 'flows' ? [] : ids));
+
+		await expect(new LicenseManager().restoreResolution({ collections: ['c1'], flows: ['f1'] }, ctx)).resolves.toEqual({
+			collections: ['c1'],
+			flows: [],
+		});
+	});
+
+	test('ignores ids that are not recorded', async () => {
+		await new LicenseManager().restoreResolution({ flows: ['f1', 'unknown'] }, ctx);
+
+		expect(entitlements.restore).toHaveBeenCalledWith('flows', ['f1'], ctx);
+	});
+
+	test('removes only the ids each restorer returned, then clears caches', async () => {
+		entitlements.restore.mockImplementation(async (key: string, ids: string[]) => (key === 'flows' ? [] : ids));
+
+		await new LicenseManager().restoreResolution({ collections: ['c1'], flows: ['f1'], sso_users: ['s1'] }, ctx);
+
+		const update = vi.mocked(updateResolvedItems).mock.calls[0]![0];
+
+		expect(
+			update({
+				collections: [{ id: 'c1', resolved_at: AT }],
+				flows: [{ id: 'f1', resolved_at: AT }],
+				sso_users: [{ id: 's1', resolved_at: AT }],
+			}),
+		).toEqual({ flows: [{ id: 'f1', resolved_at: AT }] });
+
+		expect(entitlements.clearCache).toHaveBeenCalledWith('collections', 'flows', 'seats', 'sso_enabled');
+		expect(clearPermissionCache).toHaveBeenCalledTimes(1);
+	});
+
+	test('keeps entries recorded again while the restore ran', async () => {
+		await new LicenseManager().restoreResolution({ flows: ['f1'] }, ctx);
+
+		const update = vi.mocked(updateResolvedItems).mock.calls[0]![0];
+		const rerecorded = { flows: [{ id: 'f1', resolved_at: '2026-11-21T00:00:00.000Z' }] };
+
+		expect(update(rerecorded)).toEqual(rerecorded);
 	});
 });

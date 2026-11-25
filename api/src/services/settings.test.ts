@@ -98,3 +98,29 @@ describe('custom_llms_enabled entitled', () => {
 		expect(await service().readByQuery({})).toEqual([{ ai_openai_compatible_name: 'visible' }]);
 	});
 });
+
+describe('resolved_items', () => {
+	beforeEach(() => {
+		entitlements.isEntitled.mockReturnValue(true);
+	});
+
+	test.each([
+		['updateMany', (service: SettingsService) => service.updateMany([1], { resolved_items: {} })],
+		['createOne', (service: SettingsService) => service.createOne({ resolved_items: {} })],
+	])('%s rejects manual writes', async (method, mutate) => {
+		await expect(mutate(new SettingsService({ schema, accountability }))).rejects.toThrow(
+			`You can't change the "resolved_items" value manually`,
+		);
+
+		expect(ItemsService.prototype[method as 'updateMany' | 'createOne']).not.toHaveBeenCalled();
+	});
+
+	test.each([
+		['updateMany', (service: SettingsService) => service.updateMany([1], { resolved_items: {} })],
+		['createOne', (service: SettingsService) => service.createOne({ resolved_items: {} })],
+	])('%s allows internal writes without accountability', async (method, mutate) => {
+		await mutate(new SettingsService({ schema, accountability: null }));
+
+		expect(ItemsService.prototype[method as 'updateMany' | 'createOne']).toHaveBeenCalled();
+	});
+});
