@@ -23,6 +23,7 @@ import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import { trackLastAccessedCollection } from '../index';
 import ContentNotFound from './not-found.vue';
+import { useResolvePrimaryKey } from './use-resolve-primary-key';
 import { useContextStaging } from '@/ai/composables/use-context-staging';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import VButton from '@/components/v-button.vue';
@@ -110,14 +111,18 @@ const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
 
 const form = ref<ComponentPublicInstance>();
 
-const { collection } = toRefs(props);
+const { collection, primaryKey: primaryKeyParam } = toRefs(props);
 const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
 const { deleteAllowed: deleteVersionsAllowed } = useCollectionPermissions('directus_versions');
 
-const { primaryKeyParam, resolvedPrimaryKey, existingPrimaryKey, resolvePrimaryKey } = useResolvePrimaryKey();
+const { resolvedPrimaryKey, existingPrimaryKey, resolvePrimaryKey } = useResolvePrimaryKey({
+	collection,
+	primaryKeyParam,
+	primaryKeyField,
+});
 
 const {
 	readVersionsAllowed,
@@ -755,43 +760,6 @@ function enterSingletonDraftContext(
 	if (newResolvedPK !== '+') return;
 
 	router.replace({ ...route, query: { ...route.query, version: VERSION_KEY_DRAFT } });
-}
-
-function useResolvePrimaryKey() {
-	const { primaryKey: primaryKeyParam } = toRefs(props);
-
-	/**
-	 * Collection Item PK: ID or '+' (new item).
-	 * Singleton Item PK: ID or '+' (new item) or `null` (not-yet loaded).
-	 */
-	const resolvedPrimaryKey = ref<PrimaryKey | null>(primaryKeyParam.value);
-	const existingPrimaryKey = computed(() => (resolvedPrimaryKey.value === '+' ? null : resolvedPrimaryKey.value));
-
-	// Reset on collection change to avoid previous singleton’s primary key leaking into the next
-	// collection’s queries.
-	watch(collection, () => {
-		resolvedPrimaryKey.value = primaryKeyParam.value;
-	});
-
-	return {
-		primaryKeyParam,
-		resolvedPrimaryKey,
-		existingPrimaryKey,
-		resolvePrimaryKey,
-	};
-
-	function resolvePrimaryKey(newItem: Item | null, newIsSingleton: boolean, newPrimaryKeyParam: PrimaryKey | null) {
-		if (newIsSingleton) {
-			if (!newItem) return;
-			// Note: After fetching a singleton item, `newItem` will be `{ id: null }` if it hasn’t been created yet.
-
-			const pkField = primaryKeyField.value?.field;
-			resolvedPrimaryKey.value = (pkField ? (newItem[pkField] ?? '+') : '+') as PrimaryKey;
-			return;
-		}
-
-		resolvedPrimaryKey.value = newPrimaryKeyParam;
-	}
 }
 
 function useItemNavigation() {
