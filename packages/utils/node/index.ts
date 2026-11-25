@@ -1,4 +1,3 @@
-export * from './array-helpers.js';
 export * from './fetch-global-access/fetch-global-access.js';
 export * from './fetch-global-access/lib/fetch-global-access-for-roles.js';
 export * from './fetch-global-access/lib/fetch-global-access-for-user.js';
