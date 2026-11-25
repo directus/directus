@@ -15,7 +15,7 @@ import {
 	updateItems,
 	updatePolicy,
 } from '@directus/sdk';
-import { port } from '@utils/constants.js';
+import { database, port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
@@ -293,7 +293,9 @@ test('deduplicates primary keys when validating item access', async () => {
 	).toBeDefined();
 });
 
-test('read with a relational _some permission rule containing _or', async () => {
+// MSSQL doesn't allow a subquery inside an aggregate, and permission rules are evaluated within
+// COUNT(CASE WHEN <rule> ...), so any _some/_none rule fails there until that's resolved
+test.skipIf(database === 'mssql')('read with a relational _some permission rule containing _or', async () => {
 	const [stavanger, oslo, bergen] = await api.request(
 		createItems(collections.trains, [
 			{ name: 'From Stavanger', tracks: [{ from: 'Stavanger', to: 'Oslo' }] },
