@@ -9,6 +9,8 @@ import {
 } from '../services/version-tables/constants.js';
 import { getVersionedRead } from './schema.js';
 
+const ROWS_ALIAS = 'directus_versioned_rows';
+
 /**
  * Rows of the collection that reads the live items of a collection together with their versions. Collections that
  * aren't versioned only have live rows, with the system fields of published items and the references to versions from
@@ -74,7 +76,7 @@ export function getVersionedSource(knex: Knex, schema: SchemaOverview, collectio
 		itemsQuery.leftJoin(linkTable, `${linkTable}.${primary}`, `${collection}.${primary}`);
 	}
 
-	if (!shadowTable || !shadow) return itemsQuery;
+	if (!shadowTable || !shadow) return withA2OReferences(itemsQuery);
 
 	// Published versions are represented by the live item
 	const versionsQuery = knex
@@ -87,5 +89,23 @@ export function getVersionedSource(knex: Knex, schema: SchemaOverview, collectio
 		.from(shadowTable)
 		.whereNot(`${shadowTable}.${VERSION_SYSTEM_FIELDS.type}`, 'published');
 
-	return itemsQuery.unionAll([versionsQuery]);
+	return withA2OReferences(itemsQuery.unionAll([versionsQuery]));
+
+	function withA2OReferences(rows: Knex.QueryBuilder) {
+		if (read.a2oReferences.length === 0) return rows;
+
+		return knex
+			.select([
+				`${ROWS_ALIAS}.*`,
+				...read.a2oReferences.map(({ column, reference, collectionField, collection }) =>
+					knex.raw('case when ?? = ? then ?? end as ??', [
+						`${ROWS_ALIAS}.${collectionField}`,
+						collection,
+						`${ROWS_ALIAS}.${reference}`,
+						column,
+					]),
+				),
+			])
+			.from(rows.as(ROWS_ALIAS));
+	}
 }

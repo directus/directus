@@ -35,6 +35,30 @@ export async function runAst(
 		const results: { [collection: string]: null | Item | Item[] } = {};
 
 		for (const collection of ast.names) {
+			const versioning = ast.versioning?.[collection];
+
+			if (versioning) {
+				const node = {
+					name: collection,
+					children: ast.children[collection]!,
+					query: ast.query[collection]!,
+					versioning,
+				};
+
+				const level = getVersionedLevel(node, schema, knex);
+
+				results[collection] = await run(
+					level.name,
+					level.children,
+					level.query,
+					ast.cases[collection] ?? [],
+					accountability,
+					level,
+				);
+
+				continue;
+			}
+
 			results[collection] = await run(
 				collection,
 				ast.children[collection]!,

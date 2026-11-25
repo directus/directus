@@ -54,6 +54,13 @@ export type A2MNode = {
 	cases: {
 		[collection: string]: Filter[];
 	};
+
+	/**
+	 * Set per related collection when the read includes versions of the related items
+	 */
+	versioning?: {
+		[collection: string]: VersionedNode;
+	};
 };
 
 export type O2MNode = {
@@ -126,7 +133,7 @@ export type VersionedNode = {
 	fields: string[];
 	/**
 	 * Column with references to versions, which links the node to its parent next to the live relation. It's on the
-	 * parent rows for m2o nodes and on the related rows for o2m nodes.
+	 * parent rows for m2o and a2o nodes and on the related rows for o2m nodes.
 	 */
 	reference: string | null;
 	/** Shadow tables the read requires access to */

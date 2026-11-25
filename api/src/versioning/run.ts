@@ -1,15 +1,29 @@
-import type { Filter, Item, SchemaOverview } from '@directus/types';
+import type { Filter, Item, Query, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isNil, uniq } from 'lodash-es';
 import { getHelpers } from '../database/helpers/index.js';
 import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
 import { nestVersionSystemFields } from '../services/version-tables/utils.js';
-import type { AST, FieldNode, M2ONode, O2MNode, VersionedNode } from '../types/ast.js';
+import type {
+	A2MNode,
+	FieldNode,
+	FunctionFieldNode,
+	M2ONode,
+	NestedCollectionNode,
+	O2MNode,
+	VersionedNode,
+} from '../types/ast.js';
 import { getVersionedRead } from './schema.js';
 import { getVersionedSource } from './source.js';
 
-export type VersionedLevelNode = (AST | M2ONode | O2MNode) & { versioning: VersionedNode };
+/** A node, or a related collection of an a2o node, that's read from the combined rows of its collection */
+export type VersionedLevelNode = {
+	name: string;
+	query: Query;
+	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
+	versioning: VersionedNode;
+};
 
 const SYSTEM_COLUMNS: string[] = Object.values(VERSION_SYSTEM_FIELDS);
 
@@ -58,8 +72,8 @@ export function getVersionedLevel(node: VersionedLevelNode, schema: SchemaOvervi
 }
 
 /**
- * Move the system columns of the rows of a versioned level under `directus_version`. Relations that reference a version
- * instead of a live item, and aren't read as nested node, are set to `{ directus_version: { id } }`.
+ * Move the system columns of the rows of a versioned level under `directus_version`. m2o relations that reference a
+ * version instead of a live item, and aren't read as nested node, are set to `{ directus_version: { id } }`.
  */
 export function formatVersionedLevel(
 	items: Item | Item[],
@@ -71,10 +85,9 @@ export function formatVersionedLevel(
 	const rows = toArray(items);
 
 	for (const child of node.children) {
-		if (child.type !== 'field' && child.type !== 'a2o') continue;
+		if (child.type !== 'field') continue;
 
-		const field = child.type === 'field' ? child.name : child.relation.field;
-		const reference = versioning.getVersionReferenceField(field);
+		const reference = versioning.getVersionReferenceField(child.name);
 
 		if (!versionFields.includes(reference)) continue;
 
@@ -111,9 +124,6 @@ export function applyVersionedParentFilter(
 	const { reference } = node.versioning;
 	const { field } = node.relation;
 
-	const values = (rows: Item[], column: string) =>
-		uniq(rows.map((row) => row[column])).filter((value) => !isNil(value));
-
 	let keyColumn: string;
 	let idColumn: string;
 	let keys: unknown[];
@@ -123,10 +133,10 @@ export function applyVersionedParentFilter(
 		// The parent holds the key of the related live item, or the id of the referenced version
 		keyColumn = schema.collections[node.relation.related_collection!]!.primary;
 		idColumn = VERSION_SYSTEM_FIELDS.id;
-		keys = values(parents, field);
+		keys = getValues(parents, field);
 
 		if (reference) {
-			ids = values(
+			ids = getValues(
 				parents.filter((parent) => isNil(parent[field])),
 				reference,
 			);
@@ -135,16 +145,56 @@ export function applyVersionedParentFilter(
 		// The related rows hold the key of the live parent, or the id of the parent version
 		keyColumn = field;
 		idColumn = reference ?? VERSION_SYSTEM_FIELDS.id;
-		keys = values(parents.filter(isLiveRow), node.parentKey);
+		keys = getValues(parents.filter(isLiveRow), node.parentKey);
 
 		if (reference) {
-			ids = values(
+			ids = getValues(
 				parents.filter((parent) => !isLiveRow(parent)),
 				VERSION_SYSTEM_FIELDS.id,
 			);
 		}
 	}
 
+	addFilter(node.versioning, getRelatedRowsFilter(keyColumn, keys, idColumn, ids));
+}
+
+/**
+ * Limit each versioned related collection of an a2o node to the rows the parent rows of that collection relate to: the
+ * live item of their key, or the version they reference if they don't link to a live item
+ */
+export function applyVersionedA2OParentFilter(node: A2MNode, parents: Item[], schema: SchemaOverview) {
+	const { field } = node.relation;
+	const collectionField = node.relation.meta!.one_collection_field!;
+
+	for (const collection of node.names) {
+		const versioning = node.versioning?.[collection];
+
+		if (!versioning) continue;
+
+		const related = parents.filter((parent) => parent[collectionField] === collection);
+		const keys = getValues(related, field);
+
+		const ids = versioning.reference
+			? getValues(
+					related.filter((parent) => isNil(parent[field])),
+					versioning.reference,
+				)
+			: [];
+
+		const keyColumn = schema.collections[collection]!.primary;
+
+		addFilter(versioning, getRelatedRowsFilter(keyColumn, keys, VERSION_SYSTEM_FIELDS.id, ids));
+
+		node.query[collection] = { ...node.query[collection], limit: -1 };
+	}
+}
+
+function getValues(rows: Item[], column: string) {
+	return uniq(rows.map((row) => row[column])).filter((value) => !isNil(value));
+}
+
+/** Live items with one of the keys, or versions with one of the ids */
+function getRelatedRowsFilter(keyColumn: string, keys: unknown[], idColumn: string, ids: unknown[]): Filter {
 	const conditions: Filter[] = [];
 
 	if (keys.length > 0) {
@@ -155,17 +205,15 @@ export function applyVersionedParentFilter(
 
 	if (ids.length > 0) conditions.push({ [idColumn]: { _in: ids } } as Filter);
 
-	let filter: Filter;
+	if (conditions.length === 0) return { [keyColumn]: { _in: [] } } as Filter;
 
-	if (conditions.length === 0) {
-		filter = { [keyColumn]: { _in: [] } } as Filter;
-	} else {
-		filter = conditions.length === 1 ? conditions[0]! : ({ _or: conditions } as Filter);
-	}
+	return conditions.length === 1 ? conditions[0]! : ({ _or: conditions } as Filter);
+}
 
-	const current = node.versioning.query.filter;
+function addFilter(versioning: VersionedNode, filter: Filter) {
+	const current = versioning.query.filter;
 
-	node.versioning.query.filter = current ? ({ _and: [current, filter] } as Filter) : filter;
+	versioning.query.filter = current ? ({ _and: [current, filter] } as Filter) : filter;
 }
 
 /**
@@ -237,4 +285,30 @@ export function getVersionedValue(row: Item, column: string) {
 	const key = Object.entries(VERSION_SYSTEM_FIELDS).find(([, systemColumn]) => systemColumn === column)?.[0];
 
 	return key && !(column in row) ? row[VERSION_FIELD]?.[key] : row[column];
+}
+
+/**
+ * The related item of an a2o relation of a parent in the items of a versioned related collection: the live item of the
+ * key, or the referenced version if the parent doesn't link to a live item
+ */
+export function findVersionedA2OItem(
+	node: A2MNode,
+	collection: string,
+	items: Item[],
+	parent: Item,
+	schema: SchemaOverview,
+): Item | null {
+	const reference = node.versioning?.[collection]?.reference;
+	const primary = schema.collections[collection]!.primary;
+	const key = parent[node.relation.field];
+
+	if (!isNil(key)) {
+		return items.find((item) => isLiveRow(item) && String(item[primary]) === String(key)) ?? null;
+	}
+
+	const id = reference ? parent[reference] : null;
+
+	if (isNil(id)) return null;
+
+	return items.find((item) => String(item[VERSION_FIELD]?.id) === String(id)) ?? null;
 }

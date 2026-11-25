@@ -89,13 +89,23 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
  * Shadow tables that versioned nodes read from, which require read access
  */
 function getVersionedShadows(node: AST | NestedCollectionNode, shadows = new Set<string>()) {
-	if (node.type === 'a2o') return shadows;
+	if (node.type === 'a2o') {
+		for (const collection of node.names) {
+			node.versioning?.[collection]?.shadows.forEach((shadow) => shadows.add(shadow));
+			addChildShadows(node.children[collection]!, shadows);
+		}
 
-	node.versioning?.shadows.forEach((shadow) => shadows.add(shadow));
-
-	for (const child of node.children) {
-		if (child.type === 'm2o' || child.type === 'o2m') getVersionedShadows(child, shadows);
+		return shadows;
 	}
 
+	node.versioning?.shadows.forEach((shadow) => shadows.add(shadow));
+	addChildShadows(node.children, shadows);
+
 	return shadows;
+}
+
+function addChildShadows(children: AST['children'], shadows: Set<string>) {
+	for (const child of children) {
+		if (child.type !== 'field' && child.type !== 'functionField') getVersionedShadows(child, shadows);
+	}
 }

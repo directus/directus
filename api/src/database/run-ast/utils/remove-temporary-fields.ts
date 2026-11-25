@@ -52,9 +52,15 @@ export function removeTemporaryFields(
 			}
 
 			const fieldsWithFunctionsApplied = fields[relatedCollection]!.map((field) => applyFunctionToColumnName(field));
+			const versionFields = ast.versioning?.[relatedCollection]?.fields ?? [];
 
-			item =
-				fields[relatedCollection]!.length > 0 ? pick(rawItem, fieldsWithFunctionsApplied) : rawItem[primaryKeyField];
+			if (fields[relatedCollection]!.length > 0 || versionFields.length > 0) {
+				item = pick(rawItem, fieldsWithFunctionsApplied);
+
+				if (versionFields.length > 0) item[VERSION_FIELD] = pick(rawItem[VERSION_FIELD] ?? {}, versionFields);
+			} else {
+				item = rawItem[primaryKeyField];
+			}
 
 			items.push(item);
 		}

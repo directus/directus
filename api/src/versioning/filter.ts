@@ -91,6 +91,15 @@ export function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 
 		const related = isPlainObject(value) && !key.startsWith('_') && !isFieldCondition(value as Record<string, unknown>);
 
+		if (related && key.includes(':')) {
+			const a2o = rewriteA2OFilter(key, value as Filter, level, rewriteAt);
+
+			if (a2o) conditions.push(a2o);
+			else result[key] = value;
+
+			continue;
+		}
+
 		const { relationType, oppositeCollection } = related
 			? getRelationInfo(level.schema.relations, level.collection, key)
 			: { relationType: null, oppositeCollection: null };
@@ -128,6 +137,48 @@ export function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 	if (Object.keys(result).length > 0) conditions.unshift(result as Filter);
 
 	return { _and: conditions } as Filter;
+}
+
+/**
+ * An a2o filter scoped to a related collection, `item:articles`, matches either the linked live item or the referenced
+ * version of that collection. Versions are followed through the column with the references for that collection only.
+ */
+function rewriteA2OFilter(
+	key: string,
+	value: Filter,
+	level: FilterLevel,
+	rewriteAt: (value: unknown, collection: string, versioned: boolean) => Filter,
+): Filter | null {
+	const [field, collection] = key.split(':');
+	const { relation, relationType } = getRelationInfo(level.schema.relations, level.collection, field);
+
+	if (relationType !== 'a2o' || !collection || !relation?.meta?.one_allowed_collections?.includes(collection)) {
+		return null;
+	}
+
+	const nested = rewriteAt(value, collection, false);
+
+	// A filter left without conditions still requires the related item of that collection to exist
+	const live =
+		Object.keys(nested).length > 0
+			? nestFilter(key, nested)
+			: ({
+					_and: [{ [field!]: { _nnull: true } }, { [relation.meta.one_collection_field!]: { _eq: collection } }],
+				} as Filter);
+
+	const column = level.versioning.getA2OVersionReferenceField(field!, collection);
+
+	const shadow = level.references
+		? getRelationInfo(level.schema.relations, level.collection, column).oppositeCollection
+		: null;
+
+	if (!shadow) return live;
+
+	level.shadows.add(shadow);
+
+	const version = nestOrExists(column, rewriteAt(value, shadow, true));
+
+	return { _or: [live, { _and: [{ [field!]: { _null: true } }, version] }] } as Filter;
 }
 
 /** Nest a filter under an m2o field. A filter left without conditions still requires the related item to exist */

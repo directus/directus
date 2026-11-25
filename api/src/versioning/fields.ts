@@ -76,13 +76,21 @@ export function formatAggregate(item: Item, query: Query) {
 }
 
 /**
- * Collection at the end of a path of relational fields, or `null` if a segment isn't a relation to a single collection
+ * Collection at the end of a path of relational fields, or `null` if a segment isn't a relation to a single collection.
+ * a2o fields have to be scoped to one of their related collections, `item:articles`.
  */
 export function getRelatedCollection(schema: SchemaOverview, collection: string, path: string[]) {
 	let current: string | null = collection;
 
 	for (const segment of path) {
-		current = getRelationInfo(schema.relations, current!, segment).oppositeCollection;
+		const [field, scope] = segment.split(':');
+		const { relation, relationType, oppositeCollection } = getRelationInfo(schema.relations, current!, field);
+
+		if (relationType === 'a2o') {
+			current = scope && relation?.meta?.one_allowed_collections?.includes(scope) ? scope : null;
+		} else {
+			current = scope ? null : oppositeCollection;
+		}
 
 		if (!current) return null;
 	}

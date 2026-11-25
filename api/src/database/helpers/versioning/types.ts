@@ -51,6 +51,14 @@ export class VersioningHelper extends DatabaseHelper {
 	}
 
 	/**
+	 * Name of the column of a versioned read collection that holds the references of an a2o field to versions of one of
+	 * its related collections, which lets filters follow them like m2o relations
+	 */
+	getA2OVersionReferenceField(field: string, collection: string): string {
+		return this.prefixName(VERSION_REFERENCE_PREFIX, `${field}__${collection}`);
+	}
+
+	/**
 	 * Names of the shadow and link table of each given collection
 	 */
 	getVersionTableNames(collections: string[]): string[] {

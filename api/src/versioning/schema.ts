@@ -22,6 +22,21 @@ export type VersionedRead = {
 	link: string | null;
 	/** Version system fields and references to versions of related items, which the live collection doesn't have */
 	versionFields: string[];
+	/** Columns that split the version references of a2o fields per related collection */
+	a2oReferences: A2OReference[];
+};
+
+/**
+ * Column of a versioned read collection with the version references of an a2o field for one related collection, and a
+ * relation to its shadow table
+ */
+export type A2OReference = {
+	column: string;
+	/** Column with the version references of the a2o field */
+	reference: string;
+	collectionField: string;
+	collection: string;
+	shadow: string;
 };
 
 /**
@@ -142,6 +157,36 @@ function createVersionedRead(knex: Knex, schema: SchemaOverview, collection: str
 		},
 	};
 
+	const a2oReferences = schema.relations.flatMap((relation): A2OReference[] => {
+		const allowed = relation.meta?.one_allowed_collections;
+
+		if (relation.collection !== collection || relation.related_collection || !allowed) return [];
+
+		const reference = helper.getVersionReferenceField(relation.field);
+
+		if (!referenceFields.includes(reference)) return [];
+
+		return allowed.flatMap((related) => {
+			const relatedShadow = helper.getShadowTableName(related);
+
+			if (!schema.collections[relatedShadow]) return [];
+
+			return [
+				{
+					column: helper.getA2OVersionReferenceField(relation.field, related),
+					reference,
+					collectionField: relation.meta!.one_collection_field!,
+					collection: related,
+					shadow: relatedShadow,
+				},
+			];
+		});
+	});
+
+	for (const { column, reference } of a2oReferences) {
+		fields[column] = { ...fields[reference]!, field: column };
+	}
+
 	// Relations of the live collection apply to the read collection as well, the references to versions of related
 	// items come from the shadow table
 	const relations = schema.relations.flatMap((relation): Relation[] => [
@@ -151,6 +196,10 @@ function createVersionedRead(knex: Knex, schema: SchemaOverview, collection: str
 			: []),
 		...(relation.related_collection === collection ? [{ ...relation, related_collection: name }] : []),
 	]);
+
+	for (const { column, shadow } of a2oReferences) {
+		relations.push({ collection: name, field: column, related_collection: shadow, schema: null, meta: null });
+	}
 
 	return {
 		name,
@@ -165,5 +214,6 @@ function createVersionedRead(knex: Knex, schema: SchemaOverview, collection: str
 		shadow: shadow ? shadowTable : null,
 		link: link ? linkTable : null,
 		versionFields: [...systemFields, ...referenceFields],
+		a2oReferences,
 	};
 }

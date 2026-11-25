@@ -2,7 +2,7 @@ import type { Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { getHelpers } from '../database/helpers/index.js';
 import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
-import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode, VersionedNode } from '../types/ast.js';
+import type { A2MNode, AST, FieldNode, FunctionFieldNode, NestedCollectionNode, VersionedNode } from '../types/ast.js';
 import {
 	getRelatedCollection,
 	getSystemColumn,
@@ -96,7 +96,7 @@ export function splitVersionFields(schema: SchemaOverview, collection: string, f
 		const prefix = path.slice(0, index);
 		const related = prefix.length > 0 ? getRelatedCollection(schema, collection, prefix) : collection;
 
-		// Version system fields of a2o related items aren't supported
+		// Version system fields of a2o related items require the related collection, `item:articles`
 		if (!related) continue;
 
 		const key = prefix.join('.');
@@ -135,8 +135,8 @@ export function splitVersionFields(schema: SchemaOverview, collection: string, f
 }
 
 /**
- * Mark the m2o and o2m nodes of a versioned read as versioned, which reads them from the combined rows of their
- * collection as well. Relations of a2o nodes only read live items.
+ * Mark the m2o, o2m and a2o nodes of a versioned read as versioned, which reads them from the combined rows of their
+ * collection as well
  */
 export function annotateVersionedNodes(
 	ast: AST,
@@ -159,6 +159,11 @@ function annotateChildren(
 	const { versioning } = getHelpers(context.knex);
 
 	for (const child of children) {
+		if (child.type === 'a2o') {
+			annotateA2O(child, parentVersionFields, path, fields, context);
+			continue;
+		}
+
 		if (child.type !== 'm2o' && child.type !== 'o2m') continue;
 
 		const childPath = [...path, child.fieldKey];
@@ -178,5 +183,40 @@ function annotateChildren(
 		};
 
 		annotateChildren(child.children, split.versionFields, childPath, fields, context);
+	}
+}
+
+/**
+ * Each related collection of an a2o node is read from its combined rows. The parent references versions of the related
+ * item through one column, as the related collection is stored in a separate field.
+ */
+function annotateA2O(
+	child: A2MNode,
+	parentVersionFields: string[],
+	path: string[],
+	fields: ReturnType<typeof splitVersionFields>,
+	context: Context,
+) {
+	const { versioning } = getHelpers(context.knex);
+	const reference = versioning.getVersionReferenceField(child.relation.field);
+
+	child.versioning = {};
+
+	for (const collection of child.names) {
+		const childPath = [...path, `${child.fieldKey}:${collection}`];
+		const key = childPath.join('.');
+		const split = splitVersionedQuery(collection, child.query[collection]!, context);
+
+		child.query[collection] = split.query;
+
+		if (fields.added.has(key)) child.children[collection] = [];
+
+		child.versioning[collection] = {
+			...split.versioning,
+			fields: fields.systemFields.get(key) ?? [],
+			reference: parentVersionFields.includes(reference) ? reference : null,
+		};
+
+		annotateChildren(child.children[collection]!, split.versionFields, childPath, fields, context);
 	}
 }

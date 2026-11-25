@@ -94,6 +94,20 @@ const builtSchema = new SchemaBuilder()
 		versionSystemFields(c);
 		c.field('slug').string();
 	})
+	// a2o relation to a versioned and a collection that isn't versioned
+	.collection('posts', (c) => {
+		c.field('id').id();
+		c.field('collection').string();
+		c.field('item').a2o(['authors', 'categories']);
+	})
+	.options({ versioning: true })
+	.collection('directus_shadow_posts', (c) => {
+		versionSystemFields(c);
+		c.field('id').integer();
+		c.field('collection').string();
+		c.field('item').string();
+		c.field('version_ref_item').integer();
+	})
 	.build();
 
 const schema = extractVersioning(builtSchema);
@@ -1470,5 +1484,396 @@ describe('version references', () => {
 		);
 
 		expect(items[0]!['comments']).toEqual([{ body: 'Hi', directus_version: { type: 'published' } }]);
+	});
+
+	test('reads a2o related items through the live key, or the version reference without one', async () => {
+		const { items, sql, bindings } = await read(
+			'posts',
+			{ fields: ['id', 'item:authors.name', 'item:categories.name'] },
+			{
+				responses: [
+					[
+						'directus_versioned_posts',
+						[
+							{ id: 1, collection: 'authors', item: '2', version_type: 'published', directus_version_key: 1 },
+							{
+								id: 1,
+								collection: 'authors',
+								item: null,
+								version_ref_item: 7,
+								version_id: 3,
+								version_type: 'draft',
+								directus_version_key: -3,
+							},
+							{
+								id: 4,
+								collection: 'authors',
+								item: null,
+								version_ref_item: 9,
+								version_id: 5,
+								version_type: 'draft',
+								directus_version_key: -5,
+							},
+							{ id: 6, collection: 'categories', item: '5', version_type: 'published', directus_version_key: 6 },
+						],
+					],
+					[
+						'directus_versioned_authors',
+						[
+							{ id: 2, name: 'Live', version_id: 9, version_type: 'published', directus_version_key: 2 },
+							{ id: 2, name: 'Draft', version_id: 7, version_type: 'draft', directus_version_key: -7 },
+						],
+					],
+					[
+						'directus_versioned_categories',
+						[{ id: 5, name: 'News', version_type: 'published', directus_version_key: 5 }],
+					],
+				],
+			},
+		);
+
+		expect(sql).toMatchInlineSnapshot(`
+			"select
+			  "directus_versioned_posts"."id",
+			  "directus_versioned_posts"."item",
+			  "directus_versioned_posts"."collection",
+			  "directus_versioned_posts"."version_id",
+			  "directus_versioned_posts"."version_name",
+			  "directus_versioned_posts"."version_type",
+			  "directus_versioned_posts"."version_date_created",
+			  "directus_versioned_posts"."version_date_updated",
+			  "directus_versioned_posts"."version_user_created",
+			  "directus_versioned_posts"."version_user_updated",
+			  "directus_versioned_posts"."version_ref_item",
+			  "directus_versioned_posts"."directus_version_key"
+			from
+			  (
+			    select
+			      "directus_versioned_rows".*,
+			      case
+			        when "directus_versioned_rows"."collection" = ? then "directus_versioned_rows"."version_ref_item"
+			      end as "version_ref_item__authors"
+			    from
+			      "directus_versioned_rows"
+			  ) as "directus_versioned_posts"
+			order by
+			  "directus_versioned_posts"."id" asc
+			limit
+			  ?
+
+			select
+			  "directus_versioned_authors"."name",
+			  "directus_versioned_authors"."id",
+			  "directus_versioned_authors"."version_id",
+			  "directus_versioned_authors"."version_name",
+			  "directus_versioned_authors"."version_type",
+			  "directus_versioned_authors"."version_date_created",
+			  "directus_versioned_authors"."version_date_updated",
+			  "directus_versioned_authors"."version_user_created",
+			  "directus_versioned_authors"."version_user_updated",
+			  "directus_versioned_authors"."directus_version_key"
+			from
+			  "directus_versioned_authors"
+			where
+			  (
+			    (
+			      "directus_versioned_authors"."id" in (?)
+			      and "directus_versioned_authors"."version_type" = ?
+			    )
+			    or "directus_versioned_authors"."version_id" in (?, ?)
+			  )
+
+			select
+			  "directus_versioned_categories"."name",
+			  "directus_versioned_categories"."id",
+			  "directus_versioned_categories"."version_id",
+			  "directus_versioned_categories"."version_name",
+			  "directus_versioned_categories"."version_type",
+			  "directus_versioned_categories"."version_date_created",
+			  "directus_versioned_categories"."version_date_updated",
+			  "directus_versioned_categories"."version_user_created",
+			  "directus_versioned_categories"."version_user_updated",
+			  "directus_versioned_categories"."directus_version_key"
+			from
+			  "directus_versioned_categories"
+			where
+			  (
+			    "directus_versioned_categories"."id" in (?)
+			    and "directus_versioned_categories"."version_type" = ?
+			  )"
+		`);
+
+		expect(bindings).toMatchInlineSnapshot(`
+			[
+			  [
+			    "authors",
+			    "published",
+			    "published",
+			    100,
+			  ],
+			  [
+			    "published",
+			    "published",
+			    2,
+			    "published",
+			    7,
+			    9,
+			  ],
+			  [
+			    5,
+			    "published",
+			  ],
+			]
+		`);
+
+		// A reference to the published version resolves to the live item
+		expect(items.map((item) => item['item'])).toEqual([
+			{ name: 'Live' },
+			{ name: 'Draft' },
+			{ name: 'Live' },
+			{ name: 'News' },
+		]);
+	});
+
+	test("reads a2o related items of collections that aren't versioned by their live key", async () => {
+		const { items, bindings } = await read(
+			'posts',
+			{ fields: ['id', 'item:authors.name', 'item:categories.name'] },
+			{
+				responses: [
+					[
+						'directus_versioned_posts',
+						[{ id: 1, collection: 'categories', item: '5', version_type: 'published', directus_version_key: 1 }],
+					],
+					[
+						'directus_versioned_categories',
+						[{ id: 5, name: 'News', version_type: 'published', directus_version_key: 5 }],
+					],
+				],
+			},
+		);
+
+		expect(bindings[2]).toEqual([5, 'published']);
+		expect(items[0]!['item']).toEqual({ name: 'News' });
+	});
+
+	test('marks each related collection of a2o nodes as versioned, with the shadow tables they read', async () => {
+		const db = knex.default({ client: CLIENTS.postgres });
+		const context = { knex: db, schema: schema as SchemaOverview };
+
+		const ast = await getAstFromQuery(
+			{
+				collection: 'posts',
+				query: { fields: ['item:authors.name', 'item:categories.name'] },
+				accountability: null,
+				versioning: true,
+			},
+			context,
+		);
+
+		const node = ast.children.find((child) => child.type === 'a2o')!;
+
+		expect(node.type === 'a2o' && node.versioning).toEqual({
+			authors: expect.objectContaining({ reference: 'version_ref_item', shadows: ['directus_shadow_authors'] }),
+			categories: expect.objectContaining({ reference: 'version_ref_item', shadows: [] }),
+		});
+	});
+
+	test('returns version system fields of a2o related items', async () => {
+		const { items, sql } = await read(
+			'posts',
+			{ fields: ['id', 'item:authors.directus_version.type', 'item:categories.name'] },
+			{
+				responses: [
+					[
+						'directus_versioned_posts',
+						[
+							{
+								id: 1,
+								collection: 'authors',
+								item: null,
+								version_ref_item: 7,
+								version_id: 3,
+								version_type: 'draft',
+								directus_version_key: -3,
+							},
+						],
+					],
+					['directus_versioned_authors', [{ id: 2, name: 'Draft', version_id: 7, version_type: 'draft' }]],
+				],
+			},
+		);
+
+		// Only the primary key is selected next to the system columns, as no other field of authors is requested
+		expect(sql).toContain('select\n  "directus_versioned_authors"."id",\n  "directus_versioned_authors"."version_id"');
+		expect(items[0]!['item']).toEqual({ directus_version: { type: 'draft' } });
+	});
+});
+
+describe('a2o filter', () => {
+	test('matches the live item of the collection or the referenced version of it', async () => {
+		const { sql, bindings } = await read('posts', {
+			fields: ['id'],
+			filter: { 'item:authors': { name: { _eq: 'Jane' } } },
+		});
+
+		expect(sql).toMatchInlineSnapshot(`
+			"select
+			  "directus_versioned_posts"."id",
+			  "directus_versioned_posts"."version_id",
+			  "directus_versioned_posts"."version_name",
+			  "directus_versioned_posts"."version_type",
+			  "directus_versioned_posts"."version_date_created",
+			  "directus_versioned_posts"."version_date_updated",
+			  "directus_versioned_posts"."version_user_created",
+			  "directus_versioned_posts"."version_user_updated",
+			  "directus_versioned_posts"."version_ref_item",
+			  "directus_versioned_posts"."directus_version_key"
+			from
+			  (
+			    select
+			      "directus_versioned_rows".*,
+			      case
+			        when "directus_versioned_rows"."collection" = ? then "directus_versioned_rows"."version_ref_item"
+			      end as "version_ref_item__authors"
+			    from
+			      "directus_versioned_rows"
+			  ) as "directus_versioned_posts"
+			  left join "authors" as "fjylc" on "directus_versioned_posts"."collection" = ?
+			  and "directus_versioned_posts"."item" = CAST("fjylc"."id" AS CHAR(255))
+			  left join "directus_shadow_authors" as "emimg" on "directus_versioned_posts"."version_ref_item__authors" = "emimg"."version_id"
+			where
+			  (
+			    (
+			      "fjylc"."name" = ?
+			      or (
+			        "directus_versioned_posts"."item" is null
+			        and "emimg"."name" = ?
+			      )
+			    )
+			  )
+			order by
+			  "directus_versioned_posts"."id" asc
+			limit
+			  ?"
+		`);
+
+		expect(bindings).toMatchInlineSnapshot(`
+			[
+			  [
+			    "authors",
+			    "published",
+			    "published",
+			    "authors",
+			    "Jane",
+			    "Jane",
+			    100,
+			  ],
+			]
+		`);
+	});
+
+	test('applies version system fields to the referenced version and the published live item', async () => {
+		const { sql } = await read('posts', {
+			fields: ['id'],
+			filter: { 'item:authors': { directus_version: { type: { _eq: 'draft' } } } },
+		});
+
+		expect(sql).toMatchInlineSnapshot(`
+			"select
+			  "directus_versioned_posts"."id",
+			  "directus_versioned_posts"."version_id",
+			  "directus_versioned_posts"."version_name",
+			  "directus_versioned_posts"."version_type",
+			  "directus_versioned_posts"."version_date_created",
+			  "directus_versioned_posts"."version_date_updated",
+			  "directus_versioned_posts"."version_user_created",
+			  "directus_versioned_posts"."version_user_updated",
+			  "directus_versioned_posts"."version_ref_item",
+			  "directus_versioned_posts"."directus_version_key"
+			from
+			  (
+			    select
+			      "directus_versioned_rows".*,
+			      case
+			        when "directus_versioned_rows"."collection" = ? then "directus_versioned_rows"."version_ref_item"
+			      end as "version_ref_item__authors"
+			    from
+			      "directus_versioned_rows"
+			  ) as "directus_versioned_posts"
+			  left join "authors" as "polww" on "directus_versioned_posts"."collection" = ?
+			  and "directus_versioned_posts"."item" = CAST("polww"."id" AS CHAR(255))
+			  left join "directus_shadow_authors" as "mxqzd" on "directus_versioned_posts"."version_ref_item__authors" = "mxqzd"."version_id"
+			where
+			  (
+			    (
+			      (1 = ?)
+			      or (
+			        "directus_versioned_posts"."item" is null
+			        and "mxqzd"."version_type" = ?
+			      )
+			    )
+			  )
+			order by
+			  "directus_versioned_posts"."id" asc
+			limit
+			  ?"
+		`);
+	});
+
+	test("only matches live items of collections that aren't versioned", async () => {
+		const { sql } = await read('posts', {
+			fields: ['id'],
+			filter: { 'item:categories': { name: { _eq: 'News' } } },
+		});
+
+		expect(sql).toMatchInlineSnapshot(`
+			"select
+			  "directus_versioned_posts"."id",
+			  "directus_versioned_posts"."version_id",
+			  "directus_versioned_posts"."version_name",
+			  "directus_versioned_posts"."version_type",
+			  "directus_versioned_posts"."version_date_created",
+			  "directus_versioned_posts"."version_date_updated",
+			  "directus_versioned_posts"."version_user_created",
+			  "directus_versioned_posts"."version_user_updated",
+			  "directus_versioned_posts"."version_ref_item",
+			  "directus_versioned_posts"."directus_version_key"
+			from
+			  (
+			    select
+			      "directus_versioned_rows".*,
+			      case
+			        when "directus_versioned_rows"."collection" = ? then "directus_versioned_rows"."version_ref_item"
+			      end as "version_ref_item__authors"
+			    from
+			      "directus_versioned_rows"
+			  ) as "directus_versioned_posts"
+			  left join "categories" as "tgymy" on "directus_versioned_posts"."collection" = ?
+			  and "directus_versioned_posts"."item" = CAST("tgymy"."id" AS CHAR(255))
+			where
+			  ("tgymy"."name" = ?)
+			order by
+			  "directus_versioned_posts"."id" asc
+			limit
+			  ?"
+		`);
+	});
+
+	test('requires read access to the shadow tables of referenced versions', async () => {
+		const db = knex.default({ client: CLIENTS.postgres });
+		const context = { knex: db, schema: schema as SchemaOverview };
+
+		const ast = await getAstFromQuery(
+			{
+				collection: 'posts',
+				query: { fields: ['id'], filter: { 'item:authors': { name: { _eq: 'Jane' } } } },
+				accountability: null,
+				versioning: true,
+			},
+			context,
+		);
+
+		expect(ast.versioning?.shadows).toEqual(['directus_shadow_posts', 'directus_shadow_authors']);
 	});
 });

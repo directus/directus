@@ -2,7 +2,7 @@ import type { Item, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { isNil, merge, uniq } from 'lodash-es';
 import type { NestedCollectionNode } from '../../../types/ast.js';
-import { applyVersionedParentFilter } from '../../../versioning/run.js';
+import { applyVersionedA2OParentFilter, applyVersionedParentFilter } from '../../../versioning/run.js';
 
 export function applyParentFilters(
 	schema: SchemaOverview,
@@ -64,7 +64,11 @@ export function applyParentFilters(
 				keysPerCollection[collection]!.push(parentItem[nestedNode.relation.field]);
 			}
 
+			applyVersionedA2OParentFilter(nestedNode, parentItems, schema);
+
 			for (const relatedCollection of nestedNode.names) {
+				if (nestedNode.versioning?.[relatedCollection]) continue;
+
 				const foreignField = nestedNode.relatedKey[relatedCollection]!;
 				const foreignIds = uniq(keysPerCollection[relatedCollection]);
 

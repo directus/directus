@@ -3,7 +3,12 @@ import type { Item, PrimaryKey, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { clone, isArray } from 'lodash-es';
 import type { NestedCollectionNode, O2MNode } from '../../../types/ast.js';
-import { getVersionedValue, mergeVersionedM2O, mergeVersionedO2M } from '../../../versioning/run.js';
+import {
+	findVersionedA2OItem,
+	getVersionedValue,
+	mergeVersionedM2O,
+	mergeVersionedO2M,
+} from '../../../versioning/run.js';
 
 export function mergeWithParentItems(
 	schema: SchemaOverview,
@@ -123,6 +128,18 @@ export function mergeWithParentItems(
 
 			if (!(nestedItem as Record<string, any[]>)[relatedCollection]) {
 				parentItem[nestedNode.fieldKey] = null;
+				continue;
+			}
+
+			if (nestedNode.versioning?.[relatedCollection]) {
+				parentItem[nestedNode.fieldKey] = findVersionedA2OItem(
+					nestedNode,
+					relatedCollection,
+					(nestedItem as Record<string, Item[]>)[relatedCollection]!,
+					parentItem,
+					schema,
+				);
+
 				continue;
 			}
 
