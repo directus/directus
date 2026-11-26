@@ -13,7 +13,7 @@ import {
 	toSystemColumn,
 } from './fields.js';
 import { type FilterLevel, rewriteFilter, stripSystemFilter } from './filter.js';
-import { getCollectionVersioning, getVersionedReadSchema } from './schema.js';
+import { getVersionedReadSchema } from './schema.js';
 
 type Context = { knex: Knex; schema: SchemaOverview };
 
@@ -45,7 +45,7 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 
 	delete liveQuery.version;
 
-	const read = getCollectionVersioning(schema, collection);
+	const read = schema.versioning![collection]!;
 	const shadows: FilterLevel['shadows'] = new Map();
 
 	// Filters on versions of related items require access to them
@@ -157,10 +157,8 @@ export function annotateVersionedNodes(
 		const reference = versioning.getVersionReferenceField(node.relation.field);
 
 		// The parent holds the references of m2o and a2o nodes, the related rows the ones of o2m nodes
-		const { referenceFields } = getCollectionVersioning(
-			context.schema,
-			node.type === 'o2m' ? level.collection : level.parent.collection,
-		);
+		const { referenceFields } =
+			context.schema.versioning![node.type === 'o2m' ? level.collection : level.parent.collection]!;
 
 		level.query = split.query;
 

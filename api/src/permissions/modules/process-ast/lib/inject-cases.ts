@@ -3,7 +3,6 @@ import { range, uniq } from 'lodash-es';
 import { VERSION_SYSTEM_FIELDS } from '../../../../services/version-tables/constants.js';
 import type { AST } from '../../../../types/ast.js';
 import { type AstLevel, getAstLevels } from '../../../../utils/get-ast-levels.js';
-import { getCollectionVersioning } from '../../../../versioning/schema.js';
 import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
 import { getCases } from './get-cases.js';
 
@@ -33,7 +32,7 @@ function getLevelCases(
 	// Use uniq here, since there might be multiple duplications due to aliases or functions
 	const requestedKeys = uniq(children.map(getUnaliasedFieldKey));
 	const live = getCases(collection, permissions, requestedKeys);
-	const shadow = versioning ? getCollectionVersioning(schema, collection).shadow?.collection : null;
+	const shadow = versioning ? schema.versioning?.[collection]?.shadow?.collection : null;
 	const versions = shadow ? getCases(shadow, permissions, requestedKeys) : null;
 
 	const cases = versions

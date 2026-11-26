@@ -76,17 +76,6 @@ export function getVersionTablesSchema(schema: SchemaOverview): SchemaOverview {
 	return merged;
 }
 
-/**
- * Versioning of the collection, see `CollectionVersioning`
- */
-export function getCollectionVersioning(schema: SchemaOverview, collection: string): CollectionVersioning {
-	const versioning = schema.versioning?.[collection];
-
-	if (!versioning) throw new Error(`Collection "${collection}" can't be read with versions`);
-
-	return versioning;
-}
-
 const readSchemas = new WeakMap<SchemaOverview, SchemaOverview>();
 const builtReadSchemas = new WeakSet<SchemaOverview>();
 

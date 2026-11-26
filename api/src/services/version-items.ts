@@ -17,7 +17,6 @@ import type { VersioningHelper } from '../database/helpers/versioning/types.js';
 import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { transaction } from '../utils/transaction.js';
-import { validateLinkAccess } from '../versioning/link-access.js';
 import { getVersionTablesSchema } from '../versioning/schema.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
@@ -375,10 +374,12 @@ export class VersionedItemsService {
 				continue;
 			}
 
-			await validateLinkAccess(
-				{ collection: relatedCollection, action: 'update', keys: [key], accountability: this.accountability },
-				{ knex: trx, schema: this.schema },
-			);
+			if (this.accountability) {
+				await validateAccess(
+					{ accountability: this.accountability, action: 'update', collection: relatedCollection, primaryKeys: [key] },
+					{ knex: trx, schema: this.schema },
+				);
+			}
 
 			const updated = await trx(linkTable)
 				.update({ [referenceField]: versionId })
@@ -419,10 +420,17 @@ export class VersionedItemsService {
 		).map((row) => row[primary]);
 
 		if (unlinkedKeys.length > 0) {
-			await validateLinkAccess(
-				{ collection: relatedCollection, action: 'update', keys: unlinkedKeys, accountability: this.accountability },
-				{ knex: trx, schema: this.schema },
-			);
+			if (this.accountability) {
+				await validateAccess(
+					{
+						accountability: this.accountability,
+						action: 'update',
+						collection: relatedCollection,
+						primaryKeys: unlinkedKeys,
+					},
+					{ knex: trx, schema: this.schema },
+				);
+			}
 
 			await trx(linkTable)
 				.update({ [referenceField]: null })

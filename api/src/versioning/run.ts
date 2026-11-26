@@ -14,12 +14,12 @@ import type {
 	O2MNode,
 	VersionedNode,
 } from '../types/ast.js';
-import { getCollectionVersioning, getVersionedReadSchema } from './schema.js';
+import { getVersionedReadSchema } from './schema.js';
 import { getVersionedSource } from './source.js';
 
 /** A node, or a related collection of an a2o node, that's read from the combined rows of its collection */
 export type VersionedLevelNode = {
-	name: string;
+	collection: string;
 	query: Query;
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
 	versioning: VersionedNode;
@@ -34,18 +34,18 @@ export type VersionedReadPlan = ReturnType<typeof planVersionedRead>;
  * source, the query with the version system fields mapped to their columns, and the system columns selected.
  */
 export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOverview, knex: Knex) {
-	const read = getCollectionVersioning(schema, node.name);
-	const name = read.collection.collection;
-	const { primary } = schema.collections[node.name]!;
+	const read = schema.versioning![node.collection]!;
+	const collection = read.collection.collection;
+	const { primary } = schema.collections[node.collection]!;
 	const query = { ...node.query, ...node.versioning.query };
 	const isAggregate = Boolean(query.group || Object.keys(query.aggregate ?? {}).length > 0);
 
 	const children = node.children.map((child) => {
 		if (child.type === 'm2o' || child.type === 'a2o') {
-			return { ...child, relation: { ...child.relation, collection: name } };
+			return { ...child, relation: { ...child.relation, collection } };
 		}
 
-		if (child.type === 'o2m') return { ...child, relation: { ...child.relation, related_collection: name } };
+		if (child.type === 'o2m') return { ...child, relation: { ...child.relation, related_collection: collection } };
 
 		return child;
 	});
@@ -59,10 +59,10 @@ export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOvervi
 
 	return {
 		node,
-		name,
+		collection,
 		read,
 		schema: getVersionedReadSchema(schema),
-		source: getVersionedSource(knex, schema, node.name),
+		source: getVersionedSource(knex, schema, node.collection),
 		query,
 		children: [
 			...children,
@@ -153,7 +153,10 @@ export function applyVersionedParentFilter(
 		}
 	}
 
-	addFilter(node.versioning, getRelatedRowsFilter(keyColumn, keys, idColumn, ids));
+	node.versioning.query.filter = mergeFilters(
+		node.versioning.query.filter ?? null,
+		getRelatedRowsFilter(keyColumn, keys, idColumn, ids),
+	);
 }
 
 /**
@@ -181,7 +184,10 @@ export function applyVersionedA2OParentFilter(node: A2MNode, parents: Item[], sc
 
 		const keyColumn = schema.collections[collection]!.primary;
 
-		addFilter(versioning, getRelatedRowsFilter(keyColumn, keys, VERSION_SYSTEM_FIELDS.id, ids));
+		versioning.query.filter = mergeFilters(
+			versioning.query.filter ?? null,
+			getRelatedRowsFilter(keyColumn, keys, VERSION_SYSTEM_FIELDS.id, ids),
+		);
 
 		node.query[collection] = { ...node.query[collection], limit: -1 };
 	}
@@ -206,10 +212,6 @@ function getRelatedRowsFilter(keyColumn: string, keys: unknown[], idColumn: stri
 	if (conditions.length === 0) return { [keyColumn]: { _in: [] } } as Filter;
 
 	return conditions.length === 1 ? conditions[0]! : ({ _or: conditions } as Filter);
-}
-
-function addFilter(versioning: VersionedNode, filter: Filter) {
-	versioning.query.filter = mergeFilters(versioning.query.filter ?? null, filter);
 }
 
 /**

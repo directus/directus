@@ -124,7 +124,7 @@ export function rewriteFilter(filter: Filter, level: FilterLevel): Filter {
 			: null;
 
 		if (shadow) {
-			addShadow(level.shadows, shadow);
+			if (!level.shadows.has(shadow)) level.shadows.set(shadow, new Set());
 
 			const version = nestOrExists(referenceField, rewriteAt(value, shadow, true));
 			conditions.push({ _or: [live, { _and: [{ [key]: { _null: true } }, version] }] } as Filter);
@@ -176,15 +176,11 @@ function rewriteA2OFilter(
 
 	if (!shadow) return live;
 
-	addShadow(level.shadows, shadow);
+	if (!level.shadows.has(shadow)) level.shadows.set(shadow, new Set());
 
 	const version = nestOrExists(column, rewriteAt(value, shadow, true));
 
 	return { _or: [live, { _and: [{ [field!]: { _null: true } }, version] }] } as Filter;
-}
-
-export function addShadow(shadows: FilterLevel['shadows'], shadow: string) {
-	if (!shadows.has(shadow)) shadows.set(shadow, new Set());
 }
 
 /** Nest a filter under an m2o field. A filter left without conditions still requires the related item to exist */

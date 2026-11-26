@@ -2,12 +2,7 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { describe, expect, test } from 'vitest';
-import {
-	extractVersioning,
-	getCollectionVersioning,
-	getVersionedReadSchema,
-	getVersionTablesSchema,
-} from './schema.js';
+import { extractVersioning, getVersionedReadSchema, getVersionTablesSchema } from './schema.js';
 
 // The database helpers derive the dialect from the class name of the client
 const db = knex.default({ client: class Client_PG extends MockClient {} });
@@ -93,9 +88,9 @@ describe('getVersionTablesSchema', () => {
 	});
 });
 
-describe('getCollectionVersioning', () => {
+describe('versioning of a collection', () => {
 	test('describes the read collection of a versioned collection', () => {
-		const read = getCollectionVersioning(schema, 'articles');
+		const read = schema.versioning!['articles']!;
 
 		expect(read).toMatchObject({
 			collection: { collection: 'directus_versioned_articles' },
@@ -107,17 +102,15 @@ describe('getCollectionVersioning', () => {
 	});
 
 	test('is shared by the merged schemas', () => {
-		expect(getCollectionVersioning(getVersionedReadSchema(schema), 'articles')).toBe(
-			getCollectionVersioning(schema, 'articles'),
-		);
+		expect(getVersionedReadSchema(schema).versioning!['articles']).toBe(schema.versioning!['articles']);
 	});
 
-	test('throws for collections without a read collection', () => {
-		expect(() => getCollectionVersioning(schema, 'directus_shadow_articles')).toThrow();
+	test('has no versioning for version tables', () => {
+		expect(schema.versioning!['directus_shadow_articles']).toBeUndefined();
 	});
 
 	test('reads collections without version tables as live items only', () => {
-		const read = getCollectionVersioning(schema, 'categories');
+		const read = schema.versioning!['categories']!;
 
 		expect(read).toMatchObject({ shadow: null, link: null });
 		expect(read.referenceFields).toEqual([]);

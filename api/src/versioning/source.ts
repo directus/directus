@@ -3,7 +3,6 @@ import type { Knex } from 'knex';
 import { getHelpers } from '../database/helpers/index.js';
 import { getDatabaseClient } from '../database/index.js';
 import { VERSION_SYSTEM_FIELDS, VERSIONED_KEY_FIELD } from '../services/version-tables/constants.js';
-import { getCollectionVersioning } from './schema.js';
 
 const ROWS_ALIAS = 'directus_versioned_rows';
 
@@ -13,7 +12,7 @@ const ROWS_ALIAS = 'directus_versioned_rows';
  * their link table.
  */
 export function getVersionedSource(knex: Knex, schema: SchemaOverview, collection: string): Knex.QueryBuilder {
-	const read = getCollectionVersioning(schema, collection);
+	const read = schema.versioning![collection]!;
 	const live = schema.collections[collection]!;
 	const { primary } = live;
 	const { shadow, link, referenceFields } = read;

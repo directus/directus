@@ -27,7 +27,7 @@ import { removeTemporaryFields } from './utils/remove-temporary-fields.js';
 
 /** A collection read of the AST: the root, a nested m2o or o2m node, or one related collection of an a2o node */
 type Level = {
-	name: string;
+	collection: string;
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
 	query: Query;
 	cases: Filter[];
@@ -55,7 +55,7 @@ export async function runAst(
 
 		for (const collection of ast.names) {
 			results[collection] = await run({
-				name: collection,
+				collection,
 				children: ast.children[collection]!,
 				query: ast.query[collection]!,
 				cases: ast.cases[collection] ?? [],
@@ -67,7 +67,7 @@ export async function runAst(
 	}
 
 	return await run({
-		name: ast.name,
+		collection: ast.name,
 		children: ast.children,
 		query: options?.query || ast.query,
 		cases: ast.cases,
@@ -90,7 +90,7 @@ export async function runAst(
 	 */
 	async function run(level: Level) {
 		const plan = level.versioning ? planVersionedRead({ ...level, versioning: level.versioning }, schema, knex) : null;
-		const { name: collection, children, query } = plan ?? level;
+		const { collection, children, query } = plan ?? level;
 		const { cases } = level;
 		const readSchema = plan?.schema ?? schema;
 		const env = useEnv();
