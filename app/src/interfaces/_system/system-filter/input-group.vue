@@ -7,6 +7,7 @@ import InputComponent from './input-component.vue';
 import { fieldToFilter, getComparator, getField } from './utils';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useFakeVersionField } from '@/composables/use-fake-version-field';
+import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 
@@ -24,6 +25,7 @@ const emit = defineEmits<{
 	(e: 'update:field', value: FieldFilter): void;
 }>();
 
+const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 
@@ -57,8 +59,23 @@ const comparator = computed(() => {
 	return getComparator(props.field);
 });
 
+const m2o = computed(() => {
+	if (isVersionField.value || fieldInfo.value?.meta?.options?.choices) return null;
+
+	const field = fieldsStore.getField(props.collection, fieldPath.value);
+	if (!field || field.type === 'alias') return null;
+
+	const relatedCollection = relationsStore.getRelationForField(field.collection, field.field)?.related_collection;
+	if (!relatedCollection || collectionsStore.getCollection(relatedCollection)?.meta?.singleton) return null;
+
+	const template = field.meta?.interface === 'select-dropdown-m2o' ? (field.meta.options?.template ?? null) : null;
+
+	return { relatedCollection, template };
+});
+
 const interfaceType = computed(() => {
 	if (fieldInfo.value?.meta?.options?.choices) return 'select';
+	if (m2o.value) return 'm2o';
 
 	const types: Record<string, string> = {
 		bigInteger: 'input',
@@ -257,6 +274,8 @@ function useVariableInput() {
 		<template v-if="['_eq', '_neq', '_lt', '_gt', '_lte', '_gte'].includes(comparator)">
 			<InputComponent
 				:is="interfaceType"
+				:related-collection="m2o?.relatedCollection"
+				:template="m2o?.template"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
 				:value="value as ScalarValue"
@@ -295,6 +314,8 @@ function useVariableInput() {
 				<InputComponent
 					:is="interfaceType"
 					:ref="(el) => (inputRefs[index] = el)"
+					:related-collection="m2o?.relatedCollection"
+					:template="m2o?.template"
 					:type="fieldInfo?.type ?? 'unknown'"
 					:value="val"
 					:focus="false"
@@ -310,6 +331,8 @@ function useVariableInput() {
 		<template v-else-if="['_between', '_nbetween'].includes(comparator)">
 			<InputComponent
 				:is="interfaceType"
+				:related-collection="m2o?.relatedCollection"
+				:template="m2o?.template"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
 				:value="(value as (string | number)[])[0] ?? ''"
@@ -318,6 +341,8 @@ function useVariableInput() {
 			<div class="and">{{ $t('interfaces.filter.and') }}</div>
 			<InputComponent
 				:is="interfaceType"
+				:related-collection="m2o?.relatedCollection"
+				:template="m2o?.template"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
 				:value="(value as (string | number)[])[1] ?? ''"
