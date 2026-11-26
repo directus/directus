@@ -124,7 +124,7 @@ export type FunctionFieldNode = {
 /**
  * Read of a node that includes versions: live items, with the system fields of their published version, together with
  * all other versions of the collection. The node itself describes the read of the live collection, which permissions
- * are validated against. How the collection is read with its versions is in `schema.versioning.reads`.
+ * are validated against. How the collection is read with its versions is in `schema.versioning`.
  */
 export type VersionedNode = {
 	/** Parts of the query that apply to the combined rows, with version system fields mapped to their columns */

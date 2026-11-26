@@ -1,4 +1,4 @@
-import type { DeepPartial, Permission, SchemaOverview, VersionedRead } from '@directus/types';
+import type { CollectionVersioning, DeepPartial, Permission, SchemaOverview } from '@directus/types';
 import { beforeAll, expect, test, vi } from 'vitest';
 import type { AST } from '../../../../types/ast.js';
 import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
@@ -6,14 +6,12 @@ import { injectCases } from './inject-cases.js';
 
 vi.mock('../../../utils/get-unaliased-field-key.js');
 
-const read = (shadow: string) => ({ shadow }) as VersionedRead;
+const read = (shadow: string) => ({ shadow: { collection: shadow } }) as CollectionVersioning;
 
 const schema = {
 	collections: {},
 	relations: [],
-	versioning: {
-		reads: { articles: read('directus_shadow_articles'), authors: read('directus_shadow_authors') },
-	},
+	versioning: { articles: read('directus_shadow_articles'), authors: read('directus_shadow_authors') },
 } as unknown as SchemaOverview;
 
 beforeAll(() => {

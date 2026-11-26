@@ -14,7 +14,7 @@ import type {
 	O2MNode,
 	VersionedNode,
 } from '../types/ast.js';
-import { getVersionedRead, getVersionedReadSchema } from './schema.js';
+import { getCollectionVersioning, getVersionedReadSchema } from './schema.js';
 import { getVersionedSource } from './source.js';
 
 /** A node, or a related collection of an a2o node, that's read from the combined rows of its collection */
@@ -34,8 +34,8 @@ export type VersionedReadPlan = ReturnType<typeof planVersionedRead>;
  * source, the query with the version system fields mapped to their columns, and the system columns selected.
  */
 export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOverview, knex: Knex) {
-	const read = getVersionedRead(schema, node.name);
-	const { name, versionFields } = read;
+	const read = getCollectionVersioning(schema, node.name);
+	const name = read.collection.collection;
 	const { primary } = schema.collections[node.name]!;
 	const query = { ...node.query, ...node.versioning.query };
 	const isAggregate = Boolean(query.group || Object.keys(query.aggregate ?? {}).length > 0);
@@ -55,7 +55,7 @@ export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOvervi
 	// The live primary key and system columns link the rows to the nested nodes and their parent
 	const selected = isAggregate
 		? (query.group ?? []).filter((field) => SYSTEM_COLUMNS.includes(field))
-		: [...(hasPrimary ? [] : [primary]), ...versionFields];
+		: [...(hasPrimary ? [] : [primary]), ...SYSTEM_COLUMNS, ...read.referenceFields];
 
 	return {
 		node,
@@ -80,7 +80,6 @@ export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOvervi
 export function formatVersionedLevel(items: Item | Item[], plan: VersionedReadPlan, knex: Knex): Item | Item[] {
 	const { versioning } = getHelpers(knex);
 	const { node, read } = plan;
-	const { versionFields } = read;
 	const rows = toArray(items);
 
 	for (const child of node.children) {
@@ -88,7 +87,7 @@ export function formatVersionedLevel(items: Item | Item[], plan: VersionedReadPl
 
 		const reference = versioning.getVersionReferenceField(child.name);
 
-		if (!versionFields.includes(reference)) continue;
+		if (!read.referenceFields.includes(reference)) continue;
 
 		for (const row of rows) {
 			if (isNil(row[child.fieldKey]) && !isNil(row[reference])) {

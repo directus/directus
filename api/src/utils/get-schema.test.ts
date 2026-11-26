@@ -41,7 +41,7 @@ vi.mock('../services/relations.js', () => ({
 const SCHEMA: SchemaOverview = {
 	collections: {},
 	relations: [],
-	versioning: { collections: {}, relations: [], reads: {} },
+	versioning: {},
 };
 
 const rows = { collections: [] as Record<string, unknown>[] };
@@ -94,7 +94,7 @@ describe('getSchema', () => {
 		expect(setMemorySchemaCache).not.toHaveBeenCalled();
 	});
 
-	test('moves version tables and their relations to versioning', async () => {
+	test('moves version tables and their relations to the read of their collection', async () => {
 		vi.mocked(runExclusive).mockImplementation(async (_key, fn) => ({ result: await fn(), leader: true }));
 
 		const column = (name: string) => ({ column_name: name, data_type: 'integer', is_nullable: true });
@@ -113,9 +113,12 @@ describe('getSchema', () => {
 		const schema = await getSchema({ database });
 
 		expect(Object.keys(schema.collections)).toEqual(['articles']);
-		expect(Object.keys(schema.versioning!.collections)).toEqual(['directus_shadow_articles', 'directus_link_articles']);
+		const read = schema.versioning!['articles']!;
 
-		expect(schema.versioning!.relations).toMatchObject([
+		expect(read.shadow?.collection).toBe('directus_shadow_articles');
+		expect(read.link?.collection).toBe('directus_link_articles');
+
+		expect(read.tableRelations).toMatchObject([
 			{ collection: 'directus_link_articles', field: 'author', related_collection: 'directus_shadow_authors' },
 		]);
 	});

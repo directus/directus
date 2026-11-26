@@ -13,7 +13,7 @@ import {
 	toSystemColumn,
 } from './fields.js';
 import { addShadow, type FilterLevel, rewriteFilter, stripSystemFilter } from './filter.js';
-import { getVersionedRead, getVersionedReadSchema } from './schema.js';
+import { getCollectionVersioning, getVersionedReadSchema } from './schema.js';
 
 type Context = { knex: Knex; schema: SchemaOverview };
 
@@ -45,7 +45,7 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 
 	delete liveQuery.version;
 
-	const read = getVersionedRead(schema, collection);
+	const read = getCollectionVersioning(schema, collection);
 	const shadows: FilterLevel['shadows'] = new Map();
 
 	if (schema.collections[collection]?.versioned) addShadow(shadows, versioning.getShadowTableName(collection));
@@ -55,7 +55,7 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 		? rewriteFilter(query.filter, {
 				schema: getVersionedReadSchema(schema),
 				versioning,
-				collection: read.name,
+				collection: read.collection.collection,
 				hasSystemFields: true,
 				references: true,
 				shadows,
@@ -159,7 +159,7 @@ export function annotateVersionedNodes(
 		const reference = versioning.getVersionReferenceField(node.relation.field);
 
 		// The parent holds the references of m2o and a2o nodes, the related rows the ones of o2m nodes
-		const { versionFields } = getVersionedRead(
+		const { referenceFields } = getCollectionVersioning(
 			context.schema,
 			node.type === 'o2m' ? level.collection : level.parent.collection,
 		);
@@ -171,7 +171,7 @@ export function annotateVersionedNodes(
 		level.versioning = {
 			...split.versioning,
 			fields: fields.systemFields.get(key) ?? [],
-			reference: versionFields.includes(reference) ? reference : null,
+			reference: referenceFields.includes(reference) ? reference : null,
 		};
 	}
 }

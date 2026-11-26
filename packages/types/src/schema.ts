@@ -40,37 +40,33 @@ export type SchemaOverview = {
 	collections: CollectionsOverview;
 	relations: Relation[];
 	/**
-	 * Tables managed by versioning, kept apart from the collections of the project
+	 * Versioning of each collection, by live collection. Holds the tables managed by versioning, kept apart from the
+	 * collections of the project.
 	 */
-	versioning?: VersioningOverview;
-};
-
-export type VersioningOverview = {
-	/** Shadow and link tables */
-	collections: CollectionsOverview;
-	/** Relations of the shadow and link tables */
-	relations: Relation[];
-	/** How each collection is read together with its versions, by live collection */
-	reads: Record<string, VersionedRead>;
+	versioning?: Record<string, CollectionVersioning>;
 };
 
 /**
- * How a collection is read together with its versions: through a collection of its own name and primary key, as the
- * live primary key isn't unique across the live items and versions
+ * Versioning of a collection: its shadow and link tables, and how it's read together with its versions. The read goes
+ * through a collection of its own name and primary key, as the live primary key isn't unique across the live items and
+ * versions.
  */
-export type VersionedRead = {
-	/** Name of the read collection */
-	name: string;
+export type CollectionVersioning = {
 	/** The read collection, with the version fields and the key of the combined rows */
 	collection: CollectionOverview;
 	/** Relations of the read collection, which follow the ones of its live collection */
 	relations: Relation[];
 	/** Shadow table the versions are read from, whose permissions apply to those rows */
-	shadow: string | null;
+	shadow: CollectionOverview | null;
 	/** Link table with the references of live items to versions of related items, if there is one */
-	link: string | null;
-	/** Version system fields and references to versions of related items, which the live collection doesn't have */
-	versionFields: string[];
+	link: CollectionOverview | null;
+	/** Relations of the shadow and link tables */
+	tableRelations: Relation[];
+	/**
+	 * References to versions of related items, which the live collection doesn't have. Together with the version system
+	 * fields, these are the version fields of the read collection.
+	 */
+	referenceFields: string[];
 	/** Columns that split the version references of a2o fields per related collection */
 	a2oReferences: VersionedA2OReference[];
 };
@@ -85,5 +81,4 @@ export type VersionedA2OReference = {
 	reference: string;
 	collectionField: string;
 	collection: string;
-	shadow: string;
 };

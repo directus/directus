@@ -2,8 +2,12 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { describe, expect, test } from 'vitest';
-import { VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
-import { extractVersioning, getVersionedRead, getVersionedReadSchema, getVersionTablesSchema } from './schema.js';
+import {
+	extractVersioning,
+	getCollectionVersioning,
+	getVersionedReadSchema,
+	getVersionTablesSchema,
+} from './schema.js';
 
 // The database helpers derive the dialect from the class name of the client
 const db = knex.default({ client: class Client_PG extends MockClient {} });
@@ -34,20 +38,23 @@ const schema = extractVersioning(
 );
 
 describe('extractVersioning', () => {
-	test('moves version tables and their relations out of the collections', () => {
+	test('moves version tables and their relations to the reads of their collection', () => {
+		const reads = schema.versioning!;
+
 		expect(Object.keys(schema.collections)).toEqual(['articles', 'authors', 'categories']);
-
-		expect(Object.keys(schema.versioning!.collections)).toEqual([
-			'directus_shadow_articles',
-			'directus_shadow_authors',
-		]);
-
 		expect(schema.relations.map((relation) => relation.collection)).toEqual(['articles']);
-		expect(schema.versioning!.relations.map((relation) => relation.field)).toEqual(['version_ref_author']);
+
+		expect(reads['articles']!.shadow?.collection).toBe('directus_shadow_articles');
+		expect(reads['articles']!.shadow?.primary).toBe('version_id');
+		expect(reads['authors']!.shadow?.collection).toBe('directus_shadow_authors');
+		expect(reads['categories']!.shadow).toBeNull();
+
+		expect(reads['articles']!.tableRelations.map((relation) => relation.field)).toEqual(['version_ref_author']);
+		expect(reads['authors']!.tableRelations).toEqual([]);
 	});
 
 	test('adds the read collection of every collection', () => {
-		const { reads } = schema.versioning!;
+		const reads = schema.versioning!;
 
 		expect(Object.keys(reads)).toEqual(['articles', 'authors', 'categories']);
 
@@ -86,27 +93,34 @@ describe('getVersionTablesSchema', () => {
 	});
 });
 
-describe('getVersionedRead', () => {
+describe('getCollectionVersioning', () => {
 	test('describes the read collection of a versioned collection', () => {
-		const read = getVersionedRead(schema, 'articles');
+		const read = getCollectionVersioning(schema, 'articles');
 
-		expect(read).toMatchObject({ name: 'directus_versioned_articles', shadow: 'directus_shadow_articles', link: null });
-		expect(read.versionFields).toContain('version_ref_author');
+		expect(read).toMatchObject({
+			collection: { collection: 'directus_versioned_articles' },
+			shadow: { collection: 'directus_shadow_articles' },
+			link: null,
+		});
+
+		expect(read.referenceFields).toEqual(['version_ref_author']);
 	});
 
 	test('is shared by the merged schemas', () => {
-		expect(getVersionedRead(getVersionedReadSchema(schema), 'articles')).toBe(getVersionedRead(schema, 'articles'));
+		expect(getCollectionVersioning(getVersionedReadSchema(schema), 'articles')).toBe(
+			getCollectionVersioning(schema, 'articles'),
+		);
 	});
 
 	test('throws for collections without a read collection', () => {
-		expect(() => getVersionedRead(schema, 'directus_shadow_articles')).toThrow();
+		expect(() => getCollectionVersioning(schema, 'directus_shadow_articles')).toThrow();
 	});
 
 	test('reads collections without version tables as live items only', () => {
-		const read = getVersionedRead(schema, 'categories');
+		const read = getCollectionVersioning(schema, 'categories');
 
 		expect(read).toMatchObject({ shadow: null, link: null });
-		expect(read.versionFields).toEqual(Object.values(VERSION_SYSTEM_FIELDS));
+		expect(read.referenceFields).toEqual([]);
 	});
 });
 

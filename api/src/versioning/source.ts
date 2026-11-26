@@ -3,7 +3,7 @@ import type { Knex } from 'knex';
 import { getHelpers } from '../database/helpers/index.js';
 import { getDatabaseClient } from '../database/index.js';
 import { VERSION_SYSTEM_FIELDS, VERSIONED_KEY_FIELD } from '../services/version-tables/constants.js';
-import { getVersionedRead, getVersionTablesSchema } from './schema.js';
+import { getCollectionVersioning } from './schema.js';
 
 const ROWS_ALIAS = 'directus_versioned_rows';
 
@@ -13,21 +13,18 @@ const ROWS_ALIAS = 'directus_versioned_rows';
  * their link table.
  */
 export function getVersionedSource(knex: Knex, schema: SchemaOverview, collection: string): Knex.QueryBuilder {
-	const tables = getVersionTablesSchema(schema);
-	const read = getVersionedRead(schema, collection);
+	const read = getCollectionVersioning(schema, collection);
 	const live = schema.collections[collection]!;
 	const { primary } = live;
-	const shadowTable = read.shadow;
-	const shadow = shadowTable ? tables.collections[shadowTable] : undefined;
-	const linkTable = read.link;
-	const link = linkTable ? tables.collections[linkTable] : undefined;
+	const { shadow, link, referenceFields } = read;
+	const shadowTable = shadow?.collection ?? null;
+	const linkTable = link?.collection ?? null;
 
 	const columns = Object.values(live.fields)
 		.filter((field) => !field.alias)
 		.map((field) => field.field);
 
 	const systemFields: string[] = Object.values(VERSION_SYSTEM_FIELDS);
-	const referenceFields = read.versionFields.filter((field) => !systemFields.includes(field));
 	const linkedFields = link ? Object.keys(link.fields).filter((field) => field !== primary) : [];
 	const isNumericKey = ['integer', 'bigInteger'].includes(live.fields[primary]?.type ?? '');
 
