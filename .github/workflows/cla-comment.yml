@@ -100,7 +100,7 @@ jobs:
 
             Thank you for contributing to Directus! Before we can consider this pull request, every contributor needs to sign our Contributor License Agreement (CLA).
 
-            To sign it, add the missing GitHub username(s) to `contributors.yml` in this pull request. See the [CLA section of our contribution docs](https://directus.com/docs/community/contribution/pull-requests#copyright-license-agreement-cla) for details.
+            To sign it, add the missing GitHub username(s) to `contributors.yml` in this pull request. See the [CLA section of our contribution docs](https://directus.com/docs/community/contribution/pull-requests#contributor-license-agreement-cla) for details.
 
             If the CLA is still unsigned after 7 days, this pull request will be closed automatically. You can reopen it at any time once it has been signed.
 
