@@ -1,6 +1,7 @@
 import type { Accountability, PermissionsAction } from '@directus/types';
 import type { AST } from '../../../types/ast.js';
 import { getAstLevels } from '../../../utils/get-ast-levels.js';
+import { getCollectionVersioning } from '../../../versioning/schema.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
@@ -52,8 +53,14 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 
 	const shadows: { path: string; shadow: string; fields: Set<string> }[] = [];
 
-	for (const { path, versioning } of getAstLevels(options.ast)) {
-		for (const [shadow, fields] of Object.entries(versioning?.shadows ?? {})) {
+	for (const { path, collection, versioning } of getAstLevels(options.ast)) {
+		if (!versioning) continue;
+
+		// The version rows of the level are read from its own shadow table
+		const own = getCollectionVersioning(context.schema, collection).shadow?.collection;
+		const levelShadows = { ...(own ? { [own]: [] } : {}), ...versioning.shadows };
+
+		for (const [shadow, fields] of Object.entries(levelShadows)) {
 			shadows.push({ path: path.join('.'), shadow, fields: new Set(fields) });
 			collections.add(shadow);
 		}

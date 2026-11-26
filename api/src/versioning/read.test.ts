@@ -1686,7 +1686,7 @@ describe('version references', () => {
 		const node = ast.children.find((child) => child.type === 'a2o')!;
 
 		expect(node.type === 'a2o' && node.versioning).toEqual({
-			authors: expect.objectContaining({ reference: 'version_ref_item', shadows: { directus_shadow_authors: [] } }),
+			authors: expect.objectContaining({ reference: 'version_ref_item', shadows: {} }),
 			categories: expect.objectContaining({ reference: 'version_ref_item', shadows: {} }),
 		});
 	});
@@ -1886,7 +1886,7 @@ describe('a2o filter', () => {
 			context,
 		);
 
-		expect(ast.versioning?.shadows).toEqual({ directus_shadow_posts: [], directus_shadow_authors: ['name'] });
+		expect(ast.versioning?.shadows).toEqual({ directus_shadow_authors: ['name'] });
 	});
 });
 

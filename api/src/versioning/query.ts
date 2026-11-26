@@ -12,7 +12,7 @@ import {
 	rewriteSort,
 	toSystemColumn,
 } from './fields.js';
-import { addShadow, type FilterLevel, rewriteFilter, stripSystemFilter } from './filter.js';
+import { type FilterLevel, rewriteFilter, stripSystemFilter } from './filter.js';
 import { getCollectionVersioning, getVersionedReadSchema } from './schema.js';
 
 type Context = { knex: Knex; schema: SchemaOverview };
@@ -48,9 +48,7 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 	const read = getCollectionVersioning(schema, collection);
 	const shadows: FilterLevel['shadows'] = new Map();
 
-	if (schema.collections[collection]?.versioned) addShadow(shadows, versioning.getShadowTableName(collection));
-
-	// Filters on versions of related items require access to them as well
+	// Filters on versions of related items require access to them
 	const filter = query.filter
 		? rewriteFilter(query.filter, {
 				schema: getVersionedReadSchema(schema),

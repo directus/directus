@@ -5,10 +5,17 @@ import { cloneDeep, merge } from 'lodash-es';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
 import { PayloadService } from '../../services/payload.js';
-import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../types/ast.js';
+import type {
+	AST,
+	FieldNode,
+	FunctionFieldNode,
+	NestedCollectionNode,
+	O2MNode,
+	VersionedNode,
+} from '../../types/ast.js';
 import { extractFunctionName } from '../../utils/extract-function-name.js';
 import { formatAggregate } from '../../versioning/fields.js';
-import { formatVersionedLevel, planVersionedRead, type VersionedReadPlan } from '../../versioning/run.js';
+import { formatVersionedLevel, planVersionedRead } from '../../versioning/run.js';
 import getDatabase from '../index.js';
 import { getDBQuery } from './lib/get-db-query.js';
 import { parseCurrentLevel } from './lib/parse-current-level.js';
@@ -17,6 +24,15 @@ import { applyFunctionToColumnName } from './utils/apply-function-to-column-name
 import { applyParentFilters } from './utils/apply-parent-filters.js';
 import { mergeWithParentItems } from './utils/merge-with-parent-items.js';
 import { removeTemporaryFields } from './utils/remove-temporary-fields.js';
+
+/** A collection read of the AST: the root, a nested m2o or o2m node, or one related collection of an a2o node */
+type Level = {
+	name: string;
+	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
+	query: Query;
+	cases: Filter[];
+	versioning: VersionedNode | undefined;
+};
 
 /**
  * Final step of reading data: executes an AST that went through `processAst` using Knex.
@@ -38,84 +54,46 @@ export async function runAst(
 		const results: { [collection: string]: null | Item | Item[] } = {};
 
 		for (const collection of ast.names) {
-			const versioning = ast.versioning?.[collection];
-
-			if (versioning) {
-				const node = {
-					name: collection,
-					children: ast.children[collection]!,
-					query: ast.query[collection]!,
-					versioning,
-				};
-
-				const plan = planVersionedRead(node, schema, knex);
-
-				results[collection] = await run(
-					plan.name,
-					plan.children,
-					plan.query,
-					ast.cases[collection] ?? [],
-					accountability,
-					plan,
-				);
-
-				continue;
-			}
-
-			results[collection] = await run(
-				collection,
-				ast.children[collection]!,
-				ast.query[collection]!,
-				ast.cases[collection] ?? [],
-				accountability,
-			);
+			results[collection] = await run({
+				name: collection,
+				children: ast.children[collection]!,
+				query: ast.query[collection]!,
+				cases: ast.cases[collection] ?? [],
+				versioning: ast.versioning?.[collection],
+			});
 		}
 
 		return results;
-	} else if (ast.versioning) {
-		// Versioned nodes read from the combined rows of live items and versions of their collection
-		const plan = planVersionedRead({ ...ast, versioning: ast.versioning }, schema, knex);
-
-		const items = await run(plan.name, plan.children, plan.query, ast.cases, accountability, plan);
-
-		if (options?.nested || !items || !(plan.query.group || plan.query.aggregate)) return items;
-
-		// Aggregates on version system fields are returned in the format of the query
-		return toArray(items).map((item) => formatAggregate(item, plan.query));
-	} else {
-		return await run(ast.name, ast.children, options?.query || ast.query, ast.cases, accountability);
 	}
+
+	return await run({
+		name: ast.name,
+		children: ast.children,
+		query: options?.query || ast.query,
+		cases: ast.cases,
+		versioning: ast.versioning,
+	});
 
 	/**
 	 * Reads one level of the AST and recursively resolves its nested relations.
 	 *
-	 * 1. Determines the columns to select and the nested relational nodes of this level.
-	 * 2. Queries the items of this level, applying the permission `cases` and, for versioned levels, reading from the
-	 *    combined live and version rows (`plan.source`).
-	 * 3. Runs the raw rows through the payload transforms.
-	 * 4. Limits every nested node to the fetched items (`applyParentFilters`), fetches it with a nested `runAst` call
+	 * 1. Levels with versioning are read from the read collection of their collection instead, see `planVersionedRead`.
+	 * 2. Determines the columns to select and the nested relational nodes of this level.
+	 * 3. Queries the items of this level, applying the permission `cases`.
+	 * 4. Runs the raw rows through the payload transforms.
+	 * 5. Limits every nested node to the fetched items (`applyParentFilters`), fetches it with a nested `runAst` call
 	 *    (o2m in batches of `RELATIONAL_BATCH_SIZE`, honoring per-item field access flags) and merges the results into
 	 *    the parent items.
-	 * 5. Formats versioned rows and, for the root call, strips fields that were only added for nesting.
+	 * 6. Formats versioned rows and, for the root call, strips fields that were only added for nesting.
 	 *
-	 * @param collection - The collection to read from, or the name of the combined versioned read
-	 * @param children - The field and relational nodes requested at this level
-	 * @param query - The query to apply to this level
-	 * @param cases - Permission filters the `whenCase` indices of the children refer to
-	 * @param accountability - The accountability used for permissions and payload transforms
-	 * @param plan - Set when reading a versioned node, as returned by `planVersionedRead`
 	 * @returns The item(s) of this level with their nested relations, or `null` if nothing was found
 	 */
-	async function run(
-		collection: string,
-		children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
-		query: Query,
-		cases: Filter[],
-		accountability: Accountability | null,
-		plan?: VersionedReadPlan,
-	) {
-		const env = useEnv();
+	async function run(level: Level) {
+		const plan = level.versioning ? planVersionedRead({ ...level, versioning: level.versioning }, schema, knex) : null;
+		const { name: collection, children, query } = plan ?? level;
+		const { cases } = level;
 		const readSchema = plan?.schema ?? schema;
+		const env = useEnv();
 
 		// Retrieve the database columns to select in the current AST
 		const { fieldNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
@@ -252,6 +230,11 @@ export async function runAst(
 		// the previous step.
 		if (options?.nested !== true && options?.stripNonRequested !== false) {
 			items = removeTemporaryFields(schema, items, originalAST, primaryKeyField);
+		}
+
+		// Aggregates on version system fields are returned in the format of the query
+		if (plan && items && options?.nested !== true && (query.group || query.aggregate)) {
+			return toArray(items).map((item) => formatAggregate(item, query));
 		}
 
 		return items;

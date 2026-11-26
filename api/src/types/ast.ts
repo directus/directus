@@ -136,7 +136,10 @@ export type VersionedNode = {
 	 * parent rows for m2o and a2o nodes and on the related rows for o2m nodes.
 	 */
 	reference: string | null;
-	/** Shadow tables the read requires access to, with the fields its filter reads from them */
+	/**
+	 * Shadow tables of related collections the filter reads, with the fields it reads from them. Access to the shadow
+	 * table of the collection itself is required as well, see `schema.versioning`.
+	 */
 	shadows: Record<string, string[]>;
 };
 
