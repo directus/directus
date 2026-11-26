@@ -122,34 +122,11 @@ export type FunctionFieldNode = {
 };
 
 /**
- * Column of a versioned read collection with the version references of an a2o field for one related collection, and a
- * relation to its shadow table
- */
-export type A2OReference = {
-	column: string;
-	/** Column with the version references of the a2o field */
-	reference: string;
-	collectionField: string;
-	collection: string;
-	shadow: string;
-};
-
-/**
  * Read of a node that includes versions: live items, with the system fields of their published version, together with
  * all other versions of the collection. The node itself describes the read of the live collection, which permissions
- * are validated against.
+ * are validated against. How the collection is read with its versions is in `schema.versioning.reads`.
  */
 export type VersionedNode = {
-	/** Name of the collection that reads the live items together with their versions, see `getVersionedRead` */
-	name: string;
-	/** Shadow table the versions are read from, whose permissions apply to those rows */
-	shadow: string | null;
-	/** Link table with the references of live items to versions of related items, if there is one */
-	link: string | null;
-	/** Version system fields and references to versions of related items, which the live collection doesn't have */
-	versionFields: string[];
-	/** Columns that split the version references of a2o fields per related collection */
-	a2oReferences: A2OReference[];
 	/** Parts of the query that apply to the combined rows, with version system fields mapped to their columns */
 	query: Pick<Query, 'filter' | 'sort' | 'group' | 'aggregate'>;
 	/** Requested version system fields, returned under `directus_version` */

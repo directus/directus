@@ -14,7 +14,7 @@ import type {
 	O2MNode,
 	VersionedNode,
 } from '../types/ast.js';
-import { getVersionedReadSchema } from './schema.js';
+import { getVersionedRead, getVersionedReadSchema } from './schema.js';
 import { getVersionedSource } from './source.js';
 
 /** A node, or a related collection of an a2o node, that's read from the combined rows of its collection */
@@ -34,7 +34,8 @@ export type VersionedReadPlan = ReturnType<typeof planVersionedRead>;
  * source, the query with the version system fields mapped to their columns, and the system columns selected.
  */
 export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOverview, knex: Knex) {
-	const { name, versionFields } = node.versioning;
+	const read = getVersionedRead(schema, node.name);
+	const { name, versionFields } = read;
 	const { primary } = schema.collections[node.name]!;
 	const query = { ...node.query, ...node.versioning.query };
 	const isAggregate = Boolean(query.group || Object.keys(query.aggregate ?? {}).length > 0);
@@ -59,8 +60,9 @@ export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOvervi
 	return {
 		node,
 		name,
+		read,
 		schema: getVersionedReadSchema(schema),
-		source: getVersionedSource(knex, schema, node.name, node.versioning),
+		source: getVersionedSource(knex, schema, node.name),
 		query,
 		children: [
 			...children,
@@ -75,9 +77,10 @@ export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOvervi
  * Move the system columns of the rows of a versioned level under `directus_version`. m2o relations that reference a
  * version instead of a live item, and aren't read as nested node, are set to `{ directus_version: { id } }`.
  */
-export function formatVersionedLevel(items: Item | Item[], node: VersionedLevelNode, knex: Knex): Item | Item[] {
+export function formatVersionedLevel(items: Item | Item[], plan: VersionedReadPlan, knex: Knex): Item | Item[] {
 	const { versioning } = getHelpers(knex);
-	const { versionFields } = node.versioning;
+	const { node, read } = plan;
+	const { versionFields } = read;
 	const rows = toArray(items);
 
 	for (const child of node.children) {

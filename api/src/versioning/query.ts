@@ -45,7 +45,7 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 
 	delete liveQuery.version;
 
-	const read = getVersionedRead(knex, schema, collection);
+	const read = getVersionedRead(schema, collection);
 	const shadows: FilterLevel['shadows'] = new Map();
 
 	if (schema.collections[collection]?.versioned) addShadow(shadows, versioning.getShadowTableName(collection));
@@ -63,7 +63,6 @@ export function splitVersionedQuery(collection: string, query: Query, context: C
 		: null;
 
 	const versioned: Omit<VersionedNode, 'fields' | 'reference'> = {
-		...read,
 		query: {
 			filter,
 			...(query.sort ? { sort: query.sort.map(rewriteSort) } : {}),
@@ -160,8 +159,10 @@ export function annotateVersionedNodes(
 		const reference = versioning.getVersionReferenceField(node.relation.field);
 
 		// The parent holds the references of m2o and a2o nodes, the related rows the ones of o2m nodes
-		const referenceColumns =
-			node.type === 'o2m' ? split.versioning.versionFields : level.parent.versioning!.versionFields;
+		const { versionFields } = getVersionedRead(
+			context.schema,
+			node.type === 'o2m' ? level.collection : level.parent.collection,
+		);
 
 		level.query = split.query;
 
@@ -170,7 +171,7 @@ export function annotateVersionedNodes(
 		level.versioning = {
 			...split.versioning,
 			fields: fields.systemFields.get(key) ?? [],
-			reference: referenceColumns.includes(reference) ? reference : null,
+			reference: versionFields.includes(reference) ? reference : null,
 		};
 	}
 }

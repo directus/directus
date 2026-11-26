@@ -93,7 +93,7 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 		validatePathPermissions(path, readPermissions, shadow, fields);
 	}
 
-	injectCases(options.ast, permissions);
+	injectCases(options.ast, permissions, context.schema);
 
 	return options.ast;
 }

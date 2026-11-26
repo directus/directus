@@ -47,26 +47,30 @@ describe('extractVersioning', () => {
 	});
 
 	test('adds the read collection of every collection', () => {
-		const { readCollections, readRelations } = schema.versioning!;
+		const { reads } = schema.versioning!;
 
-		expect(Object.keys(readCollections)).toEqual([
-			'directus_versioned_articles',
-			'directus_versioned_authors',
-			'directus_versioned_categories',
-		]);
+		expect(Object.keys(reads)).toEqual(['articles', 'authors', 'categories']);
 
-		expect(readCollections['directus_versioned_articles']?.primary).toBe('directus_version_key');
-		expect(readCollections['directus_versioned_articles']?.fields['version_ref_author']).toBeDefined();
+		const articles = reads['articles']!;
 
-		expect(readRelations).toEqual(
+		expect(articles.collection.collection).toBe('directus_versioned_articles');
+		expect(articles.collection.primary).toBe('directus_version_key');
+		expect(articles.collection.fields['version_ref_author']).toBeDefined();
+
+		expect(articles.relations).toEqual(
 			expect.arrayContaining([
 				expect.objectContaining({ collection: 'directus_versioned_articles', field: 'author' }),
-				expect.objectContaining({ collection: 'articles', related_collection: 'directus_versioned_authors' }),
 				expect.objectContaining({
 					collection: 'directus_versioned_articles',
 					field: 'version_ref_author',
 					related_collection: 'directus_shadow_authors',
 				}),
+			]),
+		);
+
+		expect(reads['authors']!.relations).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({ collection: 'articles', related_collection: 'directus_versioned_authors' }),
 			]),
 		);
 	});
@@ -84,14 +88,22 @@ describe('getVersionTablesSchema', () => {
 
 describe('getVersionedRead', () => {
 	test('describes the read collection of a versioned collection', () => {
-		const read = getVersionedRead(db, schema, 'articles');
+		const read = getVersionedRead(schema, 'articles');
 
 		expect(read).toMatchObject({ name: 'directus_versioned_articles', shadow: 'directus_shadow_articles', link: null });
 		expect(read.versionFields).toContain('version_ref_author');
 	});
 
+	test('is shared by the merged schemas', () => {
+		expect(getVersionedRead(getVersionedReadSchema(schema), 'articles')).toBe(getVersionedRead(schema, 'articles'));
+	});
+
+	test('throws for collections without a read collection', () => {
+		expect(() => getVersionedRead(schema, 'directus_shadow_articles')).toThrow();
+	});
+
 	test('reads collections without version tables as live items only', () => {
-		const read = getVersionedRead(db, schema, 'categories');
+		const read = getVersionedRead(schema, 'categories');
 
 		expect(read).toMatchObject({ shadow: null, link: null });
 		expect(read.versionFields).toEqual(Object.values(VERSION_SYSTEM_FIELDS));

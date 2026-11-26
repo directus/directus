@@ -50,8 +50,40 @@ export type VersioningOverview = {
 	collections: CollectionsOverview;
 	/** Relations of the shadow and link tables */
 	relations: Relation[];
-	/** Collections that read the live items of a collection together with their versions, one per collection */
-	readCollections: CollectionsOverview;
-	/** Relations of the read collections, which follow the ones of their live collection */
-	readRelations: Relation[];
+	/** How each collection is read together with its versions, by live collection */
+	reads: Record<string, VersionedRead>;
+};
+
+/**
+ * How a collection is read together with its versions: through a collection of its own name and primary key, as the
+ * live primary key isn't unique across the live items and versions
+ */
+export type VersionedRead = {
+	/** Name of the read collection */
+	name: string;
+	/** The read collection, with the version fields and the key of the combined rows */
+	collection: CollectionOverview;
+	/** Relations of the read collection, which follow the ones of its live collection */
+	relations: Relation[];
+	/** Shadow table the versions are read from, whose permissions apply to those rows */
+	shadow: string | null;
+	/** Link table with the references of live items to versions of related items, if there is one */
+	link: string | null;
+	/** Version system fields and references to versions of related items, which the live collection doesn't have */
+	versionFields: string[];
+	/** Columns that split the version references of a2o fields per related collection */
+	a2oReferences: VersionedA2OReference[];
+};
+
+/**
+ * Column of a read collection with the version references of an a2o field for one related collection, and a relation
+ * to its shadow table
+ */
+export type VersionedA2OReference = {
+	column: string;
+	/** Column with the version references of the a2o field */
+	reference: string;
+	collectionField: string;
+	collection: string;
+	shadow: string;
 };

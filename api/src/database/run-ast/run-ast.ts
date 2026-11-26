@@ -242,7 +242,7 @@ export async function runAst(
 			}
 		}
 
-		if (plan) items = formatVersionedLevel(items, plan.node, knex);
+		if (plan) items = formatVersionedLevel(items, plan, knex);
 
 		// During the fetching of data, we have to inject a couple of required fields for the child nesting
 		// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching

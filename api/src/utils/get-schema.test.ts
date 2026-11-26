@@ -41,7 +41,7 @@ vi.mock('../services/relations.js', () => ({
 const SCHEMA: SchemaOverview = {
 	collections: {},
 	relations: [],
-	versioning: { collections: {}, relations: [], readCollections: {}, readRelations: [] },
+	versioning: { collections: {}, relations: [], reads: {} },
 };
 
 const rows = { collections: [] as Record<string, unknown>[] };

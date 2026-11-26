@@ -3,8 +3,7 @@ import type { Knex } from 'knex';
 import { getHelpers } from '../database/helpers/index.js';
 import { getDatabaseClient } from '../database/index.js';
 import { VERSION_SYSTEM_FIELDS, VERSIONED_KEY_FIELD } from '../services/version-tables/constants.js';
-import type { VersionedNode } from '../types/ast.js';
-import { getVersionTablesSchema } from './schema.js';
+import { getVersionedRead, getVersionTablesSchema } from './schema.js';
 
 const ROWS_ALIAS = 'directus_versioned_rows';
 
@@ -13,13 +12,9 @@ const ROWS_ALIAS = 'directus_versioned_rows';
  * aren't versioned only have live rows, with the system fields of published items and the references to versions from
  * their link table.
  */
-export function getVersionedSource(
-	knex: Knex,
-	schema: SchemaOverview,
-	collection: string,
-	read: Pick<VersionedNode, 'shadow' | 'link' | 'versionFields' | 'a2oReferences'>,
-): Knex.QueryBuilder {
+export function getVersionedSource(knex: Knex, schema: SchemaOverview, collection: string): Knex.QueryBuilder {
 	const tables = getVersionTablesSchema(schema);
+	const read = getVersionedRead(schema, collection);
 	const live = schema.collections[collection]!;
 	const { primary } = live;
 	const shadowTable = read.shadow;

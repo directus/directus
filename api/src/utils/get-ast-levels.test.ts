@@ -80,11 +80,6 @@ describe('getAstLevels', () => {
 		pages.query = { limit: 1 };
 
 		pages.versioning = {
-			name: 'directus_versioned_pages',
-			shadow: null,
-			link: null,
-			versionFields: [],
-			a2oReferences: [],
 			query: {},
 			fields: [],
 			reference: null,

@@ -1,8 +1,9 @@
-import type { Filter, Permission } from '@directus/types';
+import type { Filter, Permission, SchemaOverview } from '@directus/types';
 import { range, uniq } from 'lodash-es';
 import { VERSION_SYSTEM_FIELDS } from '../../../../services/version-tables/constants.js';
 import type { AST } from '../../../../types/ast.js';
 import { type AstLevel, getAstLevels } from '../../../../utils/get-ast-levels.js';
+import { getVersionedRead } from '../../../../versioning/schema.js';
 import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
 import { getCases } from './get-cases.js';
 
@@ -14,9 +15,9 @@ type Access = ReturnType<typeof getCases>;
  * @param ast - Read query AST
  * @param permissions - Expected to be filtered down for the policies and action already
  */
-export function injectCases(ast: AST, permissions: Permission[]) {
+export function injectCases(ast: AST, permissions: Permission[], schema: SchemaOverview) {
 	for (const level of getAstLevels(ast)) {
-		level.cases = getLevelCases(level, permissions);
+		level.cases = getLevelCases(level, permissions, schema);
 	}
 }
 
@@ -24,11 +25,16 @@ export function injectCases(ast: AST, permissions: Permission[]) {
  * Cases of the level, with the cases that apply to each of its children set on them. The permissions of the shadow
  * table of a versioned level apply to its version rows instead of the ones of the collection.
  */
-function getLevelCases({ collection, children, versioning }: AstLevel, permissions: Permission[]) {
+function getLevelCases(
+	{ collection, children, versioning }: AstLevel,
+	permissions: Permission[],
+	schema: SchemaOverview,
+) {
 	// Use uniq here, since there might be multiple duplications due to aliases or functions
 	const requestedKeys = uniq(children.map(getUnaliasedFieldKey));
 	const live = getCases(collection, permissions, requestedKeys);
-	const versions = versioning?.shadow ? getCases(versioning.shadow, permissions, requestedKeys) : null;
+	const shadow = versioning ? getVersionedRead(schema, collection).shadow : null;
+	const versions = shadow ? getCases(shadow, permissions, requestedKeys) : null;
 
 	const cases = versions
 		? [...live.cases.map((rule) => withType(rule, '_eq')), ...versions.cases.map((rule) => withType(rule, '_neq'))]
