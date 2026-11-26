@@ -2603,6 +2603,8 @@ interfaces:
     of_the_following: of the following
     no_rules: No configured rules
     change_value: Click to change value
+    search_or_paste_id: Search or paste an ID...
+    use_value: Use "{value}"
     placeholder: Drag rules here
     add_key_placeholder: Add a key and press enter...
   fields:

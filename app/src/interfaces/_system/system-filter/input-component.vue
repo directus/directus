@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { isDynamicVariable } from '@directus/utils';
 import { computed, onMounted, onUpdated, ref, watch } from 'vue';
+import InputM2o from './input-m2o.vue';
 import VDatePicker from '@/components/v-date-picker/v-date-picker.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
 import VSelect from '@/components/v-select/v-select.vue';
+
+type M2oValue = string | number | null;
 
 type Choice = {
 	text: string;
@@ -20,10 +23,14 @@ const props = withDefaults(
 		commaAllowed?: boolean;
 		focus?: boolean;
 		choices?: Choice[];
+		relatedCollection?: string | null;
+		template?: string | null;
 	}>(),
 	{
 		focus: true,
 		choices: () => [],
+		relatedCollection: null,
+		template: null,
 	},
 );
 
@@ -34,6 +41,7 @@ const emit = defineEmits<{
 }>();
 
 const dateTimeMenu = ref();
+const m2oInput = ref<InstanceType<typeof InputM2o> | null>(null);
 const inputEl = ref<HTMLInputElement | null>(null);
 const isInputValid = ref(true);
 const inputBorderColor = computed(() => (isInputValid.value ? 'none' : 'var(--theme--danger)'));
@@ -131,6 +139,7 @@ function onPaste(event: ClipboardEvent) {
 defineExpose({
 	focus() {
 		inputEl.value?.focus();
+		m2oInput.value?.focus();
 	},
 });
 </script>
@@ -155,6 +164,16 @@ defineExpose({
 		@input="onInput(($event.target as HTMLInputElement).value)"
 		@keydown="onKeyDown"
 		@paste="onPaste"
+	/>
+	<InputM2o
+		v-else-if="is === 'm2o' && relatedCollection"
+		ref="m2oInput"
+		:value="value as M2oValue"
+		:related-collection="relatedCollection"
+		:template="template"
+		:comma-allowed="commaAllowed"
+		@input="emit('input', $event)"
+		@comma-value-pasted="emit('commaValuePasted', $event)"
 	/>
 	<VSelect
 		v-else-if="is === 'select'"
