@@ -69,7 +69,8 @@ export function flattenVersionSystemFields(payload: Record<string, unknown>): Re
 	return result;
 }
 
-const SYSTEM_FIELD_KEYS = new Map<string, string>(
+/** Version system field keys by their column in the shadow table */
+export const SYSTEM_FIELD_KEYS = new Map<string, string>(
 	Object.entries(VERSION_SYSTEM_FIELDS).map(([key, column]) => [column, key]),
 );
 

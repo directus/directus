@@ -84,15 +84,9 @@ export function removeTemporaryFields(
 		const query = ast.versioning ? { ...ast.query, ...ast.versioning.query } : ast.query;
 		const versionFields = ast.versioning?.fields ?? [];
 
-		// Make sure any requested aggregate fields are included
+		// Aggregate results only hold the requested aggregates, so they're kept as a whole
 		if (query?.aggregate) {
-			for (const [operation, aggregateFields] of Object.entries(query.aggregate)) {
-				if (!fields) continue;
-
-				if (operation === 'count' && aggregateFields.includes('*')) fields.push('count');
-
-				fields.push(...aggregateFields.map((field) => `${operation}.${field}`));
-			}
+			fields.push(...Object.keys(query.aggregate));
 		}
 
 		for (const rawItem of rawItems) {

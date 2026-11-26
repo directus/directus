@@ -1,10 +1,10 @@
 import type { Filter, Item, Query, SchemaOverview } from '@directus/types';
 import { mergeFilters, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { isNil, uniq } from 'lodash-es';
+import { isNil, isPlainObject, mapKeys, uniq } from 'lodash-es';
 import { getHelpers } from '../database/helpers/index.js';
 import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
-import { nestVersionSystemFields } from '../services/version-tables/utils.js';
+import { nestVersionSystemFields, SYSTEM_FIELD_KEYS } from '../services/version-tables/utils.js';
 import type {
 	A2MNode,
 	FieldNode,
@@ -27,17 +27,20 @@ export type VersionedLevelNode = {
 
 const SYSTEM_COLUMNS: string[] = Object.values(VERSION_SYSTEM_FIELDS);
 
-export type VersionedReadPlan = ReturnType<typeof planVersionedRead>;
+export type VersionedReadPlan = NonNullable<ReturnType<typeof planVersionedRead>>;
 
 /**
  * How to read a versioned node from the combined rows of its collection: the read collection with its schema and
  * source, the query with the version system fields mapped to their columns, and the system columns selected.
+ * Returns `null` for nodes without versioning.
  */
 export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOverview, knex: Knex) {
+	const { versioning } = node;
+
 	const read = schema.versioning![node.collection]!;
 	const collection = read.collection.collection;
 	const { primary } = schema.collections[node.collection]!;
-	const query = { ...node.query, ...node.versioning.query };
+	const query = { ...node.query, ...versioning.query };
 	const isAggregate = Boolean(query.group || Object.keys(query.aggregate ?? {}).length > 0);
 
 	const children = node.children.map((child) => {
@@ -74,13 +77,15 @@ export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOvervi
 }
 
 /**
- * Move the system columns of the rows of a versioned level under `directus_version`. m2o relations that reference a
- * version instead of a live item, and aren't read as nested node, are set to `{ directus_version: { id } }`.
+ * Move the system columns of the rows of a versioned level under `directus_version`, and rename aggregated ones to
+ * their `directus_version.<key>` name. m2o relations that reference a version instead of a live item, and aren't read
+ * as nested node, are set to `{ directus_version: { id } }`.
  */
 export function formatVersionedLevel(items: Item | Item[], plan: VersionedReadPlan, knex: Knex): Item | Item[] {
 	const { versioning } = getHelpers(knex);
-	const { node, read } = plan;
+	const { node, read, query } = plan;
 	const rows = toArray(items);
+	const aggregates = Object.keys(query.aggregate ?? {});
 
 	for (const child of node.children) {
 		if (child.type !== 'field') continue;
@@ -96,7 +101,20 @@ export function formatVersionedLevel(items: Item | Item[], plan: VersionedReadPl
 		}
 	}
 
-	const formatted = rows.map(nestVersionSystemFields);
+	const formatted = rows.map((row) => {
+		const nested = nestVersionSystemFields(row);
+
+		for (const func of aggregates) {
+			if (!isPlainObject(nested[func])) continue;
+
+			nested[func] = mapKeys(nested[func], (_value, column) => {
+				const key = SYSTEM_FIELD_KEYS.get(column);
+				return key ? `${VERSION_FIELD}.${key}` : column;
+			});
+		}
+
+		return nested;
+	});
 
 	return Array.isArray(items) ? formatted : formatted[0]!;
 }

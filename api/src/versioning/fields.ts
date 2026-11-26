@@ -1,7 +1,6 @@
 import { InvalidQueryError } from '@directus/errors';
-import type { Aggregate, Item, Query, SchemaOverview } from '@directus/types';
+import type { Aggregate, SchemaOverview } from '@directus/types';
 import { getRelationInfo } from '@directus/utils';
-import { isPlainObject, mapKeys } from 'lodash-es';
 import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
 
 /** Version system fields of live items without a version, which act as the published version */
@@ -49,30 +48,6 @@ export function rewriteSort(sort: string) {
  */
 export function mapAggregate(aggregate: Aggregate, map: (fields: string[]) => string[]): Aggregate {
 	return Object.fromEntries(Object.entries(aggregate).map(([func, fields]) => [func, map(fields ?? [])]));
-}
-
-/**
- * Group and aggregate results on version system fields use the same format as the query: grouped system field values end up in
- * `directus_version`, aggregated ones under their `directus_version.<key>` name
- */
-export function formatAggregate(item: Item, query: Query) {
-	for (const [key, column] of Object.entries(VERSION_SYSTEM_FIELDS)) {
-		if (!(column in item)) continue;
-
-		item[VERSION_FIELD] = { ...item[VERSION_FIELD], [key]: item[column] };
-		delete item[column];
-	}
-
-	for (const aggregate of Object.keys(query.aggregate ?? {})) {
-		if (!isPlainObject(item[aggregate])) continue;
-
-		item[aggregate] = mapKeys(item[aggregate], (_value, column) => {
-			const key = Object.entries(VERSION_SYSTEM_FIELDS).find(([, systemColumn]) => systemColumn === column)?.[0];
-			return key ? `${VERSION_FIELD}.${key}` : column;
-		});
-	}
-
-	return item;
 }
 
 /**

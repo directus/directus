@@ -2,7 +2,6 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import type { SchemaOverview } from '@directus/types';
 import { describe, expect, test } from 'vitest';
 import {
-	formatAggregate,
 	getRelatedCollection,
 	getSystemColumn,
 	isSystemField,
@@ -77,24 +76,6 @@ describe('mapAggregate', () => {
 		expect(
 			mapAggregate({ count: ['*'], sum: ['a', 'b'] }, (fields) => fields.map((field) => field.toUpperCase())),
 		).toEqual({ count: ['*'], sum: ['A', 'B'] });
-	});
-});
-
-describe('formatAggregate', () => {
-	test('moves grouped system columns into directus_version', () => {
-		expect(formatAggregate({ version_type: 'draft', count: 2 }, { aggregate: { count: ['*'] } })).toEqual({
-			directus_version: { type: 'draft' },
-			count: 2,
-		});
-	});
-
-	test('renames aggregated system columns to their field', () => {
-		expect(
-			formatAggregate(
-				{ countDistinct: { version_user_created: 2, title: 3 } },
-				{ aggregate: { countDistinct: ['directus_version.user_created', 'title'] } },
-			),
-		).toEqual({ countDistinct: { 'directus_version.user_created': 2, title: 3 } });
 	});
 });
 
