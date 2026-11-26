@@ -60,6 +60,23 @@ describe('assertTransformsAllowed', () => {
 		expect(() => assertTransformsAllowed(1, 1, transforms)).toThrow(IllegalAssetTransformationError);
 	});
 
+	// The Transformation type only reflects sharp's last resize overload (the options-object form),
+	// but the API passes the raw JSON arguments through to sharp, so the positional forms are reachable.
+	test('When the width and height are in the third-argument options, then they are counted', () => {
+		const transforms = [['resize', null, null, { width: MAX_DIM + 500, height: 2 }]] as unknown as Transformation[];
+		expect(() => assertTransformsAllowed(1, 1, transforms)).toThrow(IllegalAssetTransformationError);
+	});
+
+	test('When the third-argument options override smaller positional values, then the options win', () => {
+		const transforms = [['resize', 10, 2, { width: MAX_DIM + 501 }]] as unknown as Transformation[];
+		expect(() => assertTransformsAllowed(1, 1, transforms)).toThrow(IllegalAssetTransformationError);
+	});
+
+	test('When the third-argument options stay within the cap, then it does not throw', () => {
+		const transforms = [['resize', null, null, { width: 100, height: 100 }]] as unknown as Transformation[];
+		expect(() => assertTransformsAllowed(1, 1, transforms)).not.toThrow();
+	});
+
 	test('When a source dimension is zero, then it does not divide by zero or throw', () => {
 		const transforms: Transformation[] = [['resize', { width: 100 }]];
 		expect(() => assertTransformsAllowed(0, 0, transforms)).not.toThrow();
@@ -139,6 +156,27 @@ describe('calculateResize', () => {
 
 		test('When the width/height argument is an array, then it is not mistaken for an options object', () => {
 			expect(calculateResize({ width: 1, height: 1 }, [[20000, 20000]])).toEqual({ width: 1, height: 1 });
+		});
+
+		test('When the width and height are in the third-argument options, then they are counted', () => {
+			expect(calculateResize({ width: 1, height: 1 }, [null, null, { width: 6500, height: 2 }])).toEqual({
+				width: 6500,
+				height: 2,
+			});
+		});
+
+		test('When the third-argument options override the positional values, then the options win', () => {
+			expect(calculateResize({ width: 1, height: 1 }, [10, 2, { width: 6501 }])).toEqual({
+				width: 6501,
+				height: 2,
+			});
+		});
+
+		test('When the options object is given with a positional height, then the height is applied', () => {
+			expect(calculateResize({ width: 100, height: 100 }, [{ width: 100 }, 6501])).toEqual({
+				width: 100,
+				height: 6501,
+			});
 		});
 
 		test('When both axes are absent, then the input is unchanged', () => {
