@@ -29,7 +29,7 @@ import { getColumn, getColumns, getForeignKey, knex, LINK, SHADOW } from './vers
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api, snapshot);
 
-const META = [
+const SYSTEM_COLUMNS = [
 	'version_date_created',
 	'version_date_updated',
 	'version_id',
@@ -64,7 +64,7 @@ afterAll(async () => {
 test('creates shadow tables mirroring the fields of versioned collections', async () => {
 	expect(await getColumns(SHADOW + collections.posts)).toEqual(
 		columns(
-			...META,
+			...SYSTEM_COLUMNS,
 			'id',
 			'title',
 			'views',
@@ -80,10 +80,10 @@ test('creates shadow tables mirroring the fields of versioned collections', asyn
 	);
 
 	expect(await getColumns(SHADOW + collections.posts_blocks)).toEqual(
-		columns(...META, 'id', 'posts_id', 'item', 'collection', 'version_ref_posts_id', 'version_ref_item'),
+		columns(...SYSTEM_COLUMNS, 'id', 'posts_id', 'item', 'collection', 'version_ref_posts_id', 'version_ref_item'),
 	);
 
-	expect(await getColumns(SHADOW + collections.authors)).toEqual(columns(...META, 'id', 'name'));
+	expect(await getColumns(SHADOW + collections.authors)).toEqual(columns(...SYSTEM_COLUMNS, 'id', 'name'));
 	expect(await getColumns(SHADOW + collections.categories)).toBeNull();
 	expect(await getColumns(SHADOW + collections.languages)).toBeNull();
 });
@@ -277,7 +277,7 @@ test('link tables can reference live items with uuid keys', async () => {
 test('enabling and disabling versioning creates and drops the tables', async () => {
 	await api.request(updateCollection(collections.categories, { meta: { versioning: true } }));
 
-	expect(await getColumns(SHADOW + collections.categories)).toEqual(columns(...META, 'id', 'name'));
+	expect(await getColumns(SHADOW + collections.categories)).toEqual(columns(...SYSTEM_COLUMNS, 'id', 'name'));
 	expect(await getColumns(SHADOW + collections.posts)).toContain('version_ref_category');
 	expect(await getColumns(LINK + collections.posts)).toBeNull();
 
@@ -299,7 +299,7 @@ test('deleting a versioned collection drops its version tables', async () => {
 		}),
 	);
 
-	expect(await getColumns(SHADOW + name)).toEqual(columns(...META, 'id'));
+	expect(await getColumns(SHADOW + name)).toEqual(columns(...SYSTEM_COLUMNS, 'id'));
 
 	await api.request(deleteCollection(name));
 

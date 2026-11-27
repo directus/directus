@@ -1,10 +1,18 @@
-import type { DeepPartial, Permission } from '@directus/types';
+import type { CollectionVersioning, DeepPartial, Permission, SchemaOverview } from '@directus/types';
 import { beforeAll, expect, test, vi } from 'vitest';
 import type { AST } from '../../../../types/ast.js';
 import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
 import { injectCases } from './inject-cases.js';
 
 vi.mock('../../../utils/get-unaliased-field-key.js');
+
+const read = (shadow: string) => ({ shadow: { collection: shadow } }) as CollectionVersioning;
+
+const schema = {
+	collections: {},
+	relations: [],
+	versioning: { articles: read('directus_shadow_articles'), authors: read('directus_shadow_authors') },
+} as unknown as SchemaOverview;
 
 beforeAll(() => {
 	vi.clearAllMocks();
@@ -25,7 +33,7 @@ test('Injects cases related to ast', () => {
 		{ collection: 'test-collection-b', permissions: null, fields: [] },
 	];
 
-	injectCases(ast as AST, permissions as Permission[]);
+	injectCases(ast as AST, permissions as Permission[], schema);
 
 	expect(ast.cases).toEqual([{ status: { _eq: 'published' } }]);
 });
@@ -42,7 +50,7 @@ test('Ignores cases for fields that are not requested', () => {
 		{ collection: 'test-collection-a', permissions: null, fields: ['not-requested-field'] },
 	];
 
-	injectCases(ast as AST, permissions as Permission[]);
+	injectCases(ast as AST, permissions as Permission[], schema);
 
 	expect(ast.cases).toEqual([{ status: { _eq: 'published' } }]);
 });
@@ -71,7 +79,7 @@ test('Adds cases that apply to fields in ast children', () => {
 		},
 	];
 
-	injectCases(ast as AST, permissions as Permission[]);
+	injectCases(ast as AST, permissions as Permission[], schema);
 
 	expect(ast.children).toEqual([
 		{
@@ -103,7 +111,7 @@ test('Ignores cases for fields that are allowed by "all" permissions', () => {
 		{ collection: 'test-collection-a', permissions: {}, fields: ['test-field-a'] },
 	];
 
-	injectCases(ast as AST, permissions as Permission[]);
+	injectCases(ast as AST, permissions as Permission[], schema);
 
 	expect(ast.children).toEqual([
 		{
@@ -126,7 +134,7 @@ test('Errors out when there are no permissions for the requested fields', () => 
 		{ collection: 'test-collection-a', permissions: { status: { _eq: 'published' } }, fields: ['test-field-b'] },
 	];
 
-	expect(() => injectCases(ast as AST, permissions as Permission[])).toThrow();
+	expect(() => injectCases(ast as AST, permissions as Permission[], schema)).toThrow();
 });
 
 test('Adds the cases to each field if affected fields is *', () => {
@@ -153,7 +161,7 @@ test('Adds the cases to each field if affected fields is *', () => {
 		},
 	];
 
-	injectCases(ast as AST, permissions as Permission[]);
+	injectCases(ast as AST, permissions as Permission[], schema);
 
 	expect(ast.children).toEqual([
 		{
@@ -207,7 +215,7 @@ test('Processes m2o children recursively', () => {
 		},
 	];
 
-	injectCases(ast as AST, permissions as Permission[]);
+	injectCases(ast as AST, permissions as Permission[], schema);
 
 	expect(ast.children).toEqual([
 		{ fieldKey: 'test-field-a', whenCase: [0] },
@@ -261,7 +269,7 @@ test('Processes o2m children recursively', () => {
 		},
 	];
 
-	injectCases(ast as AST, permissions as Permission[]);
+	injectCases(ast as AST, permissions as Permission[], schema);
 
 	expect(ast.children).toEqual([
 		{ fieldKey: 'test-field-a', whenCase: [0] },
@@ -324,7 +332,7 @@ test('Processes a2o children recursively', () => {
 		},
 	];
 
-	injectCases(ast as AST, permissions as Permission[]);
+	injectCases(ast as AST, permissions as Permission[], schema);
 
 	expect(ast.children).toEqual([
 		{ fieldKey: 'test-field-a', whenCase: [0] },
@@ -346,4 +354,88 @@ test('Processes a2o children recursively', () => {
 			},
 		},
 	]);
+});
+
+test('Limits the rows of a versioned node to the live and shadow permissions', () => {
+	const ast: DeepPartial<AST> = {
+		name: 'articles',
+		cases: [],
+		children: [
+			{ fieldKey: 'title', whenCase: [] },
+			{ fieldKey: 'body', whenCase: [] },
+		],
+		versioning: { shadows: {} },
+	};
+
+	const permissions: DeepPartial<Permission>[] = [
+		{ collection: 'articles', permissions: {}, fields: ['*'] },
+		{
+			collection: 'directus_shadow_articles',
+			permissions: { version_user_created: { _eq: 'user' } },
+			fields: ['title'],
+		},
+	];
+
+	injectCases(ast as AST, permissions as Permission[], schema);
+
+	expect(ast.cases).toEqual([
+		{ _and: [{}, { version_type: { _eq: 'published' } }] },
+		{ _and: [{ version_user_created: { _eq: 'user' } }, { version_type: { _neq: 'published' } }] },
+	]);
+
+	// Fields the shadow permissions don't allow are only returned for live rows
+	expect(ast.children).toEqual([
+		{ fieldKey: 'title', whenCase: [0, 1] },
+		{ fieldKey: 'body', whenCase: [0] },
+	]);
+});
+
+test('Excludes the version rows of a versioned node without shadow permissions', () => {
+	const ast: DeepPartial<AST> = {
+		name: 'articles',
+		cases: [],
+		children: [{ fieldKey: 'title', whenCase: [] }],
+		versioning: { shadows: {} },
+	};
+
+	const permissions: DeepPartial<Permission>[] = [
+		{ collection: 'articles', permissions: { status: { _eq: 'published' } }, fields: ['title'] },
+	];
+
+	injectCases(ast as AST, permissions as Permission[], schema);
+
+	expect(ast.cases).toEqual([{ _and: [{ status: { _eq: 'published' } }, { version_type: { _eq: 'published' } }] }]);
+	expect(ast.children).toEqual([{ fieldKey: 'title', whenCase: [0] }]);
+});
+
+test('Uses the shadow permissions of versioned nested nodes', () => {
+	const ast: DeepPartial<AST> = {
+		name: 'articles',
+		cases: [],
+		children: [
+			{
+				type: 'm2o',
+				fieldKey: 'author',
+				whenCase: [],
+				relation: { related_collection: 'authors' },
+				children: [{ fieldKey: 'name', whenCase: [] }],
+				versioning: { shadows: {} },
+			},
+		],
+	};
+
+	const permissions: DeepPartial<Permission>[] = [
+		{ collection: 'articles', permissions: {}, fields: ['*'] },
+		{ collection: 'authors', permissions: {}, fields: ['*'] },
+		{ collection: 'directus_shadow_authors', permissions: {}, fields: ['*'] },
+	];
+
+	injectCases(ast as AST, permissions as Permission[], schema);
+
+	expect((ast.children![0] as any).cases).toEqual([
+		{ _and: [{}, { version_type: { _eq: 'published' } }] },
+		{ _and: [{}, { version_type: { _neq: 'published' } }] },
+	]);
+
+	expect((ast.children![0] as any).children).toEqual([{ fieldKey: 'name', whenCase: [] }]);
 });

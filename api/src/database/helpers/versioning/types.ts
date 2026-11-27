@@ -5,6 +5,7 @@ import {
 	LINK_TABLE_PREFIX,
 	SHADOW_TABLE_PREFIX,
 	VERSION_REFERENCE_PREFIX,
+	VERSIONED_READ_PREFIX,
 } from '../../../services/version-tables/constants.js';
 import type { VersionTableForeignKey } from '../../../services/version-tables/plan-version-tables.js';
 import type { SchemaHelper } from '../schema/types.js';
@@ -36,10 +37,25 @@ export class VersioningHelper extends DatabaseHelper {
 	}
 
 	/**
+	 * Alias for the UNION of live an shadow collection
+	 */
+	getVersionedReadName(collection: string): string {
+		return this.prefixName(VERSIONED_READ_PREFIX, collection);
+	}
+
+	/**
 	 * Name of the column in a shadow table that references a version of the related collection
 	 */
 	getVersionReferenceField(field: string): string {
 		return this.prefixName(VERSION_REFERENCE_PREFIX, field);
+	}
+
+	/**
+	 * Name of the column of a versioned read collection that holds the references of an a2o field to versions of one of
+	 * its related collections, which lets filters follow them like m2o relations
+	 */
+	getA2OVersionReferenceField(field: string, collection: string): string {
+		return this.prefixName(VERSION_REFERENCE_PREFIX, `${field}__${collection}`);
 	}
 
 	/**

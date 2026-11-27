@@ -1,11 +1,15 @@
 import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
-import type { PrimaryKey } from '@directus/types';
+import type { Filter, PrimaryKey } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
 import express from 'express';
 import { assign } from 'lodash-es';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
+import { ItemsService } from '../services/items.js';
 import { MetaService } from '../services/meta.js';
+import { VersionedItemsService } from '../services/version-items.js';
+import { VERSION_FIELD } from '../services/version-tables/constants.js';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
@@ -270,6 +274,143 @@ router.post(
 		});
 
 		res.locals['payload'] = { data: updatedItemKey || null };
+
+		return next();
+	}),
+	respond,
+);
+
+async function readVersionHandler(
+	collection: string,
+	versionId: PrimaryKey,
+	req: express.Request,
+	res: express.Response,
+) {
+	const itemsService = new ItemsService(collection, {
+		accountability: req.accountability,
+		schema: req.schema,
+	});
+
+	const filter = mergeFilters(
+		{ [VERSION_FIELD]: { id: { _eq: versionId } } } as Filter,
+		req.sanitizedQuery.filter ?? null,
+	);
+
+	try {
+		const [item] = await itemsService.readByQuery({ ...req.sanitizedQuery, version: 'true', filter, limit: 1 });
+		res.locals['payload'] = { data: item ?? null };
+	} catch (error: any) {
+		if (!isDirectusError(error, ErrorCode.Forbidden)) throw error;
+	}
+}
+
+router.post(
+	'/:collection',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const versionId = await service.createOne(req.body);
+
+		await readVersionHandler(service.collection, versionId, req, res);
+
+		return next();
+	}),
+	respond,
+);
+
+router.patch(
+	'/:collection/:id',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const versionId = await service.updateOne(req.params['id']!, req.body);
+
+		await readVersionHandler(service.collection, versionId, req, res);
+
+		return next();
+	}),
+	respond,
+);
+
+router.delete(
+	'/:collection/:id',
+	asyncHandler(async (req, _res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.deleteOne(req.params['id']!);
+
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/:collection/:id/publish',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const deleteVersion = req.body?.['delete_references'] === true;
+
+		const liveKey = await service.publish(req.params['id']!, { deleteVersion });
+
+		const itemsService = new ItemsService(service.collection, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		try {
+			res.locals['payload'] = {
+				data: await itemsService.readOne(liveKey, { ...req.sanitizedQuery, version: 'true' }),
+			};
+		} catch (error: any) {
+			if (!isDirectusError(error, ErrorCode.Forbidden)) throw error;
+		}
+
+		return next();
+	}),
+	respond,
+);
+
+router.delete(
+	'/:collection/:id/publish',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const versionId = await service.unpublish(req.params['id']!);
+
+		await readVersionHandler(service.collection, versionId, req, res);
+
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/:collection/:id/archive',
+	asyncHandler(async (req, res, next) => {
+		const service = new VersionedItemsService(req.params['collection']!, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const versionId = await service.archive(req.params['id']!);
+
+		await readVersionHandler(service.collection, versionId, req, res);
 
 		return next();
 	}),

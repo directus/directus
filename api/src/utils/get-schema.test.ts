@@ -26,10 +26,10 @@ vi.mock('../logger/index.js', () => ({
 	useLogger: () => ({ trace: vi.fn(), warn: vi.fn() }),
 }));
 
-const inspector = vi.hoisted(() => ({ overview: {} as Record<string, unknown> }));
+const inspector = vi.hoisted(() => ({ overview: {} as Record<string, unknown>, foreignKeys: [] as unknown[] }));
 
 vi.mock('@directus/schema', () => ({
-	createInspector: () => ({ overview: async () => inspector.overview }),
+	createInspector: () => ({ overview: async () => inspector.overview, foreignKeys: async () => inspector.foreignKeys }),
 }));
 
 vi.mock('../services/relations.js', () => ({
@@ -38,17 +38,23 @@ vi.mock('../services/relations.js', () => ({
 	},
 }));
 
-const SCHEMA: SchemaOverview = { collections: {}, relations: [] };
+const SCHEMA: SchemaOverview = {
+	collections: {},
+	relations: [],
+	versioning: {},
+};
 
 const rows = { collections: [] as Record<string, unknown>[] };
 
 const database = {
+	client: new (class Client_PG {})(),
 	select: () => ({ from: async (table: string) => (table === 'directus_collections' ? rows.collections : []) }),
 } as unknown as Knex;
 
 afterEach(() => {
 	vi.clearAllMocks();
 	inspector.overview = {};
+	inspector.foreignKeys = [];
 	rows.collections = [];
 });
 
@@ -88,20 +94,33 @@ describe('getSchema', () => {
 		expect(setMemorySchemaCache).not.toHaveBeenCalled();
 	});
 
-	test('leaves out version tables', async () => {
+	test('moves version tables and their relations to the read of their collection', async () => {
 		vi.mocked(runExclusive).mockImplementation(async (_key, fn) => ({ result: await fn(), leader: true }));
 
-		const table = { primary: 'id', columns: {} };
+		const column = (name: string) => ({ column_name: name, data_type: 'integer', is_nullable: true });
 
 		inspector.overview = {
-			articles: table,
-			directus_shadow_articles: table,
-			directus_link_articles: table,
+			articles: { primary: 'id', columns: { id: column('id') } },
+			directus_shadow_articles: { primary: 'version_id', columns: { version_id: column('version_id') } },
+			directus_link_articles: { primary: 'id', columns: { id: column('id'), author: column('author') } },
 		};
+
+		inspector.foreignKeys = [
+			{ table: 'directus_link_articles', column: 'author', foreign_key_table: 'directus_shadow_authors' },
+			{ table: 'articles', column: 'author', foreign_key_table: 'authors' },
+		];
 
 		const schema = await getSchema({ database });
 
 		expect(Object.keys(schema.collections)).toEqual(['articles']);
+		const read = schema.versioning!['articles']!;
+
+		expect(read.shadow?.collection).toBe('directus_shadow_articles');
+		expect(read.link?.collection).toBe('directus_link_articles');
+
+		expect(read.tableRelations).toMatchObject([
+			{ collection: 'directus_link_articles', field: 'author', related_collection: 'directus_shadow_authors' },
+		]);
 	});
 
 	test('marks collections with versioning enabled as versioned', async () => {

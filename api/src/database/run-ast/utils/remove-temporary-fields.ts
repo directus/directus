@@ -1,7 +1,9 @@
 import type { Item, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { cloneDeep, pick } from 'lodash-es';
+import { VERSION_FIELD } from '../../../services/version-tables/constants.js';
 import type { AST, NestedCollectionNode } from '../../../types/ast.js';
+import { isLiveRow } from '../../../versioning/run.js';
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
 export function removeTemporaryFields(
@@ -50,9 +52,15 @@ export function removeTemporaryFields(
 			}
 
 			const fieldsWithFunctionsApplied = fields[relatedCollection]!.map((field) => applyFunctionToColumnName(field));
+			const versionFields = ast.versioning?.[relatedCollection]?.fields ?? [];
 
-			item =
-				fields[relatedCollection]!.length > 0 ? pick(rawItem, fieldsWithFunctionsApplied) : rawItem[primaryKeyField];
+			if (fields[relatedCollection]!.length > 0 || versionFields.length > 0) {
+				item = pick(rawItem, fieldsWithFunctionsApplied);
+
+				if (versionFields.length > 0) item[VERSION_FIELD] = pick(rawItem[VERSION_FIELD] ?? {}, versionFields);
+			} else {
+				item = rawItem[primaryKeyField];
+			}
 
 			items.push(item);
 		}
@@ -73,15 +81,12 @@ export function removeTemporaryFields(
 			}
 		}
 
-		// Make sure any requested aggregate fields are included
-		if (ast.query?.aggregate) {
-			for (const [operation, aggregateFields] of Object.entries(ast.query.aggregate)) {
-				if (!fields) continue;
+		const query = ast.versioning ? { ...ast.query, ...ast.versioning.query } : ast.query;
+		const versionFields = ast.versioning?.fields ?? [];
 
-				if (operation === 'count' && aggregateFields.includes('*')) fields.push('count');
-
-				fields.push(...aggregateFields.map((field) => `${operation}.${field}`));
-			}
+		// Aggregate results only hold the requested aggregates, so they're kept as a whole
+		if (query?.aggregate) {
+			fields.push(...Object.keys(query.aggregate));
 		}
 
 		for (const rawItem of rawItems) {
@@ -103,7 +108,16 @@ export function removeTemporaryFields(
 
 			const fieldsWithFunctionsApplied = fields.map((field) => applyFunctionToColumnName(field));
 
-			item = fields.length > 0 ? pick(rawItem, fieldsWithFunctionsApplied, aliasFields) : rawItem[primaryKeyField];
+			if (fields.length > 0 || versionFields.length > 0) {
+				item = pick(rawItem, fieldsWithFunctionsApplied, aliasFields);
+
+				if (versionFields.length > 0) item[VERSION_FIELD] = pick(rawItem[VERSION_FIELD] ?? {}, versionFields);
+			} else if (ast.versioning && !isLiveRow(rawItem)) {
+				// Versions don't necessarily have a primary key, they're returned by their version id instead
+				item = { [VERSION_FIELD]: { id: rawItem[VERSION_FIELD]?.id ?? null } };
+			} else {
+				item = rawItem[primaryKeyField];
+			}
 
 			items.push(item);
 		}

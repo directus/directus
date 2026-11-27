@@ -19,6 +19,11 @@ export type M2ONode = {
 	 * Permissions rules for the item access of the children of this item.
 	 */
 	cases: Filter[];
+
+	/**
+	 * Set when the read includes versions of the related items
+	 */
+	versioning?: VersionedNode;
 };
 
 export type A2MNode = {
@@ -49,6 +54,13 @@ export type A2MNode = {
 	cases: {
 		[collection: string]: Filter[];
 	};
+
+	/**
+	 * Set per related collection when the read includes versions of the related items
+	 */
+	versioning?: {
+		[collection: string]: VersionedNode;
+	};
 };
 
 export type O2MNode = {
@@ -70,6 +82,11 @@ export type O2MNode = {
 	 * Permissions rules for the item access of the children of this item.
 	 */
 	cases: Filter[];
+
+	/**
+	 * Set when the read includes versions of the related items
+	 */
+	versioning?: VersionedNode;
 };
 
 export type NestedCollectionNode = M2ONode | O2MNode | A2MNode;
@@ -104,6 +121,28 @@ export type FunctionFieldNode = {
 	cases: Filter[];
 };
 
+/**
+ * Read of a node that includes versions: live items, with the system fields of their published version, together with
+ * all other versions of the collection. The node itself describes the read of the live collection, which permissions
+ * are validated against. How the collection is read with its versions is in `schema.versioning`.
+ */
+export type VersionedNode = {
+	/** Parts of the query that apply to the combined rows, with version system fields mapped to their columns */
+	query: Pick<Query, 'filter' | 'sort' | 'group' | 'aggregate'>;
+	/** Requested version system fields, returned under `directus_version` */
+	fields: string[];
+	/**
+	 * Column with references to versions, which links the node to its parent next to the live relation. It's on the
+	 * parent rows for m2o and a2o nodes and on the related rows for o2m nodes.
+	 */
+	reference: string | null;
+	/**
+	 * Shadow tables of related collections the filter reads, with the fields it reads from them. Access to the shadow
+	 * table of the collection itself is required as well, see `schema.versioning`.
+	 */
+	shadows: Record<string, string[]>;
+};
+
 export type AST = {
 	type: 'root';
 	name: string;
@@ -114,4 +153,9 @@ export type AST = {
 	 * Permissions rules for the item access of the children of this item.
 	 */
 	cases: Filter[];
+
+	/**
+	 * Set when the read includes versions of the items
+	 */
+	versioning?: VersionedNode;
 };

@@ -36,6 +36,10 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		]);
 	}
 
+	override castToString(sql: string): string {
+		return `CAST(${sql} AS CHAR(255))`;
+	}
+
 	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = (await this.knex

@@ -123,7 +123,7 @@ export async function validateItemAccess(
 				alias: false,
 			}));
 
-			injectCases(ast, permissions);
+			injectCases(ast, permissions, context.schema);
 		}
 	}
 

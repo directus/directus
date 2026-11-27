@@ -1,11 +1,29 @@
 import { useEnv } from '@directus/env';
-import type { Accountability, Filter, Item, Permission, Query, SchemaOverview } from '@directus/types';
+import type {
+	Accountability,
+	CollectionVersioning,
+	Filter,
+	Item,
+	Permission,
+	Query,
+	SchemaOverview,
+} from '@directus/types';
+import type { Knex } from 'knex';
 import { cloneDeep, merge } from 'lodash-es';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
 import { PayloadService } from '../../services/payload.js';
-import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../types/ast.js';
+import type {
+	AST,
+	FieldNode,
+	FunctionFieldNode,
+	NestedCollectionNode,
+	O2MNode,
+	VersionedNode,
+} from '../../types/ast.js';
 import { extractFunctionName } from '../../utils/extract-function-name.js';
+import { applyVersionedRead, formatVersionedLevel } from '../../versioning/run.js';
+import { getVersionedReadSchema } from '../../versioning/schema.js';
 import getDatabase from '../index.js';
 import { getDBQuery } from './lib/get-db-query.js';
 import { parseCurrentLevel } from './lib/parse-current-level.js';
@@ -15,8 +33,22 @@ import { applyParentFilters } from './utils/apply-parent-filters.js';
 import { mergeWithParentItems } from './utils/merge-with-parent-items.js';
 import { removeTemporaryFields } from './utils/remove-temporary-fields.js';
 
+/** A collection read of the AST: the root, a nested m2o or o2m node, or one related collection of an a2o node */
+export type Level = {
+	collection: string;
+	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
+	query: Query;
+	cases: Filter[];
+	versioning: VersionedNode | undefined;
+	/** Subquery the rows are read from instead of the table of the collection */
+	source?: Knex.QueryBuilder | undefined;
+};
+
 /**
- * Execute a given AST using Knex. Returns array of items based on requested AST.
+ * Final step of reading data: executes an AST that went through `processAst` using Knex.
+ * Queries each level of the tree (versioned nodes read from the combined live and shadow rows),
+ * applies the permission `cases`, merges nested relational results into their parent items and
+ * runs the items through the payload transforms. Returns the item(s), or a map per collection for a2o nodes.
  */
 export async function runAst(
 	originalAST: AST | NestedCollectionNode,
@@ -32,28 +64,51 @@ export async function runAst(
 		const results: { [collection: string]: null | Item | Item[] } = {};
 
 		for (const collection of ast.names) {
-			results[collection] = await run(
+			results[collection] = await run({
 				collection,
-				ast.children[collection]!,
-				ast.query[collection]!,
-				ast.cases[collection] ?? [],
-				accountability,
-			);
+				children: ast.children[collection]!,
+				query: ast.query[collection]!,
+				cases: ast.cases[collection] ?? [],
+				versioning: ast.versioning?.[collection],
+			});
 		}
 
 		return results;
-	} else {
-		return await run(ast.name, ast.children, options?.query || ast.query, ast.cases, accountability);
 	}
 
-	async function run(
-		collection: string,
-		children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
-		query: Query,
-		cases: Filter[],
-		accountability: Accountability | null,
-	) {
+	return await run({
+		collection: ast.name,
+		children: ast.children,
+		query: options?.query || ast.query,
+		cases: ast.cases,
+		versioning: ast.versioning,
+	});
+
+	/**
+	 * Reads one level of the AST and recursively resolves its nested relations.
+	 *
+	 * 1. Levels with versioning are read from the read collection of their collection instead, see `applyVersionedRead`.
+	 * 2. Determines the columns to select and the nested relational nodes of this level.
+	 * 3. Queries the items of this level, applying the permission `cases`.
+	 * 4. Runs the raw rows through the payload transforms.
+	 * 5. Limits every nested node to the fetched items (`applyParentFilters`), fetches it with a nested `runAst` call
+	 *    (o2m in batches of `RELATIONAL_BATCH_SIZE`, honoring per-item field access flags) and merges the results into
+	 *    the parent items.
+	 * 6. Formats versioned rows and, for the root call, strips fields that were only added for nesting.
+	 *
+	 * @returns The item(s) of this level with their nested relations, or `null` if nothing was found
+	 */
+	async function run(level: Level) {
 		const env = useEnv();
+		let read: CollectionVersioning | undefined;
+
+		if (level.versioning) {
+			read = schema.versioning![level.collection]!;
+			applyVersionedRead(level, schema, knex);
+			schema = getVersionedReadSchema(schema);
+		}
+
+		const { collection, children, query, cases, source } = level;
 
 		// Retrieve the database columns to select in the current AST
 		const { fieldNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
@@ -81,6 +136,7 @@ export async function runAst(
 				query,
 				cases,
 				permissions,
+				source,
 			},
 			{ schema, knex },
 		);
@@ -178,6 +234,8 @@ export async function runAst(
 				}
 			}
 		}
+
+		if (read) items = formatVersionedLevel(items, level, read, knex);
 
 		// During the fetching of data, we have to inject a couple of required fields for the child nesting
 		// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching

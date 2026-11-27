@@ -29,10 +29,12 @@ export type DBQueryOptions = {
 	cases: Filter[];
 	permissions: Permission[];
 	permissionsOnly?: boolean;
+	/** Rows to read from instead of the table, exposed under the table name */
+	source?: Knex.QueryBuilder | undefined;
 };
 
 export function getDBQuery(
-	{ table, fieldNodes, o2mNodes, query, cases, permissions, permissionsOnly }: DBQueryOptions,
+	{ table, fieldNodes, o2mNodes, query, cases, permissions, permissionsOnly, source }: DBQueryOptions,
 	{ knex, schema }: Context,
 ): Knex.QueryBuilder {
 	const aliasMap: AliasMap = Object.create(null);
@@ -40,6 +42,7 @@ export function getDBQuery(
 	const preProcess = getColumnPreprocessor(knex, schema, table, cases, permissions, aliasMap, permissionsOnly);
 	const queryCopy = cloneDeep(query);
 	const helpers = getHelpers(knex);
+	const from = () => (source ? knex.from(source.clone().as(table)) : knex.from(table));
 
 	const hasCaseWhen =
 		o2mNodes.some((node) => node.whenCase && node.whenCase.length > 0) ||
@@ -49,7 +52,7 @@ export function getDBQuery(
 
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
-		const flatQuery = knex.from(table);
+		const flatQuery = from();
 
 		const fieldNodeMap = Object.fromEntries(
 			fieldNodes.map((node, index): [string, [FieldNode | FunctionFieldNode, number]] => [
@@ -92,7 +95,7 @@ export function getDBQuery(
 	}
 
 	const primaryKey = schema.collections[table]!.primary;
-	const dbQuery = knex.from(table);
+	const dbQuery = from();
 	let sortRecords: ColumnSortRecord[] | undefined;
 	const innerQuerySortRecords: { alias: string; order: 'asc' | 'desc'; column: Knex.Raw }[] = [];
 	let hasMultiRelationalSort: boolean | undefined;
@@ -314,9 +317,11 @@ export function getDBQuery(
 		dbQuery.groupBy(groupByFields);
 	}
 
-	const wrapperQuery = knex
-		.from(table)
-		.innerJoin(knex.raw('??', dbQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
+	const wrapperQuery = from().innerJoin(
+		knex.raw('??', dbQuery.as('inner')),
+		`${table}.${primaryKey}`,
+		`inner.${primaryKey}`,
+	);
 
 	if (!hasCaseWhen) {
 		// No need for case/when in the wrapper query, just select the preprocessed columns

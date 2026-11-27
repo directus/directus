@@ -1,9 +1,10 @@
 import type { DeepPartial, Query, SchemaOverview } from '@directus/types';
 import { expect, test } from 'vitest';
 import { extractFieldsFromQuery } from './extract-fields-from-query.js';
+import { createFieldMap } from './field-map.js';
 
 test('Appends paths used in query to FieldMap', () => {
-	const fieldMap = { read: new Map(), other: new Map() };
+	const fieldMap = createFieldMap();
 
 	const query: Query = {
 		filter: {
@@ -22,7 +23,7 @@ test('Appends paths used in query to FieldMap', () => {
 });
 
 test('Appends nested paths based on m2o relational information', () => {
-	const fieldMap = { read: new Map(), other: new Map() };
+	const fieldMap = createFieldMap();
 
 	const query: Query = {
 		filter: {
@@ -56,7 +57,7 @@ test('Appends nested paths based on m2o relational information', () => {
 });
 
 test('Appends nested paths based on o2m relational information', () => {
-	const fieldMap = { read: new Map(), other: new Map() };
+	const fieldMap = createFieldMap();
 
 	const query: Query = {
 		filter: {
@@ -95,7 +96,7 @@ test('Appends nested paths based on o2m relational information', () => {
 });
 
 test('Appends nested paths based on collection scope in a2o filter', () => {
-	const fieldMap = { read: new Map(), other: new Map() };
+	const fieldMap = createFieldMap();
 
 	const query: Query = {
 		filter: {
@@ -122,7 +123,7 @@ test('Appends nested paths based on collection scope in a2o filter', () => {
 });
 
 test('All together now', () => {
-	const fieldMap = { read: new Map(), other: new Map() };
+	const fieldMap = createFieldMap();
 
 	const query: Query = {
 		filter: {
@@ -185,7 +186,7 @@ test.each([
 	['o2m', '$FOLLOW(links, article_id)', 'links'],
 	['o2a', '$FOLLOW(blocks, item, collection)', 'blocks'],
 ])('Appends nested paths based on implicit %s $FOLLOW relation', (_, follow, relatedCollection) => {
-	const fieldMap = { read: new Map(), other: new Map() };
+	const fieldMap = createFieldMap();
 
 	const query: Query = {
 		filter: {

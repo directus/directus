@@ -7,6 +7,7 @@ import type {
 	Accountability,
 	ActionEventParams,
 	Item as AnyItem,
+	Filter,
 	MutationOptions,
 	MutationTracker,
 	PermissionsAction,
@@ -16,7 +17,7 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
-import { getRelationsForCollection } from '@directus/utils';
+import { getRelationsForCollection, mergeFilters } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, difference, omit, pick, without } from 'lodash-es';
@@ -38,7 +39,9 @@ import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { captureSeatCount, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { handleVersion } from '../utils/versioning/handle-version.js';
+import { isVersionedQuery } from '../versioning/query.js';
 import { PayloadService } from './payload.js';
+import { VERSION_FIELD } from './version-tables/constants.js';
 
 export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
 	implements AbstractService<Item>
@@ -515,7 +518,9 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
 		await this.assertCollectionActive('read');
 
-		if (query.version && !isPublishedVersionKey(query.version)) {
+		const versioned = isVersionedQuery(query) && Boolean(this.schema.collections[this.collection]?.versioned);
+
+		if (!versioned && query.version && !isPublishedVersionKey(query.version)) {
 			return (await handleVersion(this, opts?.key ?? null, query, opts)) as Item[];
 		}
 
@@ -542,6 +547,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				collection: this.collection,
 				query: updatedQuery,
 				accountability: this.accountability,
+				versioning: versioned,
 			},
 			{
 				schema: this.schema,
@@ -611,16 +617,29 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		validateKeys(this.schema, this.collection, primaryKeyField, key);
 
+		// With versions, a key refers to the live item, or its latest archived version once the item is gone. Never drafts
+		if (isVersionedQuery(query) && this.schema.collections[this.collection]?.versioned) {
+			const filter = mergeFilters([
+				{ [primaryKeyField]: { _eq: key } },
+				{ [VERSION_FIELD]: { type: { _in: ['published', 'archived'] } } } as Filter,
+				query.filter,
+			]);
+
+			const [result] = await this.readByQuery({ ...query, filter, limit: 1 }, { ...opts, key });
+
+			if (!result) throw new ForbiddenError();
+
+			return result;
+		}
+
 		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
-		const results: Item[] = await this.readByQuery(queryWithKey, { ...opts, key });
+		const [result] = (await this.readByQuery(queryWithKey, { ...opts, key })) as Item[];
 
-		if (results.length === 0) {
-			throw new ForbiddenError();
-		}
+		if (!result) throw new ForbiddenError();
 
-		return results[0]!;
+		return result;
 	}
 
 	/**
@@ -1154,6 +1173,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		await transaction(this.knex, async (trx) => {
 			const previousSeatCount = await captureSeatCount(trx, opts.userIntegrityCheckFlags);
+
+			// Versions of an item are deleted along with it
+			const { versioning } = getHelpers(trx);
+
+			if (this.schema.collections[this.collection]?.versioned) {
+				await trx(versioning.getShadowTableName(this.collection)).whereIn(primaryKeyField, keysAfterHooks).delete();
+			}
 
 			await trx(this.collection).whereIn(primaryKeyField, keysAfterHooks).delete();
 

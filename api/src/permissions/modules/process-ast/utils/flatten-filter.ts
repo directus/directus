@@ -1,6 +1,10 @@
 import type { Query } from '@directus/types';
 import type { FieldKey } from '../types.js';
 
+/**
+ * Push the field path of every condition in the filter to `paths`, without operators and logical groups:
+ * `{ _and: [{ author: { name: { _eq: 'Jane' } } }] }` adds `['author', 'name']`.
+ */
 export function flattenFilter(paths: FieldKey[][], filter: Query['filter']) {
 	if (!filter) return;
 

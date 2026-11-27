@@ -8,8 +8,16 @@ export type RelationInfo = {
 	oppositeCollection: string | null;
 };
 
+/**
+ * Whether the field is an implicit reverse relation, `$FOLLOW(collection, field)` for o2m and
+ * `$FOLLOW(collection, field, collectionField)` for o2a relations, which can be used in filters
+ */
+export function isImplicitRelation(field: string): boolean {
+	return field.startsWith('$FOLLOW(') && field.endsWith(')');
+}
+
 function checkImplicitRelation(field: string) {
-	if (field.startsWith('$FOLLOW(') && field.endsWith(')')) {
+	if (isImplicitRelation(field)) {
 		return field.slice(8, -1).split(',');
 	}
 
@@ -23,7 +31,7 @@ export function getRelationInfo(
 ): RelationInfo {
 	if (!collection || !field) return { relation: null, relationType: null, oppositeCollection: null };
 
-	if (field.startsWith('$FOLLOW') && field.length > 500) {
+	if (isImplicitRelation(field) && field.length > 500) {
 		throw new Error(`Implicit $FOLLOW statement is too big to parse. Got: "${field.substring(500)}..."`);
 	}
 
