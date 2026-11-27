@@ -1864,7 +1864,7 @@ describe('a2o filter', () => {
 			  left join "categories" as "tgymy" on "directus_versioned_posts"."collection" = ?
 			  and "directus_versioned_posts"."item" = CAST("tgymy"."id" AS CHAR(255))
 			where
-			  ("tgymy"."name" = ?)
+			  "tgymy"."name" = ?
 			order by
 			  "directus_versioned_posts"."id" asc
 			limit

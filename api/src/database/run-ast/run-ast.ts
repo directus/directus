@@ -1,5 +1,14 @@
 import { useEnv } from '@directus/env';
-import type { Accountability, Filter, Item, Permission, Query, SchemaOverview } from '@directus/types';
+import type {
+	Accountability,
+	CollectionVersioning,
+	Filter,
+	Item,
+	Permission,
+	Query,
+	SchemaOverview,
+} from '@directus/types';
+import type { Knex } from 'knex';
 import { cloneDeep, merge } from 'lodash-es';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
@@ -13,12 +22,8 @@ import type {
 	VersionedNode,
 } from '../../types/ast.js';
 import { extractFunctionName } from '../../utils/extract-function-name.js';
-import {
-	formatVersionedLevel,
-	planVersionedRead,
-	type VersionedLevelNode,
-	type VersionedReadPlan,
-} from '../../versioning/run.js';
+import { applyVersionedRead, formatVersionedLevel } from '../../versioning/run.js';
+import { getVersionedReadSchema } from '../../versioning/schema.js';
 import getDatabase from '../index.js';
 import { getDBQuery } from './lib/get-db-query.js';
 import { parseCurrentLevel } from './lib/parse-current-level.js';
@@ -29,12 +34,14 @@ import { mergeWithParentItems } from './utils/merge-with-parent-items.js';
 import { removeTemporaryFields } from './utils/remove-temporary-fields.js';
 
 /** A collection read of the AST: the root, a nested m2o or o2m node, or one related collection of an a2o node */
-type Level = {
+export type Level = {
 	collection: string;
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
 	query: Query;
 	cases: Filter[];
 	versioning: VersionedNode | undefined;
+	/** Subquery the rows are read from instead of the table of the collection */
+	source?: Knex.QueryBuilder | undefined;
 };
 
 /**
@@ -80,7 +87,7 @@ export async function runAst(
 	/**
 	 * Reads one level of the AST and recursively resolves its nested relations.
 	 *
-	 * 1. Levels with versioning are read from the read collection of their collection instead, see `planVersionedRead`.
+	 * 1. Levels with versioning are read from the read collection of their collection instead, see `applyVersionedRead`.
 	 * 2. Determines the columns to select and the nested relational nodes of this level.
 	 * 3. Queries the items of this level, applying the permission `cases`.
 	 * 4. Runs the raw rows through the payload transforms.
@@ -93,15 +100,15 @@ export async function runAst(
 	 */
 	async function run(level: Level) {
 		const env = useEnv();
-		const { cases } = level;
-		let { collection, children, query } = level;
-		let versionPlan: VersionedReadPlan | undefined;
+		let read: CollectionVersioning | undefined;
 
 		if (level.versioning) {
-			versionPlan = planVersionedRead(level as VersionedLevelNode, schema, knex);
-
-			({ collection, children, query, schema } = versionPlan);
+			read = schema.versioning![level.collection]!;
+			applyVersionedRead(level, schema, knex);
+			schema = getVersionedReadSchema(schema);
 		}
+
+		const { collection, children, query, cases, source } = level;
 
 		// Retrieve the database columns to select in the current AST
 		const { fieldNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
@@ -129,7 +136,7 @@ export async function runAst(
 				query,
 				cases,
 				permissions,
-				source: versionPlan?.source,
+				source,
 			},
 			{ schema, knex },
 		);
@@ -228,7 +235,7 @@ export async function runAst(
 			}
 		}
 
-		if (versionPlan) items = formatVersionedLevel(items, versionPlan, knex);
+		if (read) items = formatVersionedLevel(items, level, read, knex);
 
 		// During the fetching of data, we have to inject a couple of required fields for the child nesting
 		// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching

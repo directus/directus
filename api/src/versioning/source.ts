@@ -1,4 +1,4 @@
-import type { SchemaOverview } from '@directus/types';
+import type { CollectionOverview, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { getHelpers } from '../database/helpers/index.js';
 import { getDatabaseClient } from '../database/index.js';
@@ -7,53 +7,55 @@ import { VERSION_SYSTEM_FIELDS, VERSIONED_KEY_FIELD } from '../services/version-
 const ROWS_ALIAS = 'directus_versioned_rows';
 
 /**
- * Rows of the collection that reads the live items of a collection together with their versions. Collections that
- * aren't versioned only have live rows, with the system fields of published items and the references to versions from
- * their link table.
+ * Rows of the versioned read collection: the live items, with the system fields of their published version and their
+ * version references, followed by their unpublished versions from the shadow table.
  */
 export function getVersionedSource(knex: Knex, schema: SchemaOverview, collection: string): Knex.QueryBuilder {
-	const read = schema.versioning![collection]!;
+	const { collection: read, shadow, link, referenceFields, a2oReferences } = schema.versioning![collection]!;
 	const live = schema.collections[collection]!;
 	const { primary } = live;
-	const { shadow, link, referenceFields } = read;
-	const shadowTable = shadow?.collection ?? null;
-	const linkTable = link?.collection ?? null;
+	const isNumericKey = read.fields[VERSIONED_KEY_FIELD]!.type !== 'string';
+	const systemFields: string[] = Object.values(VERSION_SYSTEM_FIELDS);
 
 	const columns = Object.values(live.fields)
 		.filter((field) => !field.alias)
 		.map((field) => field.field);
 
-	const systemFields: string[] = Object.values(VERSION_SYSTEM_FIELDS);
-	const linkedFields = link ? Object.keys(link.fields).filter((field) => field !== primary) : [];
-	const isNumericKey = ['integer', 'bigInteger'].includes(live.fields[primary]?.type ?? '');
+	/** Selects `alias.field`, or NULL if the table doesn't have that field */
+	function column(alias: string, table: CollectionOverview | null, field: string) {
+		if (table && field in table.fields) {
+			return knex.ref(`${alias}.${field}`).as(field);
+		}
 
-	// Live rows keep their primary key as key, versions use their negative id, so o2m relations of live rows still work.
-	// MySQL version ids are unsigned, so they need to be signed before they can be negated.
-	const negatedVersionId = getDatabaseClient(knex) === 'mysql' ? '-1 * CAST(?? AS SIGNED)' : '-1 * ??';
+		return knex.raw('NULL as ??', [field]);
+	}
 
-	const selectKey = (sql: string, bindings: string[]) =>
-		isNumericKey
-			? knex.raw(`${sql} as ??`, [...bindings, VERSIONED_KEY_FIELD])
-			: knex.raw(`${getHelpers(knex).schema.castToString(sql)} as ??`, [...bindings, VERSIONED_KEY_FIELD]);
+	/** Selects the given expression as the versioned key, cast to string for non-numeric keys */
+	function key(sql: string, binding: string) {
+		let expression = sql;
 
-	const selectColumn = (table: string | null, exists: boolean, column: string, alias = column) =>
-		table && exists ? knex.ref(`${table}.${column}`).as(alias) : knex.raw('NULL as ??', [alias]);
+		if (!isNumericKey) {
+			expression = getHelpers(knex).schema.castToString(sql);
+		}
 
-	const itemsQuery = knex
+		return knex.raw(`${expression} as ??`, [binding, VERSIONED_KEY_FIELD]);
+	}
+
+	const rows = knex
 		.select([
-			...columns.map((column) => selectColumn(collection, true, column)),
-			...systemFields.map((column) =>
-				column === VERSION_SYSTEM_FIELDS.type
-					? knex.raw(`'published' as ??`, [column])
-					: selectColumn('published', Boolean(shadow), column),
+			...columns.map((field) => column(collection, live, field)),
+			...systemFields.map((field) =>
+				field === VERSION_SYSTEM_FIELDS.type
+					? knex.raw(`'published' as ??`, [field])
+					: column('published', shadow, field),
 			),
-			...referenceFields.map((column) => selectColumn(linkTable, linkedFields.includes(column), column)),
-			selectKey('??', [`${collection}.${primary}`]),
+			...referenceFields.map((field) => column(link?.collection ?? '', link, field)),
+			key('??', `${collection}.${primary}`),
 		])
 		.from(collection);
 
-	if (shadowTable) {
-		itemsQuery.leftJoin({ published: shadowTable }, function () {
+	if (shadow) {
+		rows.leftJoin({ published: shadow.collection }, function () {
 			this.on(`published.${primary}`, '=', `${collection}.${primary}`).andOnVal(
 				`published.${VERSION_SYSTEM_FIELDS.type}`,
 				'=',
@@ -62,40 +64,40 @@ export function getVersionedSource(knex: Knex, schema: SchemaOverview, collectio
 		});
 	}
 
-	if (linkTable) {
-		itemsQuery.leftJoin(linkTable, `${linkTable}.${primary}`, `${collection}.${primary}`);
+	if (link) {
+		rows.leftJoin(link.collection, `${link.collection}.${primary}`, `${collection}.${primary}`);
 	}
 
-	if (!shadowTable || !shadow) return withA2OReferences(itemsQuery);
+	if (shadow) {
+		const table = shadow.collection;
+		// MySQL version ids are unsigned, so they need to be signed before they can be negated
+		const negatedId = getDatabaseClient(knex) === 'mysql' ? '-1 * CAST(?? AS SIGNED)' : '-1 * ??';
 
-	// Published versions are represented by the live item
-	const versionsQuery = knex
+		// Versions use their negative id as key so o2m relations of live rows still work; published versions are the live row
+		rows.unionAll([
+			knex
+				.select([
+					...[...columns, ...systemFields, ...referenceFields].map((field) => column(table, shadow, field)),
+					key(negatedId, `${table}.${VERSION_SYSTEM_FIELDS.id}`),
+				])
+				.from(table)
+				.whereNot(`${table}.${VERSION_SYSTEM_FIELDS.type}`, 'published'),
+		]);
+	}
+
+	if (a2oReferences.length === 0) return rows;
+
+	return knex
 		.select([
-			...columns.map((column) => selectColumn(shadowTable, column in shadow.fields, column)),
-			...systemFields.map((column) => selectColumn(shadowTable, true, column)),
-			...referenceFields.map((column) => selectColumn(shadowTable, column in shadow.fields, column)),
-			selectKey(negatedVersionId, [`${shadowTable}.${VERSION_SYSTEM_FIELDS.id}`]),
+			`${ROWS_ALIAS}.*`,
+			...a2oReferences.map(({ column, reference, collectionField, collection }) =>
+				knex.raw('case when ?? = ? then ?? end as ??', [
+					`${ROWS_ALIAS}.${collectionField}`,
+					collection,
+					`${ROWS_ALIAS}.${reference}`,
+					column,
+				]),
+			),
 		])
-		.from(shadowTable)
-		.whereNot(`${shadowTable}.${VERSION_SYSTEM_FIELDS.type}`, 'published');
-
-	return withA2OReferences(itemsQuery.unionAll([versionsQuery]));
-
-	function withA2OReferences(rows: Knex.QueryBuilder) {
-		if (read.a2oReferences.length === 0) return rows;
-
-		return knex
-			.select([
-				`${ROWS_ALIAS}.*`,
-				...read.a2oReferences.map(({ column, reference, collectionField, collection }) =>
-					knex.raw('case when ?? = ? then ?? end as ??', [
-						`${ROWS_ALIAS}.${collectionField}`,
-						collection,
-						`${ROWS_ALIAS}.${reference}`,
-						column,
-					]),
-				),
-			])
-			.from(rows.as(ROWS_ALIAS));
-	}
+		.from(rows.as(ROWS_ALIAS));
 }

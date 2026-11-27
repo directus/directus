@@ -1,49 +1,40 @@
-import type { Filter, Item, Query, SchemaOverview } from '@directus/types';
+import type { CollectionVersioning, Filter, Item, Query, SchemaOverview } from '@directus/types';
 import { mergeFilters, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { isNil, isPlainObject, mapKeys, uniq } from 'lodash-es';
+import { isNil, isPlainObject, mapKeys, pick, uniq } from 'lodash-es';
 import { getHelpers } from '../database/helpers/index.js';
+import type { Level } from '../database/run-ast/run-ast.js';
 import { VERSION_FIELD, VERSION_SYSTEM_FIELDS } from '../services/version-tables/constants.js';
-import { nestVersionSystemFields, SYSTEM_FIELD_KEYS } from '../services/version-tables/utils.js';
-import type {
-	A2MNode,
-	FieldNode,
-	FunctionFieldNode,
-	M2ONode,
-	NestedCollectionNode,
-	O2MNode,
-	VersionedNode,
-} from '../types/ast.js';
-import { getVersionedReadSchema } from './schema.js';
+import type { A2MNode, FieldNode, M2ONode, O2MNode, VersionedNode } from '../types/ast.js';
 import { getVersionedSource } from './source.js';
-
-/** A node, or a related collection of an a2o node, that's read from the combined rows of its collection */
-export type VersionedLevelNode = {
-	collection: string;
-	query: Query;
-	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
-	versioning: VersionedNode;
-};
 
 const SYSTEM_COLUMNS: string[] = Object.values(VERSION_SYSTEM_FIELDS);
 
-export type VersionedReadPlan = NonNullable<ReturnType<typeof planVersionedRead>>;
+/** Version system field keys by their column in the shadow table */
+const SYSTEM_FIELD_KEYS = new Map<string, string>(
+	Object.entries(VERSION_SYSTEM_FIELDS).map(([key, column]) => [column, key]),
+);
 
 /**
- * How to read a versioned node from the combined rows of its collection: the read collection with its schema and
- * source, the query with the version system fields mapped to their columns, and the system columns selected.
- * Returns `null` for nodes without versioning.
+ * Switch a versioned level to reading the combined rows of its collection: the read collection with its source, the
+ * query with the version query merged in, the relations of the nested nodes pointing at the read collection, and the
+ * live primary key and system columns selected.
  */
-export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOverview, knex: Knex) {
-	const { versioning } = node;
-
-	const read = schema.versioning![node.collection]!;
+export function applyVersionedRead(level: Level, schema: SchemaOverview, knex: Knex) {
+	const read = schema.versioning![level.collection]!;
 	const collection = read.collection.collection;
-	const { primary } = schema.collections[node.collection]!;
-	const query = { ...node.query, ...versioning.query };
+	const { primary } = schema.collections[level.collection]!;
+
+	// Paging, search, alias etc. come from the live query, the parts that can read version fields from the versioned
+	// one. Only the versioned parts that are set replace the live ones, so a live default sort is kept.
+	const query: Query = {
+		...level.query,
+		...pick(level.versioning!.query, ['filter', 'sort', 'group', 'aggregate']),
+	};
+
 	const isAggregate = Boolean(query.group || Object.keys(query.aggregate ?? {}).length > 0);
 
-	const children = node.children.map((child) => {
+	const children = level.children.map((child) => {
 		if (child.type === 'm2o' || child.type === 'a2o') {
 			return { ...child, relation: { ...child.relation, collection } };
 		}
@@ -53,27 +44,31 @@ export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOvervi
 		return child;
 	});
 
-	const hasPrimary = children.some((child) => child.type === 'field' && child.fieldKey === primary);
-
 	// The live primary key and system columns link the rows to the nested nodes and their parent
-	const selected = isAggregate
-		? (query.group ?? []).filter((field) => SYSTEM_COLUMNS.includes(field))
-		: [...(hasPrimary ? [] : [primary]), ...SYSTEM_COLUMNS, ...read.referenceFields];
+	const selected = new Set<string>();
 
-	return {
-		node,
-		collection,
-		read,
-		schema: getVersionedReadSchema(schema),
-		source: getVersionedSource(knex, schema, node.collection),
-		query,
-		children: [
-			...children,
-			...selected.map(
-				(field): FieldNode => ({ type: 'field', name: field, fieldKey: field, whenCase: [], alias: false }),
-			),
-		],
-	};
+	if (isAggregate) {
+		for (const field of query.group ?? []) {
+			if (SYSTEM_COLUMNS.includes(field)) selected.add(field);
+		}
+	} else {
+		for (const field of [primary, ...SYSTEM_COLUMNS, ...read.referenceFields]) selected.add(field);
+	}
+
+	for (const child of children) {
+		if (child.type === 'field') selected.delete(child.fieldKey);
+	}
+
+	level.source = getVersionedSource(knex, schema, level.collection);
+	level.collection = collection;
+	level.query = query;
+
+	level.children = [
+		...children,
+		...[...selected].map(
+			(field): FieldNode => ({ type: 'field', name: field, fieldKey: field, whenCase: [], alias: false }),
+		),
+	];
 }
 
 /**
@@ -81,42 +76,60 @@ export function planVersionedRead(node: VersionedLevelNode, schema: SchemaOvervi
  * their `directus_version.<key>` name. m2o relations that reference a version instead of a live item, and aren't read
  * as nested node, are set to `{ directus_version: { id } }`.
  */
-export function formatVersionedLevel(items: Item | Item[], plan: VersionedReadPlan, knex: Knex): Item | Item[] {
+export function formatVersionedLevel(
+	items: Item | Item[],
+	level: Level,
+	read: CollectionVersioning,
+	knex: Knex,
+): Item | Item[] {
 	const { versioning } = getHelpers(knex);
-	const { node, read, query } = plan;
-	const rows = toArray(items);
-	const aggregates = Object.keys(query.aggregate ?? {});
+	const aggregates = Object.keys(level.query.aggregate ?? {});
+	const isArray = Array.isArray(items);
+	items = toArray(items);
 
-	for (const child of node.children) {
-		if (child.type !== 'field') continue;
+	const references = level.children.flatMap((child) => {
+		if (child.type !== 'field') return [];
 
 		const reference = versioning.getVersionReferenceField(child.name);
 
-		if (!read.referenceFields.includes(reference)) continue;
-
-		for (const row of rows) {
-			if (isNil(row[child.fieldKey]) && !isNil(row[reference])) {
-				row[child.fieldKey] = { [VERSION_FIELD]: { id: row[reference] } };
-			}
-		}
-	}
-
-	const formatted = rows.map((row) => {
-		const nested = nestVersionSystemFields(row);
-
-		for (const func of aggregates) {
-			if (!isPlainObject(nested[func])) continue;
-
-			nested[func] = mapKeys(nested[func], (_value, column) => {
-				const key = SYSTEM_FIELD_KEYS.get(column);
-				return key ? `${VERSION_FIELD}.${key}` : column;
-			});
-		}
-
-		return nested;
+		return read.referenceFields.includes(reference) ? [{ fieldKey: child.fieldKey, reference }] : [];
 	});
 
-	return Array.isArray(items) ? formatted : formatted[0]!;
+	const renameSystemColumn = (column: string) => {
+		const key = SYSTEM_FIELD_KEYS.get(column);
+		return key ? `${VERSION_FIELD}.${key}` : column;
+	};
+
+	items = items.map((row: Item) => {
+		const result: Item = {};
+		const system: Item = {};
+
+		for (const [field, value] of Object.entries(row)) {
+			const key = SYSTEM_FIELD_KEYS.get(field);
+
+			if (key) {
+				system[key] = value ?? null;
+			} else if (aggregates.includes(field) && isPlainObject(value)) {
+				result[field] = mapKeys(value, (_, column) => renameSystemColumn(column));
+			} else {
+				result[field] = value;
+			}
+		}
+
+		for (const { fieldKey, reference } of references) {
+			if (isNil(result[fieldKey]) && !isNil(result[reference])) {
+				result[fieldKey] = { [VERSION_FIELD]: { id: result[reference] } };
+			}
+		}
+
+		if (Object.keys(system).length > 0) {
+			result[VERSION_FIELD] = isPlainObject(result[VERSION_FIELD]) ? { ...result[VERSION_FIELD], ...system } : system;
+		}
+
+		return result;
+	});
+
+	return isArray ? items : items.at(0);
 }
 
 /**
