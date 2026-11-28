@@ -77,6 +77,11 @@ describe('assertTransformsAllowed', () => {
 		expect(() => assertTransformsAllowed(1, 1, transforms)).not.toThrow();
 	});
 
+	test('When an options object is followed by a positional height, then the height is counted', () => {
+		const transforms = [['resize', { width: 10 }, MAX_DIM + 1]] as unknown as Transformation[];
+		expect(() => assertTransformsAllowed(1, 1, transforms)).toThrow(IllegalAssetTransformationError);
+	});
+
 	test('When a source dimension is zero, then it does not divide by zero or throw', () => {
 		const transforms: Transformation[] = [['resize', { width: 100 }]];
 		expect(() => assertTransformsAllowed(0, 0, transforms)).not.toThrow();
@@ -177,6 +182,15 @@ describe('calculateResize', () => {
 				width: 100,
 				height: 6501,
 			});
+		});
+
+		test('When an axis in the options object is null, then the positional value is kept', () => {
+			expect(calculateResize({ width: 100, height: 100 }, [{ width: 5, height: null }, 6501])).toEqual({
+				width: 5,
+				height: 6501,
+			});
+
+			expect(calculateResize({ width: 8, height: 4 }, [10, 2, { width: null }])).toEqual({ width: 10, height: 2 });
 		});
 
 		test('When both axes are absent, then the input is unchanged', () => {
