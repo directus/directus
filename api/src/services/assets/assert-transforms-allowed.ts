@@ -64,6 +64,7 @@ export function assertTransformsAllowed(sourceWidth: number, sourceHeight: numbe
 /**
  * Calculates the output dimensions of a resize. Sharp supports both `resize({ width, height, fit, ... })`
  * and `resize(width, height, options?)`; the result depends on the `fit` mode and enlargement/reduction guards.
+ * Width/height in the options object override the positional ones, so the projection reads them the same way.
  *
  * @param input - Dimensions entering the resize
  * @param args - Sharp `resize` arguments (an options object, or positional width/height/options)
@@ -77,13 +78,17 @@ export function calculateResize(input: Size, args: unknown[]): Size {
 	if (isObject(args[0])) {
 		opts = args[0];
 		widthArg = opts['width'];
-		heightArg = opts['height'];
+		// Sharp still applies a positional height after an options object.
+		heightArg = opts['height'] ?? args[1];
 	} else {
 		widthArg = args[0];
 		heightArg = args[1];
 
 		if (isObject(args[2])) {
 			opts = args[2];
+			// Width/height in the options object override the positional ones, as sharp does.
+			widthArg = opts['width'] ?? widthArg;
+			heightArg = opts['height'] ?? heightArg;
 		}
 	}
 
